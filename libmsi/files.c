@@ -40,6 +40,7 @@
 #include "msi.h"
 #include "msidefs.h"
 #include "msipriv.h"
+#include "wingdi.h"
 #include "winuser.h"
 #include "winreg.h"
 #include "shlwapi.h"

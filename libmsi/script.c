@@ -24,6 +24,7 @@
 #include "windef.h"
 #include "winbase.h"
 #include "winerror.h"
+#include "wingdi.h"
 #include "winuser.h"
 #include "msidefs.h"
 #include "msipriv.h"

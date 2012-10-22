@@ -38,6 +38,7 @@
 #include "winreg.h"
 #include "wine/debug.h"
 #include "msipriv.h"
+#include "wingdi.h"
 #include "winuser.h"
 #include "wine/unicode.h"
 

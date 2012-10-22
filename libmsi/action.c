@@ -31,6 +31,7 @@
 #include "wine/debug.h"
 #include "msidefs.h"
 #include "msipriv.h"
+#include "wingdi.h"
 #include "winuser.h"
 #include "shlobj.h"
 #include "objbase.h"

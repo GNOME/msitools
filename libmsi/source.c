@@ -34,6 +34,7 @@
 #include "msipriv.h"
 #include "wincrypt.h"
 #include "winver.h"
+#include "wingdi.h"
 #include "winuser.h"
 #include "wine/unicode.h"
 #include "sddl.h"

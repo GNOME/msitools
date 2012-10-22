@@ -35,6 +35,7 @@
 #include "msiserver.h"
 #include "wincrypt.h"
 #include "winver.h"
+#include "wingdi.h"
 #include "winuser.h"
 #include "shlobj.h"
 #include "shobjidl.h"

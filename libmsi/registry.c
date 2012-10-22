@@ -35,6 +35,7 @@
 #include "wincrypt.h"
 #include "wine/unicode.h"
 #include "winver.h"
+#include "wingdi.h"
 #include "winuser.h"
 #include "sddl.h"
 

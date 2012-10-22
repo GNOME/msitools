@@ -34,6 +34,7 @@
 #include "msiquery.h"
 #include "objidl.h"
 #include "wincrypt.h"
+#include "wingdi.h"
 #include "winuser.h"
 #include "wininet.h"
 #include "winver.h"

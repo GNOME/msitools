@@ -30,6 +30,8 @@
 #include "msi.h"
 #include "msiquery.h"
 #include "msidefs.h"
+#include "wingdi.h"
+#include "winuser.h"
 #include "objbase.h"
 #include "objidl.h"
 #include "fusion.h"
