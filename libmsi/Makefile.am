@@ -1,6 +1,6 @@
 lib_LTLIBRARIES = libmsi.la
 
-AM_CPPFLAGS = -I$(srcdir) -I. -D__WINESRC__
+AM_CPPFLAGS = -I$(srcdir) -I. -D__WINESRC__ -DUNICODE -D_UNICODE
 AM_YFLAGS = -d
 BUILT_SOURCES = msiserver.h msiserver_i.c sql-parser.c sql-parser.h cond-parser.c cond-parser.h
 
