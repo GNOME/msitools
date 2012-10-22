@@ -19,9 +19,6 @@ libmsi_la_SOURCES = alter.c create.c database.c delete.c distinct.c \
 	sql-parser.y \
 	msiserver_i.c
 
-libmsi_la_DEPENDENCIES = \
-	msi.res
-
 libmsi_la_LDFLAGS = -no-undefined
 libmsi_la_LIBADD = \
 	$(libmsi_la_DEPENDENCIES) \
@@ -42,6 +39,3 @@ libmsi_la_LIBADD = \
 	-lwintrust \
 	-lcrypt32 \
 	-limagehlp
-
-%.res: %.rc
-	$(RC) $(RCFLAGS) -o $@ $<

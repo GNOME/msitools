@@ -36,8 +36,6 @@
 
 WINE_DEFAULT_DEBUG_CHANNEL(msi);
 
-static LONG dll_count;
-
 /* the UI level */
 INSTALLUILEVEL           gUILevel         = INSTALLUILEVEL_BASIC;
 HWND                     gUIhwnd          = 0;
@@ -48,79 +46,3 @@ DWORD                    gUIFilter        = 0;
 LPVOID                   gUIContext       = NULL;
 WCHAR                   *gszLogFile       = NULL;
 HINSTANCE msi_hInstance;
-
-
-/*
- * Dll lifetime tracking declaration
- */
-static void LockModule(void)
-{
-    InterlockedIncrement(&dll_count);
-}
-
-static void UnlockModule(void)
-{
-    InterlockedDecrement(&dll_count);
-}
-
-/******************************************************************
- *      DllMain
- */
-BOOL WINAPI DllMain(HINSTANCE hinstDLL, DWORD fdwReason, LPVOID lpvReserved)
-{
-    switch (fdwReason)
-    {
-    case DLL_PROCESS_ATTACH:
-        msi_hInstance = hinstDLL;
-        DisableThreadLibraryCalls(hinstDLL);
-        IsWow64Process( GetCurrentProcess(), &is_wow64 );
-        break;
-    case DLL_PROCESS_DETACH:
-        msi_free_handle_table();
-        msi_free( gszLogFile );
-        break;
-    }
-    return TRUE;
-}
-
-/******************************************************************
- * DllGetVersion              [MSI.@]
- */
-HRESULT WINAPI DllGetVersion(DLLVERSIONINFO *pdvi)
-{
-    TRACE("%p\n",pdvi);
-
-    if (pdvi->cbSize < sizeof(DLLVERSIONINFO))
-        return E_INVALIDARG;
-
-    pdvi->dwMajorVersion = MSI_MAJORVERSION;
-    pdvi->dwMinorVersion = MSI_MINORVERSION;
-    pdvi->dwBuildNumber = MSI_BUILDNUMBER;
-    pdvi->dwPlatformID = DLLVER_PLATFORM_WINDOWS;
-
-    return S_OK;
-}
-
-/******************************************************************
- * DllCanUnloadNow            [MSI.@]
- */
-HRESULT WINAPI DllCanUnloadNow(void)
-{
-    return dll_count == 0 ? S_OK : S_FALSE;
-}
-
-/***********************************************************************
- *  DllRegisterServer (MSI.@)
- */
-HRESULT WINAPI DllRegisterServer(void)
-{
-    return __wine_register_resources( msi_hInstance );
-}
-
-/***********************************************************************
- *  DllUnregisterServer (MSI.@)
- */
-HRESULT WINAPI DllUnregisterServer(void)
-{
-    return __wine_unregister_resources( msi_hInstance );
-}
