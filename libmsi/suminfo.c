@@ -25,13 +25,11 @@
 
 #include "windef.h"
 #include "winbase.h"
-#include "winreg.h"
 #include "winnls.h"
 #include "shlwapi.h"
 #include "debug.h"
 #include "unicode.h"
 #include "msiquery.h"
-#include "msidefs.h"
 #include "msipriv.h"
 #include "objidl.h"
 #include "propvarutil.h"

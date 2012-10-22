@@ -26,7 +26,6 @@
 
 #include "windef.h"
 #include "winbase.h"
-#include "winreg.h"
 #include "winnls.h"
 #include "debug.h"
 #include "unicode.h"

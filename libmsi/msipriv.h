@@ -27,17 +27,11 @@
 #include "unicode.h"
 #include "windef.h"
 #include "winbase.h"
-#include "fdi.h"
 #include "msi.h"
 #include "msiquery.h"
-#include "msidefs.h"
-#include "wingdi.h"
-#include "winuser.h"
 #include "objbase.h"
 #include "objidl.h"
-#include "fusion.h"
 #include "winnls.h"
-#include "winver.h"
 #include "list.h"
 
 #pragma GCC visibility push(hidden)

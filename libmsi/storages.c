@@ -24,8 +24,6 @@
 
 #include "windef.h"
 #include "winbase.h"
-#include "wingdi.h"
-#include "winuser.h"
 #include "winerror.h"
 #include "ole2.h"
 #include "msiquery.h"
