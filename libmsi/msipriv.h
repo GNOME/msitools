@@ -24,6 +24,7 @@
 
 #include <stdarg.h>
 
+#include "wine/unicode.h"
 #include "windef.h"
 #include "winbase.h"
 #include "fdi.h"
