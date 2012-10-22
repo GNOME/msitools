@@ -375,18 +375,6 @@ static void free_package_structures( MSIPACKAGE *package )
         msi_free( cab );
     }
 
-    LIST_FOR_EACH_SAFE( item, cursor, &package->patches )
-    {
-        MSIPATCHINFO *patch = LIST_ENTRY( item, MSIPATCHINFO, entry );
-
-        list_remove( &patch->entry );
-        if (patch->delete_on_close && !DeleteFileW( patch->localfile ))
-        {
-            ERR("failed to delete %s (%u)\n", debugstr_w(patch->localfile), GetLastError());
-        }
-        msi_free_patchinfo( patch );
-    }
-
     msi_free( package->BaseURL );
     msi_free( package->PackagePath );
     msi_free( package->ProductCode );
@@ -553,7 +541,6 @@ static MSIPACKAGE *msi_alloc_package( void )
         list_init( &package->RunningActions );
         list_init( &package->sourcelist_info );
         list_init( &package->sourcelist_media );
-        list_init( &package->patches );
         list_init( &package->binaries );
         list_init( &package->cabinet_streams );
     }

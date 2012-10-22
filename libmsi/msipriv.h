@@ -362,7 +362,6 @@ typedef struct tagMSIPACKAGE
     enum platform platform;
     UINT num_langids;
     LANGID *langids;
-    struct list patches;
     struct list components;
     struct list features;
     struct list files;
