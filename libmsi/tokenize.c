@@ -24,7 +24,7 @@
 #include "winbase.h"
 #include "wine/unicode.h"
 #include "query.h"
-#include "sql.tab.h"
+#include "sql-parser.h"
 
 /*
 ** All the keywords of the SQL language are stored as in a hash

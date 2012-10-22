@@ -77,6 +77,7 @@ static struct expr * EXPR_wildcard( void *info );
 
 %}
 
+%define api.prefix "sql_"
 %pure-parser
 
 %union

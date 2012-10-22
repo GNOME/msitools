@@ -2,7 +2,7 @@ lib_LTLIBRARIES = libmsi.la
 
 AM_CPPFLAGS = -I$(srcdir) -I. -D__WINESRC__
 AM_YFLAGS = -d
-BUILT_SOURCES = msiserver.h msiserver_i.c sql.c sql.h cond.c cond.h
+BUILT_SOURCES = msiserver.h msiserver_i.c sql-parser.c sql-parser.h cond-parser.c cond-parser.h
 
 noinst_HEADERS = \
 	msi.h \
@@ -19,7 +19,7 @@ libmsi_la_SOURCES = action.c alter.c appsearch.c assembly.c \
 	package.c patch.c record.c registry.c script.c select.c source.c \
 	storages.c streams.c string.c suminfo.c table.c tokenize.c update.c \
 	upgrade.c where.c \
-	cond.y sql.y \
+	cond-parser.y sql-parser.y \
 	msiserver_i.c
 
 libmsi_la_DEPENDENCIES = \

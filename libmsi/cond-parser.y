@@ -110,6 +110,7 @@ static BOOL num_from_prop( LPCWSTR p, INT *val )
 
 %}
 
+%define api.prefix "cond_"
 %pure-parser
 
 %union
