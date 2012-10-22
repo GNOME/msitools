@@ -866,7 +866,6 @@ extern UINT msi_download_file( LPCWSTR szUrl, LPWSTR filename ) DECLSPEC_HIDDEN;
 extern UINT msi_package_add_info(MSIPACKAGE *, DWORD, DWORD, LPCWSTR, LPWSTR) DECLSPEC_HIDDEN;
 extern UINT msi_package_add_media_disk(MSIPACKAGE *, DWORD, DWORD, DWORD, LPWSTR, LPWSTR) DECLSPEC_HIDDEN;
 extern UINT msi_clone_properties(MSIPACKAGE *) DECLSPEC_HIDDEN;
-extern UINT msi_set_context(MSIPACKAGE *) DECLSPEC_HIDDEN;
 extern void msi_adjust_privilege_properties(MSIPACKAGE *) DECLSPEC_HIDDEN;
 extern UINT MSI_GetFeatureCost(MSIPACKAGE *, MSIFEATURE *, MSICOSTTREE, INSTALLSTATE, LPINT) DECLSPEC_HIDDEN;
 

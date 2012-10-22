@@ -2,7 +2,7 @@ lib_LTLIBRARIES = libmsi.la
 
 AM_CPPFLAGS = -I$(srcdir) -I. -D__WINESRC__ -DUNICODE -D_UNICODE
 AM_YFLAGS = -d
-BUILT_SOURCES = sql-parser.c sql-parser.h cond-parser.c cond-parser.h
+BUILT_SOURCES = sql-parser.c sql-parser.h
 
 noinst_HEADERS = \
 	msi.h \
@@ -11,19 +11,18 @@ noinst_HEADERS = \
 	msiserver.h \
 	query.h
 
-libmsi_la_SOURCES = action.c alter.c appsearch.c assembly.c \
-	classes.c create.c custom.c database.c delete.c \
-	dialog.c distinct.c drop.c events.c files.c font.c format.c \
-	handle.c insert.c install.c media.c msi.c msi_main.c msiquery.c \
-	package.c patch.c record.c registry.c script.c select.c source.c \
+libmsi_la_SOURCES = alter.c create.c database.c delete.c distinct.c \
+	drop.c handle.c insert.c media.c msi.c msi_main.c msiquery.c \
+	package.c patch.c record.c registry.c select.c source.c \
 	storages.c streams.c string.c suminfo.c table.c tokenize.c update.c \
-	upgrade.c where.c \
-	msiserver_i.c \
-	cond-parser.y sql-parser.y
+	where.c \
+	sql-parser.y \
+	msiserver_i.c
 
 libmsi_la_DEPENDENCIES = \
 	msi.res
 
+libmsi_la_LDFLAGS = -no-undefined
 libmsi_la_LIBADD = \
 	$(libmsi_la_DEPENDENCIES) \
 	-luuid \
@@ -43,8 +42,6 @@ libmsi_la_LIBADD = \
 	-lwintrust \
 	-lcrypt32 \
 	-limagehlp
-
-msi.res: msi.rc instabsent.bmp instadvert.bmp instlocal.bmp
 
 %.res: %.rc
 	$(RC) $(RCFLAGS) -o $@ $<

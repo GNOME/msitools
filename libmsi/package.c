@@ -50,6 +50,63 @@
 
 WINE_DEFAULT_DEBUG_CHANNEL(msi);
 
+MSICOMPONENT *msi_get_loaded_component( MSIPACKAGE *package, const WCHAR *Component )
+{
+    MSICOMPONENT *comp;
+
+    LIST_FOR_EACH_ENTRY( comp, &package->components, MSICOMPONENT, entry )
+    {
+        if (!strcmpW( Component, comp->Component )) return comp;
+    }
+    return NULL;
+}
+
+MSIFEATURE *msi_get_loaded_feature(MSIPACKAGE* package, const WCHAR *Feature )
+{
+    MSIFEATURE *feature;
+
+    LIST_FOR_EACH_ENTRY( feature, &package->features, MSIFEATURE, entry )
+    {
+        if (!strcmpW( Feature, feature->Feature )) return feature;
+    }
+    return NULL;
+}
+
+MSIFILE *msi_get_loaded_file( MSIPACKAGE *package, const WCHAR *key )
+{
+    MSIFILE *file;
+
+    LIST_FOR_EACH_ENTRY( file, &package->files, MSIFILE, entry )
+    {
+        if (!strcmpW( key, file->File )) return file;
+    }
+    return NULL;
+}
+
+MSIFILEPATCH *msi_get_loaded_filepatch( MSIPACKAGE *package, const WCHAR *key )
+{
+    MSIFILEPATCH *patch;
+
+    /* FIXME: There might be more than one patch */
+    LIST_FOR_EACH_ENTRY( patch, &package->filepatches, MSIFILEPATCH, entry )
+    {
+        if (!strcmpW( key, patch->File->File )) return patch;
+    }
+    return NULL;
+}
+
+MSIFOLDER *msi_get_loaded_folder( MSIPACKAGE *package, const WCHAR *dir )
+{
+    MSIFOLDER *folder;
+
+    LIST_FOR_EACH_ENTRY( folder, &package->folders, MSIFOLDER, entry )
+    {
+        if (!strcmpW( dir, folder->Directory )) return folder;
+    }
+    return NULL;
+}
+
+
 static void remove_tracked_tempfiles( MSIPACKAGE *package )
 {
     struct list *item, *cursor;
@@ -338,19 +395,11 @@ static void free_package_structures( MSIPACKAGE *package )
     msi_free( package->langids );
 
     remove_tracked_tempfiles(package);
-
-    /* cleanup control event subscriptions */
-    ControlEvent_CleanupSubscriptions( package );
 }
 
 static void MSI_FreePackage( MSIOBJECTHDR *arg)
 {
     MSIPACKAGE *package = (MSIPACKAGE *)arg;
-
-    msi_destroy_assembly_caches( package );
-
-    if( package->dialog )
-        msi_dialog_destroy( package->dialog );
 
     msiobj_release( &package->db->hdr );
     free_package_structures(package);
@@ -1121,6 +1170,7 @@ static MSIPACKAGE *msi_alloc_package( void )
 
 static UINT msi_load_admin_properties(MSIPACKAGE *package)
 {
+#if 0
     BYTE *data;
     UINT r, sz;
 
@@ -1134,6 +1184,7 @@ static UINT msi_load_admin_properties(MSIPACKAGE *package)
 
     msi_free(data);
     return r;
+#endif
 }
 
 void msi_adjust_privilege_properties( MSIPACKAGE *package )
@@ -1508,6 +1559,20 @@ static UINT get_local_package( const WCHAR *filename, WCHAR *localfile )
     return r;
 }
 
+static UINT msi_set_context(MSIPACKAGE *package)
+{
+    UINT r = msi_locate_product( package->ProductCode, &package->Context );
+    if (r != ERROR_SUCCESS)
+    {
+        int num = msi_get_property_int( package->db, szAllUsers, 0 );
+        if (num == 1 || num == 2)
+            package->Context = MSIINSTALLCONTEXT_MACHINE;
+        else
+            package->Context = MSIINSTALLCONTEXT_USERUNMANAGED;
+    }
+    return ERROR_SUCCESS;
+}
+
 UINT MSI_OpenPackageW(LPCWSTR szPackage, MSIPACKAGE **pPackage)
 {
     static const WCHAR dotmsi[] = {'.','m','s','i',0};
@@ -1720,212 +1785,6 @@ MSIHANDLE WINAPI MsiGetActiveDatabase(MSIHANDLE hInstall)
     }
 
     return handle;
-}
-
-INT MSI_ProcessMessage( MSIPACKAGE *package, INSTALLMESSAGE eMessageType, MSIRECORD *record )
-{
-    static const WCHAR szActionData[] = {'A','c','t','i','o','n','D','a','t','a',0};
-    static const WCHAR szSetProgress[] = {'S','e','t','P','r','o','g','r','e','s','s',0};
-    static const WCHAR szActionText[] = {'A','c','t','i','o','n','T','e','x','t',0};
-    MSIRECORD *uirow;
-    LPWSTR deformated, message;
-    DWORD i, len, total_len, log_type = 0;
-    INT rc = 0;
-    char *msg;
-
-    TRACE("%x\n", eMessageType);
-
-    if ((eMessageType & 0xff000000) == INSTALLMESSAGE_FATALEXIT)
-        log_type |= INSTALLLOGMODE_FATALEXIT;
-    if ((eMessageType & 0xff000000) == INSTALLMESSAGE_ERROR)
-        log_type |= INSTALLLOGMODE_ERROR;
-    if ((eMessageType & 0xff000000) == INSTALLMESSAGE_WARNING)
-        log_type |= INSTALLLOGMODE_WARNING;
-    if ((eMessageType & 0xff000000) == INSTALLMESSAGE_USER)
-        log_type |= INSTALLLOGMODE_USER;
-    if ((eMessageType & 0xff000000) == INSTALLMESSAGE_INFO)
-        log_type |= INSTALLLOGMODE_INFO;
-    if ((eMessageType & 0xff000000) == INSTALLMESSAGE_RESOLVESOURCE)
-        log_type |= INSTALLLOGMODE_RESOLVESOURCE;
-    if ((eMessageType & 0xff000000) == INSTALLMESSAGE_OUTOFDISKSPACE)
-        log_type |= INSTALLLOGMODE_OUTOFDISKSPACE;
-    if ((eMessageType & 0xff000000) == INSTALLMESSAGE_COMMONDATA)
-        log_type |= INSTALLLOGMODE_COMMONDATA;
-    if ((eMessageType & 0xff000000) == INSTALLMESSAGE_ACTIONSTART)
-        log_type |= INSTALLLOGMODE_ACTIONSTART;
-    if ((eMessageType & 0xff000000) == INSTALLMESSAGE_ACTIONDATA)
-        log_type |= INSTALLLOGMODE_ACTIONDATA;
-    if ((eMessageType & 0xff000000) == INSTALLMESSAGE_PROGRESS)
-        log_type |= INSTALLLOGMODE_PROGRESS;
-    if ((eMessageType & 0xff000000) == INSTALLMESSAGE_INITIALIZE)
-        log_type |= INSTALLLOGMODE_INITIALIZE;
-    if ((eMessageType & 0xff000000) == INSTALLMESSAGE_TERMINATE)
-        log_type |= INSTALLLOGMODE_TERMINATE;
-    if ((eMessageType & 0xff000000) == INSTALLMESSAGE_SHOWDIALOG)
-        log_type |= INSTALLLOGMODE_SHOWDIALOG;
-
-    if ((eMessageType & 0xff000000) == INSTALLMESSAGE_ACTIONSTART)
-    {
-        static const WCHAR template_s[]=
-            {'A','c','t','i','o','n',' ','%','s',':',' ','%','s','.',' ',0};
-        static const WCHAR format[] = 
-            {'H','H','\'',':','\'','m','m','\'',':','\'','s','s',0};
-        WCHAR timet[0x100];
-        LPCWSTR action_text, action;
-        LPWSTR deformatted = NULL;
-
-        GetTimeFormatW(LOCALE_USER_DEFAULT, 0, NULL, format, timet, 0x100);
-
-        action = MSI_RecordGetString(record, 1);
-        action_text = MSI_RecordGetString(record, 2);
-
-        if (!action || !action_text)
-            return IDOK;
-
-        deformat_string(package, action_text, &deformatted);
-
-        len = strlenW(timet) + strlenW(action) + strlenW(template_s);
-        if (deformatted)
-            len += strlenW(deformatted);
-        message = msi_alloc(len*sizeof(WCHAR));
-        sprintfW(message, template_s, timet, action);
-        if (deformatted)
-            strcatW(message, deformatted);
-        msi_free(deformatted);
-    }
-    else
-    {
-        static const WCHAR format[] = {'%','u',':',' ',0};
-        UINT count = MSI_RecordGetFieldCount( record );
-        WCHAR *p;
-
-        total_len = 1;
-        for (i = 1; i <= count; i++)
-        {
-            len = 0;
-            MSI_RecordGetStringW( record, i, NULL, &len );
-            total_len += len + 13;
-        }
-        p = message = msi_alloc( total_len * sizeof(WCHAR) );
-        if (!p) return ERROR_OUTOFMEMORY;
-
-        for (i = 1; i <= count; i++)
-        {
-            if (count > 1)
-            {
-                len = sprintfW( p, format, i );
-                total_len -= len;
-                p += len;
-            }
-            len = total_len;
-            MSI_RecordGetStringW( record, i, p, &len );
-            total_len -= len;
-            p += len;
-            if (count > 1 && total_len)
-            {
-                *p++ = ' ';
-                total_len--;
-            }
-        }
-        p[0] = 0;
-    }
-
-    TRACE("%p %p %p %x %x %s\n", gUIHandlerA, gUIHandlerW, gUIHandlerRecord,
-          gUIFilter, log_type, debugstr_w(message));
-
-    /* convert it to ASCII */
-    len = WideCharToMultiByte( CP_ACP, 0, message, -1, NULL, 0, NULL, NULL );
-    msg = msi_alloc( len );
-    WideCharToMultiByte( CP_ACP, 0, message, -1, msg, len, NULL, NULL );
-
-    if (gUIHandlerW && (gUIFilter & log_type))
-    {
-        rc = gUIHandlerW( gUIContext, eMessageType, message );
-    }
-    else if (gUIHandlerA && (gUIFilter & log_type))
-    {
-        rc = gUIHandlerA( gUIContext, eMessageType, msg );
-    }
-    else if (gUIHandlerRecord && (gUIFilter & log_type))
-    {
-        MSIHANDLE rec = MsiCreateRecord( 1 );
-        MsiRecordSetStringW( rec, 0, message );
-        rc = gUIHandlerRecord( gUIContext, eMessageType, rec );
-        MsiCloseHandle( rec );
-    }
-
-    if (!rc && package->log_file != INVALID_HANDLE_VALUE &&
-        (eMessageType & 0xff000000) != INSTALLMESSAGE_PROGRESS)
-    {
-        DWORD written;
-        WriteFile( package->log_file, msg, len - 1, &written, NULL );
-        WriteFile( package->log_file, "\n", 1, &written, NULL );
-    }
-    msi_free( msg );
-    msi_free( message );
-
-    switch (eMessageType & 0xff000000)
-    {
-    case INSTALLMESSAGE_ACTIONDATA:
-        deformat_string(package, MSI_RecordGetString(record, 2), &deformated);
-        uirow = MSI_CreateRecord(1);
-        MSI_RecordSetStringW(uirow, 1, deformated);
-        msi_free(deformated);
-
-        ControlEvent_FireSubscribedEvent(package, szActionData, uirow);
-        msiobj_release(&uirow->hdr);
-
-        if (package->action_progress_increment)
-        {
-            uirow = MSI_CreateRecord(2);
-            MSI_RecordSetInteger(uirow, 1, 2);
-            MSI_RecordSetInteger(uirow, 2, package->action_progress_increment);
-            ControlEvent_FireSubscribedEvent(package, szSetProgress, uirow);
-            msiobj_release(&uirow->hdr);
-        }
-        break;
-
-    case INSTALLMESSAGE_ACTIONSTART:
-        deformat_string(package, MSI_RecordGetString(record, 2), &deformated);
-        uirow = MSI_CreateRecord(1);
-        MSI_RecordSetStringW(uirow, 1, deformated);
-        msi_free(deformated);
-
-        ControlEvent_FireSubscribedEvent(package, szActionText, uirow);
-
-        msiobj_release(&uirow->hdr);
-        break;
-
-    case INSTALLMESSAGE_PROGRESS:
-        ControlEvent_FireSubscribedEvent(package, szSetProgress, record);
-        break;
-    }
-
-    return ERROR_SUCCESS;
-}
-
-INT WINAPI MsiProcessMessage( MSIHANDLE hInstall, INSTALLMESSAGE eMessageType,
-                              MSIHANDLE hRecord)
-{
-    UINT ret = ERROR_INVALID_HANDLE;
-    MSIPACKAGE *package = NULL;
-    MSIRECORD *record = NULL;
-
-    package = msihandle2msiinfo( hInstall, MSIHANDLETYPE_PACKAGE );
-    if( !package )
-        return ERROR_INVALID_HANDLE;
-    record = msihandle2msiinfo( hRecord, MSIHANDLETYPE_RECORD );
-    if( !record )
-        goto out;
-
-    ret = MSI_ProcessMessage( package, eMessageType, record );
-
-out:
-    msiobj_release( &package->hdr );
-    if( record )
-        msiobj_release( &record->hdr );
-
-    return ret;
 }
 
 /* property code */

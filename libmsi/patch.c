@@ -32,6 +32,43 @@
 
 WINE_DEFAULT_DEBUG_CHANNEL(msi);
 
+WCHAR **msi_split_string( const WCHAR *str, WCHAR sep )
+{
+    LPCWSTR pc;
+    LPWSTR p, *ret = NULL;
+    UINT count = 0;
+
+    if (!str)
+        return ret;
+
+    /* count the number of substrings */
+    for ( pc = str, count = 0; pc; count++ )
+    {
+        pc = strchrW( pc, sep );
+        if (pc)
+            pc++;
+    }
+
+    /* allocate space for an array of substring pointers and the substrings */
+    ret = msi_alloc( (count+1) * sizeof (LPWSTR) +
+                     (lstrlenW(str)+1) * sizeof(WCHAR) );
+    if (!ret)
+        return ret;
+
+    /* copy the string and set the pointers */
+    p = (LPWSTR) &ret[count+1];
+    lstrcpyW( p, str );
+    for( count = 0; (ret[count] = p); count++ )
+    {
+        p = strchrW( p, sep );
+        if (p)
+            *p++ = 0;
+    }
+
+    return ret;
+}
+
+
 static BOOL match_language( MSIPACKAGE *package, LANGID langid )
 {
     UINT i;
