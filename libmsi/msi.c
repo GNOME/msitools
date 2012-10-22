@@ -2581,7 +2581,7 @@ HRESULT WINAPI MsiGetFileSignatureInformationW( LPCWSTR path, DWORD flags, PCCER
     data.dwUIChoice          = WTD_UI_NONE;
     data.fdwRevocationChecks = WTD_REVOKE_WHOLECHAIN;
     data.dwUnionChoice       = WTD_CHOICE_FILE;
-    data.u.pFile             = &info;
+    data.pFile               = &info;
     data.dwStateAction       = WTD_STATEACTION_VERIFY;
     data.hWVTStateData       = NULL;
     data.pwszURLReference    = NULL;
