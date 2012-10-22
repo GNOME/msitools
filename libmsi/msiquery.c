@@ -763,22 +763,6 @@ UINT WINAPI MsiDatabaseApplyTransformA( MSIHANDLE hdb,
     return ret;
 }
 
-UINT WINAPI MsiDatabaseGenerateTransformA( MSIHANDLE hdb, MSIHANDLE hdbref,
-                 LPCSTR szTransformFile, int iReserved1, int iReserved2 )
-{
-    FIXME("%d %d %s %d %d\n", hdb, hdbref,
-           debugstr_a(szTransformFile), iReserved1, iReserved2);
-    return ERROR_CALL_NOT_IMPLEMENTED;
-}
-
-UINT WINAPI MsiDatabaseGenerateTransformW( MSIHANDLE hdb, MSIHANDLE hdbref,
-                 LPCWSTR szTransformFile, int iReserved1, int iReserved2 )
-{
-    FIXME("%d %d %s %d %d\n", hdb, hdbref,
-           debugstr_w(szTransformFile), iReserved1, iReserved2);
-    return ERROR_CALL_NOT_IMPLEMENTED;
-}
-
 UINT WINAPI MsiDatabaseCommit( MSIHANDLE hdb )
 {
     MSIDATABASE *db;
