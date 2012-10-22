@@ -397,54 +397,6 @@ static void MSI_FreePackage( MSIOBJECTHDR *arg)
     msi_free( package->localfile );
 }
 
-static UINT set_user_sid_prop( MSIPACKAGE *package )
-{
-    SID_NAME_USE use;
-    LPWSTR user_name;
-    LPWSTR sid_str = NULL, dom = NULL;
-    DWORD size, dom_size;
-    PSID psid = NULL;
-    UINT r = ERROR_FUNCTION_FAILED;
-
-    size = 0;
-    GetUserNameW( NULL, &size );
-
-    user_name = msi_alloc( (size + 1) * sizeof(WCHAR) );
-    if (!user_name)
-        return ERROR_OUTOFMEMORY;
-
-    if (!GetUserNameW( user_name, &size ))
-        goto done;
-
-    size = 0;
-    dom_size = 0;
-    LookupAccountNameW( NULL, user_name, NULL, &size, NULL, &dom_size, &use );
-
-    psid = msi_alloc( size );
-    dom = msi_alloc( dom_size*sizeof (WCHAR) );
-    if (!psid || !dom)
-    {
-        r = ERROR_OUTOFMEMORY;
-        goto done;
-    }
-
-    if (!LookupAccountNameW( NULL, user_name, psid, &size, dom, &dom_size, &use ))
-        goto done;
-
-    if (!ConvertSidToStringSidW( psid, &sid_str ))
-        goto done;
-
-    r = msi_set_property( package->db, szUserSID, sid_str );
-
-done:
-    LocalFree( sid_str );
-    msi_free( dom );
-    msi_free( psid );
-    msi_free( user_name );
-
-    return r;
-}
-
 typedef struct tagLANGANDCODEPAGE
 {
   WORD wLanguage;
@@ -765,63 +717,15 @@ int msi_track_tempfile( MSIPACKAGE *package, const WCHAR *path )
     return 0;
 }
 
-static WCHAR *get_product_code( MSIDATABASE *db )
-{
-    static const WCHAR query[] = {
-        'S','E','L','E','C','T',' ','`','V','a','l','u','e','`',' ',
-        'F','R','O','M',' ','`','P','r','o','p','e','r','t','y','`',' ',
-        'W','H','E','R','E',' ','`','P','r','o','p','e','r','t','y','`','=',
-        '\'','P','r','o','d','u','c','t','C','o','d','e','\'',0};
-    MSIQUERY *view;
-    MSIRECORD *rec;
-    WCHAR *ret = NULL;
-
-    if (MSI_DatabaseOpenViewW( db, query, &view ) != ERROR_SUCCESS)
-    {
-        return NULL;
-    }
-    if (MSI_ViewExecute( view, 0 ) != ERROR_SUCCESS)
-    {
-        MSI_ViewClose( view );
-        msiobj_release( &view->hdr );
-        return NULL;
-    }
-    if (MSI_ViewFetch( view, &rec ) == ERROR_SUCCESS)
-    {
-        ret = strdupW( MSI_RecordGetString( rec, 1 ) );
-        msiobj_release( &rec->hdr );
-    }
-    MSI_ViewClose( view );
-    msiobj_release( &view->hdr );
-    return ret;
-}
-
-static WCHAR *get_package_code( MSIDATABASE *db )
-{
-    WCHAR *ret;
-    MSISUMMARYINFO *si;
-
-    if (!(si = MSI_GetSummaryInformationW( db->storage, 0 )))
-    {
-        WARN("failed to load summary info\n");
-        return NULL;
-    }
-    ret = msi_suminfo_dup_string( si, PID_REVNUMBER );
-    msiobj_release( &si->hdr );
-    return ret;
-}
-
 UINT MSI_OpenPackageW(LPCWSTR szPackage, MSIPACKAGE **pPackage)
 {
-    static const WCHAR dotmsi[] = {'.','m','s','i',0};
     MSIDATABASE *db;
     MSIPACKAGE *package;
     MSIHANDLE handle;
-    LPWSTR ptr, base_url = NULL;
+    LPWSTR base_url = NULL;
     UINT r;
-    WCHAR localfile[MAX_PATH], cachefile[MAX_PATH];
+    WCHAR localfile[MAX_PATH];
     LPCWSTR file = szPackage;
-    DWORD index = 0;
     MSISUMMARYINFO *si;
     BOOL delete_on_close = FALSE;
 
@@ -952,7 +856,6 @@ MSIHANDLE WINAPI MsiGetActiveDatabase(MSIHANDLE hInstall)
 {
     MSIPACKAGE *package;
     MSIHANDLE handle = 0;
-    IUnknown *remote_unk;
 
     TRACE("(%d)\n",hInstall);
 

@@ -1,6 +1,7 @@
 lib_LTLIBRARIES = libmsi.la
 
 AM_CPPFLAGS = -I$(srcdir) -I. -D__WINESRC__ -DUNICODE -D_UNICODE
+AM_CFLAGS = -Wunused
 AM_YFLAGS = -d
 BUILT_SOURCES = sql-parser.c sql-parser.h
 
