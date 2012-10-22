@@ -32,6 +32,7 @@
 #include "msipriv.h"
 #include "wine/list.h"
 
+#pragma GCC visibility push(hidden)
 
 #define OP_EQ       1
 #define OP_AND      2
@@ -97,45 +98,47 @@ struct expr
 };
 
 UINT MSI_ParseSQL( MSIDATABASE *db, LPCWSTR command, MSIVIEW **phview,
-                   struct list *mem ) DECLSPEC_HIDDEN;
+                   struct list *mem );
 
-UINT TABLE_CreateView( MSIDATABASE *db, LPCWSTR name, MSIVIEW **view ) DECLSPEC_HIDDEN;
+UINT TABLE_CreateView( MSIDATABASE *db, LPCWSTR name, MSIVIEW **view );
 
 UINT SELECT_CreateView( MSIDATABASE *db, MSIVIEW **view, MSIVIEW *table,
-                        const column_info *columns ) DECLSPEC_HIDDEN;
+                        const column_info *columns );
 
-UINT DISTINCT_CreateView( MSIDATABASE *db, MSIVIEW **view, MSIVIEW *table ) DECLSPEC_HIDDEN;
+UINT DISTINCT_CreateView( MSIDATABASE *db, MSIVIEW **view, MSIVIEW *table );
 
 UINT ORDER_CreateView( MSIDATABASE *db, MSIVIEW **view, MSIVIEW *table,
-                       column_info *columns ) DECLSPEC_HIDDEN;
+                       column_info *columns );
 
 UINT WHERE_CreateView( MSIDATABASE *db, MSIVIEW **view, LPWSTR tables,
-                       struct expr *cond ) DECLSPEC_HIDDEN;
+                       struct expr *cond );
 
 UINT CREATE_CreateView( MSIDATABASE *db, MSIVIEW **view, LPCWSTR table,
-                        column_info *col_info, BOOL hold ) DECLSPEC_HIDDEN;
+                        column_info *col_info, BOOL hold );
 
 UINT INSERT_CreateView( MSIDATABASE *db, MSIVIEW **view, LPCWSTR table,
-                        column_info *columns, column_info *values, BOOL temp ) DECLSPEC_HIDDEN;
+                        column_info *columns, column_info *values, BOOL temp );
 
 UINT UPDATE_CreateView( MSIDATABASE *db, MSIVIEW **view, LPWSTR table,
-                        column_info *list, struct expr *expr ) DECLSPEC_HIDDEN;
+                        column_info *list, struct expr *expr );
 
-UINT DELETE_CreateView( MSIDATABASE *db, MSIVIEW **view, MSIVIEW *table ) DECLSPEC_HIDDEN;
+UINT DELETE_CreateView( MSIDATABASE *db, MSIVIEW **view, MSIVIEW *table );
 
-UINT ALTER_CreateView( MSIDATABASE *db, MSIVIEW **view, LPCWSTR name, column_info *colinfo, int hold ) DECLSPEC_HIDDEN;
+UINT ALTER_CreateView( MSIDATABASE *db, MSIVIEW **view, LPCWSTR name, column_info *colinfo, int hold );
 
-UINT STREAMS_CreateView( MSIDATABASE *db, MSIVIEW **view ) DECLSPEC_HIDDEN;
+UINT STREAMS_CreateView( MSIDATABASE *db, MSIVIEW **view );
 
-UINT STORAGES_CreateView( MSIDATABASE *db, MSIVIEW **view ) DECLSPEC_HIDDEN;
+UINT STORAGES_CreateView( MSIDATABASE *db, MSIVIEW **view );
 
-UINT DROP_CreateView( MSIDATABASE *db, MSIVIEW **view, LPCWSTR name ) DECLSPEC_HIDDEN;
+UINT DROP_CreateView( MSIDATABASE *db, MSIVIEW **view, LPCWSTR name );
 
-int sqliteGetToken(const WCHAR *z, int *tokenType, int *skip) DECLSPEC_HIDDEN;
+int sqliteGetToken(const WCHAR *z, int *tokenType, int *skip);
 
-MSIRECORD *msi_query_merge_record( UINT fields, const column_info *vl, MSIRECORD *rec ) DECLSPEC_HIDDEN;
+MSIRECORD *msi_query_merge_record( UINT fields, const column_info *vl, MSIRECORD *rec );
 
 UINT msi_create_table( MSIDATABASE *db, LPCWSTR name, column_info *col_info,
-                       MSICONDITION persistent ) DECLSPEC_HIDDEN;
+                       MSICONDITION persistent );
+
+#pragma GCC visibility pop
 
 #endif /* __WINE_MSI_QUERY_H */
