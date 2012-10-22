@@ -697,6 +697,9 @@ UINT WINAPI MsiCloseAllHandles(void);
 INSTALLUILEVEL WINAPI MsiSetInternalUI(INSTALLUILEVEL, HWND*);
 UINT WINAPI MsiSetExternalUIRecord(INSTALLUI_HANDLER_RECORD, DWORD, LPVOID, PINSTALLUI_HANDLER_RECORD);
 
+#define ERROR_INVALID_PATCH_XML                            1650
+#define ERROR_UNKNOWN_PATCH                                1647
+
 #ifdef __cplusplus
 }
 #endif
