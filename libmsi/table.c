@@ -35,8 +35,8 @@
 #include "msipriv.h"
 #include "query.h"
 
-#include "wine/debug.h"
-#include "wine/unicode.h"
+#include "debug.h"
+#include "unicode.h"
 
 
 #define MSITABLE_HASH_TABLE_SIZE 37

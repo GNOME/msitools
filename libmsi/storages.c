@@ -33,7 +33,7 @@
 #include "msipriv.h"
 #include "query.h"
 
-#include "wine/debug.h"
+#include "debug.h"
 
 
 #define NUM_STORAGES_COLS    2

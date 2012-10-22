@@ -6,10 +6,13 @@ AM_YFLAGS = -d
 BUILT_SOURCES = sql-parser.c sql-parser.h
 
 noinst_HEADERS = \
+	debug.h \
+	list.h \
 	msipriv.h \
 	msiquery.h \
 	msiserver.h \
-	query.h
+	query.h \
+	unicode.h
 
 libmsi_la_SOURCES = alter.c create.c database.c delete.c distinct.c \
 	drop.c handle.c insert.c msiquery.c record.c select.c storages.c \

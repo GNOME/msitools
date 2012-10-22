@@ -22,7 +22,7 @@
 
 #include "windef.h"
 #include "winbase.h"
-#include "wine/unicode.h"
+#include "unicode.h"
 #include "query.h"
 #include "sql-parser.h"
 

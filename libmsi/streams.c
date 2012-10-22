@@ -30,8 +30,8 @@
 #include "msipriv.h"
 #include "query.h"
 
-#include "wine/debug.h"
-#include "wine/unicode.h"
+#include "debug.h"
+#include "unicode.h"
 
 
 #define NUM_STREAMS_COLS    2

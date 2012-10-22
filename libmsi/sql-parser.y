@@ -30,9 +30,9 @@
 #include "windef.h"
 #include "winbase.h"
 #include "query.h"
-#include "wine/list.h"
-#include "wine/debug.h"
-#include "wine/unicode.h"
+#include "list.h"
+#include "debug.h"
+#include "unicode.h"
 
 #define YYLEX_PARAM info
 #define YYPARSE_PARAM info

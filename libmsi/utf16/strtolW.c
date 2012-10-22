@@ -25,7 +25,7 @@
 # include <config.h>
 #endif
 
-#include <wine/unicode.h>
+#include "unicode.h"
 #include <errno.h>
 #ifndef __set_errno
 # define __set_errno(Val) errno = (Val)

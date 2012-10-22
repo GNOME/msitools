@@ -30,7 +30,7 @@
 #include "msi.h"
 #include "msiquery.h"
 #include "msipriv.h"
-#include "wine/list.h"
+#include "list.h"
 
 #pragma GCC visibility push(hidden)
 

@@ -24,7 +24,7 @@
 
 #include <stdarg.h>
 
-#include "wine/unicode.h"
+#include "unicode.h"
 #include "windef.h"
 #include "winbase.h"
 #include "fdi.h"
@@ -38,7 +38,7 @@
 #include "fusion.h"
 #include "winnls.h"
 #include "winver.h"
-#include "wine/list.h"
+#include "list.h"
 
 #pragma GCC visibility push(hidden)
 
