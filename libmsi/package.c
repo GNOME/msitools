@@ -743,42 +743,6 @@ MSIPACKAGE *MSI_CreatePackage( MSIDATABASE *db, LPCWSTR base_url )
     return package;
 }
 
-UINT msi_download_file( LPCWSTR szUrl, LPWSTR filename )
-{
-    LPINTERNET_CACHE_ENTRY_INFOW cache_entry;
-    DWORD size = 0;
-    HRESULT hr;
-
-    /* call will always fail, because size is 0,
-     * but will return ERROR_FILE_NOT_FOUND first
-     * if the file doesn't exist
-     */
-    GetUrlCacheEntryInfoW( szUrl, NULL, &size );
-    if ( GetLastError() != ERROR_FILE_NOT_FOUND )
-    {
-        cache_entry = msi_alloc( size );
-        if ( !GetUrlCacheEntryInfoW( szUrl, cache_entry, &size ) )
-        {
-            UINT error = GetLastError();
-            msi_free( cache_entry );
-            return error;
-        }
-
-        lstrcpyW( filename, cache_entry->lpszLocalFileName );
-        msi_free( cache_entry );
-        return ERROR_SUCCESS;
-    }
-
-    hr = URLDownloadToCacheFileW( NULL, szUrl, filename, MAX_PATH, 0, NULL );
-    if ( FAILED(hr) )
-    {
-        WARN("failed to download %s to cache file\n", debugstr_w(szUrl));
-        return ERROR_FUNCTION_FAILED;
-    }
-
-    return ERROR_SUCCESS;
-}
-
 UINT msi_create_empty_local_file( LPWSTR path, LPCWSTR suffix )
 {
     static const WCHAR szInstaller[] = {
@@ -1096,21 +1060,6 @@ UINT MSI_OpenPackageW(LPCWSTR szPackage, MSIPACKAGE **pPackage)
     }
     else
     {
-        if ( UrlIsW( szPackage, URLIS_URL ) )
-        {
-            r = msi_download_file( szPackage, cachefile );
-            if (r != ERROR_SUCCESS)
-                return r;
-
-            file = cachefile;
-
-            base_url = strdupW( szPackage );
-            if (!base_url)
-                return ERROR_OUTOFMEMORY;
-
-            ptr = strrchrW( base_url, '/' );
-            if (ptr) *(ptr + 1) = '\0';
-        }
         r = get_local_package( file, localfile );
         if (r != ERROR_SUCCESS || GetFileAttributesW( localfile ) == INVALID_FILE_ATTRIBUTES)
         {
@@ -1162,9 +1111,7 @@ UINT MSI_OpenPackageW(LPCWSTR szPackage, MSIPACKAGE **pPackage)
     }
     msi_set_property( package->db, szDatabase, db->path );
 
-    if( UrlIsW( szPackage, URLIS_URL ) )
-        msi_set_property( package->db, szOriginalDatabase, szPackage );
-    else if( szPackage[0] == '#' )
+    if( szPackage[0] == '#' )
         msi_set_property( package->db, szOriginalDatabase, db->path );
     else
     {
