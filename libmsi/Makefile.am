@@ -13,7 +13,7 @@ noinst_HEADERS = \
 
 libmsi_la_SOURCES = alter.c create.c database.c delete.c distinct.c \
 	drop.c handle.c insert.c media.c msi.c msi_main.c msiquery.c \
-	package.c record.c select.c source.c \
+	package.c record.c select.c \
 	storages.c streams.c string.c suminfo.c table.c tokenize.c update.c \
 	where.c \
 	sql-parser.y \
