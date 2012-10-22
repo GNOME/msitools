@@ -830,7 +830,7 @@ static void parse_filetime( LPCWSTR str, FILETIME *ft )
 
     /* YYYY/MM/DD hh:mm:ss */
 
-    while (isspaceW( *p )) p++;
+    while ( *p == ' ' || *p == '\t' ) p++;
 
     lt.wYear = strtolW( p, &end, 10 );
     if (*end != '/') return;
@@ -844,7 +844,7 @@ static void parse_filetime( LPCWSTR str, FILETIME *ft )
     if (*end != ' ') return;
     p = end + 1;
 
-    while (isspaceW( *p )) p++;
+    while ( *p == ' ' || *p == '\t' ) p++;
 
     lt.wHour = strtolW( p, &end, 10 );
     if (*end != ':') return;

@@ -112,86 +112,6 @@ extern int snprintfW( WCHAR *str, size_t len, const WCHAR *format, ... );
 extern int vsprintfW( WCHAR *str, const WCHAR *format, va_list valist );
 extern int vsnprintfW( WCHAR *str, size_t len, const WCHAR *format, va_list valist );
 
-WINE_UNICODE_INLINE int wine_is_dbcs_leadbyte( const union cptable *table, unsigned char ch )
-{
-    return (table->info.char_size == 2) && (table->dbcs.cp2uni_leadbytes[ch]);
-}
-
-WINE_UNICODE_INLINE WCHAR tolowerW( WCHAR ch )
-{
-    extern WINE_UNICODE_API const WCHAR wine_casemap_lower[];
-    return ch + wine_casemap_lower[wine_casemap_lower[ch >> 8] + (ch & 0xff)];
-}
-
-WINE_UNICODE_INLINE WCHAR toupperW( WCHAR ch )
-{
-    extern WINE_UNICODE_API const WCHAR wine_casemap_upper[];
-    return ch + wine_casemap_upper[wine_casemap_upper[ch >> 8] + (ch & 0xff)];
-}
-
-/* the character type contains the C1_* flags in the low 12 bits */
-/* and the C2_* type in the high 4 bits */
-WINE_UNICODE_INLINE unsigned short get_char_typeW( WCHAR ch )
-{
-    extern WINE_UNICODE_API const unsigned short wine_wctype_table[];
-    return wine_wctype_table[wine_wctype_table[ch >> 8] + (ch & 0xff)];
-}
-
-WINE_UNICODE_INLINE int iscntrlW( WCHAR wc )
-{
-    return get_char_typeW(wc) & C1_CNTRL;
-}
-
-WINE_UNICODE_INLINE int ispunctW( WCHAR wc )
-{
-    return get_char_typeW(wc) & C1_PUNCT;
-}
-
-WINE_UNICODE_INLINE int isspaceW( WCHAR wc )
-{
-    return get_char_typeW(wc) & C1_SPACE;
-}
-
-WINE_UNICODE_INLINE int isdigitW( WCHAR wc )
-{
-    return get_char_typeW(wc) & C1_DIGIT;
-}
-
-WINE_UNICODE_INLINE int isxdigitW( WCHAR wc )
-{
-    return get_char_typeW(wc) & C1_XDIGIT;
-}
-
-WINE_UNICODE_INLINE int islowerW( WCHAR wc )
-{
-    return get_char_typeW(wc) & C1_LOWER;
-}
-
-WINE_UNICODE_INLINE int isupperW( WCHAR wc )
-{
-    return get_char_typeW(wc) & C1_UPPER;
-}
-
-WINE_UNICODE_INLINE int isalnumW( WCHAR wc )
-{
-    return get_char_typeW(wc) & (C1_ALPHA|C1_DIGIT|C1_LOWER|C1_UPPER);
-}
-
-WINE_UNICODE_INLINE int isalphaW( WCHAR wc )
-{
-    return get_char_typeW(wc) & (C1_ALPHA|C1_LOWER|C1_UPPER);
-}
-
-WINE_UNICODE_INLINE int isgraphW( WCHAR wc )
-{
-    return get_char_typeW(wc) & (C1_ALPHA|C1_PUNCT|C1_DIGIT|C1_LOWER|C1_UPPER);
-}
-
-WINE_UNICODE_INLINE int isprintW( WCHAR wc )
-{
-    return get_char_typeW(wc) & (C1_ALPHA|C1_BLANK|C1_PUNCT|C1_DIGIT|C1_LOWER|C1_UPPER);
-}
-
 /* some useful string manipulation routines */
 
 WINE_UNICODE_INLINE unsigned int strlenW( const WCHAR *str )
@@ -261,20 +181,6 @@ WINE_UNICODE_INLINE size_t strcspnW( const WCHAR *str, const WCHAR *reject )
     const WCHAR *ptr;
     for (ptr = str; *ptr; ptr++) if (strchrW( reject, *ptr )) break;
     return ptr - str;
-}
-
-WINE_UNICODE_INLINE WCHAR *strlwrW( WCHAR *str )
-{
-    WCHAR *ret;
-    for (ret = str; *str; str++) *str = tolowerW(*str);
-    return ret;
-}
-
-WINE_UNICODE_INLINE WCHAR *struprW( WCHAR *str )
-{
-    WCHAR *ret;
-    for (ret = str; *str; str++) *str = toupperW(*str);
-    return ret;
 }
 
 WINE_UNICODE_INLINE WCHAR *memchrW( const WCHAR *ptr, WCHAR ch, size_t n )
