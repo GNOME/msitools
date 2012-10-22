@@ -40,6 +40,9 @@
 
 WINE_DEFAULT_DEBUG_CHANNEL(msi);
 
+const CLSID FMTID_SummaryInformation =
+        { 0xf29f85e0, 0x4ff9, 0x1068, {0xab, 0x91, 0x08, 0x00, 0x2b, 0x27, 0xb3, 0xd9}};
+
 #include "pshpack1.h"
 
 typedef struct { 
@@ -481,28 +484,7 @@ UINT WINAPI MsiGetSummaryInformationW( MSIHANDLE hDatabase,
     {
         db = msihandle2msiinfo( hDatabase, MSIHANDLETYPE_DATABASE );
         if( !db )
-        {
-            HRESULT hr;
-            IWineMsiRemoteDatabase *remote_database;
-
-            remote_database = (IWineMsiRemoteDatabase *)msi_get_remote( hDatabase );
-            if ( !remote_database )
-                return ERROR_INVALID_HANDLE;
-
-            hr = IWineMsiRemoteDatabase_GetSummaryInformation( remote_database,
-                                                               uiUpdateCount, pHandle );
-            IWineMsiRemoteDatabase_Release( remote_database );
-
-            if (FAILED(hr))
-            {
-                if (HRESULT_FACILITY(hr) == FACILITY_WIN32)
-                    return HRESULT_CODE(hr);
-
-                return ERROR_FUNCTION_FAILED;
-            }
-
-            return ERROR_SUCCESS;
-        }
+            return ERROR_INVALID_HANDLE;
     }
 
     si = MSI_GetSummaryInformationW( db->storage, uiUpdateCount );

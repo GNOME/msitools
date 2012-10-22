@@ -1028,19 +1028,7 @@ UINT WINAPI MsiDatabaseImportW(MSIHANDLE handle, LPCWSTR szFolder, LPCWSTR szFil
 
     db = msihandle2msiinfo( handle, MSIHANDLETYPE_DATABASE );
     if( !db )
-    {
-        IWineMsiRemoteDatabase *remote_database;
-
-        remote_database = (IWineMsiRemoteDatabase *)msi_get_remote( handle );
-        if ( !remote_database )
-            return ERROR_INVALID_HANDLE;
-
-        IWineMsiRemoteDatabase_Release( remote_database );
-        WARN("MsiDatabaseImport not allowed during a custom action!\n");
-
-        return ERROR_SUCCESS;
-    }
-
+        return ERROR_INVALID_HANDLE;
     r = MSI_DatabaseImport( db, szFolder, szFilename );
     msiobj_release( &db->hdr );
     return r;
@@ -1249,19 +1237,7 @@ UINT WINAPI MsiDatabaseExportW( MSIHANDLE handle, LPCWSTR szTable,
 
     db = msihandle2msiinfo( handle, MSIHANDLETYPE_DATABASE );
     if( !db )
-    {
-        IWineMsiRemoteDatabase *remote_database;
-
-        remote_database = (IWineMsiRemoteDatabase *)msi_get_remote( handle );
-        if ( !remote_database )
-            return ERROR_INVALID_HANDLE;
-
-        IWineMsiRemoteDatabase_Release( remote_database );
-        WARN("MsiDatabaseExport not allowed during a custom action!\n");
-
-        return ERROR_SUCCESS;
-    }
-
+        return ERROR_INVALID_HANDLE;
     r = MSI_DatabaseExport( db, szTable, szFolder, szFilename );
     msiobj_release( &db->hdr );
     return r;
@@ -2045,136 +2021,10 @@ MSIDBSTATE WINAPI MsiGetDatabaseState( MSIHANDLE handle )
 
     db = msihandle2msiinfo( handle, MSIHANDLETYPE_DATABASE );
     if( !db )
-    {
-        IWineMsiRemoteDatabase *remote_database;
-
-        remote_database = (IWineMsiRemoteDatabase *)msi_get_remote( handle );
-        if ( !remote_database )
-            return MSIDBSTATE_ERROR;
-
-        IWineMsiRemoteDatabase_Release( remote_database );
-        WARN("MsiGetDatabaseState not allowed during a custom action!\n");
-
-        return MSIDBSTATE_READ;
-    }
-
+        return ERROR_INVALID_HANDLE;
     if (db->mode != MSIDBOPEN_READONLY )
         ret = MSIDBSTATE_WRITE;
     msiobj_release( &db->hdr );
 
     return ret;
-}
-
-typedef struct _msi_remote_database_impl {
-    IWineMsiRemoteDatabase IWineMsiRemoteDatabase_iface;
-    MSIHANDLE database;
-    LONG refs;
-} msi_remote_database_impl;
-
-static inline msi_remote_database_impl *impl_from_IWineMsiRemoteDatabase( IWineMsiRemoteDatabase *iface )
-{
-    return CONTAINING_RECORD(iface, msi_remote_database_impl, IWineMsiRemoteDatabase_iface);
-}
-
-static HRESULT WINAPI mrd_QueryInterface( IWineMsiRemoteDatabase *iface,
-                                          REFIID riid,LPVOID *ppobj)
-{
-    if( IsEqualCLSID( riid, &IID_IUnknown ) ||
-        IsEqualCLSID( riid, &IID_IWineMsiRemoteDatabase ) )
-    {
-        IWineMsiRemoteDatabase_AddRef( iface );
-        *ppobj = iface;
-        return S_OK;
-    }
-
-    return E_NOINTERFACE;
-}
-
-static ULONG WINAPI mrd_AddRef( IWineMsiRemoteDatabase *iface )
-{
-    msi_remote_database_impl* This = impl_from_IWineMsiRemoteDatabase( iface );
-
-    return InterlockedIncrement( &This->refs );
-}
-
-static ULONG WINAPI mrd_Release( IWineMsiRemoteDatabase *iface )
-{
-    msi_remote_database_impl* This = impl_from_IWineMsiRemoteDatabase( iface );
-    ULONG r;
-
-    r = InterlockedDecrement( &This->refs );
-    if (r == 0)
-    {
-        MsiCloseHandle( This->database );
-        msi_free( This );
-    }
-    return r;
-}
-
-static HRESULT WINAPI mrd_IsTablePersistent( IWineMsiRemoteDatabase *iface,
-                                             LPCWSTR table, MSICONDITION *persistent )
-{
-    msi_remote_database_impl *This = impl_from_IWineMsiRemoteDatabase( iface );
-    *persistent = MsiDatabaseIsTablePersistentW(This->database, table);
-    return S_OK;
-}
-
-static HRESULT WINAPI mrd_GetPrimaryKeys( IWineMsiRemoteDatabase *iface,
-                                          LPCWSTR table, MSIHANDLE *keys )
-{
-    msi_remote_database_impl *This = impl_from_IWineMsiRemoteDatabase( iface );
-    UINT r = MsiDatabaseGetPrimaryKeysW(This->database, table, keys);
-    return HRESULT_FROM_WIN32(r);
-}
-
-static HRESULT WINAPI mrd_GetSummaryInformation( IWineMsiRemoteDatabase *iface,
-                                                UINT updatecount, MSIHANDLE *suminfo )
-{
-    msi_remote_database_impl *This = impl_from_IWineMsiRemoteDatabase( iface );
-    UINT r = MsiGetSummaryInformationW(This->database, NULL, updatecount, suminfo);
-    return HRESULT_FROM_WIN32(r);
-}
-
-static HRESULT WINAPI mrd_OpenView( IWineMsiRemoteDatabase *iface,
-                                    LPCWSTR query, MSIHANDLE *view )
-{
-    msi_remote_database_impl *This = impl_from_IWineMsiRemoteDatabase( iface );
-    UINT r = MsiDatabaseOpenViewW(This->database, query, view);
-    return HRESULT_FROM_WIN32(r);
-}
-
-static HRESULT WINAPI mrd_SetMsiHandle( IWineMsiRemoteDatabase *iface, MSIHANDLE handle )
-{
-    msi_remote_database_impl* This = impl_from_IWineMsiRemoteDatabase( iface );
-    This->database = handle;
-    return S_OK;
-}
-
-static const IWineMsiRemoteDatabaseVtbl msi_remote_database_vtbl =
-{
-    mrd_QueryInterface,
-    mrd_AddRef,
-    mrd_Release,
-    mrd_IsTablePersistent,
-    mrd_GetPrimaryKeys,
-    mrd_GetSummaryInformation,
-    mrd_OpenView,
-    mrd_SetMsiHandle,
-};
-
-HRESULT create_msi_remote_database( IUnknown *pOuter, LPVOID *ppObj )
-{
-    msi_remote_database_impl *This;
-
-    This = msi_alloc( sizeof *This );
-    if (!This)
-        return E_OUTOFMEMORY;
-
-    This->IWineMsiRemoteDatabase_iface.lpVtbl = &msi_remote_database_vtbl;
-    This->database = 0;
-    This->refs = 1;
-
-    *ppObj = This;
-
-    return S_OK;
 }

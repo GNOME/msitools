@@ -249,27 +249,7 @@ UINT WINAPI MsiDatabaseOpenViewW(MSIHANDLE hdb,
 
     db = msihandle2msiinfo( hdb, MSIHANDLETYPE_DATABASE );
     if( !db )
-    {
-        HRESULT hr;
-        IWineMsiRemoteDatabase *remote_database;
-
-        remote_database = (IWineMsiRemoteDatabase *)msi_get_remote( hdb );
-        if ( !remote_database )
-            return ERROR_INVALID_HANDLE;
-
-        hr = IWineMsiRemoteDatabase_OpenView( remote_database, szQuery, phView );
-        IWineMsiRemoteDatabase_Release( remote_database );
-
-        if (FAILED(hr))
-        {
-            if (HRESULT_FACILITY(hr) == FACILITY_WIN32)
-                return HRESULT_CODE(hr);
-
-            return ERROR_FUNCTION_FAILED;
-        }
-
-        return ERROR_SUCCESS;
-    }
+        return ERROR_INVALID_HANDLE;
 
     ret = MSI_DatabaseOpenViewW( db, szQuery, &query );
     if( ret == ERROR_SUCCESS )
@@ -758,19 +738,7 @@ UINT WINAPI MsiDatabaseApplyTransformW( MSIHANDLE hdb,
 
     db = msihandle2msiinfo( hdb, MSIHANDLETYPE_DATABASE );
     if( !db )
-    {
-        IWineMsiRemoteDatabase *remote_database;
-
-        remote_database = (IWineMsiRemoteDatabase *)msi_get_remote( hdb );
-        if ( !remote_database )
-            return ERROR_INVALID_HANDLE;
-
-        IWineMsiRemoteDatabase_Release( remote_database );
-        WARN("MsiDatabaseApplyTransform not allowed during a custom action!\n");
-
-        return ERROR_SUCCESS;
-    }
-
+        return ERROR_INVALID_HANDLE;
     r = MSI_DatabaseApplyTransformW( db, szTransformFile, iErrorCond );
     msiobj_release( &db->hdr );
     return r;
@@ -820,18 +788,7 @@ UINT WINAPI MsiDatabaseCommit( MSIHANDLE hdb )
 
     db = msihandle2msiinfo( hdb, MSIHANDLETYPE_DATABASE );
     if( !db )
-    {
-        IWineMsiRemoteDatabase *remote_database;
-
-        remote_database = (IWineMsiRemoteDatabase *)msi_get_remote( hdb );
-        if ( !remote_database )
-            return ERROR_INVALID_HANDLE;
-
-        IWineMsiRemoteDatabase_Release( remote_database );
-        WARN("not allowed during a custom action!\n");
-
-        return ERROR_SUCCESS;
-    }
+        return ERROR_INVALID_HANDLE;
 
     if (db->mode == MSIDBOPEN_READONLY)
     {
@@ -941,27 +898,7 @@ UINT WINAPI MsiDatabaseGetPrimaryKeysW( MSIHANDLE hdb,
 
     db = msihandle2msiinfo( hdb, MSIHANDLETYPE_DATABASE );
     if( !db )
-    {
-        HRESULT hr;
-        IWineMsiRemoteDatabase *remote_database;
-
-        remote_database = (IWineMsiRemoteDatabase *)msi_get_remote( hdb );
-        if ( !remote_database )
-            return ERROR_INVALID_HANDLE;
-
-        hr = IWineMsiRemoteDatabase_GetPrimaryKeys( remote_database, table, phRec );
-        IWineMsiRemoteDatabase_Release( remote_database );
-
-        if (FAILED(hr))
-        {
-            if (HRESULT_FACILITY(hr) == FACILITY_WIN32)
-                return HRESULT_CODE(hr);
-
-            return ERROR_FUNCTION_FAILED;
-        }
-
-        return ERROR_SUCCESS;
-    }
+        return ERROR_INVALID_HANDLE;
 
     r = MSI_DatabaseGetPrimaryKeys( db, table, &rec );
     if( r == ERROR_SUCCESS )
@@ -1026,24 +963,7 @@ MSICONDITION WINAPI MsiDatabaseIsTablePersistentW(
 
     db = msihandle2msiinfo( hDatabase, MSIHANDLETYPE_DATABASE );
     if( !db )
-    {
-        HRESULT hr;
-        MSICONDITION condition;
-        IWineMsiRemoteDatabase *remote_database;
-
-        remote_database = (IWineMsiRemoteDatabase *)msi_get_remote( hDatabase );
-        if ( !remote_database )
-            return MSICONDITION_ERROR;
-
-        hr = IWineMsiRemoteDatabase_IsTablePersistent( remote_database,
-                                                       szTableName, &condition );
-        IWineMsiRemoteDatabase_Release( remote_database );
-
-        if (FAILED(hr))
-            return MSICONDITION_ERROR;
-
-        return condition;
-    }
+        return MSICONDITION_ERROR;
 
     r = MSI_DatabaseIsTablePersistent( db, szTableName );
 

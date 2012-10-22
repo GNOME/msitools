@@ -63,9 +63,6 @@ STRINGTABLE
 
 LANGUAGE LANG_NEUTRAL, SUBLANG_NEUTRAL
 
-/* @makedep: msiserver.rgs */
-1 WINE_REGISTRY msiserver.rgs
-
 /* @makedep: instadvert.bmp */
 0x1001 BITMAP instadvert.bmp
 

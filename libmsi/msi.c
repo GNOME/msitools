@@ -2006,30 +2006,9 @@ UINT WINAPI MsiEnumComponentCostsW( MSIHANDLE handle, LPCWSTR component, DWORD i
           state, drive, buflen, cost, temp);
 
     if (!drive || !buflen || !cost || !temp) return ERROR_INVALID_PARAMETER;
-    if (!(package = msihandle2msiinfo( handle, MSIHANDLETYPE_PACKAGE )))
-    {
-        HRESULT hr;
-        IWineMsiRemotePackage *remote_package;
-        BSTR bname = NULL;
-
-        if (!(remote_package = (IWineMsiRemotePackage *)msi_get_remote( handle )))
-            return ERROR_INVALID_HANDLE;
-
-        if (component && !(bname = SysAllocString( component )))
-        {
-            IWineMsiRemotePackage_Release( remote_package );
-            return ERROR_OUTOFMEMORY;
-        }
-        hr = IWineMsiRemotePackage_EnumComponentCosts( remote_package, bname, index, state, drive, buflen, cost, temp );
-        IWineMsiRemotePackage_Release( remote_package );
-        SysFreeString( bname );
-        if (FAILED(hr))
-        {
-            if (HRESULT_FACILITY(hr) == FACILITY_WIN32) return HRESULT_CODE(hr);
-            return ERROR_FUNCTION_FAILED;
-        }
-        return ERROR_SUCCESS;
-    }
+    package = msihandle2msiinfo( handle, MSIHANDLETYPE_PACKAGE );
+    if ( !package )
+        return ERROR_INVALID_HANDLE;
 
     if (!msi_get_property_int( package->db, szCostingComplete, 0 ))
     {

@@ -1069,11 +1069,6 @@ extern VOID ControlEvent_CleanupSubscriptions(MSIPACKAGE *package) DECLSPEC_HIDD
 extern VOID ControlEvent_SubscribeToEvent(MSIPACKAGE *package, msi_dialog *dialog,
                                       LPCWSTR event, LPCWSTR control, LPCWSTR attribute) DECLSPEC_HIDDEN;
 
-/* OLE automation */
-extern HRESULT create_msiserver(IUnknown *pOuter, LPVOID *ppObj) DECLSPEC_HIDDEN;
-extern HRESULT create_session(MSIHANDLE msiHandle, IDispatch *pInstaller, IDispatch **pDispatch) DECLSPEC_HIDDEN;
-extern HRESULT load_type_info(IDispatch *iface, ITypeInfo **pptinfo, REFIID clsid, LCID lcid) DECLSPEC_HIDDEN;
-
 /* Scripting */
 extern DWORD call_script(MSIHANDLE hPackage, INT type, LPCWSTR script, LPCWSTR function, LPCWSTR action) DECLSPEC_HIDDEN;
 

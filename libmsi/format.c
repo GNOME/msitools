@@ -918,40 +918,7 @@ UINT WINAPI MsiFormatRecordW( MSIHANDLE hInstall, MSIHANDLE hRecord,
 
     package = msihandle2msiinfo( hInstall, MSIHANDLETYPE_PACKAGE );
     if (!package)
-    {
-        HRESULT hr;
-        IWineMsiRemotePackage *remote_package;
-        BSTR value = NULL;
-        awstring wstr;
-
-        remote_package = (IWineMsiRemotePackage *)msi_get_remote( hInstall );
-        if (remote_package)
-        {
-            hr = IWineMsiRemotePackage_FormatRecord( remote_package, hRecord,
-                                                     &value );
-            if (FAILED(hr))
-                goto done;
-
-            wstr.unicode = TRUE;
-            wstr.str.w = szResult;
-            r = msi_strcpy_to_awstring( value, &wstr, sz );
-
-done:
-            IWineMsiRemotePackage_Release( remote_package );
-            SysFreeString( value );
-
-            if (FAILED(hr))
-            {
-                if (HRESULT_FACILITY(hr) == FACILITY_WIN32)
-                    return HRESULT_CODE(hr);
-
-                return ERROR_FUNCTION_FAILED;
-            }
-
-            return r;
-        }
-    }
-
+        return ERROR_INVALID_HANDLE;
     record = msihandle2msiinfo( hRecord, MSIHANDLETYPE_RECORD );
 
     if (!record)

@@ -8,11 +8,7 @@ AM_INIT_AUTOMAKE([foreign])
 AC_PROG_CC
 AC_PROG_YACC
 
-AC_CHECK_TOOLS([WIDL], [widl],
-               [AC_MSG_ERROR([could not find widl])])
-
 AC_ARG_VAR([RCFLAGS], [Flags for the Windows resource compiler])
-AC_ARG_VAR([IDLFLAGS], [Flags for the Windows IDL compiler])
 
 LT_INIT([win32-dll disable-fast-install])
 LT_LANG([Windows Resource])

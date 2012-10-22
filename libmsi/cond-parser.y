@@ -848,38 +848,7 @@ MSICONDITION WINAPI MsiEvaluateConditionW( MSIHANDLE hInstall, LPCWSTR szConditi
 
     package = msihandle2msiinfo( hInstall, MSIHANDLETYPE_PACKAGE);
     if( !package )
-    {
-        HRESULT hr;
-        BSTR condition;
-        IWineMsiRemotePackage *remote_package;
-
-        remote_package = (IWineMsiRemotePackage *)msi_get_remote( hInstall );
-        if (!remote_package)
-            return MSICONDITION_ERROR;
-
-        condition = SysAllocString( szCondition );
-        if (!condition)
-        {
-            IWineMsiRemotePackage_Release( remote_package );
-            return ERROR_OUTOFMEMORY;
-        }
-
-        hr = IWineMsiRemotePackage_EvaluateCondition( remote_package, condition );
-
-        SysFreeString( condition );
-        IWineMsiRemotePackage_Release( remote_package );
-
-        if (FAILED(hr))
-        {
-            if (HRESULT_FACILITY(hr) == FACILITY_WIN32)
-                return HRESULT_CODE(hr);
-
-            return ERROR_FUNCTION_FAILED;
-        }
-
-        return ERROR_SUCCESS;
-    }
-
+        return ERROR_INVALID_HANDLE;
     ret = MSI_EvaluateConditionW( package, szCondition );
     msiobj_release( &package->hdr );
     return ret;
