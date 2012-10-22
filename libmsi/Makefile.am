@@ -23,20 +23,5 @@ libmsi_la_SOURCES = alter.c create.c database.c delete.c distinct.c \
 libmsi_la_LDFLAGS = -no-undefined
 libmsi_la_LIBADD = \
 	$(libmsi_la_DEPENDENCIES) \
-	-luuid \
-	-lurlmon \
-	-lwininet \
-	-lcomctl32 \
-	-lshell32 \
 	-lshlwapi \
-	-lcabinet \
-	-loleaut32 \
-	-lole32 \
-	-lversion \
-	-luser32 \
-	-lgdi32 \
-	-ladvapi32 \
-	-lodbccp32 \
-	-lwintrust \
-	-lcrypt32 \
-	-limagehlp
+	-lole32
