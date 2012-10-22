@@ -409,113 +409,6 @@ static void MSI_FreePackage( MSIOBJECTHDR *arg)
     msi_free( package->localfile );
 }
 
-static UINT create_temp_property_table(MSIPACKAGE *package)
-{
-    static const WCHAR query[] = {
-        'C','R','E','A','T','E',' ','T','A','B','L','E',' ',
-        '`','_','P','r','o','p','e','r','t','y','`',' ','(',' ',
-        '`','_','P','r','o','p','e','r','t','y','`',' ',
-        'C','H','A','R','(','5','6',')',' ','N','O','T',' ','N','U','L','L',' ',
-        'T','E','M','P','O','R','A','R','Y',',',' ',
-        '`','V','a','l','u','e','`',' ','C','H','A','R','(','9','8',')',' ',
-        'N','O','T',' ','N','U','L','L',' ','T','E','M','P','O','R','A','R','Y',
-        ' ','P','R','I','M','A','R','Y',' ','K','E','Y',' ',
-        '`','_','P','r','o','p','e','r','t','y','`',')',' ','H','O','L','D',0};
-    MSIQUERY *view;
-    UINT rc;
-
-    rc = MSI_DatabaseOpenViewW(package->db, query, &view);
-    if (rc != ERROR_SUCCESS)
-        return rc;
-
-    rc = MSI_ViewExecute(view, 0);
-    MSI_ViewClose(view);
-    msiobj_release(&view->hdr);
-    return rc;
-}
-
-UINT msi_clone_properties(MSIPACKAGE *package)
-{
-    static const WCHAR query_select[] = {
-        'S','E','L','E','C','T',' ','*',' ','F','R','O','M',' ',
-        '`','P','r','o','p','e','r','t','y','`',0};
-    static const WCHAR query_insert[] = {
-        'I','N','S','E','R','T',' ','I','N','T','O',' ',
-        '`','_','P','r','o','p','e','r','t','y','`',' ',
-        '(','`','_','P','r','o','p','e','r','t','y','`',',','`','V','a','l','u','e','`',')',' ',
-        'V','A','L','U','E','S',' ','(','?',',','?',')',0};
-    static const WCHAR query_update[] = {
-        'U','P','D','A','T','E',' ','`','_','P','r','o','p','e','r','t','y','`',' ',
-        'S','E','T',' ','`','V','a','l','u','e','`',' ','=',' ','?',' ',
-        'W','H','E','R','E',' ','`','_','P','r','o','p','e','r','t','y','`',' ','=',' ','?',0};
-    MSIQUERY *view_select;
-    UINT rc;
-
-    rc = MSI_DatabaseOpenViewW( package->db, query_select, &view_select );
-    if (rc != ERROR_SUCCESS)
-        return rc;
-
-    rc = MSI_ViewExecute( view_select, 0 );
-    if (rc != ERROR_SUCCESS)
-    {
-        MSI_ViewClose( view_select );
-        msiobj_release( &view_select->hdr );
-        return rc;
-    }
-
-    while (1)
-    {
-        MSIQUERY *view_insert, *view_update;
-        MSIRECORD *rec_select;
-
-        rc = MSI_ViewFetch( view_select, &rec_select );
-        if (rc != ERROR_SUCCESS)
-            break;
-
-        rc = MSI_DatabaseOpenViewW( package->db, query_insert, &view_insert );
-        if (rc != ERROR_SUCCESS)
-        {
-            msiobj_release( &rec_select->hdr );
-            continue;
-        }
-
-        rc = MSI_ViewExecute( view_insert, rec_select );
-        MSI_ViewClose( view_insert );
-        msiobj_release( &view_insert->hdr );
-        if (rc != ERROR_SUCCESS)
-        {
-            MSIRECORD *rec_update;
-
-            TRACE("insert failed, trying update\n");
-
-            rc = MSI_DatabaseOpenViewW( package->db, query_update, &view_update );
-            if (rc != ERROR_SUCCESS)
-            {
-                WARN("open view failed %u\n", rc);
-                msiobj_release( &rec_select->hdr );
-                continue;
-            }
-
-            rec_update = MSI_CreateRecord( 2 );
-            MSI_RecordCopyField( rec_select, 1, rec_update, 2 );
-            MSI_RecordCopyField( rec_select, 2, rec_update, 1 );
-            rc = MSI_ViewExecute( view_update, rec_update );
-            if (rc != ERROR_SUCCESS)
-                WARN("update failed %u\n", rc);
-
-            MSI_ViewClose( view_update );
-            msiobj_release( &view_update->hdr );
-            msiobj_release( &rec_update->hdr );
-        }
-
-        msiobj_release( &rec_select->hdr );
-    }
-
-    MSI_ViewClose( view_select );
-    msiobj_release( &view_select->hdr );
-    return rc;
-}
-
 static UINT set_user_sid_prop( MSIPACKAGE *package )
 {
     SID_NAME_USE use;
@@ -687,17 +580,6 @@ static UINT msi_load_admin_properties(MSIPACKAGE *package)
 #endif
 }
 
-void msi_adjust_privilege_properties( MSIPACKAGE *package )
-{
-    /* FIXME: this should depend on the user's privileges */
-    if (msi_get_property_int( package->db, szAllUsers, 0 ) == 2)
-    {
-        TRACE("resetting ALLUSERS property from 2 to 1\n");
-        msi_set_property( package->db, szAllUsers, szOne );
-    }
-    msi_set_property( package->db, szAdminUser, szOne );
-}
-
 MSIPACKAGE *MSI_CreatePackage( MSIDATABASE *db, LPCWSTR base_url )
 {
     static const WCHAR fmtW[] = {'%','u',0};
@@ -716,10 +598,6 @@ MSIPACKAGE *MSI_CreatePackage( MSIDATABASE *db, LPCWSTR base_url )
         package->WordCount = 0;
         package->PackagePath = strdupW( db->path );
         package->BaseURL = strdupW( base_url );
-
-        create_temp_property_table( package );
-        msi_clone_properties( package );
-        msi_adjust_privilege_properties( package );
 
         package->ProductCode = msi_dup_property( package->db, szProductCode );
         package->script = msi_alloc_zero( sizeof(MSISCRIPT) );
@@ -931,50 +809,6 @@ static WCHAR *get_product_code( MSIDATABASE *db )
     return ret;
 }
 
-static UINT get_registered_local_package( const WCHAR *product, const WCHAR *package, WCHAR *localfile )
-{
-    MSIINSTALLCONTEXT context;
-    HKEY product_key, props_key;
-    WCHAR *registered_package = NULL, unsquashed[GUID_SIZE];
-    UINT r;
-
-    r = msi_locate_product( product, &context );
-    if (r != ERROR_SUCCESS)
-        return r;
-
-    r = MSIREG_OpenProductKey( product, NULL, context, &product_key, FALSE );
-    if (r != ERROR_SUCCESS)
-        return r;
-
-    r = MSIREG_OpenInstallProps( product, context, NULL, &props_key, FALSE );
-    if (r != ERROR_SUCCESS)
-    {
-        RegCloseKey( product_key );
-        return r;
-    }
-    r = ERROR_FUNCTION_FAILED;
-    registered_package = msi_reg_get_val_str( product_key, INSTALLPROPERTY_PACKAGECODEW );
-    if (!registered_package)
-        goto done;
-
-    unsquash_guid( registered_package, unsquashed );
-    if (!strcmpiW( package, unsquashed ))
-    {
-        WCHAR *filename = msi_reg_get_val_str( props_key, INSTALLPROPERTY_LOCALPACKAGEW );
-        if (!filename)
-            goto done;
-
-        strcpyW( localfile, filename );
-        msi_free( filename );
-        r = ERROR_SUCCESS;
-    }
-done:
-    msi_free( registered_package );
-    RegCloseKey( props_key );
-    RegCloseKey( product_key );
-    return r;
-}
-
 static WCHAR *get_package_code( MSIDATABASE *db )
 {
     WCHAR *ret;
@@ -988,50 +822,6 @@ static WCHAR *get_package_code( MSIDATABASE *db )
     ret = msi_suminfo_dup_string( si, PID_REVNUMBER );
     msiobj_release( &si->hdr );
     return ret;
-}
-
-static UINT get_local_package( const WCHAR *filename, WCHAR *localfile )
-{
-    WCHAR *product_code, *package_code;
-    MSIDATABASE *db;
-    UINT r;
-
-    if ((r = MSI_OpenDatabaseW( filename, MSIDBOPEN_READONLY, &db )) != ERROR_SUCCESS)
-    {
-        if (GetFileAttributesW( filename ) == INVALID_FILE_ATTRIBUTES)
-            return ERROR_FILE_NOT_FOUND;
-        return r;
-    }
-    if (!(product_code = get_product_code( db )))
-    {
-        msiobj_release( &db->hdr );
-        return ERROR_INSTALL_PACKAGE_INVALID;
-    }
-    if (!(package_code = get_package_code( db )))
-    {
-        msi_free( product_code );
-        msiobj_release( &db->hdr );
-        return ERROR_INSTALL_PACKAGE_INVALID;
-    }
-    r = get_registered_local_package( product_code, package_code, localfile );
-    msi_free( package_code );
-    msi_free( product_code );
-    msiobj_release( &db->hdr );
-    return r;
-}
-
-static UINT msi_set_context(MSIPACKAGE *package)
-{
-    UINT r = msi_locate_product( package->ProductCode, &package->Context );
-    if (r != ERROR_SUCCESS)
-    {
-        int num = msi_get_property_int( package->db, szAllUsers, 0 );
-        if (num == 1 || num == 2)
-            package->Context = MSIINSTALLCONTEXT_MACHINE;
-        else
-            package->Context = MSIINSTALLCONTEXT_USERUNMANAGED;
-    }
-    return ERROR_SUCCESS;
 }
 
 UINT MSI_OpenPackageW(LPCWSTR szPackage, MSIPACKAGE **pPackage)
@@ -1060,24 +850,7 @@ UINT MSI_OpenPackageW(LPCWSTR szPackage, MSIPACKAGE **pPackage)
     }
     else
     {
-        r = get_local_package( file, localfile );
-        if (r != ERROR_SUCCESS || GetFileAttributesW( localfile ) == INVALID_FILE_ATTRIBUTES)
-        {
-            r = msi_create_empty_local_file( localfile, dotmsi );
-            if (r != ERROR_SUCCESS)
-                return r;
-
-            if (!CopyFileW( file, localfile, FALSE ))
-            {
-                r = GetLastError();
-                WARN("unable to copy package %s to %s (%u)\n", debugstr_w(file), debugstr_w(localfile), r);
-                DeleteFileW( localfile );
-                return r;
-            }
-            delete_on_close = TRUE;
-        }
-        TRACE("opening package %s\n", debugstr_w( localfile ));
-        r = MSI_OpenDatabaseW( localfile, MSIDBOPEN_TRANSACT, &db );
+        r = MSI_OpenDatabaseW( file, MSIDBOPEN_TRANSACT, &db );
         if (r != ERROR_SUCCESS)
             return r;
     }
@@ -1120,32 +893,7 @@ UINT MSI_OpenPackageW(LPCWSTR szPackage, MSIPACKAGE **pPackage)
         GetFullPathNameW( szPackage, MAX_PATH, fullpath, NULL );
         msi_set_property( package->db, szOriginalDatabase, fullpath );
     }
-    msi_set_context( package );
 
-    while (1)
-    {
-        WCHAR patch_code[GUID_SIZE];
-        r = MsiEnumPatchesExW( package->ProductCode, NULL, package->Context,
-                               MSIPATCHSTATE_APPLIED, index, patch_code, NULL, NULL, NULL, NULL );
-        if (r != ERROR_SUCCESS)
-            break;
-
-        TRACE("found registered patch %s\n", debugstr_w(patch_code));
-
-        r = msi_apply_registered_patch( package, patch_code );
-        if (r != ERROR_SUCCESS)
-        {
-            ERR("registered patch failed to apply %u\n", r);
-            msiobj_release( &package->hdr );
-            return r;
-        }
-        index++;
-    }
-    if (index)
-    {
-        msi_clone_properties( package );
-        msi_adjust_privilege_properties( package );
-    }
     if (gszLogFile)
         package->log_file = CreateFileW( gszLogFile, GENERIC_WRITE, FILE_SHARE_WRITE, NULL,
                                          OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL );
