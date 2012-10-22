@@ -36,7 +36,6 @@
 
 #include "query.h"
 
-WINE_DEFAULT_DEBUG_CHANNEL(msidb);
 
 /* below is the query interface to a table */
 typedef struct tagMSIROWENTRY

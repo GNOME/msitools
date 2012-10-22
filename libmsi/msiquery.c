@@ -39,7 +39,6 @@
 
 #include "initguid.h"
 
-WINE_DEFAULT_DEBUG_CHANNEL(msi);
 
 static void MSI_CloseView( MSIOBJECTHDR *arg )
 {

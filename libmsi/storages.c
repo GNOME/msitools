@@ -36,7 +36,6 @@
 
 #include "wine/debug.h"
 
-WINE_DEFAULT_DEBUG_CHANNEL(msidb);
 
 #define NUM_STORAGES_COLS    2
 #define MAX_STORAGES_NAME_LEN 62

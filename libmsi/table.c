@@ -39,7 +39,6 @@
 #include "wine/debug.h"
 #include "wine/unicode.h"
 
-WINE_DEFAULT_DEBUG_CHANNEL(msidb);
 
 #define MSITABLE_HASH_TABLE_SIZE 37
 
@@ -2401,7 +2400,7 @@ static void dump_table( const string_table *st, const USHORT *rawdata, UINT raws
     for( i=0; i<(rawsize/2); i++ )
     {
         sval = msi_string_lookup_id( st, rawdata[i] );
-        MESSAGE(" %04x %s\n", rawdata[i], debugstr_w(sval) );
+        TRACE(" %04x %s\n", rawdata[i], debugstr_w(sval) );
     }
 }
 

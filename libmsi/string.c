@@ -39,7 +39,6 @@
 
 #include "query.h"
 
-WINE_DEFAULT_DEBUG_CHANNEL(msidb);
 
 struct msistring
 {

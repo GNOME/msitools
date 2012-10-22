@@ -49,7 +49,6 @@
 #include "wine/debug.h"
 #include "wine/unicode.h"
 
-WINE_DEFAULT_DEBUG_CHANNEL(msi);
 
 static const WCHAR installerW[] = {'\\','I','n','s','t','a','l','l','e','r',0};
 

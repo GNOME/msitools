@@ -40,7 +40,6 @@
 
 #include "initguid.h"
 
-WINE_DEFAULT_DEBUG_CHANNEL(msi);
 
 /*
  *  .MSI  file format

@@ -38,7 +38,6 @@
 #include "propvarutil.h"
 #include "msiserver.h"
 
-WINE_DEFAULT_DEBUG_CHANNEL(msi);
 
 const CLSID FMTID_SummaryInformation =
         { 0xf29f85e0, 0x4ff9, 0x1068, {0xab, 0x91, 0x08, 0x00, 0x2b, 0x27, 0xb3, 0xd9}};

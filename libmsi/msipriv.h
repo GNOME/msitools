@@ -38,7 +38,6 @@
 #include "winnls.h"
 #include "winver.h"
 #include "wine/list.h"
-#include "wine/debug.h"
 
 static const BOOL is_64bit = sizeof(void *) > sizeof(int);
 BOOL is_wow64;

@@ -39,7 +39,6 @@
 
 static int sql_error(const char *str);
 
-WINE_DEFAULT_DEBUG_CHANNEL(msi);
 
 typedef struct tag_SQL_input
 {

@@ -31,7 +31,6 @@
 #include "msiquery.h"
 #include "msipriv.h"
 
-WINE_DEFAULT_DEBUG_CHANNEL(msi);
 
 static CRITICAL_SECTION MSI_handle_cs;
 static CRITICAL_SECTION_DEBUG MSI_handle_cs_debug =

@@ -33,7 +33,6 @@
 
 #include "query.h"
 
-WINE_DEFAULT_DEBUG_CHANNEL(msidb);
 
 typedef struct tagDISTINCTSET
 {
