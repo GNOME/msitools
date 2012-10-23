@@ -200,10 +200,6 @@ unsigned MsiCreateTransformSummaryInfoA(LibmsiObject *, LibmsiObject *, const ch
 unsigned MsiCreateTransformSummaryInfoW(LibmsiObject *, LibmsiObject *, const WCHAR *, int, int);
 #define     MsiCreateTransformSummaryInfo WINELIB_NAME_AW(MsiCreateTransformSummaryInfo)
 
-unsigned MsiGetSummaryInformationA(LibmsiObject *, const char *, unsigned, LibmsiObject **);
-unsigned MsiGetSummaryInformationW(LibmsiObject *, const WCHAR *, unsigned, LibmsiObject **);
-#define     MsiGetSummaryInformation WINELIB_NAME_AW(MsiGetSummaryInformation)
-
 unsigned MsiSummaryInfoGetPropertyA(LibmsiObject *,unsigned,unsigned *,int *,uint64_t*,char *,unsigned *);
 unsigned MsiSummaryInfoGetPropertyW(LibmsiObject *,unsigned,unsigned *,int *,uint64_t*,WCHAR *,unsigned *);
 #define     MsiSummaryInfoGetProperty WINELIB_NAME_AW(MsiSummaryInfoGetProperty)
@@ -238,6 +234,7 @@ unsigned MsiDatabaseMergeW(LibmsiObject *, LibmsiObject *, const WCHAR *);
 #define     MsiDatabaseMerge WINELIB_NAME_AW(MsiDatabaseMerge)
 
 /* Non Unicode */
+unsigned MsiGetSummaryInformation(LibmsiObject *, unsigned, LibmsiObject **);
 unsigned MsiDatabaseCommit(LibmsiObject *);
 unsigned MsiCloseHandle(LibmsiObject *);
 

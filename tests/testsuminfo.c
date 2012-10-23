@@ -47,21 +47,16 @@ static void test_suminfo(void)
     r = MsiOpenDatabase(msifile, LIBMSI_DB_OPEN_CREATE, &hdb);
     ok(r == ERROR_SUCCESS, "MsiOpenDatabase failed\n");
 
-    r = MsiGetSummaryInformation(hdb, NULL, 0, NULL);
+    r = MsiGetSummaryInformation(hdb, 0, NULL);
     ok(r == ERROR_INVALID_PARAMETER, "MsiGetSummaryInformation wrong error\n");
 
-    r = MsiGetSummaryInformation(hdb, NULL, 0, &hsuminfo);
+    r = MsiGetSummaryInformation(hdb, 0, &hsuminfo);
     ok(r == ERROR_SUCCESS, "MsiGetSummaryInformation failed %u\n", r);
 
     r = MsiCloseHandle(hsuminfo);
     ok(r == ERROR_SUCCESS, "MsiCloseHandle failed\n");
 
-    r = MsiGetSummaryInformation(0, "", 0, &hsuminfo);
-    todo_wine
-    ok(r == ERROR_INSTALL_PACKAGE_INVALID || r == ERROR_INSTALL_PACKAGE_OPEN_FAILED,
-       "MsiGetSummaryInformation failed %u\n", r);
-
-    r = MsiGetSummaryInformation(hdb, "", 0, &hsuminfo);
+    r = MsiGetSummaryInformation(hdb, 0, &hsuminfo);
     ok(r == ERROR_SUCCESS, "MsiGetSummaryInformation failed %u\n", r);
 
     r = MsiSummaryInfoGetPropertyCount(0, NULL);
@@ -121,7 +116,7 @@ static void test_suminfo(void)
     ok(r == ERROR_SUCCESS, "MsiCloseHandle failed\n");
 
     /* try again with the update count set */
-    r = MsiGetSummaryInformation(hdb, NULL, 1, &hsuminfo);
+    r = MsiGetSummaryInformation(hdb, 1, &hsuminfo);
     ok(r == ERROR_SUCCESS, "MsiGetSummaryInformation failed\n");
 
     r = MsiSummaryInfoSetProperty(hsuminfo, 0, VT_LPSTR, 1, NULL, NULL);
@@ -189,7 +184,7 @@ static void test_suminfo(void)
     ok(r == ERROR_SUCCESS, "MsiCloseHandle failed\n");
 
     /* try again with a higher update count */
-    r = MsiGetSummaryInformation(hdb, NULL, 10, &hsuminfo);
+    r = MsiGetSummaryInformation(hdb, 10, &hsuminfo);
     ok(r == ERROR_SUCCESS, "MsiGetSummaryInformation failed\n");
 
     r = MsiSummaryInfoSetProperty(hsuminfo, MSI_PID_TITLE, VT_LPSTR, 0, NULL, "JungAh");
@@ -218,8 +213,11 @@ static void test_suminfo(void)
     r = MsiCloseHandle(hdb);
     ok(r == ERROR_SUCCESS, "MsiCloseHandle failed\n");
 
-    /* filename, non-zero update count */
-    r = MsiGetSummaryInformation(0, msifile, 1, &hsuminfo);
+    /* reread, non-zero update count */
+    r = MsiOpenDatabase(msifile, LIBMSI_DB_OPEN_TRANSACT, &hdb);
+    ok(r == ERROR_SUCCESS, "MsiOpenDatabase failed\n");
+
+    r = MsiGetSummaryInformation(hdb, 1, &hsuminfo);
     ok(r == ERROR_SUCCESS, "MsiGetSummaryInformation failed\n");
 
     r = MsiSummaryInfoSetProperty(hsuminfo, MSI_PID_AUTHOR, VT_LPSTR, 1, &ft, "Mike");
@@ -231,8 +229,14 @@ static void test_suminfo(void)
     r = MsiCloseHandle(hsuminfo);
     ok(r == ERROR_SUCCESS, "MsiCloseHandle failed %u\n", r);
 
-    /* filename, zero update count */
-    r = MsiGetSummaryInformation(0, msifile, 0, &hsuminfo);
+    /* now with zero update count */
+    r = MsiCloseHandle(hdb);
+    ok(r == ERROR_SUCCESS, "MsiCloseHandle failed %u\n", r);
+
+    r = MsiOpenDatabase(msifile, LIBMSI_DB_OPEN_READONLY, &hdb);
+    ok(r == ERROR_SUCCESS, "MsiOpenDatabase failed\n");
+
+    r = MsiGetSummaryInformation(hdb, 0, &hsuminfo);
     ok(r == ERROR_SUCCESS, "MsiGetSummaryInformation failed %u\n", r);
 
     r = MsiSummaryInfoSetProperty(hsuminfo, MSI_PID_AUTHOR, VT_LPSTR, 1, &ft, "Mike");
@@ -243,6 +247,9 @@ static void test_suminfo(void)
 
     r = MsiCloseHandle(hsuminfo);
     ok(r == ERROR_SUCCESS, "MsiCloseHandle failed\n");
+
+    r = MsiCloseHandle(hdb);
+    ok(r == ERROR_SUCCESS, "MsiCloseHandle failed %u\n", r);
 
     r = DeleteFile(msifile);
     ok(r, "DeleteFile failed\n");
@@ -380,7 +387,7 @@ static void test_summary_binary(void)
     r = MsiOpenDatabase(msifile, LIBMSI_DB_OPEN_READONLY, &hdb);
     ok(r == ERROR_SUCCESS, "MsiOpenDatabase failed\n");
 
-    r = MsiGetSummaryInformation(hdb, NULL, 0, &hsuminfo);
+    r = MsiGetSummaryInformation(hdb, 0, &hsuminfo);
     ok(r == ERROR_SUCCESS, "MsiGetSummaryInformation failed\n");
 
     /*

@@ -1547,7 +1547,7 @@ static void test_streamtable(void)
     MsiCloseHandle( view );
 
     /* create a summary information stream */
-    r = MsiGetSummaryInformationA( hdb, NULL, 1, &hsi );
+    r = MsiGetSummaryInformation( hdb, 1, &hsi );
     ok( r == ERROR_SUCCESS, "Failed to get summary information handle: %u\n", r );
 
     r = MsiSummaryInfoSetPropertyA( hsi, MSI_PID_SECURITY, VT_I4, 2, NULL, NULL );
@@ -2148,7 +2148,7 @@ static void test_suminfo_import(void)
 
     /* ...its data is added to the special summary information stream */
 
-    r = MsiGetSummaryInformationA(hdb, NULL, 0, &hsi);
+    r = MsiGetSummaryInformation(hdb, 0, &hsi);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %u\n", r);
 
     r = MsiSummaryInfoGetPropertyCount(hsi, &count);
@@ -2875,7 +2875,7 @@ static unsigned set_summary_info(LibmsiObject *hdb)
     LibmsiObject *suminfo;
 
     /* build summary info */
-    res = MsiGetSummaryInformation(hdb, NULL, 7, &suminfo);
+    res = MsiGetSummaryInformation(hdb, 7, &suminfo);
     ok( res == ERROR_SUCCESS , "Failed to open summaryinfo\n" );
 
     res = MsiSummaryInfoSetProperty(suminfo,2, VT_LPSTR, 0,NULL,

@@ -432,7 +432,7 @@ static unsigned save_summary_info( const LibmsiSummaryInfo * si, IStream *stm )
     return ERROR_SUCCESS;
 }
 
-LibmsiSummaryInfo *MSI_GetSummaryInformationW( IStorage *stg, unsigned uiUpdateCount )
+LibmsiSummaryInfo *MSI_GetSummaryInformation( IStorage *stg, unsigned uiUpdateCount )
 {
     IStream *stm = NULL;
     LibmsiSummaryInfo *si;
@@ -462,35 +462,23 @@ LibmsiSummaryInfo *MSI_GetSummaryInformationW( IStorage *stg, unsigned uiUpdateC
     return si;
 }
 
-unsigned MsiGetSummaryInformationW( LibmsiObject *hDatabase, 
-              const WCHAR *szDatabase, unsigned uiUpdateCount, LibmsiObject **pHandle )
+unsigned MsiGetSummaryInformation( LibmsiObject *hDatabase, 
+              unsigned uiUpdateCount, LibmsiObject **pHandle )
 {
     LibmsiSummaryInfo *si;
     LibmsiDatabase *db;
     unsigned ret = ERROR_FUNCTION_FAILED;
 
-    TRACE("%d %s %d %p\n", hDatabase, debugstr_w(szDatabase),
-           uiUpdateCount, pHandle);
+    TRACE("%d %d %p\n", hDatabase, uiUpdateCount, pHandle);
 
     if( !pHandle )
         return ERROR_INVALID_PARAMETER;
 
-    if( szDatabase && szDatabase[0] )
-    {
-        const WCHAR *persist = uiUpdateCount ? LIBMSI_DB_OPEN_TRANSACT : LIBMSI_DB_OPEN_READONLY;
+    db = msihandle2msiinfo( hDatabase, LIBMSI_OBJECT_TYPE_DATABASE );
+    if( !db )
+        return ERROR_INVALID_HANDLE;
 
-        ret = MSI_OpenDatabaseW( szDatabase, persist, &db );
-        if( ret != ERROR_SUCCESS )
-            return ret;
-    }
-    else
-    {
-        db = msihandle2msiinfo( hDatabase, LIBMSI_OBJECT_TYPE_DATABASE );
-        if( !db )
-            return ERROR_INVALID_HANDLE;
-    }
-
-    si = MSI_GetSummaryInformationW( db->storage, uiUpdateCount );
+    si = MSI_GetSummaryInformation( db->storage, uiUpdateCount );
     if (si)
     {
         *pHandle = &si->hdr;
@@ -498,29 +486,6 @@ unsigned MsiGetSummaryInformationW( LibmsiObject *hDatabase,
     }
 
     msiobj_release( &db->hdr );
-    return ret;
-}
-
-unsigned MsiGetSummaryInformationA(LibmsiObject *hDatabase, 
-              const char *szDatabase, unsigned uiUpdateCount, LibmsiObject **pHandle)
-{
-    WCHAR *szwDatabase = NULL;
-    unsigned ret;
-
-    TRACE("%d %s %d %p\n", hDatabase, debugstr_a(szDatabase),
-          uiUpdateCount, pHandle);
-
-    if( szDatabase )
-    {
-        szwDatabase = strdupAtoW( szDatabase );
-        if( !szwDatabase )
-            return ERROR_FUNCTION_FAILED;
-    }
-
-    ret = MsiGetSummaryInformationW(hDatabase, szwDatabase, uiUpdateCount, pHandle);
-
-    msi_free( szwDatabase );
-
     return ret;
 }
 
@@ -640,7 +605,7 @@ WCHAR *msi_get_suminfo_product( IStorage *stg )
     LibmsiSummaryInfo *si;
     WCHAR *prod;
 
-    si = MSI_GetSummaryInformationW( stg, 0 );
+    si = MSI_GetSummaryInformation( stg, 0 );
     if (!si)
     {
         ERR("no summary information!\n");
@@ -911,7 +876,7 @@ unsigned msi_add_suminfo( LibmsiDatabase *db, WCHAR ***records, int num_records,
     unsigned i, j;
     LibmsiSummaryInfo *si;
 
-    si = MSI_GetSummaryInformationW( db->storage, num_records * (num_columns / 2) );
+    si = MSI_GetSummaryInformation( db->storage, num_records * (num_columns / 2) );
     if (!si)
     {
         ERR("no summary information!\n");
