@@ -141,7 +141,7 @@ typedef struct tagMSIVIEWOPS
      *  To get a string value, query the database's string table with
      *   the integer value returned from this function.
      */
-    UINT (*fetch_int)( struct tagMSIVIEW *view, UINT row, UINT col, UINT *val );
+    UINT (*fetch_int)( MSIVIEW *view, UINT row, UINT col, UINT *val );
 
     /*
      * fetch_stream - gets a stream from {row,col} in the table
@@ -149,40 +149,40 @@ typedef struct tagMSIVIEWOPS
      *  This function is similar to fetch_int, except fetches a
      *    stream instead of an integer.
      */
-    UINT (*fetch_stream)( struct tagMSIVIEW *view, UINT row, UINT col, IStream **stm );
+    UINT (*fetch_stream)( MSIVIEW *view, UINT row, UINT col, IStream **stm );
 
     /*
      * get_row - gets values from a row
      *
      */
-    UINT (*get_row)( struct tagMSIVIEW *view, UINT row, MSIRECORD **rec );
+    UINT (*get_row)( MSIVIEW *view, UINT row, MSIRECORD **rec );
 
     /*
      * set_row - sets values in a row as specified by mask
      *
      *  Similar semantics to fetch_int
      */
-    UINT (*set_row)( struct tagMSIVIEW *view, UINT row, MSIRECORD *rec, UINT mask );
+    UINT (*set_row)( MSIVIEW *view, UINT row, MSIRECORD *rec, UINT mask );
 
     /*
      * Inserts a new row into the database from the records contents
      */
-    UINT (*insert_row)( struct tagMSIVIEW *view, MSIRECORD *record, UINT row, BOOL temporary );
+    UINT (*insert_row)( MSIVIEW *view, MSIRECORD *record, UINT row, BOOL temporary );
 
     /*
      * Deletes a row from the database
      */
-    UINT (*delete_row)( struct tagMSIVIEW *view, UINT row );
+    UINT (*delete_row)( MSIVIEW *view, UINT row );
 
     /*
      * execute - loads the underlying data into memory so it can be read
      */
-    UINT (*execute)( struct tagMSIVIEW *view, MSIRECORD *record );
+    UINT (*execute)( MSIVIEW *view, MSIRECORD *record );
 
     /*
      * close - clears the data read by execute from memory
      */
-    UINT (*close)( struct tagMSIVIEW *view );
+    UINT (*close)( MSIVIEW *view );
 
     /*
      * get_dimensions - returns the number of rows or columns in a table.
@@ -190,25 +190,25 @@ typedef struct tagMSIVIEWOPS
      *  The number of rows can only be queried after the execute method
      *   is called. The number of columns can be queried at any time.
      */
-    UINT (*get_dimensions)( struct tagMSIVIEW *view, UINT *rows, UINT *cols );
+    UINT (*get_dimensions)( MSIVIEW *view, UINT *rows, UINT *cols );
 
     /*
      * get_column_info - returns the name and type of a specific column
      *
      *  The column information can be queried at any time.
      */
-    UINT (*get_column_info)( struct tagMSIVIEW *view, UINT n, const WCHAR **name, UINT *type,
+    UINT (*get_column_info)( MSIVIEW *view, UINT n, const WCHAR **name, UINT *type,
                              BOOL *temporary, const WCHAR **table_name );
 
     /*
      * modify - not yet implemented properly
      */
-    UINT (*modify)( struct tagMSIVIEW *view, MSIMODIFY eModifyMode, MSIRECORD *record, UINT row );
+    UINT (*modify)( MSIVIEW *view, MSIMODIFY eModifyMode, MSIRECORD *record, UINT row );
 
     /*
      * delete - destroys the structure completely
      */
-    UINT (*delete)( struct tagMSIVIEW * );
+    UINT (*delete)( MSIVIEW * );
 
     /*
      * find_matching_rows - iterates through rows that match a value
@@ -221,37 +221,37 @@ typedef struct tagMSIVIEWOPS
      *  position in the iteration. It must be initialised to zero before the
      *  first call and continued to be passed in to subsequent calls.
      */
-    UINT (*find_matching_rows)( struct tagMSIVIEW *view, UINT col, UINT val, UINT *row, MSIITERHANDLE *handle );
+    UINT (*find_matching_rows)( MSIVIEW *view, UINT col, UINT val, UINT *row, MSIITERHANDLE *handle );
 
     /*
      * add_ref - increases the reference count of the table
      */
-    UINT (*add_ref)( struct tagMSIVIEW *view );
+    UINT (*add_ref)( MSIVIEW *view );
 
     /*
      * release - decreases the reference count of the table
      */
-    UINT (*release)( struct tagMSIVIEW *view );
+    UINT (*release)( MSIVIEW *view );
 
     /*
      * add_column - adds a column to the table
      */
-    UINT (*add_column)( struct tagMSIVIEW *view, const WCHAR *table, UINT number, const WCHAR *column, UINT type, BOOL hold );
+    UINT (*add_column)( MSIVIEW *view, const WCHAR *table, UINT number, const WCHAR *column, UINT type, BOOL hold );
 
     /*
      * remove_column - removes the column represented by table name and column number from the table
      */
-    UINT (*remove_column)( struct tagMSIVIEW *view, const WCHAR *table, UINT number );
+    UINT (*remove_column)( MSIVIEW *view, const WCHAR *table, UINT number );
 
     /*
      * sort - orders the table by columns
      */
-    UINT (*sort)( struct tagMSIVIEW *view, column_info *columns );
+    UINT (*sort)( MSIVIEW *view, column_info *columns );
 
     /*
      * drop - drops the table from the database
      */
-    UINT (*drop)( struct tagMSIVIEW *view );
+    UINT (*drop)( MSIVIEW *view );
 } MSIVIEWOPS;
 
 struct tagMSIVIEW

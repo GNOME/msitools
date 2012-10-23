@@ -1016,7 +1016,7 @@ typedef struct tagMSITABLEVIEW
     WCHAR          name[1];
 } MSITABLEVIEW;
 
-static UINT TABLE_fetch_int( struct tagMSIVIEW *view, UINT row, UINT col, UINT *val )
+static UINT TABLE_fetch_int( MSIVIEW *view, UINT row, UINT col, UINT *val )
 {
     MSITABLEVIEW *tv = (MSITABLEVIEW*)view;
     UINT offset, n;
@@ -1145,7 +1145,7 @@ err:
  * the name of the stream in the same table, and the table name
  * which may not be available at higher levels of the query
  */
-static UINT TABLE_fetch_stream( struct tagMSIVIEW *view, UINT row, UINT col, IStream **stm )
+static UINT TABLE_fetch_stream( MSIVIEW *view, UINT row, UINT col, IStream **stm )
 {
     MSITABLEVIEW *tv = (MSITABLEVIEW*)view;
     UINT r;
@@ -1209,7 +1209,7 @@ static UINT TABLE_set_int( MSITABLEVIEW *tv, UINT row, UINT col, UINT val )
     return ERROR_SUCCESS;
 }
 
-static UINT TABLE_get_row( struct tagMSIVIEW *view, UINT row, MSIRECORD **rec )
+static UINT TABLE_get_row( MSIVIEW *view, UINT row, MSIRECORD **rec )
 {
     MSITABLEVIEW *tv = (MSITABLEVIEW *)view;
 
@@ -1301,7 +1301,7 @@ static UINT get_table_value_from_record( MSITABLEVIEW *tv, MSIRECORD *rec, UINT 
     return ERROR_SUCCESS;
 }
 
-static UINT TABLE_set_row( struct tagMSIVIEW *view, UINT row, MSIRECORD *rec, UINT mask )
+static UINT TABLE_set_row( MSIVIEW *view, UINT row, MSIRECORD *rec, UINT mask )
 {
     MSITABLEVIEW *tv = (MSITABLEVIEW*)view;
     UINT i, val, r = ERROR_SUCCESS;
@@ -1386,7 +1386,7 @@ static UINT TABLE_set_row( struct tagMSIVIEW *view, UINT row, MSIRECORD *rec, UI
     return r;
 }
 
-static UINT table_create_new_row( struct tagMSIVIEW *view, UINT *num, BOOL temporary )
+static UINT table_create_new_row( MSIVIEW *view, UINT *num, BOOL temporary )
 {
     MSITABLEVIEW *tv = (MSITABLEVIEW*)view;
     BYTE **p, *row;
@@ -1445,7 +1445,7 @@ static UINT table_create_new_row( struct tagMSIVIEW *view, UINT *num, BOOL tempo
     return ERROR_SUCCESS;
 }
 
-static UINT TABLE_execute( struct tagMSIVIEW *view, MSIRECORD *record )
+static UINT TABLE_execute( MSIVIEW *view, MSIRECORD *record )
 {
     MSITABLEVIEW *tv = (MSITABLEVIEW*)view;
 
@@ -1456,14 +1456,14 @@ static UINT TABLE_execute( struct tagMSIVIEW *view, MSIRECORD *record )
     return ERROR_SUCCESS;
 }
 
-static UINT TABLE_close( struct tagMSIVIEW *view )
+static UINT TABLE_close( MSIVIEW *view )
 {
     TRACE("%p\n", view );
     
     return ERROR_SUCCESS;
 }
 
-static UINT TABLE_get_dimensions( struct tagMSIVIEW *view, UINT *rows, UINT *cols)
+static UINT TABLE_get_dimensions( MSIVIEW *view, UINT *rows, UINT *cols)
 {
     MSITABLEVIEW *tv = (MSITABLEVIEW*)view;
 
@@ -1481,7 +1481,7 @@ static UINT TABLE_get_dimensions( struct tagMSIVIEW *view, UINT *rows, UINT *col
     return ERROR_SUCCESS;
 }
 
-static UINT TABLE_get_column_info( struct tagMSIVIEW *view,
+static UINT TABLE_get_column_info( MSIVIEW *view,
                 UINT n, const WCHAR **name, UINT *type, BOOL *temporary,
                 const WCHAR **table_name )
 {
@@ -1619,7 +1619,7 @@ static int find_insert_index( MSITABLEVIEW *tv, MSIRECORD *rec )
     return high + 1;
 }
 
-static UINT TABLE_insert_row( struct tagMSIVIEW *view, MSIRECORD *rec, UINT row, BOOL temporary )
+static UINT TABLE_insert_row( MSIVIEW *view, MSIRECORD *rec, UINT row, BOOL temporary )
 {
     MSITABLEVIEW *tv = (MSITABLEVIEW*)view;
     UINT i, r;
@@ -1652,7 +1652,7 @@ static UINT TABLE_insert_row( struct tagMSIVIEW *view, MSIRECORD *rec, UINT row,
     return TABLE_set_row( view, row, rec, (1<<tv->num_cols) - 1 );
 }
 
-static UINT TABLE_delete_row( struct tagMSIVIEW *view, UINT row )
+static UINT TABLE_delete_row( MSIVIEW *view, UINT row )
 {
     MSITABLEVIEW *tv = (MSITABLEVIEW*)view;
     UINT r, num_rows, num_cols, i;
@@ -1690,7 +1690,7 @@ static UINT TABLE_delete_row( struct tagMSIVIEW *view, UINT row )
     return ERROR_SUCCESS;
 }
 
-static UINT msi_table_update(struct tagMSIVIEW *view, MSIRECORD *rec, UINT row)
+static UINT msi_table_update(MSIVIEW *view, MSIRECORD *rec, UINT row)
 {
     MSITABLEVIEW *tv = (MSITABLEVIEW *)view;
     UINT r, new_row;
@@ -1716,7 +1716,7 @@ static UINT msi_table_update(struct tagMSIVIEW *view, MSIRECORD *rec, UINT row)
     return TABLE_set_row(view, new_row, rec, (1 << tv->num_cols) - 1);
 }
 
-static UINT msi_table_assign(struct tagMSIVIEW *view, MSIRECORD *rec)
+static UINT msi_table_assign(MSIVIEW *view, MSIRECORD *rec)
 {
     MSITABLEVIEW *tv = (MSITABLEVIEW *)view;
     UINT r, row;
@@ -1731,7 +1731,7 @@ static UINT msi_table_assign(struct tagMSIVIEW *view, MSIRECORD *rec)
         return TABLE_insert_row( view, rec, -1, FALSE );
 }
 
-static UINT modify_delete_row( struct tagMSIVIEW *view, MSIRECORD *rec )
+static UINT modify_delete_row( MSIVIEW *view, MSIRECORD *rec )
 {
     MSITABLEVIEW *tv = (MSITABLEVIEW *)view;
     UINT row, r;
@@ -1743,7 +1743,7 @@ static UINT modify_delete_row( struct tagMSIVIEW *view, MSIRECORD *rec )
     return TABLE_delete_row(view, row);
 }
 
-static UINT msi_refresh_record( struct tagMSIVIEW *view, MSIRECORD *rec, UINT row )
+static UINT msi_refresh_record( MSIVIEW *view, MSIRECORD *rec, UINT row )
 {
     MSIRECORD *curr;
     UINT r, i, count;
@@ -1763,7 +1763,7 @@ static UINT msi_refresh_record( struct tagMSIVIEW *view, MSIRECORD *rec, UINT ro
     return ERROR_SUCCESS;
 }
 
-static UINT TABLE_modify( struct tagMSIVIEW *view, MSIMODIFY eModifyMode,
+static UINT TABLE_modify( MSIVIEW *view, MSIMODIFY eModifyMode,
                           MSIRECORD *rec, UINT row)
 {
     MSITABLEVIEW *tv = (MSITABLEVIEW*)view;
@@ -1838,7 +1838,7 @@ static UINT TABLE_modify( struct tagMSIVIEW *view, MSIMODIFY eModifyMode,
     return r;
 }
 
-static UINT TABLE_delete( struct tagMSIVIEW *view )
+static UINT TABLE_delete( MSIVIEW *view )
 {
     MSITABLEVIEW *tv = (MSITABLEVIEW*)view;
 
@@ -1852,7 +1852,7 @@ static UINT TABLE_delete( struct tagMSIVIEW *view )
     return ERROR_SUCCESS;
 }
 
-static UINT TABLE_find_matching_rows( struct tagMSIVIEW *view, UINT col,
+static UINT TABLE_find_matching_rows( MSIVIEW *view, UINT col,
     UINT val, UINT *row, MSIITERHANDLE *handle )
 {
     MSITABLEVIEW *tv = (MSITABLEVIEW*)view;
@@ -1931,7 +1931,7 @@ static UINT TABLE_find_matching_rows( struct tagMSIVIEW *view, UINT col,
     return ERROR_SUCCESS;
 }
 
-static UINT TABLE_add_ref(struct tagMSIVIEW *view)
+static UINT TABLE_add_ref(MSIVIEW *view)
 {
     MSITABLEVIEW *tv = (MSITABLEVIEW*)view;
     UINT i;
@@ -1947,7 +1947,7 @@ static UINT TABLE_add_ref(struct tagMSIVIEW *view)
     return InterlockedIncrement(&tv->table->ref_count);
 }
 
-static UINT TABLE_remove_column(struct tagMSIVIEW *view, const WCHAR *table, UINT number)
+static UINT TABLE_remove_column(MSIVIEW *view, const WCHAR *table, UINT number)
 {
     MSITABLEVIEW *tv = (MSITABLEVIEW*)view;
     MSIRECORD *rec = NULL;
@@ -1981,7 +1981,7 @@ done:
     return r;
 }
 
-static UINT TABLE_release(struct tagMSIVIEW *view)
+static UINT TABLE_release(MSIVIEW *view)
 {
     MSITABLEVIEW *tv = (MSITABLEVIEW*)view;
     INT ref = tv->table->ref_count;
@@ -2018,7 +2018,7 @@ static UINT TABLE_release(struct tagMSIVIEW *view)
     return ref;
 }
 
-static UINT TABLE_add_column(struct tagMSIVIEW *view, const WCHAR *table, UINT number,
+static UINT TABLE_add_column(MSIVIEW *view, const WCHAR *table, UINT number,
                              const WCHAR *column, UINT type, BOOL hold)
 {
     MSITABLEVIEW *tv = (MSITABLEVIEW*)view;
@@ -2059,7 +2059,7 @@ done:
     return r;
 }
 
-static UINT TABLE_drop(struct tagMSIVIEW *view)
+static UINT TABLE_drop(MSIVIEW *view)
 {
     MSITABLEVIEW *tv = (MSITABLEVIEW*)view;
     MSIVIEW *tables = NULL;

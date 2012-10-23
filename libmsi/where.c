@@ -211,7 +211,7 @@ static UINT parse_column(MSIWHEREVIEW *wv, union ext_column *column,
     return ERROR_BAD_QUERY_SYNTAX;
 }
 
-static UINT WHERE_fetch_int( struct tagMSIVIEW *view, UINT row, UINT col, UINT *val )
+static UINT WHERE_fetch_int( MSIVIEW *view, UINT row, UINT col, UINT *val )
 {
     MSIWHEREVIEW *wv = (MSIWHEREVIEW*)view;
     JOINTABLE *table;
@@ -234,7 +234,7 @@ static UINT WHERE_fetch_int( struct tagMSIVIEW *view, UINT row, UINT col, UINT *
     return table->view->ops->fetch_int(table->view, rows[table->table_index], col, val);
 }
 
-static UINT WHERE_fetch_stream( struct tagMSIVIEW *view, UINT row, UINT col, IStream **stm )
+static UINT WHERE_fetch_stream( MSIVIEW *view, UINT row, UINT col, IStream **stm )
 {
     MSIWHEREVIEW *wv = (MSIWHEREVIEW*)view;
     JOINTABLE *table;
@@ -257,7 +257,7 @@ static UINT WHERE_fetch_stream( struct tagMSIVIEW *view, UINT row, UINT col, ISt
     return table->view->ops->fetch_stream( table->view, rows[table->table_index], col, stm );
 }
 
-static UINT WHERE_get_row( struct tagMSIVIEW *view, UINT row, MSIRECORD **rec )
+static UINT WHERE_get_row( MSIVIEW *view, UINT row, MSIRECORD **rec )
 {
     MSIWHEREVIEW *wv = (MSIWHEREVIEW *)view;
 
@@ -269,7 +269,7 @@ static UINT WHERE_get_row( struct tagMSIVIEW *view, UINT row, MSIRECORD **rec )
     return msi_view_get_row( wv->db, view, row, rec );
 }
 
-static UINT WHERE_set_row( struct tagMSIVIEW *view, UINT row, MSIRECORD *rec, UINT mask )
+static UINT WHERE_set_row( MSIVIEW *view, UINT row, MSIRECORD *rec, UINT mask )
 {
     MSIWHEREVIEW *wv = (MSIWHEREVIEW*)view;
     UINT i, r, offset = 0;
@@ -344,7 +344,7 @@ static UINT WHERE_set_row( struct tagMSIVIEW *view, UINT row, MSIRECORD *rec, UI
     return r;
 }
 
-static UINT WHERE_delete_row(struct tagMSIVIEW *view, UINT row)
+static UINT WHERE_delete_row(MSIVIEW *view, UINT row)
 {
     MSIWHEREVIEW *wv = (MSIWHEREVIEW *)view;
     UINT r;
@@ -761,7 +761,7 @@ static JOINTABLE **ordertables( MSIWHEREVIEW *wv )
     return tables;
 }
 
-static UINT WHERE_execute( struct tagMSIVIEW *view, MSIRECORD *record )
+static UINT WHERE_execute( MSIVIEW *view, MSIRECORD *record )
 {
     MSIWHEREVIEW *wv = (MSIWHEREVIEW*)view;
     UINT r;
@@ -817,7 +817,7 @@ static UINT WHERE_execute( struct tagMSIVIEW *view, MSIRECORD *record )
     return r;
 }
 
-static UINT WHERE_close( struct tagMSIVIEW *view )
+static UINT WHERE_close( MSIVIEW *view )
 {
     MSIWHEREVIEW *wv = (MSIWHEREVIEW*)view;
     JOINTABLE *table = wv->tables;
@@ -834,7 +834,7 @@ static UINT WHERE_close( struct tagMSIVIEW *view )
     return ERROR_SUCCESS;
 }
 
-static UINT WHERE_get_dimensions( struct tagMSIVIEW *view, UINT *rows, UINT *cols )
+static UINT WHERE_get_dimensions( MSIVIEW *view, UINT *rows, UINT *cols )
 {
     MSIWHEREVIEW *wv = (MSIWHEREVIEW*)view;
 
@@ -856,7 +856,7 @@ static UINT WHERE_get_dimensions( struct tagMSIVIEW *view, UINT *rows, UINT *col
     return ERROR_SUCCESS;
 }
 
-static UINT WHERE_get_column_info( struct tagMSIVIEW *view, UINT n, const WCHAR **name,
+static UINT WHERE_get_column_info( MSIVIEW *view, UINT n, const WCHAR **name,
                                    UINT *type, BOOL *temporary, const WCHAR **table_name )
 {
     MSIWHEREVIEW *wv = (MSIWHEREVIEW*)view;
@@ -899,7 +899,7 @@ static UINT join_find_row( MSIWHEREVIEW *wv, MSIRECORD *rec, UINT *row )
     return ERROR_FUNCTION_FAILED;
 }
 
-static UINT join_modify_update( struct tagMSIVIEW *view, MSIRECORD *rec )
+static UINT join_modify_update( MSIVIEW *view, MSIRECORD *rec )
 {
     MSIWHEREVIEW *wv = (MSIWHEREVIEW *)view;
     UINT r, row, i, mask = 0;
@@ -926,7 +926,7 @@ static UINT join_modify_update( struct tagMSIVIEW *view, MSIRECORD *rec )
     return WHERE_set_row( view, row, rec, mask );
 }
 
-static UINT WHERE_modify( struct tagMSIVIEW *view, MSIMODIFY eModifyMode,
+static UINT WHERE_modify( MSIVIEW *view, MSIMODIFY eModifyMode,
                           MSIRECORD *rec, UINT row )
 {
     MSIWHEREVIEW *wv = (MSIWHEREVIEW*)view;
@@ -982,7 +982,7 @@ static UINT WHERE_modify( struct tagMSIVIEW *view, MSIMODIFY eModifyMode,
     return r;
 }
 
-static UINT WHERE_delete( struct tagMSIVIEW *view )
+static UINT WHERE_delete( MSIVIEW *view )
 {
     MSIWHEREVIEW *wv = (MSIWHEREVIEW*)view;
     JOINTABLE *table = wv->tables;
@@ -1013,7 +1013,7 @@ static UINT WHERE_delete( struct tagMSIVIEW *view )
     return ERROR_SUCCESS;
 }
 
-static UINT WHERE_find_matching_rows( struct tagMSIVIEW *view, UINT col,
+static UINT WHERE_find_matching_rows( MSIVIEW *view, UINT col,
     UINT val, UINT *row, MSIITERHANDLE *handle )
 {
     MSIWHEREVIEW *wv = (MSIWHEREVIEW*)view;
@@ -1043,7 +1043,7 @@ static UINT WHERE_find_matching_rows( struct tagMSIVIEW *view, UINT col,
     return ERROR_NO_MORE_ITEMS;
 }
 
-static UINT WHERE_sort(struct tagMSIVIEW *view, column_info *columns)
+static UINT WHERE_sort(MSIVIEW *view, column_info *columns)
 {
     MSIWHEREVIEW *wv = (MSIWHEREVIEW *)view;
     JOINTABLE *table = wv->tables;

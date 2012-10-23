@@ -47,7 +47,7 @@ typedef struct tagMSIINSERTVIEW
     column_info     *vals;
 } MSIINSERTVIEW;
 
-static UINT INSERT_fetch_int( struct tagMSIVIEW *view, UINT row, UINT col, UINT *val )
+static UINT INSERT_fetch_int( MSIVIEW *view, UINT row, UINT col, UINT *val )
 {
     MSIINSERTVIEW *iv = (MSIINSERTVIEW*)view;
 
@@ -202,7 +202,7 @@ static BOOL row_has_null_primary_keys(MSIINSERTVIEW *iv, MSIRECORD *row)
     return FALSE;
 }
 
-static UINT INSERT_execute( struct tagMSIVIEW *view, MSIRECORD *record )
+static UINT INSERT_execute( MSIVIEW *view, MSIRECORD *record )
 {
     MSIINSERTVIEW *iv = (MSIINSERTVIEW*)view;
     UINT r, row = -1, col_count = 0;
@@ -250,7 +250,7 @@ err:
 }
 
 
-static UINT INSERT_close( struct tagMSIVIEW *view )
+static UINT INSERT_close( MSIVIEW *view )
 {
     MSIINSERTVIEW *iv = (MSIINSERTVIEW*)view;
     MSIVIEW *sv;
@@ -264,7 +264,7 @@ static UINT INSERT_close( struct tagMSIVIEW *view )
     return sv->ops->close( sv );
 }
 
-static UINT INSERT_get_dimensions( struct tagMSIVIEW *view, UINT *rows, UINT *cols )
+static UINT INSERT_get_dimensions( MSIVIEW *view, UINT *rows, UINT *cols )
 {
     MSIINSERTVIEW *iv = (MSIINSERTVIEW*)view;
     MSIVIEW *sv;
@@ -278,7 +278,7 @@ static UINT INSERT_get_dimensions( struct tagMSIVIEW *view, UINT *rows, UINT *co
     return sv->ops->get_dimensions( sv, rows, cols );
 }
 
-static UINT INSERT_get_column_info( struct tagMSIVIEW *view, UINT n, const WCHAR **name,
+static UINT INSERT_get_column_info( MSIVIEW *view, UINT n, const WCHAR **name,
                                     UINT *type, BOOL *temporary, const WCHAR **table_name )
 {
     MSIINSERTVIEW *iv = (MSIINSERTVIEW*)view;
@@ -293,7 +293,7 @@ static UINT INSERT_get_column_info( struct tagMSIVIEW *view, UINT n, const WCHAR
     return sv->ops->get_column_info( sv, n, name, type, temporary, table_name );
 }
 
-static UINT INSERT_modify( struct tagMSIVIEW *view, MSIMODIFY eModifyMode, MSIRECORD *rec, UINT row)
+static UINT INSERT_modify( MSIVIEW *view, MSIMODIFY eModifyMode, MSIRECORD *rec, UINT row)
 {
     MSIINSERTVIEW *iv = (MSIINSERTVIEW*)view;
 
@@ -302,7 +302,7 @@ static UINT INSERT_modify( struct tagMSIVIEW *view, MSIMODIFY eModifyMode, MSIRE
     return ERROR_FUNCTION_FAILED;
 }
 
-static UINT INSERT_delete( struct tagMSIVIEW *view )
+static UINT INSERT_delete( MSIVIEW *view )
 {
     MSIINSERTVIEW *iv = (MSIINSERTVIEW*)view;
     MSIVIEW *sv;
@@ -318,7 +318,7 @@ static UINT INSERT_delete( struct tagMSIVIEW *view )
     return ERROR_SUCCESS;
 }
 
-static UINT INSERT_find_matching_rows( struct tagMSIVIEW *view, UINT col,
+static UINT INSERT_find_matching_rows( MSIVIEW *view, UINT col,
     UINT val, UINT *row, MSIITERHANDLE *handle )
 {
     TRACE("%p, %d, %u, %p\n", view, col, val, *handle);

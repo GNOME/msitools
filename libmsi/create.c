@@ -47,7 +47,7 @@ typedef struct tagMSICREATEVIEW
     column_info     *col_info;
 } MSICREATEVIEW;
 
-static UINT CREATE_fetch_int( struct tagMSIVIEW *view, UINT row, UINT col, UINT *val )
+static UINT CREATE_fetch_int( MSIVIEW *view, UINT row, UINT col, UINT *val )
 {
     MSICREATEVIEW *cv = (MSICREATEVIEW*)view;
 
@@ -56,7 +56,7 @@ static UINT CREATE_fetch_int( struct tagMSIVIEW *view, UINT row, UINT col, UINT 
     return ERROR_FUNCTION_FAILED;
 }
 
-static UINT CREATE_execute( struct tagMSIVIEW *view, MSIRECORD *record )
+static UINT CREATE_execute( MSIVIEW *view, MSIRECORD *record )
 {
     MSICREATEVIEW *cv = (MSICREATEVIEW*)view;
     BOOL persist = (cv->bIsTemp) ? MSICONDITION_FALSE : MSICONDITION_TRUE;
@@ -70,7 +70,7 @@ static UINT CREATE_execute( struct tagMSIVIEW *view, MSIRECORD *record )
     return msi_create_table( cv->db, cv->name, cv->col_info, persist );
 }
 
-static UINT CREATE_close( struct tagMSIVIEW *view )
+static UINT CREATE_close( MSIVIEW *view )
 {
     MSICREATEVIEW *cv = (MSICREATEVIEW*)view;
 
@@ -79,7 +79,7 @@ static UINT CREATE_close( struct tagMSIVIEW *view )
     return ERROR_SUCCESS;
 }
 
-static UINT CREATE_get_dimensions( struct tagMSIVIEW *view, UINT *rows, UINT *cols )
+static UINT CREATE_get_dimensions( MSIVIEW *view, UINT *rows, UINT *cols )
 {
     MSICREATEVIEW *cv = (MSICREATEVIEW*)view;
 
@@ -88,7 +88,7 @@ static UINT CREATE_get_dimensions( struct tagMSIVIEW *view, UINT *rows, UINT *co
     return ERROR_FUNCTION_FAILED;
 }
 
-static UINT CREATE_get_column_info( struct tagMSIVIEW *view, UINT n, const WCHAR **name,
+static UINT CREATE_get_column_info( MSIVIEW *view, UINT n, const WCHAR **name,
                                     UINT *type, BOOL *temporary, const WCHAR **table_name )
 {
     MSICREATEVIEW *cv = (MSICREATEVIEW*)view;
@@ -98,7 +98,7 @@ static UINT CREATE_get_column_info( struct tagMSIVIEW *view, UINT n, const WCHAR
     return ERROR_FUNCTION_FAILED;
 }
 
-static UINT CREATE_modify( struct tagMSIVIEW *view, MSIMODIFY eModifyMode,
+static UINT CREATE_modify( MSIVIEW *view, MSIMODIFY eModifyMode,
                            MSIRECORD *rec, UINT row)
 {
     MSICREATEVIEW *cv = (MSICREATEVIEW*)view;
@@ -108,7 +108,7 @@ static UINT CREATE_modify( struct tagMSIVIEW *view, MSIMODIFY eModifyMode,
     return ERROR_FUNCTION_FAILED;
 }
 
-static UINT CREATE_delete( struct tagMSIVIEW *view )
+static UINT CREATE_delete( MSIVIEW *view )
 {
     MSICREATEVIEW *cv = (MSICREATEVIEW*)view;
 

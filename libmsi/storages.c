@@ -83,7 +83,7 @@ static STORAGE *create_storage(MSISTORAGESVIEW *sv, const WCHAR *name, IStorage 
     return storage;
 }
 
-static UINT STORAGES_fetch_int(struct tagMSIVIEW *view, UINT row, UINT col, UINT *val)
+static UINT STORAGES_fetch_int(MSIVIEW *view, UINT row, UINT col, UINT *val)
 {
     MSISTORAGESVIEW *sv = (MSISTORAGESVIEW *)view;
 
@@ -100,7 +100,7 @@ static UINT STORAGES_fetch_int(struct tagMSIVIEW *view, UINT row, UINT col, UINT
     return ERROR_SUCCESS;
 }
 
-static UINT STORAGES_fetch_stream(struct tagMSIVIEW *view, UINT row, UINT col, IStream **stm)
+static UINT STORAGES_fetch_stream(MSIVIEW *view, UINT row, UINT col, IStream **stm)
 {
     MSISTORAGESVIEW *sv = (MSISTORAGESVIEW *)view;
 
@@ -112,7 +112,7 @@ static UINT STORAGES_fetch_stream(struct tagMSIVIEW *view, UINT row, UINT col, I
     return ERROR_INVALID_DATA;
 }
 
-static UINT STORAGES_get_row( struct tagMSIVIEW *view, UINT row, MSIRECORD **rec )
+static UINT STORAGES_get_row( MSIVIEW *view, UINT row, MSIRECORD **rec )
 {
     MSISTORAGESVIEW *sv = (MSISTORAGESVIEW *)view;
 
@@ -170,7 +170,7 @@ done:
     return hr;
 }
 
-static UINT STORAGES_set_row(struct tagMSIVIEW *view, UINT row, MSIRECORD *rec, UINT mask)
+static UINT STORAGES_set_row(MSIVIEW *view, UINT row, MSIRECORD *rec, UINT mask)
 {
     MSISTORAGESVIEW *sv = (MSISTORAGESVIEW *)view;
     IStorage *stg, *substg = NULL;
@@ -232,7 +232,7 @@ done:
     return r;
 }
 
-static UINT STORAGES_insert_row(struct tagMSIVIEW *view, MSIRECORD *rec, UINT row, BOOL temporary)
+static UINT STORAGES_insert_row(MSIVIEW *view, MSIRECORD *rec, UINT row, BOOL temporary)
 {
     MSISTORAGESVIEW *sv = (MSISTORAGESVIEW *)view;
 
@@ -247,25 +247,25 @@ static UINT STORAGES_insert_row(struct tagMSIVIEW *view, MSIRECORD *rec, UINT ro
     return STORAGES_set_row(view, row, rec, 0);
 }
 
-static UINT STORAGES_delete_row(struct tagMSIVIEW *view, UINT row)
+static UINT STORAGES_delete_row(MSIVIEW *view, UINT row)
 {
     FIXME("(%p %d): stub!\n", view, row);
     return ERROR_SUCCESS;
 }
 
-static UINT STORAGES_execute(struct tagMSIVIEW *view, MSIRECORD *record)
+static UINT STORAGES_execute(MSIVIEW *view, MSIRECORD *record)
 {
     TRACE("(%p, %p)\n", view, record);
     return ERROR_SUCCESS;
 }
 
-static UINT STORAGES_close(struct tagMSIVIEW *view)
+static UINT STORAGES_close(MSIVIEW *view)
 {
     TRACE("(%p)\n", view);
     return ERROR_SUCCESS;
 }
 
-static UINT STORAGES_get_dimensions(struct tagMSIVIEW *view, UINT *rows, UINT *cols)
+static UINT STORAGES_get_dimensions(MSIVIEW *view, UINT *rows, UINT *cols)
 {
     MSISTORAGESVIEW *sv = (MSISTORAGESVIEW *)view;
 
@@ -277,7 +277,7 @@ static UINT STORAGES_get_dimensions(struct tagMSIVIEW *view, UINT *rows, UINT *c
     return ERROR_SUCCESS;
 }
 
-static UINT STORAGES_get_column_info( struct tagMSIVIEW *view, UINT n, const WCHAR **name,
+static UINT STORAGES_get_column_info( MSIVIEW *view, UINT n, const WCHAR **name,
                                       UINT *type, BOOL *temporary, const WCHAR **table_name )
 {
     TRACE("(%p, %d, %p, %p, %p, %p)\n", view, n, name, type, temporary,
@@ -327,7 +327,7 @@ static UINT storages_find_row(MSISTORAGESVIEW *sv, MSIRECORD *rec, UINT *row)
     return ERROR_FUNCTION_FAILED;
 }
 
-static UINT storages_modify_update(struct tagMSIVIEW *view, MSIRECORD *rec)
+static UINT storages_modify_update(MSIVIEW *view, MSIRECORD *rec)
 {
     MSISTORAGESVIEW *sv = (MSISTORAGESVIEW *)view;
     UINT r, row;
@@ -339,7 +339,7 @@ static UINT storages_modify_update(struct tagMSIVIEW *view, MSIRECORD *rec)
     return STORAGES_set_row(view, row, rec, 0);
 }
 
-static UINT storages_modify_assign(struct tagMSIVIEW *view, MSIRECORD *rec)
+static UINT storages_modify_assign(MSIVIEW *view, MSIRECORD *rec)
 {
     MSISTORAGESVIEW *sv = (MSISTORAGESVIEW *)view;
     UINT r, row;
@@ -351,7 +351,7 @@ static UINT storages_modify_assign(struct tagMSIVIEW *view, MSIRECORD *rec)
     return STORAGES_insert_row(view, rec, -1, FALSE);
 }
 
-static UINT STORAGES_modify(struct tagMSIVIEW *view, MSIMODIFY eModifyMode, MSIRECORD *rec, UINT row)
+static UINT STORAGES_modify(MSIVIEW *view, MSIMODIFY eModifyMode, MSIRECORD *rec, UINT row)
 {
     UINT r;
 
@@ -391,7 +391,7 @@ static UINT STORAGES_modify(struct tagMSIVIEW *view, MSIMODIFY eModifyMode, MSIR
     return r;
 }
 
-static UINT STORAGES_delete(struct tagMSIVIEW *view)
+static UINT STORAGES_delete(MSIVIEW *view)
 {
     MSISTORAGESVIEW *sv = (MSISTORAGESVIEW *)view;
     UINT i;
@@ -412,7 +412,7 @@ static UINT STORAGES_delete(struct tagMSIVIEW *view)
     return ERROR_SUCCESS;
 }
 
-static UINT STORAGES_find_matching_rows(struct tagMSIVIEW *view, UINT col,
+static UINT STORAGES_find_matching_rows(MSIVIEW *view, UINT col,
                                        UINT val, UINT *row, MSIITERHANDLE *handle)
 {
     MSISTORAGESVIEW *sv = (MSISTORAGESVIEW *)view;

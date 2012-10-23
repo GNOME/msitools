@@ -41,7 +41,7 @@ typedef struct tagMSIALTERVIEW
     INT hold;
 } MSIALTERVIEW;
 
-static UINT ALTER_fetch_int( struct tagMSIVIEW *view, UINT row, UINT col, UINT *val )
+static UINT ALTER_fetch_int( MSIVIEW *view, UINT row, UINT col, UINT *val )
 {
     MSIALTERVIEW *av = (MSIALTERVIEW*)view;
 
@@ -50,7 +50,7 @@ static UINT ALTER_fetch_int( struct tagMSIVIEW *view, UINT row, UINT col, UINT *
     return ERROR_FUNCTION_FAILED;
 }
 
-static UINT ALTER_fetch_stream( struct tagMSIVIEW *view, UINT row, UINT col, IStream **stm)
+static UINT ALTER_fetch_stream( MSIVIEW *view, UINT row, UINT col, IStream **stm)
 {
     MSIALTERVIEW *av = (MSIALTERVIEW*)view;
 
@@ -59,7 +59,7 @@ static UINT ALTER_fetch_stream( struct tagMSIVIEW *view, UINT row, UINT col, ISt
     return ERROR_FUNCTION_FAILED;
 }
 
-static UINT ALTER_get_row( struct tagMSIVIEW *view, UINT row, MSIRECORD **rec )
+static UINT ALTER_get_row( MSIVIEW *view, UINT row, MSIRECORD **rec )
 {
     MSIALTERVIEW *av = (MSIALTERVIEW*)view;
 
@@ -147,7 +147,7 @@ static UINT alter_add_column(MSIALTERVIEW *av)
     return r;
 }
 
-static UINT ALTER_execute( struct tagMSIVIEW *view, MSIRECORD *record )
+static UINT ALTER_execute( MSIVIEW *view, MSIRECORD *record )
 {
     MSIALTERVIEW *av = (MSIALTERVIEW*)view;
     UINT ref;
@@ -169,7 +169,7 @@ static UINT ALTER_execute( struct tagMSIVIEW *view, MSIRECORD *record )
     return ERROR_SUCCESS;
 }
 
-static UINT ALTER_close( struct tagMSIVIEW *view )
+static UINT ALTER_close( MSIVIEW *view )
 {
     MSIALTERVIEW *av = (MSIALTERVIEW*)view;
 
@@ -178,7 +178,7 @@ static UINT ALTER_close( struct tagMSIVIEW *view )
     return ERROR_SUCCESS;
 }
 
-static UINT ALTER_get_dimensions( struct tagMSIVIEW *view, UINT *rows, UINT *cols )
+static UINT ALTER_get_dimensions( MSIVIEW *view, UINT *rows, UINT *cols )
 {
     MSIALTERVIEW *av = (MSIALTERVIEW*)view;
 
@@ -187,7 +187,7 @@ static UINT ALTER_get_dimensions( struct tagMSIVIEW *view, UINT *rows, UINT *col
     return ERROR_FUNCTION_FAILED;
 }
 
-static UINT ALTER_get_column_info( struct tagMSIVIEW *view, UINT n, const WCHAR **name,
+static UINT ALTER_get_column_info( MSIVIEW *view, UINT n, const WCHAR **name,
                                    UINT *type, BOOL *temporary, const WCHAR **table_name )
 {
     MSIALTERVIEW *av = (MSIALTERVIEW*)view;
@@ -197,7 +197,7 @@ static UINT ALTER_get_column_info( struct tagMSIVIEW *view, UINT n, const WCHAR 
     return ERROR_FUNCTION_FAILED;
 }
 
-static UINT ALTER_modify( struct tagMSIVIEW *view, MSIMODIFY eModifyMode,
+static UINT ALTER_modify( MSIVIEW *view, MSIMODIFY eModifyMode,
                           MSIRECORD *rec, UINT row )
 {
     MSIALTERVIEW *av = (MSIALTERVIEW*)view;
@@ -207,7 +207,7 @@ static UINT ALTER_modify( struct tagMSIVIEW *view, MSIMODIFY eModifyMode,
     return ERROR_FUNCTION_FAILED;
 }
 
-static UINT ALTER_delete( struct tagMSIVIEW *view )
+static UINT ALTER_delete( MSIVIEW *view )
 {
     MSIALTERVIEW *av = (MSIALTERVIEW*)view;
 
@@ -219,7 +219,7 @@ static UINT ALTER_delete( struct tagMSIVIEW *view )
     return ERROR_SUCCESS;
 }
 
-static UINT ALTER_find_matching_rows( struct tagMSIVIEW *view, UINT col,
+static UINT ALTER_find_matching_rows( MSIVIEW *view, UINT col,
     UINT val, UINT *row, MSIITERHANDLE *handle )
 {
     TRACE("%p, %d, %u, %p\n", view, col, val, *handle);

@@ -53,7 +53,7 @@ typedef struct tagMSIDELETEVIEW
     MSIVIEW       *table;
 } MSIDELETEVIEW;
 
-static UINT DELETE_fetch_int( struct tagMSIVIEW *view, UINT row, UINT col, UINT *val )
+static UINT DELETE_fetch_int( MSIVIEW *view, UINT row, UINT col, UINT *val )
 {
     MSIDELETEVIEW *dv = (MSIDELETEVIEW*)view;
 
@@ -62,7 +62,7 @@ static UINT DELETE_fetch_int( struct tagMSIVIEW *view, UINT row, UINT col, UINT 
     return ERROR_FUNCTION_FAILED;
 }
 
-static UINT DELETE_fetch_stream( struct tagMSIVIEW *view, UINT row, UINT col, IStream **stm)
+static UINT DELETE_fetch_stream( MSIVIEW *view, UINT row, UINT col, IStream **stm)
 {
     MSIDELETEVIEW *dv = (MSIDELETEVIEW*)view;
 
@@ -71,7 +71,7 @@ static UINT DELETE_fetch_stream( struct tagMSIVIEW *view, UINT row, UINT col, IS
     return ERROR_FUNCTION_FAILED;
 }
 
-static UINT DELETE_execute( struct tagMSIVIEW *view, MSIRECORD *record )
+static UINT DELETE_execute( MSIVIEW *view, MSIRECORD *record )
 {
     MSIDELETEVIEW *dv = (MSIDELETEVIEW*)view;
     UINT r, i, rows = 0, cols = 0;
@@ -98,7 +98,7 @@ static UINT DELETE_execute( struct tagMSIVIEW *view, MSIRECORD *record )
     return ERROR_SUCCESS;
 }
 
-static UINT DELETE_close( struct tagMSIVIEW *view )
+static UINT DELETE_close( MSIVIEW *view )
 {
     MSIDELETEVIEW *dv = (MSIDELETEVIEW*)view;
 
@@ -110,7 +110,7 @@ static UINT DELETE_close( struct tagMSIVIEW *view )
     return dv->table->ops->close( dv->table );
 }
 
-static UINT DELETE_get_dimensions( struct tagMSIVIEW *view, UINT *rows, UINT *cols )
+static UINT DELETE_get_dimensions( MSIVIEW *view, UINT *rows, UINT *cols )
 {
     MSIDELETEVIEW *dv = (MSIDELETEVIEW*)view;
 
@@ -124,7 +124,7 @@ static UINT DELETE_get_dimensions( struct tagMSIVIEW *view, UINT *rows, UINT *co
     return dv->table->ops->get_dimensions( dv->table, NULL, cols );
 }
 
-static UINT DELETE_get_column_info( struct tagMSIVIEW *view, UINT n, const WCHAR **name,
+static UINT DELETE_get_column_info( MSIVIEW *view, UINT n, const WCHAR **name,
                                     UINT *type, BOOL *temporary, const WCHAR **table_name )
 {
     MSIDELETEVIEW *dv = (MSIDELETEVIEW*)view;
@@ -138,7 +138,7 @@ static UINT DELETE_get_column_info( struct tagMSIVIEW *view, UINT n, const WCHAR
                                             type, temporary, table_name);
 }
 
-static UINT DELETE_modify( struct tagMSIVIEW *view, MSIMODIFY eModifyMode,
+static UINT DELETE_modify( MSIVIEW *view, MSIMODIFY eModifyMode,
                            MSIRECORD *rec, UINT row )
 {
     MSIDELETEVIEW *dv = (MSIDELETEVIEW*)view;
@@ -148,7 +148,7 @@ static UINT DELETE_modify( struct tagMSIVIEW *view, MSIMODIFY eModifyMode,
     return ERROR_FUNCTION_FAILED;
 }
 
-static UINT DELETE_delete( struct tagMSIVIEW *view )
+static UINT DELETE_delete( MSIVIEW *view )
 {
     MSIDELETEVIEW *dv = (MSIDELETEVIEW*)view;
 
@@ -162,7 +162,7 @@ static UINT DELETE_delete( struct tagMSIVIEW *view )
     return ERROR_SUCCESS;
 }
 
-static UINT DELETE_find_matching_rows( struct tagMSIVIEW *view, UINT col,
+static UINT DELETE_find_matching_rows( MSIVIEW *view, UINT col,
     UINT val, UINT *row, MSIITERHANDLE *handle )
 {
     TRACE("%p, %d, %u, %p\n", view, col, val, *handle);

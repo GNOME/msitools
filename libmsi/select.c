@@ -46,7 +46,7 @@ typedef struct tagMSISELECTVIEW
     UINT           cols[1];
 } MSISELECTVIEW;
 
-static UINT SELECT_fetch_int( struct tagMSIVIEW *view, UINT row, UINT col, UINT *val )
+static UINT SELECT_fetch_int( MSIVIEW *view, UINT row, UINT col, UINT *val )
 {
     MSISELECTVIEW *sv = (MSISELECTVIEW*)view;
 
@@ -67,7 +67,7 @@ static UINT SELECT_fetch_int( struct tagMSIVIEW *view, UINT row, UINT col, UINT 
     return sv->table->ops->fetch_int( sv->table, row, col, val );
 }
 
-static UINT SELECT_fetch_stream( struct tagMSIVIEW *view, UINT row, UINT col, IStream **stm)
+static UINT SELECT_fetch_stream( MSIVIEW *view, UINT row, UINT col, IStream **stm)
 {
     MSISELECTVIEW *sv = (MSISELECTVIEW*)view;
 
@@ -88,7 +88,7 @@ static UINT SELECT_fetch_stream( struct tagMSIVIEW *view, UINT row, UINT col, IS
     return sv->table->ops->fetch_stream( sv->table, row, col, stm );
 }
 
-static UINT SELECT_get_row( struct tagMSIVIEW *view, UINT row, MSIRECORD **rec )
+static UINT SELECT_get_row( MSIVIEW *view, UINT row, MSIRECORD **rec )
 {
     MSISELECTVIEW *sv = (MSISELECTVIEW *)view;
 
@@ -100,7 +100,7 @@ static UINT SELECT_get_row( struct tagMSIVIEW *view, UINT row, MSIRECORD **rec )
     return msi_view_get_row(sv->db, view, row, rec);
 }
 
-static UINT SELECT_set_row( struct tagMSIVIEW *view, UINT row, MSIRECORD *rec, UINT mask )
+static UINT SELECT_set_row( MSIVIEW *view, UINT row, MSIRECORD *rec, UINT mask )
 {
     MSISELECTVIEW *sv = (MSISELECTVIEW*)view;
     UINT i, expanded_mask = 0, r = ERROR_SUCCESS, col_count = 0;
@@ -142,7 +142,7 @@ static UINT SELECT_set_row( struct tagMSIVIEW *view, UINT row, MSIRECORD *rec, U
     return r;
 }
 
-static UINT SELECT_insert_row( struct tagMSIVIEW *view, MSIRECORD *record, UINT row, BOOL temporary )
+static UINT SELECT_insert_row( MSIVIEW *view, MSIRECORD *record, UINT row, BOOL temporary )
 {
     MSISELECTVIEW *sv = (MSISELECTVIEW*)view;
     UINT i, table_cols, r;
@@ -175,7 +175,7 @@ fail:
     return r;
 }
 
-static UINT SELECT_execute( struct tagMSIVIEW *view, MSIRECORD *record )
+static UINT SELECT_execute( MSIVIEW *view, MSIRECORD *record )
 {
     MSISELECTVIEW *sv = (MSISELECTVIEW*)view;
 
@@ -187,7 +187,7 @@ static UINT SELECT_execute( struct tagMSIVIEW *view, MSIRECORD *record )
     return sv->table->ops->execute( sv->table, record );
 }
 
-static UINT SELECT_close( struct tagMSIVIEW *view )
+static UINT SELECT_close( MSIVIEW *view )
 {
     MSISELECTVIEW *sv = (MSISELECTVIEW*)view;
 
@@ -199,7 +199,7 @@ static UINT SELECT_close( struct tagMSIVIEW *view )
     return sv->table->ops->close( sv->table );
 }
 
-static UINT SELECT_get_dimensions( struct tagMSIVIEW *view, UINT *rows, UINT *cols )
+static UINT SELECT_get_dimensions( MSIVIEW *view, UINT *rows, UINT *cols )
 {
     MSISELECTVIEW *sv = (MSISELECTVIEW*)view;
 
@@ -214,7 +214,7 @@ static UINT SELECT_get_dimensions( struct tagMSIVIEW *view, UINT *rows, UINT *co
     return sv->table->ops->get_dimensions( sv->table, rows, NULL );
 }
 
-static UINT SELECT_get_column_info( struct tagMSIVIEW *view, UINT n, const WCHAR **name,
+static UINT SELECT_get_column_info( MSIVIEW *view, UINT n, const WCHAR **name,
                                     UINT *type, BOOL *temporary, const WCHAR **table_name )
 {
     MSISELECTVIEW *sv = (MSISELECTVIEW*)view;
@@ -240,7 +240,7 @@ static UINT SELECT_get_column_info( struct tagMSIVIEW *view, UINT n, const WCHAR
                                             type, temporary, table_name );
 }
 
-static UINT msi_select_update(struct tagMSIVIEW *view, MSIRECORD *rec, UINT row)
+static UINT msi_select_update(MSIVIEW *view, MSIRECORD *rec, UINT row)
 {
     MSISELECTVIEW *sv = (MSISELECTVIEW*)view;
     UINT r, i, num_columns, col, type, val;
@@ -297,7 +297,7 @@ done:
     return r;
 }
 
-static UINT SELECT_modify( struct tagMSIVIEW *view, MSIMODIFY eModifyMode,
+static UINT SELECT_modify( MSIVIEW *view, MSIMODIFY eModifyMode,
                            MSIRECORD *rec, UINT row )
 {
     MSISELECTVIEW *sv = (MSISELECTVIEW*)view;
@@ -313,7 +313,7 @@ static UINT SELECT_modify( struct tagMSIVIEW *view, MSIMODIFY eModifyMode,
     return sv->table->ops->modify( sv->table, eModifyMode, rec, row );
 }
 
-static UINT SELECT_delete( struct tagMSIVIEW *view )
+static UINT SELECT_delete( MSIVIEW *view )
 {
     MSISELECTVIEW *sv = (MSISELECTVIEW*)view;
 
@@ -328,7 +328,7 @@ static UINT SELECT_delete( struct tagMSIVIEW *view )
     return ERROR_SUCCESS;
 }
 
-static UINT SELECT_find_matching_rows( struct tagMSIVIEW *view, UINT col,
+static UINT SELECT_find_matching_rows( MSIVIEW *view, UINT col,
     UINT val, UINT *row, MSIITERHANDLE *handle )
 {
     MSISELECTVIEW *sv = (MSISELECTVIEW*)view;

@@ -41,7 +41,7 @@ typedef struct tagMSIDROPVIEW
     INT hold;
 } MSIDROPVIEW;
 
-static UINT DROP_execute(struct tagMSIVIEW *view, MSIRECORD *record)
+static UINT DROP_execute(MSIVIEW *view, MSIRECORD *record)
 {
     MSIDROPVIEW *dv = (MSIDROPVIEW*)view;
     UINT r;
@@ -58,7 +58,7 @@ static UINT DROP_execute(struct tagMSIVIEW *view, MSIRECORD *record)
     return dv->table->ops->drop(dv->table);
 }
 
-static UINT DROP_close(struct tagMSIVIEW *view)
+static UINT DROP_close(MSIVIEW *view)
 {
     MSIDROPVIEW *dv = (MSIDROPVIEW*)view;
 
@@ -67,7 +67,7 @@ static UINT DROP_close(struct tagMSIVIEW *view)
     return ERROR_SUCCESS;
 }
 
-static UINT DROP_get_dimensions(struct tagMSIVIEW *view, UINT *rows, UINT *cols)
+static UINT DROP_get_dimensions(MSIVIEW *view, UINT *rows, UINT *cols)
 {
     MSIDROPVIEW *dv = (MSIDROPVIEW*)view;
 
@@ -76,7 +76,7 @@ static UINT DROP_get_dimensions(struct tagMSIVIEW *view, UINT *rows, UINT *cols)
     return ERROR_FUNCTION_FAILED;
 }
 
-static UINT DROP_delete( struct tagMSIVIEW *view )
+static UINT DROP_delete( MSIVIEW *view )
 {
     MSIDROPVIEW *dv = (MSIDROPVIEW*)view;
 

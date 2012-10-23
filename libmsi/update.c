@@ -44,7 +44,7 @@ typedef struct tagMSIUPDATEVIEW
     column_info     *vals;
 } MSIUPDATEVIEW;
 
-static UINT UPDATE_fetch_int( struct tagMSIVIEW *view, UINT row, UINT col, UINT *val )
+static UINT UPDATE_fetch_int( MSIVIEW *view, UINT row, UINT col, UINT *val )
 {
     MSIUPDATEVIEW *uv = (MSIUPDATEVIEW*)view;
 
@@ -53,7 +53,7 @@ static UINT UPDATE_fetch_int( struct tagMSIVIEW *view, UINT row, UINT col, UINT 
     return ERROR_FUNCTION_FAILED;
 }
 
-static UINT UPDATE_execute( struct tagMSIVIEW *view, MSIRECORD *record )
+static UINT UPDATE_execute( MSIVIEW *view, MSIRECORD *record )
 {
     MSIUPDATEVIEW *uv = (MSIUPDATEVIEW*)view;
     UINT i, r, col_count = 0, row_count = 0;
@@ -124,7 +124,7 @@ done:
 }
 
 
-static UINT UPDATE_close( struct tagMSIVIEW *view )
+static UINT UPDATE_close( MSIVIEW *view )
 {
     MSIUPDATEVIEW *uv = (MSIUPDATEVIEW*)view;
     MSIVIEW *wv;
@@ -138,7 +138,7 @@ static UINT UPDATE_close( struct tagMSIVIEW *view )
     return wv->ops->close( wv );
 }
 
-static UINT UPDATE_get_dimensions( struct tagMSIVIEW *view, UINT *rows, UINT *cols )
+static UINT UPDATE_get_dimensions( MSIVIEW *view, UINT *rows, UINT *cols )
 {
     MSIUPDATEVIEW *uv = (MSIUPDATEVIEW*)view;
     MSIVIEW *wv;
@@ -152,7 +152,7 @@ static UINT UPDATE_get_dimensions( struct tagMSIVIEW *view, UINT *rows, UINT *co
     return wv->ops->get_dimensions( wv, rows, cols );
 }
 
-static UINT UPDATE_get_column_info( struct tagMSIVIEW *view, UINT n, const WCHAR **name,
+static UINT UPDATE_get_column_info( MSIVIEW *view, UINT n, const WCHAR **name,
                                     UINT *type, BOOL *temporary, const WCHAR **table_name )
 {
     MSIUPDATEVIEW *uv = (MSIUPDATEVIEW*)view;
@@ -167,7 +167,7 @@ static UINT UPDATE_get_column_info( struct tagMSIVIEW *view, UINT n, const WCHAR
     return wv->ops->get_column_info( wv, n, name, type, temporary, table_name );
 }
 
-static UINT UPDATE_modify( struct tagMSIVIEW *view, MSIMODIFY eModifyMode,
+static UINT UPDATE_modify( MSIVIEW *view, MSIMODIFY eModifyMode,
                            MSIRECORD *rec, UINT row )
 {
     MSIUPDATEVIEW *uv = (MSIUPDATEVIEW*)view;
@@ -177,7 +177,7 @@ static UINT UPDATE_modify( struct tagMSIVIEW *view, MSIMODIFY eModifyMode,
     return ERROR_FUNCTION_FAILED;
 }
 
-static UINT UPDATE_delete( struct tagMSIVIEW *view )
+static UINT UPDATE_delete( MSIVIEW *view )
 {
     MSIUPDATEVIEW *uv = (MSIUPDATEVIEW*)view;
     MSIVIEW *wv;
@@ -193,7 +193,7 @@ static UINT UPDATE_delete( struct tagMSIVIEW *view )
     return ERROR_SUCCESS;
 }
 
-static UINT UPDATE_find_matching_rows( struct tagMSIVIEW *view, UINT col, UINT val, UINT *row, MSIITERHANDLE *handle )
+static UINT UPDATE_find_matching_rows( MSIVIEW *view, UINT col, UINT val, UINT *row, MSIITERHANDLE *handle )
 {
     TRACE("%p %d %d %p\n", view, col, val, *handle );
 

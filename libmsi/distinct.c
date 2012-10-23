@@ -88,7 +88,7 @@ static void distinct_free( DISTINCTSET *x )
     }
 }
 
-static UINT DISTINCT_fetch_int( struct tagMSIVIEW *view, UINT row, UINT col, UINT *val )
+static UINT DISTINCT_fetch_int( MSIVIEW *view, UINT row, UINT col, UINT *val )
 {
     MSIDISTINCTVIEW *dv = (MSIDISTINCTVIEW*)view;
 
@@ -105,7 +105,7 @@ static UINT DISTINCT_fetch_int( struct tagMSIVIEW *view, UINT row, UINT col, UIN
     return dv->table->ops->fetch_int( dv->table, row, col, val );
 }
 
-static UINT DISTINCT_execute( struct tagMSIVIEW *view, MSIRECORD *record )
+static UINT DISTINCT_execute( MSIVIEW *view, MSIRECORD *record )
 {
     MSIDISTINCTVIEW *dv = (MSIDISTINCTVIEW*)view;
     UINT r, i, j, r_count, c_count;
@@ -167,7 +167,7 @@ static UINT DISTINCT_execute( struct tagMSIVIEW *view, MSIRECORD *record )
     return ERROR_SUCCESS;
 }
 
-static UINT DISTINCT_close( struct tagMSIVIEW *view )
+static UINT DISTINCT_close( MSIVIEW *view )
 {
     MSIDISTINCTVIEW *dv = (MSIDISTINCTVIEW*)view;
 
@@ -183,7 +183,7 @@ static UINT DISTINCT_close( struct tagMSIVIEW *view )
     return dv->table->ops->close( dv->table );
 }
 
-static UINT DISTINCT_get_dimensions( struct tagMSIVIEW *view, UINT *rows, UINT *cols )
+static UINT DISTINCT_get_dimensions( MSIVIEW *view, UINT *rows, UINT *cols )
 {
     MSIDISTINCTVIEW *dv = (MSIDISTINCTVIEW*)view;
 
@@ -202,7 +202,7 @@ static UINT DISTINCT_get_dimensions( struct tagMSIVIEW *view, UINT *rows, UINT *
     return dv->table->ops->get_dimensions( dv->table, NULL, cols );
 }
 
-static UINT DISTINCT_get_column_info( struct tagMSIVIEW *view, UINT n, const WCHAR **name,
+static UINT DISTINCT_get_column_info( MSIVIEW *view, UINT n, const WCHAR **name,
                                       UINT *type, BOOL *temporary, const WCHAR **table_name )
 {
     MSIDISTINCTVIEW *dv = (MSIDISTINCTVIEW*)view;
@@ -216,7 +216,7 @@ static UINT DISTINCT_get_column_info( struct tagMSIVIEW *view, UINT n, const WCH
                                             type, temporary, table_name );
 }
 
-static UINT DISTINCT_modify( struct tagMSIVIEW *view, MSIMODIFY eModifyMode,
+static UINT DISTINCT_modify( MSIVIEW *view, MSIMODIFY eModifyMode,
                              MSIRECORD *rec, UINT row )
 {
     MSIDISTINCTVIEW *dv = (MSIDISTINCTVIEW*)view;
@@ -229,7 +229,7 @@ static UINT DISTINCT_modify( struct tagMSIVIEW *view, MSIMODIFY eModifyMode,
     return dv->table->ops->modify( dv->table, eModifyMode, rec, row );
 }
 
-static UINT DISTINCT_delete( struct tagMSIVIEW *view )
+static UINT DISTINCT_delete( MSIVIEW *view )
 {
     MSIDISTINCTVIEW *dv = (MSIDISTINCTVIEW*)view;
 
@@ -245,7 +245,7 @@ static UINT DISTINCT_delete( struct tagMSIVIEW *view )
     return ERROR_SUCCESS;
 }
 
-static UINT DISTINCT_find_matching_rows( struct tagMSIVIEW *view, UINT col,
+static UINT DISTINCT_find_matching_rows( MSIVIEW *view, UINT col,
     UINT val, UINT *row, MSIITERHANDLE *handle )
 {
     MSIDISTINCTVIEW *dv = (MSIDISTINCTVIEW*)view;
