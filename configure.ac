@@ -10,5 +10,6 @@ AC_PROG_YACC
 
 LT_INIT([win32-dll disable-fast-install])
 
-AC_CONFIG_FILES([Makefile libmsi/Makefile])
+AC_CONFIG_FILES([Makefile libmsi/Makefile tests/Makefile])
+AC_CONFIG_FILES([tests/runtest], [chmod +x tests/runtest])
 AC_OUTPUT

@@ -1,0 +1,12 @@
+#! /bin/bash
+
+: ${srcdir=$(basename $0)}
+: ${EXEEXT=@EXEEXT@}
+
+base=${1%${EXEEXT}}
+
+rm -f winetest-db.msi
+$1 > $base.log
+diff -u $srcdir/$base.ok $base.log | tee $base.diff
+test -s $base.diff && exit 1
+exit 0
