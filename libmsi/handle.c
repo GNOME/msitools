@@ -107,7 +107,7 @@ int msiobj_release( MSIOBJECT *obj )
 /***********************************************************
  *   MsiCloseHandle   [MSI.@]
  */
-UINT WINAPI MsiCloseHandle(MSIOBJECT *obj)
+UINT MsiCloseHandle(MSIOBJECT *obj)
 {
     TRACE("%x\n",obj);
 

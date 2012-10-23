@@ -89,7 +89,7 @@ MSIRECORD *MSI_CreateRecord( UINT cParams )
     return rec;
 }
 
-MSIOBJECT *WINAPI MsiCreateRecord( UINT cParams )
+MSIOBJECT * MsiCreateRecord( UINT cParams )
 {
     MSIRECORD *rec;
 
@@ -104,7 +104,7 @@ UINT MSI_RecordGetFieldCount( const MSIRECORD *rec )
     return rec->count;
 }
 
-UINT WINAPI MsiRecordGetFieldCount( MSIOBJECT *handle )
+UINT MsiRecordGetFieldCount( MSIOBJECT *handle )
 {
     MSIRECORD *rec;
     UINT ret;
@@ -248,7 +248,7 @@ int MSI_RecordGetInteger( MSIRECORD *rec, UINT iField)
     return MSI_NULL_INTEGER;
 }
 
-int WINAPI MsiRecordGetInteger( MSIOBJECT *handle, UINT iField)
+int MsiRecordGetInteger( MSIOBJECT *handle, UINT iField)
 {
     MSIRECORD *rec;
     UINT ret;
@@ -267,7 +267,7 @@ int WINAPI MsiRecordGetInteger( MSIOBJECT *handle, UINT iField)
     return ret;
 }
 
-UINT WINAPI MsiRecordClearData( MSIOBJECT *handle )
+UINT MsiRecordClearData( MSIOBJECT *handle )
 {
     MSIRECORD *rec;
     UINT i;
@@ -319,7 +319,7 @@ UINT MSI_RecordSetInteger( MSIRECORD *rec, UINT iField, int iVal )
     return ERROR_SUCCESS;
 }
 
-UINT WINAPI MsiRecordSetInteger( MSIOBJECT *handle, UINT iField, int iVal )
+UINT MsiRecordSetInteger( MSIOBJECT *handle, UINT iField, int iVal )
 {
     MSIRECORD *rec;
     UINT ret;
@@ -349,7 +349,7 @@ BOOL MSI_RecordIsNull( MSIRECORD *rec, UINT iField )
     return r;
 }
 
-BOOL WINAPI MsiRecordIsNull( MSIOBJECT *handle, UINT iField )
+BOOL MsiRecordIsNull( MSIOBJECT *handle, UINT iField )
 {
     MSIRECORD *rec;
     UINT ret;
@@ -420,7 +420,7 @@ UINT MSI_RecordGetStringA(MSIRECORD *rec, UINT iField,
     return ret;
 }
 
-UINT WINAPI MsiRecordGetStringA(MSIOBJECT *handle, UINT iField,
+UINT MsiRecordGetStringA(MSIOBJECT *handle, UINT iField,
                CHAR *szValue, DWORD *pcchValue)
 {
     MSIRECORD *rec;
@@ -496,7 +496,7 @@ UINT MSI_RecordGetStringW(MSIRECORD *rec, UINT iField,
     return ret;
 }
 
-UINT WINAPI MsiRecordGetStringW(MSIOBJECT *handle, UINT iField,
+UINT MsiRecordGetStringW(MSIOBJECT *handle, UINT iField,
                WCHAR *szValue, DWORD *pcchValue)
 {
     MSIRECORD *rec;
@@ -547,7 +547,7 @@ static UINT MSI_RecordDataSize(MSIRECORD *rec, UINT iField)
     return 0;
 }
 
-UINT WINAPI MsiRecordDataSize(MSIOBJECT *handle, UINT iField)
+UINT MsiRecordDataSize(MSIOBJECT *handle, UINT iField)
 {
     MSIRECORD *rec;
     UINT ret;
@@ -589,7 +589,7 @@ static UINT MSI_RecordSetStringA( MSIRECORD *rec, UINT iField, const CHAR *szVal
     return 0;
 }
 
-UINT WINAPI MsiRecordSetStringA( MSIOBJECT *handle, UINT iField, const CHAR *szValue )
+UINT MsiRecordSetStringA( MSIOBJECT *handle, UINT iField, const CHAR *szValue )
 {
     MSIRECORD *rec;
     UINT ret;
@@ -632,7 +632,7 @@ UINT MSI_RecordSetStringW( MSIRECORD *rec, UINT iField, const WCHAR *szValue )
     return 0;
 }
 
-UINT WINAPI MsiRecordSetStringW( MSIOBJECT *handle, UINT iField, const WCHAR *szValue )
+UINT MsiRecordSetStringW( MSIOBJECT *handle, UINT iField, const WCHAR *szValue )
 {
     MSIRECORD *rec;
     UINT ret;
@@ -752,7 +752,7 @@ UINT MSI_RecordSetStreamFromFileW(MSIRECORD *rec, UINT iField, const WCHAR *szFi
     return ERROR_SUCCESS;
 }
 
-UINT WINAPI MsiRecordSetStreamA(MSIOBJECT *hRecord, UINT iField, const CHAR *szFilename)
+UINT MsiRecordSetStreamA(MSIOBJECT *hRecord, UINT iField, const CHAR *szFilename)
 {
     WCHAR *wstr = NULL;
     UINT ret;
@@ -771,7 +771,7 @@ UINT WINAPI MsiRecordSetStreamA(MSIOBJECT *hRecord, UINT iField, const CHAR *szF
     return ret;
 }
 
-UINT WINAPI MsiRecordSetStreamW(MSIOBJECT *handle, UINT iField, const WCHAR *szFilename)
+UINT MsiRecordSetStreamW(MSIOBJECT *handle, UINT iField, const WCHAR *szFilename)
 {
     MSIRECORD *rec;
     UINT ret;
@@ -847,7 +847,7 @@ UINT MSI_RecordReadStream(MSIRECORD *rec, UINT iField, char *buf, DWORD *sz)
     return ERROR_SUCCESS;
 }
 
-UINT WINAPI MsiRecordReadStream(MSIOBJECT *handle, UINT iField, char *buf, DWORD *sz)
+UINT MsiRecordReadStream(MSIOBJECT *handle, UINT iField, char *buf, DWORD *sz)
 {
     MSIRECORD *rec;
     UINT ret;

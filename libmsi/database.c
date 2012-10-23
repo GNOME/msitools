@@ -450,7 +450,7 @@ end:
     return ret;
 }
 
-UINT WINAPI MsiOpenDatabaseW(const WCHAR *szDBPath, const WCHAR *szPersist, MSIOBJECT **phDB)
+UINT MsiOpenDatabaseW(const WCHAR *szDBPath, const WCHAR *szPersist, MSIOBJECT **phDB)
 {
     MSIDATABASE *db;
     UINT ret;
@@ -466,7 +466,7 @@ UINT WINAPI MsiOpenDatabaseW(const WCHAR *szDBPath, const WCHAR *szPersist, MSIO
     return ret;
 }
 
-UINT WINAPI MsiOpenDatabaseA(const CHAR *szDBPath, const CHAR *szPersist, MSIOBJECT **phDB)
+UINT MsiOpenDatabaseA(const CHAR *szDBPath, const CHAR *szPersist, MSIOBJECT **phDB)
 {
     HRESULT r = ERROR_FUNCTION_FAILED;
     WCHAR *szwDBPath = NULL;
@@ -1026,7 +1026,7 @@ done:
     return r;
 }
 
-UINT WINAPI MsiDatabaseImportW(MSIOBJECT *handle, const WCHAR *szFolder, const WCHAR *szFilename)
+UINT MsiDatabaseImportW(MSIOBJECT *handle, const WCHAR *szFolder, const WCHAR *szFilename)
 {
     MSIDATABASE *db;
     UINT r;
@@ -1041,7 +1041,7 @@ UINT WINAPI MsiDatabaseImportW(MSIOBJECT *handle, const WCHAR *szFolder, const W
     return r;
 }
 
-UINT WINAPI MsiDatabaseImportA( MSIOBJECT *handle,
+UINT MsiDatabaseImportA( MSIOBJECT *handle,
                const CHAR *szFolder, const CHAR *szFilename )
 {
     WCHAR *path = NULL;
@@ -1234,7 +1234,7 @@ done:
  *
  * row4 : data <tab> data <tab> data <tab> ... data <cr> <lf>
  */
-UINT WINAPI MsiDatabaseExportW( MSIOBJECT *handle, const WCHAR *szTable,
+UINT MsiDatabaseExportW( MSIOBJECT *handle, const WCHAR *szTable,
                const WCHAR *szFolder, const WCHAR *szFilename )
 {
     MSIDATABASE *db;
@@ -1251,7 +1251,7 @@ UINT WINAPI MsiDatabaseExportW( MSIOBJECT *handle, const WCHAR *szTable,
     return r;
 }
 
-UINT WINAPI MsiDatabaseExportA( MSIOBJECT *handle, const CHAR *szTable,
+UINT MsiDatabaseExportA( MSIOBJECT *handle, const CHAR *szTable,
                const CHAR *szFolder, const CHAR *szFilename )
 {
     WCHAR *path = NULL;
@@ -1293,7 +1293,7 @@ end:
     return r;
 }
 
-UINT WINAPI MsiDatabaseMergeA(MSIOBJECT *hDatabase, MSIOBJECT *hDatabaseMerge,
+UINT MsiDatabaseMergeA(MSIOBJECT *hDatabase, MSIOBJECT *hDatabaseMerge,
                               const CHAR *szTableName)
 {
     UINT r;
@@ -1962,7 +1962,7 @@ static UINT update_merge_errors(MSIDATABASE *db, const WCHAR *error,
     return r;
 }
 
-UINT WINAPI MsiDatabaseMergeW(MSIOBJECT *hDatabase, MSIOBJECT *hDatabaseMerge,
+UINT MsiDatabaseMergeW(MSIOBJECT *hDatabase, MSIOBJECT *hDatabaseMerge,
                               const WCHAR *szTableName)
 {
     struct list tabledata = LIST_INIT(tabledata);
@@ -2026,7 +2026,7 @@ done:
     return r;
 }
 
-MSIDBSTATE WINAPI MsiGetDatabaseState( MSIOBJECT *handle )
+MSIDBSTATE MsiGetDatabaseState( MSIOBJECT *handle )
 {
     MSIDBSTATE ret = MSIDBSTATE_READ;
     MSIDATABASE *db;

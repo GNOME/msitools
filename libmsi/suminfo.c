@@ -456,7 +456,7 @@ MSISUMMARYINFO *MSI_GetSummaryInformationW( IStorage *stg, UINT uiUpdateCount )
     return si;
 }
 
-UINT WINAPI MsiGetSummaryInformationW( MSIOBJECT *hDatabase, 
+UINT MsiGetSummaryInformationW( MSIOBJECT *hDatabase, 
               const WCHAR *szDatabase, UINT uiUpdateCount, MSIOBJECT **pHandle )
 {
     MSISUMMARYINFO *si;
@@ -495,7 +495,7 @@ UINT WINAPI MsiGetSummaryInformationW( MSIOBJECT *hDatabase,
     return ret;
 }
 
-UINT WINAPI MsiGetSummaryInformationA(MSIOBJECT *hDatabase, 
+UINT MsiGetSummaryInformationA(MSIOBJECT *hDatabase, 
               const CHAR *szDatabase, UINT uiUpdateCount, MSIOBJECT **pHandle)
 {
     WCHAR *szwDatabase = NULL;
@@ -518,7 +518,7 @@ UINT WINAPI MsiGetSummaryInformationA(MSIOBJECT *hDatabase,
     return ret;
 }
 
-UINT WINAPI MsiSummaryInfoGetPropertyCount(MSIOBJECT *hSummaryInfo, UINT *pCount)
+UINT MsiSummaryInfoGetPropertyCount(MSIOBJECT *hSummaryInfo, UINT *pCount)
 {
     MSISUMMARYINFO *si;
 
@@ -645,7 +645,7 @@ WCHAR *msi_get_suminfo_product( IStorage *stg )
     return prod;
 }
 
-UINT WINAPI MsiSummaryInfoGetPropertyA(
+UINT MsiSummaryInfoGetPropertyA(
       MSIOBJECT *handle, UINT uiProperty, UINT *puiDataType, INT *piValue,
       FILETIME *pftValue, CHAR *szValueBuf, DWORD *pcchValueBuf)
 {
@@ -661,7 +661,7 @@ UINT WINAPI MsiSummaryInfoGetPropertyA(
                      pftValue, &str, pcchValueBuf );
 }
 
-UINT WINAPI MsiSummaryInfoGetPropertyW(
+UINT MsiSummaryInfoGetPropertyW(
       MSIOBJECT *handle, UINT uiProperty, UINT *puiDataType, INT *piValue,
       FILETIME *pftValue, WCHAR *szValueBuf, DWORD *pcchValueBuf)
 {
@@ -732,7 +732,7 @@ static UINT set_prop( MSISUMMARYINFO *si, UINT uiProperty, UINT type,
     return ERROR_SUCCESS;
 }
 
-UINT WINAPI MsiSummaryInfoSetPropertyW( MSIOBJECT *handle, UINT uiProperty,
+UINT MsiSummaryInfoSetPropertyW( MSIOBJECT *handle, UINT uiProperty,
                UINT uiDataType, INT iValue, FILETIME* pftValue, const WCHAR *szValue )
 {
     awcstring str;
@@ -764,7 +764,7 @@ UINT WINAPI MsiSummaryInfoSetPropertyW( MSIOBJECT *handle, UINT uiProperty,
     return ret;
 }
 
-UINT WINAPI MsiSummaryInfoSetPropertyA( MSIOBJECT *handle, UINT uiProperty,
+UINT MsiSummaryInfoSetPropertyA( MSIOBJECT *handle, UINT uiProperty,
                UINT uiDataType, INT iValue, FILETIME* pftValue, const CHAR *szValue )
 {
     awcstring str;
@@ -934,7 +934,7 @@ end:
     return r;
 }
 
-UINT WINAPI MsiSummaryInfoPersist( MSIOBJECT *handle )
+UINT MsiSummaryInfoPersist( MSIOBJECT *handle )
 {
     MSISUMMARYINFO *si;
     UINT ret;
@@ -951,7 +951,7 @@ UINT WINAPI MsiSummaryInfoPersist( MSIOBJECT *handle )
     return ret;
 }
 
-UINT WINAPI MsiCreateTransformSummaryInfoA( MSIOBJECT *db, MSIOBJECT *db_ref, const CHAR *transform, int error, int validation )
+UINT MsiCreateTransformSummaryInfoA( MSIOBJECT *db, MSIOBJECT *db_ref, const CHAR *transform, int error, int validation )
 {
     UINT r;
     WCHAR *transformW = NULL;
@@ -966,7 +966,7 @@ UINT WINAPI MsiCreateTransformSummaryInfoA( MSIOBJECT *db, MSIOBJECT *db_ref, co
     return r;
 }
 
-UINT WINAPI MsiCreateTransformSummaryInfoW( MSIOBJECT *db, MSIOBJECT *db_ref, const WCHAR *transform, int error, int validation )
+UINT MsiCreateTransformSummaryInfoW( MSIOBJECT *db, MSIOBJECT *db_ref, const WCHAR *transform, int error, int validation )
 {
     FIXME("%u, %u, %s, %d, %d\n", db, db_ref, debugstr_w(transform), error, validation);
     return ERROR_FUNCTION_FAILED;
