@@ -1018,7 +1018,7 @@ unsigned MsiDatabaseImport(LibmsiObject *handle, const char *szFolder, const cha
     return r;
 }
 
-static unsigned msi_export_record( HANDLE handle, LibmsiRecord *row, unsigned start )
+static unsigned msi_export_record( int fd, LibmsiRecord *row, unsigned start )
 {
     unsigned i, count, len, r = ERROR_SUCCESS;
     const char *sep;
@@ -1048,14 +1048,15 @@ static unsigned msi_export_record( HANDLE handle, LibmsiRecord *row, unsigned st
         if (r != ERROR_SUCCESS)
             break;
 
-        if (!WriteFile( handle, buffer, sz, &sz, NULL ))
+        /* TODO full_write */
+        if (write( fd, buffer, sz ) != sz)
         {
             r = ERROR_FUNCTION_FAILED;
             break;
         }
 
         sep = (i < count) ? "\t" : "\r\n";
-        if (!WriteFile( handle, sep, strlen(sep), &sz, NULL ))
+        if (write( fd, sep, strlen(sep) ) != strlen(sep))
         {
             r = ERROR_FUNCTION_FAILED;
             break;
@@ -1067,10 +1068,10 @@ static unsigned msi_export_record( HANDLE handle, LibmsiRecord *row, unsigned st
 
 static unsigned msi_export_row( LibmsiRecord *row, void *arg )
 {
-    return msi_export_record( arg, row, 1 );
+    return msi_export_record( (intptr_t) arg, row, 1 );
 }
 
-static unsigned msi_export_forcecodepage( HANDLE handle, unsigned codepage )
+static unsigned msi_export_forcecodepage( int fd, unsigned codepage )
 {
     static const char fmt[] = "\r\n\r\n%u\t_ForceCodepage\r\n";
     char data[sizeof(fmt) + 10];
@@ -1079,14 +1080,14 @@ static unsigned msi_export_forcecodepage( HANDLE handle, unsigned codepage )
     sprintf( data, fmt, codepage );
 
     sz = strlen(data) + 1;
-    if (!WriteFile(handle, data, sz, &sz, NULL))
+    if (write( fd, data, sz ) != sz)
         return ERROR_FUNCTION_FAILED;
 
     return ERROR_SUCCESS;
 }
 
 static unsigned MSI_DatabaseExport( LibmsiDatabase *db, const WCHAR *table,
-               const WCHAR *folder, const WCHAR *file )
+               int fd)
 {
     static const WCHAR query[] = {
         's','e','l','e','c','t',' ','*',' ','f','r','o','m',' ','%','s',0 };
@@ -1094,35 +1095,15 @@ static unsigned MSI_DatabaseExport( LibmsiDatabase *db, const WCHAR *table,
         '_','F','o','r','c','e','C','o','d','e','p','a','g','e',0 };
     LibmsiRecord *rec = NULL;
     LibmsiQuery *view = NULL;
-    WCHAR *filename;
-    HANDLE handle;
-    unsigned len, r;
+    unsigned r;
 
     TRACE("%p %s %s %s\n", db, debugstr_w(table),
           debugstr_w(folder), debugstr_w(file) );
 
-    if( folder == NULL || file == NULL )
-        return ERROR_INVALID_PARAMETER;
-
-    len = strlenW(folder) + strlenW(file) + 2;
-    filename = msi_alloc(len * sizeof (WCHAR));
-    if (!filename)
-        return ERROR_OUTOFMEMORY;
-
-    strcpyW( filename, folder );
-    strcatW( filename, szBackSlash );
-    strcatW( filename, file );
-
-    handle = CreateFileW( filename, GENERIC_READ | GENERIC_WRITE, 0,
-                          NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL );
-    msi_free( filename );
-    if (handle == INVALID_HANDLE_VALUE)
-        return ERROR_FUNCTION_FAILED;
-
     if (!strcmpW( table, forcecodepage ))
     {
         unsigned codepage = msi_get_string_table_codepage( db->strings );
-        r = msi_export_forcecodepage( handle, codepage );
+        r = msi_export_forcecodepage( fd, codepage );
         goto done;
     }
 
@@ -1133,7 +1114,7 @@ static unsigned MSI_DatabaseExport( LibmsiDatabase *db, const WCHAR *table,
         r = MSI_ViewGetColumnInfo(view, LIBMSI_COL_INFO_NAMES, &rec);
         if (r == ERROR_SUCCESS)
         {
-            msi_export_record( handle, rec, 1 );
+            msi_export_record( fd, rec, 1 );
             msiobj_release( &rec->hdr );
         }
 
@@ -1141,7 +1122,7 @@ static unsigned MSI_DatabaseExport( LibmsiDatabase *db, const WCHAR *table,
         r = MSI_ViewGetColumnInfo(view, LIBMSI_COL_INFO_TYPES, &rec);
         if (r == ERROR_SUCCESS)
         {
-            msi_export_record( handle, rec, 1 );
+            msi_export_record( fd, rec, 1 );
             msiobj_release( &rec->hdr );
         }
 
@@ -1150,17 +1131,16 @@ static unsigned MSI_DatabaseExport( LibmsiDatabase *db, const WCHAR *table,
         if (r == ERROR_SUCCESS)
         {
             MSI_RecordSetStringW( rec, 0, table );
-            msi_export_record( handle, rec, 0 );
+            msi_export_record( fd, rec, 0 );
             msiobj_release( &rec->hdr );
         }
 
         /* write out row 4 onwards, the data */
-        r = MSI_IterateRecords( view, 0, msi_export_row, handle );
+        r = MSI_IterateRecords( view, 0, msi_export_row, (void *)(intptr_t) fd );
         msiobj_release( &view->hdr );
     }
 
 done:
-    CloseHandle( handle );
     return r;
 }
 
@@ -1180,7 +1160,7 @@ done:
  * row4 : data <tab> data <tab> data <tab> ... data <cr> <lf>
  */
 unsigned MsiDatabaseExportW( LibmsiObject *handle, const WCHAR *szTable,
-               const WCHAR *szFolder, const WCHAR *szFilename )
+               int fd )
 {
     LibmsiDatabase *db;
     unsigned r;
@@ -1191,13 +1171,13 @@ unsigned MsiDatabaseExportW( LibmsiObject *handle, const WCHAR *szTable,
     db = msihandle2msiinfo( handle, LIBMSI_OBJECT_TYPE_DATABASE );
     if( !db )
         return ERROR_INVALID_HANDLE;
-    r = MSI_DatabaseExport( db, szTable, szFolder, szFilename );
+    r = MSI_DatabaseExport( db, szTable, fd );
     msiobj_release( &db->hdr );
     return r;
 }
 
 unsigned MsiDatabaseExportA( LibmsiObject *handle, const char *szTable,
-               const char *szFolder, const char *szFilename )
+               int fd )
 {
     WCHAR *path = NULL;
     WCHAR *file = NULL;
@@ -1214,21 +1194,7 @@ unsigned MsiDatabaseExportA( LibmsiObject *handle, const char *szTable,
             goto end;
     }
 
-    if( szFolder )
-    {
-        path = strdupAtoW( szFolder );
-        if( !path )
-            goto end;
-    }
-
-    if( szFilename )
-    {
-        file = strdupAtoW( szFilename );
-        if( !file )
-            goto end;
-    }
-
-    r = MsiDatabaseExportW( handle, table, path, file );
+    r = MsiDatabaseExportW( handle, table, fd );
 
 end:
     msi_free( table );

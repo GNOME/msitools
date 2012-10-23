@@ -21,6 +21,8 @@
 #define COBJMACROS
 
 #include <stdio.h>
+#include <fcntl.h>
+#include <unistd.h>
 
 #include <windows.h>
 #include <libmsi.h>
@@ -1327,7 +1329,7 @@ static void test_msiexport(void)
     LibmsiObject *hview = 0;
     unsigned r;
     const char *query;
-    char path[MAX_PATH];
+    int fd;
     const char file[] = "phone.txt";
     HANDLE handle;
     char buffer[0x100];
@@ -1369,28 +1371,28 @@ static void test_msiexport(void)
     r = MsiCloseHandle(hview);
     ok(r == ERROR_SUCCESS, "MsiCloseHandle failed\n");
 
-    GetCurrentDirectory(MAX_PATH, path);
+    fd = open(file, O_WRONLY | O_BINARY | O_CREAT, 0644);
+    ok(fd != -1, "open failed\n");
 
-    r = MsiDatabaseExport(hdb, "phone", path, file);
+    r = MsiDatabaseExport(hdb, "phone", fd);
     ok(r == ERROR_SUCCESS, "MsiDatabaseExport failed\n");
 
-    MsiCloseHandle(hdb);
+    close(fd);
 
-    strcat(path, "\\");
-    strcat(path, file);
+    MsiCloseHandle(hdb);
 
     /* check the data that was written */
     length = 0;
     memset(buffer, 0, sizeof buffer);
-    handle = CreateFile(path, GENERIC_READ, 0, NULL, OPEN_EXISTING, 0, NULL);
+    handle = CreateFile(file, GENERIC_READ, 0, NULL, OPEN_EXISTING, 0, NULL);
     if (handle != INVALID_HANDLE_VALUE)
     {
         ReadFile(handle, buffer, sizeof buffer, &length, NULL);
         CloseHandle(handle);
-        DeleteFile(path);
+        DeleteFile(file);
     }
     else
-        ok(0, "failed to open file %s\n", path);
+        ok(0, "failed to open file %s\n", file);
 
     ok( length == strlen(expected), "length of data wrong\n");
     ok( !strcmp(buffer, expected), "data doesn't match\n");
@@ -7086,6 +7088,7 @@ static void test_forcecodepage(void)
     const char *query;
     char buffer[MAX_PATH];
     unsigned r;
+    int fd;
 
     DeleteFile(msifile);
     GetCurrentDirectoryA(MAX_PATH, CURR_DIR);
@@ -7121,8 +7124,12 @@ static void test_forcecodepage(void)
     r = run_query(hdb, 0, query);
     ok(r == ERROR_BAD_QUERY_SYNTAX, "Expected ERROR_BAD_QUERY_SYNTAX, got %d\n", r);
 
-    r = MsiDatabaseExport(hdb, "_ForceCodepage", CURR_DIR, "forcecodepage.idt");
+    fd = open("forcecodepage.idt", O_WRONLY | O_BINARY | O_CREAT, 0644);
+    ok(fd != -1, "cannot open file\n");
+
+    r = MsiDatabaseExport(hdb, "_ForceCodepage", fd);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    close(fd);
 
     read_file_data("forcecodepage.idt", buffer);
     ok(!strcmp(buffer, "\r\n\r\n0\t_ForceCodepage\r\n"),
@@ -7133,8 +7140,12 @@ static void test_forcecodepage(void)
     r = MsiDatabaseImport(hdb, CURR_DIR, "forcecodepage.idt");
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
-    r = MsiDatabaseExport(hdb, "_ForceCodepage", CURR_DIR, "forcecodepage.idt");
+    fd = open("forcecodepage.idt", O_WRONLY | O_BINARY | O_CREAT, 0644);
+    ok(fd != -1, "cannot open file\n");
+
+    r = MsiDatabaseExport(hdb, "_ForceCodepage", fd);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    close(fd);
 
     read_file_data("forcecodepage.idt", buffer);
     ok(!strcmp(buffer, "\r\n\r\n850\t_ForceCodepage\r\n"),

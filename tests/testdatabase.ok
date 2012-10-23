@@ -330,6 +330,7 @@ ok: r == ERROR_SUCCESS
 ok: r == ERROR_SUCCESS
 ok: r == ERROR_SUCCESS
 ok: r == ERROR_SUCCESS
+ok: fd != -1
 ok: r == ERROR_SUCCESS
 ok: length == strlen(expected)
 ok: !strcmp(buffer, expected)
@@ -2383,9 +2384,11 @@ ok: r == ERROR_SUCCESS
 ok: r == ERROR_BAD_QUERY_SYNTAX
 ok: r == ERROR_SUCCESS
 ok: r == ERROR_BAD_QUERY_SYNTAX
+ok: fd != -1
 ok: r == ERROR_SUCCESS
 ok: !strcmp(buffer, "\r\n\r\n0\t_ForceCodepage\r\n")
 ok: r == ERROR_SUCCESS
+ok: fd != -1
 ok: r == ERROR_SUCCESS
 ok: !strcmp(buffer, "\r\n\r\n850\t_ForceCodepage\r\n")
 ok: r == ERROR_FUNCTION_FAILED

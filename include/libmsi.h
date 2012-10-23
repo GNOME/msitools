@@ -207,8 +207,8 @@ unsigned MsiSummaryInfoSetPropertyA(LibmsiObject *, unsigned, unsigned, int, uin
 unsigned MsiSummaryInfoSetPropertyW(LibmsiObject *, unsigned, unsigned, int, uint64_t*, const WCHAR *);
 #define     MsiSummaryInfoSetProperty WINELIB_NAME_AW(MsiSummaryInfoSetProperty)
 
-unsigned MsiDatabaseExportA(LibmsiObject *, const char *, const char *, const char *);
-unsigned MsiDatabaseExportW(LibmsiObject *, const WCHAR *, const WCHAR *, const WCHAR *);
+unsigned MsiDatabaseExportA(LibmsiObject *, const char *, int fd);
+unsigned MsiDatabaseExportW(LibmsiObject *, const WCHAR *, int fd);
 #define     MsiDatabaseExport WINELIB_NAME_AW(MsiDatabaseExport)
 
 unsigned MsiDatabaseImport(LibmsiObject *, const char *, const char *);
