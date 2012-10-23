@@ -19,7 +19,7 @@
 #ifndef _MSIQUERY_H
 #define _MSIQUERY_H
 
-typedef unsigned __LONG32 MSIHANDLE;
+#include <msi.h>
 
 typedef enum tagMSICONDITION
 {
@@ -54,11 +54,11 @@ typedef enum tagMSIMODIFY
     MSIMODIFY_VALIDATE_DELETE = 11
 } MSIMODIFY;
 
-#define MSIDBOPEN_READONLY (LPCWSTR)0
-#define MSIDBOPEN_TRANSACT (LPCWSTR)1
-#define MSIDBOPEN_DIRECT   (LPCWSTR)2
-#define MSIDBOPEN_CREATE   (LPCWSTR)3
-#define MSIDBOPEN_CREATEDIRECT (LPCWSTR)4
+#define MSIDBOPEN_READONLY (LPCTSTR)0
+#define MSIDBOPEN_TRANSACT (LPCTSTR)1
+#define MSIDBOPEN_DIRECT   (LPCTSTR)2
+#define MSIDBOPEN_CREATE   (LPCTSTR)3
+#define MSIDBOPEN_CREATEDIRECT (LPCTSTR)4
 
 #define MSIDBOPEN_PATCHFILE 32 / sizeof(*MSIDBOPEN_READONLY)
 
@@ -119,31 +119,6 @@ extern "C" {
 #endif
 #endif
 
-#define PID_DICTIONARY (0)
-#define PID_CODEPAGE (0x1)
-#define PID_TITLE 2
-#define PID_SUBJECT 3
-#define PID_AUTHOR 4
-#define PID_KEYWORDS 5
-#define PID_COMMENTS 6
-#define PID_TEMPLATE 7
-#define PID_LASTAUTHOR 8
-#define PID_REVNUMBER 9
-#define PID_EDITTIME 10
-#define PID_LASTPRINTED 11
-#define PID_CREATE_DTM 12
-#define PID_LASTSAVE_DTM 13
-#define PID_PAGECOUNT 14
-#define PID_WORDCOUNT 15
-#define PID_CHARCOUNT 16
-#define PID_THUMBNAIL 17
-#define PID_APPNAME 18
-#define PID_SECURITY 19
-
-#define PID_MSIVERSION PID_PAGECOUNT
-#define PID_MSISOURCE PID_WORDCOUNT
-#define PID_MSIRESTRICT PID_CHARCOUNT
-
 /* view manipulation */
 UINT WINAPI MsiViewFetch(MSIHANDLE,MSIHANDLE*);
 UINT WINAPI MsiViewExecute(MSIHANDLE,MSIHANDLE);
@@ -183,12 +158,80 @@ UINT WINAPI MsiDatabaseGetPrimaryKeysA(MSIHANDLE,LPCSTR,MSIHANDLE*);
 UINT WINAPI MsiDatabaseGetPrimaryKeysW(MSIHANDLE,LPCWSTR,MSIHANDLE*);
 #define     MsiDatabaseGetPrimaryKeys WINELIB_NAME_AW(MsiDatabaseGetPrimaryKeys)
 
+/* installing */
+UINT WINAPI MsiDoActionA(MSIHANDLE,LPCSTR );
+UINT WINAPI MsiDoActionW(MSIHANDLE,LPCWSTR );
+#define     MsiDoAction WINELIB_NAME_AW(MsiDoAction)
+
 /* database transforms */
 UINT WINAPI MsiDatabaseApplyTransformA(MSIHANDLE,LPCSTR,int);
 UINT WINAPI MsiDatabaseApplyTransformW(MSIHANDLE,LPCWSTR,int);
 #define     MsiDatabaseApplyTransform WINELIB_NAME_AW(MsiDatabaseApplyTransform)
+UINT WINAPI MsiDatabaseGenerateTransformA(MSIHANDLE,MSIHANDLE,LPCSTR,int,int);
+UINT WINAPI MsiDatabaseGenerateTransformW(MSIHANDLE,MSIHANDLE,LPCWSTR,int,int);
+#define     MsiDatabaseGenerateTransform WINELIB_NAME_AW(MsiDatabaseGenerateTransform)
+
+UINT WINAPI MsiDatabaseCommit(MSIHANDLE);
+
+/* install state */
+UINT WINAPI MsiGetFeatureStateA(MSIHANDLE,LPCSTR,INSTALLSTATE*,INSTALLSTATE*);
+UINT WINAPI MsiGetFeatureStateW(MSIHANDLE,LPCWSTR,INSTALLSTATE*,INSTALLSTATE*);
+#define     MsiGetFeatureState WINELIB_NAME_AW(MsiGetFeatureState)
+UINT WINAPI MsiGetFeatureValidStatesA(MSIHANDLE,LPCSTR,LPDWORD);
+UINT WINAPI MsiGetFeatureValidStatesW(MSIHANDLE,LPCWSTR,LPDWORD);
+#define     MsiGetFeatureValidStates WINELIB_NAME_AW(MsiGetFeatureValidStates)
+UINT WINAPI MsiSetComponentStateA(MSIHANDLE,LPCSTR,INSTALLSTATE);
+UINT WINAPI MsiSetComponentStateW(MSIHANDLE,LPCWSTR,INSTALLSTATE);
+#define     MsiSetComponentState WINELIB_NAME_AW(MsiSetComponentState)
+UINT WINAPI MsiGetComponentStateA(MSIHANDLE,LPCSTR,INSTALLSTATE*,INSTALLSTATE*);
+UINT WINAPI MsiGetComponentStateW(MSIHANDLE,LPCWSTR,INSTALLSTATE*,INSTALLSTATE*);
+#define     MsiGetComponentState WINELIB_NAME_AW(MsiGetComponentState)
+
+MSICONDITION WINAPI MsiEvaluateConditionA(MSIHANDLE,LPCSTR);
+MSICONDITION WINAPI MsiEvaluateConditionW(MSIHANDLE,LPCWSTR);
+#define     MsiEvaluateCondition WINELIB_NAME_AW(MsiEvaluateCondition)
+
+/* property functions */
+UINT WINAPI MsiGetPropertyA(MSIHANDLE, LPCSTR, LPSTR, LPDWORD);
+UINT WINAPI MsiGetPropertyW(MSIHANDLE, LPCWSTR, LPWSTR, LPDWORD);
+#define     MsiGetProperty WINELIB_NAME_AW(MsiGetProperty)
+
+UINT WINAPI MsiSetPropertyA(MSIHANDLE, LPCSTR, LPCSTR);
+UINT WINAPI MsiSetPropertyW(MSIHANDLE, LPCWSTR, LPCWSTR);
+#define     MsiSetProperty WINELIB_NAME_AW(MsiSetProperty)
+
+UINT WINAPI MsiGetTargetPathA(MSIHANDLE,LPCSTR,LPSTR,LPDWORD);
+UINT WINAPI MsiGetTargetPathW(MSIHANDLE,LPCWSTR,LPWSTR,LPDWORD);
+#define     MsiGetTargetPath WINELIB_NAME_AW(MsiGetTargetPath)
+
+UINT WINAPI MsiSetTargetPathA(MSIHANDLE, LPCSTR, LPCSTR);
+UINT WINAPI MsiSetTargetPathW(MSIHANDLE, LPCWSTR, LPCWSTR);
+#define     MsiSetTargetPath WINELIB_NAME_AW(MsiSetTargetPath)
+
+UINT WINAPI MsiGetSourcePathA(MSIHANDLE,LPCSTR,LPSTR,LPDWORD);
+UINT WINAPI MsiGetSourcePathW(MSIHANDLE,LPCWSTR,LPWSTR,LPDWORD);
+#define     MsiGetSourcePath WINELIB_NAME_AW(MsiGetSourcePath)
+
+MSIHANDLE WINAPI MsiGetActiveDatabase(MSIHANDLE);
 
 UINT WINAPI MsiViewGetColumnInfo(MSIHANDLE, MSICOLINFO, MSIHANDLE*);
+INT WINAPI MsiProcessMessage(MSIHANDLE, INSTALLMESSAGE, MSIHANDLE);
+
+UINT WINAPI MsiSetFeatureAttributesA(MSIHANDLE, LPCSTR, DWORD);
+UINT WINAPI MsiSetFeatureAttributesW(MSIHANDLE, LPCWSTR, DWORD);
+#define     MsiSetFeatureAttributes WINELIB_NAME_AW(MsiSetFeatureAttributes)
+
+UINT WINAPI MsiSetFeatureStateA(MSIHANDLE, LPCSTR, INSTALLSTATE);
+UINT WINAPI MsiSetFeatureStateW(MSIHANDLE, LPCWSTR, INSTALLSTATE);
+#define     MsiSetFeatureState WINELIB_NAME_AW(MsiSetFeatureState)
+
+UINT WINAPI MsiPreviewDialogA(MSIHANDLE, LPCSTR);
+UINT WINAPI MsiPreviewDialogW(MSIHANDLE, LPCWSTR);
+#define     MsiPreviewDialog WINELIB_NAME_AW(MsiPreviewDialog)
+
+UINT WINAPI MsiPreviewBillboardA(MSIHANDLE, LPCSTR, LPCSTR);
+UINT WINAPI MsiPreviewBillboardW(MSIHANDLE, LPCWSTR, LPCWSTR);
+#define     MsiPreviewBillboard WINELIB_NAME_AW(MsiPreviewBillboard)
 
 UINT WINAPI MsiCreateTransformSummaryInfoA(MSIHANDLE, MSIHANDLE, LPCSTR, int, int);
 UINT WINAPI MsiCreateTransformSummaryInfoW(MSIHANDLE, MSIHANDLE, LPCWSTR, int, int);
@@ -221,6 +264,10 @@ UINT WINAPI MsiOpenDatabaseA(LPCSTR, LPCSTR, MSIHANDLE*);
 MSICONDITION WINAPI MsiDatabaseIsTablePersistentA(MSIHANDLE, LPCSTR);
 MSICONDITION WINAPI MsiDatabaseIsTablePersistentW(MSIHANDLE, LPCWSTR);
 #define     MsiDatabaseIsTablePersistent WINELIB_NAME_AW(MsiDatabaseIsTablePersistent)
+
+UINT WINAPI MsiSequenceA(MSIHANDLE, LPCSTR, INT);
+UINT WINAPI MsiSequenceW(MSIHANDLE, LPCWSTR, INT);
+#define     MsiSequence WINELIB_NAME_AW(MsiSequence)
 
 UINT WINAPI MsiSummaryInfoPersist(MSIHANDLE);
 UINT WINAPI MsiSummaryInfoGetPropertyCount(MSIHANDLE,PUINT);
