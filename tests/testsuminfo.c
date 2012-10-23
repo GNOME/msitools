@@ -394,7 +394,7 @@ static void test_summary_binary(void)
     type = 0;
     r = MsiSummaryInfoGetProperty(hsuminfo, MSI_PID_LASTPRINTED, &type, NULL, NULL, sval, &sz);
     ok(r == ERROR_SUCCESS, "MsiSummaryInfoGetProperty failed\n");
-    ok(!lstrcmpA(sval, "") || !lstrcmpA(sval, "7"),
+    ok(!strcmp(sval, "") || !strcmp(sval, "7"),
         "Expected empty string or \"7\", got \"%s\"\n", sval);
     todo_wine {
     ok(type == VT_LPSTR, "Expected VT_LPSTR, got %d\n", type);

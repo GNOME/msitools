@@ -410,11 +410,11 @@ unsigned MSI_OpenDatabaseW(const WCHAR *szDBPath, const WCHAR *szPersist, Libmsi
     if (!strchrW( save_path, '\\' ))
     {
         GetCurrentDirectoryW( MAX_PATH, path );
-        lstrcatW( path, szBackSlash );
-        lstrcatW( path, save_path );
+        strcatW( path, szBackSlash );
+        strcatW( path, save_path );
     }
     else
-        lstrcpyW( path, save_path );
+        strcpyW( path, save_path );
 
     db->path = strdupW( path );
     db->media_transform_offset = MSI_INITIAL_MEDIA_TRANSFORM_OFFSET;
@@ -607,7 +607,7 @@ static WCHAR *msi_build_createsql_prelude(WCHAR *table)
 
     static const WCHAR create_fmt[] = {'C','R','E','A','T','E',' ','T','A','B','L','E',' ','`','%','s','`',' ','(',' ',0};
 
-    size = sizeof(create_fmt)/sizeof(create_fmt[0]) + lstrlenW(table) - 2;
+    size = sizeof(create_fmt)/sizeof(create_fmt[0]) + strlenW(table) - 2;
     prelude = msi_alloc(size * sizeof(WCHAR));
     if (!prelude)
         return NULL;
@@ -655,22 +655,22 @@ static WCHAR *msi_build_createsql_columns(WCHAR **columns_data, WCHAR **types, u
         switch (types[i][0])
         {
             case 'l':
-                lstrcpyW(extra, type_notnull);
+                strcpyW(extra, type_notnull);
                 /* fall through */
             case 'L':
-                lstrcatW(extra, localizable);
+                strcatW(extra, localizable);
                 type = type_char;
                 sprintfW(size, size_fmt, ptr);
                 break;
             case 's':
-                lstrcpyW(extra, type_notnull);
+                strcpyW(extra, type_notnull);
                 /* fall through */
             case 'S':
                 type = type_char;
                 sprintfW(size, size_fmt, ptr);
                 break;
             case 'i':
-                lstrcpyW(extra, type_notnull);
+                strcpyW(extra, type_notnull);
                 /* fall through */
             case 'I':
                 if (len <= 2)
@@ -685,7 +685,7 @@ static WCHAR *msi_build_createsql_columns(WCHAR **columns_data, WCHAR **types, u
                 }
                 break;
             case 'v':
-                lstrcpyW(extra, type_notnull);
+                strcpyW(extra, type_notnull);
                 /* fall through */
             case 'V':
                 type = type_object;
@@ -697,7 +697,7 @@ static WCHAR *msi_build_createsql_columns(WCHAR **columns_data, WCHAR **types, u
         }
 
         sprintfW(expanded, column_fmt, columns_data[i], type, size, extra, comma);
-        sql_size += lstrlenW(expanded);
+        sql_size += strlenW(expanded);
 
         p = msi_realloc(columns, sql_size * sizeof(WCHAR));
         if (!p)
@@ -707,7 +707,7 @@ static WCHAR *msi_build_createsql_columns(WCHAR **columns_data, WCHAR **types, u
         }
         columns = p;
 
-        lstrcatW(columns, expanded);
+        strcatW(columns, expanded);
     }
 
     return columns;
@@ -724,7 +724,7 @@ static WCHAR *msi_build_createsql_postlude(WCHAR **primary_keys, unsigned num_ke
     static const WCHAR postlude_fmt[] = {'P','R','I','M','A','R','Y',' ','K','E','Y',' ','%','s',')',0};
 
     for (i = 0, size = 1; i < num_keys; i++)
-        size += lstrlenW(key_fmt) + lstrlenW(primary_keys[i]) - 2;
+        size += strlenW(key_fmt) + strlenW(primary_keys[i]) - 2;
 
     keys = msi_alloc(size * sizeof(WCHAR));
     if (!keys)
@@ -732,7 +732,7 @@ static WCHAR *msi_build_createsql_postlude(WCHAR **primary_keys, unsigned num_ke
 
     for (i = 0, ptr = keys; i < num_keys; i++)
     {
-        key_size = lstrlenW(key_fmt) + lstrlenW(primary_keys[i]) -2;
+        key_size = strlenW(key_fmt) + strlenW(primary_keys[i]) -2;
         sprintfW(ptr, key_fmt, primary_keys[i]);
         ptr += key_size;
     }
@@ -740,7 +740,7 @@ static WCHAR *msi_build_createsql_postlude(WCHAR **primary_keys, unsigned num_ke
     /* remove final ', ' */
     *(ptr - 2) = '\0';
 
-    size = lstrlenW(postlude_fmt) + size - 1;
+    size = strlenW(postlude_fmt) + size - 1;
     postlude = msi_alloc(size * sizeof(WCHAR));
     if (!postlude)
         goto done;
@@ -769,14 +769,14 @@ static unsigned msi_add_table_to_db(LibmsiDatabase *db, WCHAR **columns, WCHAR *
     if (!prelude || !columns_sql || !postlude)
         goto done;
 
-    size = lstrlenW(prelude) + lstrlenW(columns_sql) + lstrlenW(postlude) + 1;
+    size = strlenW(prelude) + strlenW(columns_sql) + strlenW(postlude) + 1;
     create_sql = msi_alloc(size * sizeof(WCHAR));
     if (!create_sql)
         goto done;
 
-    lstrcpyW(create_sql, prelude);
-    lstrcatW(create_sql, columns_sql);
-    lstrcatW(create_sql, postlude);
+    strcpyW(create_sql, prelude);
+    strcatW(create_sql, columns_sql);
+    strcatW(create_sql, postlude);
 
     r = MSI_DatabaseOpenViewW( db, create_sql, &view );
     if (r != ERROR_SUCCESS)
@@ -800,12 +800,12 @@ static WCHAR *msi_import_stream_filename(const WCHAR *path, const WCHAR *name)
     WCHAR *fullname;
     WCHAR *ptr;
 
-    len = lstrlenW(path) + lstrlenW(name) + 1;
+    len = strlenW(path) + strlenW(name) + 1;
     fullname = msi_alloc(len*sizeof(WCHAR));
     if (!fullname)
        return NULL;
 
-    lstrcpyW( fullname, path );
+    strcpyW( fullname, path );
 
     /* chop off extension from path */
     ptr = strrchrW(fullname, '.');
@@ -815,7 +815,7 @@ static WCHAR *msi_import_stream_filename(const WCHAR *path, const WCHAR *name)
         return NULL;
     }
     *ptr++ = '\\';
-    lstrcpyW( ptr, name );
+    strcpyW( ptr, name );
     return fullname;
 }
 
@@ -936,14 +936,14 @@ static unsigned MSI_DatabaseImport(LibmsiDatabase *db, const WCHAR *folder, cons
     if( folder == NULL || file == NULL )
         return ERROR_INVALID_PARAMETER;
 
-    len = lstrlenW(folder) + lstrlenW(szBackSlash) + lstrlenW(file) + 1;
+    len = strlenW(folder) + strlenW(szBackSlash) + strlenW(file) + 1;
     path = msi_alloc( len * sizeof(WCHAR) );
     if (!path)
         return ERROR_OUTOFMEMORY;
 
-    lstrcpyW( path, folder );
-    lstrcatW( path, szBackSlash );
-    lstrcatW( path, file );
+    strcpyW( path, folder );
+    strcatW( path, szBackSlash );
+    strcatW( path, file );
 
     data = msi_read_text_archive( path, &len );
 
@@ -1133,7 +1133,7 @@ static unsigned msi_export_forcecodepage( HANDLE handle, unsigned codepage )
 
     sprintf( data, fmt, codepage );
 
-    sz = lstrlenA(data) + 1;
+    sz = strlen(data) + 1;
     if (!WriteFile(handle, data, sz, &sz, NULL))
         return ERROR_FUNCTION_FAILED;
 
@@ -1159,14 +1159,14 @@ static unsigned MSI_DatabaseExport( LibmsiDatabase *db, const WCHAR *table,
     if( folder == NULL || file == NULL )
         return ERROR_INVALID_PARAMETER;
 
-    len = lstrlenW(folder) + lstrlenW(file) + 2;
+    len = strlenW(folder) + strlenW(file) + 2;
     filename = msi_alloc(len * sizeof (WCHAR));
     if (!filename)
         return ERROR_OUTOFMEMORY;
 
-    lstrcpyW( filename, folder );
-    lstrcatW( filename, szBackSlash );
-    lstrcatW( filename, file );
+    strcpyW( filename, folder );
+    strcatW( filename, szBackSlash );
+    strcatW( filename, file );
 
     handle = CreateFileW( filename, GENERIC_READ | GENERIC_WRITE, 0,
                           NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL );
@@ -1482,9 +1482,9 @@ static WCHAR *get_key_value(LibmsiQuery *view, const WCHAR *key, LibmsiRecord *r
         if (!val)
             return NULL;
 
-        lstrcpyW(val, szQuote);
+        strcpyW(val, szQuote);
         r = MSI_RecordGetStringW(rec, i, val+1, &sz);
-        lstrcpyW(val+1+sz, szQuote);
+        strcpyW(val+1+sz, szQuote);
     }
     else
     {
@@ -1547,7 +1547,7 @@ static WCHAR *create_diff_row_query(LibmsiDatabase *merge, LibmsiQuery *view,
             setptr = keyset;
 
         oldsize = size;
-        size += lstrlenW(setptr) + lstrlenW(key) + lstrlenW(val) - 4;
+        size += strlenW(setptr) + strlenW(key) + strlenW(val) - 4;
         clause = msi_realloc(clause, size * sizeof (WCHAR));
         if (!clause)
         {
@@ -1559,7 +1559,7 @@ static WCHAR *create_diff_row_query(LibmsiDatabase *merge, LibmsiQuery *view,
         msi_free(val);
     }
 
-    size = lstrlenW(fmt) + lstrlenW(table) + lstrlenW(clause) + 1;
+    size = strlenW(fmt) + strlenW(table) + strlenW(clause) + 1;
     query = msi_alloc(size * sizeof(WCHAR));
     if (!query)
         goto done;

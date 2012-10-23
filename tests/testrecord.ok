@@ -144,21 +144,21 @@ ok: rec != 0
 ok: r == ERROR_SUCCESS
 ok: sz == 0
 ok: r == ERROR_SUCCESS
-ok: !lstrcmpA(buf, "")
+ok: !strcmp(buf, "")
 ok: sz == 0
 ok: r == ERROR_SUCCESS
-ok: !lstrcmpA(buf, "")
+ok: !strcmp(buf, "")
 ok: sz == 0
 ok: rec != 0
 ok: r == ERROR_SUCCESS
 ok: r == ERROR_SUCCESS
 ok: sz == 1
 ok: r == ERROR_SUCCESS
-ok: !lstrcmpA(buf, "5")
+ok: !strcmp(buf, "5")
 ok: sz == 1
 ok: r == ERROR_SUCCESS
 ok: r == ERROR_SUCCESS
-ok: !lstrcmpA(buf, "-5")
+ok: !strcmp(buf, "-5")
 ok: sz == 2
 ok: rec != 0
 ok: r == ERROR_SUCCESS
@@ -170,25 +170,25 @@ ok: val == MSI_NULL_INTEGER
 ok: rec != 0
 ok: r == MSI_NULL_INTEGER
 ok: r == ERROR_SUCCESS
-ok: !lstrcmpA(buf, "")
+ok: !strcmp(buf, "")
 ok: sz == 0
 ok: r == true
 ok: r == MSI_NULL_INTEGER
 ok: r == ERROR_SUCCESS
 ok: r == MSI_NULL_INTEGER
 ok: r == ERROR_SUCCESS
-ok: !lstrcmpA(buf, "")
+ok: !strcmp(buf, "")
 ok: sz == 0
 ok: r == true
 ok: r == 42
 ok: r == ERROR_SUCCESS
 ok: r == MSI_NULL_INTEGER
 ok: r == ERROR_SUCCESS
-ok: !lstrcmpA(buf, "")
+ok: !strcmp(buf, "")
 ok: sz == 0
 ok: r == true
 ok: r == ERROR_SUCCESS
-ok: !lstrcmpA(buf, "bologna")
+ok: !strcmp(buf, "bologna")
 ok: sz == 7
 ok: r == ERROR_SUCCESS
 ok: r == ERROR_SUCCESS
@@ -202,7 +202,7 @@ ok: r == ERROR_SUCCESS
 ok: r == ERROR_SUCCESS
 ok: r == MSI_NULL_INTEGER
 ok: r == ERROR_SUCCESS
-ok: !lstrcmpA(buf, "drone")
+ok: !strcmp(buf, "drone")
 ok: sz == 5
 ok: r == false
 ok: r == ERROR_INVALID_TABLE

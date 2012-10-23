@@ -197,9 +197,9 @@ ok: r == ERROR_SUCCESS
 ok: r == ERROR_SUCCESS
 ok: r == 1
 ok: r == ERROR_SUCCESS
-ok: !lstrcmp(buffer, "bob")
+ok: !strcmp(buffer, "bob")
 ok: r == ERROR_SUCCESS
-ok: !lstrcmp(buffer, "7654321")
+ok: !strcmp(buffer, "7654321")
 ok: r == ERROR_SUCCESS
 ok: r == ERROR_SUCCESS
 ok: r == ERROR_SUCCESS
@@ -213,9 +213,9 @@ ok: r == ERROR_SUCCESS
 ok: r == ERROR_SUCCESS
 ok: r == 1
 ok: r == ERROR_SUCCESS
-ok: !lstrcmp(buffer, "bob")
+ok: !strcmp(buffer, "bob")
 ok: r == ERROR_SUCCESS
-ok: !lstrcmp(buffer, "3141592")
+ok: !strcmp(buffer, "3141592")
 ok: r == ERROR_SUCCESS
 ok: hrec != 0
 ok: r == ERROR_SUCCESS
@@ -332,7 +332,7 @@ ok: r == ERROR_SUCCESS
 ok: r == ERROR_SUCCESS
 ok: r == ERROR_SUCCESS
 ok: length == strlen(expected)
-ok: !lstrcmp(buffer, expected)
+ok: !strcmp(buffer, expected)
 ok: r == ERROR_SUCCESS
 ok: r == ERROR_SUCCESS
 ok: r == ERROR_SUCCESS
@@ -375,26 +375,24 @@ ok: r == ERROR_SUCCESS
 ok: r == ERROR_SUCCESS
 ok: r == ERROR_SUCCESS
 ok: r == ERROR_SUCCESS
-ok: !lstrcmp(file, "data")
+ok: !strcmp(file, "data")
 ok: r == ERROR_SUCCESS
-ok: !lstrcmp(buf, "test.txt\n")
-ok: r == ERROR_SUCCESS
-ok: r == ERROR_SUCCESS
+ok: !strcmp(buf, "test.txt\n")
 ok: r == ERROR_SUCCESS
 ok: r == ERROR_SUCCESS
-ok: !lstrcmp(file, "data1")
-ok: r == ERROR_SUCCESS
-ok: !lstrcmp(buf, "test1.txt\n")
 ok: r == ERROR_SUCCESS
 ok: r == ERROR_SUCCESS
+ok: !strcmp(file, "data1")
+ok: r == ERROR_SUCCESS
+ok: !strcmp(buf, "test1.txt\n")
 ok: r == ERROR_SUCCESS
 ok: r == ERROR_SUCCESS
 ok: r == ERROR_SUCCESS
 ok: r == ERROR_SUCCESS
 ok: r == ERROR_SUCCESS
-ok: !lstrcmp(file, "data1")
 ok: r == ERROR_SUCCESS
 ok: r == ERROR_SUCCESS
+ok: !strcmp(file, "data1")
 ok: r == ERROR_SUCCESS
 ok: r == ERROR_SUCCESS
 ok: r == ERROR_SUCCESS
@@ -404,15 +402,17 @@ ok: r == ERROR_SUCCESS
 ok: r == ERROR_SUCCESS
 ok: r == ERROR_SUCCESS
 ok: r == ERROR_SUCCESS
-ok: !lstrcmp(file, "Binary.filename1.1")
-ok: r == ERROR_SUCCESS
-ok: !lstrcmp(buf, "test.txt\n")
 ok: r == ERROR_SUCCESS
 ok: r == ERROR_SUCCESS
+ok: !strcmp(file, "Binary.filename1.1")
 ok: r == ERROR_SUCCESS
-ok: !lstrcmp(file, "filename1")
+ok: !strcmp(buf, "test.txt\n")
 ok: r == ERROR_SUCCESS
-ok: !lstrcmp(buf, "test.txt\n")
+ok: r == ERROR_SUCCESS
+ok: r == ERROR_SUCCESS
+ok: !strcmp(file, "filename1")
+ok: r == ERROR_SUCCESS
+ok: !strcmp(buf, "test.txt\n")
 ok: r == ERROR_SUCCESS
 ok: r == ERROR_SUCCESS
 ok: res == ERROR_SUCCESS
@@ -453,10 +453,10 @@ ok: r == ERROR_SUCCESS
 ok: r == ERROR_SUCCESS
 ok: count == 1
 ok: r == ERROR_SUCCESS
-ok: !lstrcmp( buf, "2" )
+ok: !strcmp( buf, "2" )
 ok: r == ERROR_SUCCESS
 ok: r == ERROR_SUCCESS
-ok: !lstrcmp( buf, "3" )
+ok: !strcmp( buf, "3" )
 ok: r == ERROR_NO_MORE_ITEMS
 ok: r == ERROR_SUCCESS
 ok: r == ERROR_BAD_QUERY_SYNTAX
@@ -560,9 +560,9 @@ ok: r == ERROR_SUCCESS
 ok: r == ERROR_SUCCESS
 ok: r == ERROR_SUCCESS
 ok: r == ERROR_SUCCESS
-ok: !lstrcmp(file, "filename1")
+ok: !strcmp(file, "filename1")
 ok: r == ERROR_SUCCESS
-ok: !lstrcmp(buf, "just some words")
+ok: !strcmp(buf, "just some words")
 ok: r == ERROR_SUCCESS
 ok: r == ERROR_SUCCESS
 ok: res == ERROR_SUCCESS
@@ -638,13 +638,13 @@ ok: r == ERROR_SUCCESS
 ok: r == ERROR_SUCCESS
 ok: r == 1
 ok: r == ERROR_SUCCESS
-ok: !lstrcmpA(buffer, "c")
+ok: !strcmp(buffer, "c")
 ok: r == 0x80000000
 ok: r == 5
 ok: r == ERROR_SUCCESS
 ok: r == 2
 ok: r == ERROR_SUCCESS
-ok: !lstrcmpA(buffer, "b")
+ok: !strcmp(buffer, "b")
 ok: r == 0x80000000
 ok: r == 0x80000000
 ok: r == ERROR_NO_MORE_ITEMS
@@ -687,29 +687,29 @@ ok: r == ERROR_SUCCESS
 ok: r == ERROR_SUCCESS
 ok: count == 2
 ok: r == ERROR_SUCCESS
-ok: !lstrcmp( buf, join_res_first[i].one )
+ok: !strcmp( buf, join_res_first[i].one )
 ok: r == ERROR_SUCCESS
-ok: !lstrcmp( buf, join_res_first[i].two )
+ok: !strcmp( buf, join_res_first[i].two )
 ok: count == 2
 ok: r == ERROR_SUCCESS
-ok: !lstrcmp( buf, join_res_first[i].one )
+ok: !strcmp( buf, join_res_first[i].one )
 ok: r == ERROR_SUCCESS
-ok: !lstrcmp( buf, join_res_first[i].two )
+ok: !strcmp( buf, join_res_first[i].two )
 ok: count == 2
 ok: r == ERROR_SUCCESS
-ok: !lstrcmp( buf, join_res_first[i].one )
+ok: !strcmp( buf, join_res_first[i].one )
 ok: r == ERROR_SUCCESS
-ok: !lstrcmp( buf, join_res_first[i].two )
+ok: !strcmp( buf, join_res_first[i].two )
 ok: count == 2
 ok: r == ERROR_SUCCESS
-ok: !lstrcmp( buf, join_res_first[i].one )
+ok: !strcmp( buf, join_res_first[i].one )
 ok: r == ERROR_SUCCESS
-ok: !lstrcmp( buf, join_res_first[i].two )
+ok: !strcmp( buf, join_res_first[i].two )
 ok: count == 2
 ok: r == ERROR_SUCCESS
-ok: !lstrcmp( buf, join_res_first[i].one )
+ok: !strcmp( buf, join_res_first[i].one )
 ok: r == ERROR_SUCCESS
-ok: !lstrcmp( buf, join_res_first[i].two )
+ok: !strcmp( buf, join_res_first[i].two )
 ok: i == 5
 ok: r == ERROR_NO_MORE_ITEMS
 ok: r == ERROR_SUCCESS
@@ -875,7 +875,7 @@ ok: r == ERROR_SUCCESS
 ok: r == ERROR_SUCCESS
 ok: r == ERROR_SUCCESS
 ok: r == ERROR_SUCCESS
-ok: !lstrcmp( buf, "epicranius" )
+ok: !strcmp( buf, "epicranius" )
 ok: cond == LIBMSI_CONDITION_ERROR
 ok: res == ERROR_SUCCESS
 ok: res == ERROR_SUCCESS
@@ -1021,10 +1021,10 @@ ok: r == ERROR_SUCCESS
 ok: r == ERROR_SUCCESS
 ok: r == ERROR_SUCCESS
 ok: r == ERROR_SUCCESS
-ok: !lstrcmp(result, "this is text")
+ok: !strcmp(result, "this is text")
 ok: r == ERROR_SUCCESS
 ok: r == ERROR_SUCCESS
-ok: !lstrlen(result)
+ok: !strlen(result)
 ok: r == ERROR_NO_MORE_ITEMS
 ok: r == ERROR_SUCCESS
 ok: r == ERROR_SUCCESS
@@ -1036,10 +1036,10 @@ ok: r == ERROR_SUCCESS
 ok: r == ERROR_SUCCESS
 ok: r == ERROR_SUCCESS
 ok: r == ERROR_SUCCESS
-ok: !lstrcmp(result, "this is text")
+ok: !strcmp(result, "this is text")
 ok: r == ERROR_SUCCESS
 ok: r == ERROR_SUCCESS
-ok: !lstrlen(result)
+ok: !strlen(result)
 ok: r == ERROR_NO_MORE_ITEMS
 ok: r == ERROR_SUCCESS
 ok: r == ERROR_SUCCESS
@@ -1051,13 +1051,13 @@ ok: r == ERROR_SUCCESS
 ok: r == ERROR_SUCCESS
 ok: r == ERROR_SUCCESS
 ok: r == ERROR_SUCCESS
-ok: !lstrcmp(result, "this is text")
+ok: !strcmp(result, "this is text")
 ok: r == ERROR_SUCCESS
 ok: r == ERROR_SUCCESS
-ok: !lstrcmp(result, "this is text")
+ok: !strcmp(result, "this is text")
 ok: r == ERROR_SUCCESS
 ok: r == ERROR_SUCCESS
-ok: !lstrcmp(result, "this is text")
+ok: !strcmp(result, "this is text")
 ok: r == ERROR_NO_MORE_ITEMS
 ok: r == ERROR_SUCCESS
 ok: r == ERROR_SUCCESS
@@ -1092,15 +1092,15 @@ ok: r == ERROR_SUCCESS
 ok: r == ERROR_SUCCESS
 ok: r == ERROR_SUCCESS
 ok: r == ERROR_SUCCESS
-ok: !lstrcmp(buffer, "foo")
+ok: !strcmp(buffer, "foo")
 ok: r == ERROR_SUCCESS
 ok: r == ERROR_SUCCESS
 ok: r == ERROR_SUCCESS
-ok: !lstrcmp(buffer, "baz")
+ok: !strcmp(buffer, "baz")
 ok: r == ERROR_SUCCESS
 ok: r == ERROR_SUCCESS
 ok: r == ERROR_SUCCESS
-ok: !lstrcmp(buffer, "bar")
+ok: !strcmp(buffer, "bar")
 ok: r == ERROR_SUCCESS
 ok: r == ERROR_SUCCESS
 ok: r == ERROR_SUCCESS
@@ -1108,33 +1108,33 @@ ok: r == ERROR_SUCCESS
 ok: r == ERROR_SUCCESS
 ok: r == ERROR_SUCCESS
 ok: r == ERROR_SUCCESS
-ok: !lstrcmp(buffer, "foo")
+ok: !strcmp(buffer, "foo")
 ok: r == ERROR_SUCCESS
-ok: !lstrcmp(buffer, "baz")
+ok: !strcmp(buffer, "baz")
 ok: r == ERROR_SUCCESS
 ok: r == ERROR_SUCCESS
 ok: r == ERROR_SUCCESS
-ok: !lstrcmp(buffer, "baz")
+ok: !strcmp(buffer, "baz")
 ok: r == ERROR_SUCCESS
-ok: !lstrcmp(buffer, "bar")
+ok: !strcmp(buffer, "bar")
 ok: r == ERROR_SUCCESS
 ok: r == ERROR_SUCCESS
 ok: r == ERROR_SUCCESS
-ok: !lstrcmp(buffer, "baz")
+ok: !strcmp(buffer, "baz")
 ok: r == ERROR_SUCCESS
-ok: !lstrcmp(buffer, "baz")
+ok: !strcmp(buffer, "baz")
 ok: r == ERROR_SUCCESS
 ok: r == ERROR_SUCCESS
 ok: r == ERROR_SUCCESS
-ok: !lstrcmp(buffer, "baz")
+ok: !strcmp(buffer, "baz")
 ok: r == ERROR_SUCCESS
-ok: !lstrcmp(buffer, "foo")
+ok: !strcmp(buffer, "foo")
 ok: r == ERROR_SUCCESS
 ok: r == ERROR_SUCCESS
 ok: r == ERROR_SUCCESS
-ok: !lstrcmp(buffer, "bar")
+ok: !strcmp(buffer, "bar")
 ok: r == ERROR_SUCCESS
-ok: !lstrcmp(buffer, "foo")
+ok: !strcmp(buffer, "foo")
 ok: r == ERROR_SUCCESS
 ok: r == ERROR_SUCCESS
 ok: r == ERROR_SUCCESS
@@ -1156,27 +1156,27 @@ ok: r == ERROR_SUCCESS
 ok: r == ERROR_SUCCESS
 ok: r == ERROR_SUCCESS
 ok: r == ERROR_SUCCESS
-ok: !lstrcmp(buffer, "A")
+ok: !strcmp(buffer, "A")
 ok: r == ERROR_SUCCESS
-ok: !lstrcmp(buffer, "B")
+ok: !strcmp(buffer, "B")
 ok: r == ERROR_SUCCESS
 ok: r == ERROR_SUCCESS
 ok: r == ERROR_SUCCESS
-ok: !lstrcmp(buffer, "C")
+ok: !strcmp(buffer, "C")
 ok: r == ERROR_SUCCESS
-ok: !lstrcmp(buffer, "E")
+ok: !strcmp(buffer, "E")
 ok: r == ERROR_SUCCESS
 ok: r == ERROR_SUCCESS
 ok: r == ERROR_SUCCESS
-ok: !lstrcmp(buffer, "D")
+ok: !strcmp(buffer, "D")
 ok: r == ERROR_SUCCESS
-ok: !lstrcmp(buffer, "E")
+ok: !strcmp(buffer, "E")
 ok: r == ERROR_SUCCESS
 ok: r == ERROR_SUCCESS
 ok: r == ERROR_SUCCESS
-ok: !lstrcmp(buffer, "F")
+ok: !strcmp(buffer, "F")
 ok: r == ERROR_SUCCESS
-ok: !lstrcmp(buffer, "A")
+ok: !strcmp(buffer, "A")
 ok: r == ERROR_SUCCESS
 ok: r == ERROR_SUCCESS
 ok: r == ERROR_SUCCESS
@@ -1193,30 +1193,30 @@ ok: r == ERROR_SUCCESS
 ok: r == ERROR_SUCCESS
 ok: r == ERROR_SUCCESS
 ok: r == ERROR_SUCCESS
-ok: !lstrcmp(buf, "apple")
+ok: !strcmp(buf, "apple")
 ok: r == ERROR_SUCCESS
-ok: !lstrcmp(buf, "two")
+ok: !strcmp(buf, "two")
 ok: r == 1
 ok: r == ERROR_SUCCESS
 ok: r == ERROR_SUCCESS
-ok: !lstrcmp(buf, "apple")
+ok: !strcmp(buf, "apple")
 ok: r == ERROR_SUCCESS
-ok: !lstrcmp(buf, "two")
+ok: !strcmp(buf, "two")
 ok: r == 2
 ok: r == ERROR_NO_MORE_ITEMS
 ok: r == ERROR_SUCCESS
 ok: r == ERROR_SUCCESS
 ok: r == ERROR_SUCCESS
 ok: r == ERROR_SUCCESS
-ok: !lstrcmp(buf, "apple")
+ok: !strcmp(buf, "apple")
 ok: r == ERROR_SUCCESS
-ok: !lstrcmp(buf, "two")
+ok: !strcmp(buf, "two")
 ok: r == 2
 ok: r == ERROR_SUCCESS
 ok: r == ERROR_SUCCESS
-ok: !lstrcmp(buf, "banana")
+ok: !strcmp(buf, "banana")
 ok: r == ERROR_SUCCESS
-ok: !lstrcmp(buf, "three")
+ok: !strcmp(buf, "three")
 ok: r == 3
 ok: r == ERROR_NO_MORE_ITEMS
 ok: r == ERROR_SUCCESS
@@ -2057,7 +2057,7 @@ ok: r == ERROR_SUCCESS
 ok: r == 2
 ok: r == 1
 ok: r == ERROR_SUCCESS
-ok: !lstrcmp(buffer, "one")
+ok: !strcmp(buffer, "one")
 ok: r == ERROR_SUCCESS
 ok: r == ERROR_NO_MORE_ITEMS
 ok: r == ERROR_SUCCESS
@@ -2069,13 +2069,13 @@ ok: r == ERROR_SUCCESS
 ok: r == 2
 ok: r == 2
 ok: r == ERROR_SUCCESS
-ok: !lstrcmp(buffer, "two")
+ok: !strcmp(buffer, "two")
 ok: r == ERROR_SUCCESS
 ok: r == ERROR_SUCCESS
 ok: r == 2
 ok: r == 5
 ok: r == ERROR_SUCCESS
-ok: !lstrcmp(buffer, "five")
+ok: !strcmp(buffer, "five")
 ok: r == ERROR_SUCCESS
 ok: r == ERROR_NO_MORE_ITEMS
 ok: r == ERROR_SUCCESS
@@ -2125,9 +2125,9 @@ ok: r == ERROR_SUCCESS
 ok: r == ERROR_SUCCESS
 ok: r == 3
 ok: r == ERROR_SUCCESS
-ok: !lstrcmp(buffer, "Cindy")
+ok: !strcmp(buffer, "Cindy")
 ok: r == ERROR_SUCCESS
-ok: !lstrcmp(buffer, "2937550")
+ok: !strcmp(buffer, "2937550")
 ok: r == ERROR_SUCCESS
 ok: r == ERROR_NO_MORE_ITEMS
 ok: r == ERROR_SUCCESS
@@ -2222,7 +2222,7 @@ ok: r == ERROR_SUCCESS
 ok: r == ERROR_SUCCESS
 ok: r == ERROR_SUCCESS
 ok: r == ERROR_SUCCESS
-ok: !lstrcmp(buffer, "dos")
+ok: !strcmp(buffer, "dos")
 ok: r == 3
 ok: r == ERROR_NO_MORE_ITEMS
 ok: r == ERROR_SUCCESS
@@ -2259,7 +2259,7 @@ ok: r == ERROR_SUCCESS
 ok: r == ERROR_SUCCESS
 ok: r == ERROR_SUCCESS
 ok: r == ERROR_SUCCESS
-ok: !lstrcmpA(buf, "two")
+ok: !strcmp(buf, "two")
 ok: r == ERROR_NO_MORE_ITEMS
 ok: r == ERROR_SUCCESS
 ok: r == ERROR_SUCCESS
@@ -2274,14 +2274,14 @@ ok: r == ERROR_SUCCESS
 ok: r == ERROR_SUCCESS
 ok: r == ERROR_SUCCESS
 ok: r == ERROR_SUCCESS
-ok: !lstrcmp(buf, "This is a \"string\" ok")
+ok: !strcmp(buf, "This is a \"string\" ok")
 ok: r == ERROR_NO_MORE_ITEMS
 ok: r == ERROR_SUCCESS
 ok: r == ERROR_SUCCESS
 ok: r == ERROR_SUCCESS
 ok: r == ERROR_SUCCESS
 ok: r == ERROR_SUCCESS
-ok: !lstrcmp(buf, "This is a new 'string' ok")
+ok: !strcmp(buf, "This is a new 'string' ok")
 ok: r == ERROR_NO_MORE_ITEMS
 ok: r == ERROR_SUCCESS
 ok: r == ERROR_BAD_QUERY_SYNTAX
@@ -2314,13 +2314,13 @@ ok: r == ERROR_SUCCESS
 ok: r == ERROR_SUCCESS
 ok: r == ERROR_SUCCESS
 ok: r == ERROR_SUCCESS
-ok: !lstrcmpA(buf, "\rOne")
+ok: !strcmp(buf, "\rOne")
 ok: r == ERROR_SUCCESS
 ok: r == ERROR_SUCCESS
-ok: !lstrcmpA(buf, "Tw\ro")
+ok: !strcmp(buf, "Tw\ro")
 ok: r == ERROR_SUCCESS
 ok: r == ERROR_SUCCESS
-ok: !lstrcmpA(buf, "Three\r")
+ok: !strcmp(buf, "Three\r")
 ok: r == ERROR_NO_MORE_ITEMS
 ok: r == ERROR_SUCCESS
 ok: r == ERROR_BAD_QUERY_SYNTAX
@@ -2331,34 +2331,34 @@ ok: r == ERROR_SUCCESS
 ok: r == ERROR_SUCCESS
 ok: r == ERROR_SUCCESS
 ok: r == ERROR_SUCCESS
-ok: !lstrcmpA(buf, "Table")
+ok: !strcmp(buf, "Table")
 ok: r == ERROR_SUCCESS
 ok: r == ERROR_SUCCESS
-ok: !lstrcmpA(buf, "Table2")
+ok: !strcmp(buf, "Table2")
 ok: r == ERROR_SUCCESS
 ok: r == ERROR_SUCCESS
-ok: !lstrcmpA(buf, "Table3")
+ok: !strcmp(buf, "Table3")
 ok: r == ERROR_NO_MORE_ITEMS
 ok: r == ERROR_SUCCESS
 ok: r == ERROR_SUCCESS
 ok: r == ERROR_SUCCESS
 ok: r == ERROR_SUCCESS
-ok: !lstrcmpA(buf, "Table")
+ok: !strcmp(buf, "Table")
 ok: r == 1
 ok: r == ERROR_SUCCESS
-ok: !lstrcmpA(buf, "A")
+ok: !strcmp(buf, "A")
 ok: r == ERROR_SUCCESS
 ok: r == ERROR_SUCCESS
-ok: !lstrcmpA(buf, "Table2")
+ok: !strcmp(buf, "Table2")
 ok: r == 1
 ok: r == ERROR_SUCCESS
-ok: !lstrcmpA(buf, "A")
+ok: !strcmp(buf, "A")
 ok: r == ERROR_SUCCESS
 ok: r == ERROR_SUCCESS
-ok: !lstrcmpA(buf, "Table3")
+ok: !strcmp(buf, "Table3")
 ok: r == 1
 ok: r == ERROR_SUCCESS
-ok: !lstrcmpA(buf, "A")
+ok: !strcmp(buf, "A")
 ok: r == ERROR_NO_MORE_ITEMS
 ok: r == ERROR_BAD_QUERY_SYNTAX
 ok: r == ERROR_SUCCESS
@@ -2373,7 +2373,7 @@ ok: r == ERROR_SUCCESS
 ok: r == ERROR_SUCCESS
 ok: r == ERROR_SUCCESS
 ok: r == ERROR_SUCCESS
-ok: !lstrcmpA(buf, "hi")
+ok: !strcmp(buf, "hi")
 ok: r == ERROR_NO_MORE_ITEMS
 ok: r == ERROR_SUCCESS
 ok: r == ERROR_BAD_QUERY_SYNTAX
@@ -2384,10 +2384,10 @@ ok: r == ERROR_BAD_QUERY_SYNTAX
 ok: r == ERROR_SUCCESS
 ok: r == ERROR_BAD_QUERY_SYNTAX
 ok: r == ERROR_SUCCESS
-ok: !lstrcmpA(buffer, "\r\n\r\n0\t_ForceCodepage\r\n")
+ok: !strcmp(buffer, "\r\n\r\n0\t_ForceCodepage\r\n")
 ok: r == ERROR_SUCCESS
 ok: r == ERROR_SUCCESS
-ok: !lstrcmpA(buffer, "\r\n\r\n850\t_ForceCodepage\r\n")
+ok: !strcmp(buffer, "\r\n\r\n850\t_ForceCodepage\r\n")
 ok: r == ERROR_FUNCTION_FAILED
 ok: r == ERROR_SUCCESS
 ok: r == ERROR_SUCCESS
@@ -2398,7 +2398,7 @@ ok: r == ERROR_SUCCESS
 ok: r == ERROR_SUCCESS
 ok: r == ERROR_SUCCESS
 ok: r == ERROR_SUCCESS
-ok: !lstrcmpA(buffer, "hi")
+ok: !strcmp(buffer, "hi")
 ok: size == 2
 ok: r == 2
 ok: r == ERROR_SUCCESS
@@ -2409,7 +2409,7 @@ ok: r == ERROR_SUCCESS
 ok: r == ERROR_SUCCESS
 ok: r == ERROR_SUCCESS
 ok: r == ERROR_SUCCESS
-ok: !lstrcmpA(buffer, "hello")
+ok: !strcmp(buffer, "hello")
 ok: size == 5
 ok: r == 2
 ok: r == ERROR_SUCCESS
@@ -2452,9 +2452,9 @@ ok: r == ERROR_SUCCESS
 ok: r == ERROR_SUCCESS
 ok: r == ERROR_SUCCESS
 ok: r == ERROR_SUCCESS
-ok: !lstrcmp(file, "stgname")
+ok: !strcmp(file, "stgname")
 ok: r == ERROR_INVALID_DATA
-ok: !lstrcmp(buf, "apple")
+ok: !strcmp(buf, "apple")
 ok: size == 0
 ok: r == ERROR_NO_MORE_ITEMS
 ok: hr == S_OK
@@ -2465,7 +2465,7 @@ ok: hr == S_OK
 ok: stm != NULL
 ok: hr == S_OK
 ok: size == 8
-ok: !lstrcmpA(buf, "stgdata")
+ok: !strcmp(buf, "stgdata")
 ok: r == ERROR_SUCCESS
 ok: r == ERROR_SUCCESS
 ok: r == ERROR_NO_MORE_ITEMS
@@ -2473,15 +2473,15 @@ ok: r == ERROR_SUCCESS
 ok: r == ERROR_SUCCESS
 ok: r == ERROR_SUCCESS
 ok: r == ERROR_SUCCESS
-ok: !lstrcmpA(buf, "One")
+ok: !strcmp(buf, "One")
 ok: r == ERROR_SUCCESS
 ok: r == ERROR_SUCCESS
 ok: r == ERROR_SUCCESS
 ok: r == ERROR_SUCCESS
-ok: !lstrcmpA(buf, "One")
+ok: !strcmp(buf, "One")
 ok: r == 1
 ok: r == ERROR_SUCCESS
-ok: !lstrcmpA(buf, "A")
+ok: !strcmp(buf, "A")
 ok: r == ERROR_NO_MORE_ITEMS
 ok: r == ERROR_BAD_QUERY_SYNTAX
 ok: r == ERROR_BAD_QUERY_SYNTAX
@@ -2501,21 +2501,21 @@ ok: r == ERROR_SUCCESS
 ok: r == ERROR_SUCCESS
 ok: r == ERROR_SUCCESS
 ok: r == ERROR_SUCCESS
-ok: !lstrcmpA(buf, "One")
+ok: !strcmp(buf, "One")
 ok: r == ERROR_SUCCESS
 ok: r == ERROR_SUCCESS
 ok: r == ERROR_SUCCESS
 ok: r == ERROR_SUCCESS
-ok: !lstrcmpA(buf, "One")
+ok: !strcmp(buf, "One")
 ok: r == 1
 ok: r == ERROR_SUCCESS
-ok: !lstrcmpA(buf, "B")
+ok: !strcmp(buf, "B")
 ok: r == ERROR_SUCCESS
 ok: r == ERROR_SUCCESS
-ok: !lstrcmpA(buf, "One")
+ok: !strcmp(buf, "One")
 ok: r == 2
 ok: r == ERROR_SUCCESS
-ok: !lstrcmpA(buf, "C")
+ok: !strcmp(buf, "C")
 ok: r == ERROR_NO_MORE_ITEMS
 ok: r == ERROR_SUCCESS
 ok: r == ERROR_BAD_QUERY_SYNTAX
@@ -2623,133 +2623,133 @@ ok: r == ERROR_SUCCESS
 ok: r == ERROR_SUCCESS
 ok: r == ERROR_SUCCESS
 ok: r == ERROR_SUCCESS
-ok: !lstrcmpA("s255", buf)
+ok: !strcmp("s255", buf)
 ok: r == ERROR_SUCCESS
-ok: !lstrcmpA("I2", buf)
+ok: !strcmp("I2", buf)
 ok: r == ERROR_SUCCESS
-ok: !lstrcmpA("S255", buf)
+ok: !strcmp("S255", buf)
 ok: r == ERROR_SUCCESS
-ok: !lstrcmpA("i2", buf)
+ok: !strcmp("i2", buf)
 ok: r == ERROR_SUCCESS
-ok: !lstrcmpA("i2", buf)
-ok: r == ERROR_SUCCESS
-ok: r == ERROR_SUCCESS
-ok: !lstrcmpA("D", buf)
-ok: r == ERROR_SUCCESS
-ok: !lstrcmpA("E", buf)
-ok: r == ERROR_SUCCESS
-ok: !lstrcmpA("A", buf)
-ok: r == ERROR_SUCCESS
-ok: !lstrcmpA("C", buf)
-ok: r == ERROR_SUCCESS
-ok: !lstrcmpA("B", buf)
+ok: !strcmp("i2", buf)
 ok: r == ERROR_SUCCESS
 ok: r == ERROR_SUCCESS
+ok: !strcmp("D", buf)
 ok: r == ERROR_SUCCESS
-ok: !lstrcmpA("bc", buf)
+ok: !strcmp("E", buf)
+ok: r == ERROR_SUCCESS
+ok: !strcmp("A", buf)
+ok: r == ERROR_SUCCESS
+ok: !strcmp("C", buf)
+ok: r == ERROR_SUCCESS
+ok: !strcmp("B", buf)
+ok: r == ERROR_SUCCESS
+ok: r == ERROR_SUCCESS
+ok: r == ERROR_SUCCESS
+ok: !strcmp("bc", buf)
 ok: r == 3
 ok: r == ERROR_SUCCESS
-ok: !lstrcmpA("a", buf)
+ok: !strcmp("a", buf)
 ok: r == 2
 ok: r == 1
 ok: r == ERROR_SUCCESS
 ok: r == ERROR_SUCCESS
 ok: r == ERROR_SUCCESS
 ok: r == ERROR_SUCCESS
-ok: !lstrcmpA("T", buf)
+ok: !strcmp("T", buf)
 ok: r == 1
 ok: r == ERROR_SUCCESS
-ok: !lstrcmpA("D", buf)
+ok: !strcmp("D", buf)
 ok: r == ERROR_SUCCESS
 ok: r == ERROR_SUCCESS
-ok: !lstrcmpA("T", buf)
+ok: !strcmp("T", buf)
 ok: r == 2
 ok: r == ERROR_SUCCESS
-ok: !lstrcmpA("E", buf)
+ok: !strcmp("E", buf)
 ok: r == ERROR_SUCCESS
 ok: r == ERROR_SUCCESS
-ok: !lstrcmpA("T", buf)
+ok: !strcmp("T", buf)
 ok: r == 3
 ok: r == ERROR_SUCCESS
-ok: !lstrcmpA("A", buf)
+ok: !strcmp("A", buf)
 ok: r == ERROR_SUCCESS
 ok: r == ERROR_SUCCESS
-ok: !lstrcmpA("T", buf)
+ok: !strcmp("T", buf)
 ok: r == 4
 ok: r == ERROR_SUCCESS
-ok: !lstrcmpA("C", buf)
+ok: !strcmp("C", buf)
 ok: r == ERROR_SUCCESS
 ok: r == ERROR_SUCCESS
-ok: !lstrcmpA("T", buf)
+ok: !strcmp("T", buf)
 ok: r == 5
 ok: r == ERROR_SUCCESS
-ok: !lstrcmpA("B", buf)
+ok: !strcmp("B", buf)
 ok: r == ERROR_NO_MORE_ITEMS
 ok: r == ERROR_SUCCESS
 ok: r == ERROR_SUCCESS
 ok: r == ERROR_SUCCESS
 ok: r == ERROR_SUCCESS
-ok: !lstrcmpA("i2", buf)
+ok: !strcmp("i2", buf)
 ok: r == ERROR_SUCCESS
-ok: !lstrcmpA("S255", buf)
+ok: !strcmp("S255", buf)
 ok: r == ERROR_SUCCESS
-ok: !lstrcmpA("s255", buf)
+ok: !strcmp("s255", buf)
 ok: r == ERROR_SUCCESS
-ok: !lstrcmpA("I2", buf)
+ok: !strcmp("I2", buf)
 ok: r == ERROR_SUCCESS
-ok: !lstrcmpA("i2", buf)
+ok: !strcmp("i2", buf)
 ok: r == ERROR_SUCCESS
 ok: r == ERROR_SUCCESS
-ok: !lstrcmpA("C", buf)
+ok: !strcmp("C", buf)
 ok: r == ERROR_SUCCESS
-ok: !lstrcmpA("A", buf)
+ok: !strcmp("A", buf)
 ok: r == ERROR_SUCCESS
-ok: !lstrcmpA("D", buf)
+ok: !strcmp("D", buf)
 ok: r == ERROR_SUCCESS
-ok: !lstrcmpA("E", buf)
+ok: !strcmp("E", buf)
 ok: r == ERROR_SUCCESS
-ok: !lstrcmpA("B", buf)
+ok: !strcmp("B", buf)
 ok: r == ERROR_SUCCESS
 ok: r == ERROR_SUCCESS
 ok: r == 2
 ok: r == ERROR_SUCCESS
-ok: !lstrcmpA("a", buf)
+ok: !strcmp("a", buf)
 ok: r == ERROR_SUCCESS
-ok: !lstrcmpA("bc", buf)
+ok: !strcmp("bc", buf)
 ok: r == 3
 ok: r == 1
 ok: r == ERROR_SUCCESS
 ok: r == ERROR_SUCCESS
 ok: r == ERROR_SUCCESS
 ok: r == ERROR_SUCCESS
-ok: !lstrcmpA("T", buf)
+ok: !strcmp("T", buf)
 ok: r == 1
 ok: r == ERROR_SUCCESS
-ok: !lstrcmpA("D", buf)
+ok: !strcmp("D", buf)
 ok: r == ERROR_SUCCESS
 ok: r == ERROR_SUCCESS
-ok: !lstrcmpA("T", buf)
+ok: !strcmp("T", buf)
 ok: r == 2
 ok: r == ERROR_SUCCESS
-ok: !lstrcmpA("E", buf)
+ok: !strcmp("E", buf)
 ok: r == ERROR_SUCCESS
 ok: r == ERROR_SUCCESS
-ok: !lstrcmpA("T", buf)
+ok: !strcmp("T", buf)
 ok: r == 3
 ok: r == ERROR_SUCCESS
-ok: !lstrcmpA("A", buf)
+ok: !strcmp("A", buf)
 ok: r == ERROR_SUCCESS
 ok: r == ERROR_SUCCESS
-ok: !lstrcmpA("T", buf)
+ok: !strcmp("T", buf)
 ok: r == 4
 ok: r == ERROR_SUCCESS
-ok: !lstrcmpA("C", buf)
+ok: !strcmp("C", buf)
 ok: r == ERROR_SUCCESS
 ok: r == ERROR_SUCCESS
-ok: !lstrcmpA("T", buf)
+ok: !strcmp("T", buf)
 ok: r == 5
 ok: r == ERROR_SUCCESS
-ok: !lstrcmpA("B", buf)
+ok: !strcmp("B", buf)
 ok: r == ERROR_NO_MORE_ITEMS
 ok: r == ERROR_SUCCESS
 ok: r == ERROR_SUCCESS
@@ -2841,14 +2841,14 @@ ok: r == ERROR_SUCCESS
 ok: r == ERROR_SUCCESS
 ok: r == ERROR_SUCCESS
 ok: r == ERROR_SUCCESS
-ok: !lstrcmp(buffer, "\2")
+ok: !strcmp(buffer, "\2")
 ok: r == ERROR_SUCCESS
-ok: !lstrcmp(buffer, "A")
+ok: !strcmp(buffer, "A")
 ok: r == ERROR_SUCCESS
 ok: r == ERROR_SUCCESS
-ok: !lstrcmp(buffer, "\1")
+ok: !strcmp(buffer, "\1")
 ok: r == ERROR_SUCCESS
-ok: !lstrcmp(buffer, "B")
+ok: !strcmp(buffer, "B")
 ok: r == ERROR_SUCCESS
 ok: r == ERROR_SUCCESS
 ok: !memcmp(bufferW, letter_a_ring, sizeof(letter_a_ring))
@@ -2900,7 +2900,7 @@ ok: !buffer[0]
 ok: r == ERROR_SUCCESS
 ok: r == 1
 ok: r == ERROR_SUCCESS
-ok: !lstrcmpA( buffer, "f0" )
+ok: !strcmp( buffer, "f0" )
 ok: r == ERROR_SUCCESS
 ok: !buffer[0]
 ok: r == ERROR_SUCCESS
@@ -2912,7 +2912,7 @@ ok: r == ERROR_SUCCESS
 ok: r == ERROR_SUCCESS
 ok: r == 2
 ok: r == ERROR_SUCCESS
-ok: !lstrcmpA( buffer, "1" )
+ok: !strcmp( buffer, "1" )
 ok: r == ERROR_SUCCESS
 ok: r == ERROR_SUCCESS
 ok: !buffer[0]
@@ -2924,30 +2924,30 @@ ok: r == 2
 ok: r == ERROR_SUCCESS
 ok: !buffer[0]
 ok: r == ERROR_SUCCESS
-ok: !lstrcmpA( buffer, "1" )
+ok: !strcmp( buffer, "1" )
 ok: r == ERROR_SUCCESS
 ok: r == ERROR_SUCCESS
 ok: !buffer[0]
 ok: r == ERROR_SUCCESS
-ok: !lstrcmpA( buffer, "3" )
+ok: !strcmp( buffer, "3" )
 ok: r == ERROR_NO_MORE_ITEMS
 ok: r == ERROR_SUCCESS
 ok: r == ERROR_SUCCESS
 ok: r == ERROR_SUCCESS
 ok: r == 3
 ok: r == ERROR_SUCCESS
-ok: !lstrcmpA( buffer, "1" )
+ok: !strcmp( buffer, "1" )
 ok: r == ERROR_SUCCESS
 ok: !buffer[0]
 ok: r == ERROR_SUCCESS
-ok: !lstrcmpA( buffer, "2" )
+ok: !strcmp( buffer, "2" )
 ok: r == ERROR_SUCCESS
 ok: r == ERROR_SUCCESS
-ok: !lstrcmpA( buffer, "3" )
+ok: !strcmp( buffer, "3" )
 ok: r == ERROR_SUCCESS
 ok: !buffer[0]
 ok: r == ERROR_SUCCESS
-ok: !lstrcmpA( buffer, "4" )
+ok: !strcmp( buffer, "4" )
 ok: r == ERROR_NO_MORE_ITEMS
 ok: r == ERROR_SUCCESS
 ok: r == ERROR_BAD_QUERY_SYNTAX

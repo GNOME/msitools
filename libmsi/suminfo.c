@@ -324,7 +324,7 @@ static unsigned write_filetime( uint8_t *data, unsigned ofs, const FILETIME *ft 
 
 static unsigned write_string( uint8_t *data, unsigned ofs, const char *str )
 {
-    unsigned len = lstrlenA( str ) + 1;
+    unsigned len = strlen( str ) + 1;
     write_dword( data, ofs, len );
     if( data )
         memcpy( &data[ofs + 4], str, len );
@@ -582,9 +582,9 @@ static unsigned get_prop( LibmsiObject *handle, unsigned uiProperty, unsigned *p
             }
             else
             {
-                len = lstrlenA( prop->pszVal );
+                len = strlen( prop->pszVal );
                 if( str->str.a )
-                    lstrcpynA(str->str.a, prop->pszVal, *pcchValueBuf );
+                    strcpynA(str->str.a, prop->pszVal, *pcchValueBuf );
             }
             if (len >= *pcchValueBuf)
                 ret = ERROR_MORE_DATA;
@@ -722,9 +722,9 @@ static unsigned set_prop( LibmsiSummaryInfo *si, unsigned uiProperty, unsigned t
         }
         else
         {
-            len = lstrlenA( str->str.a ) + 1;
+            len = strlen( str->str.a ) + 1;
             prop->pszVal = msi_alloc( len );
-            lstrcpyA( prop->pszVal, str->str.a );
+            strcpy( prop->pszVal, str->str.a );
         }
         break;
     }

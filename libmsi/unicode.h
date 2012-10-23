@@ -56,6 +56,20 @@ static inline WCHAR *strcpyW( WCHAR *dst, const WCHAR *src )
 /* strncpy doesn't do what you think, don't use it */
 #define strncpyW(d,s,n) error do_not_use_strncpyW_use_lstrcpynW_or_memcpy_instead
 
+static inline WCHAR *strcpynW( WCHAR *dst, const WCHAR *src, unsigned count )
+{
+    WCHAR *d = dst;
+    const WCHAR *s = src;
+
+    while ((count > 1) && *s)
+    {
+        count--;
+        *d++ = *s++;
+    }
+    if (count) *d = 0;
+    return dst;
+}
+
 static inline int strcmpW( const WCHAR *str1, const WCHAR *str2 )
 {
     while (*str1 && (*str1 == *str2)) { str1++; str2++; }

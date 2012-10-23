@@ -389,9 +389,9 @@ unsigned MSI_RecordGetStringA(LibmsiRecord *rec, unsigned iField,
     {
     case LIBMSI_FIELD_TYPE_INT:
         wsprintfA(buffer, "%d", rec->fields[iField].u.iVal);
-        len = lstrlenA( buffer );
+        len = strlen( buffer );
         if (szValue)
-            lstrcpynA(szValue, buffer, *pcchValue);
+            strcpynA(szValue, buffer, *pcchValue);
         break;
     case LIBMSI_FIELD_TYPE_WSTR:
         len = WideCharToMultiByte( CP_ACP, 0, rec->fields[iField].u.szwVal, -1,
@@ -472,14 +472,14 @@ unsigned MSI_RecordGetStringW(LibmsiRecord *rec, unsigned iField,
     {
     case LIBMSI_FIELD_TYPE_INT:
         wsprintfW(buffer, szFormat, rec->fields[iField].u.iVal);
-        len = lstrlenW( buffer );
+        len = strlenW( buffer );
         if (szValue)
-            lstrcpynW(szValue, buffer, *pcchValue);
+            strcpynW(szValue, buffer, *pcchValue);
         break;
     case LIBMSI_FIELD_TYPE_WSTR:
-        len = lstrlenW( rec->fields[iField].u.szwVal );
+        len = strlenW( rec->fields[iField].u.szwVal );
         if (szValue)
-            lstrcpynW(szValue, rec->fields[iField].u.szwVal, *pcchValue);
+            strcpynW(szValue, rec->fields[iField].u.szwVal, *pcchValue);
         break;
     case LIBMSI_FIELD_TYPE_NULL:
         if( szValue && *pcchValue > 0 )
@@ -538,7 +538,7 @@ static unsigned MSI_RecordDataSize(LibmsiRecord *rec, unsigned iField)
     case LIBMSI_FIELD_TYPE_INT:
         return sizeof (int);
     case LIBMSI_FIELD_TYPE_WSTR:
-        return lstrlenW( rec->fields[iField].u.szwVal );
+        return strlenW( rec->fields[iField].u.szwVal );
     case LIBMSI_FIELD_TYPE_NULL:
         break;
     case LIBMSI_FIELD_TYPE_STREAM:

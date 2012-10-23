@@ -133,7 +133,7 @@ WCHAR *encode_streamname(bool bTable, const WCHAR *in)
     WCHAR *p;
 
     if( !bTable )
-        count = lstrlenW( in )+2;
+        count = strlenW( in )+2;
     if (!(out = msi_alloc( count*sizeof(WCHAR) ))) return NULL;
     p = out;
 
@@ -597,7 +597,7 @@ static unsigned get_table( LibmsiDatabase *db, const WCHAR *name, LibmsiTable **
     }
 
     /* nonexistent tables should be interpreted as empty tables */
-    table = msi_alloc( sizeof(LibmsiTable) + lstrlenW( name ) * sizeof(WCHAR) );
+    table = msi_alloc( sizeof(LibmsiTable) + strlenW( name ) * sizeof(WCHAR) );
     if (!table)
         return ERROR_FUNCTION_FAILED;
 
@@ -607,7 +607,7 @@ static unsigned get_table( LibmsiDatabase *db, const WCHAR *name, LibmsiTable **
     table->colinfo = NULL;
     table->col_count = 0;
     table->persistent = LIBMSI_CONDITION_TRUE;
-    lstrcpyW( table->name, name );
+    strcpyW( table->name, name );
 
     if (!strcmpW( name, szTables ) || !strcmpW( name, szColumns ))
         table->persistent = LIBMSI_CONDITION_NONE;
@@ -734,7 +734,7 @@ unsigned msi_create_table( LibmsiDatabase *db, const WCHAR *name, column_info *c
         return ERROR_BAD_QUERY_SYNTAX;
     }
 
-    table = msi_alloc( sizeof (LibmsiTable) + lstrlenW(name)*sizeof (WCHAR) );
+    table = msi_alloc( sizeof (LibmsiTable) + strlenW(name)*sizeof (WCHAR) );
     if( !table )
         return ERROR_FUNCTION_FAILED;
 
@@ -745,7 +745,7 @@ unsigned msi_create_table( LibmsiDatabase *db, const WCHAR *name, column_info *c
     table->colinfo = NULL;
     table->col_count = 0;
     table->persistent = persistent;
-    lstrcpyW( table->name, name );
+    strcpyW( table->name, name );
 
     for( col = col_info; col; col = col->next )
         table->col_count++;
@@ -1064,7 +1064,7 @@ static unsigned msi_stream_name( const LibmsiTableVIEW *tv, unsigned row, WCHAR 
 
     TRACE("%p %d\n", tv, row);
 
-    len = lstrlenW( tv->name ) + 1;
+    len = strlenW( tv->name ) + 1;
     stname = msi_alloc( len*sizeof(WCHAR) );
     if ( !stname )
     {
@@ -1072,7 +1072,7 @@ static unsigned msi_stream_name( const LibmsiTableVIEW *tv, unsigned row, WCHAR 
        goto err;
     }
 
-    lstrcpyW( stname, tv->name );
+    strcpyW( stname, tv->name );
 
     for ( i = 0; i < tv->num_cols; i++ )
     {
@@ -1115,7 +1115,7 @@ static unsigned msi_stream_name( const LibmsiTableVIEW *tv, unsigned row, WCHAR 
                 sval = number;
             }
 
-            len += lstrlenW( szDot ) + lstrlenW( sval );
+            len += strlenW( szDot ) + strlenW( sval );
             p = msi_realloc ( stname, len*sizeof(WCHAR) );
             if ( !p )
             {
@@ -1124,8 +1124,8 @@ static unsigned msi_stream_name( const LibmsiTableVIEW *tv, unsigned row, WCHAR 
             }
             stname = p;
 
-            lstrcatW( stname, szDot );
-            lstrcatW( stname, sval );
+            strcatW( stname, szDot );
+            strcatW( stname, sval );
         }
         else
            continue;
@@ -2140,7 +2140,7 @@ unsigned TABLE_CreateView( LibmsiDatabase *db, const WCHAR *name, LibmsiView **v
     else if ( !strcmpW( name, szStorages ) )
         return STORAGES_CreateView( db, view );
 
-    sz = sizeof *tv + lstrlenW(name)*sizeof name[0] ;
+    sz = sizeof *tv + strlenW(name)*sizeof name[0] ;
     tv = msi_alloc_zero( sz );
     if( !tv )
         return ERROR_FUNCTION_FAILED;
@@ -2165,7 +2165,7 @@ unsigned TABLE_CreateView( LibmsiDatabase *db, const WCHAR *name, LibmsiView **v
     TRACE("%s one row is %d bytes\n", debugstr_w(name), tv->row_size );
 
     *view = (LibmsiView*) tv;
-    lstrcpyW( tv->name, name );
+    strcpyW( tv->name, name );
 
     return ERROR_SUCCESS;
 }
@@ -2242,7 +2242,7 @@ static unsigned msi_record_encoded_stream_name( const LibmsiTableVIEW *tv, Libms
 
     TRACE("%p %p\n", tv, rec);
 
-    len = lstrlenW( tv->name ) + 1;
+    len = strlenW( tv->name ) + 1;
     stname = msi_alloc( len*sizeof(WCHAR) );
     if ( !stname )
     {
@@ -2250,7 +2250,7 @@ static unsigned msi_record_encoded_stream_name( const LibmsiTableVIEW *tv, Libms
        goto err;
     }
 
-    lstrcpyW( stname, tv->name );
+    strcpyW( stname, tv->name );
 
     for ( i = 0; i < tv->num_cols; i++ )
     {
@@ -2263,7 +2263,7 @@ static unsigned msi_record_encoded_stream_name( const LibmsiTableVIEW *tv, Libms
                 goto err;
             }
 
-            len += lstrlenW( szDot ) + lstrlenW ( sval );
+            len += strlenW( szDot ) + strlenW ( sval );
             p = msi_realloc ( stname, len*sizeof(WCHAR) );
             if ( !p )
             {
@@ -2272,8 +2272,8 @@ static unsigned msi_record_encoded_stream_name( const LibmsiTableVIEW *tv, Libms
             }
             stname = p;
 
-            lstrcatW( stname, szDot );
-            lstrcatW( stname, sval );
+            strcatW( stname, szDot );
+            strcatW( stname, sval );
 
             msi_free( sval );
         }
@@ -2626,7 +2626,7 @@ static unsigned msi_table_load_transform( LibmsiDatabase *db, IStorage *stg,
                     if (strcmpW( coltable, table ))
                     {
                         colcol = 0;
-                        lstrcpyW( coltable, table );
+                        strcpyW( coltable, table );
                     }
 
                     /* fix nul column numbers */

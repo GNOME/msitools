@@ -397,17 +397,17 @@ static void test_MsiRecordGetString(void)
     ok(sz == 0, "Expected 0, got %d\n",sz);
 
     sz = MAX_PATH;
-    lstrcpyA(buf, "apple");
+    strcpy(buf, "apple");
     r = MsiRecordGetString(rec, 1, buf, &sz);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-    ok(!lstrcmpA(buf, ""), "Expected \"\", got \"%s\"\n", buf);
+    ok(!strcmp(buf, ""), "Expected \"\", got \"%s\"\n", buf);
     ok(sz == 0, "Expected 0, got %d\n", sz);
 
     sz = MAX_PATH;
-    lstrcpyA(buf, "apple");
+    strcpy(buf, "apple");
     r = MsiRecordGetString(rec, 10, buf, &sz);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-    ok(!lstrcmpA(buf, ""), "Expected \"\", got \"%s\"\n", buf);
+    ok(!strcmp(buf, ""), "Expected \"\", got \"%s\"\n", buf);
     ok(sz == 0, "Expected 0, got %d\n", sz);
 
     MsiCloseHandle(rec);
@@ -424,20 +424,20 @@ static void test_MsiRecordGetString(void)
     ok(sz == 1, "Expected 1, got %d\n",sz);
 
     sz = MAX_PATH;
-    lstrcpyA(buf, "apple");
+    strcpy(buf, "apple");
     r = MsiRecordGetString(rec, 1, buf, &sz);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-    ok(!lstrcmpA(buf, "5"), "Expected \"5\", got \"%s\"\n", buf);
+    ok(!strcmp(buf, "5"), "Expected \"5\", got \"%s\"\n", buf);
     ok(sz == 1, "Expectd 1, got %d\n", sz);
 
     r = MsiRecordSetInteger(rec, 1, -5);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     sz = MAX_PATH;
-    lstrcpyA(buf, "apple");
+    strcpy(buf, "apple");
     r = MsiRecordGetString(rec, 1, buf, &sz);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-    ok(!lstrcmpA(buf, "-5"), "Expected \"-5\", got \"%s\"\n", buf);
+    ok(!strcmp(buf, "-5"), "Expected \"-5\", got \"%s\"\n", buf);
     ok(sz == 2, "Expectd 2, got %d\n", sz);
 
     MsiCloseHandle(rec);
@@ -490,10 +490,10 @@ static void test_fieldzero(void)
     ok(r == MSI_NULL_INTEGER, "Expected MSI_NULL_INTEGER, got %d\n", r);
 
     sz = MAX_PATH;
-    lstrcpyA(buf, "apple");
+    strcpy(buf, "apple");
     r = MsiRecordGetString(rec, 0, buf, &sz);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-    ok(!lstrcmpA(buf, ""), "Expected \"\", got \"%s\"\n", buf);
+    ok(!strcmp(buf, ""), "Expected \"\", got \"%s\"\n", buf);
     ok(sz == 0, "Expectd 0, got %d\n", sz);
 
     r = MsiRecordIsNull(rec, 0);
@@ -509,10 +509,10 @@ static void test_fieldzero(void)
     ok(r == MSI_NULL_INTEGER, "Expected MSI_NULL_INTEGER, got %d\n", r);
 
     sz = MAX_PATH;
-    lstrcpyA(buf, "apple");
+    strcpy(buf, "apple");
     r = MsiRecordGetString(rec, 0, buf, &sz);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-    ok(!lstrcmpA(buf, ""), "Expected \"\", got \"%s\"\n", buf);
+    ok(!strcmp(buf, ""), "Expected \"\", got \"%s\"\n", buf);
     ok(sz == 0, "Expectd 0, got %d\n", sz);
 
     r = MsiRecordIsNull(rec, 0);
@@ -528,20 +528,20 @@ static void test_fieldzero(void)
     ok(r == MSI_NULL_INTEGER, "Expected MSI_NULL_INTEGER, got %d\n", r);
 
     sz = MAX_PATH;
-    lstrcpyA(buf, "apple");
+    strcpy(buf, "apple");
     r = MsiRecordGetString(rec, 0, buf, &sz);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-    ok(!lstrcmpA(buf, ""), "Expected \"\", got \"%s\"\n", buf);
+    ok(!strcmp(buf, ""), "Expected \"\", got \"%s\"\n", buf);
     ok(sz == 0, "Expectd 0, got %d\n", sz);
 
     r = MsiRecordIsNull(rec, 0);
     ok(r == true, "Expected true, got %d\n", r);
 
     sz = MAX_PATH;
-    lstrcpyA(buf, "apple");
+    strcpy(buf, "apple");
     r = MsiRecordGetString(rec, 1, buf, &sz);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-    ok(!lstrcmpA(buf, "bologna"), "Expected \"bologna\", got \"%s\"\n", buf);
+    ok(!strcmp(buf, "bologna"), "Expected \"bologna\", got \"%s\"\n", buf);
     ok(sz == 7, "Expectd 7, got %d\n", sz);
 
     MsiCloseHandle(rec);
@@ -580,10 +580,10 @@ static void test_fieldzero(void)
     ok(r == MSI_NULL_INTEGER, "Expected MSI_NULL_INTEGER, got %d\n", r);
 
     sz = MAX_PATH;
-    lstrcpyA(buf, "apple");
+    strcpy(buf, "apple");
     r = MsiRecordGetString(rec, 0, buf, &sz);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-    ok(!lstrcmpA(buf, "drone"), "Expected \"drone\", got \"%s\"\n", buf);
+    ok(!strcmp(buf, "drone"), "Expected \"drone\", got \"%s\"\n", buf);
     ok(sz == 5, "Expectd 5, got %d\n", sz);
 
     r = MsiRecordIsNull(rec, 0);

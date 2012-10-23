@@ -549,6 +549,20 @@ static inline bool msi_free( void *mem )
     free(mem);
 }
 
+static inline char *strcpynA( char *dst, const char *src, unsigned count )
+{
+    char *d = dst;
+    const char *s = src;
+
+    while ((count > 1) && *s)
+    {
+        count--;
+        *d++ = *s++;
+    }
+    if (count) *d = 0;
+    return dst;
+}
+
 static inline char *strdupWtoA( const WCHAR *str )
 {
     char *ret = NULL;
@@ -579,9 +593,9 @@ static inline WCHAR *strdupW( const WCHAR *src )
 {
     WCHAR *dest;
     if (!src) return NULL;
-    dest = msi_alloc( (lstrlenW(src)+1)*sizeof(WCHAR) );
+    dest = msi_alloc( (strlenW(src)+1)*sizeof(WCHAR) );
     if (dest)
-        lstrcpyW(dest, src);
+        strcpyW(dest, src);
     return dest;
 }
 

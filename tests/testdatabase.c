@@ -903,12 +903,12 @@ static void test_viewmodify(void)
     sz = sizeof(buffer);
     r = MsiRecordGetString(hrec, 2, buffer, &sz);
     ok(r == ERROR_SUCCESS, "MsiRecordGetString failed\n");
-    ok(!lstrcmp(buffer, "bob"), "Expected bob, got %s\n", buffer);
+    ok(!strcmp(buffer, "bob"), "Expected bob, got %s\n", buffer);
 
     sz = sizeof(buffer);
     r = MsiRecordGetString(hrec, 3, buffer, &sz);
     ok(r == ERROR_SUCCESS, "MsiRecordGetString failed\n");
-    ok(!lstrcmp(buffer, "7654321"), "Expected 7654321, got %s\n", buffer);
+    ok(!strcmp(buffer, "7654321"), "Expected 7654321, got %s\n", buffer);
 
     /* update the view, non-primary key */
     r = MsiRecordSetString(hrec, 3, "3141592");
@@ -952,12 +952,12 @@ static void test_viewmodify(void)
     sz = sizeof(buffer);
     r = MsiRecordGetString(hrec, 2, buffer, &sz);
     ok(r == ERROR_SUCCESS, "MsiRecordGetString failed\n");
-    ok(!lstrcmp(buffer, "bob"), "Expected bob, got %s\n", buffer);
+    ok(!strcmp(buffer, "bob"), "Expected bob, got %s\n", buffer);
 
     sz = sizeof(buffer);
     r = MsiRecordGetString(hrec, 3, buffer, &sz);
     ok(r == ERROR_SUCCESS, "MsiRecordGetString failed\n");
-    ok(!lstrcmp(buffer, "3141592"), "Expected 3141592, got %s\n", buffer);
+    ok(!strcmp(buffer, "3141592"), "Expected 3141592, got %s\n", buffer);
 
     r = MsiCloseHandle(hrec);
     ok(r == ERROR_SUCCESS, "failed to close record\n");
@@ -1376,8 +1376,8 @@ static void test_msiexport(void)
 
     MsiCloseHandle(hdb);
 
-    lstrcat(path, "\\");
-    lstrcat(path, file);
+    strcat(path, "\\");
+    strcat(path, file);
 
     /* check the data that was written */
     length = 0;
@@ -1393,7 +1393,7 @@ static void test_msiexport(void)
         ok(0, "failed to open file %s\n", path);
 
     ok( length == strlen(expected), "length of data wrong\n");
-    ok( !lstrcmp(buffer, expected), "data doesn't match\n");
+    ok( !strcmp(buffer, expected), "data doesn't match\n");
     DeleteFile(msifile);
 }
 
@@ -1633,13 +1633,13 @@ static void test_streamtable(void)
     size = MAX_PATH;
     r = MsiRecordGetString( rec, 1, file, &size );
     ok( r == ERROR_SUCCESS, "Failed to get string: %d\n", r);
-    ok( !lstrcmp(file, "data"), "Expected 'data', got %s\n", file);
+    ok( !strcmp(file, "data"), "Expected 'data', got %s\n", file);
 
     size = MAX_PATH;
     memset(buf, 0, MAX_PATH);
     r = MsiRecordReadStream( rec, 2, buf, &size );
     ok( r == ERROR_SUCCESS, "Failed to get stream: %d\n", r);
-    ok( !lstrcmp(buf, "test.txt\n"), "Expected 'test.txt\\n', got %s\n", buf);
+    ok( !strcmp(buf, "test.txt\n"), "Expected 'test.txt\\n', got %s\n", buf);
 
     MsiCloseHandle( rec );
     MsiViewClose( view );
@@ -1659,13 +1659,13 @@ static void test_streamtable(void)
     size = MAX_PATH;
     r = MsiRecordGetString( rec, 1, file, &size );
     ok( r == ERROR_SUCCESS, "Failed to get string: %d\n", r);
-    ok( !lstrcmp(file, "data1"), "Expected 'data1', got %s\n", file);
+    ok( !strcmp(file, "data1"), "Expected 'data1', got %s\n", file);
 
     size = MAX_PATH;
     memset(buf, 0, MAX_PATH);
     r = MsiRecordReadStream( rec, 2, buf, &size );
     ok( r == ERROR_SUCCESS, "Failed to get stream: %d\n", r);
-    ok( !lstrcmp(buf, "test1.txt\n"), "Expected 'test1.txt\\n', got %s\n", buf);
+    ok( !strcmp(buf, "test1.txt\n"), "Expected 'test1.txt\\n', got %s\n", buf);
 
     MsiCloseHandle( rec );
     MsiViewClose( view );
@@ -1706,13 +1706,13 @@ static void test_streamtable(void)
     size = MAX_PATH;
     r = MsiRecordGetString( rec, 1, file, &size );
     ok( r == ERROR_SUCCESS, "Failed to get string: %d\n", r);
-    ok( !lstrcmp(file, "data1"), "Expected 'data1', got %s\n", file);
+    ok( !strcmp(file, "data1"), "Expected 'data1', got %s\n", file);
 
     size = MAX_PATH;
     memset(buf, 0, MAX_PATH);
     r = MsiRecordReadStream( rec, 2, buf, &size );
     ok( r == ERROR_SUCCESS, "Failed to get stream: %d\n", r);
-    todo_wine ok( !lstrcmp(buf, "test2.txt\n"), "Expected 'test2.txt\\n', got %s\n", buf);
+    todo_wine ok( !strcmp(buf, "test2.txt\n"), "Expected 'test2.txt\\n', got %s\n", buf);
 
     MsiCloseHandle( rec );
     MsiViewClose( view );
@@ -1769,13 +1769,13 @@ static void test_binary(void)
     size = MAX_PATH;
     r = MsiRecordGetString( rec, 1, file, &size );
     ok( r == ERROR_SUCCESS, "Failed to get string: %d\n", r );
-    ok( !lstrcmp(file, "Binary.filename1.1"), "Expected 'Binary.filename1.1', got %s\n", file );
+    ok( !strcmp(file, "Binary.filename1.1"), "Expected 'Binary.filename1.1', got %s\n", file );
 
     size = MAX_PATH;
     memset( buf, 0, MAX_PATH );
     r = MsiRecordReadStream( rec, 2, buf, &size );
     ok( r == ERROR_SUCCESS, "Failed to get stream: %d\n", r );
-    ok( !lstrcmp(buf, "test.txt\n"), "Expected 'test.txt\\n', got %s\n", buf );
+    ok( !strcmp(buf, "test.txt\n"), "Expected 'test.txt\\n', got %s\n", buf );
 
     r = MsiCloseHandle( rec );
     ok( r == ERROR_SUCCESS , "Failed to close record handle\n" );
@@ -1788,13 +1788,13 @@ static void test_binary(void)
     size = MAX_PATH;
     r = MsiRecordGetString( rec, 1, file, &size );
     ok( r == ERROR_SUCCESS, "Failed to get string: %d\n", r );
-    ok( !lstrcmp(file, "filename1"), "Expected 'filename1', got %s\n", file );
+    ok( !strcmp(file, "filename1"), "Expected 'filename1', got %s\n", file );
 
     size = MAX_PATH;
     memset( buf, 0, MAX_PATH );
     r = MsiRecordReadStream( rec, 3, buf, &size );
     ok( r == ERROR_SUCCESS, "Failed to get stream: %d\n", r );
-    ok( !lstrcmp(buf, "test.txt\n"), "Expected 'test.txt\\n', got %s\n", buf );
+    ok( !strcmp(buf, "test.txt\n"), "Expected 'test.txt\\n', got %s\n", buf );
 
     r = MsiCloseHandle( rec );
     ok( r == ERROR_SUCCESS , "Failed to close record handle\n" );
@@ -1978,7 +1978,7 @@ static void test_where(void)
     size = MAX_PATH;
     r = MsiRecordGetString( rec, 1, buf, &size );
     ok( r == ERROR_SUCCESS, "failed to get record string: %d\n", r );
-    ok( !lstrcmp( buf, "2" ),
+    ok( !strcmp( buf, "2" ),
         "For (row %d, column 1) expected '%d', got %s\n", 0, 2, buf );
     MsiCloseHandle( rec );
 
@@ -1988,7 +1988,7 @@ static void test_where(void)
     size = MAX_PATH;
     r = MsiRecordGetString( rec, 1, buf, &size );
     ok( r == ERROR_SUCCESS, "failed to get record string: %d\n", r );
-    ok( !lstrcmp( buf, "3" ),
+    ok( !strcmp( buf, "3" ),
         "For (row %d, column 1) expected '%d', got %s\n", 1, 3, buf );
     MsiCloseHandle( rec );
 
@@ -2112,7 +2112,7 @@ static unsigned add_table_to_db(LibmsiObject *hdb, const char *table_data)
 {
     unsigned r;
 
-    write_file("temp_file", table_data, (lstrlen(table_data) - 1) * sizeof(char));
+    write_file("temp_file", table_data, (strlen(table_data) - 1) * sizeof(char));
     r = MsiDatabaseImportA(hdb, CURR_DIR, "temp_file");
     DeleteFileA("temp_file");
 
@@ -2498,13 +2498,13 @@ static void test_binary_import(void)
     size = MAX_PATH;
     r = MsiRecordGetString(rec, 1, file, &size);
     ok(r == ERROR_SUCCESS, "Failed to get string: %d\n", r);
-    ok(!lstrcmp(file, "filename1"), "Expected 'filename1', got %s\n", file);
+    ok(!strcmp(file, "filename1"), "Expected 'filename1', got %s\n", file);
 
     size = MAX_PATH;
     memset(buf, 0, MAX_PATH);
     r = MsiRecordReadStream(rec, 2, buf, &size);
     ok(r == ERROR_SUCCESS, "Failed to get stream: %d\n", r);
-    ok(!lstrcmp(buf, "just some words"),
+    ok(!strcmp(buf, "just some words"),
         "Expected 'just some words', got %s\n", buf);
 
     r = MsiCloseHandle(rec);
@@ -3072,7 +3072,7 @@ static void test_try_transform(void)
     sz = sizeof buffer;
     r = MsiRecordGetString(hrec, 2, buffer, &sz);
     ok(r == ERROR_SUCCESS, "record get string failed\n");
-    ok(!lstrcmpA(buffer, "c"), "Expected c, got %s\n", buffer);
+    ok(!strcmp(buffer, "c"), "Expected c, got %s\n", buffer);
 
     r = MsiRecordGetInteger(hrec, 3);
     ok(r == 0x80000000, "Expected 0x80000000, got %d\n", r);
@@ -3091,7 +3091,7 @@ static void test_try_transform(void)
     sz = sizeof buffer;
     r = MsiRecordGetString(hrec, 2, buffer, &sz);
     ok(r == ERROR_SUCCESS, "record get string failed\n");
-    ok(!lstrcmpA(buffer, "b"), "Expected b, got %s\n", buffer);
+    ok(!strcmp(buffer, "b"), "Expected b, got %s\n", buffer);
 
     r = MsiRecordGetInteger(hrec, 3);
     ok(r == 0x80000000, "Expected 0x80000000, got %d\n", r);
@@ -3121,7 +3121,7 @@ static void test_try_transform(void)
     sz = MAX_PATH;
     r = MsiGetProperty(hpkg, "prop", buffer, &sz);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-    ok(!lstrcmp(buffer, "val"), "Expected val, got %s\n", buffer);
+    ok(!strcmp(buffer, "val"), "Expected val, got %s\n", buffer);
 #endif
 
     MsiCloseHandle(hpkg);
@@ -3366,13 +3366,13 @@ static void test_join(void)
         size = MAX_PATH;
         r = MsiRecordGetString( hrec, 1, buf, &size );
         ok( r == ERROR_SUCCESS, "failed to get record string: %d\n", r );
-        ok( !lstrcmp( buf, join_res_first[i].one ),
+        ok( !strcmp( buf, join_res_first[i].one ),
             "For (row %d, column 1) expected '%s', got %s\n", i, join_res_first[i].one, buf );
 
         size = MAX_PATH;
         r = MsiRecordGetString( hrec, 2, buf, &size );
         ok( r == ERROR_SUCCESS, "failed to get record string: %d\n", r );
-        ok( !lstrcmp( buf, join_res_first[i].two ),
+        ok( !strcmp( buf, join_res_first[i].two ),
             "For (row %d, column 2) expected '%s', got %s\n", i, join_res_first[i].two, buf );
 
         i++;
@@ -3424,13 +3424,13 @@ static void test_join(void)
         size = MAX_PATH;
         r = MsiRecordGetString( hrec, 1, buf, &size );
         ok( r == ERROR_SUCCESS, "failed to get record string: %d\n", r );
-        if( lstrcmp( buf, join_res_second[i].one ))
+        if( strcmp( buf, join_res_second[i].one ))
             data_correct = false;
 
         size = MAX_PATH;
         r = MsiRecordGetString( hrec, 2, buf, &size );
         ok( r == ERROR_SUCCESS, "failed to get record string: %d\n", r );
-        if( lstrcmp( buf, join_res_second[i].two ))
+        if( strcmp( buf, join_res_second[i].two ))
             data_correct = false;
 
         i++;
@@ -3465,13 +3465,13 @@ static void test_join(void)
         size = MAX_PATH;
         r = MsiRecordGetString( hrec, 1, buf, &size );
         ok( r == ERROR_SUCCESS, "failed to get record string: %d\n", r );
-        if( lstrcmp( buf, join_res_third[i].one ) )
+        if( strcmp( buf, join_res_third[i].one ) )
             data_correct = false;
 
         size = MAX_PATH;
         r = MsiRecordGetString( hrec, 2, buf, &size );
         ok( r == ERROR_SUCCESS, "failed to get record string: %d\n", r );
-        if( lstrcmp( buf, join_res_third[i].two ) )
+        if( strcmp( buf, join_res_third[i].two ) )
             data_correct = false;
 
         i++;
@@ -3506,13 +3506,13 @@ static void test_join(void)
         size = MAX_PATH;
         r = MsiRecordGetString( hrec, 1, buf, &size );
         ok( r == ERROR_SUCCESS, "failed to get record string: %d\n", r );
-        if( lstrcmp( buf, join_res_fourth[i].one ))
+        if( strcmp( buf, join_res_fourth[i].one ))
             data_correct = false;
 
         size = MAX_PATH;
         r = MsiRecordGetString( hrec, 2, buf, &size );
         ok( r == ERROR_SUCCESS, "failed to get record string: %d\n", r );
-        if( lstrcmp( buf, join_res_fourth[i].two ))
+        if( strcmp( buf, join_res_fourth[i].two ))
             data_correct = false;
 
         i++;
@@ -3547,13 +3547,13 @@ static void test_join(void)
         size = MAX_PATH;
         r = MsiRecordGetString( hrec, 1, buf, &size );
         ok( r == ERROR_SUCCESS, "failed to get record string: %d\n", r );
-        if( lstrcmp( buf, join_res_fifth[i].one ))
+        if( strcmp( buf, join_res_fifth[i].one ))
             data_correct = false;
 
         size = MAX_PATH;
         r = MsiRecordGetString( hrec, 2, buf, &size );
         ok( r == ERROR_SUCCESS, "failed to get record string: %d\n", r );
-        if( lstrcmp( buf, join_res_fifth[i].two ))
+        if( strcmp( buf, join_res_fifth[i].two ))
             data_correct = false;
 
         i++;
@@ -3587,13 +3587,13 @@ static void test_join(void)
         size = MAX_PATH;
         r = MsiRecordGetString( hrec, 1, buf, &size );
         ok( r == ERROR_SUCCESS, "failed to get record string: %d\n", r );
-        if( lstrcmp( buf, join_res_sixth[i].one ))
+        if( strcmp( buf, join_res_sixth[i].one ))
             data_correct = false;
 
         size = MAX_PATH;
         r = MsiRecordGetString( hrec, 2, buf, &size );
         ok( r == ERROR_SUCCESS, "failed to get record string: %d\n", r );
-        if( lstrcmp( buf, join_res_sixth[i].two ))
+        if( strcmp( buf, join_res_sixth[i].two ))
             data_correct = false;
 
         i++;
@@ -3628,13 +3628,13 @@ static void test_join(void)
         size = MAX_PATH;
         r = MsiRecordGetString( hrec, 1, buf, &size );
         ok( r == ERROR_SUCCESS, "failed to get record string: %d\n", r );
-        if( lstrcmp( buf, join_res_seventh[i].one ))
+        if( strcmp( buf, join_res_seventh[i].one ))
             data_correct = false;
 
         size = MAX_PATH;
         r = MsiRecordGetString( hrec, 2, buf, &size );
         ok( r == ERROR_SUCCESS, "failed to get record string: %d\n", r );
-        if( lstrcmp( buf, join_res_seventh[i].two ))
+        if( strcmp( buf, join_res_seventh[i].two ))
             data_correct = false;
 
         i++;
@@ -3666,13 +3666,13 @@ static void test_join(void)
         size = MAX_PATH;
         r = MsiRecordGetString( hrec, 1, buf, &size );
         ok( r == ERROR_SUCCESS, "failed to get record string: %d\n", r );
-        if( lstrcmp( buf, join_res_eighth[i].one ))
+        if( strcmp( buf, join_res_eighth[i].one ))
             data_correct = false;
 
         size = MAX_PATH;
         r = MsiRecordGetString( hrec, 2, buf, &size );
         ok( r == ERROR_SUCCESS, "failed to get record string: %d\n", r );
-        if( lstrcmp( buf, join_res_eighth[i].four ))
+        if( strcmp( buf, join_res_eighth[i].four ))
             data_correct = false;
 
         i++;
@@ -3703,25 +3703,25 @@ static void test_join(void)
         size = MAX_PATH;
         r = MsiRecordGetString( hrec, 1, buf, &size );
         ok( r == ERROR_SUCCESS, "failed to get record string: %d\n", r );
-        if( lstrcmp( buf, join_res_eighth[i].one ))
+        if( strcmp( buf, join_res_eighth[i].one ))
             data_correct = false;
 
         size = MAX_PATH;
         r = MsiRecordGetString( hrec, 2, buf, &size );
         ok( r == ERROR_SUCCESS, "failed to get record string: %d\n", r );
-        if( lstrcmp( buf, join_res_eighth[i].two ))
+        if( strcmp( buf, join_res_eighth[i].two ))
             data_correct = false;
 
         size = MAX_PATH;
         r = MsiRecordGetString( hrec, 3, buf, &size );
         ok( r == ERROR_SUCCESS, "failed to get record string: %d\n", r );
-        if( lstrcmp( buf, join_res_eighth[i].three ))
+        if( strcmp( buf, join_res_eighth[i].three ))
             data_correct = false;
 
         size = MAX_PATH;
         r = MsiRecordGetString( hrec, 4, buf, &size );
         ok( r == ERROR_SUCCESS, "failed to get record string: %d\n", r );
-        if( lstrcmp( buf, join_res_eighth[i].four ))
+        if( strcmp( buf, join_res_eighth[i].four ))
             data_correct = false;
 
         i++;
@@ -3853,7 +3853,7 @@ static void test_join(void)
     size = MAX_PATH;
     r = MsiRecordGetString( hrec, 1, buf, &size );
     ok( r == ERROR_SUCCESS, "failed to get record string: %d\n", r );
-    ok( !lstrcmp( buf, "epicranius" ), "expected 'epicranius', got %s\n", buf );
+    ok( !strcmp( buf, "epicranius" ), "expected 'epicranius', got %s\n", buf );
 
     MsiCloseHandle(hrec);
     MsiViewClose(hview);
@@ -4419,7 +4419,7 @@ static void test_update(void)
     size = MAX_PATH;
     r = MsiRecordGetString(rec, 1, result, &size);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-    ok(!lstrcmp(result, "this is text"), "Expected `this is text`, got %s\n", result);
+    ok(!strcmp(result, "this is text"), "Expected `this is text`, got %s\n", result);
 
     MsiCloseHandle(rec);
 
@@ -4429,7 +4429,7 @@ static void test_update(void)
     size = MAX_PATH;
     r = MsiRecordGetString(rec, 1, result, &size);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-    ok(!lstrlen(result), "Expected an empty string, got %s\n", result);
+    ok(!strlen(result), "Expected an empty string, got %s\n", result);
 
     MsiCloseHandle(rec);
 
@@ -4467,7 +4467,7 @@ static void test_update(void)
     size = MAX_PATH;
     r = MsiRecordGetString(rec, 1, result, &size);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-    ok(!lstrcmp(result, "this is text"), "Expected `this is text`, got %s\n", result);
+    ok(!strcmp(result, "this is text"), "Expected `this is text`, got %s\n", result);
 
     MsiCloseHandle(rec);
 
@@ -4477,7 +4477,7 @@ static void test_update(void)
     size = MAX_PATH;
     r = MsiRecordGetString(rec, 1, result, &size);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-    ok(!lstrlen(result), "Expected an empty string, got %s\n", result);
+    ok(!strlen(result), "Expected an empty string, got %s\n", result);
 
     MsiCloseHandle(rec);
 
@@ -4515,7 +4515,7 @@ static void test_update(void)
     size = MAX_PATH;
     r = MsiRecordGetString(rec, 1, result, &size);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-    ok(!lstrcmp(result, "this is text"), "Expected `this is text`, got %s\n", result);
+    ok(!strcmp(result, "this is text"), "Expected `this is text`, got %s\n", result);
 
     MsiCloseHandle(rec);
 
@@ -4525,7 +4525,7 @@ static void test_update(void)
     size = MAX_PATH;
     r = MsiRecordGetString(rec, 1, result, &size);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-    ok(!lstrcmp(result, "this is text"), "Expected `this is text`, got %s\n", result);
+    ok(!strcmp(result, "this is text"), "Expected `this is text`, got %s\n", result);
 
     MsiCloseHandle(rec);
 
@@ -4535,7 +4535,7 @@ static void test_update(void)
     size = MAX_PATH;
     r = MsiRecordGetString(rec, 1, result, &size);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-    ok(!lstrcmp(result, "this is text"), "Expected `this is text`, got %s\n", result);
+    ok(!strcmp(result, "this is text"), "Expected `this is text`, got %s\n", result);
 
     MsiCloseHandle(rec);
 
@@ -4704,7 +4704,7 @@ static void test_tables_order(void)
     sz = sizeof(buffer);
     r = MsiRecordGetString(hrec, 1, buffer, &sz);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-    ok(!lstrcmp(buffer, "foo"), "Expected foo, got %s\n", buffer);
+    ok(!strcmp(buffer, "foo"), "Expected foo, got %s\n", buffer);
     r = MsiCloseHandle(hrec);
     ok(r == ERROR_SUCCESS, "failed to close record\n");
 
@@ -4713,7 +4713,7 @@ static void test_tables_order(void)
     sz = sizeof(buffer);
     r = MsiRecordGetString(hrec, 1, buffer, &sz);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-    ok(!lstrcmp(buffer, "baz"), "Expected baz, got %s\n", buffer);
+    ok(!strcmp(buffer, "baz"), "Expected baz, got %s\n", buffer);
     r = MsiCloseHandle(hrec);
     ok(r == ERROR_SUCCESS, "failed to close record\n");
 
@@ -4722,7 +4722,7 @@ static void test_tables_order(void)
     sz = sizeof(buffer);
     r = MsiRecordGetString(hrec, 1, buffer, &sz);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-    ok(!lstrcmp(buffer, "bar"), "Expected bar, got %s\n", buffer);
+    ok(!strcmp(buffer, "bar"), "Expected bar, got %s\n", buffer);
     r = MsiCloseHandle(hrec);
     ok(r == ERROR_SUCCESS, "failed to close record\n");
 
@@ -4745,11 +4745,11 @@ static void test_tables_order(void)
     sz = sizeof(buffer);
     r = MsiRecordGetString(hrec, 1, buffer, &sz);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-    ok(!lstrcmp(buffer, "foo"), "Expected foo, got %s\n", buffer);
+    ok(!strcmp(buffer, "foo"), "Expected foo, got %s\n", buffer);
     sz = sizeof(buffer);
     r = MsiRecordGetString(hrec, 3, buffer, &sz);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-    ok(!lstrcmp(buffer, "baz"), "Expected baz, got %s\n", buffer);
+    ok(!strcmp(buffer, "baz"), "Expected baz, got %s\n", buffer);
     r = MsiCloseHandle(hrec);
     ok(r == ERROR_SUCCESS, "failed to close record\n");
 
@@ -4758,11 +4758,11 @@ static void test_tables_order(void)
     sz = sizeof(buffer);
     r = MsiRecordGetString(hrec, 1, buffer, &sz);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-    ok(!lstrcmp(buffer, "baz"), "Expected baz, got %s\n", buffer);
+    ok(!strcmp(buffer, "baz"), "Expected baz, got %s\n", buffer);
     sz = sizeof(buffer);
     r = MsiRecordGetString(hrec, 3, buffer, &sz);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-    ok(!lstrcmp(buffer, "bar"), "Expected bar, got %s\n", buffer);
+    ok(!strcmp(buffer, "bar"), "Expected bar, got %s\n", buffer);
     r = MsiCloseHandle(hrec);
     ok(r == ERROR_SUCCESS, "failed to close record\n");
 
@@ -4771,11 +4771,11 @@ static void test_tables_order(void)
     sz = sizeof(buffer);
     r = MsiRecordGetString(hrec, 1, buffer, &sz);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-    ok(!lstrcmp(buffer, "baz"), "Expected baz, got %s\n", buffer);
+    ok(!strcmp(buffer, "baz"), "Expected baz, got %s\n", buffer);
     sz = sizeof(buffer);
     r = MsiRecordGetString(hrec, 3, buffer, &sz);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-    ok(!lstrcmp(buffer, "baz"), "Expected baz, got %s\n", buffer);
+    ok(!strcmp(buffer, "baz"), "Expected baz, got %s\n", buffer);
     r = MsiCloseHandle(hrec);
     ok(r == ERROR_SUCCESS, "failed to close record\n");
 
@@ -4784,11 +4784,11 @@ static void test_tables_order(void)
     sz = sizeof(buffer);
     r = MsiRecordGetString(hrec, 1, buffer, &sz);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-    ok(!lstrcmp(buffer, "baz"), "Expected baz, got %s\n", buffer);
+    ok(!strcmp(buffer, "baz"), "Expected baz, got %s\n", buffer);
     sz = sizeof(buffer);
     r = MsiRecordGetString(hrec, 3, buffer, &sz);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-    ok(!lstrcmp(buffer, "foo"), "Expected foo, got %s\n", buffer);
+    ok(!strcmp(buffer, "foo"), "Expected foo, got %s\n", buffer);
     r = MsiCloseHandle(hrec);
     ok(r == ERROR_SUCCESS, "failed to close record\n");
 
@@ -4797,11 +4797,11 @@ static void test_tables_order(void)
     sz = sizeof(buffer);
     r = MsiRecordGetString(hrec, 1, buffer, &sz);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-    ok(!lstrcmp(buffer, "bar"), "Expected bar, got %s\n", buffer);
+    ok(!strcmp(buffer, "bar"), "Expected bar, got %s\n", buffer);
     sz = sizeof(buffer);
     r = MsiRecordGetString(hrec, 3, buffer, &sz);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-    ok(!lstrcmp(buffer, "foo"), "Expected foo, got %s\n", buffer);
+    ok(!strcmp(buffer, "foo"), "Expected foo, got %s\n", buffer);
     r = MsiCloseHandle(hrec);
     ok(r == ERROR_SUCCESS, "failed to close record\n");
 
@@ -4896,11 +4896,11 @@ static void test_rows_order(void)
     sz = sizeof(buffer);
     r = MsiRecordGetString(hrec, 1, buffer, &sz);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-    ok(!lstrcmp(buffer, "A"), "Expected A, got %s\n", buffer);
+    ok(!strcmp(buffer, "A"), "Expected A, got %s\n", buffer);
     sz = sizeof(buffer);
     r = MsiRecordGetString(hrec, 2, buffer, &sz);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-    ok(!lstrcmp(buffer, "B"), "Expected B, got %s\n", buffer);
+    ok(!strcmp(buffer, "B"), "Expected B, got %s\n", buffer);
     r = MsiCloseHandle(hrec);
     ok(r == ERROR_SUCCESS, "failed to close record\n");
 
@@ -4909,11 +4909,11 @@ static void test_rows_order(void)
     sz = sizeof(buffer);
     r = MsiRecordGetString(hrec, 1, buffer, &sz);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-    ok(!lstrcmp(buffer, "C"), "Expected E, got %s\n", buffer);
+    ok(!strcmp(buffer, "C"), "Expected E, got %s\n", buffer);
     sz = sizeof(buffer);
     r = MsiRecordGetString(hrec, 2, buffer, &sz);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-    ok(!lstrcmp(buffer, "E"), "Expected E, got %s\n", buffer);
+    ok(!strcmp(buffer, "E"), "Expected E, got %s\n", buffer);
     r = MsiCloseHandle(hrec);
     ok(r == ERROR_SUCCESS, "failed to close record\n");
 
@@ -4922,11 +4922,11 @@ static void test_rows_order(void)
     sz = sizeof(buffer);
     r = MsiRecordGetString(hrec, 1, buffer, &sz);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-    ok(!lstrcmp(buffer, "D"), "Expected D, got %s\n", buffer);
+    ok(!strcmp(buffer, "D"), "Expected D, got %s\n", buffer);
     sz = sizeof(buffer);
     r = MsiRecordGetString(hrec, 2, buffer, &sz);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-    ok(!lstrcmp(buffer, "E"), "Expected E, got %s\n", buffer);
+    ok(!strcmp(buffer, "E"), "Expected E, got %s\n", buffer);
     r = MsiCloseHandle(hrec);
     ok(r == ERROR_SUCCESS, "failed to close record\n");
 
@@ -4935,11 +4935,11 @@ static void test_rows_order(void)
     sz = sizeof(buffer);
     r = MsiRecordGetString(hrec, 1, buffer, &sz);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-    ok(!lstrcmp(buffer, "F"), "Expected F, got %s\n", buffer);
+    ok(!strcmp(buffer, "F"), "Expected F, got %s\n", buffer);
     sz = sizeof(buffer);
     r = MsiRecordGetString(hrec, 2, buffer, &sz);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-    ok(!lstrcmp(buffer, "A"), "Expected A, got %s\n", buffer);
+    ok(!strcmp(buffer, "A"), "Expected A, got %s\n", buffer);
     r = MsiCloseHandle(hrec);
     ok(r == ERROR_SUCCESS, "failed to close record\n");
 
@@ -5040,11 +5040,11 @@ static void test_collation(void)
     sz = sizeof(buffer);
     r = MsiRecordGetString(hrec, 1, buffer, &sz);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-    ok(!lstrcmp(buffer, "\2"), "Expected \\2, got '%s'\n", buffer);
+    ok(!strcmp(buffer, "\2"), "Expected \\2, got '%s'\n", buffer);
     sz = sizeof(buffer);
     r = MsiRecordGetString(hrec, 2, buffer, &sz);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-    ok(!lstrcmp(buffer, "A"), "Expected A, got '%s'\n", buffer);
+    ok(!strcmp(buffer, "A"), "Expected A, got '%s'\n", buffer);
     MsiCloseHandle(hrec);
 
     r = MsiViewFetch(hview, &hrec);
@@ -5052,11 +5052,11 @@ static void test_collation(void)
     sz = sizeof(buffer);
     r = MsiRecordGetString(hrec, 1, buffer, &sz);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-    ok(!lstrcmp(buffer, "\1"), "Expected \\1, got '%s'\n", buffer);
+    ok(!strcmp(buffer, "\1"), "Expected \\1, got '%s'\n", buffer);
     sz = sizeof(buffer);
     r = MsiRecordGetString(hrec, 2, buffer, &sz);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-    ok(!lstrcmp(buffer, "B"), "Expected B, got '%s'\n", buffer);
+    ok(!strcmp(buffer, "B"), "Expected B, got '%s'\n", buffer);
     MsiCloseHandle(hrec);
 
     r = MsiViewFetch(hview, &hrec);
@@ -5174,12 +5174,12 @@ static void test_select_markers(void)
     size = MAX_PATH;
     r = MsiRecordGetString(res, 1, buf, &size);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-    ok(!lstrcmp(buf, "apple"), "Expected apple, got %s\n", buf);
+    ok(!strcmp(buf, "apple"), "Expected apple, got %s\n", buf);
 
     size = MAX_PATH;
     r = MsiRecordGetString(res, 2, buf, &size);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-    ok(!lstrcmp(buf, "two"), "Expected two, got %s\n", buf);
+    ok(!strcmp(buf, "two"), "Expected two, got %s\n", buf);
 
     r = MsiRecordGetInteger(res, 3);
     ok(r == 1, "Expected 1, got %d\n", r);
@@ -5192,12 +5192,12 @@ static void test_select_markers(void)
     size = MAX_PATH;
     r = MsiRecordGetString(res, 1, buf, &size);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-    ok(!lstrcmp(buf, "apple"), "Expected apple, got %s\n", buf);
+    ok(!strcmp(buf, "apple"), "Expected apple, got %s\n", buf);
 
     size = MAX_PATH;
     r = MsiRecordGetString(res, 2, buf, &size);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-    ok(!lstrcmp(buf, "two"), "Expected two, got %s\n", buf);
+    ok(!strcmp(buf, "two"), "Expected two, got %s\n", buf);
 
     r = MsiRecordGetInteger(res, 3);
     ok(r == 2, "Expected 2, got %d\n", r);
@@ -5228,12 +5228,12 @@ static void test_select_markers(void)
     size = MAX_PATH;
     r = MsiRecordGetString(res, 1, buf, &size);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-    ok(!lstrcmp(buf, "apple"), "Expected apple, got %s\n", buf);
+    ok(!strcmp(buf, "apple"), "Expected apple, got %s\n", buf);
 
     size = MAX_PATH;
     r = MsiRecordGetString(res, 2, buf, &size);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-    ok(!lstrcmp(buf, "two"), "Expected two, got %s\n", buf);
+    ok(!strcmp(buf, "two"), "Expected two, got %s\n", buf);
 
     r = MsiRecordGetInteger(res, 3);
     ok(r == 2, "Expected 2, got %d\n", r);
@@ -5246,12 +5246,12 @@ static void test_select_markers(void)
     size = MAX_PATH;
     r = MsiRecordGetString(res, 1, buf, &size);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-    ok(!lstrcmp(buf, "banana"), "Expected banana, got %s\n", buf);
+    ok(!strcmp(buf, "banana"), "Expected banana, got %s\n", buf);
 
     size = MAX_PATH;
     r = MsiRecordGetString(res, 2, buf, &size);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-    ok(!lstrcmp(buf, "three"), "Expected three, got %s\n", buf);
+    ok(!strcmp(buf, "three"), "Expected three, got %s\n", buf);
 
     r = MsiRecordGetInteger(res, 3);
     ok(r == 3, "Expected 3, got %d\n", r);
@@ -5787,7 +5787,7 @@ static void test_stringtable(void)
     sz = sizeof(buffer);
     r = MsiRecordGetString(hrec, 2, buffer, &sz);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-    ok(!lstrcmp(buffer, "one"), "Expected one, got '%s'\n", buffer);
+    ok(!strcmp(buffer, "one"), "Expected one, got '%s'\n", buffer);
 
     r = MsiCloseHandle(hrec);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
@@ -5821,7 +5821,7 @@ static void test_stringtable(void)
     sz = sizeof(buffer);
     r = MsiRecordGetString(hrec, 2, buffer, &sz);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-    ok(!lstrcmp(buffer, "two"), "Expected two, got '%s'\n", buffer);
+    ok(!strcmp(buffer, "two"), "Expected two, got '%s'\n", buffer);
 
     r = MsiCloseHandle(hrec);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
@@ -5838,7 +5838,7 @@ static void test_stringtable(void)
     sz = sizeof(buffer);
     r = MsiRecordGetString(hrec, 2, buffer, &sz);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-    ok(!lstrcmp(buffer, "five"), "Expected five, got '%s'\n", buffer);
+    ok(!strcmp(buffer, "five"), "Expected five, got '%s'\n", buffer);
 
     r = MsiCloseHandle(hrec);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
@@ -5999,12 +5999,12 @@ static void test_viewmodify_delete(void)
     sz = sizeof(buffer);
     r = MsiRecordGetString(hrec, 2, buffer, &sz);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-    ok(!lstrcmp(buffer, "Cindy"), "Expected Cindy, got %s\n", buffer);
+    ok(!strcmp(buffer, "Cindy"), "Expected Cindy, got %s\n", buffer);
 
     sz = sizeof(buffer);
     r = MsiRecordGetString(hrec, 3, buffer, &sz);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-    ok(!lstrcmp(buffer, "2937550"), "Expected 2937550, got %s\n", buffer);
+    ok(!strcmp(buffer, "2937550"), "Expected 2937550, got %s\n", buffer);
 
     r = MsiCloseHandle(hrec);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
@@ -6370,7 +6370,7 @@ static void test_order(void)
     sz = sizeof(buffer);
     r = MsiRecordGetString(hrec, 1, buffer, &sz);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-    ok(!lstrcmp(buffer, "dos"), "Expected \"dos\", got \"%s\"\n", buffer);
+    ok(!strcmp(buffer, "dos"), "Expected \"dos\", got \"%s\"\n", buffer);
 
     r = MsiRecordGetInteger(hrec, 2);
     ok(r == 3, "Expected 3, got %d\n", r);
@@ -6554,7 +6554,7 @@ static void test_deleterow(void)
     size = MAX_PATH;
     r = MsiRecordGetStringA(hrec, 1, buf, &size);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-    ok(!lstrcmpA(buf, "two"), "Expected two, got %s\n", buf);
+    ok(!strcmp(buf, "two"), "Expected two, got %s\n", buf);
 
     MsiCloseHandle(hrec);
 
@@ -6635,7 +6635,7 @@ static void test_quotes(void)
     size = MAX_PATH;
     r = MsiRecordGetString(hrec, 1, buf, &size);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-    ok(!lstrcmp(buf, "This is a \"string\" ok"),
+    ok(!strcmp(buf, "This is a \"string\" ok"),
        "Expected \"This is a \"string\" ok\", got %s\n", buf);
 
     MsiCloseHandle(hrec);
@@ -6666,7 +6666,7 @@ static void test_quotes(void)
     size = MAX_PATH;
     r = MsiRecordGetString(hrec, 1, buf, &size);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-    ok(!lstrcmp(buf, "This is a new 'string' ok"),
+    ok(!strcmp(buf, "This is a new 'string' ok"),
        "Expected \"This is a new 'string' ok\", got %s\n", buf);
 
     MsiCloseHandle(hrec);
@@ -6834,7 +6834,7 @@ static void test_carriagereturn(void)
     size = MAX_PATH;
     r = MsiRecordGetStringA(hrec, 1, buf, &size);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-    ok(!lstrcmpA(buf, "\rOne"), "Expected \"\\rOne\", got \"%s\"\n", buf);
+    ok(!strcmp(buf, "\rOne"), "Expected \"\\rOne\", got \"%s\"\n", buf);
 
     MsiCloseHandle(hrec);
 
@@ -6844,7 +6844,7 @@ static void test_carriagereturn(void)
     size = MAX_PATH;
     r = MsiRecordGetStringA(hrec, 1, buf, &size);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-    ok(!lstrcmpA(buf, "Tw\ro"), "Expected \"Tw\\ro\", got \"%s\"\n", buf);
+    ok(!strcmp(buf, "Tw\ro"), "Expected \"Tw\\ro\", got \"%s\"\n", buf);
 
     MsiCloseHandle(hrec);
 
@@ -6854,7 +6854,7 @@ static void test_carriagereturn(void)
     size = MAX_PATH;
     r = MsiRecordGetStringA(hrec, 1, buf, &size);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-    ok(!lstrcmpA(buf, "Three\r"), "Expected \"Three\r\", got \"%s\"\n", buf);
+    ok(!strcmp(buf, "Three\r"), "Expected \"Three\r\", got \"%s\"\n", buf);
 
     MsiCloseHandle(hrec);
 
@@ -6911,7 +6911,7 @@ static void test_noquotes(void)
     size = MAX_PATH;
     r = MsiRecordGetStringA(hrec, 1, buf, &size);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-    ok(!lstrcmpA(buf, "Table"), "Expected \"Table\", got \"%s\"\n", buf);
+    ok(!strcmp(buf, "Table"), "Expected \"Table\", got \"%s\"\n", buf);
 
     MsiCloseHandle(hrec);
 
@@ -6921,7 +6921,7 @@ static void test_noquotes(void)
     size = MAX_PATH;
     r = MsiRecordGetStringA(hrec, 1, buf, &size);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-    ok(!lstrcmpA(buf, "Table2"), "Expected \"Table2\", got \"%s\"\n", buf);
+    ok(!strcmp(buf, "Table2"), "Expected \"Table2\", got \"%s\"\n", buf);
 
     MsiCloseHandle(hrec);
 
@@ -6931,7 +6931,7 @@ static void test_noquotes(void)
     size = MAX_PATH;
     r = MsiRecordGetStringA(hrec, 1, buf, &size);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-    ok(!lstrcmpA(buf, "Table3"), "Expected \"Table3\", got \"%s\"\n", buf);
+    ok(!strcmp(buf, "Table3"), "Expected \"Table3\", got \"%s\"\n", buf);
 
     MsiCloseHandle(hrec);
 
@@ -6953,7 +6953,7 @@ static void test_noquotes(void)
     size = MAX_PATH;
     r = MsiRecordGetStringA(hrec, 1, buf, &size);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-    ok(!lstrcmpA(buf, "Table"), "Expected \"Table\", got \"%s\"\n", buf);
+    ok(!strcmp(buf, "Table"), "Expected \"Table\", got \"%s\"\n", buf);
 
     r = MsiRecordGetInteger(hrec, 2);
     ok(r == 1, "Expected 1, got %d\n", r);
@@ -6961,7 +6961,7 @@ static void test_noquotes(void)
     size = MAX_PATH;
     r = MsiRecordGetStringA(hrec, 3, buf, &size);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-    ok(!lstrcmpA(buf, "A"), "Expected \"A\", got \"%s\"\n", buf);
+    ok(!strcmp(buf, "A"), "Expected \"A\", got \"%s\"\n", buf);
 
     MsiCloseHandle(hrec);
 
@@ -6971,7 +6971,7 @@ static void test_noquotes(void)
     size = MAX_PATH;
     r = MsiRecordGetStringA(hrec, 1, buf, &size);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-    ok(!lstrcmpA(buf, "Table2"), "Expected \"Table2\", got \"%s\"\n", buf);
+    ok(!strcmp(buf, "Table2"), "Expected \"Table2\", got \"%s\"\n", buf);
 
     r = MsiRecordGetInteger(hrec, 2);
     ok(r == 1, "Expected 1, got %d\n", r);
@@ -6979,7 +6979,7 @@ static void test_noquotes(void)
     size = MAX_PATH;
     r = MsiRecordGetStringA(hrec, 3, buf, &size);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-    ok(!lstrcmpA(buf, "A"), "Expected \"A\", got \"%s\"\n", buf);
+    ok(!strcmp(buf, "A"), "Expected \"A\", got \"%s\"\n", buf);
 
     MsiCloseHandle(hrec);
 
@@ -6989,7 +6989,7 @@ static void test_noquotes(void)
     size = MAX_PATH;
     r = MsiRecordGetStringA(hrec, 1, buf, &size);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-    ok(!lstrcmpA(buf, "Table3"), "Expected \"Table3\", got \"%s\"\n", buf);
+    ok(!strcmp(buf, "Table3"), "Expected \"Table3\", got \"%s\"\n", buf);
 
     r = MsiRecordGetInteger(hrec, 2);
     ok(r == 1, "Expected 1, got %d\n", r);
@@ -6997,7 +6997,7 @@ static void test_noquotes(void)
     size = MAX_PATH;
     r = MsiRecordGetStringA(hrec, 3, buf, &size);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-    ok(!lstrcmpA(buf, "A"), "Expected \"A\", got \"%s\"\n", buf);
+    ok(!strcmp(buf, "A"), "Expected \"A\", got \"%s\"\n", buf);
 
     MsiCloseHandle(hrec);
 
@@ -7056,7 +7056,7 @@ static void test_noquotes(void)
     size = MAX_PATH;
     r = MsiRecordGetStringA(hrec, 1, buf, &size);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-    ok(!lstrcmpA(buf, "hi"), "Expected \"hi\", got \"%s\"\n", buf);
+    ok(!strcmp(buf, "hi"), "Expected \"hi\", got \"%s\"\n", buf);
 
     MsiCloseHandle(hrec);
 
@@ -7125,7 +7125,7 @@ static void test_forcecodepage(void)
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     read_file_data("forcecodepage.idt", buffer);
-    ok(!lstrcmpA(buffer, "\r\n\r\n0\t_ForceCodepage\r\n"),
+    ok(!strcmp(buffer, "\r\n\r\n0\t_ForceCodepage\r\n"),
        "Expected \"\r\n\r\n0\t_ForceCodepage\r\n\", got \"%s\"\n", buffer);
 
     create_file_data("forcecodepage.idt", "\r\n\r\n850\t_ForceCodepage\r\n", 0);
@@ -7137,7 +7137,7 @@ static void test_forcecodepage(void)
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     read_file_data("forcecodepage.idt", buffer);
-    ok(!lstrcmpA(buffer, "\r\n\r\n850\t_ForceCodepage\r\n"),
+    ok(!strcmp(buffer, "\r\n\r\n850\t_ForceCodepage\r\n"),
        "Expected \"\r\n\r\n850\t_ForceCodepage\r\n\", got \"%s\"\n", buffer);
 
     create_file_data("forcecodepage.idt", "\r\n\r\n9999\t_ForceCodepage\r\n", 0);
@@ -7192,7 +7192,7 @@ static void test_viewmodify_refresh(void)
     size = MAX_PATH;
     r = MsiRecordGetStringA(hrec, 1, buffer, &size);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-    ok(!lstrcmpA(buffer, "hi"), "Expected \"hi\", got \"%s\"\n", buffer);
+    ok(!strcmp(buffer, "hi"), "Expected \"hi\", got \"%s\"\n", buffer);
     ok(size == 2, "Expected 2, got %d\n", size);
 
     r = MsiRecordGetInteger(hrec, 2);
@@ -7229,7 +7229,7 @@ static void test_viewmodify_refresh(void)
     size = MAX_PATH;
     r = MsiRecordGetStringA(hrec, 1, buffer, &size);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-    ok(!lstrcmpA(buffer, "hello"), "Expected \"hello\", got \"%s\"\n", buffer);
+    ok(!strcmp(buffer, "hello"), "Expected \"hello\", got \"%s\"\n", buffer);
     ok(size == 5, "Expected 5, got %d\n", size);
 
     r = MsiRecordGetInteger(hrec, 2);
@@ -7452,13 +7452,13 @@ static void test_storages_table(void)
     size = MAX_PATH;
     r = MsiRecordGetString(hrec, 1, file, &size);
     ok(r == ERROR_SUCCESS, "Failed to get string: %d\n", r);
-    ok(!lstrcmp(file, "stgname"), "Expected \"stgname\", got \"%s\"\n", file);
+    ok(!strcmp(file, "stgname"), "Expected \"stgname\", got \"%s\"\n", file);
 
     size = MAX_PATH;
-    lstrcpyA(buf, "apple");
+    strcpy(buf, "apple");
     r = MsiRecordReadStream(hrec, 2, buf, &size);
     ok(r == ERROR_INVALID_DATA, "Expected ERROR_INVALID_DATA, got %d\n", r);
-    ok(!lstrcmp(buf, "apple"), "Expected buf to be unchanged, got %s\n", buf);
+    ok(!strcmp(buf, "apple"), "Expected buf to be unchanged, got %s\n", buf);
     ok(size == 0, "Expected 0, got %d\n", size);
 
     MsiCloseHandle(hrec);
@@ -7492,7 +7492,7 @@ static void test_storages_table(void)
     hr = IStream_Read(stm, buf, MAX_PATH, &size);
     ok(hr == S_OK, "Expected S_OK, got %d\n", hr);
     ok(size == 8, "Expected 8, got %d\n", size);
-    ok(!lstrcmpA(buf, "stgdata"), "Expected \"stgdata\", got \"%s\"\n", buf);
+    ok(!strcmp(buf, "stgdata"), "Expected \"stgdata\", got \"%s\"\n", buf);
 
     IStream_Release(stm);
     IStorage_Release(inner);
@@ -7534,7 +7534,7 @@ static void test_droptable(void)
     size = MAX_PATH;
     r = MsiRecordGetStringA(hrec, 1, buf, &size);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-    ok(!lstrcmpA(buf, "One"), "Expected \"One\", got \"%s\"\n", buf);
+    ok(!strcmp(buf, "One"), "Expected \"One\", got \"%s\"\n", buf);
 
     MsiCloseHandle(hrec);
     MsiViewClose(hview);
@@ -7552,7 +7552,7 @@ static void test_droptable(void)
     size = MAX_PATH;
     r = MsiRecordGetStringA(hrec, 1, buf, &size);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-    ok(!lstrcmpA(buf, "One"), "Expected \"One\", got \"%s\"\n", buf);
+    ok(!strcmp(buf, "One"), "Expected \"One\", got \"%s\"\n", buf);
 
     r = MsiRecordGetInteger(hrec, 2);
     ok(r == 1, "Expected 1, got %d\n", r);
@@ -7560,7 +7560,7 @@ static void test_droptable(void)
     size = MAX_PATH;
     r = MsiRecordGetStringA(hrec, 3, buf, &size);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-    ok(!lstrcmpA(buf, "A"), "Expected \"A\", got \"%s\"\n", buf);
+    ok(!strcmp(buf, "A"), "Expected \"A\", got \"%s\"\n", buf);
 
     MsiCloseHandle(hrec);
 
@@ -7646,7 +7646,7 @@ static void test_droptable(void)
     size = MAX_PATH;
     r = MsiRecordGetStringA(hrec, 1, buf, &size);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-    ok(!lstrcmpA(buf, "One"), "Expected \"One\", got \"%s\"\n", buf);
+    ok(!strcmp(buf, "One"), "Expected \"One\", got \"%s\"\n", buf);
 
     MsiCloseHandle(hrec);
     MsiViewClose(hview);
@@ -7664,7 +7664,7 @@ static void test_droptable(void)
     size = MAX_PATH;
     r = MsiRecordGetStringA(hrec, 1, buf, &size);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-    ok(!lstrcmpA(buf, "One"), "Expected \"One\", got \"%s\"\n", buf);
+    ok(!strcmp(buf, "One"), "Expected \"One\", got \"%s\"\n", buf);
 
     r = MsiRecordGetInteger(hrec, 2);
     ok(r == 1, "Expected 1, got %d\n", r);
@@ -7672,7 +7672,7 @@ static void test_droptable(void)
     size = MAX_PATH;
     r = MsiRecordGetStringA(hrec, 3, buf, &size);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-    ok(!lstrcmpA(buf, "B"), "Expected \"B\", got \"%s\"\n", buf);
+    ok(!strcmp(buf, "B"), "Expected \"B\", got \"%s\"\n", buf);
 
     MsiCloseHandle(hrec);
 
@@ -7682,7 +7682,7 @@ static void test_droptable(void)
     size = MAX_PATH;
     r = MsiRecordGetStringA(hrec, 1, buf, &size);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-    ok(!lstrcmpA(buf, "One"), "Expected \"One\", got \"%s\"\n", buf);
+    ok(!strcmp(buf, "One"), "Expected \"One\", got \"%s\"\n", buf);
 
     r = MsiRecordGetInteger(hrec, 2);
     ok(r == 2, "Expected 2, got %d\n", r);
@@ -7690,7 +7690,7 @@ static void test_droptable(void)
     size = MAX_PATH;
     r = MsiRecordGetStringA(hrec, 3, buf, &size);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-    ok(!lstrcmpA(buf, "C"), "Expected \"C\", got \"%s\"\n", buf);
+    ok(!strcmp(buf, "C"), "Expected \"C\", got \"%s\"\n", buf);
 
     MsiCloseHandle(hrec);
 
@@ -8041,7 +8041,7 @@ static void test_dbmerge(void)
     size = MAX_PATH;
     r = MsiRecordGetStringA(hrec, 1, buf, &size);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-    ok(!lstrcmpA(buf, "One"), "Expected \"One\", got \"%s\"\n", buf);
+    ok(!strcmp(buf, "One"), "Expected \"One\", got \"%s\"\n", buf);
 
     r = MsiRecordGetInteger(hrec, 2);
     ok(r == 2, "Expected 2, got %d\n", r);
@@ -8058,12 +8058,12 @@ static void test_dbmerge(void)
     size = MAX_PATH;
     r = MsiRecordGetString(hrec, 1, buf, &size);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-    ok(!lstrcmpA(buf, "Table"), "Expected \"Table\", got \"%s\"\n", buf);
+    ok(!strcmp(buf, "Table"), "Expected \"Table\", got \"%s\"\n", buf);
 
     size = MAX_PATH;
     r = MsiRecordGetString(hrec, 2, buf, &size);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-    ok(!lstrcmpA(buf, "NumRowMergeConflicts"),
+    ok(!strcmp(buf, "NumRowMergeConflicts"),
        "Expected \"NumRowMergeConflicts\", got \"%s\"\n", buf);
 
     MsiCloseHandle(hrec);
@@ -8075,12 +8075,12 @@ static void test_dbmerge(void)
     size = MAX_PATH;
     r = MsiRecordGetString(hrec, 1, buf, &size);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-    ok(!lstrcmpA(buf, "s255"), "Expected \"s255\", got \"%s\"\n", buf);
+    ok(!strcmp(buf, "s255"), "Expected \"s255\", got \"%s\"\n", buf);
 
     size = MAX_PATH;
     r = MsiRecordGetString(hrec, 2, buf, &size);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-    ok(!lstrcmpA(buf, "i2"), "Expected \"i2\", got \"%s\"\n", buf);
+    ok(!strcmp(buf, "i2"), "Expected \"i2\", got \"%s\"\n", buf);
 
     MsiCloseHandle(hrec);
     MsiViewClose(hview);
@@ -8120,7 +8120,7 @@ static void test_dbmerge(void)
     size = MAX_PATH;
     r = MsiRecordGetStringA(hrec, 2, buf, &size);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-    ok(!lstrcmpA(buf, "hi"), "Expected \"hi\", got \"%s\"\n", buf);
+    ok(!strcmp(buf, "hi"), "Expected \"hi\", got \"%s\"\n", buf);
 
     MsiCloseHandle(hrec);
 
@@ -8163,7 +8163,7 @@ static void test_dbmerge(void)
     size = MAX_PATH;
     r = MsiRecordGetStringA(hrec, 1, buf, &size);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-    ok(!lstrcmpA(buf, "hi"), "Expected \"hi\", got \"%s\"\n", buf);
+    ok(!strcmp(buf, "hi"), "Expected \"hi\", got \"%s\"\n", buf);
 
     r = MsiRecordGetInteger(hrec, 2);
     ok(r == 1, "Expected 1, got %d\n", r);
@@ -8218,7 +8218,7 @@ static void test_dbmerge(void)
     size = MAX_PATH;
     r = MsiRecordGetStringA(hrec, 2, buf, &size);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-    ok(!lstrcmpA(buf, "hi"), "Expected \"hi\", got \"%s\"\n", buf);
+    ok(!strcmp(buf, "hi"), "Expected \"hi\", got \"%s\"\n", buf);
 
     MsiCloseHandle(hrec);
 
@@ -8269,7 +8269,7 @@ static void test_dbmerge(void)
     ZeroMemory(buf, MAX_PATH);
     r = MsiRecordReadStream(hrec, 2, buf, &size);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-    ok(!lstrcmpA(buf, "binary.dat\n"),
+    ok(!strcmp(buf, "binary.dat\n"),
        "Expected \"binary.dat\\n\", got \"%s\"\n", buf);
 
     MsiCloseHandle(hrec);
@@ -8320,7 +8320,7 @@ static void test_dbmerge(void)
     size = MAX_PATH;
     r = MsiRecordGetStringA(hrec, 2, buf, &size);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-    ok(!lstrcmpA(buf, "foo"), "Expected \"foo\", got \"%s\"\n", buf);
+    ok(!strcmp(buf, "foo"), "Expected \"foo\", got \"%s\"\n", buf);
 
     MsiCloseHandle(hrec);
 
@@ -8333,7 +8333,7 @@ static void test_dbmerge(void)
     size = MAX_PATH;
     r = MsiRecordGetStringA(hrec, 2, buf, &size);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-    ok(!lstrcmpA(buf, "bar"), "Expected \"bar\", got \"%s\"\n", buf);
+    ok(!strcmp(buf, "bar"), "Expected \"bar\", got \"%s\"\n", buf);
 
     MsiCloseHandle(hrec);
 
@@ -8628,34 +8628,34 @@ static void test_columnorder(void)
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     sz = MAX_PATH;
-    lstrcpyA(buf, "kiwi");
+    strcpy(buf, "kiwi");
     r = MsiRecordGetString(rec, 1, buf, &sz);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-    ok(!lstrcmpA("s255", buf), "Expected \"s255\", got \"%s\"\n", buf);
+    ok(!strcmp("s255", buf), "Expected \"s255\", got \"%s\"\n", buf);
 
     sz = MAX_PATH;
-    lstrcpyA(buf, "kiwi");
+    strcpy(buf, "kiwi");
     r = MsiRecordGetString(rec, 2, buf, &sz);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-    ok(!lstrcmpA("I2", buf), "Expected \"I2\", got \"%s\"\n", buf);
+    ok(!strcmp("I2", buf), "Expected \"I2\", got \"%s\"\n", buf);
 
     sz = MAX_PATH;
-    lstrcpyA(buf, "kiwi");
+    strcpy(buf, "kiwi");
     r = MsiRecordGetString(rec, 3, buf, &sz);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-    ok(!lstrcmpA("S255", buf), "Expected \"S255\", got \"%s\"\n", buf);
+    ok(!strcmp("S255", buf), "Expected \"S255\", got \"%s\"\n", buf);
 
     sz = MAX_PATH;
-    lstrcpyA(buf, "kiwi");
+    strcpy(buf, "kiwi");
     r = MsiRecordGetString(rec, 4, buf, &sz);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-    ok(!lstrcmpA("i2", buf), "Expected \"i2\", got \"%s\"\n", buf);
+    ok(!strcmp("i2", buf), "Expected \"i2\", got \"%s\"\n", buf);
 
     sz = MAX_PATH;
-    lstrcpyA(buf, "kiwi");
+    strcpy(buf, "kiwi");
     r = MsiRecordGetString(rec, 5, buf, &sz);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-    ok(!lstrcmpA("i2", buf), "Expected \"i2\", got \"%s\"\n", buf);
+    ok(!strcmp("i2", buf), "Expected \"i2\", got \"%s\"\n", buf);
 
     MsiCloseHandle(rec);
 
@@ -8664,34 +8664,34 @@ static void test_columnorder(void)
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     sz = MAX_PATH;
-    lstrcpyA(buf, "kiwi");
+    strcpy(buf, "kiwi");
     r = MsiRecordGetString(rec, 1, buf, &sz);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-    ok(!lstrcmpA("D", buf), "Expected \"D\", got \"%s\"\n", buf);
+    ok(!strcmp("D", buf), "Expected \"D\", got \"%s\"\n", buf);
 
     sz = MAX_PATH;
-    lstrcpyA(buf, "kiwi");
+    strcpy(buf, "kiwi");
     r = MsiRecordGetString(rec, 2, buf, &sz);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-    ok(!lstrcmpA("E", buf), "Expected \"E\", got \"%s\"\n", buf);
+    ok(!strcmp("E", buf), "Expected \"E\", got \"%s\"\n", buf);
 
     sz = MAX_PATH;
-    lstrcpyA(buf, "kiwi");
+    strcpy(buf, "kiwi");
     r = MsiRecordGetString(rec, 3, buf, &sz);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-    ok(!lstrcmpA("A", buf), "Expected \"A\", got \"%s\"\n", buf);
+    ok(!strcmp("A", buf), "Expected \"A\", got \"%s\"\n", buf);
 
     sz = MAX_PATH;
-    lstrcpyA(buf, "kiwi");
+    strcpy(buf, "kiwi");
     r = MsiRecordGetString(rec, 4, buf, &sz);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-    ok(!lstrcmpA("C", buf), "Expected \"C\", got \"%s\"\n", buf);
+    ok(!strcmp("C", buf), "Expected \"C\", got \"%s\"\n", buf);
 
     sz = MAX_PATH;
-    lstrcpyA(buf, "kiwi");
+    strcpy(buf, "kiwi");
     r = MsiRecordGetString(rec, 5, buf, &sz);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-    ok(!lstrcmpA("B", buf), "Expected \"B\", got \"%s\"\n", buf);
+    ok(!strcmp("B", buf), "Expected \"B\", got \"%s\"\n", buf);
 
     MsiCloseHandle(rec);
     MsiViewClose(view);
@@ -8707,19 +8707,19 @@ static void test_columnorder(void)
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     sz = MAX_PATH;
-    lstrcpyA(buf, "kiwi");
+    strcpy(buf, "kiwi");
     r = MsiRecordGetString(rec, 1, buf, &sz);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-    ok(!lstrcmpA("bc", buf), "Expected \"bc\", got \"%s\"\n", buf);
+    ok(!strcmp("bc", buf), "Expected \"bc\", got \"%s\"\n", buf);
 
     r = MsiRecordGetInteger(rec, 2);
     ok(r == 3, "Expected 3, got %d\n", r);
 
     sz = MAX_PATH;
-    lstrcpyA(buf, "kiwi");
+    strcpy(buf, "kiwi");
     r = MsiRecordGetString(rec, 3, buf, &sz);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-    ok(!lstrcmpA("a", buf), "Expected \"a\", got \"%s\"\n", buf);
+    ok(!strcmp("a", buf), "Expected \"a\", got \"%s\"\n", buf);
 
     r = MsiRecordGetInteger(rec, 4);
     ok(r == 2, "Expected 2, got %d\n", r);
@@ -8740,19 +8740,19 @@ static void test_columnorder(void)
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     sz = MAX_PATH;
-    lstrcpyA(buf, "kiwi");
+    strcpy(buf, "kiwi");
     r = MsiRecordGetString(rec, 1, buf, &sz);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-    ok(!lstrcmpA("T", buf), "Expected \"T\", got \"%s\"\n", buf);
+    ok(!strcmp("T", buf), "Expected \"T\", got \"%s\"\n", buf);
 
     r = MsiRecordGetInteger(rec, 2);
     ok(r == 1, "Expected 1, got %d\n", r);
 
     sz = MAX_PATH;
-    lstrcpyA(buf, "kiwi");
+    strcpy(buf, "kiwi");
     r = MsiRecordGetString(rec, 3, buf, &sz);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-    ok(!lstrcmpA("D", buf), "Expected \"D\", got \"%s\"\n", buf);
+    ok(!strcmp("D", buf), "Expected \"D\", got \"%s\"\n", buf);
 
     MsiCloseHandle(rec);
 
@@ -8760,19 +8760,19 @@ static void test_columnorder(void)
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     sz = MAX_PATH;
-    lstrcpyA(buf, "kiwi");
+    strcpy(buf, "kiwi");
     r = MsiRecordGetString(rec, 1, buf, &sz);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-    ok(!lstrcmpA("T", buf), "Expected \"T\", got \"%s\"\n", buf);
+    ok(!strcmp("T", buf), "Expected \"T\", got \"%s\"\n", buf);
 
     r = MsiRecordGetInteger(rec, 2);
     ok(r == 2, "Expected 2, got %d\n", r);
 
     sz = MAX_PATH;
-    lstrcpyA(buf, "kiwi");
+    strcpy(buf, "kiwi");
     r = MsiRecordGetString(rec, 3, buf, &sz);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-    ok(!lstrcmpA("E", buf), "Expected \"E\", got \"%s\"\n", buf);
+    ok(!strcmp("E", buf), "Expected \"E\", got \"%s\"\n", buf);
 
     MsiCloseHandle(rec);
 
@@ -8780,19 +8780,19 @@ static void test_columnorder(void)
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     sz = MAX_PATH;
-    lstrcpyA(buf, "kiwi");
+    strcpy(buf, "kiwi");
     r = MsiRecordGetString(rec, 1, buf, &sz);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-    ok(!lstrcmpA("T", buf), "Expected \"T\", got \"%s\"\n", buf);
+    ok(!strcmp("T", buf), "Expected \"T\", got \"%s\"\n", buf);
 
     r = MsiRecordGetInteger(rec, 2);
     ok(r == 3, "Expected 3, got %d\n", r);
 
     sz = MAX_PATH;
-    lstrcpyA(buf, "kiwi");
+    strcpy(buf, "kiwi");
     r = MsiRecordGetString(rec, 3, buf, &sz);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-    ok(!lstrcmpA("A", buf), "Expected \"A\", got \"%s\"\n", buf);
+    ok(!strcmp("A", buf), "Expected \"A\", got \"%s\"\n", buf);
 
     MsiCloseHandle(rec);
 
@@ -8800,19 +8800,19 @@ static void test_columnorder(void)
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     sz = MAX_PATH;
-    lstrcpyA(buf, "kiwi");
+    strcpy(buf, "kiwi");
     r = MsiRecordGetString(rec, 1, buf, &sz);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-    ok(!lstrcmpA("T", buf), "Expected \"T\", got \"%s\"\n", buf);
+    ok(!strcmp("T", buf), "Expected \"T\", got \"%s\"\n", buf);
 
     r = MsiRecordGetInteger(rec, 2);
     ok(r == 4, "Expected 4, got %d\n", r);
 
     sz = MAX_PATH;
-    lstrcpyA(buf, "kiwi");
+    strcpy(buf, "kiwi");
     r = MsiRecordGetString(rec, 3, buf, &sz);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-    ok(!lstrcmpA("C", buf), "Expected \"C\", got \"%s\"\n", buf);
+    ok(!strcmp("C", buf), "Expected \"C\", got \"%s\"\n", buf);
 
     MsiCloseHandle(rec);
 
@@ -8820,19 +8820,19 @@ static void test_columnorder(void)
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     sz = MAX_PATH;
-    lstrcpyA(buf, "kiwi");
+    strcpy(buf, "kiwi");
     r = MsiRecordGetString(rec, 1, buf, &sz);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-    ok(!lstrcmpA("T", buf), "Expected \"T\", got \"%s\"\n", buf);
+    ok(!strcmp("T", buf), "Expected \"T\", got \"%s\"\n", buf);
 
     r = MsiRecordGetInteger(rec, 2);
     ok(r == 5, "Expected 5, got %d\n", r);
 
     sz = MAX_PATH;
-    lstrcpyA(buf, "kiwi");
+    strcpy(buf, "kiwi");
     r = MsiRecordGetString(rec, 3, buf, &sz);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-    ok(!lstrcmpA("B", buf), "Expected \"B\", got \"%s\"\n", buf);
+    ok(!strcmp("B", buf), "Expected \"B\", got \"%s\"\n", buf);
 
     MsiCloseHandle(rec);
 
@@ -8858,34 +8858,34 @@ static void test_columnorder(void)
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     sz = MAX_PATH;
-    lstrcpyA(buf, "kiwi");
+    strcpy(buf, "kiwi");
     r = MsiRecordGetString(rec, 1, buf, &sz);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-    ok(!lstrcmpA("i2", buf), "Expected \"i2\", got \"%s\"\n", buf);
+    ok(!strcmp("i2", buf), "Expected \"i2\", got \"%s\"\n", buf);
 
     sz = MAX_PATH;
-    lstrcpyA(buf, "kiwi");
+    strcpy(buf, "kiwi");
     r = MsiRecordGetString(rec, 2, buf, &sz);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-    ok(!lstrcmpA("S255", buf), "Expected \"S255\", got \"%s\"\n", buf);
+    ok(!strcmp("S255", buf), "Expected \"S255\", got \"%s\"\n", buf);
 
     sz = MAX_PATH;
-    lstrcpyA(buf, "kiwi");
+    strcpy(buf, "kiwi");
     r = MsiRecordGetString(rec, 3, buf, &sz);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-    ok(!lstrcmpA("s255", buf), "Expected \"s255\", got \"%s\"\n", buf);
+    ok(!strcmp("s255", buf), "Expected \"s255\", got \"%s\"\n", buf);
 
     sz = MAX_PATH;
-    lstrcpyA(buf, "kiwi");
+    strcpy(buf, "kiwi");
     r = MsiRecordGetString(rec, 4, buf, &sz);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-    ok(!lstrcmpA("I2", buf), "Expected \"I2\", got \"%s\"\n", buf);
+    ok(!strcmp("I2", buf), "Expected \"I2\", got \"%s\"\n", buf);
 
     sz = MAX_PATH;
-    lstrcpyA(buf, "kiwi");
+    strcpy(buf, "kiwi");
     r = MsiRecordGetString(rec, 5, buf, &sz);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-    ok(!lstrcmpA("i2", buf), "Expected \"i2\", got \"%s\"\n", buf);
+    ok(!strcmp("i2", buf), "Expected \"i2\", got \"%s\"\n", buf);
 
     MsiCloseHandle(rec);
 
@@ -8894,34 +8894,34 @@ static void test_columnorder(void)
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     sz = MAX_PATH;
-    lstrcpyA(buf, "kiwi");
+    strcpy(buf, "kiwi");
     r = MsiRecordGetString(rec, 1, buf, &sz);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-    ok(!lstrcmpA("C", buf), "Expected \"C\", got \"%s\"\n", buf);
+    ok(!strcmp("C", buf), "Expected \"C\", got \"%s\"\n", buf);
 
     sz = MAX_PATH;
-    lstrcpyA(buf, "kiwi");
+    strcpy(buf, "kiwi");
     r = MsiRecordGetString(rec, 2, buf, &sz);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-    ok(!lstrcmpA("A", buf), "Expected \"A\", got \"%s\"\n", buf);
+    ok(!strcmp("A", buf), "Expected \"A\", got \"%s\"\n", buf);
 
     sz = MAX_PATH;
-    lstrcpyA(buf, "kiwi");
+    strcpy(buf, "kiwi");
     r = MsiRecordGetString(rec, 3, buf, &sz);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-    ok(!lstrcmpA("D", buf), "Expected \"D\", got \"%s\"\n", buf);
+    ok(!strcmp("D", buf), "Expected \"D\", got \"%s\"\n", buf);
 
     sz = MAX_PATH;
-    lstrcpyA(buf, "kiwi");
+    strcpy(buf, "kiwi");
     r = MsiRecordGetString(rec, 4, buf, &sz);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-    ok(!lstrcmpA("E", buf), "Expected \"E\", got \"%s\"\n", buf);
+    ok(!strcmp("E", buf), "Expected \"E\", got \"%s\"\n", buf);
 
     sz = MAX_PATH;
-    lstrcpyA(buf, "kiwi");
+    strcpy(buf, "kiwi");
     r = MsiRecordGetString(rec, 5, buf, &sz);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-    ok(!lstrcmpA("B", buf), "Expected \"B\", got \"%s\"\n", buf);
+    ok(!strcmp("B", buf), "Expected \"B\", got \"%s\"\n", buf);
 
     MsiCloseHandle(rec);
     MsiViewClose(view);
@@ -8940,16 +8940,16 @@ static void test_columnorder(void)
     ok(r == 2, "Expected 2, got %d\n", r);
 
     sz = MAX_PATH;
-    lstrcpyA(buf, "kiwi");
+    strcpy(buf, "kiwi");
     r = MsiRecordGetString(rec, 2, buf, &sz);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-    ok(!lstrcmpA("a", buf), "Expected \"a\", got \"%s\"\n", buf);
+    ok(!strcmp("a", buf), "Expected \"a\", got \"%s\"\n", buf);
 
     sz = MAX_PATH;
-    lstrcpyA(buf, "kiwi");
+    strcpy(buf, "kiwi");
     r = MsiRecordGetString(rec, 3, buf, &sz);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-    ok(!lstrcmpA("bc", buf), "Expected \"bc\", got \"%s\"\n", buf);
+    ok(!strcmp("bc", buf), "Expected \"bc\", got \"%s\"\n", buf);
 
     r = MsiRecordGetInteger(rec, 4);
     ok(r == 3, "Expected 3, got %d\n", r);
@@ -8970,19 +8970,19 @@ static void test_columnorder(void)
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     sz = MAX_PATH;
-    lstrcpyA(buf, "kiwi");
+    strcpy(buf, "kiwi");
     r = MsiRecordGetString(rec, 1, buf, &sz);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-    ok(!lstrcmpA("T", buf), "Expected \"T\", got \"%s\"\n", buf);
+    ok(!strcmp("T", buf), "Expected \"T\", got \"%s\"\n", buf);
 
     r = MsiRecordGetInteger(rec, 2);
     ok(r == 1, "Expected 1, got %d\n", r);
 
     sz = MAX_PATH;
-    lstrcpyA(buf, "kiwi");
+    strcpy(buf, "kiwi");
     r = MsiRecordGetString(rec, 3, buf, &sz);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-    ok(!lstrcmpA("D", buf), "Expected \"D\", got \"%s\"\n", buf);
+    ok(!strcmp("D", buf), "Expected \"D\", got \"%s\"\n", buf);
 
     MsiCloseHandle(rec);
 
@@ -8990,19 +8990,19 @@ static void test_columnorder(void)
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     sz = MAX_PATH;
-    lstrcpyA(buf, "kiwi");
+    strcpy(buf, "kiwi");
     r = MsiRecordGetString(rec, 1, buf, &sz);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-    ok(!lstrcmpA("T", buf), "Expected \"T\", got \"%s\"\n", buf);
+    ok(!strcmp("T", buf), "Expected \"T\", got \"%s\"\n", buf);
 
     r = MsiRecordGetInteger(rec, 2);
     ok(r == 2, "Expected 2, got %d\n", r);
 
     sz = MAX_PATH;
-    lstrcpyA(buf, "kiwi");
+    strcpy(buf, "kiwi");
     r = MsiRecordGetString(rec, 3, buf, &sz);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-    ok(!lstrcmpA("E", buf), "Expected \"E\", got \"%s\"\n", buf);
+    ok(!strcmp("E", buf), "Expected \"E\", got \"%s\"\n", buf);
 
     MsiCloseHandle(rec);
 
@@ -9010,19 +9010,19 @@ static void test_columnorder(void)
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     sz = MAX_PATH;
-    lstrcpyA(buf, "kiwi");
+    strcpy(buf, "kiwi");
     r = MsiRecordGetString(rec, 1, buf, &sz);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-    ok(!lstrcmpA("T", buf), "Expected \"T\", got \"%s\"\n", buf);
+    ok(!strcmp("T", buf), "Expected \"T\", got \"%s\"\n", buf);
 
     r = MsiRecordGetInteger(rec, 2);
     ok(r == 3, "Expected 3, got %d\n", r);
 
     sz = MAX_PATH;
-    lstrcpyA(buf, "kiwi");
+    strcpy(buf, "kiwi");
     r = MsiRecordGetString(rec, 3, buf, &sz);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-    ok(!lstrcmpA("A", buf), "Expected \"A\", got \"%s\"\n", buf);
+    ok(!strcmp("A", buf), "Expected \"A\", got \"%s\"\n", buf);
 
     MsiCloseHandle(rec);
 
@@ -9030,19 +9030,19 @@ static void test_columnorder(void)
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     sz = MAX_PATH;
-    lstrcpyA(buf, "kiwi");
+    strcpy(buf, "kiwi");
     r = MsiRecordGetString(rec, 1, buf, &sz);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-    ok(!lstrcmpA("T", buf), "Expected \"T\", got \"%s\"\n", buf);
+    ok(!strcmp("T", buf), "Expected \"T\", got \"%s\"\n", buf);
 
     r = MsiRecordGetInteger(rec, 2);
     ok(r == 4, "Expected 4, got %d\n", r);
 
     sz = MAX_PATH;
-    lstrcpyA(buf, "kiwi");
+    strcpy(buf, "kiwi");
     r = MsiRecordGetString(rec, 3, buf, &sz);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-    ok(!lstrcmpA("C", buf), "Expected \"C\", got \"%s\"\n", buf);
+    ok(!strcmp("C", buf), "Expected \"C\", got \"%s\"\n", buf);
 
     MsiCloseHandle(rec);
 
@@ -9050,19 +9050,19 @@ static void test_columnorder(void)
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     sz = MAX_PATH;
-    lstrcpyA(buf, "kiwi");
+    strcpy(buf, "kiwi");
     r = MsiRecordGetString(rec, 1, buf, &sz);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-    ok(!lstrcmpA("T", buf), "Expected \"T\", got \"%s\"\n", buf);
+    ok(!strcmp("T", buf), "Expected \"T\", got \"%s\"\n", buf);
 
     r = MsiRecordGetInteger(rec, 2);
     ok(r == 5, "Expected 5, got %d\n", r);
 
     sz = MAX_PATH;
-    lstrcpyA(buf, "kiwi");
+    strcpy(buf, "kiwi");
     r = MsiRecordGetString(rec, 3, buf, &sz);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-    ok(!lstrcmpA("B", buf), "Expected \"B\", got \"%s\"\n", buf);
+    ok(!strcmp("B", buf), "Expected \"B\", got \"%s\"\n", buf);
 
     MsiCloseHandle(rec);
 
@@ -9308,7 +9308,7 @@ static void test_select_column_names(void)
     memset( buffer, 0x55, sizeof(buffer) );
     r = MsiRecordGetStringA( rec2, 1, buffer, &size );
     ok( r == ERROR_SUCCESS, "unexpected result: %u\n", r );
-    ok( !lstrcmpA( buffer, "f0" ), "got \"%s\"\n", buffer );
+    ok( !strcmp( buffer, "f0" ), "got \"%s\"\n", buffer );
     MsiCloseHandle( rec2 );
 
     size = sizeof(buffer);
@@ -9349,7 +9349,7 @@ static void test_select_column_names(void)
     memset( buffer, 0x55, sizeof(buffer) );
     r = MsiRecordGetStringA( rec, 1, buffer, &size );
     ok( r == ERROR_SUCCESS, "unexpected result: %u\n", r );
-    ok( !lstrcmpA( buffer, "1" ), "got \"%s\"\n", buffer );
+    ok( !strcmp( buffer, "1" ), "got \"%s\"\n", buffer );
     MsiCloseHandle( rec );
 
     r = MsiViewFetch( view, &rec );
@@ -9388,7 +9388,7 @@ static void test_select_column_names(void)
     memset( buffer, 0x55, sizeof(buffer) );
     r = MsiRecordGetStringA( rec, 2, buffer, &size );
     ok( r == ERROR_SUCCESS, "unexpected result: %u\n", r );
-    ok( !lstrcmpA( buffer, "1" ), "got \"%s\"\n", buffer );
+    ok( !strcmp( buffer, "1" ), "got \"%s\"\n", buffer );
     MsiCloseHandle( rec );
 
     r = MsiViewFetch( view, &rec );
@@ -9402,7 +9402,7 @@ static void test_select_column_names(void)
     memset( buffer, 0x55, sizeof(buffer) );
     r = MsiRecordGetStringA( rec, 2, buffer, &size );
     ok( r == ERROR_SUCCESS, "unexpected result: %u\n", r );
-    ok( !lstrcmpA( buffer, "3" ), "got \"%s\"\n", buffer );
+    ok( !strcmp( buffer, "3" ), "got \"%s\"\n", buffer );
     MsiCloseHandle( rec );
 
     r = MsiViewFetch( view, &rec );
@@ -9427,7 +9427,7 @@ static void test_select_column_names(void)
     memset( buffer, 0x55, sizeof(buffer) );
     r = MsiRecordGetStringA( rec, 1, buffer, &size );
     ok( r == ERROR_SUCCESS, "unexpected result: %u\n", r );
-    ok( !lstrcmpA( buffer, "1" ), "got \"%s\"\n", buffer );
+    ok( !strcmp( buffer, "1" ), "got \"%s\"\n", buffer );
     size = sizeof(buffer);
     memset( buffer, 0x55, sizeof(buffer) );
     r = MsiRecordGetStringA( rec, 2, buffer, &size );
@@ -9437,7 +9437,7 @@ static void test_select_column_names(void)
     memset( buffer, 0x55, sizeof(buffer) );
     r = MsiRecordGetStringA( rec, 3, buffer, &size );
     ok( r == ERROR_SUCCESS, "unexpected result: %u\n", r );
-    ok( !lstrcmpA( buffer, "2" ), "got \"%s\"\n", buffer );
+    ok( !strcmp( buffer, "2" ), "got \"%s\"\n", buffer );
     MsiCloseHandle( rec );
 
     r = MsiViewFetch( view, &rec );
@@ -9446,7 +9446,7 @@ static void test_select_column_names(void)
     memset( buffer, 0x55, sizeof(buffer) );
     r = MsiRecordGetStringA( rec, 1, buffer, &size );
     ok( r == ERROR_SUCCESS, "unexpected result: %u\n", r );
-    ok( !lstrcmpA( buffer, "3" ), "got \"%s\"\n", buffer );
+    ok( !strcmp( buffer, "3" ), "got \"%s\"\n", buffer );
     size = sizeof(buffer);
     memset( buffer, 0x55, sizeof(buffer) );
     r = MsiRecordGetStringA( rec, 2, buffer, &size );
@@ -9456,7 +9456,7 @@ static void test_select_column_names(void)
     memset( buffer, 0x55, sizeof(buffer) );
     r = MsiRecordGetStringA( rec, 3, buffer, &size );
     ok( r == ERROR_SUCCESS, "unexpected result: %u\n", r );
-    ok( !lstrcmpA( buffer, "4" ), "got \"%s\"\n", buffer );
+    ok( !strcmp( buffer, "4" ), "got \"%s\"\n", buffer );
     MsiCloseHandle( rec );
 
     r = MsiViewFetch( view, &rec );

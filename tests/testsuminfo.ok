@@ -80,7 +80,7 @@ ok: INVALID_FILE_ATTRIBUTES != GetFileAttributes(msifile)
 ok: r == ERROR_SUCCESS
 ok: r == ERROR_SUCCESS
 ok: r == ERROR_SUCCESS
-ok: !lstrcmpA(sval, "") || !lstrcmpA(sval, "7")
+ok: !strcmp(sval, "") || !strcmp(sval, "7")
 ok: r == ERROR_SUCCESS
 ok: r == ERROR_SUCCESS
 ok: r == ERROR_FUNCTION_FAILED
