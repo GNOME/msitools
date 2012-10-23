@@ -521,30 +521,32 @@ static const WCHAR szInstallLocation[] = {'I','n','s','t','a','l','l','L','o','c
 static void *msi_alloc( size_t len ) __WINE_ALLOC_SIZE(1);
 static inline void *msi_alloc( size_t len )
 {
-    return HeapAlloc( GetProcessHeap(), 0, len );
+    return malloc(len);
 }
 
 static void *msi_alloc_zero( size_t len ) __WINE_ALLOC_SIZE(1);
 static inline void *msi_alloc_zero( size_t len )
 {
-    return HeapAlloc( GetProcessHeap(), HEAP_ZERO_MEMORY, len );
+    return calloc(len, 1);
 }
 
 static void *msi_realloc( void *mem, size_t len ) __WINE_ALLOC_SIZE(2);
 static inline void *msi_realloc( void *mem, size_t len )
 {
-    return HeapReAlloc( GetProcessHeap(), 0, mem, len );
+    return realloc(mem, len);
 }
 
-static void *msi_realloc_zero( void *mem, size_t len ) __WINE_ALLOC_SIZE(2);
-static inline void *msi_realloc_zero( void *mem, size_t len )
+static void *msi_realloc_zero( void *mem, size_t oldlen, size_t len ) __WINE_ALLOC_SIZE(3);
+static inline void *msi_realloc_zero( void *mem, size_t oldlen, size_t len )
 {
-    return HeapReAlloc( GetProcessHeap(), HEAP_ZERO_MEMORY, mem, len );
+    mem = realloc( mem, len );
+    memset(mem + oldlen, 0, len - oldlen);
+    return mem;
 }
 
 static inline bool msi_free( void *mem )
 {
-    return HeapFree( GetProcessHeap(), 0, mem );
+    free(mem);
 }
 
 static inline char *strdupWtoA( const WCHAR *str )

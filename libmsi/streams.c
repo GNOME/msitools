@@ -56,8 +56,9 @@ static bool streams_set_table_size(LibmsiStreamSVIEW *sv, unsigned size)
 {
     if (size >= sv->max_streams)
     {
+        sv->streams = msi_realloc_zero(sv->streams, sv->max_streams * sizeof(STREAM *),
+                                       sv->max_streams * 2 * sizeof(STREAM *));
         sv->max_streams *= 2;
-        sv->streams = msi_realloc_zero(sv->streams, sv->max_streams * sizeof(STREAM *));
         if (!sv->streams)
             return false;
     }

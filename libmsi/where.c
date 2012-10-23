@@ -130,7 +130,8 @@ static unsigned add_row(LibmsiWhereView *wv, unsigned vals[])
         LibmsiRowEntry **new_reorder;
         unsigned newsize = wv->reorder_size * 2;
 
-        new_reorder = msi_realloc_zero(wv->reorder, sizeof(LibmsiRowEntry *) * newsize);
+        new_reorder = msi_realloc_zero(wv->reorder, sizeof(LibmsiRowEntry *) * wv->reorder_size,
+                                       sizeof(LibmsiRowEntry *) * newsize);
         if (!new_reorder)
             return ERROR_OUTOFMEMORY;
 

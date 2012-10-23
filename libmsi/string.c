@@ -138,7 +138,7 @@ static int st_find_free_entry( string_table *st )
 
     /* dynamically resize */
     sz = st->maxcount + 1 + st->maxcount/2;
-    p = msi_realloc_zero( st->strings, sz * sizeof(struct msistring) );
+    p = msi_realloc_zero( st->strings, st->maxcount * sizeof(struct msistring), sz * sizeof(struct msistring) );
     if( !p )
         return -1;
 
