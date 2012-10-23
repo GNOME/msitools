@@ -168,7 +168,8 @@ static void read_properties_from_data( PROPVARIANT *prop, LPBYTE data, DWORD sz 
     UINT type;
     DWORD i, size;
     PROPERTY_DATA *propdata;
-    PROPVARIANT property, *ptr;
+    PROPVARIANT property;
+    PROPVARIANT *ptr;
     PROPVARIANT changed;
     PROPERTYIDOFFSET *idofs;
     PROPERTYSECTIONHEADER *section_hdr;

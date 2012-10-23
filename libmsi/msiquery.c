@@ -56,7 +56,8 @@ static void MSI_CloseView( MSIOBJECT *arg )
 
 UINT VIEW_find_column( MSIVIEW *table, LPCWSTR name, LPCWSTR table_name, UINT *n )
 {
-    LPCWSTR col_name, haystack_table_name;
+    LPCWSTR col_name;
+    LPCWSTR haystack_table_name;
     UINT i, count, r;
 
     r = table->ops->get_dimensions( table, NULL, &count );
@@ -790,7 +791,8 @@ struct msi_primary_key_record_info
 static UINT msi_primary_key_iterator( MSIRECORD *rec, LPVOID param )
 {
     struct msi_primary_key_record_info *info = param;
-    LPCWSTR name, table;
+    LPCWSTR name;
+    LPCWSTR table;
     DWORD type;
 
     type = MSI_RecordGetInteger( rec, 4 );

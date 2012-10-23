@@ -129,7 +129,8 @@ LPWSTR encode_streamname(BOOL bTable, LPCWSTR in)
 {
     DWORD count = MAX_STREAM_NAME;
     DWORD ch, next;
-    LPWSTR out, p;
+    LPWSTR out;
+    LPWSTR p;
 
     if( !bTable )
         count = lstrlenW( in )+2;
@@ -1054,7 +1055,8 @@ static UINT TABLE_fetch_int( struct tagMSIVIEW *view, UINT row, UINT col, UINT *
 
 static UINT msi_stream_name( const MSITABLEVIEW *tv, UINT row, LPWSTR *pstname )
 {
-    LPWSTR p, stname = NULL;
+    LPWSTR p;
+    LPWSTR stname = NULL;
     UINT i, r, type, ival;
     DWORD len;
     LPCWSTR sval;
@@ -1147,7 +1149,8 @@ static UINT TABLE_fetch_stream( struct tagMSIVIEW *view, UINT row, UINT col, ISt
 {
     MSITABLEVIEW *tv = (MSITABLEVIEW*)view;
     UINT r;
-    LPWSTR encname, full_name = NULL;
+    LPWSTR encname;
+    LPWSTR full_name = NULL;
 
     if( !view->ops->fetch_int )
         return ERROR_INVALID_PARAMETER;
@@ -2231,7 +2234,9 @@ static UINT read_raw_int(const BYTE *data, UINT col, UINT bytes)
 
 static UINT msi_record_encoded_stream_name( const MSITABLEVIEW *tv, MSIRECORD *rec, LPWSTR *pstname )
 {
-    LPWSTR stname = NULL, sval, p;
+    LPWSTR stname = NULL;
+    LPWSTR sval;
+    LPWSTR p;
     DWORD len;
     UINT i, r;
 

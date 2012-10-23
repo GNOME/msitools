@@ -299,7 +299,8 @@ UINT MSI_OpenDatabaseW(LPCWSTR szDBPath, LPCWSTR szPersist, MSIDATABASE **pdb)
     HRESULT r;
     MSIDATABASE *db = NULL;
     UINT ret = ERROR_FUNCTION_FAILED;
-    LPCWSTR szMode, save_path;
+    LPCWSTR szMode;
+    LPCWSTR save_path;
     STATSTG stat;
     BOOL created = FALSE, patch = FALSE;
     WCHAR path[MAX_PATH];
@@ -468,7 +469,8 @@ UINT WINAPI MsiOpenDatabaseW(LPCWSTR szDBPath, LPCWSTR szPersist, PMSIOBJECT *ph
 UINT WINAPI MsiOpenDatabaseA(LPCSTR szDBPath, LPCSTR szPersist, PMSIOBJECT *phDB)
 {
     HRESULT r = ERROR_FUNCTION_FAILED;
-    LPWSTR szwDBPath = NULL, szwPersist = NULL;
+    LPWSTR szwDBPath = NULL;
+    LPWSTR szwPersist = NULL;
 
     TRACE("%s %s %p\n", debugstr_a(szDBPath), debugstr_a(szPersist), phDB);
 
@@ -530,7 +532,8 @@ done:
 
 static void msi_parse_line(LPWSTR *line, LPWSTR **entries, DWORD *num_entries, DWORD *len)
 {
-    LPWSTR ptr = *line, save;
+    LPWSTR ptr = *line;
+    LPWSTR save;
     DWORD i, count = 1, chars_left = *len;
 
     *entries = NULL;
@@ -615,7 +618,8 @@ static LPWSTR msi_build_createsql_prelude(LPWSTR table)
 
 static LPWSTR msi_build_createsql_columns(LPWSTR *columns_data, LPWSTR *types, DWORD num_columns)
 {
-    LPWSTR columns, p;
+    LPWSTR columns;
+    LPWSTR p;
     LPCWSTR type;
     DWORD sql_size = 1, i, len;
     WCHAR expanded[128], *ptr;
@@ -711,7 +715,9 @@ static LPWSTR msi_build_createsql_columns(LPWSTR *columns_data, LPWSTR *types, D
 
 static LPWSTR msi_build_createsql_postlude(LPWSTR *primary_keys, DWORD num_keys)
 {
-    LPWSTR postlude, keys, ptr;
+    LPWSTR postlude;
+    LPWSTR keys;
+    LPWSTR ptr;
     DWORD size, key_size, i;
 
     static const WCHAR key_fmt[] = {'`','%','s','`',',',' ',0};
@@ -752,7 +758,9 @@ static UINT msi_add_table_to_db(MSIDATABASE *db, LPWSTR *columns, LPWSTR *types,
     DWORD size;
     MSIQUERY *view;
     LPWSTR create_sql = NULL;
-    LPWSTR prelude, columns_sql, postlude;
+    LPWSTR prelude;
+    LPWSTR columns_sql;
+    LPWSTR postlude;
 
     prelude = msi_build_createsql_prelude(labels[0]);
     columns_sql = msi_build_createsql_columns(columns, types, num_columns);
@@ -789,7 +797,8 @@ done:
 static LPWSTR msi_import_stream_filename(LPCWSTR path, LPCWSTR name)
 {
     DWORD len;
-    LPWSTR fullname, ptr;
+    LPWSTR fullname;
+    LPWSTR ptr;
 
     len = lstrlenW(path) + lstrlenW(name) + 1;
     fullname = msi_alloc(len*sizeof(WCHAR));
@@ -908,8 +917,12 @@ static UINT MSI_DatabaseImport(MSIDATABASE *db, LPCWSTR folder, LPCWSTR file)
     DWORD len, i;
     DWORD num_labels, num_types;
     DWORD num_columns, num_records = 0;
-    LPWSTR *columns, *types, *labels;
-    LPWSTR path, ptr, data;
+    LPWSTR *columns;
+    LPWSTR *types;
+    LPWSTR *labels;
+    LPWSTR path;
+    LPWSTR ptr;
+    LPWSTR data;
     LPWSTR **records = NULL;
     LPWSTR **temp_records;
 
@@ -1031,7 +1044,8 @@ UINT WINAPI MsiDatabaseImportW(PMSIOBJECT handle, LPCWSTR szFolder, LPCWSTR szFi
 UINT WINAPI MsiDatabaseImportA( PMSIOBJECT handle,
                LPCSTR szFolder, LPCSTR szFilename )
 {
-    LPWSTR path = NULL, file = NULL;
+    LPWSTR path = NULL;
+    LPWSTR file = NULL;
     UINT r = ERROR_OUTOFMEMORY;
 
     TRACE("%x %s %s\n", handle, debugstr_a(szFolder), debugstr_a(szFilename));
@@ -1240,7 +1254,9 @@ UINT WINAPI MsiDatabaseExportW( PMSIOBJECT handle, LPCWSTR szTable,
 UINT WINAPI MsiDatabaseExportA( PMSIOBJECT handle, LPCSTR szTable,
                LPCSTR szFolder, LPCSTR szFilename )
 {
-    LPWSTR path = NULL, file = NULL, table = NULL;
+    LPWSTR path = NULL;
+    LPWSTR file = NULL;
+    LPWSTR table = NULL;
     UINT r = ERROR_OUTOFMEMORY;
 
     TRACE("%x %s %s %s\n", handle, debugstr_a(szTable),
@@ -1434,7 +1450,8 @@ done:
 static LPWSTR get_key_value(MSIQUERY *view, LPCWSTR key, MSIRECORD *rec)
 {
     MSIRECORD *colnames;
-    LPWSTR str, val;
+    LPWSTR str;
+    LPWSTR val;
     UINT r, i = 0, sz = 0;
     int cmp;
 
@@ -1492,8 +1509,11 @@ static LPWSTR get_key_value(MSIQUERY *view, LPCWSTR key, MSIRECORD *rec)
 static LPWSTR create_diff_row_query(MSIDATABASE *merge, MSIQUERY *view,
                                     LPWSTR table, MSIRECORD *rec)
 {
-    LPWSTR query = NULL, clause = NULL, val;
-    LPCWSTR setptr, key;
+    LPWSTR query = NULL;
+    LPWSTR clause = NULL;
+    LPWSTR val;
+    LPCWSTR setptr;
+    LPCWSTR key;
     DWORD size, oldsize;
     MSIRECORD *keys;
     UINT r, i, count;

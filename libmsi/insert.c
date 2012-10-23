@@ -107,7 +107,8 @@ err:
  */
 static BOOL msi_columns_in_order(MSIINSERTVIEW *iv, UINT col_count)
 {
-    LPCWSTR a, b;
+    LPCWSTR a;
+    LPCWSTR b;
     UINT i;
 
     for (i = 1; i <= col_count; i++)
@@ -128,7 +129,8 @@ static UINT msi_arrange_record(MSIINSERTVIEW *iv, MSIRECORD **values)
     MSIRECORD *padded;
     UINT col_count, val_count;
     UINT r, i, colidx;
-    LPCWSTR a, b;
+    LPCWSTR a;
+    LPCWSTR b;
 
     r = iv->table->ops->get_dimensions(iv->table, NULL, &col_count);
     if (r != ERROR_SUCCESS)

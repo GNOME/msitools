@@ -133,7 +133,8 @@ static UINT STREAMS_set_row(struct tagMSIVIEW *view, UINT row, MSIRECORD *rec, U
     STREAM *stream;
     IStream *stm;
     STATSTG stat;
-    LPWSTR encname = NULL, name = NULL;
+    LPWSTR encname = NULL;
+    LPWSTR name = NULL;
     USHORT *data = NULL;
     HRESULT hr;
     ULONG count;
