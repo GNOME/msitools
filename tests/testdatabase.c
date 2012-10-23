@@ -38,7 +38,7 @@ static void test_msidatabase(void)
 {
     MSIOBJECT *hdb = 0;
     MSIOBJECT *hdb2 = 0;
-    UINT res;
+    unsigned res;
 
     DeleteFile(msifile);
 
@@ -143,10 +143,10 @@ static void test_msidatabase(void)
     ok( res == TRUE, "Failed to delete database\n" );
 }
 
-static UINT do_query(MSIOBJECT *hdb, const char *query, MSIOBJECT **phrec)
+static unsigned do_query(MSIOBJECT *hdb, const char *query, MSIOBJECT **phrec)
 {
     MSIOBJECT *hview = 0;
-    UINT r, ret;
+    unsigned r, ret;
 
     if (phrec)
         *phrec = 0;
@@ -168,10 +168,10 @@ static UINT do_query(MSIOBJECT *hdb, const char *query, MSIOBJECT **phrec)
     return ret;
 }
 
-static UINT run_query( MSIOBJECT *hdb, MSIOBJECT *hrec, const char *query )
+static unsigned run_query( MSIOBJECT *hdb, MSIOBJECT *hrec, const char *query )
 {
     MSIOBJECT *hview = 0;
-    UINT r;
+    unsigned r;
 
     r = MsiDatabaseOpenView(hdb, query, &hview);
     if( r != ERROR_SUCCESS )
@@ -184,10 +184,10 @@ static UINT run_query( MSIOBJECT *hdb, MSIOBJECT *hrec, const char *query )
     return r;
 }
 
-static UINT run_queryW( MSIOBJECT *hdb, MSIOBJECT *hrec, const WCHAR *query )
+static unsigned run_queryW( MSIOBJECT *hdb, MSIOBJECT *hrec, const WCHAR *query )
 {
     MSIOBJECT *hview = 0;
-    UINT r;
+    unsigned r;
 
     r = MsiDatabaseOpenViewW(hdb, query, &hview);
     if( r != ERROR_SUCCESS )
@@ -200,7 +200,7 @@ static UINT run_queryW( MSIOBJECT *hdb, MSIOBJECT *hrec, const WCHAR *query )
     return r;
 }
 
-static UINT create_component_table( MSIOBJECT *hdb )
+static unsigned create_component_table( MSIOBJECT *hdb )
 {
     return run_query( hdb, 0,
             "CREATE TABLE `Component` ( "
@@ -213,7 +213,7 @@ static UINT create_component_table( MSIOBJECT *hdb )
             "PRIMARY KEY `Component`)" );
 }
 
-static UINT create_custom_action_table( MSIOBJECT *hdb )
+static unsigned create_custom_action_table( MSIOBJECT *hdb )
 {
     return run_query( hdb, 0,
             "CREATE TABLE `CustomAction` ( "
@@ -224,7 +224,7 @@ static UINT create_custom_action_table( MSIOBJECT *hdb )
             "PRIMARY KEY `Action`)" );
 }
 
-static UINT create_directory_table( MSIOBJECT *hdb )
+static unsigned create_directory_table( MSIOBJECT *hdb )
 {
     return run_query( hdb, 0,
             "CREATE TABLE `Directory` ( "
@@ -234,7 +234,7 @@ static UINT create_directory_table( MSIOBJECT *hdb )
             "PRIMARY KEY `Directory`)" );
 }
 
-static UINT create_feature_components_table( MSIOBJECT *hdb )
+static unsigned create_feature_components_table( MSIOBJECT *hdb )
 {
     return run_query( hdb, 0,
             "CREATE TABLE `FeatureComponents` ( "
@@ -243,7 +243,7 @@ static UINT create_feature_components_table( MSIOBJECT *hdb )
             "PRIMARY KEY `Feature_`, `Component_` )" );
 }
 
-static UINT create_std_dlls_table( MSIOBJECT *hdb )
+static unsigned create_std_dlls_table( MSIOBJECT *hdb )
 {
     return run_query( hdb, 0,
             "CREATE TABLE `StdDlls` ( "
@@ -252,7 +252,7 @@ static UINT create_std_dlls_table( MSIOBJECT *hdb )
             "PRIMARY KEY `File` )" );
 }
 
-static UINT create_binary_table( MSIOBJECT *hdb )
+static unsigned create_binary_table( MSIOBJECT *hdb )
 {
     return run_query( hdb, 0,
             "CREATE TABLE `Binary` ( "
@@ -262,11 +262,11 @@ static UINT create_binary_table( MSIOBJECT *hdb )
 }
 
 #define make_add_entry(type, qtext) \
-    static UINT add##_##type##_##entry( MSIOBJECT *hdb, const char *values ) \
+    static unsigned add##_##type##_##entry( MSIOBJECT *hdb, const char *values ) \
     { \
         char insert[] = qtext; \
         char *query; \
-        UINT sz, r; \
+        unsigned sz, r; \
         sz = strlen(values) + sizeof insert; \
         query = HeapAlloc(GetProcessHeap(),0,sz); \
         sprintf(query,insert,values); \
@@ -300,10 +300,10 @@ static void test_msiinsert(void)
     MSIOBJECT *hview = 0;
     MSIOBJECT *hview2 = 0;
     MSIOBJECT *hrec = 0;
-    UINT r;
+    unsigned r;
     const char *query;
     char buf[80];
-    DWORD sz;
+    unsigned sz;
 
     DeleteFile(msifile);
 
@@ -455,15 +455,15 @@ static void test_msiinsert(void)
     ok(r == TRUE, "file didn't exist after commit\n");
 }
 
-static UINT try_query_param( MSIOBJECT *hdb, const CHAR *szQuery, MSIOBJECT *hrec )
+static unsigned try_query_param( MSIOBJECT *hdb, const CHAR *szQuery, MSIOBJECT *hrec )
 {
     MSIOBJECT *htab = 0;
-    UINT res;
+    unsigned res;
 
     res = MsiDatabaseOpenView( hdb, szQuery, &htab );
     if(res == ERROR_SUCCESS )
     {
-        UINT r;
+        unsigned r;
 
         r = MsiViewExecute( htab, hrec );
         if(r != ERROR_SUCCESS )
@@ -480,15 +480,15 @@ static UINT try_query_param( MSIOBJECT *hdb, const CHAR *szQuery, MSIOBJECT *hre
     return res;
 }
 
-static UINT try_query( MSIOBJECT *hdb, const CHAR *szQuery )
+static unsigned try_query( MSIOBJECT *hdb, const CHAR *szQuery )
 {
     return try_query_param( hdb, szQuery, 0 );
 }
 
-static UINT try_insert_query( MSIOBJECT *hdb, const CHAR *szQuery )
+static unsigned try_insert_query( MSIOBJECT *hdb, const CHAR *szQuery )
 {
     MSIOBJECT *hrec = 0;
-    UINT r;
+    unsigned r;
 
     hrec = MsiCreateRecord( 1 );
     MsiRecordSetString( hrec, 1, "Hello");
@@ -502,7 +502,7 @@ static UINT try_insert_query( MSIOBJECT *hdb, const CHAR *szQuery )
 static void test_msibadqueries(void)
 {
     MSIOBJECT *hdb = 0;
-    UINT r;
+    unsigned r;
 
     DeleteFile(msifile);
 
@@ -723,11 +723,11 @@ static void test_viewmodify(void)
     MSIOBJECT *hdb = 0;
     MSIOBJECT *hview = 0;
     MSIOBJECT *hrec = 0;
-    UINT r;
+    unsigned r;
     MSIDBERROR err;
     const char *query;
     char buffer[0x100];
-    DWORD sz;
+    unsigned sz;
 
     DeleteFile(msifile);
 
@@ -1073,7 +1073,7 @@ static void test_viewmodify(void)
 static MSIOBJECT *create_db(void)
 {
     MSIOBJECT *hdb = 0;
-    UINT res;
+    unsigned res;
 
     DeleteFile(msifile);
 
@@ -1094,8 +1094,8 @@ static void test_getcolinfo(void)
     MSIOBJECT *hdb;
     MSIOBJECT *hview = 0;
     MSIOBJECT *rec = 0;
-    UINT r;
-    DWORD sz;
+    unsigned r;
+    unsigned sz;
     char buffer[0x20];
 
     /* create an empty db */
@@ -1155,7 +1155,7 @@ static MSIOBJECT *get_column_info(MSIOBJECT *hdb, const char *query, MSICOLINFO 
 {
     MSIOBJECT *hview = 0;
     MSIOBJECT *rec = 0;
-    UINT r;
+    unsigned r;
 
     r = MsiDatabaseOpenView(hdb, query, &hview);
     if( r != ERROR_SUCCESS )
@@ -1171,11 +1171,11 @@ static MSIOBJECT *get_column_info(MSIOBJECT *hdb, const char *query, MSICOLINFO 
     return rec;
 }
 
-static UINT get_columns_table_type(MSIOBJECT *hdb, const char *table, UINT field)
+static unsigned get_columns_table_type(MSIOBJECT *hdb, const char *table, unsigned field)
 {
     MSIOBJECT *hview = 0;
     MSIOBJECT *rec = 0;
-    UINT r, type = 0;
+    unsigned r, type = 0;
     char query[0x100];
 
     sprintf(query, "select * from `_Columns` where  `Table` = '%s'", table );
@@ -1203,11 +1203,11 @@ static UINT get_columns_table_type(MSIOBJECT *hdb, const char *table, UINT field
     return type;
 }
 
-static BOOL check_record( MSIOBJECT *rec, UINT field, const CHAR *val )
+static BOOL check_record( MSIOBJECT *rec, unsigned field, const CHAR *val )
 {
     CHAR buffer[0x20];
-    UINT r;
-    DWORD sz;
+    unsigned r;
+    unsigned sz;
 
     sz = sizeof buffer;
     r = MsiRecordGetString( rec, field, buffer, &sz );
@@ -1218,7 +1218,7 @@ static void test_viewgetcolumninfo(void)
 {
     MSIOBJECT *hdb = 0;
     MSIOBJECT *rec;
-    UINT r;
+    unsigned r;
 
     hdb = create_db();
     ok( hdb, "failed to create db\n");
@@ -1325,13 +1325,13 @@ static void test_msiexport(void)
 {
     MSIOBJECT *hdb = 0;
     MSIOBJECT *hview = 0;
-    UINT r;
+    unsigned r;
     const char *query;
     char path[MAX_PATH];
     const char file[] = "phone.txt";
     HANDLE handle;
     char buffer[0x100];
-    DWORD length;
+    unsigned length;
     const char expected[] =
         "id\tname\tnumber\r\n"
         "I2\tS32\tS32\r\n"
@@ -1405,9 +1405,9 @@ static void test_longstrings(void)
     MSIOBJECT *hdb = 0;
     MSIOBJECT *hview = 0;
     MSIOBJECT *hrec = 0;
-    DWORD len;
-    UINT r;
-    const DWORD STRING_LENGTH = 0x10005;
+    unsigned len;
+    unsigned r;
+    const unsigned STRING_LENGTH = 0x10005;
 
     DeleteFile(msifile);
     /* just MsiOpenDatabase should not create a file */
@@ -1458,10 +1458,10 @@ static void test_longstrings(void)
     DeleteFile(msifile);
 }
 
-static void create_file_data(const CHAR *name, const CHAR *data, DWORD size)
+static void create_file_data(const CHAR *name, const CHAR *data, unsigned size)
 {
     HANDLE file;
-    DWORD written;
+    unsigned written;
 
     file = CreateFileA(name, GENERIC_WRITE, 0, NULL, CREATE_ALWAYS, 0, NULL);
     if (file == INVALID_HANDLE_VALUE)
@@ -1489,8 +1489,8 @@ static void test_streamtable(void)
     MSIOBJECT *hsi;
     char file[MAX_PATH];
     char buf[MAX_PATH];
-    DWORD size;
-    UINT r;
+    unsigned size;
+    unsigned r;
 
     hdb = create_db();
     ok( hdb, "failed to create db\n");
@@ -1727,9 +1727,9 @@ static void test_binary(void)
     MSIOBJECT *rec;
     char file[MAX_PATH];
     char buf[MAX_PATH];
-    DWORD size;
+    unsigned size;
     const CHAR *query;
-    UINT r;
+    unsigned r;
 
     /* insert a file into the Binary table */
     r = MsiOpenDatabase(msifile, MSIDBOPEN_CREATE, &hdb );
@@ -1811,7 +1811,7 @@ static void test_where_not_in_selected(void)
     MSIOBJECT *rec;
     MSIOBJECT *view;
     const CHAR *query;
-    UINT r;
+    unsigned r;
 
     hdb = create_db();
     ok( hdb, "failed to create db\n");
@@ -1910,10 +1910,10 @@ static void test_where(void)
     MSIOBJECT *rec;
     MSIOBJECT *view;
     const CHAR *query;
-    UINT r;
-    DWORD size;
+    unsigned r;
+    unsigned size;
     CHAR buf[MAX_PATH];
-    UINT count;
+    unsigned count;
 
     hdb = create_db();
     ok( hdb, "failed to create db\n");
@@ -2099,7 +2099,7 @@ static const CHAR suminfo[] = "PropertyId\tValue\n"
 
 static void write_file(const CHAR *filename, const char *data, int data_size)
 {
-    DWORD size;
+    unsigned size;
 
     HANDLE hf = CreateFile(filename, GENERIC_WRITE, 0, NULL,
                            CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
@@ -2108,9 +2108,9 @@ static void write_file(const CHAR *filename, const char *data, int data_size)
     CloseHandle(hf);
 }
 
-static UINT add_table_to_db(MSIOBJECT *hdb, const CHAR *table_data)
+static unsigned add_table_to_db(MSIOBJECT *hdb, const CHAR *table_data)
 {
-    UINT r;
+    unsigned r;
 
     write_file("temp_file", table_data, (lstrlen(table_data) - 1) * sizeof(char));
     r = MsiDatabaseImportA(hdb, CURR_DIR, "temp_file");
@@ -2125,9 +2125,9 @@ static void test_suminfo_import(void)
     MSIOBJECT *hsi;
     MSIOBJECT *view = 0;
     const CHAR *query;
-    UINT r, count, size, type;
+    unsigned r, count, size, type;
     char str_value[50];
-    INT int_value;
+    int int_value;
     FILETIME ft_value;
 
     GetCurrentDirectoryA(MAX_PATH, CURR_DIR);
@@ -2250,7 +2250,7 @@ static void test_msiimport(void)
     MSIOBJECT *view;
     MSIOBJECT *rec;
     const CHAR *query;
-    UINT r, count;
+    unsigned r, count;
     signed int i;
 
     GetCurrentDirectoryA(MAX_PATH, CURR_DIR);
@@ -2472,9 +2472,9 @@ static void test_binary_import(void)
     char file[MAX_PATH];
     char buf[MAX_PATH];
     char path[MAX_PATH];
-    DWORD size;
+    unsigned size;
     const CHAR *query;
-    UINT r;
+    unsigned r;
 
     /* create files to import */
     write_file("bin_import.idt", bin_import_dat,
@@ -2523,7 +2523,7 @@ static void test_markers(void)
     MSIOBJECT *hdb;
     MSIOBJECT *rec;
     const CHAR *query;
-    UINT r;
+    unsigned r;
 
     hdb = create_db();
     ok( hdb, "failed to create db\n");
@@ -2709,7 +2709,7 @@ static void test_handle_limit(void)
     int i;
     MSIOBJECT *hdb;
     MSIOBJECT *hviews[MY_NVIEWS];
-    UINT r;
+    unsigned r;
 
     /* create an empty db */
     hdb = create_db();
@@ -2812,7 +2812,7 @@ static const WCHAR data9[] = { /* Property */
 static const struct {
     const WCHAR *name;
     const void *data;
-    DWORD size;
+    unsigned size;
 } table_transform_data[] =
 {
     { name1, data1, sizeof data1 },
@@ -2834,8 +2834,8 @@ static void generate_transform_manual(void)
     IStream *stm;
     WCHAR name[0x20];
     HRESULT r;
-    DWORD i, count;
-    const DWORD mode = STGM_CREATE|STGM_READWRITE|STGM_DIRECT|STGM_SHARE_EXCLUSIVE;
+    unsigned i, count;
+    const unsigned mode = STGM_CREATE|STGM_READWRITE|STGM_DIRECT|STGM_SHARE_EXCLUSIVE;
 
     const CLSID CLSID_MsiTransform = { 0xc1082,0,0,{0xc0,0,0,0,0,0,0,0x46}};
 
@@ -2869,9 +2869,9 @@ static void generate_transform_manual(void)
     IStorage_Release(stg);
 }
 
-static UINT set_summary_info(MSIOBJECT *hdb)
+static unsigned set_summary_info(MSIOBJECT *hdb)
 {
-    UINT res;
+    unsigned res;
     MSIOBJECT *suminfo;
 
     /* build summary info */
@@ -2916,7 +2916,7 @@ static UINT set_summary_info(MSIOBJECT *hdb)
 static MSIOBJECT *create_package_db(const CHAR *filename)
 {
     MSIOBJECT *hdb = 0;
-    UINT res;
+    unsigned res;
 
     DeleteFile(msifile);
 
@@ -2945,8 +2945,8 @@ static void test_try_transform(void)
     MSIOBJECT *hrec;
     MSIOBJECT *hpkg = 0;
     const CHAR *query;
-    UINT r;
-    DWORD sz;
+    unsigned r;
+    unsigned sz;
     char buffer[MAX_PATH];
 
     DeleteFile(msifile);
@@ -3148,12 +3148,12 @@ struct join_res_4col
 
 struct join_res_uint
 {
-    UINT one;
-    UINT two;
-    UINT three;
-    UINT four;
-    UINT five;
-    UINT six;
+    unsigned one;
+    unsigned two;
+    unsigned three;
+    unsigned four;
+    unsigned five;
+    unsigned six;
 };
 
 static const struct join_res join_res_first[] =
@@ -3231,8 +3231,8 @@ static void test_join(void)
     MSIOBJECT *hrec;
     const CHAR *query;
     CHAR buf[MAX_PATH];
-    UINT r, count;
-    DWORD size, i;
+    unsigned r, count;
+    unsigned size, i;
     BOOL data_correct;
 
     hdb = create_db();
@@ -3870,9 +3870,9 @@ static void test_temporary_table(void)
     MSIOBJECT *view = 0;
     MSIOBJECT *rec;
     const char *query;
-    UINT r;
+    unsigned r;
     char buf[0x10];
-    DWORD sz;
+    unsigned sz;
 
     cond = MsiDatabaseIsTablePersistent(0, NULL);
     ok( cond == MSICONDITION_ERROR, "wrong return condition\n");
@@ -3996,7 +3996,7 @@ static void test_alter(void)
     MSICONDITION cond;
     MSIOBJECT *hdb = 0;
     const char *query;
-    UINT r;
+    unsigned r;
 
     hdb = create_db();
     ok( hdb, "failed to create db\n");
@@ -4173,9 +4173,9 @@ static void test_integers(void)
     MSIOBJECT *hdb = 0;
     MSIOBJECT *view = 0;
     MSIOBJECT *rec = 0;
-    DWORD count, i;
+    unsigned count, i;
     const char *query;
-    UINT r;
+    unsigned r;
 
     /* just MsiOpenDatabase should not create a file */
     r = MsiOpenDatabase(msifile, MSIDBOPEN_CREATE, &hdb);
@@ -4308,8 +4308,8 @@ static void test_update(void)
     MSIOBJECT *rec = 0;
     CHAR result[MAX_PATH];
     const char *query;
-    DWORD size;
-    UINT r;
+    unsigned size;
+    unsigned r;
 
     /* just MsiOpenDatabase should not create a file */
     r = MsiOpenDatabase(msifile, MSIDBOPEN_CREATE, &hdb);
@@ -4626,7 +4626,7 @@ static void test_special_tables(void)
 {
     const char *query;
     MSIOBJECT *hdb = 0;
-    UINT r;
+    unsigned r;
 
     r = MsiOpenDatabase(msifile, MSIDBOPEN_CREATE, &hdb);
     ok(r == ERROR_SUCCESS, "MsiOpenDatabase failed\n");
@@ -4666,9 +4666,9 @@ static void test_tables_order(void)
     MSIOBJECT *hdb = 0;
     MSIOBJECT *hview = 0;
     MSIOBJECT *hrec = 0;
-    UINT r;
+    unsigned r;
     char buffer[100];
-    DWORD sz;
+    unsigned sz;
 
     r = MsiOpenDatabase(msifile, MSIDBOPEN_CREATE, &hdb);
     ok(r == ERROR_SUCCESS, "MsiOpenDatabase failed\n");
@@ -4822,9 +4822,9 @@ static void test_rows_order(void)
     MSIOBJECT *hdb = 0;
     MSIOBJECT *hview = 0;
     MSIOBJECT *hrec = 0;
-    UINT r;
+    unsigned r;
     char buffer[100];
-    DWORD sz;
+    unsigned sz;
 
     r = MsiOpenDatabase(msifile, MSIDBOPEN_CREATE, &hdb);
     ok(r == ERROR_SUCCESS, "MsiOpenDatabase failed\n");
@@ -4988,10 +4988,10 @@ static void test_collation(void)
     MSIOBJECT *hdb = 0;
     MSIOBJECT *hview = 0;
     MSIOBJECT *hrec = 0;
-    UINT r;
+    unsigned r;
     char buffer[100];
     WCHAR bufferW[100];
-    DWORD sz;
+    unsigned sz;
 
     r = MsiOpenDatabase(msifile, MSIDBOPEN_CREATE, &hdb);
     ok(r == ERROR_SUCCESS, "MsiOpenDatabase failed\n");
@@ -5129,8 +5129,8 @@ static void test_select_markers(void)
     MSIOBJECT *view;
     MSIOBJECT *res;
     const CHAR *query;
-    UINT r;
-    DWORD size;
+    unsigned r;
+    unsigned size;
     CHAR buf[MAX_PATH];
 
     hdb = create_db();
@@ -5273,9 +5273,9 @@ static void test_viewmodify_update(void)
     MSIOBJECT *hdb = 0;
     MSIOBJECT *hview = 0;
     MSIOBJECT *hrec = 0;
-    UINT i, test_max, offset, count;
+    unsigned i, test_max, offset, count;
     const char *query;
-    UINT r;
+    unsigned r;
 
     DeleteFile(msifile);
 
@@ -5479,7 +5479,7 @@ static void test_viewmodify_update(void)
     count = 0;
     while (MsiViewFetch( hview, &hrec ) == ERROR_SUCCESS)
     {
-        UINT b = MsiRecordGetInteger( hrec, 2 );
+        unsigned b = MsiRecordGetInteger( hrec, 2 );
 
         r = MsiRecordSetInteger( hrec, 2, b + offset);
         ok(r == ERROR_SUCCESS, "Got %d\n", r);
@@ -5508,8 +5508,8 @@ static void test_viewmodify_update(void)
     count = 0;
     while (MsiViewFetch( hview, &hrec ) == ERROR_SUCCESS)
     {
-        UINT a = MsiRecordGetInteger( hrec, 1 );
-        UINT b = MsiRecordGetInteger( hrec, 2 );
+        unsigned a = MsiRecordGetInteger( hrec, 1 );
+        unsigned b = MsiRecordGetInteger( hrec, 2 );
         ok( ( test_max - a + offset) == b, "Got (%d, %d), expected (%d, %d)\n",
             a, b, test_max - a + offset, b);
 
@@ -5534,7 +5534,7 @@ static void test_viewmodify_assign(void)
     MSIOBJECT *hview = 0;
     MSIOBJECT *hrec = 0;
     const char *query;
-    UINT r;
+    unsigned r;
 
     /* setup database */
     DeleteFile(msifile);
@@ -5692,10 +5692,10 @@ static void test_stringtable(void)
     const char *query;
     char buffer[MAX_PATH];
     WCHAR data[MAX_PATH];
-    DWORD sz, read;
-    UINT r;
+    unsigned sz, read;
+    unsigned r;
 
-    static const DWORD mode = STGM_DIRECT | STGM_READ | STGM_SHARE_DENY_WRITE;
+    static const unsigned mode = STGM_DIRECT | STGM_READ | STGM_SHARE_DENY_WRITE;
     static const WCHAR stringdata[] = {0x4840, 0x3f3f, 0x4577, 0x446c, 0x3b6a, 0x45e4, 0x4824, 0}; /* _StringData */
     static const WCHAR stringpool[] = {0x4840, 0x3f3f, 0x4577, 0x446c, 0x3e6a, 0x44b2, 0x482f, 0}; /* _StringPool */
     static const WCHAR moo[] = {0x4840, 0x3e16, 0x4818, 0}; /* MOO */
@@ -5925,10 +5925,10 @@ static void test_viewmodify_delete(void)
     MSIOBJECT *hdb = 0;
     MSIOBJECT *hview = 0;
     MSIOBJECT *hrec = 0;
-    UINT r;
+    unsigned r;
     const char *query;
     char buffer[0x100];
-    DWORD sz;
+    unsigned sz;
 
     DeleteFile(msifile);
 
@@ -6032,7 +6032,7 @@ static const WCHAR data14[] = { /* _StringPool */
 static const struct {
     const WCHAR *name;
     const void *data;
-    DWORD size;
+    unsigned size;
 } database_table_data[] =
 {
     {_Tables, NULL, 0},
@@ -6046,10 +6046,10 @@ static void enum_stream_names(IStorage *stg)
     IStream *stm;
     HRESULT hr;
     STATSTG stat;
-    ULONG n, count;
-    BYTE data[MAX_PATH];
-    BYTE check[MAX_PATH];
-    DWORD sz;
+    unsigned n, count;
+    uint8_t data[MAX_PATH];
+    uint8_t check[MAX_PATH];
+    unsigned sz;
 
     memset(check, 'a', MAX_PATH);
 
@@ -6100,7 +6100,7 @@ static void enum_stream_names(IStorage *stg)
 
 static void test_defaultdatabase(void)
 {
-    UINT r;
+    unsigned r;
     HRESULT hr;
     MSIOBJECT *hdb;
     IStorage *stg = NULL;
@@ -6132,7 +6132,7 @@ static void test_order(void)
     MSIOBJECT *hrec;
     CHAR buffer[MAX_PATH];
     const CHAR *query;
-    UINT r, sz;
+    unsigned r, sz;
     int val;
 
     hdb = create_db();
@@ -6391,7 +6391,7 @@ static void test_viewmodify_delete_temporary(void)
     MSIOBJECT *hview;
     MSIOBJECT *hrec;
     const char *query;
-    UINT r;
+    unsigned r;
 
     DeleteFile(msifile);
 
@@ -6510,8 +6510,8 @@ static void test_deleterow(void)
     MSIOBJECT *hrec;
     const char *query;
     char buf[MAX_PATH];
-    UINT r;
-    DWORD size;
+    unsigned r;
+    unsigned size;
 
     DeleteFile(msifile);
 
@@ -6579,8 +6579,8 @@ static void test_quotes(void)
     MSIOBJECT *hrec;
     const char *query;
     char buf[MAX_PATH];
-    UINT r;
-    DWORD size;
+    unsigned r;
+    unsigned size;
 
     DeleteFile(msifile);
 
@@ -6687,8 +6687,8 @@ static void test_carriagereturn(void)
     MSIOBJECT *hrec;
     const char *query;
     char buf[MAX_PATH];
-    UINT r;
-    DWORD size;
+    unsigned r;
+    unsigned size;
 
     DeleteFile(msifile);
 
@@ -6875,8 +6875,8 @@ static void test_noquotes(void)
     MSIOBJECT *hrec;
     const char *query;
     char buf[MAX_PATH];
-    UINT r;
-    DWORD size;
+    unsigned r;
+    unsigned size;
 
     DeleteFile(msifile);
 
@@ -7072,7 +7072,7 @@ static void test_noquotes(void)
 static void read_file_data(const CHAR *filename, CHAR *buffer)
 {
     HANDLE file;
-    DWORD read;
+    unsigned read;
 
     file = CreateFileA( filename, GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, 0, NULL );
     ZeroMemory(buffer, MAX_PATH);
@@ -7085,7 +7085,7 @@ static void test_forcecodepage(void)
     MSIOBJECT *hdb;
     const char *query;
     char buffer[MAX_PATH];
-    UINT r;
+    unsigned r;
 
     DeleteFile(msifile);
     GetCurrentDirectoryA(MAX_PATH, CURR_DIR);
@@ -7157,8 +7157,8 @@ static void test_viewmodify_refresh(void)
     MSIOBJECT *hrec;
     const char *query;
     char buffer[MAX_PATH];
-    UINT r;
-    DWORD size;
+    unsigned r;
+    unsigned size;
 
     DeleteFile(msifile);
 
@@ -7248,7 +7248,7 @@ static void test_where_viewmodify(void)
     MSIOBJECT *hview;
     MSIOBJECT *hrec;
     const char *query;
-    UINT r;
+    unsigned r;
 
     DeleteFile(msifile);
 
@@ -7351,7 +7351,7 @@ static BOOL create_storage(const CHAR *name)
     IStorage *stg;
     IStream *stm;
     HRESULT hr;
-    DWORD count;
+    unsigned count;
     BOOL res = FALSE;
 
     MultiByteToWideChar(CP_ACP, 0, name, -1, nameW, MAX_PATH);
@@ -7388,8 +7388,8 @@ static void test_storages_table(void)
     WCHAR name[MAX_PATH];
     const CHAR *query;
     HRESULT hr;
-    DWORD size;
-    UINT r;
+    unsigned size;
+    unsigned r;
 
     hdb = create_db();
     ok(hdb, "failed to create db\n");
@@ -7508,8 +7508,8 @@ static void test_droptable(void)
     MSIOBJECT *hrec;
     CHAR buf[MAX_PATH];
     const CHAR *query;
-    DWORD size;
-    UINT r;
+    unsigned size;
+    unsigned r;
 
     r = MsiOpenDatabase(msifile, MSIDBOPEN_CREATE, &hdb);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
@@ -7730,8 +7730,8 @@ static void test_dbmerge(void)
     MSIOBJECT *hrec;
     CHAR buf[MAX_PATH];
     const CHAR *query;
-    DWORD size;
-    UINT r;
+    unsigned size;
+    unsigned r;
 
     r = MsiOpenDatabase(msifile, MSIDBOPEN_CREATE, &hdb);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
@@ -8358,7 +8358,7 @@ static void test_select_with_tablenames(void)
     MSIOBJECT *view;
     MSIOBJECT *rec;
     const CHAR *query;
-    UINT r;
+    unsigned r;
     int i;
 
     int vals[4][2] = {
@@ -8429,7 +8429,7 @@ static void test_select_with_tablenames(void)
     DeleteFileA(msifile);
 }
 
-static const UINT ordervals[6][3] =
+static const unsigned ordervals[6][3] =
 {
     { MSI_NULL_INTEGER, 12, 13 },
     { 1, 2, 3 },
@@ -8445,7 +8445,7 @@ static void test_insertorder(void)
     MSIOBJECT *view;
     MSIOBJECT *rec;
     const CHAR *query;
-    UINT r;
+    unsigned r;
     int i;
 
     hdb = create_db();
@@ -8586,8 +8586,8 @@ static void test_columnorder(void)
     MSIOBJECT *rec;
     char buf[MAX_PATH];
     const CHAR *query;
-    DWORD sz;
-    UINT r;
+    unsigned sz;
+    unsigned r;
 
     hdb = create_db();
     ok(hdb, "failed to create db\n");
@@ -9082,8 +9082,8 @@ static void test_createtable(void)
     MSIOBJECT *htab = 0;
     MSIOBJECT *hrec = 0;
     const CHAR *query;
-    UINT res;
-    DWORD size;
+    unsigned res;
+    unsigned size;
     char buffer[0x20];
 
     hdb = create_db();
@@ -9197,7 +9197,7 @@ static void test_embedded_nulls(void)
         "s72\tL0\n"
         "Control\tDialog\n"
         "LicenseAgreementDlg\ttext\x11\x19text\0text";
-    UINT r, sz;
+    unsigned r, sz;
     MSIOBJECT *hdb;
     MSIOBJECT *hrec;
     char buffer[32];
@@ -9232,7 +9232,7 @@ static void test_select_column_names(void)
     MSIOBJECT *rec2;
     MSIOBJECT *view;
     char buffer[32];
-    UINT r, size;
+    unsigned r, size;
 
     DeleteFile(msifile);
 

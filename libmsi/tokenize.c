@@ -94,13 +94,13 @@ static int compKeyword(const void *m1, const void *m2){
 
   for (; *p; p++, q++) {
     CHAR c;
-    if ((USHORT) *p > 127)
+    if ((uint16_t) *p > 127)
       return 1;
     c = *p;
     if (c >= 'a' && c <= 'z')
       c ^= 'A' ^ 'a';
     if (c != *q)
-      return (UINT)c - (UINT)*q;
+      return (unsigned)c - (unsigned)*q;
   }
 
   return (unsigned)*p - (unsigned)*q;

@@ -35,9 +35,9 @@
 
 typedef struct tagDISTINCTSET
 {
-    UINT val;
-    UINT count;
-    UINT row;
+    unsigned val;
+    unsigned count;
+    unsigned row;
     struct tagDISTINCTSET *nextrow;
     struct tagDISTINCTSET *nextcol;
 } DISTINCTSET;
@@ -47,11 +47,11 @@ typedef struct tagMSIDISTINCTVIEW
     MSIVIEW        view;
     MSIDATABASE   *db;
     MSIVIEW       *table;
-    UINT           row_count;
-    UINT          *translation;
+    unsigned           row_count;
+    unsigned          *translation;
 } MSIDISTINCTVIEW;
 
-static DISTINCTSET ** distinct_insert( DISTINCTSET **x, UINT val, UINT row )
+static DISTINCTSET ** distinct_insert( DISTINCTSET **x, unsigned val, unsigned row )
 {
     /* horrible O(n) find */
     while( *x )
@@ -88,7 +88,7 @@ static void distinct_free( DISTINCTSET *x )
     }
 }
 
-static UINT DISTINCT_fetch_int( MSIVIEW *view, UINT row, UINT col, UINT *val )
+static unsigned DISTINCT_fetch_int( MSIVIEW *view, unsigned row, unsigned col, unsigned *val )
 {
     MSIDISTINCTVIEW *dv = (MSIDISTINCTVIEW*)view;
 
@@ -105,10 +105,10 @@ static UINT DISTINCT_fetch_int( MSIVIEW *view, UINT row, UINT col, UINT *val )
     return dv->table->ops->fetch_int( dv->table, row, col, val );
 }
 
-static UINT DISTINCT_execute( MSIVIEW *view, MSIRECORD *record )
+static unsigned DISTINCT_execute( MSIVIEW *view, MSIRECORD *record )
 {
     MSIDISTINCTVIEW *dv = (MSIDISTINCTVIEW*)view;
-    UINT r, i, j, r_count, c_count;
+    unsigned r, i, j, r_count, c_count;
     DISTINCTSET *rowset = NULL;
 
     TRACE("%p %p\n", dv, record);
@@ -124,7 +124,7 @@ static UINT DISTINCT_execute( MSIVIEW *view, MSIRECORD *record )
     if( r != ERROR_SUCCESS )
         return r;
 
-    dv->translation = msi_alloc( r_count*sizeof(UINT) );
+    dv->translation = msi_alloc( r_count*sizeof(unsigned) );
     if( !dv->translation )
         return ERROR_FUNCTION_FAILED;
 
@@ -135,7 +135,7 @@ static UINT DISTINCT_execute( MSIVIEW *view, MSIRECORD *record )
 
         for( j=1; j<=c_count; j++ )
         {
-            UINT val = 0;
+            unsigned val = 0;
             r = dv->table->ops->fetch_int( dv->table, i, j, &val );
             if( r != ERROR_SUCCESS )
             {
@@ -167,7 +167,7 @@ static UINT DISTINCT_execute( MSIVIEW *view, MSIRECORD *record )
     return ERROR_SUCCESS;
 }
 
-static UINT DISTINCT_close( MSIVIEW *view )
+static unsigned DISTINCT_close( MSIVIEW *view )
 {
     MSIDISTINCTVIEW *dv = (MSIDISTINCTVIEW*)view;
 
@@ -183,7 +183,7 @@ static UINT DISTINCT_close( MSIVIEW *view )
     return dv->table->ops->close( dv->table );
 }
 
-static UINT DISTINCT_get_dimensions( MSIVIEW *view, UINT *rows, UINT *cols )
+static unsigned DISTINCT_get_dimensions( MSIVIEW *view, unsigned *rows, unsigned *cols )
 {
     MSIDISTINCTVIEW *dv = (MSIDISTINCTVIEW*)view;
 
@@ -202,8 +202,8 @@ static UINT DISTINCT_get_dimensions( MSIVIEW *view, UINT *rows, UINT *cols )
     return dv->table->ops->get_dimensions( dv->table, NULL, cols );
 }
 
-static UINT DISTINCT_get_column_info( MSIVIEW *view, UINT n, const WCHAR **name,
-                                      UINT *type, BOOL *temporary, const WCHAR **table_name )
+static unsigned DISTINCT_get_column_info( MSIVIEW *view, unsigned n, const WCHAR **name,
+                                      unsigned *type, BOOL *temporary, const WCHAR **table_name )
 {
     MSIDISTINCTVIEW *dv = (MSIDISTINCTVIEW*)view;
 
@@ -216,8 +216,8 @@ static UINT DISTINCT_get_column_info( MSIVIEW *view, UINT n, const WCHAR **name,
                                             type, temporary, table_name );
 }
 
-static UINT DISTINCT_modify( MSIVIEW *view, MSIMODIFY eModifyMode,
-                             MSIRECORD *rec, UINT row )
+static unsigned DISTINCT_modify( MSIVIEW *view, MSIMODIFY eModifyMode,
+                             MSIRECORD *rec, unsigned row )
 {
     MSIDISTINCTVIEW *dv = (MSIDISTINCTVIEW*)view;
 
@@ -229,7 +229,7 @@ static UINT DISTINCT_modify( MSIVIEW *view, MSIMODIFY eModifyMode,
     return dv->table->ops->modify( dv->table, eModifyMode, rec, row );
 }
 
-static UINT DISTINCT_delete( MSIVIEW *view )
+static unsigned DISTINCT_delete( MSIVIEW *view )
 {
     MSIDISTINCTVIEW *dv = (MSIDISTINCTVIEW*)view;
 
@@ -245,11 +245,11 @@ static UINT DISTINCT_delete( MSIVIEW *view )
     return ERROR_SUCCESS;
 }
 
-static UINT DISTINCT_find_matching_rows( MSIVIEW *view, UINT col,
-    UINT val, UINT *row, MSIITERHANDLE *handle )
+static unsigned DISTINCT_find_matching_rows( MSIVIEW *view, unsigned col,
+    unsigned val, unsigned *row, MSIITERHANDLE *handle )
 {
     MSIDISTINCTVIEW *dv = (MSIDISTINCTVIEW*)view;
-    UINT r;
+    unsigned r;
 
     TRACE("%p, %d, %u, %p\n", view, col, val, *handle);
 
@@ -289,10 +289,10 @@ static const MSIVIEWOPS distinct_ops =
     NULL,
 };
 
-UINT DISTINCT_CreateView( MSIDATABASE *db, MSIVIEW **view, MSIVIEW *table )
+unsigned DISTINCT_CreateView( MSIDATABASE *db, MSIVIEW **view, MSIVIEW *table )
 {
     MSIDISTINCTVIEW *dv = NULL;
-    UINT count = 0, r;
+    unsigned count = 0, r;
 
     TRACE("%p\n", dv );
 

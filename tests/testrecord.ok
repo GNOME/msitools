@@ -20,7 +20,7 @@ ok: sz==0
 ok: buf[0]==0
 ok: r == ERROR_SUCCESS
 ok: r==0
-ok: r==sizeof(DWORD)
+ok: r==sizeof(unsigned)
 ok: r == ERROR_SUCCESS
 ok: r == ERROR_INVALID_PARAMETER
 ok: r == ERROR_INVALID_PARAMETER

@@ -68,7 +68,7 @@ static inline const char *wine_dbgstr_wn( const WCHAR *s, int n )
     static int i;
 
     CHAR *ret;
-    DWORD len;
+    unsigned len;
 
     if (!s) return "";
     i = (i + 1) % 10;
@@ -86,7 +86,7 @@ static inline const char *wine_dbg_sprintf( const char *format, ...)
     static int i;
 
     CHAR *ret;
-    DWORD len;
+    unsigned len;
     va_list ap;
 
     va_start(ap, format);
@@ -120,7 +120,7 @@ static inline const char *wine_dbgstr_w( const WCHAR *s )
 static inline const char *wine_dbgstr_guid( const GUID *id )
 {
     if (!id) return "(null)";
-    if (!((ULONG_PTR)id >> 16)) return wine_dbg_sprintf( "<guid-0x%04hx>", (WORD)(ULONG_PTR)id );
+    if (!((uintptr_t)id >> 16)) return wine_dbg_sprintf( "<guid-0x%04hx>", (WORD)(uintptr_t)id );
     return wine_dbg_sprintf( "{%08x-%04x-%04x-%02x%02x-%02x%02x%02x%02x%02x%02x}",
                              id->Data1, id->Data2, id->Data3,
                              id->Data4[0], id->Data4[1], id->Data4[2], id->Data4[3],
@@ -146,7 +146,7 @@ static inline const char *wine_dbgstr_rect( const RECT *rect )
                              rect->right, rect->bottom );
 }
 
-static inline const char *wine_dbgstr_longlong( ULONGLONG ll )
+static inline const char *wine_dbgstr_longlong( unsigned long long ll )
 {
     if (sizeof(ll) > sizeof(unsigned long) && ll >> 32)
         return wine_dbg_sprintf( "%lx%08lx", (unsigned long)(ll >> 32), (unsigned long)ll );

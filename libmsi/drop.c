@@ -38,13 +38,13 @@ typedef struct tagMSIDROPVIEW
     MSIDATABASE *db;
     MSIVIEW *table;
     column_info *colinfo;
-    INT hold;
+    int hold;
 } MSIDROPVIEW;
 
-static UINT DROP_execute(MSIVIEW *view, MSIRECORD *record)
+static unsigned DROP_execute(MSIVIEW *view, MSIRECORD *record)
 {
     MSIDROPVIEW *dv = (MSIDROPVIEW*)view;
-    UINT r;
+    unsigned r;
 
     TRACE("%p %p\n", dv, record);
 
@@ -58,7 +58,7 @@ static UINT DROP_execute(MSIVIEW *view, MSIRECORD *record)
     return dv->table->ops->drop(dv->table);
 }
 
-static UINT DROP_close(MSIVIEW *view)
+static unsigned DROP_close(MSIVIEW *view)
 {
     MSIDROPVIEW *dv = (MSIDROPVIEW*)view;
 
@@ -67,7 +67,7 @@ static UINT DROP_close(MSIVIEW *view)
     return ERROR_SUCCESS;
 }
 
-static UINT DROP_get_dimensions(MSIVIEW *view, UINT *rows, UINT *cols)
+static unsigned DROP_get_dimensions(MSIVIEW *view, unsigned *rows, unsigned *cols)
 {
     MSIDROPVIEW *dv = (MSIDROPVIEW*)view;
 
@@ -76,7 +76,7 @@ static UINT DROP_get_dimensions(MSIVIEW *view, UINT *rows, UINT *cols)
     return ERROR_FUNCTION_FAILED;
 }
 
-static UINT DROP_delete( MSIVIEW *view )
+static unsigned DROP_delete( MSIVIEW *view )
 {
     MSIDROPVIEW *dv = (MSIDROPVIEW*)view;
 
@@ -113,10 +113,10 @@ static const MSIVIEWOPS drop_ops =
     NULL,
 };
 
-UINT DROP_CreateView(MSIDATABASE *db, MSIVIEW **view, const WCHAR *name)
+unsigned DROP_CreateView(MSIDATABASE *db, MSIVIEW **view, const WCHAR *name)
 {
     MSIDROPVIEW *dv;
-    UINT r;
+    unsigned r;
 
     TRACE("%p %s\n", view, debugstr_w(name));
 

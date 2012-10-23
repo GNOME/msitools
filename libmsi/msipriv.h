@@ -62,8 +62,8 @@ typedef VOID (*msihandledestructor)( MSIOBJECT * );
 
 struct tagMSIOBJECT
 {
-    UINT magic;
-    UINT type;
+    unsigned magic;
+    unsigned type;
     LONG refcount;
     msihandledestructor destructor;
 };
@@ -76,12 +76,12 @@ typedef struct tagMSIDATABASE
     MSIOBJECT hdr;
     IStorage *storage;
     string_table *strings;
-    UINT bytes_per_strref;
+    unsigned bytes_per_strref;
     WCHAR *path;
     WCHAR *deletefile;
     const WCHAR *mode;
-    UINT media_transform_offset;
-    UINT media_transform_disk_id;
+    unsigned media_transform_offset;
+    unsigned media_transform_disk_id;
     struct list tables;
     struct list transforms;
     struct list streams;
@@ -93,7 +93,7 @@ typedef struct tagMSIQUERY
 {
     MSIOBJECT hdr;
     MSIVIEW *view;
-    UINT row;
+    unsigned row;
     MSIDATABASE *db;
     struct list mem;
 } MSIQUERY;
@@ -101,11 +101,11 @@ typedef struct tagMSIQUERY
 /* maybe we can use a Variant instead of doing it ourselves? */
 typedef struct tagMSIFIELD
 {
-    UINT type;
+    unsigned type;
     union
     {
-        INT iVal;
-        INT_PTR pVal;
+        int iVal;
+        intptr_t pVal;
         WCHAR *szwVal;
         IStream *stream;
     } u;
@@ -114,7 +114,7 @@ typedef struct tagMSIFIELD
 typedef struct tagMSIRECORD
 {
     MSIOBJECT hdr;
-    UINT count;       /* as passed to MsiCreateRecord */
+    unsigned count;       /* as passed to MsiCreateRecord */
     MSIFIELD fields[1]; /* nb. array size is count+1 */
 } MSIRECORD;
 
@@ -122,7 +122,7 @@ typedef struct _column_info
 {
     const WCHAR *table;
     const WCHAR *column;
-    INT   type;
+    int   type;
     BOOL   temporary;
     struct expr *val;
     struct _column_info *next;
@@ -141,7 +141,7 @@ typedef struct tagMSIVIEWOPS
      *  To get a string value, query the database's string table with
      *   the integer value returned from this function.
      */
-    UINT (*fetch_int)( MSIVIEW *view, UINT row, UINT col, UINT *val );
+    unsigned (*fetch_int)( MSIVIEW *view, unsigned row, unsigned col, unsigned *val );
 
     /*
      * fetch_stream - gets a stream from {row,col} in the table
@@ -149,40 +149,40 @@ typedef struct tagMSIVIEWOPS
      *  This function is similar to fetch_int, except fetches a
      *    stream instead of an integer.
      */
-    UINT (*fetch_stream)( MSIVIEW *view, UINT row, UINT col, IStream **stm );
+    unsigned (*fetch_stream)( MSIVIEW *view, unsigned row, unsigned col, IStream **stm );
 
     /*
      * get_row - gets values from a row
      *
      */
-    UINT (*get_row)( MSIVIEW *view, UINT row, MSIRECORD **rec );
+    unsigned (*get_row)( MSIVIEW *view, unsigned row, MSIRECORD **rec );
 
     /*
      * set_row - sets values in a row as specified by mask
      *
      *  Similar semantics to fetch_int
      */
-    UINT (*set_row)( MSIVIEW *view, UINT row, MSIRECORD *rec, UINT mask );
+    unsigned (*set_row)( MSIVIEW *view, unsigned row, MSIRECORD *rec, unsigned mask );
 
     /*
      * Inserts a new row into the database from the records contents
      */
-    UINT (*insert_row)( MSIVIEW *view, MSIRECORD *record, UINT row, BOOL temporary );
+    unsigned (*insert_row)( MSIVIEW *view, MSIRECORD *record, unsigned row, BOOL temporary );
 
     /*
      * Deletes a row from the database
      */
-    UINT (*delete_row)( MSIVIEW *view, UINT row );
+    unsigned (*delete_row)( MSIVIEW *view, unsigned row );
 
     /*
      * execute - loads the underlying data into memory so it can be read
      */
-    UINT (*execute)( MSIVIEW *view, MSIRECORD *record );
+    unsigned (*execute)( MSIVIEW *view, MSIRECORD *record );
 
     /*
      * close - clears the data read by execute from memory
      */
-    UINT (*close)( MSIVIEW *view );
+    unsigned (*close)( MSIVIEW *view );
 
     /*
      * get_dimensions - returns the number of rows or columns in a table.
@@ -190,25 +190,25 @@ typedef struct tagMSIVIEWOPS
      *  The number of rows can only be queried after the execute method
      *   is called. The number of columns can be queried at any time.
      */
-    UINT (*get_dimensions)( MSIVIEW *view, UINT *rows, UINT *cols );
+    unsigned (*get_dimensions)( MSIVIEW *view, unsigned *rows, unsigned *cols );
 
     /*
      * get_column_info - returns the name and type of a specific column
      *
      *  The column information can be queried at any time.
      */
-    UINT (*get_column_info)( MSIVIEW *view, UINT n, const WCHAR **name, UINT *type,
+    unsigned (*get_column_info)( MSIVIEW *view, unsigned n, const WCHAR **name, unsigned *type,
                              BOOL *temporary, const WCHAR **table_name );
 
     /*
      * modify - not yet implemented properly
      */
-    UINT (*modify)( MSIVIEW *view, MSIMODIFY eModifyMode, MSIRECORD *record, UINT row );
+    unsigned (*modify)( MSIVIEW *view, MSIMODIFY eModifyMode, MSIRECORD *record, unsigned row );
 
     /*
      * delete - destroys the structure completely
      */
-    UINT (*delete)( MSIVIEW * );
+    unsigned (*delete)( MSIVIEW * );
 
     /*
      * find_matching_rows - iterates through rows that match a value
@@ -221,37 +221,37 @@ typedef struct tagMSIVIEWOPS
      *  position in the iteration. It must be initialised to zero before the
      *  first call and continued to be passed in to subsequent calls.
      */
-    UINT (*find_matching_rows)( MSIVIEW *view, UINT col, UINT val, UINT *row, MSIITERHANDLE *handle );
+    unsigned (*find_matching_rows)( MSIVIEW *view, unsigned col, unsigned val, unsigned *row, MSIITERHANDLE *handle );
 
     /*
      * add_ref - increases the reference count of the table
      */
-    UINT (*add_ref)( MSIVIEW *view );
+    unsigned (*add_ref)( MSIVIEW *view );
 
     /*
      * release - decreases the reference count of the table
      */
-    UINT (*release)( MSIVIEW *view );
+    unsigned (*release)( MSIVIEW *view );
 
     /*
      * add_column - adds a column to the table
      */
-    UINT (*add_column)( MSIVIEW *view, const WCHAR *table, UINT number, const WCHAR *column, UINT type, BOOL hold );
+    unsigned (*add_column)( MSIVIEW *view, const WCHAR *table, unsigned number, const WCHAR *column, unsigned type, BOOL hold );
 
     /*
      * remove_column - removes the column represented by table name and column number from the table
      */
-    UINT (*remove_column)( MSIVIEW *view, const WCHAR *table, UINT number );
+    unsigned (*remove_column)( MSIVIEW *view, const WCHAR *table, unsigned number );
 
     /*
      * sort - orders the table by columns
      */
-    UINT (*sort)( MSIVIEW *view, column_info *columns );
+    unsigned (*sort)( MSIVIEW *view, column_info *columns );
 
     /*
      * drop - drops the table from the database
      */
-    UINT (*drop)( MSIVIEW *view );
+    unsigned (*drop)( MSIVIEW *view );
 } MSIVIEWOPS;
 
 struct tagMSIVIEW
@@ -268,7 +268,7 @@ typedef struct tagMSISUMMARYINFO
 {
     MSIOBJECT hdr;
     IStorage *storage;
-    DWORD update_count;
+    unsigned update_count;
     PROPVARIANT property[MSI_MAX_PROPS];
 } MSISUMMARYINFO;
 
@@ -297,13 +297,13 @@ typedef struct {
     } str;
 } awcstring;
 
-UINT msi_strcpy_to_awstring( const WCHAR *str, awstring *awbuf, DWORD *sz );
+unsigned msi_strcpy_to_awstring( const WCHAR *str, awstring *awbuf, unsigned *sz );
 
 /* handle functions */
-extern void *msihandle2msiinfo(MSIOBJECT *handle, UINT type);
+extern void *msihandle2msiinfo(MSIOBJECT *handle, unsigned type);
 extern MSIOBJECT *alloc_msihandle( MSIOBJECT * );
 extern MSIOBJECT *alloc_msi_remote_handle( IUnknown *unk );
-extern void *alloc_msiobject(UINT type, UINT size, msihandledestructor destroy );
+extern void *alloc_msiobject(unsigned type, unsigned size, msihandledestructor destroy );
 extern void msiobj_addref(MSIOBJECT *);
 extern int msiobj_release(MSIOBJECT *);
 extern void msiobj_lock(MSIOBJECT *);
@@ -311,7 +311,7 @@ extern void msiobj_unlock(MSIOBJECT *);
 extern void msi_free_handle_table(void);
 
 extern void free_cached_tables( MSIDATABASE *db );
-extern UINT MSI_CommitTables( MSIDATABASE *db );
+extern unsigned MSI_CommitTables( MSIDATABASE *db );
 
 
 /* string table functions */
@@ -321,53 +321,53 @@ enum StringPersistence
     StringNonPersistent = 1
 };
 
-extern BOOL msi_addstringW( string_table *st, const WCHAR *data, int len, USHORT refcount, enum StringPersistence persistence );
-extern UINT msi_string2idW( const string_table *st, const WCHAR *buffer, UINT *id );
+extern BOOL msi_addstringW( string_table *st, const WCHAR *data, int len, uint16_t refcount, enum StringPersistence persistence );
+extern unsigned msi_string2idW( const string_table *st, const WCHAR *buffer, unsigned *id );
 extern VOID msi_destroy_stringtable( string_table *st );
-extern const WCHAR *msi_string_lookup_id( const string_table *st, UINT id );
+extern const WCHAR *msi_string_lookup_id( const string_table *st, unsigned id );
 extern HRESULT msi_init_string_table( IStorage *stg );
-extern string_table *msi_load_string_table( IStorage *stg, UINT *bytes_per_strref );
-extern UINT msi_save_string_table( const string_table *st, IStorage *storage, UINT *bytes_per_strref );
-extern UINT msi_get_string_table_codepage( const string_table *st );
-extern UINT msi_set_string_table_codepage( string_table *st, UINT codepage );
+extern string_table *msi_load_string_table( IStorage *stg, unsigned *bytes_per_strref );
+extern unsigned msi_save_string_table( const string_table *st, IStorage *storage, unsigned *bytes_per_strref );
+extern unsigned msi_get_string_table_codepage( const string_table *st );
+extern unsigned msi_set_string_table_codepage( string_table *st, unsigned codepage );
 
 extern BOOL TABLE_Exists( MSIDATABASE *db, const WCHAR *name );
 extern MSICONDITION MSI_DatabaseIsTablePersistent( MSIDATABASE *db, const WCHAR *table );
 
-extern UINT read_stream_data( IStorage *stg, const WCHAR *stname, BOOL table,
-                              BYTE **pdata, UINT *psz );
-extern UINT write_stream_data( IStorage *stg, const WCHAR *stname,
-                               const void *data, UINT sz, BOOL bTable );
+extern unsigned read_stream_data( IStorage *stg, const WCHAR *stname, BOOL table,
+                              uint8_t **pdata, unsigned *psz );
+extern unsigned write_stream_data( IStorage *stg, const WCHAR *stname,
+                               const void *data, unsigned sz, BOOL bTable );
 
 /* transform functions */
-extern UINT msi_table_apply_transform( MSIDATABASE *db, IStorage *stg );
-extern UINT MSI_DatabaseApplyTransformW( MSIDATABASE *db,
+extern unsigned msi_table_apply_transform( MSIDATABASE *db, IStorage *stg );
+extern unsigned MSI_DatabaseApplyTransformW( MSIDATABASE *db,
                  const WCHAR *szTransformFile, int iErrorCond );
 extern void append_storage_to_db( MSIDATABASE *db, IStorage *stg );
 
 /* record internals */
 extern void MSI_CloseRecord( MSIOBJECT * );
-extern UINT MSI_RecordSetIStream( MSIRECORD *, UINT, IStream *);
-extern UINT MSI_RecordGetIStream( MSIRECORD *, UINT, IStream **);
-extern const WCHAR *MSI_RecordGetString( const MSIRECORD *, UINT );
-extern MSIRECORD *MSI_CreateRecord( UINT );
-extern UINT MSI_RecordSetInteger( MSIRECORD *, UINT, int );
-extern UINT MSI_RecordSetIntPtr( MSIRECORD *, UINT, INT_PTR );
-extern UINT MSI_RecordSetStringW( MSIRECORD *, UINT, const WCHAR *);
-extern BOOL MSI_RecordIsNull( MSIRECORD *, UINT );
-extern UINT MSI_RecordGetStringW( MSIRECORD *, UINT, WCHAR *, DWORD *);
-extern UINT MSI_RecordGetStringA( MSIRECORD *, UINT, CHAR *, DWORD *);
-extern int MSI_RecordGetInteger( MSIRECORD *, UINT );
-extern INT_PTR MSI_RecordGetIntPtr( MSIRECORD *, UINT );
-extern UINT MSI_RecordReadStream( MSIRECORD *, UINT, char *, DWORD *);
-extern UINT MSI_RecordSetStream(MSIRECORD *, UINT, IStream *);
-extern UINT MSI_RecordGetFieldCount( const MSIRECORD *rec );
-extern UINT MSI_RecordStreamToFile( MSIRECORD *, UINT, const WCHAR *);
-extern UINT MSI_RecordSetStreamFromFileW( MSIRECORD *, UINT, const WCHAR *);
-extern UINT MSI_RecordCopyField( MSIRECORD *, UINT, MSIRECORD *, UINT );
+extern unsigned MSI_RecordSetIStream( MSIRECORD *, unsigned, IStream *);
+extern unsigned MSI_RecordGetIStream( MSIRECORD *, unsigned, IStream **);
+extern const WCHAR *MSI_RecordGetString( const MSIRECORD *, unsigned );
+extern MSIRECORD *MSI_CreateRecord( unsigned );
+extern unsigned MSI_RecordSetInteger( MSIRECORD *, unsigned, int );
+extern unsigned MSI_RecordSetIntPtr( MSIRECORD *, unsigned, intptr_t );
+extern unsigned MSI_RecordSetStringW( MSIRECORD *, unsigned, const WCHAR *);
+extern BOOL MSI_RecordIsNull( MSIRECORD *, unsigned );
+extern unsigned MSI_RecordGetStringW( MSIRECORD *, unsigned, WCHAR *, unsigned *);
+extern unsigned MSI_RecordGetStringA( MSIRECORD *, unsigned, CHAR *, unsigned *);
+extern int MSI_RecordGetInteger( MSIRECORD *, unsigned );
+extern intptr_t MSI_RecordGetIntPtr( MSIRECORD *, unsigned );
+extern unsigned MSI_RecordReadStream( MSIRECORD *, unsigned, char *, unsigned *);
+extern unsigned MSI_RecordSetStream(MSIRECORD *, unsigned, IStream *);
+extern unsigned MSI_RecordGetFieldCount( const MSIRECORD *rec );
+extern unsigned MSI_RecordStreamToFile( MSIRECORD *, unsigned, const WCHAR *);
+extern unsigned MSI_RecordSetStreamFromFileW( MSIRECORD *, unsigned, const WCHAR *);
+extern unsigned MSI_RecordCopyField( MSIRECORD *, unsigned, MSIRECORD *, unsigned );
 extern MSIRECORD *MSI_CloneRecord( MSIRECORD * );
 extern BOOL MSI_RecordsAreEqual( MSIRECORD *, MSIRECORD * );
-extern BOOL MSI_RecordsAreFieldsEqual(MSIRECORD *a, MSIRECORD *b, UINT field);
+extern BOOL MSI_RecordsAreFieldsEqual(MSIRECORD *a, MSIRECORD *b, unsigned field);
 
 /* stream internals */
 extern void enum_stream_names( IStorage *stg );
@@ -375,38 +375,38 @@ extern WCHAR *encode_streamname(BOOL bTable, const WCHAR *in);
 extern BOOL decode_streamname(const WCHAR *in, WCHAR *out);
 
 /* database internals */
-extern UINT msi_get_raw_stream( MSIDATABASE *, const WCHAR *, IStream **);
-extern UINT msi_clone_open_stream( MSIDATABASE *, IStorage *, const WCHAR *, IStream ** );
+extern unsigned msi_get_raw_stream( MSIDATABASE *, const WCHAR *, IStream **);
+extern unsigned msi_clone_open_stream( MSIDATABASE *, IStorage *, const WCHAR *, IStream ** );
 void msi_destroy_stream( MSIDATABASE *, const WCHAR * );
-extern UINT MSI_OpenDatabaseW( const WCHAR *, const WCHAR *, MSIDATABASE **);
-extern UINT MSI_DatabaseOpenViewW(MSIDATABASE *, const WCHAR *, MSIQUERY **);
-extern UINT MSI_OpenQuery( MSIDATABASE *, MSIQUERY **, const WCHAR *, ... );
-typedef UINT (*record_func)( MSIRECORD *, void *);
-extern UINT MSI_IterateRecords( MSIQUERY *, DWORD *, record_func, void *);
+extern unsigned MSI_OpenDatabaseW( const WCHAR *, const WCHAR *, MSIDATABASE **);
+extern unsigned MSI_DatabaseOpenViewW(MSIDATABASE *, const WCHAR *, MSIQUERY **);
+extern unsigned MSI_OpenQuery( MSIDATABASE *, MSIQUERY **, const WCHAR *, ... );
+typedef unsigned (*record_func)( MSIRECORD *, void *);
+extern unsigned MSI_IterateRecords( MSIQUERY *, unsigned *, record_func, void *);
 extern MSIRECORD *MSI_QueryGetRecord( MSIDATABASE *db, const WCHAR *query, ... );
-extern UINT MSI_DatabaseGetPrimaryKeys( MSIDATABASE *, const WCHAR *, MSIRECORD **);
+extern unsigned MSI_DatabaseGetPrimaryKeys( MSIDATABASE *, const WCHAR *, MSIRECORD **);
 
 /* view internals */
-extern UINT MSI_ViewExecute( MSIQUERY*, MSIRECORD * );
-extern UINT MSI_ViewFetch( MSIQUERY*, MSIRECORD ** );
-extern UINT MSI_ViewClose( MSIQUERY* );
-extern UINT MSI_ViewGetColumnInfo(MSIQUERY *, MSICOLINFO, MSIRECORD **);
-extern UINT MSI_ViewModify( MSIQUERY *, MSIMODIFY, MSIRECORD * );
-extern UINT VIEW_find_column( MSIVIEW *, const WCHAR *, const WCHAR *, UINT *);
-extern UINT msi_view_get_row(MSIDATABASE *, MSIVIEW *, UINT, MSIRECORD **);
+extern unsigned MSI_ViewExecute( MSIQUERY*, MSIRECORD * );
+extern unsigned MSI_ViewFetch( MSIQUERY*, MSIRECORD ** );
+extern unsigned MSI_ViewClose( MSIQUERY* );
+extern unsigned MSI_ViewGetColumnInfo(MSIQUERY *, MSICOLINFO, MSIRECORD **);
+extern unsigned MSI_ViewModify( MSIQUERY *, MSIMODIFY, MSIRECORD * );
+extern unsigned VIEW_find_column( MSIVIEW *, const WCHAR *, const WCHAR *, unsigned *);
+extern unsigned msi_view_get_row(MSIDATABASE *, MSIVIEW *, unsigned, MSIRECORD **);
 
 /* summary information */
-extern MSISUMMARYINFO *MSI_GetSummaryInformationW( IStorage *stg, UINT uiUpdateCount );
-extern WCHAR *msi_suminfo_dup_string( MSISUMMARYINFO *si, UINT uiProperty );
-extern INT msi_suminfo_get_int32( MSISUMMARYINFO *si, UINT uiProperty );
+extern MSISUMMARYINFO *MSI_GetSummaryInformationW( IStorage *stg, unsigned uiUpdateCount );
+extern WCHAR *msi_suminfo_dup_string( MSISUMMARYINFO *si, unsigned uiProperty );
+extern int msi_suminfo_get_int32( MSISUMMARYINFO *si, unsigned uiProperty );
 extern WCHAR *msi_get_suminfo_product( IStorage *stg );
-extern UINT msi_add_suminfo( MSIDATABASE *db, WCHAR ***records, int num_records, int num_columns );
+extern unsigned msi_add_suminfo( MSIDATABASE *db, WCHAR ***records, int num_records, int num_columns );
 
 /* Helpers */
-extern WCHAR *msi_dup_record_field(MSIRECORD *row, INT index);
+extern WCHAR *msi_dup_record_field(MSIRECORD *row, int index);
 extern WCHAR *msi_dup_property( MSIDATABASE *db, const WCHAR *prop );
-extern UINT msi_set_property( MSIDATABASE *, const WCHAR *, const WCHAR *);
-extern UINT msi_get_property( MSIDATABASE *, const WCHAR *, WCHAR *, DWORD *);
+extern unsigned msi_set_property( MSIDATABASE *, const WCHAR *, const WCHAR *);
+extern unsigned msi_get_property( MSIDATABASE *, const WCHAR *, WCHAR *, unsigned *);
 extern int msi_get_property_int( MSIDATABASE *package, const WCHAR *prop, int def );
 
 /* common strings */
@@ -550,7 +550,7 @@ static inline BOOL msi_free( void *mem )
 static inline char *strdupWtoA( const WCHAR *str )
 {
     CHAR *ret = NULL;
-    DWORD len;
+    unsigned len;
 
     if (!str) return ret;
     len = WideCharToMultiByte( CP_ACP, 0, str, -1, NULL, 0, NULL, NULL);
@@ -563,7 +563,7 @@ static inline char *strdupWtoA( const WCHAR *str )
 static inline WCHAR *strdupAtoW( const CHAR *str )
 {
     WCHAR *ret = NULL;
-    DWORD len;
+    unsigned len;
 
     if (!str) return ret;
     len = MultiByteToWideChar( CP_ACP, 0, str, -1, NULL, 0 );

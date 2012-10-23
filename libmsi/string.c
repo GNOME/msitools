@@ -41,22 +41,22 @@
 
 struct msistring
 {
-    USHORT persistent_refcount;
-    USHORT nonpersistent_refcount;
+    uint16_t persistent_refcount;
+    uint16_t nonpersistent_refcount;
     WCHAR *str;
 };
 
 struct string_table
 {
-    UINT maxcount;         /* the number of strings */
-    UINT freeslot;
-    UINT codepage;
-    UINT sortcount;
+    unsigned maxcount;         /* the number of strings */
+    unsigned freeslot;
+    unsigned codepage;
+    unsigned sortcount;
     struct msistring *strings; /* an array of strings */
-    UINT *sorted;              /* index */
+    unsigned *sorted;              /* index */
 };
 
-static BOOL validate_codepage( UINT codepage )
+static BOOL validate_codepage( unsigned codepage )
 {
     if (codepage != CP_ACP && !IsValidCodePage( codepage ))
     {
@@ -66,7 +66,7 @@ static BOOL validate_codepage( UINT codepage )
     return TRUE;
 }
 
-static string_table *init_stringtable( int entries, UINT codepage )
+static string_table *init_stringtable( int entries, unsigned codepage )
 {
     string_table *st;
 
@@ -86,7 +86,7 @@ static string_table *init_stringtable( int entries, UINT codepage )
         return NULL;    
     }
 
-    st->sorted = msi_alloc( sizeof (UINT) * entries );
+    st->sorted = msi_alloc( sizeof (unsigned) * entries );
     if( !st->sorted )
     {
         msi_free( st->strings );
@@ -104,7 +104,7 @@ static string_table *init_stringtable( int entries, UINT codepage )
 
 VOID msi_destroy_stringtable( string_table *st )
 {
-    UINT i;
+    unsigned i;
 
     for( i=0; i<st->maxcount; i++ )
     {
@@ -119,7 +119,7 @@ VOID msi_destroy_stringtable( string_table *st )
 
 static int st_find_free_entry( string_table *st )
 {
-    UINT i, sz, *s;
+    unsigned i, sz, *s;
     struct msistring *p;
 
     TRACE("%p\n", st);
@@ -142,7 +142,7 @@ static int st_find_free_entry( string_table *st )
     if( !p )
         return -1;
 
-    s = msi_realloc( st->sorted, sz*sizeof(UINT) );
+    s = msi_realloc( st->sorted, sz*sizeof(unsigned) );
     if( !s )
     {
         msi_free( p );
@@ -160,7 +160,7 @@ static int st_find_free_entry( string_table *st )
     return st->freeslot;
 }
 
-static int find_insert_index( const string_table *st, UINT string_id )
+static int find_insert_index( const string_table *st, unsigned string_id )
 {
     int i, c, low = 0, high = st->sortcount - 1;
 
@@ -179,7 +179,7 @@ static int find_insert_index( const string_table *st, UINT string_id )
     return high + 1;
 }
 
-static void insert_string_sorted( string_table *st, UINT string_id )
+static void insert_string_sorted( string_table *st, unsigned string_id )
 {
     int i;
 
@@ -187,12 +187,12 @@ static void insert_string_sorted( string_table *st, UINT string_id )
     if (i == -1)
         return;
 
-    memmove( &st->sorted[i] + 1, &st->sorted[i], (st->sortcount - i) * sizeof(UINT) );
+    memmove( &st->sorted[i] + 1, &st->sorted[i], (st->sortcount - i) * sizeof(unsigned) );
     st->sorted[i] = string_id;
     st->sortcount++;
 }
 
-static void set_st_entry( string_table *st, UINT n, WCHAR *str, USHORT refcount, enum StringPersistence persistence )
+static void set_st_entry( string_table *st, unsigned n, WCHAR *str, uint16_t refcount, enum StringPersistence persistence )
 {
     if (persistence == StringPersistent)
     {
@@ -213,10 +213,10 @@ static void set_st_entry( string_table *st, UINT n, WCHAR *str, USHORT refcount,
         st->freeslot = n + 1;
 }
 
-static UINT msi_string2idA( const string_table *st, const CHAR *buffer, UINT *id )
+static unsigned msi_string2idA( const string_table *st, const CHAR *buffer, unsigned *id )
 {
-    DWORD sz;
-    UINT r = ERROR_INVALID_PARAMETER;
+    unsigned sz;
+    unsigned r = ERROR_INVALID_PARAMETER;
     WCHAR *str;
 
     TRACE("Finding string %s in string table\n", debugstr_a(buffer) );
@@ -241,7 +241,7 @@ static UINT msi_string2idA( const string_table *st, const CHAR *buffer, UINT *id
     return r;
 }
 
-static int msi_addstring( string_table *st, UINT n, const CHAR *data, int len, USHORT refcount, enum StringPersistence persistence )
+static int msi_addstring( string_table *st, unsigned n, const CHAR *data, int len, uint16_t refcount, enum StringPersistence persistence )
 {
     WCHAR *str;
     int sz;
@@ -292,9 +292,9 @@ static int msi_addstring( string_table *st, UINT n, const CHAR *data, int len, U
     return n;
 }
 
-int msi_addstringW( string_table *st, const WCHAR *data, int len, USHORT refcount, enum StringPersistence persistence )
+int msi_addstringW( string_table *st, const WCHAR *data, int len, uint16_t refcount, enum StringPersistence persistence )
 {
-    UINT n;
+    unsigned n;
     WCHAR *str;
 
     if( !data )
@@ -332,7 +332,7 @@ int msi_addstringW( string_table *st, const WCHAR *data, int len, USHORT refcoun
 }
 
 /* find the string identified by an id - return null if there's none */
-const WCHAR *msi_string_lookup_id( const string_table *st, UINT id )
+const WCHAR *msi_string_lookup_id( const string_table *st, unsigned id )
 {
     if( id == 0 )
         return szEmpty;
@@ -357,9 +357,9 @@ const WCHAR *msi_string_lookup_id( const string_table *st, UINT id )
  *
  *  Returned string is not nul terminated.
  */
-static UINT msi_id2stringA( const string_table *st, UINT id, CHAR *buffer, UINT *sz )
+static unsigned msi_id2stringA( const string_table *st, unsigned id, CHAR *buffer, unsigned *sz )
 {
-    UINT len, lenW;
+    unsigned len, lenW;
     const WCHAR *str;
 
     TRACE("Finding string %d of %d\n", id, st->maxcount);
@@ -386,7 +386,7 @@ static UINT msi_id2stringA( const string_table *st, UINT id, CHAR *buffer, UINT 
  *  [in] str        - string to find in the string table
  *  [out] id        - id of the string, if found
  */
-UINT msi_string2idW( const string_table *st, const WCHAR *str, UINT *id )
+unsigned msi_string2idW( const string_table *st, const WCHAR *str, unsigned *id )
 {
     int i, c, low = 0, high = st->sortcount - 1;
 
@@ -409,9 +409,9 @@ UINT msi_string2idW( const string_table *st, const WCHAR *str, UINT *id )
     return ERROR_INVALID_PARAMETER;
 }
 
-static void string_totalsize( const string_table *st, UINT *datasize, UINT *poolsize )
+static void string_totalsize( const string_table *st, unsigned *datasize, unsigned *poolsize )
 {
-    UINT i, len, holesize;
+    unsigned i, len, holesize;
 
     if( st->strings[0].str || st->strings[0].persistent_refcount || st->strings[0].nonpersistent_refcount)
         ERR("oops. element 0 has a string\n");
@@ -447,8 +447,8 @@ static void string_totalsize( const string_table *st, UINT *datasize, UINT *pool
 
 HRESULT msi_init_string_table( IStorage *stg )
 {
-    USHORT zero[2] = { 0, 0 };
-    UINT ret;
+    uint16_t zero[2] = { 0, 0 };
+    unsigned ret;
 
     /* create the StringPool stream... add the zero string to it*/
     ret = write_stream_data(stg, szStringPool, zero, sizeof zero, TRUE);
@@ -463,25 +463,25 @@ HRESULT msi_init_string_table( IStorage *stg )
     return S_OK;
 }
 
-string_table *msi_load_string_table( IStorage *stg, UINT *bytes_per_strref )
+string_table *msi_load_string_table( IStorage *stg, unsigned *bytes_per_strref )
 {
     string_table *st = NULL;
     CHAR *data = NULL;
-    USHORT *pool = NULL;
-    UINT r, datasize = 0, poolsize = 0, codepage;
-    DWORD i, count, offset, len, n, refs;
+    uint16_t *pool = NULL;
+    unsigned r, datasize = 0, poolsize = 0, codepage;
+    unsigned i, count, offset, len, n, refs;
 
-    r = read_stream_data( stg, szStringPool, TRUE, (BYTE **)&pool, &poolsize );
+    r = read_stream_data( stg, szStringPool, TRUE, (uint8_t **)&pool, &poolsize );
     if( r != ERROR_SUCCESS)
         goto end;
-    r = read_stream_data( stg, szStringData, TRUE, (BYTE **)&data, &datasize );
+    r = read_stream_data( stg, szStringData, TRUE, (uint8_t **)&data, &datasize );
     if( r != ERROR_SUCCESS)
         goto end;
 
     if ( (poolsize > 4) && (pool[1] & 0x8000) )
         *bytes_per_strref = LONG_STR_BYTES;
     else
-        *bytes_per_strref = sizeof(USHORT);
+        *bytes_per_strref = sizeof(uint16_t);
 
     count = poolsize/4;
     if( poolsize > 4 )
@@ -549,12 +549,12 @@ end:
     return st;
 }
 
-UINT msi_save_string_table( const string_table *st, IStorage *storage, UINT *bytes_per_strref )
+unsigned msi_save_string_table( const string_table *st, IStorage *storage, unsigned *bytes_per_strref )
 {
-    UINT i, datasize = 0, poolsize = 0, sz, used, r, codepage, n;
-    UINT ret = ERROR_FUNCTION_FAILED;
+    unsigned i, datasize = 0, poolsize = 0, sz, used, r, codepage, n;
+    unsigned ret = ERROR_FUNCTION_FAILED;
     CHAR *data = NULL;
-    USHORT *pool = NULL;
+    uint16_t *pool = NULL;
 
     TRACE("\n");
 
@@ -586,7 +586,7 @@ UINT msi_save_string_table( const string_table *st, IStorage *storage, UINT *byt
         *bytes_per_strref = LONG_STR_BYTES;
     }
     else
-        *bytes_per_strref = sizeof(USHORT);
+        *bytes_per_strref = sizeof(uint16_t);
 
     n = 1;
     for( i=1; i<st->maxcount; i++ )
@@ -656,12 +656,12 @@ err:
     return ret;
 }
 
-UINT msi_get_string_table_codepage( const string_table *st )
+unsigned msi_get_string_table_codepage( const string_table *st )
 {
     return st->codepage;
 }
 
-UINT msi_set_string_table_codepage( string_table *st, UINT codepage )
+unsigned msi_set_string_table_codepage( string_table *st, unsigned codepage )
 {
     if (validate_codepage( codepage ))
     {

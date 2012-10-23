@@ -38,10 +38,10 @@ typedef struct tagMSIALTERVIEW
     MSIDATABASE   *db;
     MSIVIEW       *table;
     column_info   *colinfo;
-    INT hold;
+    int hold;
 } MSIALTERVIEW;
 
-static UINT ALTER_fetch_int( MSIVIEW *view, UINT row, UINT col, UINT *val )
+static unsigned ALTER_fetch_int( MSIVIEW *view, unsigned row, unsigned col, unsigned *val )
 {
     MSIALTERVIEW *av = (MSIALTERVIEW*)view;
 
@@ -50,7 +50,7 @@ static UINT ALTER_fetch_int( MSIVIEW *view, UINT row, UINT col, UINT *val )
     return ERROR_FUNCTION_FAILED;
 }
 
-static UINT ALTER_fetch_stream( MSIVIEW *view, UINT row, UINT col, IStream **stm)
+static unsigned ALTER_fetch_stream( MSIVIEW *view, unsigned row, unsigned col, IStream **stm)
 {
     MSIALTERVIEW *av = (MSIALTERVIEW*)view;
 
@@ -59,7 +59,7 @@ static UINT ALTER_fetch_stream( MSIVIEW *view, UINT row, UINT col, IStream **stm
     return ERROR_FUNCTION_FAILED;
 }
 
-static UINT ALTER_get_row( MSIVIEW *view, UINT row, MSIRECORD **rec )
+static unsigned ALTER_get_row( MSIVIEW *view, unsigned row, MSIRECORD **rec )
 {
     MSIALTERVIEW *av = (MSIALTERVIEW*)view;
 
@@ -68,9 +68,9 @@ static UINT ALTER_get_row( MSIVIEW *view, UINT row, MSIRECORD **rec )
     return av->table->ops->get_row(av->table, row, rec);
 }
 
-static UINT ITERATE_columns(MSIRECORD *row, void *param)
+static unsigned ITERATE_columns(MSIRECORD *row, void *param)
 {
-    (*(UINT *)param)++;
+    (*(unsigned *)param)++;
     return ERROR_SUCCESS;
 }
 
@@ -78,7 +78,7 @@ static BOOL check_column_exists(MSIDATABASE *db, const WCHAR *table, const WCHAR
 {
     MSIQUERY *view;
     MSIRECORD *rec;
-    UINT r;
+    unsigned r;
 
     static const WCHAR query[] = {
         'S','E','L','E','C','T',' ','*',' ','F','R','O','M',' ',
@@ -104,9 +104,9 @@ done:
     return (r == ERROR_SUCCESS);
 }
 
-static UINT alter_add_column(MSIALTERVIEW *av)
+static unsigned alter_add_column(MSIALTERVIEW *av)
 {
-    UINT r, colnum = 1;
+    unsigned r, colnum = 1;
     MSIQUERY *view;
     MSIVIEW *columns;
 
@@ -147,10 +147,10 @@ static UINT alter_add_column(MSIALTERVIEW *av)
     return r;
 }
 
-static UINT ALTER_execute( MSIVIEW *view, MSIRECORD *record )
+static unsigned ALTER_execute( MSIVIEW *view, MSIRECORD *record )
 {
     MSIALTERVIEW *av = (MSIALTERVIEW*)view;
-    UINT ref;
+    unsigned ref;
 
     TRACE("%p %p\n", av, record);
 
@@ -169,7 +169,7 @@ static UINT ALTER_execute( MSIVIEW *view, MSIRECORD *record )
     return ERROR_SUCCESS;
 }
 
-static UINT ALTER_close( MSIVIEW *view )
+static unsigned ALTER_close( MSIVIEW *view )
 {
     MSIALTERVIEW *av = (MSIALTERVIEW*)view;
 
@@ -178,7 +178,7 @@ static UINT ALTER_close( MSIVIEW *view )
     return ERROR_SUCCESS;
 }
 
-static UINT ALTER_get_dimensions( MSIVIEW *view, UINT *rows, UINT *cols )
+static unsigned ALTER_get_dimensions( MSIVIEW *view, unsigned *rows, unsigned *cols )
 {
     MSIALTERVIEW *av = (MSIALTERVIEW*)view;
 
@@ -187,8 +187,8 @@ static UINT ALTER_get_dimensions( MSIVIEW *view, UINT *rows, UINT *cols )
     return ERROR_FUNCTION_FAILED;
 }
 
-static UINT ALTER_get_column_info( MSIVIEW *view, UINT n, const WCHAR **name,
-                                   UINT *type, BOOL *temporary, const WCHAR **table_name )
+static unsigned ALTER_get_column_info( MSIVIEW *view, unsigned n, const WCHAR **name,
+                                   unsigned *type, BOOL *temporary, const WCHAR **table_name )
 {
     MSIALTERVIEW *av = (MSIALTERVIEW*)view;
 
@@ -197,8 +197,8 @@ static UINT ALTER_get_column_info( MSIVIEW *view, UINT n, const WCHAR **name,
     return ERROR_FUNCTION_FAILED;
 }
 
-static UINT ALTER_modify( MSIVIEW *view, MSIMODIFY eModifyMode,
-                          MSIRECORD *rec, UINT row )
+static unsigned ALTER_modify( MSIVIEW *view, MSIMODIFY eModifyMode,
+                          MSIRECORD *rec, unsigned row )
 {
     MSIALTERVIEW *av = (MSIALTERVIEW*)view;
 
@@ -207,7 +207,7 @@ static UINT ALTER_modify( MSIVIEW *view, MSIMODIFY eModifyMode,
     return ERROR_FUNCTION_FAILED;
 }
 
-static UINT ALTER_delete( MSIVIEW *view )
+static unsigned ALTER_delete( MSIVIEW *view )
 {
     MSIALTERVIEW *av = (MSIALTERVIEW*)view;
 
@@ -219,8 +219,8 @@ static UINT ALTER_delete( MSIVIEW *view )
     return ERROR_SUCCESS;
 }
 
-static UINT ALTER_find_matching_rows( MSIVIEW *view, UINT col,
-    UINT val, UINT *row, MSIITERHANDLE *handle )
+static unsigned ALTER_find_matching_rows( MSIVIEW *view, unsigned col,
+    unsigned val, unsigned *row, MSIITERHANDLE *handle )
 {
     TRACE("%p, %d, %u, %p\n", view, col, val, *handle);
 
@@ -250,10 +250,10 @@ static const MSIVIEWOPS alter_ops =
     NULL,
 };
 
-UINT ALTER_CreateView( MSIDATABASE *db, MSIVIEW **view, const WCHAR *name, column_info *colinfo, int hold )
+unsigned ALTER_CreateView( MSIDATABASE *db, MSIVIEW **view, const WCHAR *name, column_info *colinfo, int hold )
 {
     MSIALTERVIEW *av;
-    UINT r;
+    unsigned r;
 
     TRACE("%p %p %s %d\n", view, colinfo, debugstr_w(name), hold );
 

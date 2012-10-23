@@ -35,9 +35,9 @@ static void test_suminfo(void)
 {
     MSIOBJECT *hdb = 0;
     MSIOBJECT *hsuminfo;
-    UINT r, count, type;
-    DWORD sz;
-    INT val;
+    unsigned r, count, type;
+    unsigned sz;
+    int val;
     FILETIME ft;
     char buf[0x10];
 
@@ -252,7 +252,7 @@ static const WCHAR tb[] = { 0x4840, 0x3f7f, 0x4164, 0x422f, 0x4836, 0 }; /* _Tab
 static const WCHAR sd[] = { 0x4840, 0x3f3f, 0x4577, 0x446c, 0x3b6a, 0x45e4, 0x4824, 0 }; /* _StringData */
 static const WCHAR sp[] = { 0x4840, 0x3f3f, 0x4577, 0x446c, 0x3e6a, 0x44b2, 0x482f, 0 }; /* _StringPool */
 
-#define LOSE_CONST(x) ((char *)(UINT_PTR)(x))
+#define LOSE_CONST(x) ((char *)(uintptr_t)(x))
 
 static void test_create_database_binary(void)
 {
@@ -262,7 +262,7 @@ static void test_create_database_binary(void)
         { 0x13a, 0, 0, {0xc0, 0, 0, 0, 0, 0, 0, 0x46 } };
     static const CLSID FMTID_SummaryInformation =
         { 0xf29f85e0, 0x4ff9, 0x1068, {0xab, 0x91, 0x08, 0x00, 0x2b, 0x27, 0xb3, 0xd9}};
-    DWORD mode = STGM_CREATE | STGM_READWRITE | STGM_DIRECT | STGM_SHARE_EXCLUSIVE;
+    unsigned mode = STGM_CREATE | STGM_READWRITE | STGM_DIRECT | STGM_SHARE_EXCLUSIVE;
     IPropertySetStorage *pss = NULL;
     IPropertyStorage *ps = NULL;
     IStorage *stg = NULL;
@@ -270,7 +270,7 @@ static void test_create_database_binary(void)
     HRESULT r;
     PROPSPEC propspec[10];
     PROPVARIANT propvar[10];
-    USHORT data[2] = { 0, 0 };
+    uint16_t data[2] = { 0, 0 };
 
     r = StgCreateDocfile( msifileW, mode, 0, &stg );
     ok( r == S_OK, "failed to create database\n");
@@ -365,9 +365,9 @@ static void test_summary_binary(void)
 {
     MSIOBJECT *hdb = 0;
     MSIOBJECT *hsuminfo = 0;
-    UINT r, type, count;
-    INT ival;
-    DWORD sz;
+    unsigned r, type, count;
+    int ival;
+    unsigned sz;
     char sval[20];
 
     DeleteFile( msifile );

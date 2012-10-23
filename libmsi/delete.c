@@ -53,7 +53,7 @@ typedef struct tagMSIDELETEVIEW
     MSIVIEW       *table;
 } MSIDELETEVIEW;
 
-static UINT DELETE_fetch_int( MSIVIEW *view, UINT row, UINT col, UINT *val )
+static unsigned DELETE_fetch_int( MSIVIEW *view, unsigned row, unsigned col, unsigned *val )
 {
     MSIDELETEVIEW *dv = (MSIDELETEVIEW*)view;
 
@@ -62,7 +62,7 @@ static UINT DELETE_fetch_int( MSIVIEW *view, UINT row, UINT col, UINT *val )
     return ERROR_FUNCTION_FAILED;
 }
 
-static UINT DELETE_fetch_stream( MSIVIEW *view, UINT row, UINT col, IStream **stm)
+static unsigned DELETE_fetch_stream( MSIVIEW *view, unsigned row, unsigned col, IStream **stm)
 {
     MSIDELETEVIEW *dv = (MSIDELETEVIEW*)view;
 
@@ -71,10 +71,10 @@ static UINT DELETE_fetch_stream( MSIVIEW *view, UINT row, UINT col, IStream **st
     return ERROR_FUNCTION_FAILED;
 }
 
-static UINT DELETE_execute( MSIVIEW *view, MSIRECORD *record )
+static unsigned DELETE_execute( MSIVIEW *view, MSIRECORD *record )
 {
     MSIDELETEVIEW *dv = (MSIDELETEVIEW*)view;
-    UINT r, i, rows = 0, cols = 0;
+    unsigned r, i, rows = 0, cols = 0;
 
     TRACE("%p %p\n", dv, record);
 
@@ -98,7 +98,7 @@ static UINT DELETE_execute( MSIVIEW *view, MSIRECORD *record )
     return ERROR_SUCCESS;
 }
 
-static UINT DELETE_close( MSIVIEW *view )
+static unsigned DELETE_close( MSIVIEW *view )
 {
     MSIDELETEVIEW *dv = (MSIDELETEVIEW*)view;
 
@@ -110,7 +110,7 @@ static UINT DELETE_close( MSIVIEW *view )
     return dv->table->ops->close( dv->table );
 }
 
-static UINT DELETE_get_dimensions( MSIVIEW *view, UINT *rows, UINT *cols )
+static unsigned DELETE_get_dimensions( MSIVIEW *view, unsigned *rows, unsigned *cols )
 {
     MSIDELETEVIEW *dv = (MSIDELETEVIEW*)view;
 
@@ -124,8 +124,8 @@ static UINT DELETE_get_dimensions( MSIVIEW *view, UINT *rows, UINT *cols )
     return dv->table->ops->get_dimensions( dv->table, NULL, cols );
 }
 
-static UINT DELETE_get_column_info( MSIVIEW *view, UINT n, const WCHAR **name,
-                                    UINT *type, BOOL *temporary, const WCHAR **table_name )
+static unsigned DELETE_get_column_info( MSIVIEW *view, unsigned n, const WCHAR **name,
+                                    unsigned *type, BOOL *temporary, const WCHAR **table_name )
 {
     MSIDELETEVIEW *dv = (MSIDELETEVIEW*)view;
 
@@ -138,8 +138,8 @@ static UINT DELETE_get_column_info( MSIVIEW *view, UINT n, const WCHAR **name,
                                             type, temporary, table_name);
 }
 
-static UINT DELETE_modify( MSIVIEW *view, MSIMODIFY eModifyMode,
-                           MSIRECORD *rec, UINT row )
+static unsigned DELETE_modify( MSIVIEW *view, MSIMODIFY eModifyMode,
+                           MSIRECORD *rec, unsigned row )
 {
     MSIDELETEVIEW *dv = (MSIDELETEVIEW*)view;
 
@@ -148,7 +148,7 @@ static UINT DELETE_modify( MSIVIEW *view, MSIMODIFY eModifyMode,
     return ERROR_FUNCTION_FAILED;
 }
 
-static UINT DELETE_delete( MSIVIEW *view )
+static unsigned DELETE_delete( MSIVIEW *view )
 {
     MSIDELETEVIEW *dv = (MSIDELETEVIEW*)view;
 
@@ -162,8 +162,8 @@ static UINT DELETE_delete( MSIVIEW *view )
     return ERROR_SUCCESS;
 }
 
-static UINT DELETE_find_matching_rows( MSIVIEW *view, UINT col,
-    UINT val, UINT *row, MSIITERHANDLE *handle )
+static unsigned DELETE_find_matching_rows( MSIVIEW *view, unsigned col,
+    unsigned val, unsigned *row, MSIITERHANDLE *handle )
 {
     TRACE("%p, %d, %u, %p\n", view, col, val, *handle);
 
@@ -194,7 +194,7 @@ static const MSIVIEWOPS delete_ops =
     NULL,
 };
 
-UINT DELETE_CreateView( MSIDATABASE *db, MSIVIEW **view, MSIVIEW *table )
+unsigned DELETE_CreateView( MSIDATABASE *db, MSIVIEW **view, MSIVIEW *table )
 {
     MSIDELETEVIEW *dv = NULL;
 

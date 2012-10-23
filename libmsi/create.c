@@ -47,7 +47,7 @@ typedef struct tagMSICREATEVIEW
     column_info     *col_info;
 } MSICREATEVIEW;
 
-static UINT CREATE_fetch_int( MSIVIEW *view, UINT row, UINT col, UINT *val )
+static unsigned CREATE_fetch_int( MSIVIEW *view, unsigned row, unsigned col, unsigned *val )
 {
     MSICREATEVIEW *cv = (MSICREATEVIEW*)view;
 
@@ -56,7 +56,7 @@ static UINT CREATE_fetch_int( MSIVIEW *view, UINT row, UINT col, UINT *val )
     return ERROR_FUNCTION_FAILED;
 }
 
-static UINT CREATE_execute( MSIVIEW *view, MSIRECORD *record )
+static unsigned CREATE_execute( MSIVIEW *view, MSIRECORD *record )
 {
     MSICREATEVIEW *cv = (MSICREATEVIEW*)view;
     BOOL persist = (cv->bIsTemp) ? MSICONDITION_FALSE : MSICONDITION_TRUE;
@@ -70,7 +70,7 @@ static UINT CREATE_execute( MSIVIEW *view, MSIRECORD *record )
     return msi_create_table( cv->db, cv->name, cv->col_info, persist );
 }
 
-static UINT CREATE_close( MSIVIEW *view )
+static unsigned CREATE_close( MSIVIEW *view )
 {
     MSICREATEVIEW *cv = (MSICREATEVIEW*)view;
 
@@ -79,7 +79,7 @@ static UINT CREATE_close( MSIVIEW *view )
     return ERROR_SUCCESS;
 }
 
-static UINT CREATE_get_dimensions( MSIVIEW *view, UINT *rows, UINT *cols )
+static unsigned CREATE_get_dimensions( MSIVIEW *view, unsigned *rows, unsigned *cols )
 {
     MSICREATEVIEW *cv = (MSICREATEVIEW*)view;
 
@@ -88,8 +88,8 @@ static UINT CREATE_get_dimensions( MSIVIEW *view, UINT *rows, UINT *cols )
     return ERROR_FUNCTION_FAILED;
 }
 
-static UINT CREATE_get_column_info( MSIVIEW *view, UINT n, const WCHAR **name,
-                                    UINT *type, BOOL *temporary, const WCHAR **table_name )
+static unsigned CREATE_get_column_info( MSIVIEW *view, unsigned n, const WCHAR **name,
+                                    unsigned *type, BOOL *temporary, const WCHAR **table_name )
 {
     MSICREATEVIEW *cv = (MSICREATEVIEW*)view;
 
@@ -98,8 +98,8 @@ static UINT CREATE_get_column_info( MSIVIEW *view, UINT n, const WCHAR **name,
     return ERROR_FUNCTION_FAILED;
 }
 
-static UINT CREATE_modify( MSIVIEW *view, MSIMODIFY eModifyMode,
-                           MSIRECORD *rec, UINT row)
+static unsigned CREATE_modify( MSIVIEW *view, MSIMODIFY eModifyMode,
+                           MSIRECORD *rec, unsigned row)
 {
     MSICREATEVIEW *cv = (MSICREATEVIEW*)view;
 
@@ -108,7 +108,7 @@ static UINT CREATE_modify( MSIVIEW *view, MSIMODIFY eModifyMode,
     return ERROR_FUNCTION_FAILED;
 }
 
-static UINT CREATE_delete( MSIVIEW *view )
+static unsigned CREATE_delete( MSIVIEW *view )
 {
     MSICREATEVIEW *cv = (MSICREATEVIEW*)view;
 
@@ -143,7 +143,7 @@ static const MSIVIEWOPS create_ops =
     NULL,
 };
 
-static UINT check_columns( const column_info *col_info )
+static unsigned check_columns( const column_info *col_info )
 {
     const column_info *c1, *c2;
 
@@ -156,11 +156,11 @@ static UINT check_columns( const column_info *col_info )
     return ERROR_SUCCESS;
 }
 
-UINT CREATE_CreateView( MSIDATABASE *db, MSIVIEW **view, const WCHAR *table,
+unsigned CREATE_CreateView( MSIDATABASE *db, MSIVIEW **view, const WCHAR *table,
                         column_info *col_info, BOOL hold )
 {
     MSICREATEVIEW *cv = NULL;
-    UINT r;
+    unsigned r;
     column_info *col;
     BOOL temp = TRUE;
     BOOL tempprim = FALSE;

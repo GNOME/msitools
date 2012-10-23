@@ -19,6 +19,8 @@
 #ifndef _LIBMSI_H
 #define _LIBMSI_H
 
+#include <stdint.h>
+
 struct tagMSIOBJECT;
 typedef struct tagMSIOBJECT MSIOBJECT;
 
@@ -148,95 +150,95 @@ extern "C" {
 
 
 /* view manipulation */
-UINT MsiViewFetch(MSIOBJECT *,MSIOBJECT **);
-UINT MsiViewExecute(MSIOBJECT *,MSIOBJECT *);
-UINT MsiViewClose(MSIOBJECT *);
-UINT MsiDatabaseOpenViewA(MSIOBJECT *,const CHAR *,MSIOBJECT **);
-UINT MsiDatabaseOpenViewW(MSIOBJECT *,const WCHAR *,MSIOBJECT **);
+unsigned MsiViewFetch(MSIOBJECT *,MSIOBJECT **);
+unsigned MsiViewExecute(MSIOBJECT *,MSIOBJECT *);
+unsigned MsiViewClose(MSIOBJECT *);
+unsigned MsiDatabaseOpenViewA(MSIOBJECT *,const CHAR *,MSIOBJECT **);
+unsigned MsiDatabaseOpenViewW(MSIOBJECT *,const WCHAR *,MSIOBJECT **);
 #define     MsiDatabaseOpenView WINELIB_NAME_AW(MsiDatabaseOpenView)
-MSIDBERROR MsiViewGetErrorA(MSIOBJECT *,CHAR *,DWORD *);
-MSIDBERROR MsiViewGetErrorW(MSIOBJECT *,WCHAR *,DWORD *);
+MSIDBERROR MsiViewGetErrorA(MSIOBJECT *,CHAR *,unsigned *);
+MSIDBERROR MsiViewGetErrorW(MSIOBJECT *,WCHAR *,unsigned *);
 #define     MsiViewGetError WINELIB_NAME_AW(MsiViewGetError)
 
 MSIDBSTATE MsiGetDatabaseState(MSIOBJECT *);
 
 /* record manipulation */
-MSIOBJECT * MsiCreateRecord(UINT);
-UINT MsiRecordClearData(MSIOBJECT *);
-UINT MsiRecordSetInteger(MSIOBJECT *,UINT,int);
-UINT MsiRecordSetStringA(MSIOBJECT *,UINT,const CHAR *);
-UINT MsiRecordSetStringW(MSIOBJECT *,UINT,const WCHAR *);
+MSIOBJECT * MsiCreateRecord(unsigned);
+unsigned MsiRecordClearData(MSIOBJECT *);
+unsigned MsiRecordSetInteger(MSIOBJECT *,unsigned,int);
+unsigned MsiRecordSetStringA(MSIOBJECT *,unsigned,const CHAR *);
+unsigned MsiRecordSetStringW(MSIOBJECT *,unsigned,const WCHAR *);
 #define     MsiRecordSetString WINELIB_NAME_AW(MsiRecordSetString)
-UINT MsiRecordGetStringA(MSIOBJECT *,UINT,CHAR *,DWORD *);
-UINT MsiRecordGetStringW(MSIOBJECT *,UINT,WCHAR *,DWORD *);
+unsigned MsiRecordGetStringA(MSIOBJECT *,unsigned,CHAR *,unsigned *);
+unsigned MsiRecordGetStringW(MSIOBJECT *,unsigned,WCHAR *,unsigned *);
 #define     MsiRecordGetString WINELIB_NAME_AW(MsiRecordGetString)
-UINT MsiRecordGetFieldCount(MSIOBJECT *);
-int MsiRecordGetInteger(MSIOBJECT *,UINT);
-UINT MsiRecordDataSize(MSIOBJECT *,UINT);
-BOOL MsiRecordIsNull(MSIOBJECT *,UINT);
-UINT MsiFormatRecordA(MSIOBJECT *,MSIOBJECT *,CHAR *,DWORD *);
-UINT MsiFormatRecordW(MSIOBJECT *,MSIOBJECT *,WCHAR *,DWORD *);
+unsigned MsiRecordGetFieldCount(MSIOBJECT *);
+int MsiRecordGetInteger(MSIOBJECT *,unsigned);
+unsigned MsiRecordDataSize(MSIOBJECT *,unsigned);
+BOOL MsiRecordIsNull(MSIOBJECT *,unsigned);
+unsigned MsiFormatRecordA(MSIOBJECT *,MSIOBJECT *,CHAR *,unsigned *);
+unsigned MsiFormatRecordW(MSIOBJECT *,MSIOBJECT *,WCHAR *,unsigned *);
 #define     MsiFormatRecord WINELIB_NAME_AW(MsiFormatRecord)
-UINT MsiRecordSetStreamA(MSIOBJECT *,UINT,const CHAR *);
-UINT MsiRecordSetStreamW(MSIOBJECT *,UINT,const WCHAR *);
+unsigned MsiRecordSetStreamA(MSIOBJECT *,unsigned,const CHAR *);
+unsigned MsiRecordSetStreamW(MSIOBJECT *,unsigned,const WCHAR *);
 #define     MsiRecordSetStream WINELIB_NAME_AW(MsiRecordSetStream)
-UINT MsiRecordReadStream(MSIOBJECT *,UINT,char*,DWORD *);
+unsigned MsiRecordReadStream(MSIOBJECT *,unsigned,char*,unsigned *);
 
-UINT MsiDatabaseGetPrimaryKeysA(MSIOBJECT *,const CHAR *,MSIOBJECT **);
-UINT MsiDatabaseGetPrimaryKeysW(MSIOBJECT *,const WCHAR *,MSIOBJECT **);
+unsigned MsiDatabaseGetPrimaryKeysA(MSIOBJECT *,const CHAR *,MSIOBJECT **);
+unsigned MsiDatabaseGetPrimaryKeysW(MSIOBJECT *,const WCHAR *,MSIOBJECT **);
 #define     MsiDatabaseGetPrimaryKeys WINELIB_NAME_AW(MsiDatabaseGetPrimaryKeys)
 
 /* database transforms */
-UINT MsiDatabaseApplyTransformA(MSIOBJECT *,const CHAR *,int);
-UINT MsiDatabaseApplyTransformW(MSIOBJECT *,const WCHAR *,int);
+unsigned MsiDatabaseApplyTransformA(MSIOBJECT *,const CHAR *,int);
+unsigned MsiDatabaseApplyTransformW(MSIOBJECT *,const WCHAR *,int);
 #define     MsiDatabaseApplyTransform WINELIB_NAME_AW(MsiDatabaseApplyTransform)
 
-UINT MsiViewGetColumnInfo(MSIOBJECT *, MSICOLINFO, MSIOBJECT **);
+unsigned MsiViewGetColumnInfo(MSIOBJECT *, MSICOLINFO, MSIOBJECT **);
 
-UINT MsiCreateTransformSummaryInfoA(MSIOBJECT *, MSIOBJECT *, const CHAR *, int, int);
-UINT MsiCreateTransformSummaryInfoW(MSIOBJECT *, MSIOBJECT *, const WCHAR *, int, int);
+unsigned MsiCreateTransformSummaryInfoA(MSIOBJECT *, MSIOBJECT *, const CHAR *, int, int);
+unsigned MsiCreateTransformSummaryInfoW(MSIOBJECT *, MSIOBJECT *, const WCHAR *, int, int);
 #define     MsiCreateTransformSummaryInfo WINELIB_NAME_AW(MsiCreateTransformSummaryInfo)
 
-UINT MsiGetSummaryInformationA(MSIOBJECT *, const CHAR *, UINT, MSIOBJECT **);
-UINT MsiGetSummaryInformationW(MSIOBJECT *, const WCHAR *, UINT, MSIOBJECT **);
+unsigned MsiGetSummaryInformationA(MSIOBJECT *, const CHAR *, unsigned, MSIOBJECT **);
+unsigned MsiGetSummaryInformationW(MSIOBJECT *, const WCHAR *, unsigned, MSIOBJECT **);
 #define     MsiGetSummaryInformation WINELIB_NAME_AW(MsiGetSummaryInformation)
 
-UINT MsiSummaryInfoGetPropertyA(MSIOBJECT *,UINT,UINT *,INT *,FILETIME*,CHAR *,DWORD *);
-UINT MsiSummaryInfoGetPropertyW(MSIOBJECT *,UINT,UINT *,INT *,FILETIME*,WCHAR *,DWORD *);
+unsigned MsiSummaryInfoGetPropertyA(MSIOBJECT *,unsigned,unsigned *,int *,FILETIME*,CHAR *,unsigned *);
+unsigned MsiSummaryInfoGetPropertyW(MSIOBJECT *,unsigned,unsigned *,int *,FILETIME*,WCHAR *,unsigned *);
 #define     MsiSummaryInfoGetProperty WINELIB_NAME_AW(MsiSummaryInfoGetProperty)
 
-UINT MsiSummaryInfoSetPropertyA(MSIOBJECT *, UINT, UINT, INT, FILETIME*, const CHAR *);
-UINT MsiSummaryInfoSetPropertyW(MSIOBJECT *, UINT, UINT, INT, FILETIME*, const WCHAR *);
+unsigned MsiSummaryInfoSetPropertyA(MSIOBJECT *, unsigned, unsigned, int, FILETIME*, const CHAR *);
+unsigned MsiSummaryInfoSetPropertyW(MSIOBJECT *, unsigned, unsigned, int, FILETIME*, const WCHAR *);
 #define     MsiSummaryInfoSetProperty WINELIB_NAME_AW(MsiSummaryInfoSetProperty)
 
-UINT MsiDatabaseExportA(MSIOBJECT *, const CHAR *, const CHAR *, const CHAR *);
-UINT MsiDatabaseExportW(MSIOBJECT *, const WCHAR *, const WCHAR *, const WCHAR *);
+unsigned MsiDatabaseExportA(MSIOBJECT *, const CHAR *, const CHAR *, const CHAR *);
+unsigned MsiDatabaseExportW(MSIOBJECT *, const WCHAR *, const WCHAR *, const WCHAR *);
 #define     MsiDatabaseExport WINELIB_NAME_AW(MsiDatabaseExport)
 
-UINT MsiDatabaseImportA(MSIOBJECT *, const CHAR *, const CHAR *);
-UINT MsiDatabaseImportW(MSIOBJECT *, const WCHAR *, const WCHAR *);
+unsigned MsiDatabaseImportA(MSIOBJECT *, const CHAR *, const CHAR *);
+unsigned MsiDatabaseImportW(MSIOBJECT *, const WCHAR *, const WCHAR *);
 #define     MsiDatabaseImport WINELIB_NAME_AW(MsiDatabaseImport)
 
-UINT MsiOpenDatabaseW(const WCHAR *, const WCHAR *, MSIOBJECT **);
-UINT MsiOpenDatabaseA(const CHAR *, const CHAR *, MSIOBJECT **);
+unsigned MsiOpenDatabaseW(const WCHAR *, const WCHAR *, MSIOBJECT **);
+unsigned MsiOpenDatabaseA(const CHAR *, const CHAR *, MSIOBJECT **);
 #define     MsiOpenDatabase WINELIB_NAME_AW(MsiOpenDatabase)
 
 MSICONDITION MsiDatabaseIsTablePersistentA(MSIOBJECT *, const CHAR *);
 MSICONDITION MsiDatabaseIsTablePersistentW(MSIOBJECT *, const WCHAR *);
 #define     MsiDatabaseIsTablePersistent WINELIB_NAME_AW(MsiDatabaseIsTablePersistent)
 
-UINT MsiSummaryInfoPersist(MSIOBJECT *);
-UINT MsiSummaryInfoGetPropertyCount(MSIOBJECT *,UINT *);
+unsigned MsiSummaryInfoPersist(MSIOBJECT *);
+unsigned MsiSummaryInfoGetPropertyCount(MSIOBJECT *,unsigned *);
 
-UINT MsiViewModify(MSIOBJECT *, MSIMODIFY, MSIOBJECT *);
+unsigned MsiViewModify(MSIOBJECT *, MSIMODIFY, MSIOBJECT *);
 
-UINT MsiDatabaseMergeA(MSIOBJECT *, MSIOBJECT *, const CHAR *);
-UINT MsiDatabaseMergeW(MSIOBJECT *, MSIOBJECT *, const WCHAR *);
+unsigned MsiDatabaseMergeA(MSIOBJECT *, MSIOBJECT *, const CHAR *);
+unsigned MsiDatabaseMergeW(MSIOBJECT *, MSIOBJECT *, const WCHAR *);
 #define     MsiDatabaseMerge WINELIB_NAME_AW(MsiDatabaseMerge)
 
 /* Non Unicode */
-UINT MsiDatabaseCommit(MSIOBJECT *);
-UINT MsiCloseHandle(MSIOBJECT *);
+unsigned MsiDatabaseCommit(MSIOBJECT *);
+unsigned MsiCloseHandle(MSIOBJECT *);
 
 MSIOBJECT * MsiGetLastErrorRecord(void);
 

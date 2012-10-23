@@ -54,11 +54,11 @@ static void MSI_CloseView( MSIOBJECT *arg )
     }
 }
 
-UINT VIEW_find_column( MSIVIEW *table, const WCHAR *name, const WCHAR *table_name, UINT *n )
+unsigned VIEW_find_column( MSIVIEW *table, const WCHAR *name, const WCHAR *table_name, unsigned *n )
 {
     const WCHAR *col_name;
     const WCHAR *haystack_table_name;
-    UINT i, count, r;
+    unsigned i, count, r;
 
     r = table->ops->get_dimensions( table, NULL, &count );
     if( r != ERROR_SUCCESS )
@@ -66,7 +66,7 @@ UINT VIEW_find_column( MSIVIEW *table, const WCHAR *name, const WCHAR *table_nam
 
     for( i=1; i<=count; i++ )
     {
-        INT x;
+        int x;
 
         r = table->ops->get_column_info( table, i, &col_name, NULL,
                                          NULL, &haystack_table_name );
@@ -84,10 +84,10 @@ UINT VIEW_find_column( MSIVIEW *table, const WCHAR *name, const WCHAR *table_nam
     return ERROR_INVALID_PARAMETER;
 }
 
-UINT MsiDatabaseOpenViewA(MSIOBJECT *hdb,
+unsigned MsiDatabaseOpenViewA(MSIOBJECT *hdb,
               const CHAR *szQuery, MSIOBJECT **phView)
 {
-    UINT r;
+    unsigned r;
     WCHAR *szwQuery;
 
     TRACE("%d %s %p\n", hdb, debugstr_a(szQuery), phView);
@@ -107,11 +107,11 @@ UINT MsiDatabaseOpenViewA(MSIOBJECT *hdb,
     return r;
 }
 
-UINT MSI_DatabaseOpenViewW(MSIDATABASE *db,
+unsigned MSI_DatabaseOpenViewW(MSIDATABASE *db,
               const WCHAR *szQuery, MSIQUERY **pView)
 {
     MSIQUERY *query;
-    UINT r;
+    unsigned r;
 
     TRACE("%s %p\n", debugstr_w(szQuery), pView);
 
@@ -139,9 +139,9 @@ UINT MSI_DatabaseOpenViewW(MSIDATABASE *db,
     return r;
 }
 
-UINT MSI_OpenQuery( MSIDATABASE *db, MSIQUERY **view, const WCHAR *fmt, ... )
+unsigned MSI_OpenQuery( MSIDATABASE *db, MSIQUERY **view, const WCHAR *fmt, ... )
 {
-    UINT r;
+    unsigned r;
     int size = 100, res;
     WCHAR *query;
 
@@ -164,11 +164,11 @@ UINT MSI_OpenQuery( MSIDATABASE *db, MSIQUERY **view, const WCHAR *fmt, ... )
     return r;
 }
 
-UINT MSI_IterateRecords( MSIQUERY *view, DWORD *count,
+unsigned MSI_IterateRecords( MSIQUERY *view, unsigned *count,
                          record_func func, void *param )
 {
     MSIRECORD *rec = NULL;
-    UINT r, n = 0, max = 0;
+    unsigned r, n = 0, max = 0;
 
     r = MSI_ViewExecute( view, NULL );
     if( r != ERROR_SUCCESS )
@@ -206,7 +206,7 @@ MSIRECORD *MSI_QueryGetRecord( MSIDATABASE *db, const WCHAR *fmt, ... )
 {
     MSIRECORD *rec = NULL;
     MSIQUERY *view = NULL;
-    UINT r;
+    unsigned r;
     int size = 100, res;
     WCHAR *query;
 
@@ -237,12 +237,12 @@ MSIRECORD *MSI_QueryGetRecord( MSIDATABASE *db, const WCHAR *fmt, ... )
     return rec;
 }
 
-UINT MsiDatabaseOpenViewW(MSIOBJECT *hdb,
+unsigned MsiDatabaseOpenViewW(MSIOBJECT *hdb,
               const WCHAR *szQuery, MSIOBJECT **phView)
 {
     MSIDATABASE *db;
     MSIQUERY *query = NULL;
-    UINT ret;
+    unsigned ret;
 
     TRACE("%s %p\n", debugstr_w(szQuery), phView);
 
@@ -258,9 +258,9 @@ UINT MsiDatabaseOpenViewW(MSIOBJECT *hdb,
     return ret;
 }
 
-UINT msi_view_get_row(MSIDATABASE *db, MSIVIEW *view, UINT row, MSIRECORD **rec)
+unsigned msi_view_get_row(MSIDATABASE *db, MSIVIEW *view, unsigned row, MSIRECORD **rec)
 {
-    UINT row_count = 0, col_count = 0, i, ival, ret, type;
+    unsigned row_count = 0, col_count = 0, i, ival, ret, type;
 
     TRACE("%p %p %d %p\n", db, view, row, rec);
 
@@ -336,10 +336,10 @@ UINT msi_view_get_row(MSIDATABASE *db, MSIVIEW *view, UINT row, MSIRECORD **rec)
     return ERROR_SUCCESS;
 }
 
-UINT MSI_ViewFetch(MSIQUERY *query, MSIRECORD **prec)
+unsigned MSI_ViewFetch(MSIQUERY *query, MSIRECORD **prec)
 {
     MSIVIEW *view;
-    UINT r;
+    unsigned r;
 
     TRACE("%p %p\n", query, prec );
 
@@ -351,17 +351,17 @@ UINT MSI_ViewFetch(MSIQUERY *query, MSIRECORD **prec)
     if (r == ERROR_SUCCESS)
     {
         query->row ++;
-        MSI_RecordSetIntPtr(*prec, 0, (INT_PTR)query);
+        MSI_RecordSetIntPtr(*prec, 0, (intptr_t)query);
     }
 
     return r;
 }
 
-UINT MsiViewFetch(MSIOBJECT *hView, MSIOBJECT **record)
+unsigned MsiViewFetch(MSIOBJECT *hView, MSIOBJECT **record)
 {
     MSIQUERY *query;
     MSIRECORD *rec = NULL;
-    UINT ret;
+    unsigned ret;
 
     TRACE("%d %p\n", hView, record);
 
@@ -379,7 +379,7 @@ UINT MsiViewFetch(MSIOBJECT *hView, MSIOBJECT **record)
     return ret;
 }
 
-UINT MSI_ViewClose(MSIQUERY *query)
+unsigned MSI_ViewClose(MSIQUERY *query)
 {
     MSIVIEW *view;
 
@@ -394,10 +394,10 @@ UINT MSI_ViewClose(MSIQUERY *query)
     return view->ops->close( view );
 }
 
-UINT MsiViewClose(MSIOBJECT *hView)
+unsigned MsiViewClose(MSIOBJECT *hView)
 {
     MSIQUERY *query;
-    UINT ret;
+    unsigned ret;
 
     TRACE("%d\n", hView );
 
@@ -410,7 +410,7 @@ UINT MsiViewClose(MSIOBJECT *hView)
     return ret;
 }
 
-UINT MSI_ViewExecute(MSIQUERY *query, MSIRECORD *rec )
+unsigned MSI_ViewExecute(MSIQUERY *query, MSIRECORD *rec )
 {
     MSIVIEW *view;
 
@@ -426,11 +426,11 @@ UINT MSI_ViewExecute(MSIQUERY *query, MSIRECORD *rec )
     return view->ops->execute( view, rec );
 }
 
-UINT MsiViewExecute(MSIOBJECT *hView, MSIOBJECT *hRec)
+unsigned MsiViewExecute(MSIOBJECT *hView, MSIOBJECT *hRec)
 {
     MSIQUERY *query;
     MSIRECORD *rec = NULL;
-    UINT ret;
+    unsigned ret;
     
     TRACE("%d %d\n", hView, hRec);
 
@@ -460,8 +460,8 @@ out:
     return ret;
 }
 
-static UINT msi_set_record_type_string( MSIRECORD *rec, UINT field,
-                                        UINT type, BOOL temporary )
+static unsigned msi_set_record_type_string( MSIRECORD *rec, unsigned field,
+                                        unsigned type, BOOL temporary )
 {
     static const WCHAR fmt[] = { '%','d',0 };
     WCHAR szType[0x10];
@@ -497,9 +497,9 @@ static UINT msi_set_record_type_string( MSIRECORD *rec, UINT field,
     return MSI_RecordSetStringW( rec, field, szType );
 }
 
-UINT MSI_ViewGetColumnInfo( MSIQUERY *query, MSICOLINFO info, MSIRECORD **prec )
+unsigned MSI_ViewGetColumnInfo( MSIQUERY *query, MSICOLINFO info, MSIRECORD **prec )
 {
-    UINT r = ERROR_FUNCTION_FAILED, i, count = 0, type;
+    unsigned r = ERROR_FUNCTION_FAILED, i, count = 0, type;
     MSIRECORD *rec;
     MSIVIEW *view = query->view;
     const WCHAR *name;
@@ -536,11 +536,11 @@ UINT MSI_ViewGetColumnInfo( MSIQUERY *query, MSICOLINFO info, MSIRECORD **prec )
     return ERROR_SUCCESS;
 }
 
-UINT MsiViewGetColumnInfo(MSIOBJECT *hView, MSICOLINFO info, MSIOBJECT **hRec)
+unsigned MsiViewGetColumnInfo(MSIOBJECT *hView, MSICOLINFO info, MSIOBJECT **hRec)
 {
     MSIQUERY *query = NULL;
     MSIRECORD *rec = NULL;
-    UINT r;
+    unsigned r;
 
     TRACE("%d %d %p\n", hView, info, hRec);
 
@@ -563,10 +563,10 @@ UINT MsiViewGetColumnInfo(MSIOBJECT *hView, MSICOLINFO info, MSIOBJECT **hRec)
     return r;
 }
 
-UINT MSI_ViewModify( MSIQUERY *query, MSIMODIFY mode, MSIRECORD *rec )
+unsigned MSI_ViewModify( MSIQUERY *query, MSIMODIFY mode, MSIRECORD *rec )
 {
     MSIVIEW *view = NULL;
-    UINT r;
+    unsigned r;
 
     if ( !query || !rec )
         return ERROR_INVALID_HANDLE;
@@ -575,7 +575,7 @@ UINT MSI_ViewModify( MSIQUERY *query, MSIMODIFY mode, MSIRECORD *rec )
     if ( !view  || !view->ops->modify)
         return ERROR_FUNCTION_FAILED;
 
-    if ( mode == MSIMODIFY_UPDATE && MSI_RecordGetIntPtr( rec, 0 ) != (INT_PTR)query )
+    if ( mode == MSIMODIFY_UPDATE && MSI_RecordGetIntPtr( rec, 0 ) != (intptr_t)query )
         return ERROR_FUNCTION_FAILED;
 
     r = view->ops->modify( view, mode, rec, query->row );
@@ -585,12 +585,12 @@ UINT MSI_ViewModify( MSIQUERY *query, MSIMODIFY mode, MSIRECORD *rec )
     return r;
 }
 
-UINT MsiViewModify( MSIOBJECT *hView, MSIMODIFY eModifyMode,
+unsigned MsiViewModify( MSIOBJECT *hView, MSIMODIFY eModifyMode,
                 MSIOBJECT *hRecord)
 {
     MSIQUERY *query = NULL;
     MSIRECORD *rec = NULL;
-    UINT r = ERROR_FUNCTION_FAILED;
+    unsigned r = ERROR_FUNCTION_FAILED;
 
     TRACE("%d %x %d\n", hView, eModifyMode, hRecord);
 
@@ -608,12 +608,12 @@ UINT MsiViewModify( MSIOBJECT *hView, MSIMODIFY eModifyMode,
     return r;
 }
 
-MSIDBERROR MsiViewGetErrorW( MSIOBJECT *handle, WCHAR *buffer, DWORD *buflen )
+MSIDBERROR MsiViewGetErrorW( MSIOBJECT *handle, WCHAR *buffer, unsigned *buflen )
 {
     MSIQUERY *query;
     const WCHAR *column;
     MSIDBERROR r;
-    DWORD len;
+    unsigned len;
 
     TRACE("%u %p %p\n", handle, buffer, buflen);
 
@@ -640,12 +640,12 @@ MSIDBERROR MsiViewGetErrorW( MSIOBJECT *handle, WCHAR *buffer, DWORD *buflen )
     return r;
 }
 
-MSIDBERROR MsiViewGetErrorA( MSIOBJECT *handle, CHAR *buffer, DWORD *buflen )
+MSIDBERROR MsiViewGetErrorA( MSIOBJECT *handle, CHAR *buffer, unsigned *buflen )
 {
     MSIQUERY *query;
     const WCHAR *column;
     MSIDBERROR r;
-    DWORD len;
+    unsigned len;
 
     TRACE("%u %p %p\n", handle, buffer, buflen);
 
@@ -678,11 +678,11 @@ MSIOBJECT * MsiGetLastErrorRecord( void )
     return 0;
 }
 
-UINT MSI_DatabaseApplyTransformW( MSIDATABASE *db,
+unsigned MSI_DatabaseApplyTransformW( MSIDATABASE *db,
                  const WCHAR *szTransformFile, int iErrorCond )
 {
     HRESULT r;
-    UINT ret = ERROR_FUNCTION_FAILED;
+    unsigned ret = ERROR_FUNCTION_FAILED;
     IStorage *stg = NULL;
     STATSTG stat;
 
@@ -714,11 +714,11 @@ end:
     return ret;
 }
 
-UINT MsiDatabaseApplyTransformW( MSIOBJECT *hdb,
+unsigned MsiDatabaseApplyTransformW( MSIOBJECT *hdb,
                  const WCHAR *szTransformFile, int iErrorCond)
 {
     MSIDATABASE *db;
-    UINT r;
+    unsigned r;
 
     db = msihandle2msiinfo( hdb, MSIOBJECTTYPE_DATABASE );
     if( !db )
@@ -728,11 +728,11 @@ UINT MsiDatabaseApplyTransformW( MSIOBJECT *hdb,
     return r;
 }
 
-UINT MsiDatabaseApplyTransformA( MSIOBJECT *hdb, 
+unsigned MsiDatabaseApplyTransformA( MSIOBJECT *hdb, 
                  const CHAR *szTransformFile, int iErrorCond)
 {
     WCHAR *wstr;
-    UINT ret;
+    unsigned ret;
 
     TRACE("%d %s %d\n", hdb, debugstr_a(szTransformFile), iErrorCond);
 
@@ -747,10 +747,10 @@ UINT MsiDatabaseApplyTransformA( MSIOBJECT *hdb,
     return ret;
 }
 
-UINT MsiDatabaseCommit( MSIOBJECT *hdb )
+unsigned MsiDatabaseCommit( MSIOBJECT *hdb )
 {
     MSIDATABASE *db;
-    UINT r;
+    unsigned r;
 
     TRACE("%d\n", hdb);
 
@@ -784,16 +784,16 @@ UINT MsiDatabaseCommit( MSIOBJECT *hdb )
 
 struct msi_primary_key_record_info
 {
-    DWORD n;
+    unsigned n;
     MSIRECORD *rec;
 };
 
-static UINT msi_primary_key_iterator( MSIRECORD *rec, void *param )
+static unsigned msi_primary_key_iterator( MSIRECORD *rec, void *param )
 {
     struct msi_primary_key_record_info *info = param;
     const WCHAR *name;
     const WCHAR *table;
-    DWORD type;
+    unsigned type;
 
     type = MSI_RecordGetInteger( rec, 4 );
     if( type & MSITYPE_KEY )
@@ -815,7 +815,7 @@ static UINT msi_primary_key_iterator( MSIRECORD *rec, void *param )
     return ERROR_SUCCESS;
 }
 
-UINT MSI_DatabaseGetPrimaryKeys( MSIDATABASE *db,
+unsigned MSI_DatabaseGetPrimaryKeys( MSIDATABASE *db,
                 const WCHAR *table, MSIRECORD **prec )
 {
     static const WCHAR sql[] = {
@@ -825,7 +825,7 @@ UINT MSI_DatabaseGetPrimaryKeys( MSIDATABASE *db,
         '`','T','a','b','l','e','`',' ','=',' ','\'','%','s','\'',0 };
     struct msi_primary_key_record_info info;
     MSIQUERY *query = NULL;
-    UINT r;
+    unsigned r;
 
     if (!TABLE_Exists( db, table ))
         return ERROR_INVALID_TABLE;
@@ -856,12 +856,12 @@ UINT MSI_DatabaseGetPrimaryKeys( MSIDATABASE *db,
     return r;
 }
 
-UINT MsiDatabaseGetPrimaryKeysW( MSIOBJECT *hdb,
+unsigned MsiDatabaseGetPrimaryKeysW( MSIOBJECT *hdb,
                     const WCHAR *table, MSIOBJECT **phRec )
 {
     MSIRECORD *rec = NULL;
     MSIDATABASE *db;
-    UINT r;
+    unsigned r;
 
     TRACE("%d %s %p\n", hdb, debugstr_w(table), phRec);
 
@@ -877,11 +877,11 @@ UINT MsiDatabaseGetPrimaryKeysW( MSIOBJECT *hdb,
     return r;
 }
 
-UINT MsiDatabaseGetPrimaryKeysA(MSIOBJECT *hdb, 
+unsigned MsiDatabaseGetPrimaryKeysA(MSIOBJECT *hdb, 
                     const CHAR *table, MSIOBJECT **phRec)
 {
     WCHAR *szwTable = NULL;
-    UINT r;
+    unsigned r;
 
     TRACE("%d %s %p\n", hdb, debugstr_a(table), phRec);
 

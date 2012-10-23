@@ -44,8 +44,8 @@ typedef struct tag_SQL_input
 {
     MSIDATABASE *db;
     const WCHAR *command;
-    DWORD n, len;
-    UINT r;
+    unsigned n, len;
+    unsigned r;
     MSIVIEW **view;  /* View structure for the resulting query.  This value
                       * tracks the view currently being created so we can free
                       * this view on syntax error.
@@ -53,7 +53,7 @@ typedef struct tag_SQL_input
     struct list *mem;
 } SQL_input;
 
-static UINT SQL_getstring( void *info, const struct sql_str *strdata, WCHAR **str );
+static unsigned SQL_getstring( void *info, const struct sql_str *strdata, WCHAR **str );
 static INT SQL_getint( void *info );
 static int sql_lex( void *SQL_lval, SQL_input *info );
 
@@ -63,8 +63,8 @@ static column_info *parser_alloc_column( void *info, const WCHAR *table, const W
 
 static BOOL SQL_MarkPrimaryKeys( column_info **cols, column_info *keys);
 
-static struct expr * EXPR_complex( void *info, struct expr *l, UINT op, struct expr *r );
-static struct expr * EXPR_unary( void *info, struct expr *l, UINT op );
+static struct expr * EXPR_complex( void *info, struct expr *l, unsigned op, struct expr *r );
+static struct expr * EXPR_unary( void *info, struct expr *l, unsigned op );
 static struct expr * EXPR_column( void *info, const column_info *column );
 static struct expr * EXPR_ival( void *info, int val );
 static struct expr * EXPR_sval( void *info, const struct sql_str *str );
@@ -86,7 +86,7 @@ static struct expr * EXPR_wildcard( void *info );
     column_info *column_list;
     MSIVIEW *query;
     struct expr *expr;
-    USHORT column_type;
+    uint16_t column_type;
     int integer;
 }
 
@@ -176,7 +176,7 @@ onecreate:
         {
             SQL_input* sql = (SQL_input*) info;
             MSIVIEW *create = NULL;
-            UINT r;
+            unsigned r;
 
             if( !$5 )
                 YYABORT;
@@ -295,7 +295,7 @@ onedrop:
         {
             SQL_input* sql = (SQL_input*) info;
             MSIVIEW* drop = NULL;
-            UINT r;
+            unsigned r;
 
             r = DROP_CreateView( sql->db, &drop, $3 );
             if( r != ERROR_SUCCESS || !$$ )
@@ -416,7 +416,7 @@ oneselect:
         {
             SQL_input* sql = (SQL_input*) info;
             MSIVIEW* distinct = NULL;
-            UINT r;
+            unsigned r;
 
             r = DISTINCT_CreateView( sql->db, &distinct, $3 );
             if (r != ERROR_SUCCESS)
@@ -431,7 +431,7 @@ selectfrom:
         {
             SQL_input* sql = (SQL_input*) info;
             MSIVIEW* select = NULL;
-            UINT r;
+            unsigned r;
 
             if( $1 )
             {
@@ -475,7 +475,7 @@ from:
         {
             SQL_input* sql = (SQL_input*) info;
             MSIVIEW* table = NULL;
-            UINT r;
+            unsigned r;
 
             r = TABLE_CreateView( sql->db, $2, &table );
             if( r != ERROR_SUCCESS || !$$ )
@@ -485,7 +485,7 @@ from:
         }
   | unorderdfrom TK_ORDER TK_BY collist
         {
-            UINT r;
+            unsigned r;
 
             if( $4 )
             {
@@ -504,7 +504,7 @@ unorderdfrom:
         {
             SQL_input* sql = (SQL_input*) info;
             MSIVIEW* where = NULL;
-            UINT r;
+            unsigned r;
 
             r = WHERE_CreateView( sql->db, &where, $2, NULL );
             if( r != ERROR_SUCCESS )
@@ -516,7 +516,7 @@ unorderdfrom:
         {
             SQL_input* sql = (SQL_input*) info;
             MSIVIEW* where = NULL;
-            UINT r;
+            unsigned r;
 
             r = WHERE_CreateView( sql->db, &where, $2, $4 );
             if( r != ERROR_SUCCESS )
@@ -755,7 +755,7 @@ number:
 static WCHAR *parser_add_table( void *info, const WCHAR *list, const WCHAR *table )
 {
     static const WCHAR space[] = {' ',0};
-    DWORD len = strlenW( list ) + strlenW( table ) + 2;
+    unsigned len = strlenW( list ) + strlenW( table ) + 2;
     WCHAR *ret;
 
     ret = parser_alloc( info, len * sizeof(WCHAR) );
@@ -821,10 +821,10 @@ static int sql_lex( void *SQL_lval, SQL_input *sql )
     return token;
 }
 
-UINT SQL_getstring( void *info, const struct sql_str *strdata, WCHAR **str )
+unsigned SQL_getstring( void *info, const struct sql_str *strdata, WCHAR **str )
 {
     const WCHAR *p = strdata->data;
-    UINT len = strdata->len;
+    unsigned len = strdata->len;
 
     /* match quotes */
     if( ( (p[0]=='`') && (p[len-1]!='`') ) ||
@@ -881,7 +881,7 @@ static struct expr * EXPR_wildcard( void *info )
     return e;
 }
 
-static struct expr * EXPR_complex( void *info, struct expr *l, UINT op, struct expr *r )
+static struct expr * EXPR_complex( void *info, struct expr *l, unsigned op, struct expr *r )
 {
     struct expr *e = parser_alloc( info, sizeof *e );
     if( e )
@@ -894,7 +894,7 @@ static struct expr * EXPR_complex( void *info, struct expr *l, UINT op, struct e
     return e;
 }
 
-static struct expr * EXPR_unary( void *info, struct expr *l, UINT op )
+static struct expr * EXPR_unary( void *info, struct expr *l, unsigned op )
 {
     struct expr *e = parser_alloc( info, sizeof *e );
     if( e )
@@ -998,7 +998,7 @@ static BOOL SQL_MarkPrimaryKeys( column_info **cols,
     return found;
 }
 
-UINT MSI_ParseSQL( MSIDATABASE *db, const WCHAR *command, MSIVIEW **phview,
+unsigned MSI_ParseSQL( MSIDATABASE *db, const WCHAR *command, MSIVIEW **phview,
                    struct list *mem )
 {
     SQL_input sql;

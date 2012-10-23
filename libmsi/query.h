@@ -59,12 +59,12 @@
 
 struct sql_str {
     const WCHAR *data;
-    INT len;
+    int len;
 };
 
 struct complex_expr
 {
-    UINT op;
+    unsigned op;
     struct expr *left;
     struct expr *right;
 };
@@ -79,7 +79,7 @@ union ext_column
     } unparsed;
     struct
     {
-        UINT column;
+        unsigned column;
         struct tagJOINTABLE *table;
     } parsed;
 };
@@ -90,53 +90,53 @@ struct expr
     union
     {
         struct complex_expr expr;
-        INT   ival;
-        UINT  uval;
+        int   ival;
+        unsigned  uval;
         const WCHAR *sval;
         union ext_column column;
     } u;
 };
 
-UINT MSI_ParseSQL( MSIDATABASE *db, const WCHAR *command, MSIVIEW **phview,
+unsigned MSI_ParseSQL( MSIDATABASE *db, const WCHAR *command, MSIVIEW **phview,
                    struct list *mem );
 
-UINT TABLE_CreateView( MSIDATABASE *db, const WCHAR *name, MSIVIEW **view );
+unsigned TABLE_CreateView( MSIDATABASE *db, const WCHAR *name, MSIVIEW **view );
 
-UINT SELECT_CreateView( MSIDATABASE *db, MSIVIEW **view, MSIVIEW *table,
+unsigned SELECT_CreateView( MSIDATABASE *db, MSIVIEW **view, MSIVIEW *table,
                         const column_info *columns );
 
-UINT DISTINCT_CreateView( MSIDATABASE *db, MSIVIEW **view, MSIVIEW *table );
+unsigned DISTINCT_CreateView( MSIDATABASE *db, MSIVIEW **view, MSIVIEW *table );
 
-UINT ORDER_CreateView( MSIDATABASE *db, MSIVIEW **view, MSIVIEW *table,
+unsigned ORDER_CreateView( MSIDATABASE *db, MSIVIEW **view, MSIVIEW *table,
                        column_info *columns );
 
-UINT WHERE_CreateView( MSIDATABASE *db, MSIVIEW **view, WCHAR *tables,
+unsigned WHERE_CreateView( MSIDATABASE *db, MSIVIEW **view, WCHAR *tables,
                        struct expr *cond );
 
-UINT CREATE_CreateView( MSIDATABASE *db, MSIVIEW **view, const WCHAR *table,
+unsigned CREATE_CreateView( MSIDATABASE *db, MSIVIEW **view, const WCHAR *table,
                         column_info *col_info, BOOL hold );
 
-UINT INSERT_CreateView( MSIDATABASE *db, MSIVIEW **view, const WCHAR *table,
+unsigned INSERT_CreateView( MSIDATABASE *db, MSIVIEW **view, const WCHAR *table,
                         column_info *columns, column_info *values, BOOL temp );
 
-UINT UPDATE_CreateView( MSIDATABASE *db, MSIVIEW **view, WCHAR *table,
+unsigned UPDATE_CreateView( MSIDATABASE *db, MSIVIEW **view, WCHAR *table,
                         column_info *list, struct expr *expr );
 
-UINT DELETE_CreateView( MSIDATABASE *db, MSIVIEW **view, MSIVIEW *table );
+unsigned DELETE_CreateView( MSIDATABASE *db, MSIVIEW **view, MSIVIEW *table );
 
-UINT ALTER_CreateView( MSIDATABASE *db, MSIVIEW **view, const WCHAR *name, column_info *colinfo, int hold );
+unsigned ALTER_CreateView( MSIDATABASE *db, MSIVIEW **view, const WCHAR *name, column_info *colinfo, int hold );
 
-UINT STREAMS_CreateView( MSIDATABASE *db, MSIVIEW **view );
+unsigned STREAMS_CreateView( MSIDATABASE *db, MSIVIEW **view );
 
-UINT STORAGES_CreateView( MSIDATABASE *db, MSIVIEW **view );
+unsigned STORAGES_CreateView( MSIDATABASE *db, MSIVIEW **view );
 
-UINT DROP_CreateView( MSIDATABASE *db, MSIVIEW **view, const WCHAR *name );
+unsigned DROP_CreateView( MSIDATABASE *db, MSIVIEW **view, const WCHAR *name );
 
 int sqliteGetToken(const WCHAR *z, int *tokenType, int *skip);
 
-MSIRECORD *msi_query_merge_record( UINT fields, const column_info *vl, MSIRECORD *rec );
+MSIRECORD *msi_query_merge_record( unsigned fields, const column_info *vl, MSIRECORD *rec );
 
-UINT msi_create_table( MSIDATABASE *db, const WCHAR *name, column_info *col_info,
+unsigned msi_create_table( MSIDATABASE *db, const WCHAR *name, column_info *col_info,
                        MSICONDITION persistent );
 
 #pragma GCC visibility pop

@@ -41,12 +41,12 @@ typedef struct tagMSISELECTVIEW
     MSIVIEW        view;
     MSIDATABASE   *db;
     MSIVIEW       *table;
-    UINT           num_cols;
-    UINT           max_cols;
-    UINT           cols[1];
+    unsigned           num_cols;
+    unsigned           max_cols;
+    unsigned           cols[1];
 } MSISELECTVIEW;
 
-static UINT SELECT_fetch_int( MSIVIEW *view, UINT row, UINT col, UINT *val )
+static unsigned SELECT_fetch_int( MSIVIEW *view, unsigned row, unsigned col, unsigned *val )
 {
     MSISELECTVIEW *sv = (MSISELECTVIEW*)view;
 
@@ -67,7 +67,7 @@ static UINT SELECT_fetch_int( MSIVIEW *view, UINT row, UINT col, UINT *val )
     return sv->table->ops->fetch_int( sv->table, row, col, val );
 }
 
-static UINT SELECT_fetch_stream( MSIVIEW *view, UINT row, UINT col, IStream **stm)
+static unsigned SELECT_fetch_stream( MSIVIEW *view, unsigned row, unsigned col, IStream **stm)
 {
     MSISELECTVIEW *sv = (MSISELECTVIEW*)view;
 
@@ -88,7 +88,7 @@ static UINT SELECT_fetch_stream( MSIVIEW *view, UINT row, UINT col, IStream **st
     return sv->table->ops->fetch_stream( sv->table, row, col, stm );
 }
 
-static UINT SELECT_get_row( MSIVIEW *view, UINT row, MSIRECORD **rec )
+static unsigned SELECT_get_row( MSIVIEW *view, unsigned row, MSIRECORD **rec )
 {
     MSISELECTVIEW *sv = (MSISELECTVIEW *)view;
 
@@ -100,10 +100,10 @@ static UINT SELECT_get_row( MSIVIEW *view, UINT row, MSIRECORD **rec )
     return msi_view_get_row(sv->db, view, row, rec);
 }
 
-static UINT SELECT_set_row( MSIVIEW *view, UINT row, MSIRECORD *rec, UINT mask )
+static unsigned SELECT_set_row( MSIVIEW *view, unsigned row, MSIRECORD *rec, unsigned mask )
 {
     MSISELECTVIEW *sv = (MSISELECTVIEW*)view;
-    UINT i, expanded_mask = 0, r = ERROR_SUCCESS, col_count = 0;
+    unsigned i, expanded_mask = 0, r = ERROR_SUCCESS, col_count = 0;
     MSIRECORD *expanded;
 
     TRACE("%p %d %p %08x\n", sv, row, rec, mask );
@@ -142,10 +142,10 @@ static UINT SELECT_set_row( MSIVIEW *view, UINT row, MSIRECORD *rec, UINT mask )
     return r;
 }
 
-static UINT SELECT_insert_row( MSIVIEW *view, MSIRECORD *record, UINT row, BOOL temporary )
+static unsigned SELECT_insert_row( MSIVIEW *view, MSIRECORD *record, unsigned row, BOOL temporary )
 {
     MSISELECTVIEW *sv = (MSISELECTVIEW*)view;
-    UINT i, table_cols, r;
+    unsigned i, table_cols, r;
     MSIRECORD *outrec;
 
     TRACE("%p %p\n", sv, record );
@@ -175,7 +175,7 @@ fail:
     return r;
 }
 
-static UINT SELECT_execute( MSIVIEW *view, MSIRECORD *record )
+static unsigned SELECT_execute( MSIVIEW *view, MSIRECORD *record )
 {
     MSISELECTVIEW *sv = (MSISELECTVIEW*)view;
 
@@ -187,7 +187,7 @@ static UINT SELECT_execute( MSIVIEW *view, MSIRECORD *record )
     return sv->table->ops->execute( sv->table, record );
 }
 
-static UINT SELECT_close( MSIVIEW *view )
+static unsigned SELECT_close( MSIVIEW *view )
 {
     MSISELECTVIEW *sv = (MSISELECTVIEW*)view;
 
@@ -199,7 +199,7 @@ static UINT SELECT_close( MSIVIEW *view )
     return sv->table->ops->close( sv->table );
 }
 
-static UINT SELECT_get_dimensions( MSIVIEW *view, UINT *rows, UINT *cols )
+static unsigned SELECT_get_dimensions( MSIVIEW *view, unsigned *rows, unsigned *cols )
 {
     MSISELECTVIEW *sv = (MSISELECTVIEW*)view;
 
@@ -214,8 +214,8 @@ static UINT SELECT_get_dimensions( MSIVIEW *view, UINT *rows, UINT *cols )
     return sv->table->ops->get_dimensions( sv->table, rows, NULL );
 }
 
-static UINT SELECT_get_column_info( MSIVIEW *view, UINT n, const WCHAR **name,
-                                    UINT *type, BOOL *temporary, const WCHAR **table_name )
+static unsigned SELECT_get_column_info( MSIVIEW *view, unsigned n, const WCHAR **name,
+                                    unsigned *type, BOOL *temporary, const WCHAR **table_name )
 {
     MSISELECTVIEW *sv = (MSISELECTVIEW*)view;
 
@@ -240,10 +240,10 @@ static UINT SELECT_get_column_info( MSIVIEW *view, UINT n, const WCHAR **name,
                                             type, temporary, table_name );
 }
 
-static UINT msi_select_update(MSIVIEW *view, MSIRECORD *rec, UINT row)
+static unsigned msi_select_update(MSIVIEW *view, MSIRECORD *rec, unsigned row)
 {
     MSISELECTVIEW *sv = (MSISELECTVIEW*)view;
-    UINT r, i, num_columns, col, type, val;
+    unsigned r, i, num_columns, col, type, val;
     const WCHAR *str;
     MSIRECORD *mod;
 
@@ -297,8 +297,8 @@ done:
     return r;
 }
 
-static UINT SELECT_modify( MSIVIEW *view, MSIMODIFY eModifyMode,
-                           MSIRECORD *rec, UINT row )
+static unsigned SELECT_modify( MSIVIEW *view, MSIMODIFY eModifyMode,
+                           MSIRECORD *rec, unsigned row )
 {
     MSISELECTVIEW *sv = (MSISELECTVIEW*)view;
 
@@ -313,7 +313,7 @@ static UINT SELECT_modify( MSIVIEW *view, MSIMODIFY eModifyMode,
     return sv->table->ops->modify( sv->table, eModifyMode, rec, row );
 }
 
-static UINT SELECT_delete( MSIVIEW *view )
+static unsigned SELECT_delete( MSIVIEW *view )
 {
     MSISELECTVIEW *sv = (MSISELECTVIEW*)view;
 
@@ -328,8 +328,8 @@ static UINT SELECT_delete( MSIVIEW *view )
     return ERROR_SUCCESS;
 }
 
-static UINT SELECT_find_matching_rows( MSIVIEW *view, UINT col,
-    UINT val, UINT *row, MSIITERHANDLE *handle )
+static unsigned SELECT_find_matching_rows( MSIVIEW *view, unsigned col,
+    unsigned val, unsigned *row, MSIITERHANDLE *handle )
 {
     MSISELECTVIEW *sv = (MSISELECTVIEW*)view;
 
@@ -370,10 +370,10 @@ static const MSIVIEWOPS select_ops =
     NULL,
 };
 
-static UINT SELECT_AddColumn( MSISELECTVIEW *sv, const WCHAR *name,
+static unsigned SELECT_AddColumn( MSISELECTVIEW *sv, const WCHAR *name,
                               const WCHAR *table_name )
 {
-    UINT r, n;
+    unsigned r, n;
     MSIVIEW *table;
 
     TRACE("%p adding %s.%s\n", sv, debugstr_w( table_name ),
@@ -418,17 +418,17 @@ static int select_count_columns( const column_info *col )
     return n;
 }
 
-UINT SELECT_CreateView( MSIDATABASE *db, MSIVIEW **view, MSIVIEW *table,
+unsigned SELECT_CreateView( MSIDATABASE *db, MSIVIEW **view, MSIVIEW *table,
                         const column_info *columns )
 {
     MSISELECTVIEW *sv = NULL;
-    UINT count = 0, r = ERROR_SUCCESS;
+    unsigned count = 0, r = ERROR_SUCCESS;
 
     TRACE("%p\n", sv );
 
     count = select_count_columns( columns );
 
-    sv = msi_alloc_zero( sizeof *sv + count*sizeof (UINT) );
+    sv = msi_alloc_zero( sizeof *sv + count*sizeof (unsigned) );
     if( !sv )
         return ERROR_FUNCTION_FAILED;
     

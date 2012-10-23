@@ -47,7 +47,7 @@ typedef struct tagMSIINSERTVIEW
     column_info     *vals;
 } MSIINSERTVIEW;
 
-static UINT INSERT_fetch_int( MSIVIEW *view, UINT row, UINT col, UINT *val )
+static unsigned INSERT_fetch_int( MSIVIEW *view, unsigned row, unsigned col, unsigned *val )
 {
     MSIINSERTVIEW *iv = (MSIINSERTVIEW*)view;
 
@@ -62,10 +62,10 @@ static UINT INSERT_fetch_int( MSIVIEW *view, UINT row, UINT col, UINT *val )
  * Merge a value_list and a record to create a second record.
  * Replace wildcard entries in the valuelist with values from the record
  */
-MSIRECORD *msi_query_merge_record( UINT fields, const column_info *vl, MSIRECORD *rec )
+MSIRECORD *msi_query_merge_record( unsigned fields, const column_info *vl, MSIRECORD *rec )
 {
     MSIRECORD *merged;
-    DWORD wildcard_count = 1, i;
+    unsigned wildcard_count = 1, i;
 
     merged = MSI_CreateRecord( fields );
     for( i=1; i <= fields; i++ )
@@ -105,11 +105,11 @@ err:
 /* checks to see if the column order specified in the INSERT query
  * matches the column order of the table
  */
-static BOOL msi_columns_in_order(MSIINSERTVIEW *iv, UINT col_count)
+static BOOL msi_columns_in_order(MSIINSERTVIEW *iv, unsigned col_count)
 {
     const WCHAR *a;
     const WCHAR *b;
-    UINT i;
+    unsigned i;
 
     for (i = 1; i <= col_count; i++)
     {
@@ -124,11 +124,11 @@ static BOOL msi_columns_in_order(MSIINSERTVIEW *iv, UINT col_count)
 /* rearranges the data in the record to be inserted based on column order,
  * and pads the record for any missing columns in the INSERT query
  */
-static UINT msi_arrange_record(MSIINSERTVIEW *iv, MSIRECORD **values)
+static unsigned msi_arrange_record(MSIINSERTVIEW *iv, MSIRECORD **values)
 {
     MSIRECORD *padded;
-    UINT col_count, val_count;
-    UINT r, i, colidx;
+    unsigned col_count, val_count;
+    unsigned r, i, colidx;
     const WCHAR *a;
     const WCHAR *b;
 
@@ -179,7 +179,7 @@ err:
 
 static BOOL row_has_null_primary_keys(MSIINSERTVIEW *iv, MSIRECORD *row)
 {
-    UINT r, i, col_count, type;
+    unsigned r, i, col_count, type;
 
     r = iv->table->ops->get_dimensions( iv->table, NULL, &col_count );
     if (r != ERROR_SUCCESS)
@@ -202,10 +202,10 @@ static BOOL row_has_null_primary_keys(MSIINSERTVIEW *iv, MSIRECORD *row)
     return FALSE;
 }
 
-static UINT INSERT_execute( MSIVIEW *view, MSIRECORD *record )
+static unsigned INSERT_execute( MSIVIEW *view, MSIRECORD *record )
 {
     MSIINSERTVIEW *iv = (MSIINSERTVIEW*)view;
-    UINT r, row = -1, col_count = 0;
+    unsigned r, row = -1, col_count = 0;
     MSIVIEW *sv;
     MSIRECORD *values = NULL;
 
@@ -250,7 +250,7 @@ err:
 }
 
 
-static UINT INSERT_close( MSIVIEW *view )
+static unsigned INSERT_close( MSIVIEW *view )
 {
     MSIINSERTVIEW *iv = (MSIINSERTVIEW*)view;
     MSIVIEW *sv;
@@ -264,7 +264,7 @@ static UINT INSERT_close( MSIVIEW *view )
     return sv->ops->close( sv );
 }
 
-static UINT INSERT_get_dimensions( MSIVIEW *view, UINT *rows, UINT *cols )
+static unsigned INSERT_get_dimensions( MSIVIEW *view, unsigned *rows, unsigned *cols )
 {
     MSIINSERTVIEW *iv = (MSIINSERTVIEW*)view;
     MSIVIEW *sv;
@@ -278,8 +278,8 @@ static UINT INSERT_get_dimensions( MSIVIEW *view, UINT *rows, UINT *cols )
     return sv->ops->get_dimensions( sv, rows, cols );
 }
 
-static UINT INSERT_get_column_info( MSIVIEW *view, UINT n, const WCHAR **name,
-                                    UINT *type, BOOL *temporary, const WCHAR **table_name )
+static unsigned INSERT_get_column_info( MSIVIEW *view, unsigned n, const WCHAR **name,
+                                    unsigned *type, BOOL *temporary, const WCHAR **table_name )
 {
     MSIINSERTVIEW *iv = (MSIINSERTVIEW*)view;
     MSIVIEW *sv;
@@ -293,7 +293,7 @@ static UINT INSERT_get_column_info( MSIVIEW *view, UINT n, const WCHAR **name,
     return sv->ops->get_column_info( sv, n, name, type, temporary, table_name );
 }
 
-static UINT INSERT_modify( MSIVIEW *view, MSIMODIFY eModifyMode, MSIRECORD *rec, UINT row)
+static unsigned INSERT_modify( MSIVIEW *view, MSIMODIFY eModifyMode, MSIRECORD *rec, unsigned row)
 {
     MSIINSERTVIEW *iv = (MSIINSERTVIEW*)view;
 
@@ -302,7 +302,7 @@ static UINT INSERT_modify( MSIVIEW *view, MSIMODIFY eModifyMode, MSIRECORD *rec,
     return ERROR_FUNCTION_FAILED;
 }
 
-static UINT INSERT_delete( MSIVIEW *view )
+static unsigned INSERT_delete( MSIVIEW *view )
 {
     MSIINSERTVIEW *iv = (MSIINSERTVIEW*)view;
     MSIVIEW *sv;
@@ -318,8 +318,8 @@ static UINT INSERT_delete( MSIVIEW *view )
     return ERROR_SUCCESS;
 }
 
-static UINT INSERT_find_matching_rows( MSIVIEW *view, UINT col,
-    UINT val, UINT *row, MSIITERHANDLE *handle )
+static unsigned INSERT_find_matching_rows( MSIVIEW *view, unsigned col,
+    unsigned val, unsigned *row, MSIITERHANDLE *handle )
 {
     TRACE("%p, %d, %u, %p\n", view, col, val, *handle);
 
@@ -350,19 +350,19 @@ static const MSIVIEWOPS insert_ops =
     NULL,
 };
 
-static UINT count_column_info( const column_info *ci )
+static unsigned count_column_info( const column_info *ci )
 {
-    UINT n = 0;
+    unsigned n = 0;
     for ( ; ci; ci = ci->next )
         n++;
     return n;
 }
 
-UINT INSERT_CreateView( MSIDATABASE *db, MSIVIEW **view, const WCHAR *table,
+unsigned INSERT_CreateView( MSIDATABASE *db, MSIVIEW **view, const WCHAR *table,
                         column_info *columns, column_info *values, BOOL temp )
 {
     MSIINSERTVIEW *iv = NULL;
-    UINT r;
+    unsigned r;
     MSIVIEW *tv = NULL, *sv = NULL;
 
     TRACE("%p\n", iv );

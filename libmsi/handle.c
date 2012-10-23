@@ -37,11 +37,11 @@ static CRITICAL_SECTION_DEBUG MSI_object_cs_debug =
     0, 0, &MSI_object_cs,
     { &MSI_object_cs_debug.ProcessLocksList, 
       &MSI_object_cs_debug.ProcessLocksList },
-      0, 0, { (DWORD_PTR)(__FILE__ ": MSI_object_cs") }
+      0, 0, { (uintptr_t)(__FILE__ ": MSI_object_cs") }
 };
 static CRITICAL_SECTION MSI_object_cs = { &MSI_object_cs_debug, -1, 0, 0, 0, 0 };
 
-void *msihandle2msiinfo(MSIOBJECT *obj, UINT type)
+void *msihandle2msiinfo(MSIOBJECT *obj, unsigned type)
 {
     if( !obj )
         return NULL;
@@ -52,7 +52,7 @@ void *msihandle2msiinfo(MSIOBJECT *obj, UINT type)
     return obj;
 }
 
-void *alloc_msiobject(UINT type, UINT size, msihandledestructor destroy )
+void *alloc_msiobject(unsigned type, unsigned size, msihandledestructor destroy )
 {
     MSIOBJECT *info;
 
@@ -107,7 +107,7 @@ int msiobj_release( MSIOBJECT *obj )
 /***********************************************************
  *   MsiCloseHandle   [MSI.@]
  */
-UINT MsiCloseHandle(MSIOBJECT *obj)
+unsigned MsiCloseHandle(MSIOBJECT *obj)
 {
     TRACE("%x\n",obj);
 

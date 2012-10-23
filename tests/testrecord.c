@@ -27,9 +27,9 @@ static const char *msifile = "winetest-record.msi";
 
 static BOOL create_temp_file(char *name)
 {
-    UINT r;
+    unsigned r;
     unsigned char buffer[26], i;
-    DWORD sz;
+    unsigned sz;
     HANDLE handle;
     
     r = GetTempFileName(".", "msitest",0,name);
@@ -48,8 +48,8 @@ static BOOL create_temp_file(char *name)
 
 static void test_msirecord(void)
 {
-    DWORD r, sz;
-    INT i;
+    unsigned r, sz;
+    int i;
     MSIOBJECT *h;
     char buf[10];
     WCHAR bufW[10];
@@ -109,7 +109,7 @@ static void test_msirecord(void)
     r = MsiRecordIsNull(h,0);
     ok(r==0, "new record is null after setting an integer\n");
     r = MsiRecordDataSize(h,0);
-    ok(r==sizeof(DWORD), "size of integer record is 4\n");
+    ok(r==sizeof(unsigned), "size of integer record is 4\n");
     r = MsiRecordSetInteger(h, 0, 1);
     ok(r == ERROR_SUCCESS, "Failed to set integer at 0 to 1\n");
     r = MsiRecordSetInteger(h, 1, 1);
@@ -385,8 +385,8 @@ static void test_MsiRecordGetString(void)
 {
     MSIOBJECT *rec;
     CHAR buf[MAX_PATH];
-    DWORD sz;
-    UINT r;
+    unsigned sz;
+    unsigned r;
 
     rec = MsiCreateRecord(2);
     ok(rec != 0, "Expected a valid handle\n");
@@ -446,8 +446,8 @@ static void test_MsiRecordGetString(void)
 static void test_MsiRecordGetInteger(void)
 {
     MSIOBJECT *rec;
-    INT val;
-    UINT r;
+    int val;
+    unsigned r;
 
     rec = MsiCreateRecord(1);
     ok(rec != 0, "Expected a valid handle\n");
@@ -480,8 +480,8 @@ static void test_fieldzero(void)
     MSIOBJECT *rec;
     CHAR buf[MAX_PATH];
     const CHAR *query;
-    DWORD sz;
-    UINT r;
+    unsigned sz;
+    unsigned r;
 
     rec = MsiCreateRecord(1);
     ok(rec != 0, "Expected a valid handle\n");

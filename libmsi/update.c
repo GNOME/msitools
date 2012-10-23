@@ -44,7 +44,7 @@ typedef struct tagMSIUPDATEVIEW
     column_info     *vals;
 } MSIUPDATEVIEW;
 
-static UINT UPDATE_fetch_int( MSIVIEW *view, UINT row, UINT col, UINT *val )
+static unsigned UPDATE_fetch_int( MSIVIEW *view, unsigned row, unsigned col, unsigned *val )
 {
     MSIUPDATEVIEW *uv = (MSIUPDATEVIEW*)view;
 
@@ -53,14 +53,14 @@ static UINT UPDATE_fetch_int( MSIVIEW *view, UINT row, UINT col, UINT *val )
     return ERROR_FUNCTION_FAILED;
 }
 
-static UINT UPDATE_execute( MSIVIEW *view, MSIRECORD *record )
+static unsigned UPDATE_execute( MSIVIEW *view, MSIRECORD *record )
 {
     MSIUPDATEVIEW *uv = (MSIUPDATEVIEW*)view;
-    UINT i, r, col_count = 0, row_count = 0;
+    unsigned i, r, col_count = 0, row_count = 0;
     MSIRECORD *values = NULL;
     MSIRECORD *where = NULL;
     MSIVIEW *wv;
-    UINT cols_count, where_count;
+    unsigned cols_count, where_count;
     column_info *col = uv->vals;
 
     TRACE("%p %p\n", uv, record );
@@ -124,7 +124,7 @@ done:
 }
 
 
-static UINT UPDATE_close( MSIVIEW *view )
+static unsigned UPDATE_close( MSIVIEW *view )
 {
     MSIUPDATEVIEW *uv = (MSIUPDATEVIEW*)view;
     MSIVIEW *wv;
@@ -138,7 +138,7 @@ static UINT UPDATE_close( MSIVIEW *view )
     return wv->ops->close( wv );
 }
 
-static UINT UPDATE_get_dimensions( MSIVIEW *view, UINT *rows, UINT *cols )
+static unsigned UPDATE_get_dimensions( MSIVIEW *view, unsigned *rows, unsigned *cols )
 {
     MSIUPDATEVIEW *uv = (MSIUPDATEVIEW*)view;
     MSIVIEW *wv;
@@ -152,8 +152,8 @@ static UINT UPDATE_get_dimensions( MSIVIEW *view, UINT *rows, UINT *cols )
     return wv->ops->get_dimensions( wv, rows, cols );
 }
 
-static UINT UPDATE_get_column_info( MSIVIEW *view, UINT n, const WCHAR **name,
-                                    UINT *type, BOOL *temporary, const WCHAR **table_name )
+static unsigned UPDATE_get_column_info( MSIVIEW *view, unsigned n, const WCHAR **name,
+                                    unsigned *type, BOOL *temporary, const WCHAR **table_name )
 {
     MSIUPDATEVIEW *uv = (MSIUPDATEVIEW*)view;
     MSIVIEW *wv;
@@ -167,8 +167,8 @@ static UINT UPDATE_get_column_info( MSIVIEW *view, UINT n, const WCHAR **name,
     return wv->ops->get_column_info( wv, n, name, type, temporary, table_name );
 }
 
-static UINT UPDATE_modify( MSIVIEW *view, MSIMODIFY eModifyMode,
-                           MSIRECORD *rec, UINT row )
+static unsigned UPDATE_modify( MSIVIEW *view, MSIMODIFY eModifyMode,
+                           MSIRECORD *rec, unsigned row )
 {
     MSIUPDATEVIEW *uv = (MSIUPDATEVIEW*)view;
 
@@ -177,7 +177,7 @@ static UINT UPDATE_modify( MSIVIEW *view, MSIMODIFY eModifyMode,
     return ERROR_FUNCTION_FAILED;
 }
 
-static UINT UPDATE_delete( MSIVIEW *view )
+static unsigned UPDATE_delete( MSIVIEW *view )
 {
     MSIUPDATEVIEW *uv = (MSIUPDATEVIEW*)view;
     MSIVIEW *wv;
@@ -193,7 +193,7 @@ static UINT UPDATE_delete( MSIVIEW *view )
     return ERROR_SUCCESS;
 }
 
-static UINT UPDATE_find_matching_rows( MSIVIEW *view, UINT col, UINT val, UINT *row, MSIITERHANDLE *handle )
+static unsigned UPDATE_find_matching_rows( MSIVIEW *view, unsigned col, unsigned val, unsigned *row, MSIITERHANDLE *handle )
 {
     TRACE("%p %d %d %p\n", view, col, val, *handle );
 
@@ -223,11 +223,11 @@ static const MSIVIEWOPS update_ops =
     NULL,
 };
 
-UINT UPDATE_CreateView( MSIDATABASE *db, MSIVIEW **view, WCHAR *table,
+unsigned UPDATE_CreateView( MSIDATABASE *db, MSIVIEW **view, WCHAR *table,
                         column_info *columns, struct expr *expr )
 {
     MSIUPDATEVIEW *uv = NULL;
-    UINT r;
+    unsigned r;
     MSIVIEW *sv = NULL, *wv = NULL;
 
     TRACE("%p\n", uv );
