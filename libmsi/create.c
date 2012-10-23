@@ -41,7 +41,7 @@ typedef struct tagMSICREATEVIEW
 {
     MSIVIEW          view;
     MSIDATABASE     *db;
-    LPCWSTR          name;
+    const WCHAR *         name;
     BOOL             bIsTemp;
     BOOL             hold;
     column_info     *col_info;
@@ -88,8 +88,8 @@ static UINT CREATE_get_dimensions( struct tagMSIVIEW *view, UINT *rows, UINT *co
     return ERROR_FUNCTION_FAILED;
 }
 
-static UINT CREATE_get_column_info( struct tagMSIVIEW *view, UINT n, LPCWSTR *name,
-                                    UINT *type, BOOL *temporary, LPCWSTR *table_name )
+static UINT CREATE_get_column_info( struct tagMSIVIEW *view, UINT n, const WCHAR **name,
+                                    UINT *type, BOOL *temporary, const WCHAR **table_name )
 {
     MSICREATEVIEW *cv = (MSICREATEVIEW*)view;
 
@@ -156,7 +156,7 @@ static UINT check_columns( const column_info *col_info )
     return ERROR_SUCCESS;
 }
 
-UINT CREATE_CreateView( MSIDATABASE *db, MSIVIEW **view, LPCWSTR table,
+UINT CREATE_CreateView( MSIDATABASE *db, MSIVIEW **view, const WCHAR *table,
                         column_info *col_info, BOOL hold )
 {
     MSICREATEVIEW *cv = NULL;

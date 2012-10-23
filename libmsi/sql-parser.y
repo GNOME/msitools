@@ -43,7 +43,7 @@ static int sql_error(const char *str);
 typedef struct tag_SQL_input
 {
     MSIDATABASE *db;
-    LPCWSTR command;
+    const WCHAR *command;
     DWORD n, len;
     UINT r;
     MSIVIEW **view;  /* View structure for the resulting query.  This value
@@ -53,13 +53,13 @@ typedef struct tag_SQL_input
     struct list *mem;
 } SQL_input;
 
-static UINT SQL_getstring( void *info, const struct sql_str *strdata, LPWSTR *str );
+static UINT SQL_getstring( void *info, const struct sql_str *strdata, WCHAR **str );
 static INT SQL_getint( void *info );
 static int sql_lex( void *SQL_lval, SQL_input *info );
 
-static LPWSTR parser_add_table( void *info, LPCWSTR list, LPCWSTR table );
+static WCHAR *parser_add_table( void *info, const WCHAR *list, const WCHAR *table );
 static void *parser_alloc( void *info, unsigned int sz );
-static column_info *parser_alloc_column( void *info, LPCWSTR table, LPCWSTR column );
+static column_info *parser_alloc_column( void *info, const WCHAR *table, const WCHAR *column );
 
 static BOOL SQL_MarkPrimaryKeys( column_info **cols, column_info *keys);
 
@@ -82,7 +82,7 @@ static struct expr * EXPR_wildcard( void *info );
 %union
 {
     struct sql_str str;
-    LPWSTR string;
+    WCHAR *string;
     column_info *column_list;
     MSIVIEW *query;
     struct expr *expr;
@@ -752,11 +752,11 @@ number:
 
 %%
 
-static LPWSTR parser_add_table( void *info, LPCWSTR list, LPCWSTR table )
+static WCHAR *parser_add_table( void *info, const WCHAR *list, const WCHAR *table )
 {
     static const WCHAR space[] = {' ',0};
     DWORD len = strlenW( list ) + strlenW( table ) + 2;
-    LPWSTR ret;
+    WCHAR *ret;
 
     ret = parser_alloc( info, len * sizeof(WCHAR) );
     if( ret )
@@ -778,7 +778,7 @@ static void *parser_alloc( void *info, unsigned int sz )
     return &mem[1];
 }
 
-static column_info *parser_alloc_column( void *info, LPCWSTR table, LPCWSTR column )
+static column_info *parser_alloc_column( void *info, const WCHAR *table, const WCHAR *column )
 {
     column_info *col;
 
@@ -821,9 +821,9 @@ static int sql_lex( void *SQL_lval, SQL_input *sql )
     return token;
 }
 
-UINT SQL_getstring( void *info, const struct sql_str *strdata, LPWSTR *str )
+UINT SQL_getstring( void *info, const struct sql_str *strdata, WCHAR **str )
 {
-    LPCWSTR p = strdata->data;
+    const WCHAR *p = strdata->data;
     UINT len = strdata->len;
 
     /* match quotes */
@@ -850,7 +850,7 @@ UINT SQL_getstring( void *info, const struct sql_str *strdata, LPWSTR *str )
 INT SQL_getint( void *info )
 {
     SQL_input* sql = (SQL_input*) info;
-    LPCWSTR p = &sql->command[sql->n];
+    const WCHAR *p = &sql->command[sql->n];
     INT i, r = 0;
 
     for( i=0; i<sql->len; i++ )
@@ -936,7 +936,7 @@ static struct expr * EXPR_sval( void *info, const struct sql_str *str )
     if( e )
     {
         e->type = EXPR_SVAL;
-        if( SQL_getstring( info, str, (LPWSTR *)&e->u.sval ) != ERROR_SUCCESS )
+        if( SQL_getstring( info, str, (WCHAR **)&e->u.sval ) != ERROR_SUCCESS )
             return NULL; /* e will be freed by query destructor */
     }
     return e;
@@ -998,7 +998,7 @@ static BOOL SQL_MarkPrimaryKeys( column_info **cols,
     return found;
 }
 
-UINT MSI_ParseSQL( MSIDATABASE *db, LPCWSTR command, MSIVIEW **phview,
+UINT MSI_ParseSQL( MSIDATABASE *db, const WCHAR *command, MSIVIEW **phview,
                    struct list *mem )
 {
     SQL_input sql;

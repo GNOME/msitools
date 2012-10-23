@@ -152,8 +152,8 @@ static UINT UPDATE_get_dimensions( struct tagMSIVIEW *view, UINT *rows, UINT *co
     return wv->ops->get_dimensions( wv, rows, cols );
 }
 
-static UINT UPDATE_get_column_info( struct tagMSIVIEW *view, UINT n, LPCWSTR *name,
-                                    UINT *type, BOOL *temporary, LPCWSTR *table_name )
+static UINT UPDATE_get_column_info( struct tagMSIVIEW *view, UINT n, const WCHAR **name,
+                                    UINT *type, BOOL *temporary, const WCHAR **table_name )
 {
     MSIUPDATEVIEW *uv = (MSIUPDATEVIEW*)view;
     MSIVIEW *wv;
@@ -223,7 +223,7 @@ static const MSIVIEWOPS update_ops =
     NULL,
 };
 
-UINT UPDATE_CreateView( MSIDATABASE *db, MSIVIEW **view, LPWSTR table,
+UINT UPDATE_CreateView( MSIDATABASE *db, MSIVIEW **view, WCHAR *table,
                         column_info *columns, struct expr *expr )
 {
     MSIUPDATEVIEW *uv = NULL;

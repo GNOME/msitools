@@ -123,10 +123,10 @@ UINT WINAPI MsiRecordGetFieldCount( PMSIOBJECT handle )
     return ret;
 }
 
-static BOOL string2intW( LPCWSTR str, int *out )
+static BOOL string2intW( const WCHAR *str, int *out )
 {
     int x = 0;
-    LPCWSTR p = str;
+    const WCHAR *p = str;
 
     if( *p == '-' ) /* skip the minus sign */
         p++;
@@ -157,7 +157,7 @@ UINT MSI_RecordCopyField( MSIRECORD *in_rec, UINT in_n,
         r = ERROR_FUNCTION_FAILED;
     else if ( in_rec != out_rec || in_n != out_n )
     {
-        LPWSTR str;
+        WCHAR *str;
         MSIFIELD *in, *out;
 
         in = &in_rec->fields[in_n];
@@ -368,7 +368,7 @@ BOOL WINAPI MsiRecordIsNull( PMSIOBJECT handle, UINT iField )
 }
 
 UINT MSI_RecordGetStringA(MSIRECORD *rec, UINT iField,
-               LPSTR szValue, LPDWORD pcchValue)
+               CHAR *szValue, DWORD *pcchValue)
 {
     UINT len=0, ret;
     CHAR buffer[16];
@@ -421,7 +421,7 @@ UINT MSI_RecordGetStringA(MSIRECORD *rec, UINT iField,
 }
 
 UINT WINAPI MsiRecordGetStringA(PMSIOBJECT handle, UINT iField,
-               LPSTR szValue, LPDWORD pcchValue)
+               CHAR *szValue, DWORD *pcchValue)
 {
     MSIRECORD *rec;
     UINT ret;
@@ -450,7 +450,7 @@ const WCHAR *MSI_RecordGetString( const MSIRECORD *rec, UINT iField )
 }
 
 UINT MSI_RecordGetStringW(MSIRECORD *rec, UINT iField,
-               LPWSTR szValue, LPDWORD pcchValue)
+               WCHAR *szValue, DWORD *pcchValue)
 {
     UINT len=0, ret;
     WCHAR buffer[16];
@@ -497,7 +497,7 @@ UINT MSI_RecordGetStringW(MSIRECORD *rec, UINT iField,
 }
 
 UINT WINAPI MsiRecordGetStringW(PMSIOBJECT handle, UINT iField,
-               LPWSTR szValue, LPDWORD pcchValue)
+               WCHAR *szValue, DWORD *pcchValue)
 {
     MSIRECORD *rec;
     UINT ret;
@@ -564,9 +564,9 @@ UINT WINAPI MsiRecordDataSize(PMSIOBJECT handle, UINT iField)
     return ret;
 }
 
-static UINT MSI_RecordSetStringA( MSIRECORD *rec, UINT iField, LPCSTR szValue )
+static UINT MSI_RecordSetStringA( MSIRECORD *rec, UINT iField, const CHAR *szValue )
 {
-    LPWSTR str;
+    WCHAR *str;
 
     TRACE("%p %d %s\n", rec, iField, debugstr_a(szValue));
 
@@ -589,7 +589,7 @@ static UINT MSI_RecordSetStringA( MSIRECORD *rec, UINT iField, LPCSTR szValue )
     return 0;
 }
 
-UINT WINAPI MsiRecordSetStringA( PMSIOBJECT handle, UINT iField, LPCSTR szValue )
+UINT WINAPI MsiRecordSetStringA( PMSIOBJECT handle, UINT iField, const CHAR *szValue )
 {
     MSIRECORD *rec;
     UINT ret;
@@ -606,9 +606,9 @@ UINT WINAPI MsiRecordSetStringA( PMSIOBJECT handle, UINT iField, LPCSTR szValue 
     return ret;
 }
 
-UINT MSI_RecordSetStringW( MSIRECORD *rec, UINT iField, LPCWSTR szValue )
+UINT MSI_RecordSetStringW( MSIRECORD *rec, UINT iField, const WCHAR *szValue )
 {
-    LPWSTR str;
+    WCHAR *str;
 
     TRACE("%p %d %s\n", rec, iField, debugstr_w(szValue));
 
@@ -632,7 +632,7 @@ UINT MSI_RecordSetStringW( MSIRECORD *rec, UINT iField, LPCWSTR szValue )
     return 0;
 }
 
-UINT WINAPI MsiRecordSetStringW( PMSIOBJECT handle, UINT iField, LPCWSTR szValue )
+UINT WINAPI MsiRecordSetStringW( PMSIOBJECT handle, UINT iField, const WCHAR *szValue )
 {
     MSIRECORD *rec;
     UINT ret;
@@ -651,7 +651,7 @@ UINT WINAPI MsiRecordSetStringW( PMSIOBJECT handle, UINT iField, LPCWSTR szValue
 }
 
 /* read the data in a file into an IStream */
-static UINT RECORD_StreamFromFile(LPCWSTR szFile, IStream **pstm)
+static UINT RECORD_StreamFromFile(const WCHAR *szFile, IStream **pstm)
 {
     DWORD sz, szHighWord = 0, read;
     HANDLE handle;
@@ -712,7 +712,7 @@ UINT MSI_RecordSetStream(MSIRECORD *rec, UINT iField, IStream *stream)
     return ERROR_SUCCESS;
 }
 
-UINT MSI_RecordSetStreamFromFileW(MSIRECORD *rec, UINT iField, LPCWSTR szFilename)
+UINT MSI_RecordSetStreamFromFileW(MSIRECORD *rec, UINT iField, const WCHAR *szFilename)
 {
     IStream *stm = NULL;
     HRESULT r;
@@ -752,9 +752,9 @@ UINT MSI_RecordSetStreamFromFileW(MSIRECORD *rec, UINT iField, LPCWSTR szFilenam
     return ERROR_SUCCESS;
 }
 
-UINT WINAPI MsiRecordSetStreamA(PMSIOBJECT hRecord, UINT iField, LPCSTR szFilename)
+UINT WINAPI MsiRecordSetStreamA(PMSIOBJECT hRecord, UINT iField, const CHAR *szFilename)
 {
-    LPWSTR wstr = NULL;
+    WCHAR *wstr = NULL;
     UINT ret;
 
     TRACE("%d %d %s\n", hRecord, iField, debugstr_a(szFilename));
@@ -771,7 +771,7 @@ UINT WINAPI MsiRecordSetStreamA(PMSIOBJECT hRecord, UINT iField, LPCSTR szFilena
     return ret;
 }
 
-UINT WINAPI MsiRecordSetStreamW(PMSIOBJECT handle, UINT iField, LPCWSTR szFilename)
+UINT WINAPI MsiRecordSetStreamW(PMSIOBJECT handle, UINT iField, const WCHAR *szFilename)
 {
     MSIRECORD *rec;
     UINT ret;
@@ -789,7 +789,7 @@ UINT WINAPI MsiRecordSetStreamW(PMSIOBJECT handle, UINT iField, LPCWSTR szFilena
     return ret;
 }
 
-UINT MSI_RecordReadStream(MSIRECORD *rec, UINT iField, char *buf, LPDWORD sz)
+UINT MSI_RecordReadStream(MSIRECORD *rec, UINT iField, char *buf, DWORD *sz)
 {
     ULONG count;
     HRESULT r;
@@ -847,7 +847,7 @@ UINT MSI_RecordReadStream(MSIRECORD *rec, UINT iField, char *buf, LPDWORD sz)
     return ERROR_SUCCESS;
 }
 
-UINT WINAPI MsiRecordReadStream(PMSIOBJECT handle, UINT iField, char *buf, LPDWORD sz)
+UINT WINAPI MsiRecordReadStream(PMSIOBJECT handle, UINT iField, char *buf, DWORD *sz)
 {
     MSIRECORD *rec;
     UINT ret;
@@ -896,7 +896,7 @@ UINT MSI_RecordGetIStream( MSIRECORD *rec, UINT iField, IStream **pstm)
     return ERROR_SUCCESS;
 }
 
-static UINT msi_dump_stream_to_file( IStream *stm, LPCWSTR name )
+static UINT msi_dump_stream_to_file( IStream *stm, const WCHAR *name )
 {
     ULARGE_INTEGER size;
     LARGE_INTEGER pos;
@@ -928,7 +928,7 @@ end:
     return ERROR_SUCCESS;
 }
 
-UINT MSI_RecordStreamToFile( MSIRECORD *rec, UINT iField, LPCWSTR name )
+UINT MSI_RecordStreamToFile( MSIRECORD *rec, UINT iField, const WCHAR *name )
 {
     IStream *stm = NULL;
     UINT r;

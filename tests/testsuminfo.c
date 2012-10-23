@@ -251,7 +251,7 @@ static const WCHAR tb[] = { 0x4840, 0x3f7f, 0x4164, 0x422f, 0x4836, 0 }; /* _Tab
 static const WCHAR sd[] = { 0x4840, 0x3f3f, 0x4577, 0x446c, 0x3b6a, 0x45e4, 0x4824, 0 }; /* _StringData */
 static const WCHAR sp[] = { 0x4840, 0x3f3f, 0x4577, 0x446c, 0x3e6a, 0x44b2, 0x482f, 0 }; /* _StringPool */
 
-#define LOSE_CONST(x) ((LPSTR)(UINT_PTR)(x))
+#define LOSE_CONST(x) ((char *)(UINT_PTR)(x))
 
 static void test_create_database_binary(void)
 {

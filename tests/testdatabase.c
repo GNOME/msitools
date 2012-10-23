@@ -451,7 +451,7 @@ static void test_msiinsert(void)
     ok(r == TRUE, "file didn't exist after commit\n");
 }
 
-static UINT try_query_param( PMSIOBJECT hdb, LPCSTR szQuery, PMSIOBJECT hrec )
+static UINT try_query_param( PMSIOBJECT hdb, const CHAR *szQuery, PMSIOBJECT hrec )
 {
     PMSIOBJECT htab = 0;
     UINT res;
@@ -476,12 +476,12 @@ static UINT try_query_param( PMSIOBJECT hdb, LPCSTR szQuery, PMSIOBJECT hrec )
     return res;
 }
 
-static UINT try_query( PMSIOBJECT hdb, LPCSTR szQuery )
+static UINT try_query( PMSIOBJECT hdb, const CHAR *szQuery )
 {
     return try_query_param( hdb, szQuery, 0 );
 }
 
-static UINT try_insert_query( PMSIOBJECT hdb, LPCSTR szQuery )
+static UINT try_insert_query( PMSIOBJECT hdb, const CHAR *szQuery )
 {
     PMSIOBJECT hrec = 0;
     UINT r;
@@ -1193,7 +1193,7 @@ static UINT get_columns_table_type(PMSIOBJECT hdb, const char *table, UINT field
     return type;
 }
 
-static BOOL check_record( PMSIOBJECT rec, UINT field, LPCSTR val )
+static BOOL check_record( PMSIOBJECT rec, UINT field, const CHAR *val )
 {
     CHAR buffer[0x20];
     UINT r;
@@ -1444,7 +1444,7 @@ static void test_longstrings(void)
     DeleteFile(msifile);
 }
 
-static void create_file_data(LPCSTR name, LPCSTR data, DWORD size)
+static void create_file_data(const CHAR *name, const CHAR *data, DWORD size)
 {
     HANDLE file;
     DWORD written;
@@ -1710,7 +1710,7 @@ static void test_binary(void)
     char file[MAX_PATH];
     char buf[MAX_PATH];
     DWORD size;
-    LPCSTR query;
+    const CHAR *query;
     UINT r;
 
     /* insert a file into the Binary table */
@@ -1790,7 +1790,7 @@ static void test_binary(void)
 static void test_where_not_in_selected(void)
 {
     PMSIOBJECT hdb = 0, rec, view;
-    LPCSTR query;
+    const CHAR *query;
     UINT r;
 
     hdb = create_db();
@@ -1887,7 +1887,7 @@ static void test_where_not_in_selected(void)
 static void test_where(void)
 {
     PMSIOBJECT hdb = 0, rec, view;
-    LPCSTR query;
+    const CHAR *query;
     UINT r;
     DWORD size;
     CHAR buf[MAX_PATH];
@@ -2086,7 +2086,7 @@ static void write_file(const CHAR *filename, const char *data, int data_size)
     CloseHandle(hf);
 }
 
-static UINT add_table_to_db(PMSIOBJECT hdb, LPCSTR table_data)
+static UINT add_table_to_db(PMSIOBJECT hdb, const CHAR *table_data)
 {
     UINT r;
 
@@ -2100,7 +2100,7 @@ static UINT add_table_to_db(PMSIOBJECT hdb, LPCSTR table_data)
 static void test_suminfo_import(void)
 {
     PMSIOBJECT hdb, hsi, view = 0;
-    LPCSTR query;
+    const CHAR *query;
     UINT r, count, size, type;
     char str_value[50];
     INT int_value;
@@ -2223,7 +2223,7 @@ static void test_suminfo_import(void)
 static void test_msiimport(void)
 {
     PMSIOBJECT hdb, view, rec;
-    LPCSTR query;
+    const CHAR *query;
     UINT r, count;
     signed int i;
 
@@ -2446,7 +2446,7 @@ static void test_binary_import(void)
     char buf[MAX_PATH];
     char path[MAX_PATH];
     DWORD size;
-    LPCSTR query;
+    const CHAR *query;
     UINT r;
 
     /* create files to import */
@@ -2494,7 +2494,7 @@ static void test_binary_import(void)
 static void test_markers(void)
 {
     PMSIOBJECT hdb, rec;
-    LPCSTR query;
+    const CHAR *query;
     UINT r;
 
     hdb = create_db();
@@ -2782,7 +2782,7 @@ static const WCHAR data9[] = { /* Property */
 };
 
 static const struct {
-    LPCWSTR name;
+    const WCHAR *name;
     const void *data;
     DWORD size;
 } table_transform_data[] =
@@ -2885,7 +2885,7 @@ static UINT set_summary_info(PMSIOBJECT hdb)
     return res;
 }
 
-static PMSIOBJECT create_package_db(LPCSTR filename)
+static PMSIOBJECT create_package_db(const CHAR *filename)
 {
     PMSIOBJECT hdb = 0;
     UINT res;
@@ -2913,7 +2913,7 @@ static PMSIOBJECT create_package_db(LPCSTR filename)
 static void test_try_transform(void)
 {
     PMSIOBJECT hdb, hview, hrec, hpkg = 0;
-    LPCSTR query;
+    const CHAR *query;
     UINT r;
     DWORD sz;
     char buffer[MAX_PATH];
@@ -3196,7 +3196,7 @@ static const struct join_res_uint join_res_ninth[] =
 static void test_join(void)
 {
     PMSIOBJECT hdb, hview, hrec;
-    LPCSTR query;
+    const CHAR *query;
     CHAR buf[MAX_PATH];
     UINT r, count;
     DWORD size, i;
@@ -5080,7 +5080,7 @@ static void test_collation(void)
 static void test_select_markers(void)
 {
     PMSIOBJECT hdb = 0, rec, view, res;
-    LPCSTR query;
+    const CHAR *query;
     UINT r;
     DWORD size;
     CHAR buf[MAX_PATH];
@@ -5974,7 +5974,7 @@ static const WCHAR data14[] = { /* _StringPool */
 };
 
 static const struct {
-    LPCWSTR name;
+    const WCHAR *name;
     const void *data;
     DWORD size;
 } database_table_data[] =
@@ -6073,7 +6073,7 @@ static void test_order(void)
 {
     PMSIOBJECT hdb, hview, hrec;
     CHAR buffer[MAX_PATH];
-    LPCSTR query;
+    const CHAR *query;
     UINT r, sz;
     int val;
 
@@ -7001,7 +7001,7 @@ static void test_noquotes(void)
     DeleteFileA(msifile);
 }
 
-static void read_file_data(LPCSTR filename, LPSTR buffer)
+static void read_file_data(const CHAR *filename, CHAR *buffer)
 {
     HANDLE file;
     DWORD read;
@@ -7273,7 +7273,7 @@ static void test_where_viewmodify(void)
     MsiCloseHandle(hdb);
 }
 
-static BOOL create_storage(LPCSTR name)
+static BOOL create_storage(const CHAR *name)
 {
     WCHAR nameW[MAX_PATH];
     IStorage *stg;
@@ -7312,7 +7312,7 @@ static void test_storages_table(void)
     char file[MAX_PATH];
     char buf[MAX_PATH];
     WCHAR name[MAX_PATH];
-    LPCSTR query;
+    const CHAR *query;
     HRESULT hr;
     DWORD size;
     UINT r;
@@ -7431,7 +7431,7 @@ static void test_droptable(void)
 {
     PMSIOBJECT hdb, hview, hrec;
     CHAR buf[MAX_PATH];
-    LPCSTR query;
+    const CHAR *query;
     DWORD size;
     UINT r;
 
@@ -7650,7 +7650,7 @@ static void test_dbmerge(void)
 {
     PMSIOBJECT hdb, href, hview, hrec;
     CHAR buf[MAX_PATH];
-    LPCSTR query;
+    const CHAR *query;
     DWORD size;
     UINT r;
 
@@ -8276,7 +8276,7 @@ static void test_dbmerge(void)
 static void test_select_with_tablenames(void)
 {
     PMSIOBJECT hdb, view, rec;
-    LPCSTR query;
+    const CHAR *query;
     UINT r;
     int i;
 
@@ -8361,7 +8361,7 @@ static const UINT ordervals[6][3] =
 static void test_insertorder(void)
 {
     PMSIOBJECT hdb, view, rec;
-    LPCSTR query;
+    const CHAR *query;
     UINT r;
     int i;
 
@@ -8500,7 +8500,7 @@ static void test_columnorder(void)
 {
     PMSIOBJECT hdb, view, rec;
     char buf[MAX_PATH];
-    LPCSTR query;
+    const CHAR *query;
     DWORD sz;
     UINT r;
 
@@ -8994,7 +8994,7 @@ static void test_columnorder(void)
 static void test_createtable(void)
 {
     PMSIOBJECT hdb, htab = 0, hrec = 0;
-    LPCSTR query;
+    const CHAR *query;
     UINT res;
     DWORD size;
     char buffer[0x20];

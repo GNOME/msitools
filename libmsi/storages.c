@@ -66,7 +66,7 @@ static BOOL storages_set_table_size(MSISTORAGESVIEW *sv, UINT size)
     return TRUE;
 }
 
-static STORAGE *create_storage(MSISTORAGESVIEW *sv, LPCWSTR name, IStorage *stg)
+static STORAGE *create_storage(MSISTORAGESVIEW *sv, const WCHAR *name, IStorage *stg)
 {
     STORAGE *storage;
 
@@ -125,7 +125,7 @@ static HRESULT stream_to_storage(IStream *stm, IStorage **stg)
 {
     ILockBytes *lockbytes = NULL;
     STATSTG stat;
-    LPVOID data;
+    void *data;
     HRESULT hr;
     DWORD size, read;
     ULARGE_INTEGER offset;
@@ -175,7 +175,7 @@ static UINT STORAGES_set_row(struct tagMSIVIEW *view, UINT row, MSIRECORD *rec, 
     MSISTORAGESVIEW *sv = (MSISTORAGESVIEW *)view;
     IStorage *stg, *substg = NULL;
     IStream *stm;
-    LPWSTR name = NULL;
+    WCHAR *name = NULL;
     HRESULT hr;
     UINT r = ERROR_FUNCTION_FAILED;
 
@@ -277,8 +277,8 @@ static UINT STORAGES_get_dimensions(struct tagMSIVIEW *view, UINT *rows, UINT *c
     return ERROR_SUCCESS;
 }
 
-static UINT STORAGES_get_column_info( struct tagMSIVIEW *view, UINT n, LPCWSTR *name,
-                                      UINT *type, BOOL *temporary, LPCWSTR *table_name )
+static UINT STORAGES_get_column_info( struct tagMSIVIEW *view, UINT n, const WCHAR **name,
+                                      UINT *type, BOOL *temporary, const WCHAR **table_name )
 {
     TRACE("(%p, %d, %p, %p, %p, %p)\n", view, n, name, type, temporary,
           table_name);
@@ -305,7 +305,7 @@ static UINT STORAGES_get_column_info( struct tagMSIVIEW *view, UINT n, LPCWSTR *
 
 static UINT storages_find_row(MSISTORAGESVIEW *sv, MSIRECORD *rec, UINT *row)
 {
-    LPCWSTR str;
+    const WCHAR *str;
     UINT r, i, id, data;
 
     str = MSI_RecordGetString(rec, 1);

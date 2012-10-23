@@ -107,8 +107,8 @@ err:
  */
 static BOOL msi_columns_in_order(MSIINSERTVIEW *iv, UINT col_count)
 {
-    LPCWSTR a;
-    LPCWSTR b;
+    const WCHAR *a;
+    const WCHAR *b;
     UINT i;
 
     for (i = 1; i <= col_count; i++)
@@ -129,8 +129,8 @@ static UINT msi_arrange_record(MSIINSERTVIEW *iv, MSIRECORD **values)
     MSIRECORD *padded;
     UINT col_count, val_count;
     UINT r, i, colidx;
-    LPCWSTR a;
-    LPCWSTR b;
+    const WCHAR *a;
+    const WCHAR *b;
 
     r = iv->table->ops->get_dimensions(iv->table, NULL, &col_count);
     if (r != ERROR_SUCCESS)
@@ -278,8 +278,8 @@ static UINT INSERT_get_dimensions( struct tagMSIVIEW *view, UINT *rows, UINT *co
     return sv->ops->get_dimensions( sv, rows, cols );
 }
 
-static UINT INSERT_get_column_info( struct tagMSIVIEW *view, UINT n, LPCWSTR *name,
-                                    UINT *type, BOOL *temporary, LPCWSTR *table_name )
+static UINT INSERT_get_column_info( struct tagMSIVIEW *view, UINT n, const WCHAR **name,
+                                    UINT *type, BOOL *temporary, const WCHAR **table_name )
 {
     MSIINSERTVIEW *iv = (MSIINSERTVIEW*)view;
     MSIVIEW *sv;
@@ -358,7 +358,7 @@ static UINT count_column_info( const column_info *ci )
     return n;
 }
 
-UINT INSERT_CreateView( MSIDATABASE *db, MSIVIEW **view, LPCWSTR table,
+UINT INSERT_CreateView( MSIDATABASE *db, MSIVIEW **view, const WCHAR *table,
                         column_info *columns, column_info *values, BOOL temp )
 {
     MSIINSERTVIEW *iv = NULL;

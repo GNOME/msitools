@@ -124,8 +124,8 @@ static UINT DELETE_get_dimensions( struct tagMSIVIEW *view, UINT *rows, UINT *co
     return dv->table->ops->get_dimensions( dv->table, NULL, cols );
 }
 
-static UINT DELETE_get_column_info( struct tagMSIVIEW *view, UINT n, LPCWSTR *name,
-                                    UINT *type, BOOL *temporary, LPCWSTR *table_name )
+static UINT DELETE_get_column_info( struct tagMSIVIEW *view, UINT n, const WCHAR **name,
+                                    UINT *type, BOOL *temporary, const WCHAR **table_name )
 {
     MSIDELETEVIEW *dv = (MSIDELETEVIEW*)view;
 

@@ -87,7 +87,7 @@ static HRESULT (WINAPI *pPropVariantChangeType)
 
 static void free_prop( PROPVARIANT *prop )
 {
-    if (prop->vt == VT_LPSTR )
+    if (prop->vt == VT_LPSTR)
         msi_free( prop->pszVal );
     prop->vt = VT_EMPTY;
 }
@@ -163,7 +163,7 @@ static UINT propvar_changetype(PROPVARIANT *changed, PROPVARIANT *property, VART
 }
 
 /* FIXME: doesn't deal with endian conversion */
-static void read_properties_from_data( PROPVARIANT *prop, LPBYTE data, DWORD sz )
+static void read_properties_from_data( PROPVARIANT *prop, BYTE *data, DWORD sz )
 {
     UINT type;
     DWORD i, size;
@@ -206,9 +206,9 @@ static void read_properties_from_data( PROPVARIANT *prop, LPBYTE data, DWORD sz 
         }
 
         property.vt = propdata->type;
-        if( propdata->type == VT_LPSTR )
+        if( propdata->type == VT_LPSTR)
         {
-            LPSTR str = msi_alloc( propdata->u.str.len );
+            CHAR *str = msi_alloc( propdata->u.str.len );
             memcpy( str, propdata->u.str.str, propdata->u.str.len );
             str[ propdata->u.str.len - 1 ] = 0;
             property.pszVal = str;
@@ -239,7 +239,7 @@ static UINT load_summary_info( MSISUMMARYINFO *si, IStream *stm )
     PROPERTYSETHEADER set_hdr;
     FORMATIDOFFSET format_hdr;
     PROPERTYSECTIONHEADER section_hdr;
-    LPBYTE data = NULL;
+    BYTE *data = NULL;
     LARGE_INTEGER ofs;
     ULONG count, sz;
     HRESULT r;
@@ -303,7 +303,7 @@ static UINT load_summary_info( MSISUMMARYINFO *si, IStream *stm )
     return ret;
 }
 
-static DWORD write_dword( LPBYTE data, DWORD ofs, DWORD val )
+static DWORD write_dword( BYTE *data, DWORD ofs, DWORD val )
 {
     if( data )
     {
@@ -315,14 +315,14 @@ static DWORD write_dword( LPBYTE data, DWORD ofs, DWORD val )
     return 4;
 }
 
-static DWORD write_filetime( LPBYTE data, DWORD ofs, const FILETIME *ft )
+static DWORD write_filetime( BYTE *data, DWORD ofs, const FILETIME *ft )
 {
     write_dword( data, ofs, ft->dwLowDateTime );
     write_dword( data, ofs + 4, ft->dwHighDateTime );
     return 8;
 }
 
-static DWORD write_string( LPBYTE data, DWORD ofs, LPCSTR str )
+static DWORD write_string( BYTE *data, DWORD ofs, const CHAR *str )
 {
     DWORD len = lstrlenA( str ) + 1;
     write_dword( data, ofs, len );
@@ -331,7 +331,7 @@ static DWORD write_string( LPBYTE data, DWORD ofs, LPCSTR str )
     return (7 + len) & ~3;
 }
 
-static UINT write_property_to_data( const PROPVARIANT *prop, LPBYTE data )
+static UINT write_property_to_data( const PROPVARIANT *prop, BYTE *data )
 {
     DWORD sz = 0;
 
@@ -365,7 +365,7 @@ static UINT save_summary_info( const MSISUMMARYINFO * si, IStream *stm )
     FORMATIDOFFSET format_hdr;
     PROPERTYSECTIONHEADER section_hdr;
     PROPERTYIDOFFSET idofs[MSI_MAX_PROPS];
-    LPBYTE data = NULL;
+    BYTE *data = NULL;
     ULONG count, sz;
     HRESULT r;
     int i;
@@ -457,7 +457,7 @@ MSISUMMARYINFO *MSI_GetSummaryInformationW( IStorage *stg, UINT uiUpdateCount )
 }
 
 UINT WINAPI MsiGetSummaryInformationW( PMSIOBJECT hDatabase, 
-              LPCWSTR szDatabase, UINT uiUpdateCount, PMSIOBJECT *pHandle )
+              const WCHAR *szDatabase, UINT uiUpdateCount, PMSIOBJECT *pHandle )
 {
     MSISUMMARYINFO *si;
     MSIDATABASE *db;
@@ -471,7 +471,7 @@ UINT WINAPI MsiGetSummaryInformationW( PMSIOBJECT hDatabase,
 
     if( szDatabase && szDatabase[0] )
     {
-        LPCWSTR persist = uiUpdateCount ? MSIDBOPEN_TRANSACT : MSIDBOPEN_READONLY;
+        const WCHAR *persist = uiUpdateCount ? MSIDBOPEN_TRANSACT : MSIDBOPEN_READONLY;
 
         ret = MSI_OpenDatabaseW( szDatabase, persist, &db );
         if( ret != ERROR_SUCCESS )
@@ -496,9 +496,9 @@ UINT WINAPI MsiGetSummaryInformationW( PMSIOBJECT hDatabase,
 }
 
 UINT WINAPI MsiGetSummaryInformationA(PMSIOBJECT hDatabase, 
-              LPCSTR szDatabase, UINT uiUpdateCount, PMSIOBJECT *pHandle)
+              const CHAR *szDatabase, UINT uiUpdateCount, PMSIOBJECT *pHandle)
 {
-    LPWSTR szwDatabase = NULL;
+    WCHAR *szwDatabase = NULL;
     UINT ret;
 
     TRACE("%d %s %d %p\n", hDatabase, debugstr_a(szDatabase),
@@ -518,7 +518,7 @@ UINT WINAPI MsiGetSummaryInformationA(PMSIOBJECT hDatabase,
     return ret;
 }
 
-UINT WINAPI MsiSummaryInfoGetPropertyCount(PMSIOBJECT hSummaryInfo, PUINT pCount)
+UINT WINAPI MsiSummaryInfoGetPropertyCount(PMSIOBJECT hSummaryInfo, UINT *pCount)
 {
     MSISUMMARYINFO *si;
 
@@ -605,14 +605,14 @@ static UINT get_prop( PMSIOBJECT handle, UINT uiProperty, UINT *puiDataType,
     return ret;
 }
 
-LPWSTR msi_suminfo_dup_string( MSISUMMARYINFO *si, UINT uiProperty )
+WCHAR *msi_suminfo_dup_string( MSISUMMARYINFO *si, UINT uiProperty )
 {
     PROPVARIANT *prop;
 
     if ( uiProperty >= MSI_MAX_PROPS )
         return NULL;
     prop = &si->property[uiProperty];
-    if( prop->vt != VT_LPSTR )
+    if( prop->vt != VT_LPSTR)
         return NULL;
     return strdupAtoW( prop->pszVal );
 }
@@ -629,10 +629,10 @@ INT msi_suminfo_get_int32( MSISUMMARYINFO *si, UINT uiProperty )
     return prop->lVal;
 }
 
-LPWSTR msi_get_suminfo_product( IStorage *stg )
+WCHAR *msi_get_suminfo_product( IStorage *stg )
 {
     MSISUMMARYINFO *si;
-    LPWSTR prod;
+    WCHAR *prod;
 
     si = MSI_GetSummaryInformationW( stg, 0 );
     if (!si)
@@ -646,8 +646,8 @@ LPWSTR msi_get_suminfo_product( IStorage *stg )
 }
 
 UINT WINAPI MsiSummaryInfoGetPropertyA(
-      PMSIOBJECT handle, UINT uiProperty, PUINT puiDataType, LPINT piValue,
-      FILETIME *pftValue, LPSTR szValueBuf, LPDWORD pcchValueBuf)
+      PMSIOBJECT handle, UINT uiProperty, UINT *puiDataType, INT *piValue,
+      FILETIME *pftValue, CHAR *szValueBuf, DWORD *pcchValueBuf)
 {
     awstring str;
 
@@ -662,8 +662,8 @@ UINT WINAPI MsiSummaryInfoGetPropertyA(
 }
 
 UINT WINAPI MsiSummaryInfoGetPropertyW(
-      PMSIOBJECT handle, UINT uiProperty, PUINT puiDataType, LPINT piValue,
-      FILETIME *pftValue, LPWSTR szValueBuf, LPDWORD pcchValueBuf)
+      PMSIOBJECT handle, UINT uiProperty, UINT *puiDataType, INT *piValue,
+      FILETIME *pftValue, WCHAR *szValueBuf, DWORD *pcchValueBuf)
 {
     awstring str;
 
@@ -733,7 +733,7 @@ static UINT set_prop( MSISUMMARYINFO *si, UINT uiProperty, UINT type,
 }
 
 UINT WINAPI MsiSummaryInfoSetPropertyW( PMSIOBJECT handle, UINT uiProperty,
-               UINT uiDataType, INT iValue, FILETIME* pftValue, LPCWSTR szValue )
+               UINT uiDataType, INT iValue, FILETIME* pftValue, const WCHAR *szValue )
 {
     awcstring str;
     MSISUMMARYINFO *si;
@@ -765,7 +765,7 @@ UINT WINAPI MsiSummaryInfoSetPropertyW( PMSIOBJECT handle, UINT uiProperty,
 }
 
 UINT WINAPI MsiSummaryInfoSetPropertyA( PMSIOBJECT handle, UINT uiProperty,
-               UINT uiDataType, INT iValue, FILETIME* pftValue, LPCSTR szValue )
+               UINT uiDataType, INT iValue, FILETIME* pftValue, const CHAR *szValue )
 {
     awcstring str;
     MSISUMMARYINFO *si;
@@ -813,7 +813,7 @@ static UINT suminfo_persist( MSISUMMARYINFO *si )
     return ret;
 }
 
-static void parse_filetime( LPCWSTR str, FILETIME *ft )
+static void parse_filetime( const WCHAR *str, FILETIME *ft )
 {
     SYSTEMTIME lt, utc;
     const WCHAR *p = str;
@@ -853,7 +853,7 @@ static void parse_filetime( LPCWSTR str, FILETIME *ft )
     SystemTimeToFileTime( &utc, ft );
 }
 
-static UINT parse_prop( LPCWSTR prop, LPCWSTR value, UINT *pid, INT *int_value,
+static UINT parse_prop( const WCHAR *prop, const WCHAR *value, UINT *pid, INT *int_value,
                         FILETIME *ft_value, awcstring *str_value )
 {
     *pid = atoiW( prop );
@@ -894,7 +894,7 @@ static UINT parse_prop( LPCWSTR prop, LPCWSTR value, UINT *pid, INT *int_value,
     return ERROR_SUCCESS;
 }
 
-UINT msi_add_suminfo( MSIDATABASE *db, LPWSTR **records, int num_records, int num_columns )
+UINT msi_add_suminfo( MSIDATABASE *db, WCHAR ***records, int num_records, int num_columns )
 {
     UINT r = ERROR_FUNCTION_FAILED;
     DWORD i, j;
@@ -951,7 +951,7 @@ UINT WINAPI MsiSummaryInfoPersist( PMSIOBJECT handle )
     return ret;
 }
 
-UINT WINAPI MsiCreateTransformSummaryInfoA( PMSIOBJECT db, PMSIOBJECT db_ref, LPCSTR transform, int error, int validation )
+UINT WINAPI MsiCreateTransformSummaryInfoA( PMSIOBJECT db, PMSIOBJECT db_ref, const CHAR *transform, int error, int validation )
 {
     UINT r;
     WCHAR *transformW = NULL;
@@ -966,7 +966,7 @@ UINT WINAPI MsiCreateTransformSummaryInfoA( PMSIOBJECT db, PMSIOBJECT db_ref, LP
     return r;
 }
 
-UINT WINAPI MsiCreateTransformSummaryInfoW( PMSIOBJECT db, PMSIOBJECT db_ref, LPCWSTR transform, int error, int validation )
+UINT WINAPI MsiCreateTransformSummaryInfoW( PMSIOBJECT db, PMSIOBJECT db_ref, const WCHAR *transform, int error, int validation )
 {
     FIXME("%u, %u, %s, %d, %d\n", db, db_ref, debugstr_w(transform), error, validation);
     return ERROR_FUNCTION_FAILED;

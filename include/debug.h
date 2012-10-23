@@ -64,10 +64,10 @@ static inline const char *wine_dbgstr_an( const char * s, int n )
 }
 static inline const char *wine_dbgstr_wn( const WCHAR *s, int n )
 {
-    static LPSTR p_ret[10];
+    static CHAR *p_ret[10];
     static int i;
 
-    LPSTR ret;
+    CHAR *ret;
     DWORD len;
 
     if (!s) return "";
@@ -82,10 +82,10 @@ static inline const char *wine_dbgstr_wn( const WCHAR *s, int n )
 
 static inline const char *wine_dbg_sprintf( const char *format, ...)
 {
-    static LPSTR p_ret[10];
+    static CHAR *p_ret[10];
     static int i;
 
-    LPSTR ret;
+    CHAR *ret;
     DWORD len;
     va_list ap;
 

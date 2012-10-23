@@ -65,7 +65,7 @@ static BOOL streams_set_table_size(MSISTREAMSVIEW *sv, UINT size)
     return TRUE;
 }
 
-static STREAM *create_stream(MSISTREAMSVIEW *sv, LPCWSTR name, BOOL encoded, IStream *stm)
+static STREAM *create_stream(MSISTREAMSVIEW *sv, const WCHAR *name, BOOL encoded, IStream *stm)
 {
     STREAM *stream;
     WCHAR decoded[MAX_STREAM_NAME_LEN];
@@ -133,8 +133,8 @@ static UINT STREAMS_set_row(struct tagMSIVIEW *view, UINT row, MSIRECORD *rec, U
     STREAM *stream;
     IStream *stm;
     STATSTG stat;
-    LPWSTR encname = NULL;
-    LPWSTR name = NULL;
+    WCHAR *encname = NULL;
+    WCHAR *name = NULL;
     USHORT *data = NULL;
     HRESULT hr;
     ULONG count;
@@ -266,8 +266,8 @@ static UINT STREAMS_get_dimensions(struct tagMSIVIEW *view, UINT *rows, UINT *co
     return ERROR_SUCCESS;
 }
 
-static UINT STREAMS_get_column_info( struct tagMSIVIEW *view, UINT n, LPCWSTR *name,
-                                     UINT *type, BOOL *temporary, LPCWSTR *table_name )
+static UINT STREAMS_get_column_info( struct tagMSIVIEW *view, UINT n, const WCHAR **name,
+                                     UINT *type, BOOL *temporary, const WCHAR **table_name )
 {
     TRACE("(%p, %d, %p, %p, %p, %p)\n", view, n, name, type, temporary,
           table_name);
@@ -294,7 +294,7 @@ static UINT STREAMS_get_column_info( struct tagMSIVIEW *view, UINT n, LPCWSTR *n
 
 static UINT streams_find_row(MSISTREAMSVIEW *sv, MSIRECORD *rec, UINT *row)
 {
-    LPCWSTR str;
+    const WCHAR *str;
     UINT r, i, id, data;
 
     str = MSI_RecordGetString(rec, 1);
@@ -463,7 +463,7 @@ static INT add_streams_to_table(MSISTREAMSVIEW *sv)
     STREAM *stream = NULL;
     HRESULT hr;
     UINT r, count = 0, size;
-    LPWSTR encname;
+    WCHAR *encname;
 
     hr = IStorage_EnumElements(sv->db->storage, 0, NULL, 0, &stgenum);
     if (FAILED(hr))

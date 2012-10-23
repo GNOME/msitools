@@ -43,7 +43,7 @@ struct msistring
 {
     USHORT persistent_refcount;
     USHORT nonpersistent_refcount;
-    LPWSTR str;
+    WCHAR *str;
 };
 
 struct string_table
@@ -192,7 +192,7 @@ static void insert_string_sorted( string_table *st, UINT string_id )
     st->sortcount++;
 }
 
-static void set_st_entry( string_table *st, UINT n, LPWSTR str, USHORT refcount, enum StringPersistence persistence )
+static void set_st_entry( string_table *st, UINT n, WCHAR *str, USHORT refcount, enum StringPersistence persistence )
 {
     if (persistence == StringPersistent)
     {
@@ -213,11 +213,11 @@ static void set_st_entry( string_table *st, UINT n, LPWSTR str, USHORT refcount,
         st->freeslot = n + 1;
 }
 
-static UINT msi_string2idA( const string_table *st, LPCSTR buffer, UINT *id )
+static UINT msi_string2idA( const string_table *st, const CHAR *buffer, UINT *id )
 {
     DWORD sz;
     UINT r = ERROR_INVALID_PARAMETER;
-    LPWSTR str;
+    WCHAR *str;
 
     TRACE("Finding string %s in string table\n", debugstr_a(buffer) );
 
@@ -243,7 +243,7 @@ static UINT msi_string2idA( const string_table *st, LPCSTR buffer, UINT *id )
 
 static int msi_addstring( string_table *st, UINT n, const CHAR *data, int len, USHORT refcount, enum StringPersistence persistence )
 {
-    LPWSTR str;
+    WCHAR *str;
     int sz;
 
     if( !data )
@@ -295,7 +295,7 @@ static int msi_addstring( string_table *st, UINT n, const CHAR *data, int len, U
 int msi_addstringW( string_table *st, const WCHAR *data, int len, USHORT refcount, enum StringPersistence persistence )
 {
     UINT n;
-    LPWSTR str;
+    WCHAR *str;
 
     if( !data )
         return 0;
@@ -357,7 +357,7 @@ const WCHAR *msi_string_lookup_id( const string_table *st, UINT id )
  *
  *  Returned string is not nul terminated.
  */
-static UINT msi_id2stringA( const string_table *st, UINT id, LPSTR buffer, UINT *sz )
+static UINT msi_id2stringA( const string_table *st, UINT id, CHAR *buffer, UINT *sz )
 {
     UINT len, lenW;
     const WCHAR *str;
@@ -386,7 +386,7 @@ static UINT msi_id2stringA( const string_table *st, UINT id, LPSTR buffer, UINT 
  *  [in] str        - string to find in the string table
  *  [out] id        - id of the string, if found
  */
-UINT msi_string2idW( const string_table *st, LPCWSTR str, UINT *id )
+UINT msi_string2idW( const string_table *st, const WCHAR *str, UINT *id )
 {
     int i, c, low = 0, high = st->sortcount - 1;
 

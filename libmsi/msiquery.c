@@ -54,10 +54,10 @@ static void MSI_CloseView( MSIOBJECT *arg )
     }
 }
 
-UINT VIEW_find_column( MSIVIEW *table, LPCWSTR name, LPCWSTR table_name, UINT *n )
+UINT VIEW_find_column( MSIVIEW *table, const WCHAR *name, const WCHAR *table_name, UINT *n )
 {
-    LPCWSTR col_name;
-    LPCWSTR haystack_table_name;
+    const WCHAR *col_name;
+    const WCHAR *haystack_table_name;
     UINT i, count, r;
 
     r = table->ops->get_dimensions( table, NULL, &count );
@@ -85,10 +85,10 @@ UINT VIEW_find_column( MSIVIEW *table, LPCWSTR name, LPCWSTR table_name, UINT *n
 }
 
 UINT WINAPI MsiDatabaseOpenViewA(PMSIOBJECT hdb,
-              LPCSTR szQuery, PMSIOBJECT *phView)
+              const CHAR *szQuery, PMSIOBJECT *phView)
 {
     UINT r;
-    LPWSTR szwQuery;
+    WCHAR *szwQuery;
 
     TRACE("%d %s %p\n", hdb, debugstr_a(szQuery), phView);
 
@@ -108,7 +108,7 @@ UINT WINAPI MsiDatabaseOpenViewA(PMSIOBJECT hdb,
 }
 
 UINT MSI_DatabaseOpenViewW(MSIDATABASE *db,
-              LPCWSTR szQuery, MSIQUERY **pView)
+              const WCHAR *szQuery, MSIQUERY **pView)
 {
     MSIQUERY *query;
     UINT r;
@@ -139,11 +139,11 @@ UINT MSI_DatabaseOpenViewW(MSIDATABASE *db,
     return r;
 }
 
-UINT MSI_OpenQuery( MSIDATABASE *db, MSIQUERY **view, LPCWSTR fmt, ... )
+UINT MSI_OpenQuery( MSIDATABASE *db, MSIQUERY **view, const WCHAR *fmt, ... )
 {
     UINT r;
     int size = 100, res;
-    LPWSTR query;
+    WCHAR *query;
 
     /* construct the string */
     for (;;)
@@ -164,8 +164,8 @@ UINT MSI_OpenQuery( MSIDATABASE *db, MSIQUERY **view, LPCWSTR fmt, ... )
     return r;
 }
 
-UINT MSI_IterateRecords( MSIQUERY *view, LPDWORD count,
-                         record_func func, LPVOID param )
+UINT MSI_IterateRecords( MSIQUERY *view, DWORD *count,
+                         record_func func, void *param )
 {
     MSIRECORD *rec = NULL;
     UINT r, n = 0, max = 0;
@@ -202,13 +202,13 @@ UINT MSI_IterateRecords( MSIQUERY *view, LPDWORD count,
 }
 
 /* return a single record from a query */
-MSIRECORD *MSI_QueryGetRecord( MSIDATABASE *db, LPCWSTR fmt, ... )
+MSIRECORD *MSI_QueryGetRecord( MSIDATABASE *db, const WCHAR *fmt, ... )
 {
     MSIRECORD *rec = NULL;
     MSIQUERY *view = NULL;
     UINT r;
     int size = 100, res;
-    LPWSTR query;
+    WCHAR *query;
 
     /* construct the string */
     for (;;)
@@ -238,7 +238,7 @@ MSIRECORD *MSI_QueryGetRecord( MSIDATABASE *db, LPCWSTR fmt, ... )
 }
 
 UINT WINAPI MsiDatabaseOpenViewW(PMSIOBJECT hdb,
-              LPCWSTR szQuery, PMSIOBJECT *phView)
+              const WCHAR *szQuery, PMSIOBJECT *phView)
 {
     MSIDATABASE *db;
     MSIQUERY *query = NULL;
@@ -319,7 +319,7 @@ UINT msi_view_get_row(MSIDATABASE *db, MSIVIEW *view, UINT row, MSIRECORD **rec)
 
         if (type & MSITYPE_STRING)
         {
-            LPCWSTR sval;
+            const WCHAR *sval;
 
             sval = msi_string_lookup_id(db->strings, ival);
             MSI_RecordSetStringW(*rec, i, sval);
@@ -502,7 +502,7 @@ UINT MSI_ViewGetColumnInfo( MSIQUERY *query, MSICOLINFO info, MSIRECORD **prec )
     UINT r = ERROR_FUNCTION_FAILED, i, count = 0, type;
     MSIRECORD *rec;
     MSIVIEW *view = query->view;
-    LPCWSTR name;
+    const WCHAR *name;
     BOOL temporary;
 
     if( !view )
@@ -608,7 +608,7 @@ UINT WINAPI MsiViewModify( PMSIOBJECT hView, MSIMODIFY eModifyMode,
     return r;
 }
 
-MSIDBERROR WINAPI MsiViewGetErrorW( PMSIOBJECT handle, LPWSTR buffer, LPDWORD buflen )
+MSIDBERROR WINAPI MsiViewGetErrorW( PMSIOBJECT handle, WCHAR *buffer, DWORD *buflen )
 {
     MSIQUERY *query;
     const WCHAR *column;
@@ -640,7 +640,7 @@ MSIDBERROR WINAPI MsiViewGetErrorW( PMSIOBJECT handle, LPWSTR buffer, LPDWORD bu
     return r;
 }
 
-MSIDBERROR WINAPI MsiViewGetErrorA( PMSIOBJECT handle, LPSTR buffer, LPDWORD buflen )
+MSIDBERROR WINAPI MsiViewGetErrorA( PMSIOBJECT handle, CHAR *buffer, DWORD *buflen )
 {
     MSIQUERY *query;
     const WCHAR *column;
@@ -679,7 +679,7 @@ PMSIOBJECT WINAPI MsiGetLastErrorRecord( void )
 }
 
 UINT MSI_DatabaseApplyTransformW( MSIDATABASE *db,
-                 LPCWSTR szTransformFile, int iErrorCond )
+                 const WCHAR *szTransformFile, int iErrorCond )
 {
     HRESULT r;
     UINT ret = ERROR_FUNCTION_FAILED;
@@ -715,7 +715,7 @@ end:
 }
 
 UINT WINAPI MsiDatabaseApplyTransformW( PMSIOBJECT hdb,
-                 LPCWSTR szTransformFile, int iErrorCond)
+                 const WCHAR *szTransformFile, int iErrorCond)
 {
     MSIDATABASE *db;
     UINT r;
@@ -729,9 +729,9 @@ UINT WINAPI MsiDatabaseApplyTransformW( PMSIOBJECT hdb,
 }
 
 UINT WINAPI MsiDatabaseApplyTransformA( PMSIOBJECT hdb, 
-                 LPCSTR szTransformFile, int iErrorCond)
+                 const CHAR *szTransformFile, int iErrorCond)
 {
-    LPWSTR wstr;
+    WCHAR *wstr;
     UINT ret;
 
     TRACE("%d %s %d\n", hdb, debugstr_a(szTransformFile), iErrorCond);
@@ -788,11 +788,11 @@ struct msi_primary_key_record_info
     MSIRECORD *rec;
 };
 
-static UINT msi_primary_key_iterator( MSIRECORD *rec, LPVOID param )
+static UINT msi_primary_key_iterator( MSIRECORD *rec, void *param )
 {
     struct msi_primary_key_record_info *info = param;
-    LPCWSTR name;
-    LPCWSTR table;
+    const WCHAR *name;
+    const WCHAR *table;
     DWORD type;
 
     type = MSI_RecordGetInteger( rec, 4 );
@@ -816,7 +816,7 @@ static UINT msi_primary_key_iterator( MSIRECORD *rec, LPVOID param )
 }
 
 UINT MSI_DatabaseGetPrimaryKeys( MSIDATABASE *db,
-                LPCWSTR table, MSIRECORD **prec )
+                const WCHAR *table, MSIRECORD **prec )
 {
     static const WCHAR sql[] = {
         's','e','l','e','c','t',' ','*',' ',
@@ -857,7 +857,7 @@ UINT MSI_DatabaseGetPrimaryKeys( MSIDATABASE *db,
 }
 
 UINT WINAPI MsiDatabaseGetPrimaryKeysW( PMSIOBJECT hdb,
-                    LPCWSTR table, PMSIOBJECT* phRec )
+                    const WCHAR *table, PMSIOBJECT* phRec )
 {
     MSIRECORD *rec = NULL;
     MSIDATABASE *db;
@@ -878,9 +878,9 @@ UINT WINAPI MsiDatabaseGetPrimaryKeysW( PMSIOBJECT hdb,
 }
 
 UINT WINAPI MsiDatabaseGetPrimaryKeysA(PMSIOBJECT hdb, 
-                    LPCSTR table, PMSIOBJECT* phRec)
+                    const CHAR *table, PMSIOBJECT* phRec)
 {
-    LPWSTR szwTable = NULL;
+    WCHAR *szwTable = NULL;
     UINT r;
 
     TRACE("%d %s %p\n", hdb, debugstr_a(table), phRec);
@@ -898,9 +898,9 @@ UINT WINAPI MsiDatabaseGetPrimaryKeysA(PMSIOBJECT hdb,
 }
 
 MSICONDITION WINAPI MsiDatabaseIsTablePersistentA(
-              PMSIOBJECT hDatabase, LPCSTR szTableName)
+              PMSIOBJECT hDatabase, const CHAR *szTableName)
 {
-    LPWSTR szwTableName = NULL;
+    WCHAR *szwTableName = NULL;
     MSICONDITION r;
 
     TRACE("%x %s\n", hDatabase, debugstr_a(szTableName));
@@ -918,7 +918,7 @@ MSICONDITION WINAPI MsiDatabaseIsTablePersistentA(
 }
 
 MSICONDITION WINAPI MsiDatabaseIsTablePersistentW(
-              PMSIOBJECT hDatabase, LPCWSTR szTableName)
+              PMSIOBJECT hDatabase, const WCHAR *szTableName)
 {
     MSIDATABASE *db;
     MSICONDITION r;

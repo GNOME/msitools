@@ -214,8 +214,8 @@ static UINT SELECT_get_dimensions( struct tagMSIVIEW *view, UINT *rows, UINT *co
     return sv->table->ops->get_dimensions( sv->table, rows, NULL );
 }
 
-static UINT SELECT_get_column_info( struct tagMSIVIEW *view, UINT n, LPCWSTR *name,
-                                    UINT *type, BOOL *temporary, LPCWSTR *table_name )
+static UINT SELECT_get_column_info( struct tagMSIVIEW *view, UINT n, const WCHAR **name,
+                                    UINT *type, BOOL *temporary, const WCHAR **table_name )
 {
     MSISELECTVIEW *sv = (MSISELECTVIEW*)view;
 
@@ -244,7 +244,7 @@ static UINT msi_select_update(struct tagMSIVIEW *view, MSIRECORD *rec, UINT row)
 {
     MSISELECTVIEW *sv = (MSISELECTVIEW*)view;
     UINT r, i, num_columns, col, type, val;
-    LPCWSTR str;
+    const WCHAR *str;
     MSIRECORD *mod;
 
     r = SELECT_get_dimensions(view, NULL, &num_columns);
@@ -370,8 +370,8 @@ static const MSIVIEWOPS select_ops =
     NULL,
 };
 
-static UINT SELECT_AddColumn( MSISELECTVIEW *sv, LPCWSTR name,
-                              LPCWSTR table_name )
+static UINT SELECT_AddColumn( MSISELECTVIEW *sv, const WCHAR *name,
+                              const WCHAR *table_name )
 {
     UINT r, n;
     MSIVIEW *table;

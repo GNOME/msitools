@@ -68,13 +68,13 @@ static UINT ALTER_get_row( struct tagMSIVIEW *view, UINT row, MSIRECORD **rec )
     return av->table->ops->get_row(av->table, row, rec);
 }
 
-static UINT ITERATE_columns(MSIRECORD *row, LPVOID param)
+static UINT ITERATE_columns(MSIRECORD *row, void *param)
 {
     (*(UINT *)param)++;
     return ERROR_SUCCESS;
 }
 
-static BOOL check_column_exists(MSIDATABASE *db, LPCWSTR table, LPCWSTR column)
+static BOOL check_column_exists(MSIDATABASE *db, const WCHAR *table, const WCHAR *column)
 {
     MSIQUERY *view;
     MSIRECORD *rec;
@@ -187,8 +187,8 @@ static UINT ALTER_get_dimensions( struct tagMSIVIEW *view, UINT *rows, UINT *col
     return ERROR_FUNCTION_FAILED;
 }
 
-static UINT ALTER_get_column_info( struct tagMSIVIEW *view, UINT n, LPCWSTR *name,
-                                   UINT *type, BOOL *temporary, LPCWSTR *table_name )
+static UINT ALTER_get_column_info( struct tagMSIVIEW *view, UINT n, const WCHAR **name,
+                                   UINT *type, BOOL *temporary, const WCHAR **table_name )
 {
     MSIALTERVIEW *av = (MSIALTERVIEW*)view;
 
@@ -250,7 +250,7 @@ static const MSIVIEWOPS alter_ops =
     NULL,
 };
 
-UINT ALTER_CreateView( MSIDATABASE *db, MSIVIEW **view, LPCWSTR name, column_info *colinfo, int hold )
+UINT ALTER_CreateView( MSIDATABASE *db, MSIVIEW **view, const WCHAR *name, column_info *colinfo, int hold )
 {
     MSIALTERVIEW *av;
     UINT r;

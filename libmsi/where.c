@@ -177,7 +177,7 @@ static UINT parse_column(MSIWHEREVIEW *wv, union ext_column *column,
 
     do
     {
-        LPCWSTR table_name;
+        const WCHAR *table_name;
 
         if (column->unparsed.table)
         {
@@ -191,7 +191,7 @@ static UINT parse_column(MSIWHEREVIEW *wv, union ext_column *column,
 
         for(i = 1; i <= table->col_count; i++)
         {
-            LPCWSTR col_name;
+            const WCHAR *col_name;
 
             r = table->view->ops->get_column_info(table->view, i, &col_name, column_type,
                                                   NULL, NULL);
@@ -856,8 +856,8 @@ static UINT WHERE_get_dimensions( struct tagMSIVIEW *view, UINT *rows, UINT *col
     return ERROR_SUCCESS;
 }
 
-static UINT WHERE_get_column_info( struct tagMSIVIEW *view, UINT n, LPCWSTR *name,
-                                   UINT *type, BOOL *temporary, LPCWSTR *table_name )
+static UINT WHERE_get_column_info( struct tagMSIVIEW *view, UINT n, const WCHAR **name,
+                                   UINT *type, BOOL *temporary, const WCHAR **table_name )
 {
     MSIWHEREVIEW *wv = (MSIWHEREVIEW*)view;
     JOINTABLE *table;
@@ -877,7 +877,7 @@ static UINT WHERE_get_column_info( struct tagMSIVIEW *view, UINT n, LPCWSTR *nam
 
 static UINT join_find_row( MSIWHEREVIEW *wv, MSIRECORD *rec, UINT *row )
 {
-    LPCWSTR str;
+    const WCHAR *str;
     UINT r, i, id, data;
 
     str = MSI_RecordGetString( rec, 1 );
@@ -1204,7 +1204,7 @@ static UINT WHERE_VerifyCondition( MSIWHEREVIEW *wv, struct expr *cond,
     return ERROR_SUCCESS;
 }
 
-UINT WHERE_CreateView( MSIDATABASE *db, MSIVIEW **view, LPWSTR tables,
+UINT WHERE_CreateView( MSIDATABASE *db, MSIVIEW **view, WCHAR *tables,
                        struct expr *cond )
 {
     MSIWHEREVIEW *wv = NULL;

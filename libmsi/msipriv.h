@@ -77,9 +77,9 @@ typedef struct tagMSIDATABASE
     IStorage *storage;
     string_table *strings;
     UINT bytes_per_strref;
-    LPWSTR path;
-    LPWSTR deletefile;
-    LPCWSTR mode;
+    WCHAR *path;
+    WCHAR *deletefile;
+    const WCHAR *mode;
     UINT media_transform_offset;
     UINT media_transform_disk_id;
     struct list tables;
@@ -106,7 +106,7 @@ typedef struct tagMSIFIELD
     {
         INT iVal;
         INT_PTR pVal;
-        LPWSTR szwVal;
+        WCHAR *szwVal;
         IStream *stream;
     } u;
 } MSIFIELD;
@@ -120,8 +120,8 @@ typedef struct tagMSIRECORD
 
 typedef struct _column_info
 {
-    LPCWSTR table;
-    LPCWSTR column;
+    const WCHAR *table;
+    const WCHAR *column;
     INT   type;
     BOOL   temporary;
     struct expr *val;
@@ -197,8 +197,8 @@ typedef struct tagMSIVIEWOPS
      *
      *  The column information can be queried at any time.
      */
-    UINT (*get_column_info)( struct tagMSIVIEW *view, UINT n, LPCWSTR *name, UINT *type,
-                             BOOL *temporary, LPCWSTR *table_name );
+    UINT (*get_column_info)( struct tagMSIVIEW *view, UINT n, const WCHAR **name, UINT *type,
+                             BOOL *temporary, const WCHAR **table_name );
 
     /*
      * modify - not yet implemented properly
@@ -236,12 +236,12 @@ typedef struct tagMSIVIEWOPS
     /*
      * add_column - adds a column to the table
      */
-    UINT (*add_column)( struct tagMSIVIEW *view, LPCWSTR table, UINT number, LPCWSTR column, UINT type, BOOL hold );
+    UINT (*add_column)( struct tagMSIVIEW *view, const WCHAR *table, UINT number, const WCHAR *column, UINT type, BOOL hold );
 
     /*
      * remove_column - removes the column represented by table name and column number from the table
      */
-    UINT (*remove_column)( struct tagMSIVIEW *view, LPCWSTR table, UINT number );
+    UINT (*remove_column)( struct tagMSIVIEW *view, const WCHAR *table, UINT number );
 
     /*
      * sort - orders the table by columns
@@ -286,20 +286,20 @@ typedef struct tagMSISUMMARYINFO
 typedef struct {
     BOOL unicode;
     union {
-       LPSTR a;
-       LPWSTR w;
+       CHAR *a;
+       WCHAR *w;
     } str;
 } awstring;
 
 typedef struct {
     BOOL unicode;
     union {
-       LPCSTR a;
-       LPCWSTR w;
+       const CHAR *a;
+       const WCHAR *w;
     } str;
 } awcstring;
 
-UINT msi_strcpy_to_awstring( LPCWSTR str, awstring *awbuf, DWORD *sz );
+UINT msi_strcpy_to_awstring( const WCHAR *str, awstring *awbuf, DWORD *sz );
 
 /* handle functions */
 extern void *msihandle2msiinfo(PMSIOBJECT handle, UINT type);
@@ -324,7 +324,7 @@ enum StringPersistence
 };
 
 extern BOOL msi_addstringW( string_table *st, const WCHAR *data, int len, USHORT refcount, enum StringPersistence persistence );
-extern UINT msi_string2idW( const string_table *st, LPCWSTR buffer, UINT *id );
+extern UINT msi_string2idW( const string_table *st, const WCHAR *buffer, UINT *id );
 extern VOID msi_destroy_stringtable( string_table *st );
 extern const WCHAR *msi_string_lookup_id( const string_table *st, UINT id );
 extern HRESULT msi_init_string_table( IStorage *stg );
@@ -333,18 +333,18 @@ extern UINT msi_save_string_table( const string_table *st, IStorage *storage, UI
 extern UINT msi_get_string_table_codepage( const string_table *st );
 extern UINT msi_set_string_table_codepage( string_table *st, UINT codepage );
 
-extern BOOL TABLE_Exists( MSIDATABASE *db, LPCWSTR name );
-extern MSICONDITION MSI_DatabaseIsTablePersistent( MSIDATABASE *db, LPCWSTR table );
+extern BOOL TABLE_Exists( MSIDATABASE *db, const WCHAR *name );
+extern MSICONDITION MSI_DatabaseIsTablePersistent( MSIDATABASE *db, const WCHAR *table );
 
-extern UINT read_stream_data( IStorage *stg, LPCWSTR stname, BOOL table,
+extern UINT read_stream_data( IStorage *stg, const WCHAR *stname, BOOL table,
                               BYTE **pdata, UINT *psz );
-extern UINT write_stream_data( IStorage *stg, LPCWSTR stname,
-                               LPCVOID data, UINT sz, BOOL bTable );
+extern UINT write_stream_data( IStorage *stg, const WCHAR *stname,
+                               const void *data, UINT sz, BOOL bTable );
 
 /* transform functions */
 extern UINT msi_table_apply_transform( MSIDATABASE *db, IStorage *stg );
 extern UINT MSI_DatabaseApplyTransformW( MSIDATABASE *db,
-                 LPCWSTR szTransformFile, int iErrorCond );
+                 const WCHAR *szTransformFile, int iErrorCond );
 extern void append_storage_to_db( MSIDATABASE *db, IStorage *stg );
 
 /* record internals */
@@ -355,17 +355,17 @@ extern const WCHAR *MSI_RecordGetString( const MSIRECORD *, UINT );
 extern MSIRECORD *MSI_CreateRecord( UINT );
 extern UINT MSI_RecordSetInteger( MSIRECORD *, UINT, int );
 extern UINT MSI_RecordSetIntPtr( MSIRECORD *, UINT, INT_PTR );
-extern UINT MSI_RecordSetStringW( MSIRECORD *, UINT, LPCWSTR );
+extern UINT MSI_RecordSetStringW( MSIRECORD *, UINT, const WCHAR *);
 extern BOOL MSI_RecordIsNull( MSIRECORD *, UINT );
-extern UINT MSI_RecordGetStringW( MSIRECORD * , UINT, LPWSTR, LPDWORD);
-extern UINT MSI_RecordGetStringA( MSIRECORD *, UINT, LPSTR, LPDWORD);
+extern UINT MSI_RecordGetStringW( MSIRECORD *, UINT, WCHAR *, DWORD *);
+extern UINT MSI_RecordGetStringA( MSIRECORD *, UINT, CHAR *, DWORD *);
 extern int MSI_RecordGetInteger( MSIRECORD *, UINT );
 extern INT_PTR MSI_RecordGetIntPtr( MSIRECORD *, UINT );
-extern UINT MSI_RecordReadStream( MSIRECORD *, UINT, char *, LPDWORD);
+extern UINT MSI_RecordReadStream( MSIRECORD *, UINT, char *, DWORD *);
 extern UINT MSI_RecordSetStream(MSIRECORD *, UINT, IStream *);
 extern UINT MSI_RecordGetFieldCount( const MSIRECORD *rec );
-extern UINT MSI_RecordStreamToFile( MSIRECORD *, UINT, LPCWSTR );
-extern UINT MSI_RecordSetStreamFromFileW( MSIRECORD *, UINT, LPCWSTR );
+extern UINT MSI_RecordStreamToFile( MSIRECORD *, UINT, const WCHAR *);
+extern UINT MSI_RecordSetStreamFromFileW( MSIRECORD *, UINT, const WCHAR *);
 extern UINT MSI_RecordCopyField( MSIRECORD *, UINT, MSIRECORD *, UINT );
 extern MSIRECORD *MSI_CloneRecord( MSIRECORD * );
 extern BOOL MSI_RecordsAreEqual( MSIRECORD *, MSIRECORD * );
@@ -373,20 +373,20 @@ extern BOOL MSI_RecordsAreFieldsEqual(MSIRECORD *a, MSIRECORD *b, UINT field);
 
 /* stream internals */
 extern void enum_stream_names( IStorage *stg );
-extern LPWSTR encode_streamname(BOOL bTable, LPCWSTR in);
-extern BOOL decode_streamname(LPCWSTR in, LPWSTR out);
+extern WCHAR *encode_streamname(BOOL bTable, const WCHAR *in);
+extern BOOL decode_streamname(const WCHAR *in, WCHAR *out);
 
 /* database internals */
-extern UINT msi_get_raw_stream( MSIDATABASE *, LPCWSTR, IStream ** );
+extern UINT msi_get_raw_stream( MSIDATABASE *, const WCHAR *, IStream **);
 extern UINT msi_clone_open_stream( MSIDATABASE *, IStorage *, const WCHAR *, IStream ** );
 void msi_destroy_stream( MSIDATABASE *, const WCHAR * );
-extern UINT MSI_OpenDatabaseW( LPCWSTR, LPCWSTR, MSIDATABASE ** );
-extern UINT MSI_DatabaseOpenViewW(MSIDATABASE *, LPCWSTR, MSIQUERY ** );
-extern UINT MSI_OpenQuery( MSIDATABASE *, MSIQUERY **, LPCWSTR, ... );
-typedef UINT (*record_func)( MSIRECORD *, LPVOID );
-extern UINT MSI_IterateRecords( MSIQUERY *, LPDWORD, record_func, LPVOID );
-extern MSIRECORD *MSI_QueryGetRecord( MSIDATABASE *db, LPCWSTR query, ... );
-extern UINT MSI_DatabaseGetPrimaryKeys( MSIDATABASE *, LPCWSTR, MSIRECORD ** );
+extern UINT MSI_OpenDatabaseW( const WCHAR *, const WCHAR *, MSIDATABASE **);
+extern UINT MSI_DatabaseOpenViewW(MSIDATABASE *, const WCHAR *, MSIQUERY **);
+extern UINT MSI_OpenQuery( MSIDATABASE *, MSIQUERY **, const WCHAR *, ... );
+typedef UINT (*record_func)( MSIRECORD *, void *);
+extern UINT MSI_IterateRecords( MSIQUERY *, DWORD *, record_func, void *);
+extern MSIRECORD *MSI_QueryGetRecord( MSIDATABASE *db, const WCHAR *query, ... );
+extern UINT MSI_DatabaseGetPrimaryKeys( MSIDATABASE *, const WCHAR *, MSIRECORD **);
 
 /* view internals */
 extern UINT MSI_ViewExecute( MSIQUERY*, MSIRECORD * );
@@ -394,22 +394,22 @@ extern UINT MSI_ViewFetch( MSIQUERY*, MSIRECORD ** );
 extern UINT MSI_ViewClose( MSIQUERY* );
 extern UINT MSI_ViewGetColumnInfo(MSIQUERY *, MSICOLINFO, MSIRECORD **);
 extern UINT MSI_ViewModify( MSIQUERY *, MSIMODIFY, MSIRECORD * );
-extern UINT VIEW_find_column( MSIVIEW *, LPCWSTR, LPCWSTR, UINT * );
+extern UINT VIEW_find_column( MSIVIEW *, const WCHAR *, const WCHAR *, UINT *);
 extern UINT msi_view_get_row(MSIDATABASE *, MSIVIEW *, UINT, MSIRECORD **);
 
 /* summary information */
 extern MSISUMMARYINFO *MSI_GetSummaryInformationW( IStorage *stg, UINT uiUpdateCount );
-extern LPWSTR msi_suminfo_dup_string( MSISUMMARYINFO *si, UINT uiProperty );
+extern WCHAR *msi_suminfo_dup_string( MSISUMMARYINFO *si, UINT uiProperty );
 extern INT msi_suminfo_get_int32( MSISUMMARYINFO *si, UINT uiProperty );
-extern LPWSTR msi_get_suminfo_product( IStorage *stg );
-extern UINT msi_add_suminfo( MSIDATABASE *db, LPWSTR **records, int num_records, int num_columns );
+extern WCHAR *msi_get_suminfo_product( IStorage *stg );
+extern UINT msi_add_suminfo( MSIDATABASE *db, WCHAR ***records, int num_records, int num_columns );
 
 /* Helpers */
 extern WCHAR *msi_dup_record_field(MSIRECORD *row, INT index);
-extern LPWSTR msi_dup_property( MSIDATABASE *db, LPCWSTR prop );
-extern UINT msi_set_property( MSIDATABASE *, LPCWSTR, LPCWSTR );
-extern UINT msi_get_property( MSIDATABASE *, LPCWSTR, LPWSTR, LPDWORD );
-extern int msi_get_property_int( MSIDATABASE *package, LPCWSTR prop, int def );
+extern WCHAR *msi_dup_property( MSIDATABASE *db, const WCHAR *prop );
+extern UINT msi_set_property( MSIDATABASE *, const WCHAR *, const WCHAR *);
+extern UINT msi_get_property( MSIDATABASE *, const WCHAR *, WCHAR *, DWORD *);
+extern int msi_get_property_int( MSIDATABASE *package, const WCHAR *prop, int def );
 
 /* common strings */
 static const WCHAR szSourceDir[] = {'S','o','u','r','c','e','D','i','r',0};
@@ -549,9 +549,9 @@ static inline BOOL msi_free( void *mem )
     return HeapFree( GetProcessHeap(), 0, mem );
 }
 
-static inline char *strdupWtoA( LPCWSTR str )
+static inline char *strdupWtoA( const WCHAR *str )
 {
-    LPSTR ret = NULL;
+    CHAR *ret = NULL;
     DWORD len;
 
     if (!str) return ret;
@@ -562,9 +562,9 @@ static inline char *strdupWtoA( LPCWSTR str )
     return ret;
 }
 
-static inline LPWSTR strdupAtoW( LPCSTR str )
+static inline WCHAR *strdupAtoW( const CHAR *str )
 {
-    LPWSTR ret = NULL;
+    WCHAR *ret = NULL;
     DWORD len;
 
     if (!str) return ret;
@@ -575,9 +575,9 @@ static inline LPWSTR strdupAtoW( LPCSTR str )
     return ret;
 }
 
-static inline LPWSTR strdupW( LPCWSTR src )
+static inline WCHAR *strdupW( const WCHAR *src )
 {
-    LPWSTR dest;
+    WCHAR *dest;
     if (!src) return NULL;
     dest = msi_alloc( (lstrlenW(src)+1)*sizeof(WCHAR) );
     if (dest)

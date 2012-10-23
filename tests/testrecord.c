@@ -477,7 +477,7 @@ static void test_fieldzero(void)
 {
     PMSIOBJECT hdb, hview, rec;
     CHAR buf[MAX_PATH];
-    LPCSTR query;
+    const CHAR *query;
     DWORD sz;
     UINT r;
 
