@@ -50,7 +50,7 @@ static void test_msirecord(void)
 {
     unsigned r, sz;
     int i;
-    MSIOBJECT *h;
+    LibmsiObject *h;
     char buf[10];
     WCHAR bufW[10];
     const char str[] = "hello";
@@ -383,7 +383,7 @@ static void test_msirecord(void)
 
 static void test_MsiRecordGetString(void)
 {
-    MSIOBJECT *rec;
+    LibmsiObject *rec;
     char buf[MAX_PATH];
     unsigned sz;
     unsigned r;
@@ -445,7 +445,7 @@ static void test_MsiRecordGetString(void)
 
 static void test_MsiRecordGetInteger(void)
 {
-    MSIOBJECT *rec;
+    LibmsiObject *rec;
     int val;
     unsigned r;
 
@@ -475,9 +475,9 @@ static void test_MsiRecordGetInteger(void)
 
 static void test_fieldzero(void)
 {
-    MSIOBJECT *hdb;
-    MSIOBJECT *hview;
-    MSIOBJECT *rec;
+    LibmsiObject *hdb;
+    LibmsiObject *hview;
+    LibmsiObject *rec;
     char buf[MAX_PATH];
     const char *query;
     unsigned sz;
@@ -546,7 +546,7 @@ static void test_fieldzero(void)
 
     MsiCloseHandle(rec);
 
-    r = MsiOpenDatabase(msifile, MSIDBOPEN_CREATE, &hdb);
+    r = MsiOpenDatabase(msifile, LIBMSI_DB_OPEN_CREATE, &hdb);
     ok(r == ERROR_SUCCESS, "MsiOpenDatabase failed\n");
 
     query = "CREATE TABLE `drone` ( "

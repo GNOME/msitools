@@ -32,18 +32,18 @@
 #include "query.h"
 
 
-typedef struct tagMSIDROPVIEW
+typedef struct LibmsiDropView
 {
-    MSIVIEW view;
-    MSIDATABASE *db;
-    MSIVIEW *table;
+    LibmsiView view;
+    LibmsiDatabase *db;
+    LibmsiView *table;
     column_info *colinfo;
     int hold;
-} MSIDROPVIEW;
+} LibmsiDropView;
 
-static unsigned DROP_execute(MSIVIEW *view, MSIRECORD *record)
+static unsigned DROP_execute(LibmsiView *view, LibmsiRecord *record)
 {
-    MSIDROPVIEW *dv = (MSIDROPVIEW*)view;
+    LibmsiDropView *dv = (LibmsiDropView*)view;
     unsigned r;
 
     TRACE("%p %p\n", dv, record);
@@ -58,27 +58,27 @@ static unsigned DROP_execute(MSIVIEW *view, MSIRECORD *record)
     return dv->table->ops->drop(dv->table);
 }
 
-static unsigned DROP_close(MSIVIEW *view)
+static unsigned DROP_close(LibmsiView *view)
 {
-    MSIDROPVIEW *dv = (MSIDROPVIEW*)view;
+    LibmsiDropView *dv = (LibmsiDropView*)view;
 
     TRACE("%p\n", dv);
 
     return ERROR_SUCCESS;
 }
 
-static unsigned DROP_get_dimensions(MSIVIEW *view, unsigned *rows, unsigned *cols)
+static unsigned DROP_get_dimensions(LibmsiView *view, unsigned *rows, unsigned *cols)
 {
-    MSIDROPVIEW *dv = (MSIDROPVIEW*)view;
+    LibmsiDropView *dv = (LibmsiDropView*)view;
 
     TRACE("%p %p %p\n", dv, rows, cols);
 
     return ERROR_FUNCTION_FAILED;
 }
 
-static unsigned DROP_delete( MSIVIEW *view )
+static unsigned DROP_delete( LibmsiView *view )
 {
-    MSIDROPVIEW *dv = (MSIDROPVIEW*)view;
+    LibmsiDropView *dv = (LibmsiDropView*)view;
 
     TRACE("%p\n", dv );
 
@@ -90,7 +90,7 @@ static unsigned DROP_delete( MSIVIEW *view )
     return ERROR_SUCCESS;
 }
 
-static const MSIVIEWOPS drop_ops =
+static const LibmsiViewOPS drop_ops =
 {
     NULL,
     NULL,
@@ -113,9 +113,9 @@ static const MSIVIEWOPS drop_ops =
     NULL,
 };
 
-unsigned DROP_CreateView(MSIDATABASE *db, MSIVIEW **view, const WCHAR *name)
+unsigned DROP_CreateView(LibmsiDatabase *db, LibmsiView **view, const WCHAR *name)
 {
-    MSIDROPVIEW *dv;
+    LibmsiDropView *dv;
     unsigned r;
 
     TRACE("%p %s\n", view, debugstr_w(name));
@@ -134,7 +134,7 @@ unsigned DROP_CreateView(MSIDATABASE *db, MSIVIEW **view, const WCHAR *name)
     dv->view.ops = &drop_ops;
     dv->db = db;
 
-    *view = (MSIVIEW *)dv;
+    *view = (LibmsiView *)dv;
 
     return ERROR_SUCCESS;
 }

@@ -33,8 +33,8 @@ static const WCHAR msifileW[] = {
 
 static void test_suminfo(void)
 {
-    MSIOBJECT *hdb = 0;
-    MSIOBJECT *hsuminfo;
+    LibmsiObject *hdb = 0;
+    LibmsiObject *hsuminfo;
     unsigned r, count, type;
     unsigned sz;
     int val;
@@ -44,7 +44,7 @@ static void test_suminfo(void)
     DeleteFile(msifile);
 
     /* just MsiOpenDatabase should not create a file */
-    r = MsiOpenDatabase(msifile, MSIDBOPEN_CREATE, &hdb);
+    r = MsiOpenDatabase(msifile, LIBMSI_DB_OPEN_CREATE, &hdb);
     ok(r == ERROR_SUCCESS, "MsiOpenDatabase failed\n");
 
     r = MsiGetSummaryInformation(hdb, NULL, 0, NULL);
@@ -363,8 +363,8 @@ static void test_create_database_binary(void)
 
 static void test_summary_binary(void)
 {
-    MSIOBJECT *hdb = 0;
-    MSIOBJECT *hsuminfo = 0;
+    LibmsiObject *hdb = 0;
+    LibmsiObject *hsuminfo = 0;
     unsigned r, type, count;
     int ival;
     unsigned sz;
@@ -377,7 +377,7 @@ static void test_summary_binary(void)
     ok( INVALID_FILE_ATTRIBUTES != GetFileAttributes(msifile), "file doesn't exist!\n");
 
     /* just MsiOpenDatabase should not create a file */
-    r = MsiOpenDatabase(msifile, MSIDBOPEN_READONLY, &hdb);
+    r = MsiOpenDatabase(msifile, LIBMSI_DB_OPEN_READONLY, &hdb);
     ok(r == ERROR_SUCCESS, "MsiOpenDatabase failed\n");
 
     r = MsiGetSummaryInformation(hdb, NULL, 0, &hsuminfo);

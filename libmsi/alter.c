@@ -32,52 +32,52 @@
 #include "query.h"
 
 
-typedef struct tagMSIALTERVIEW
+typedef struct LibmsiAlterView
 {
-    MSIVIEW        view;
-    MSIDATABASE   *db;
-    MSIVIEW       *table;
+    LibmsiView        view;
+    LibmsiDatabase   *db;
+    LibmsiView       *table;
     column_info   *colinfo;
     int hold;
-} MSIALTERVIEW;
+} LibmsiAlterView;
 
-static unsigned ALTER_fetch_int( MSIVIEW *view, unsigned row, unsigned col, unsigned *val )
+static unsigned ALTER_fetch_int( LibmsiView *view, unsigned row, unsigned col, unsigned *val )
 {
-    MSIALTERVIEW *av = (MSIALTERVIEW*)view;
+    LibmsiAlterView *av = (LibmsiAlterView*)view;
 
     TRACE("%p %d %d %p\n", av, row, col, val );
 
     return ERROR_FUNCTION_FAILED;
 }
 
-static unsigned ALTER_fetch_stream( MSIVIEW *view, unsigned row, unsigned col, IStream **stm)
+static unsigned ALTER_fetch_stream( LibmsiView *view, unsigned row, unsigned col, IStream **stm)
 {
-    MSIALTERVIEW *av = (MSIALTERVIEW*)view;
+    LibmsiAlterView *av = (LibmsiAlterView*)view;
 
     TRACE("%p %d %d %p\n", av, row, col, stm );
 
     return ERROR_FUNCTION_FAILED;
 }
 
-static unsigned ALTER_get_row( MSIVIEW *view, unsigned row, MSIRECORD **rec )
+static unsigned ALTER_get_row( LibmsiView *view, unsigned row, LibmsiRecord **rec )
 {
-    MSIALTERVIEW *av = (MSIALTERVIEW*)view;
+    LibmsiAlterView *av = (LibmsiAlterView*)view;
 
     TRACE("%p %d %p\n", av, row, rec );
 
     return av->table->ops->get_row(av->table, row, rec);
 }
 
-static unsigned ITERATE_columns(MSIRECORD *row, void *param)
+static unsigned ITERATE_columns(LibmsiRecord *row, void *param)
 {
     (*(unsigned *)param)++;
     return ERROR_SUCCESS;
 }
 
-static bool check_column_exists(MSIDATABASE *db, const WCHAR *table, const WCHAR *column)
+static bool check_column_exists(LibmsiDatabase *db, const WCHAR *table, const WCHAR *column)
 {
-    MSIQUERY *view;
-    MSIRECORD *rec;
+    LibmsiQuery *view;
+    LibmsiRecord *rec;
     unsigned r;
 
     static const WCHAR query[] = {
@@ -104,11 +104,11 @@ done:
     return (r == ERROR_SUCCESS);
 }
 
-static unsigned alter_add_column(MSIALTERVIEW *av)
+static unsigned alter_add_column(LibmsiAlterView *av)
 {
     unsigned r, colnum = 1;
-    MSIQUERY *view;
-    MSIVIEW *columns;
+    LibmsiQuery *view;
+    LibmsiView *columns;
 
     static const WCHAR szColumns[] = {'_','C','o','l','u','m','n','s',0};
     static const WCHAR query[] = {
@@ -147,9 +147,9 @@ static unsigned alter_add_column(MSIALTERVIEW *av)
     return r;
 }
 
-static unsigned ALTER_execute( MSIVIEW *view, MSIRECORD *record )
+static unsigned ALTER_execute( LibmsiView *view, LibmsiRecord *record )
 {
-    MSIALTERVIEW *av = (MSIALTERVIEW*)view;
+    LibmsiAlterView *av = (LibmsiAlterView*)view;
     unsigned ref;
 
     TRACE("%p %p\n", av, record);
@@ -169,47 +169,47 @@ static unsigned ALTER_execute( MSIVIEW *view, MSIRECORD *record )
     return ERROR_SUCCESS;
 }
 
-static unsigned ALTER_close( MSIVIEW *view )
+static unsigned ALTER_close( LibmsiView *view )
 {
-    MSIALTERVIEW *av = (MSIALTERVIEW*)view;
+    LibmsiAlterView *av = (LibmsiAlterView*)view;
 
     TRACE("%p\n", av );
 
     return ERROR_SUCCESS;
 }
 
-static unsigned ALTER_get_dimensions( MSIVIEW *view, unsigned *rows, unsigned *cols )
+static unsigned ALTER_get_dimensions( LibmsiView *view, unsigned *rows, unsigned *cols )
 {
-    MSIALTERVIEW *av = (MSIALTERVIEW*)view;
+    LibmsiAlterView *av = (LibmsiAlterView*)view;
 
     TRACE("%p %p %p\n", av, rows, cols );
 
     return ERROR_FUNCTION_FAILED;
 }
 
-static unsigned ALTER_get_column_info( MSIVIEW *view, unsigned n, const WCHAR **name,
+static unsigned ALTER_get_column_info( LibmsiView *view, unsigned n, const WCHAR **name,
                                    unsigned *type, bool *temporary, const WCHAR **table_name )
 {
-    MSIALTERVIEW *av = (MSIALTERVIEW*)view;
+    LibmsiAlterView *av = (LibmsiAlterView*)view;
 
     TRACE("%p %d %p %p %p %p\n", av, n, name, type, temporary, table_name );
 
     return ERROR_FUNCTION_FAILED;
 }
 
-static unsigned ALTER_modify( MSIVIEW *view, MSIMODIFY eModifyMode,
-                          MSIRECORD *rec, unsigned row )
+static unsigned ALTER_modify( LibmsiView *view, LibmsiModify eModifyMode,
+                          LibmsiRecord *rec, unsigned row )
 {
-    MSIALTERVIEW *av = (MSIALTERVIEW*)view;
+    LibmsiAlterView *av = (LibmsiAlterView*)view;
 
     TRACE("%p %d %p\n", av, eModifyMode, rec );
 
     return ERROR_FUNCTION_FAILED;
 }
 
-static unsigned ALTER_delete( MSIVIEW *view )
+static unsigned ALTER_delete( LibmsiView *view )
 {
-    MSIALTERVIEW *av = (MSIALTERVIEW*)view;
+    LibmsiAlterView *av = (LibmsiAlterView*)view;
 
     TRACE("%p\n", av );
     if (av->table)
@@ -219,7 +219,7 @@ static unsigned ALTER_delete( MSIVIEW *view )
     return ERROR_SUCCESS;
 }
 
-static unsigned ALTER_find_matching_rows( MSIVIEW *view, unsigned col,
+static unsigned ALTER_find_matching_rows( LibmsiView *view, unsigned col,
     unsigned val, unsigned *row, MSIITERHANDLE *handle )
 {
     TRACE("%p, %d, %u, %p\n", view, col, val, *handle);
@@ -227,7 +227,7 @@ static unsigned ALTER_find_matching_rows( MSIVIEW *view, unsigned col,
     return ERROR_FUNCTION_FAILED;
 }
 
-static const MSIVIEWOPS alter_ops =
+static const LibmsiViewOPS alter_ops =
 {
     ALTER_fetch_int,
     ALTER_fetch_stream,
@@ -250,9 +250,9 @@ static const MSIVIEWOPS alter_ops =
     NULL,
 };
 
-unsigned ALTER_CreateView( MSIDATABASE *db, MSIVIEW **view, const WCHAR *name, column_info *colinfo, int hold )
+unsigned ALTER_CreateView( LibmsiDatabase *db, LibmsiView **view, const WCHAR *name, column_info *colinfo, int hold )
 {
-    MSIALTERVIEW *av;
+    LibmsiAlterView *av;
     unsigned r;
 
     TRACE("%p %p %s %d\n", view, colinfo, debugstr_w(name), hold );

@@ -42,17 +42,17 @@ typedef struct tabSTREAM
     IStream *stream;
 } STREAM;
 
-typedef struct tagMSISTREAMSVIEW
+typedef struct LibmsiStreamSVIEW
 {
-    MSIVIEW view;
-    MSIDATABASE *db;
+    LibmsiView view;
+    LibmsiDatabase *db;
     STREAM **streams;
     unsigned max_streams;
     unsigned num_rows;
     unsigned row_size;
-} MSISTREAMSVIEW;
+} LibmsiStreamSVIEW;
 
-static bool streams_set_table_size(MSISTREAMSVIEW *sv, unsigned size)
+static bool streams_set_table_size(LibmsiStreamSVIEW *sv, unsigned size)
 {
     if (size >= sv->max_streams)
     {
@@ -65,7 +65,7 @@ static bool streams_set_table_size(MSISTREAMSVIEW *sv, unsigned size)
     return true;
 }
 
-static STREAM *create_stream(MSISTREAMSVIEW *sv, const WCHAR *name, bool encoded, IStream *stm)
+static STREAM *create_stream(LibmsiStreamSVIEW *sv, const WCHAR *name, bool encoded, IStream *stm)
 {
     STREAM *stream;
     WCHAR decoded[MAX_STREAM_NAME_LEN];
@@ -86,9 +86,9 @@ static STREAM *create_stream(MSISTREAMSVIEW *sv, const WCHAR *name, bool encoded
     return stream;
 }
 
-static unsigned STREAMS_fetch_int(MSIVIEW *view, unsigned row, unsigned col, unsigned *val)
+static unsigned STREAMS_fetch_int(LibmsiView *view, unsigned row, unsigned col, unsigned *val)
 {
-    MSISTREAMSVIEW *sv = (MSISTREAMSVIEW *)view;
+    LibmsiStreamSVIEW *sv = (LibmsiStreamSVIEW *)view;
 
     TRACE("(%p, %d, %d, %p)\n", view, row, col, val);
 
@@ -103,9 +103,9 @@ static unsigned STREAMS_fetch_int(MSIVIEW *view, unsigned row, unsigned col, uns
     return ERROR_SUCCESS;
 }
 
-static unsigned STREAMS_fetch_stream(MSIVIEW *view, unsigned row, unsigned col, IStream **stm)
+static unsigned STREAMS_fetch_stream(LibmsiView *view, unsigned row, unsigned col, IStream **stm)
 {
-    MSISTREAMSVIEW *sv = (MSISTREAMSVIEW *)view;
+    LibmsiStreamSVIEW *sv = (LibmsiStreamSVIEW *)view;
 
     TRACE("(%p, %d, %d, %p)\n", view, row, col, stm);
 
@@ -118,18 +118,18 @@ static unsigned STREAMS_fetch_stream(MSIVIEW *view, unsigned row, unsigned col, 
     return ERROR_SUCCESS;
 }
 
-static unsigned STREAMS_get_row( MSIVIEW *view, unsigned row, MSIRECORD **rec )
+static unsigned STREAMS_get_row( LibmsiView *view, unsigned row, LibmsiRecord **rec )
 {
-    MSISTREAMSVIEW *sv = (MSISTREAMSVIEW *)view;
+    LibmsiStreamSVIEW *sv = (LibmsiStreamSVIEW *)view;
 
     TRACE("%p %d %p\n", sv, row, rec);
 
     return msi_view_get_row( sv->db, view, row, rec );
 }
 
-static unsigned STREAMS_set_row(MSIVIEW *view, unsigned row, MSIRECORD *rec, unsigned mask)
+static unsigned STREAMS_set_row(LibmsiView *view, unsigned row, LibmsiRecord *rec, unsigned mask)
 {
-    MSISTREAMSVIEW *sv = (MSISTREAMSVIEW *)view;
+    LibmsiStreamSVIEW *sv = (LibmsiStreamSVIEW *)view;
     STREAM *stream;
     IStream *stm;
     STATSTG stat;
@@ -214,9 +214,9 @@ done:
     return r;
 }
 
-static unsigned STREAMS_insert_row(MSIVIEW *view, MSIRECORD *rec, unsigned row, bool temporary)
+static unsigned STREAMS_insert_row(LibmsiView *view, LibmsiRecord *rec, unsigned row, bool temporary)
 {
-    MSISTREAMSVIEW *sv = (MSISTREAMSVIEW *)view;
+    LibmsiStreamSVIEW *sv = (LibmsiStreamSVIEW *)view;
     unsigned i;
 
     TRACE("(%p, %p, %d, %d)\n", view, rec, row, temporary);
@@ -236,27 +236,27 @@ static unsigned STREAMS_insert_row(MSIVIEW *view, MSIRECORD *rec, unsigned row, 
     return STREAMS_set_row(view, row, rec, 0);
 }
 
-static unsigned STREAMS_delete_row(MSIVIEW *view, unsigned row)
+static unsigned STREAMS_delete_row(LibmsiView *view, unsigned row)
 {
     FIXME("(%p %d): stub!\n", view, row);
     return ERROR_SUCCESS;
 }
 
-static unsigned STREAMS_execute(MSIVIEW *view, MSIRECORD *record)
+static unsigned STREAMS_execute(LibmsiView *view, LibmsiRecord *record)
 {
     TRACE("(%p, %p)\n", view, record);
     return ERROR_SUCCESS;
 }
 
-static unsigned STREAMS_close(MSIVIEW *view)
+static unsigned STREAMS_close(LibmsiView *view)
 {
     TRACE("(%p)\n", view);
     return ERROR_SUCCESS;
 }
 
-static unsigned STREAMS_get_dimensions(MSIVIEW *view, unsigned *rows, unsigned *cols)
+static unsigned STREAMS_get_dimensions(LibmsiView *view, unsigned *rows, unsigned *cols)
 {
-    MSISTREAMSVIEW *sv = (MSISTREAMSVIEW *)view;
+    LibmsiStreamSVIEW *sv = (LibmsiStreamSVIEW *)view;
 
     TRACE("(%p, %p, %p)\n", view, rows, cols);
 
@@ -266,7 +266,7 @@ static unsigned STREAMS_get_dimensions(MSIVIEW *view, unsigned *rows, unsigned *
     return ERROR_SUCCESS;
 }
 
-static unsigned STREAMS_get_column_info( MSIVIEW *view, unsigned n, const WCHAR **name,
+static unsigned STREAMS_get_column_info( LibmsiView *view, unsigned n, const WCHAR **name,
                                      unsigned *type, bool *temporary, const WCHAR **table_name )
 {
     TRACE("(%p, %d, %p, %p, %p, %p)\n", view, n, name, type, temporary,
@@ -292,7 +292,7 @@ static unsigned STREAMS_get_column_info( MSIVIEW *view, unsigned n, const WCHAR 
     return ERROR_SUCCESS;
 }
 
-static unsigned streams_find_row(MSISTREAMSVIEW *sv, MSIRECORD *rec, unsigned *row)
+static unsigned streams_find_row(LibmsiStreamSVIEW *sv, LibmsiRecord *rec, unsigned *row)
 {
     const WCHAR *str;
     unsigned r, i, id, data;
@@ -316,9 +316,9 @@ static unsigned streams_find_row(MSISTREAMSVIEW *sv, MSIRECORD *rec, unsigned *r
     return ERROR_FUNCTION_FAILED;
 }
 
-static unsigned streams_modify_update(MSIVIEW *view, MSIRECORD *rec)
+static unsigned streams_modify_update(LibmsiView *view, LibmsiRecord *rec)
 {
-    MSISTREAMSVIEW *sv = (MSISTREAMSVIEW *)view;
+    LibmsiStreamSVIEW *sv = (LibmsiStreamSVIEW *)view;
     unsigned r, row;
 
     r = streams_find_row(sv, rec, &row);
@@ -328,9 +328,9 @@ static unsigned streams_modify_update(MSIVIEW *view, MSIRECORD *rec)
     return STREAMS_set_row(view, row, rec, 0);
 }
 
-static unsigned streams_modify_assign(MSIVIEW *view, MSIRECORD *rec)
+static unsigned streams_modify_assign(LibmsiView *view, LibmsiRecord *rec)
 {
-    MSISTREAMSVIEW *sv = (MSISTREAMSVIEW *)view;
+    LibmsiStreamSVIEW *sv = (LibmsiStreamSVIEW *)view;
     unsigned r, row;
 
     r = streams_find_row(sv, rec, &row);
@@ -340,7 +340,7 @@ static unsigned streams_modify_assign(MSIVIEW *view, MSIRECORD *rec)
     return STREAMS_insert_row(view, rec, -1, false);
 }
 
-static unsigned STREAMS_modify(MSIVIEW *view, MSIMODIFY eModifyMode, MSIRECORD *rec, unsigned row)
+static unsigned STREAMS_modify(LibmsiView *view, LibmsiModify eModifyMode, LibmsiRecord *rec, unsigned row)
 {
     unsigned r;
 
@@ -348,27 +348,27 @@ static unsigned STREAMS_modify(MSIVIEW *view, MSIMODIFY eModifyMode, MSIRECORD *
 
     switch (eModifyMode)
     {
-    case MSIMODIFY_ASSIGN:
+    case LIBMSI_MODIFY_ASSIGN:
         r = streams_modify_assign(view, rec);
         break;
 
-    case MSIMODIFY_INSERT:
+    case LIBMSI_MODIFY_INSERT:
         r = STREAMS_insert_row(view, rec, -1, false);
         break;
 
-    case MSIMODIFY_UPDATE:
+    case LIBMSI_MODIFY_UPDATE:
         r = streams_modify_update(view, rec);
         break;
 
-    case MSIMODIFY_VALIDATE_NEW:
-    case MSIMODIFY_INSERT_TEMPORARY:
-    case MSIMODIFY_REFRESH:
-    case MSIMODIFY_REPLACE:
-    case MSIMODIFY_MERGE:
-    case MSIMODIFY_DELETE:
-    case MSIMODIFY_VALIDATE:
-    case MSIMODIFY_VALIDATE_FIELD:
-    case MSIMODIFY_VALIDATE_DELETE:
+    case LIBMSI_MODIFY_VALIDATE_NEW:
+    case LIBMSI_MODIFY_INSERT_TEMPORARY:
+    case LIBMSI_MODIFY_REFRESH:
+    case LIBMSI_MODIFY_REPLACE:
+    case LIBMSI_MODIFY_MERGE:
+    case LIBMSI_MODIFY_DELETE:
+    case LIBMSI_MODIFY_VALIDATE:
+    case LIBMSI_MODIFY_VALIDATE_FIELD:
+    case LIBMSI_MODIFY_VALIDATE_DELETE:
         FIXME("%p %d %p - mode not implemented\n", view, eModifyMode, rec );
         r = ERROR_CALL_NOT_IMPLEMENTED;
         break;
@@ -380,9 +380,9 @@ static unsigned STREAMS_modify(MSIVIEW *view, MSIMODIFY eModifyMode, MSIRECORD *
     return r;
 }
 
-static unsigned STREAMS_delete(MSIVIEW *view)
+static unsigned STREAMS_delete(LibmsiView *view)
 {
-    MSISTREAMSVIEW *sv = (MSISTREAMSVIEW *)view;
+    LibmsiStreamSVIEW *sv = (LibmsiStreamSVIEW *)view;
     unsigned i;
 
     TRACE("(%p)\n", view);
@@ -403,10 +403,10 @@ static unsigned STREAMS_delete(MSIVIEW *view)
     return ERROR_SUCCESS;
 }
 
-static unsigned STREAMS_find_matching_rows(MSIVIEW *view, unsigned col,
+static unsigned STREAMS_find_matching_rows(LibmsiView *view, unsigned col,
                                        unsigned val, unsigned *row, MSIITERHANDLE *handle)
 {
-    MSISTREAMSVIEW *sv = (MSISTREAMSVIEW *)view;
+    LibmsiStreamSVIEW *sv = (LibmsiStreamSVIEW *)view;
     unsigned index = PtrToUlong(*handle);
 
     TRACE("(%p, %d, %d, %p, %p)\n", view, col, val, row, handle);
@@ -433,7 +433,7 @@ static unsigned STREAMS_find_matching_rows(MSIVIEW *view, unsigned col,
     return ERROR_SUCCESS;
 }
 
-static const MSIVIEWOPS streams_ops =
+static const LibmsiViewOPS streams_ops =
 {
     STREAMS_fetch_int,
     STREAMS_fetch_stream,
@@ -456,7 +456,7 @@ static const MSIVIEWOPS streams_ops =
     NULL,
 };
 
-static int add_streams_to_table(MSISTREAMSVIEW *sv)
+static int add_streams_to_table(LibmsiStreamSVIEW *sv)
 {
     IEnumSTATSTG *stgenum = NULL;
     STATSTG stat;
@@ -535,14 +535,14 @@ static int add_streams_to_table(MSISTREAMSVIEW *sv)
     return count;
 }
 
-unsigned STREAMS_CreateView(MSIDATABASE *db, MSIVIEW **view)
+unsigned STREAMS_CreateView(LibmsiDatabase *db, LibmsiView **view)
 {
-    MSISTREAMSVIEW *sv;
+    LibmsiStreamSVIEW *sv;
     int rows;
 
     TRACE("(%p, %p)\n", db, view);
 
-    sv = msi_alloc_zero( sizeof(MSISTREAMSVIEW) );
+    sv = msi_alloc_zero( sizeof(LibmsiStreamSVIEW) );
     if (!sv)
         return ERROR_FUNCTION_FAILED;
 
@@ -556,7 +556,7 @@ unsigned STREAMS_CreateView(MSIDATABASE *db, MSIVIEW **view)
     }
     sv->num_rows = rows;
 
-    *view = (MSIVIEW *)sv;
+    *view = (LibmsiView *)sv;
 
     return ERROR_SUCCESS;
 }

@@ -41,7 +41,7 @@ static CRITICAL_SECTION_DEBUG MSI_object_cs_debug =
 };
 static CRITICAL_SECTION MSI_object_cs = { &MSI_object_cs_debug, -1, 0, 0, 0, 0 };
 
-void *msihandle2msiinfo(MSIOBJECT *obj, unsigned type)
+void *msihandle2msiinfo(LibmsiObject *obj, unsigned type)
 {
     if( !obj )
         return NULL;
@@ -54,7 +54,7 @@ void *msihandle2msiinfo(MSIOBJECT *obj, unsigned type)
 
 void *alloc_msiobject(unsigned type, unsigned size, msihandledestructor destroy )
 {
-    MSIOBJECT *info;
+    LibmsiObject *info;
 
     info = msi_alloc_zero( size );
     if( info )
@@ -67,7 +67,7 @@ void *alloc_msiobject(unsigned type, unsigned size, msihandledestructor destroy 
     return info;
 }
 
-void msiobj_addref( MSIOBJECT *info )
+void msiobj_addref( LibmsiObject *info )
 {
     if( !info )
         return;
@@ -75,17 +75,17 @@ void msiobj_addref( MSIOBJECT *info )
     InterlockedIncrement(&info->refcount);
 }
 
-void msiobj_lock( MSIOBJECT *obj )
+void msiobj_lock( LibmsiObject *obj )
 {
     EnterCriticalSection( &MSI_object_cs );
 }
 
-void msiobj_unlock( MSIOBJECT *obj )
+void msiobj_unlock( LibmsiObject *obj )
 {
     LeaveCriticalSection( &MSI_object_cs );
 }
 
-int msiobj_release( MSIOBJECT *obj )
+int msiobj_release( LibmsiObject *obj )
 {
     int ret;
 
@@ -107,7 +107,7 @@ int msiobj_release( MSIOBJECT *obj )
 /***********************************************************
  *   MsiCloseHandle   [MSI.@]
  */
-unsigned MsiCloseHandle(MSIOBJECT *obj)
+unsigned MsiCloseHandle(LibmsiObject *obj)
 {
     TRACE("%x\n",obj);
 

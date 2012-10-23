@@ -92,9 +92,9 @@ static void free_prop( PROPVARIANT *prop )
     prop->vt = VT_EMPTY;
 }
 
-static void MSI_CloseSummaryInfo( MSIOBJECT *arg )
+static void MSI_CloseSummaryInfo( LibmsiObject *arg )
 {
-    MSISUMMARYINFO *si = (MSISUMMARYINFO *) arg;
+    LibmsiSummaryInfo *si = (LibmsiSummaryInfo *) arg;
     unsigned i;
 
     for( i = 0; i < MSI_MAX_PROPS; i++ )
@@ -233,7 +233,7 @@ static void read_properties_from_data( PROPVARIANT *prop, uint8_t *data, unsigne
     }
 }
 
-static unsigned load_summary_info( MSISUMMARYINFO *si, IStream *stm )
+static unsigned load_summary_info( LibmsiSummaryInfo *si, IStream *stm )
 {
     unsigned ret = ERROR_FUNCTION_FAILED;
     PROPERTYSETHEADER set_hdr;
@@ -358,7 +358,7 @@ static unsigned write_property_to_data( const PROPVARIANT *prop, uint8_t *data )
     return sz;
 }
 
-static unsigned save_summary_info( const MSISUMMARYINFO * si, IStream *stm )
+static unsigned save_summary_info( const LibmsiSummaryInfo * si, IStream *stm )
 {
     unsigned ret = ERROR_FUNCTION_FAILED;
     PROPERTYSETHEADER set_hdr;
@@ -426,17 +426,17 @@ static unsigned save_summary_info( const MSISUMMARYINFO * si, IStream *stm )
     return ERROR_SUCCESS;
 }
 
-MSISUMMARYINFO *MSI_GetSummaryInformationW( IStorage *stg, unsigned uiUpdateCount )
+LibmsiSummaryInfo *MSI_GetSummaryInformationW( IStorage *stg, unsigned uiUpdateCount )
 {
     IStream *stm = NULL;
-    MSISUMMARYINFO *si;
+    LibmsiSummaryInfo *si;
     unsigned grfMode;
     HRESULT r;
 
     TRACE("%p %d\n", stg, uiUpdateCount );
 
-    si = alloc_msiobject( MSIOBJECTTYPE_SUMMARYINFO, 
-                  sizeof (MSISUMMARYINFO), MSI_CloseSummaryInfo );
+    si = alloc_msiobject( LIBMSI_OBJECT_TYPE_SUMMARYINFO, 
+                  sizeof (LibmsiSummaryInfo), MSI_CloseSummaryInfo );
     if( !si )
         return si;
 
@@ -456,11 +456,11 @@ MSISUMMARYINFO *MSI_GetSummaryInformationW( IStorage *stg, unsigned uiUpdateCoun
     return si;
 }
 
-unsigned MsiGetSummaryInformationW( MSIOBJECT *hDatabase, 
-              const WCHAR *szDatabase, unsigned uiUpdateCount, MSIOBJECT **pHandle )
+unsigned MsiGetSummaryInformationW( LibmsiObject *hDatabase, 
+              const WCHAR *szDatabase, unsigned uiUpdateCount, LibmsiObject **pHandle )
 {
-    MSISUMMARYINFO *si;
-    MSIDATABASE *db;
+    LibmsiSummaryInfo *si;
+    LibmsiDatabase *db;
     unsigned ret = ERROR_FUNCTION_FAILED;
 
     TRACE("%d %s %d %p\n", hDatabase, debugstr_w(szDatabase),
@@ -471,7 +471,7 @@ unsigned MsiGetSummaryInformationW( MSIOBJECT *hDatabase,
 
     if( szDatabase && szDatabase[0] )
     {
-        const WCHAR *persist = uiUpdateCount ? MSIDBOPEN_TRANSACT : MSIDBOPEN_READONLY;
+        const WCHAR *persist = uiUpdateCount ? LIBMSI_DB_OPEN_TRANSACT : LIBMSI_DB_OPEN_READONLY;
 
         ret = MSI_OpenDatabaseW( szDatabase, persist, &db );
         if( ret != ERROR_SUCCESS )
@@ -479,7 +479,7 @@ unsigned MsiGetSummaryInformationW( MSIOBJECT *hDatabase,
     }
     else
     {
-        db = msihandle2msiinfo( hDatabase, MSIOBJECTTYPE_DATABASE );
+        db = msihandle2msiinfo( hDatabase, LIBMSI_OBJECT_TYPE_DATABASE );
         if( !db )
             return ERROR_INVALID_HANDLE;
     }
@@ -495,8 +495,8 @@ unsigned MsiGetSummaryInformationW( MSIOBJECT *hDatabase,
     return ret;
 }
 
-unsigned MsiGetSummaryInformationA(MSIOBJECT *hDatabase, 
-              const char *szDatabase, unsigned uiUpdateCount, MSIOBJECT **pHandle)
+unsigned MsiGetSummaryInformationA(LibmsiObject *hDatabase, 
+              const char *szDatabase, unsigned uiUpdateCount, LibmsiObject **pHandle)
 {
     WCHAR *szwDatabase = NULL;
     unsigned ret;
@@ -518,13 +518,13 @@ unsigned MsiGetSummaryInformationA(MSIOBJECT *hDatabase,
     return ret;
 }
 
-unsigned MsiSummaryInfoGetPropertyCount(MSIOBJECT *hSummaryInfo, unsigned *pCount)
+unsigned MsiSummaryInfoGetPropertyCount(LibmsiObject *hSummaryInfo, unsigned *pCount)
 {
-    MSISUMMARYINFO *si;
+    LibmsiSummaryInfo *si;
 
     TRACE("%d %p\n", hSummaryInfo, pCount);
 
-    si = msihandle2msiinfo( hSummaryInfo, MSIOBJECTTYPE_SUMMARYINFO );
+    si = msihandle2msiinfo( hSummaryInfo, LIBMSI_OBJECT_TYPE_SUMMARYINFO );
     if( !si )
         return ERROR_INVALID_HANDLE;
 
@@ -535,10 +535,10 @@ unsigned MsiSummaryInfoGetPropertyCount(MSIOBJECT *hSummaryInfo, unsigned *pCoun
     return ERROR_SUCCESS;
 }
 
-static unsigned get_prop( MSIOBJECT *handle, unsigned uiProperty, unsigned *puiDataType,
+static unsigned get_prop( LibmsiObject *handle, unsigned uiProperty, unsigned *puiDataType,
           int *piValue, FILETIME *pftValue, awstring *str, unsigned *pcchValueBuf)
 {
-    MSISUMMARYINFO *si;
+    LibmsiSummaryInfo *si;
     PROPVARIANT *prop;
     unsigned ret = ERROR_SUCCESS;
 
@@ -551,7 +551,7 @@ static unsigned get_prop( MSIOBJECT *handle, unsigned uiProperty, unsigned *puiD
         return ERROR_UNKNOWN_PROPERTY;
     }
 
-    si = msihandle2msiinfo( handle, MSIOBJECTTYPE_SUMMARYINFO );
+    si = msihandle2msiinfo( handle, LIBMSI_OBJECT_TYPE_SUMMARYINFO );
     if( !si )
         return ERROR_INVALID_HANDLE;
 
@@ -605,7 +605,7 @@ static unsigned get_prop( MSIOBJECT *handle, unsigned uiProperty, unsigned *puiD
     return ret;
 }
 
-WCHAR *msi_suminfo_dup_string( MSISUMMARYINFO *si, unsigned uiProperty )
+WCHAR *msi_suminfo_dup_string( LibmsiSummaryInfo *si, unsigned uiProperty )
 {
     PROPVARIANT *prop;
 
@@ -617,7 +617,7 @@ WCHAR *msi_suminfo_dup_string( MSISUMMARYINFO *si, unsigned uiProperty )
     return strdupAtoW( prop->pszVal );
 }
 
-int msi_suminfo_get_int32( MSISUMMARYINFO *si, unsigned uiProperty )
+int msi_suminfo_get_int32( LibmsiSummaryInfo *si, unsigned uiProperty )
 {
     PROPVARIANT *prop;
 
@@ -631,7 +631,7 @@ int msi_suminfo_get_int32( MSISUMMARYINFO *si, unsigned uiProperty )
 
 WCHAR *msi_get_suminfo_product( IStorage *stg )
 {
-    MSISUMMARYINFO *si;
+    LibmsiSummaryInfo *si;
     WCHAR *prod;
 
     si = MSI_GetSummaryInformationW( stg, 0 );
@@ -646,7 +646,7 @@ WCHAR *msi_get_suminfo_product( IStorage *stg )
 }
 
 unsigned MsiSummaryInfoGetPropertyA(
-      MSIOBJECT *handle, unsigned uiProperty, unsigned *puiDataType, int *piValue,
+      LibmsiObject *handle, unsigned uiProperty, unsigned *puiDataType, int *piValue,
       FILETIME *pftValue, char *szValueBuf, unsigned *pcchValueBuf)
 {
     awstring str;
@@ -662,7 +662,7 @@ unsigned MsiSummaryInfoGetPropertyA(
 }
 
 unsigned MsiSummaryInfoGetPropertyW(
-      MSIOBJECT *handle, unsigned uiProperty, unsigned *puiDataType, int *piValue,
+      LibmsiObject *handle, unsigned uiProperty, unsigned *puiDataType, int *piValue,
       FILETIME *pftValue, WCHAR *szValueBuf, unsigned *pcchValueBuf)
 {
     awstring str;
@@ -677,7 +677,7 @@ unsigned MsiSummaryInfoGetPropertyW(
                      pftValue, &str, pcchValueBuf );
 }
 
-static unsigned set_prop( MSISUMMARYINFO *si, unsigned uiProperty, unsigned type,
+static unsigned set_prop( LibmsiSummaryInfo *si, unsigned uiProperty, unsigned type,
                int iValue, FILETIME* pftValue, awcstring *str )
 {
     PROPVARIANT *prop;
@@ -732,11 +732,11 @@ static unsigned set_prop( MSISUMMARYINFO *si, unsigned uiProperty, unsigned type
     return ERROR_SUCCESS;
 }
 
-unsigned MsiSummaryInfoSetPropertyW( MSIOBJECT *handle, unsigned uiProperty,
+unsigned MsiSummaryInfoSetPropertyW( LibmsiObject *handle, unsigned uiProperty,
                unsigned uiDataType, int iValue, FILETIME* pftValue, const WCHAR *szValue )
 {
     awcstring str;
-    MSISUMMARYINFO *si;
+    LibmsiSummaryInfo *si;
     unsigned type, ret;
 
     TRACE("%d %u %u %i %p %s\n", handle, uiProperty, uiDataType,
@@ -752,7 +752,7 @@ unsigned MsiSummaryInfoSetPropertyW( MSIOBJECT *handle, unsigned uiProperty,
     if( uiDataType == VT_FILETIME && !pftValue )
         return ERROR_INVALID_PARAMETER;
 
-    si = msihandle2msiinfo( handle, MSIOBJECTTYPE_SUMMARYINFO );
+    si = msihandle2msiinfo( handle, LIBMSI_OBJECT_TYPE_SUMMARYINFO );
     if( !si )
         return ERROR_INVALID_HANDLE;
 
@@ -764,11 +764,11 @@ unsigned MsiSummaryInfoSetPropertyW( MSIOBJECT *handle, unsigned uiProperty,
     return ret;
 }
 
-unsigned MsiSummaryInfoSetPropertyA( MSIOBJECT *handle, unsigned uiProperty,
+unsigned MsiSummaryInfoSetPropertyA( LibmsiObject *handle, unsigned uiProperty,
                unsigned uiDataType, int iValue, FILETIME* pftValue, const char *szValue )
 {
     awcstring str;
-    MSISUMMARYINFO *si;
+    LibmsiSummaryInfo *si;
     unsigned type, ret;
 
     TRACE("%d %u %u %i %p %s\n", handle, uiProperty, uiDataType,
@@ -784,7 +784,7 @@ unsigned MsiSummaryInfoSetPropertyA( MSIOBJECT *handle, unsigned uiProperty,
     if( uiDataType == VT_FILETIME && !pftValue )
         return ERROR_INVALID_PARAMETER;
 
-    si = msihandle2msiinfo( handle, MSIOBJECTTYPE_SUMMARYINFO );
+    si = msihandle2msiinfo( handle, LIBMSI_OBJECT_TYPE_SUMMARYINFO );
     if( !si )
         return ERROR_INVALID_HANDLE;
 
@@ -796,7 +796,7 @@ unsigned MsiSummaryInfoSetPropertyA( MSIOBJECT *handle, unsigned uiProperty,
     return ret;
 }
 
-static unsigned suminfo_persist( MSISUMMARYINFO *si )
+static unsigned suminfo_persist( LibmsiSummaryInfo *si )
 {
     unsigned ret = ERROR_FUNCTION_FAILED;
     IStream *stm = NULL;
@@ -894,11 +894,11 @@ static unsigned parse_prop( const WCHAR *prop, const WCHAR *value, unsigned *pid
     return ERROR_SUCCESS;
 }
 
-unsigned msi_add_suminfo( MSIDATABASE *db, WCHAR ***records, int num_records, int num_columns )
+unsigned msi_add_suminfo( LibmsiDatabase *db, WCHAR ***records, int num_records, int num_columns )
 {
     unsigned r = ERROR_FUNCTION_FAILED;
     unsigned i, j;
-    MSISUMMARYINFO *si;
+    LibmsiSummaryInfo *si;
 
     si = MSI_GetSummaryInformationW( db->storage, num_records * (num_columns / 2) );
     if (!si)
@@ -934,14 +934,14 @@ end:
     return r;
 }
 
-unsigned MsiSummaryInfoPersist( MSIOBJECT *handle )
+unsigned MsiSummaryInfoPersist( LibmsiObject *handle )
 {
-    MSISUMMARYINFO *si;
+    LibmsiSummaryInfo *si;
     unsigned ret;
 
     TRACE("%d\n", handle );
 
-    si = msihandle2msiinfo( handle, MSIOBJECTTYPE_SUMMARYINFO );
+    si = msihandle2msiinfo( handle, LIBMSI_OBJECT_TYPE_SUMMARYINFO );
     if( !si )
         return ERROR_INVALID_HANDLE;
 
@@ -951,7 +951,7 @@ unsigned MsiSummaryInfoPersist( MSIOBJECT *handle )
     return ret;
 }
 
-unsigned MsiCreateTransformSummaryInfoA( MSIOBJECT *db, MSIOBJECT *db_ref, const char *transform, int error, int validation )
+unsigned MsiCreateTransformSummaryInfoA( LibmsiObject *db, LibmsiObject *db_ref, const char *transform, int error, int validation )
 {
     unsigned r;
     WCHAR *transformW = NULL;
@@ -966,7 +966,7 @@ unsigned MsiCreateTransformSummaryInfoA( MSIOBJECT *db, MSIOBJECT *db_ref, const
     return r;
 }
 
-unsigned MsiCreateTransformSummaryInfoW( MSIOBJECT *db, MSIOBJECT *db_ref, const WCHAR *transform, int error, int validation )
+unsigned MsiCreateTransformSummaryInfoW( LibmsiObject *db, LibmsiObject *db_ref, const WCHAR *transform, int error, int validation )
 {
     FIXME("%u, %u, %s, %d, %d\n", db, db_ref, debugstr_w(transform), error, validation);
     return ERROR_FUNCTION_FAILED;

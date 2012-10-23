@@ -37,29 +37,29 @@
 
 /* below is the query interface to a table */
 
-typedef struct tagMSICREATEVIEW
+typedef struct LibmsiCreateView
 {
-    MSIVIEW          view;
-    MSIDATABASE     *db;
+    LibmsiView          view;
+    LibmsiDatabase     *db;
     const WCHAR *         name;
     bool             bIsTemp;
     bool             hold;
     column_info     *col_info;
-} MSICREATEVIEW;
+} LibmsiCreateView;
 
-static unsigned CREATE_fetch_int( MSIVIEW *view, unsigned row, unsigned col, unsigned *val )
+static unsigned CREATE_fetch_int( LibmsiView *view, unsigned row, unsigned col, unsigned *val )
 {
-    MSICREATEVIEW *cv = (MSICREATEVIEW*)view;
+    LibmsiCreateView *cv = (LibmsiCreateView*)view;
 
     TRACE("%p %d %d %p\n", cv, row, col, val );
 
     return ERROR_FUNCTION_FAILED;
 }
 
-static unsigned CREATE_execute( MSIVIEW *view, MSIRECORD *record )
+static unsigned CREATE_execute( LibmsiView *view, LibmsiRecord *record )
 {
-    MSICREATEVIEW *cv = (MSICREATEVIEW*)view;
-    bool persist = (cv->bIsTemp) ? MSICONDITION_FALSE : MSICONDITION_TRUE;
+    LibmsiCreateView *cv = (LibmsiCreateView*)view;
+    bool persist = (cv->bIsTemp) ? LIBMSI_CONDITION_FALSE : LIBMSI_CONDITION_TRUE;
 
     TRACE("%p Table %s (%s)\n", cv, debugstr_w(cv->name),
           cv->bIsTemp?"temporary":"permanent");
@@ -70,47 +70,47 @@ static unsigned CREATE_execute( MSIVIEW *view, MSIRECORD *record )
     return msi_create_table( cv->db, cv->name, cv->col_info, persist );
 }
 
-static unsigned CREATE_close( MSIVIEW *view )
+static unsigned CREATE_close( LibmsiView *view )
 {
-    MSICREATEVIEW *cv = (MSICREATEVIEW*)view;
+    LibmsiCreateView *cv = (LibmsiCreateView*)view;
 
     TRACE("%p\n", cv);
 
     return ERROR_SUCCESS;
 }
 
-static unsigned CREATE_get_dimensions( MSIVIEW *view, unsigned *rows, unsigned *cols )
+static unsigned CREATE_get_dimensions( LibmsiView *view, unsigned *rows, unsigned *cols )
 {
-    MSICREATEVIEW *cv = (MSICREATEVIEW*)view;
+    LibmsiCreateView *cv = (LibmsiCreateView*)view;
 
     TRACE("%p %p %p\n", cv, rows, cols );
 
     return ERROR_FUNCTION_FAILED;
 }
 
-static unsigned CREATE_get_column_info( MSIVIEW *view, unsigned n, const WCHAR **name,
+static unsigned CREATE_get_column_info( LibmsiView *view, unsigned n, const WCHAR **name,
                                     unsigned *type, bool *temporary, const WCHAR **table_name )
 {
-    MSICREATEVIEW *cv = (MSICREATEVIEW*)view;
+    LibmsiCreateView *cv = (LibmsiCreateView*)view;
 
     TRACE("%p %d %p %p %p %p\n", cv, n, name, type, temporary, table_name );
 
     return ERROR_FUNCTION_FAILED;
 }
 
-static unsigned CREATE_modify( MSIVIEW *view, MSIMODIFY eModifyMode,
-                           MSIRECORD *rec, unsigned row)
+static unsigned CREATE_modify( LibmsiView *view, LibmsiModify eModifyMode,
+                           LibmsiRecord *rec, unsigned row)
 {
-    MSICREATEVIEW *cv = (MSICREATEVIEW*)view;
+    LibmsiCreateView *cv = (LibmsiCreateView*)view;
 
     TRACE("%p %d %p\n", cv, eModifyMode, rec );
 
     return ERROR_FUNCTION_FAILED;
 }
 
-static unsigned CREATE_delete( MSIVIEW *view )
+static unsigned CREATE_delete( LibmsiView *view )
 {
-    MSICREATEVIEW *cv = (MSICREATEVIEW*)view;
+    LibmsiCreateView *cv = (LibmsiCreateView*)view;
 
     TRACE("%p\n", cv );
 
@@ -120,7 +120,7 @@ static unsigned CREATE_delete( MSIVIEW *view )
     return ERROR_SUCCESS;
 }
 
-static const MSIVIEWOPS create_ops =
+static const LibmsiViewOPS create_ops =
 {
     CREATE_fetch_int,
     NULL,
@@ -156,10 +156,10 @@ static unsigned check_columns( const column_info *col_info )
     return ERROR_SUCCESS;
 }
 
-unsigned CREATE_CreateView( MSIDATABASE *db, MSIVIEW **view, const WCHAR *table,
+unsigned CREATE_CreateView( LibmsiDatabase *db, LibmsiView **view, const WCHAR *table,
                         column_info *col_info, bool hold )
 {
-    MSICREATEVIEW *cv = NULL;
+    LibmsiCreateView *cv = NULL;
     unsigned r;
     column_info *col;
     bool temp = true;
@@ -200,7 +200,7 @@ unsigned CREATE_CreateView( MSIDATABASE *db, MSIVIEW **view, const WCHAR *table,
     cv->col_info = col_info;
     cv->bIsTemp = temp;
     cv->hold = hold;
-    *view = (MSIVIEW*) cv;
+    *view = (LibmsiView*) cv;
 
     return ERROR_SUCCESS;
 }

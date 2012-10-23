@@ -46,34 +46,34 @@
  * that's a bug in the way I'm running the query, or a just a bug.
  */
 
-typedef struct tagMSIDELETEVIEW
+typedef struct LibmsiDeleteView
 {
-    MSIVIEW        view;
-    MSIDATABASE   *db;
-    MSIVIEW       *table;
-} MSIDELETEVIEW;
+    LibmsiView        view;
+    LibmsiDatabase   *db;
+    LibmsiView       *table;
+} LibmsiDeleteView;
 
-static unsigned DELETE_fetch_int( MSIVIEW *view, unsigned row, unsigned col, unsigned *val )
+static unsigned DELETE_fetch_int( LibmsiView *view, unsigned row, unsigned col, unsigned *val )
 {
-    MSIDELETEVIEW *dv = (MSIDELETEVIEW*)view;
+    LibmsiDeleteView *dv = (LibmsiDeleteView*)view;
 
     TRACE("%p %d %d %p\n", dv, row, col, val );
 
     return ERROR_FUNCTION_FAILED;
 }
 
-static unsigned DELETE_fetch_stream( MSIVIEW *view, unsigned row, unsigned col, IStream **stm)
+static unsigned DELETE_fetch_stream( LibmsiView *view, unsigned row, unsigned col, IStream **stm)
 {
-    MSIDELETEVIEW *dv = (MSIDELETEVIEW*)view;
+    LibmsiDeleteView *dv = (LibmsiDeleteView*)view;
 
     TRACE("%p %d %d %p\n", dv, row, col, stm );
 
     return ERROR_FUNCTION_FAILED;
 }
 
-static unsigned DELETE_execute( MSIVIEW *view, MSIRECORD *record )
+static unsigned DELETE_execute( LibmsiView *view, LibmsiRecord *record )
 {
-    MSIDELETEVIEW *dv = (MSIDELETEVIEW*)view;
+    LibmsiDeleteView *dv = (LibmsiDeleteView*)view;
     unsigned r, i, rows = 0, cols = 0;
 
     TRACE("%p %p\n", dv, record);
@@ -98,9 +98,9 @@ static unsigned DELETE_execute( MSIVIEW *view, MSIRECORD *record )
     return ERROR_SUCCESS;
 }
 
-static unsigned DELETE_close( MSIVIEW *view )
+static unsigned DELETE_close( LibmsiView *view )
 {
-    MSIDELETEVIEW *dv = (MSIDELETEVIEW*)view;
+    LibmsiDeleteView *dv = (LibmsiDeleteView*)view;
 
     TRACE("%p\n", dv );
 
@@ -110,9 +110,9 @@ static unsigned DELETE_close( MSIVIEW *view )
     return dv->table->ops->close( dv->table );
 }
 
-static unsigned DELETE_get_dimensions( MSIVIEW *view, unsigned *rows, unsigned *cols )
+static unsigned DELETE_get_dimensions( LibmsiView *view, unsigned *rows, unsigned *cols )
 {
-    MSIDELETEVIEW *dv = (MSIDELETEVIEW*)view;
+    LibmsiDeleteView *dv = (LibmsiDeleteView*)view;
 
     TRACE("%p %p %p\n", dv, rows, cols );
 
@@ -124,10 +124,10 @@ static unsigned DELETE_get_dimensions( MSIVIEW *view, unsigned *rows, unsigned *
     return dv->table->ops->get_dimensions( dv->table, NULL, cols );
 }
 
-static unsigned DELETE_get_column_info( MSIVIEW *view, unsigned n, const WCHAR **name,
+static unsigned DELETE_get_column_info( LibmsiView *view, unsigned n, const WCHAR **name,
                                     unsigned *type, bool *temporary, const WCHAR **table_name )
 {
-    MSIDELETEVIEW *dv = (MSIDELETEVIEW*)view;
+    LibmsiDeleteView *dv = (LibmsiDeleteView*)view;
 
     TRACE("%p %d %p %p %p %p\n", dv, n, name, type, temporary, table_name );
 
@@ -138,19 +138,19 @@ static unsigned DELETE_get_column_info( MSIVIEW *view, unsigned n, const WCHAR *
                                             type, temporary, table_name);
 }
 
-static unsigned DELETE_modify( MSIVIEW *view, MSIMODIFY eModifyMode,
-                           MSIRECORD *rec, unsigned row )
+static unsigned DELETE_modify( LibmsiView *view, LibmsiModify eModifyMode,
+                           LibmsiRecord *rec, unsigned row )
 {
-    MSIDELETEVIEW *dv = (MSIDELETEVIEW*)view;
+    LibmsiDeleteView *dv = (LibmsiDeleteView*)view;
 
     TRACE("%p %d %p\n", dv, eModifyMode, rec );
 
     return ERROR_FUNCTION_FAILED;
 }
 
-static unsigned DELETE_delete( MSIVIEW *view )
+static unsigned DELETE_delete( LibmsiView *view )
 {
-    MSIDELETEVIEW *dv = (MSIDELETEVIEW*)view;
+    LibmsiDeleteView *dv = (LibmsiDeleteView*)view;
 
     TRACE("%p\n", dv );
 
@@ -162,7 +162,7 @@ static unsigned DELETE_delete( MSIVIEW *view )
     return ERROR_SUCCESS;
 }
 
-static unsigned DELETE_find_matching_rows( MSIVIEW *view, unsigned col,
+static unsigned DELETE_find_matching_rows( LibmsiView *view, unsigned col,
     unsigned val, unsigned *row, MSIITERHANDLE *handle )
 {
     TRACE("%p, %d, %u, %p\n", view, col, val, *handle);
@@ -171,7 +171,7 @@ static unsigned DELETE_find_matching_rows( MSIVIEW *view, unsigned col,
 }
 
 
-static const MSIVIEWOPS delete_ops =
+static const LibmsiViewOPS delete_ops =
 {
     DELETE_fetch_int,
     DELETE_fetch_stream,
@@ -194,9 +194,9 @@ static const MSIVIEWOPS delete_ops =
     NULL,
 };
 
-unsigned DELETE_CreateView( MSIDATABASE *db, MSIVIEW **view, MSIVIEW *table )
+unsigned DELETE_CreateView( LibmsiDatabase *db, LibmsiView **view, LibmsiView *table )
 {
-    MSIDELETEVIEW *dv = NULL;
+    LibmsiDeleteView *dv = NULL;
 
     TRACE("%p\n", dv );
 

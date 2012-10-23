@@ -43,17 +43,17 @@ typedef struct tabSTORAGE
     IStorage *storage;
 } STORAGE;
 
-typedef struct tagMSISTORAGESVIEW
+typedef struct LibmsiStorageView
 {
-    MSIVIEW view;
-    MSIDATABASE *db;
+    LibmsiView view;
+    LibmsiDatabase *db;
     STORAGE **storages;
     unsigned max_storages;
     unsigned num_rows;
     unsigned row_size;
-} MSISTORAGESVIEW;
+} LibmsiStorageView;
 
-static bool storages_set_table_size(MSISTORAGESVIEW *sv, unsigned size)
+static bool storages_set_table_size(LibmsiStorageView *sv, unsigned size)
 {
     if (size >= sv->max_storages)
     {
@@ -66,7 +66,7 @@ static bool storages_set_table_size(MSISTORAGESVIEW *sv, unsigned size)
     return true;
 }
 
-static STORAGE *create_storage(MSISTORAGESVIEW *sv, const WCHAR *name, IStorage *stg)
+static STORAGE *create_storage(LibmsiStorageView *sv, const WCHAR *name, IStorage *stg)
 {
     STORAGE *storage;
 
@@ -83,9 +83,9 @@ static STORAGE *create_storage(MSISTORAGESVIEW *sv, const WCHAR *name, IStorage 
     return storage;
 }
 
-static unsigned STORAGES_fetch_int(MSIVIEW *view, unsigned row, unsigned col, unsigned *val)
+static unsigned STORAGES_fetch_int(LibmsiView *view, unsigned row, unsigned col, unsigned *val)
 {
-    MSISTORAGESVIEW *sv = (MSISTORAGESVIEW *)view;
+    LibmsiStorageView *sv = (LibmsiStorageView *)view;
 
     TRACE("(%p, %d, %d, %p)\n", view, row, col, val);
 
@@ -100,9 +100,9 @@ static unsigned STORAGES_fetch_int(MSIVIEW *view, unsigned row, unsigned col, un
     return ERROR_SUCCESS;
 }
 
-static unsigned STORAGES_fetch_stream(MSIVIEW *view, unsigned row, unsigned col, IStream **stm)
+static unsigned STORAGES_fetch_stream(LibmsiView *view, unsigned row, unsigned col, IStream **stm)
 {
-    MSISTORAGESVIEW *sv = (MSISTORAGESVIEW *)view;
+    LibmsiStorageView *sv = (LibmsiStorageView *)view;
 
     TRACE("(%p, %d, %d, %p)\n", view, row, col, stm);
 
@@ -112,9 +112,9 @@ static unsigned STORAGES_fetch_stream(MSIVIEW *view, unsigned row, unsigned col,
     return ERROR_INVALID_DATA;
 }
 
-static unsigned STORAGES_get_row( MSIVIEW *view, unsigned row, MSIRECORD **rec )
+static unsigned STORAGES_get_row( LibmsiView *view, unsigned row, LibmsiRecord **rec )
 {
-    MSISTORAGESVIEW *sv = (MSISTORAGESVIEW *)view;
+    LibmsiStorageView *sv = (LibmsiStorageView *)view;
 
     FIXME("%p %d %p\n", sv, row, rec);
 
@@ -170,9 +170,9 @@ done:
     return hr;
 }
 
-static unsigned STORAGES_set_row(MSIVIEW *view, unsigned row, MSIRECORD *rec, unsigned mask)
+static unsigned STORAGES_set_row(LibmsiView *view, unsigned row, LibmsiRecord *rec, unsigned mask)
 {
-    MSISTORAGESVIEW *sv = (MSISTORAGESVIEW *)view;
+    LibmsiStorageView *sv = (LibmsiStorageView *)view;
     IStorage *stg, *substg = NULL;
     IStream *stm;
     WCHAR *name = NULL;
@@ -232,9 +232,9 @@ done:
     return r;
 }
 
-static unsigned STORAGES_insert_row(MSIVIEW *view, MSIRECORD *rec, unsigned row, bool temporary)
+static unsigned STORAGES_insert_row(LibmsiView *view, LibmsiRecord *rec, unsigned row, bool temporary)
 {
-    MSISTORAGESVIEW *sv = (MSISTORAGESVIEW *)view;
+    LibmsiStorageView *sv = (LibmsiStorageView *)view;
 
     if (!storages_set_table_size(sv, ++sv->num_rows))
         return ERROR_FUNCTION_FAILED;
@@ -247,27 +247,27 @@ static unsigned STORAGES_insert_row(MSIVIEW *view, MSIRECORD *rec, unsigned row,
     return STORAGES_set_row(view, row, rec, 0);
 }
 
-static unsigned STORAGES_delete_row(MSIVIEW *view, unsigned row)
+static unsigned STORAGES_delete_row(LibmsiView *view, unsigned row)
 {
     FIXME("(%p %d): stub!\n", view, row);
     return ERROR_SUCCESS;
 }
 
-static unsigned STORAGES_execute(MSIVIEW *view, MSIRECORD *record)
+static unsigned STORAGES_execute(LibmsiView *view, LibmsiRecord *record)
 {
     TRACE("(%p, %p)\n", view, record);
     return ERROR_SUCCESS;
 }
 
-static unsigned STORAGES_close(MSIVIEW *view)
+static unsigned STORAGES_close(LibmsiView *view)
 {
     TRACE("(%p)\n", view);
     return ERROR_SUCCESS;
 }
 
-static unsigned STORAGES_get_dimensions(MSIVIEW *view, unsigned *rows, unsigned *cols)
+static unsigned STORAGES_get_dimensions(LibmsiView *view, unsigned *rows, unsigned *cols)
 {
-    MSISTORAGESVIEW *sv = (MSISTORAGESVIEW *)view;
+    LibmsiStorageView *sv = (LibmsiStorageView *)view;
 
     TRACE("(%p, %p, %p)\n", view, rows, cols);
 
@@ -277,7 +277,7 @@ static unsigned STORAGES_get_dimensions(MSIVIEW *view, unsigned *rows, unsigned 
     return ERROR_SUCCESS;
 }
 
-static unsigned STORAGES_get_column_info( MSIVIEW *view, unsigned n, const WCHAR **name,
+static unsigned STORAGES_get_column_info( LibmsiView *view, unsigned n, const WCHAR **name,
                                       unsigned *type, bool *temporary, const WCHAR **table_name )
 {
     TRACE("(%p, %d, %p, %p, %p, %p)\n", view, n, name, type, temporary,
@@ -303,7 +303,7 @@ static unsigned STORAGES_get_column_info( MSIVIEW *view, unsigned n, const WCHAR
     return ERROR_SUCCESS;
 }
 
-static unsigned storages_find_row(MSISTORAGESVIEW *sv, MSIRECORD *rec, unsigned *row)
+static unsigned storages_find_row(LibmsiStorageView *sv, LibmsiRecord *rec, unsigned *row)
 {
     const WCHAR *str;
     unsigned r, i, id, data;
@@ -327,9 +327,9 @@ static unsigned storages_find_row(MSISTORAGESVIEW *sv, MSIRECORD *rec, unsigned 
     return ERROR_FUNCTION_FAILED;
 }
 
-static unsigned storages_modify_update(MSIVIEW *view, MSIRECORD *rec)
+static unsigned storages_modify_update(LibmsiView *view, LibmsiRecord *rec)
 {
-    MSISTORAGESVIEW *sv = (MSISTORAGESVIEW *)view;
+    LibmsiStorageView *sv = (LibmsiStorageView *)view;
     unsigned r, row;
 
     r = storages_find_row(sv, rec, &row);
@@ -339,9 +339,9 @@ static unsigned storages_modify_update(MSIVIEW *view, MSIRECORD *rec)
     return STORAGES_set_row(view, row, rec, 0);
 }
 
-static unsigned storages_modify_assign(MSIVIEW *view, MSIRECORD *rec)
+static unsigned storages_modify_assign(LibmsiView *view, LibmsiRecord *rec)
 {
-    MSISTORAGESVIEW *sv = (MSISTORAGESVIEW *)view;
+    LibmsiStorageView *sv = (LibmsiStorageView *)view;
     unsigned r, row;
 
     r = storages_find_row(sv, rec, &row);
@@ -351,7 +351,7 @@ static unsigned storages_modify_assign(MSIVIEW *view, MSIRECORD *rec)
     return STORAGES_insert_row(view, rec, -1, false);
 }
 
-static unsigned STORAGES_modify(MSIVIEW *view, MSIMODIFY eModifyMode, MSIRECORD *rec, unsigned row)
+static unsigned STORAGES_modify(LibmsiView *view, LibmsiModify eModifyMode, LibmsiRecord *rec, unsigned row)
 {
     unsigned r;
 
@@ -359,27 +359,27 @@ static unsigned STORAGES_modify(MSIVIEW *view, MSIMODIFY eModifyMode, MSIRECORD 
 
     switch (eModifyMode)
     {
-    case MSIMODIFY_ASSIGN:
+    case LIBMSI_MODIFY_ASSIGN:
         r = storages_modify_assign(view, rec);
         break;
 
-    case MSIMODIFY_INSERT:
+    case LIBMSI_MODIFY_INSERT:
         r = STORAGES_insert_row(view, rec, -1, false);
         break;
 
-    case MSIMODIFY_UPDATE:
+    case LIBMSI_MODIFY_UPDATE:
         r = storages_modify_update(view, rec);
         break;
 
-    case MSIMODIFY_VALIDATE_NEW:
-    case MSIMODIFY_INSERT_TEMPORARY:
-    case MSIMODIFY_REFRESH:
-    case MSIMODIFY_REPLACE:
-    case MSIMODIFY_MERGE:
-    case MSIMODIFY_DELETE:
-    case MSIMODIFY_VALIDATE:
-    case MSIMODIFY_VALIDATE_FIELD:
-    case MSIMODIFY_VALIDATE_DELETE:
+    case LIBMSI_MODIFY_VALIDATE_NEW:
+    case LIBMSI_MODIFY_INSERT_TEMPORARY:
+    case LIBMSI_MODIFY_REFRESH:
+    case LIBMSI_MODIFY_REPLACE:
+    case LIBMSI_MODIFY_MERGE:
+    case LIBMSI_MODIFY_DELETE:
+    case LIBMSI_MODIFY_VALIDATE:
+    case LIBMSI_MODIFY_VALIDATE_FIELD:
+    case LIBMSI_MODIFY_VALIDATE_DELETE:
         FIXME("%p %d %p - mode not implemented\n", view, eModifyMode, rec );
         r = ERROR_CALL_NOT_IMPLEMENTED;
         break;
@@ -391,9 +391,9 @@ static unsigned STORAGES_modify(MSIVIEW *view, MSIMODIFY eModifyMode, MSIRECORD 
     return r;
 }
 
-static unsigned STORAGES_delete(MSIVIEW *view)
+static unsigned STORAGES_delete(LibmsiView *view)
 {
-    MSISTORAGESVIEW *sv = (MSISTORAGESVIEW *)view;
+    LibmsiStorageView *sv = (LibmsiStorageView *)view;
     unsigned i;
 
     TRACE("(%p)\n", view);
@@ -412,10 +412,10 @@ static unsigned STORAGES_delete(MSIVIEW *view)
     return ERROR_SUCCESS;
 }
 
-static unsigned STORAGES_find_matching_rows(MSIVIEW *view, unsigned col,
+static unsigned STORAGES_find_matching_rows(LibmsiView *view, unsigned col,
                                        unsigned val, unsigned *row, MSIITERHANDLE *handle)
 {
-    MSISTORAGESVIEW *sv = (MSISTORAGESVIEW *)view;
+    LibmsiStorageView *sv = (LibmsiStorageView *)view;
     unsigned index = PtrToUlong(*handle);
 
     TRACE("(%d, %d): %d\n", *row, col, val);
@@ -441,7 +441,7 @@ static unsigned STORAGES_find_matching_rows(MSIVIEW *view, unsigned col,
     return ERROR_SUCCESS;
 }
 
-static const MSIVIEWOPS storages_ops =
+static const LibmsiViewOPS storages_ops =
 {
     STORAGES_fetch_int,
     STORAGES_fetch_stream,
@@ -464,7 +464,7 @@ static const MSIVIEWOPS storages_ops =
     NULL,
 };
 
-static int add_storages_to_table(MSISTORAGESVIEW *sv)
+static int add_storages_to_table(LibmsiStorageView *sv)
 {
     STORAGE *storage = NULL;
     IEnumSTATSTG *stgenum = NULL;
@@ -522,14 +522,14 @@ static int add_storages_to_table(MSISTORAGESVIEW *sv)
     return count;
 }
 
-unsigned STORAGES_CreateView(MSIDATABASE *db, MSIVIEW **view)
+unsigned STORAGES_CreateView(LibmsiDatabase *db, LibmsiView **view)
 {
-    MSISTORAGESVIEW *sv;
+    LibmsiStorageView *sv;
     int rows;
 
     TRACE("(%p, %p)\n", db, view);
 
-    sv = msi_alloc_zero( sizeof(MSISTORAGESVIEW) );
+    sv = msi_alloc_zero( sizeof(LibmsiStorageView) );
     if (!sv)
         return ERROR_FUNCTION_FAILED;
 
@@ -544,7 +544,7 @@ unsigned STORAGES_CreateView(MSIDATABASE *db, MSIVIEW **view)
     }
     sv->num_rows = rows;
 
-    *view = (MSIVIEW *)sv;
+    *view = (LibmsiView *)sv;
 
     return ERROR_SUCCESS;
 }

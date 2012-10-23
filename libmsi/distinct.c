@@ -33,25 +33,25 @@
 #include "query.h"
 
 
-typedef struct tagDISTINCTSET
+typedef struct LibmsiDistinctSet
 {
     unsigned val;
     unsigned count;
     unsigned row;
-    struct tagDISTINCTSET *nextrow;
-    struct tagDISTINCTSET *nextcol;
-} DISTINCTSET;
+    struct LibmsiDistinctSet *nextrow;
+    struct LibmsiDistinctSet *nextcol;
+} LibmsiDistinctSet;
 
-typedef struct tagMSIDISTINCTVIEW
+typedef struct LibmsiDistinctView
 {
-    MSIVIEW        view;
-    MSIDATABASE   *db;
-    MSIVIEW       *table;
+    LibmsiView        view;
+    LibmsiDatabase   *db;
+    LibmsiView       *table;
     unsigned           row_count;
     unsigned          *translation;
-} MSIDISTINCTVIEW;
+} LibmsiDistinctView;
 
-static DISTINCTSET ** distinct_insert( DISTINCTSET **x, unsigned val, unsigned row )
+static LibmsiDistinctSet ** distinct_insert( LibmsiDistinctSet **x, unsigned val, unsigned row )
 {
     /* horrible O(n) find */
     while( *x )
@@ -65,7 +65,7 @@ static DISTINCTSET ** distinct_insert( DISTINCTSET **x, unsigned val, unsigned r
     }
 
     /* nothing found, so add one */
-    *x = msi_alloc( sizeof (DISTINCTSET) );
+    *x = msi_alloc( sizeof (LibmsiDistinctSet) );
     if( *x )
     {
         (*x)->val = val;
@@ -77,20 +77,20 @@ static DISTINCTSET ** distinct_insert( DISTINCTSET **x, unsigned val, unsigned r
     return x;
 }
 
-static void distinct_free( DISTINCTSET *x )
+static void distinct_free( LibmsiDistinctSet *x )
 {
     while( x )
     {
-        DISTINCTSET *next = x->nextrow;
+        LibmsiDistinctSet *next = x->nextrow;
         distinct_free( x->nextcol );
         msi_free( x );
         x = next;
     }
 }
 
-static unsigned DISTINCT_fetch_int( MSIVIEW *view, unsigned row, unsigned col, unsigned *val )
+static unsigned DISTINCT_fetch_int( LibmsiView *view, unsigned row, unsigned col, unsigned *val )
 {
-    MSIDISTINCTVIEW *dv = (MSIDISTINCTVIEW*)view;
+    LibmsiDistinctView *dv = (LibmsiDistinctView*)view;
 
     TRACE("%p %d %d %p\n", dv, row, col, val );
 
@@ -105,11 +105,11 @@ static unsigned DISTINCT_fetch_int( MSIVIEW *view, unsigned row, unsigned col, u
     return dv->table->ops->fetch_int( dv->table, row, col, val );
 }
 
-static unsigned DISTINCT_execute( MSIVIEW *view, MSIRECORD *record )
+static unsigned DISTINCT_execute( LibmsiView *view, LibmsiRecord *record )
 {
-    MSIDISTINCTVIEW *dv = (MSIDISTINCTVIEW*)view;
+    LibmsiDistinctView *dv = (LibmsiDistinctView*)view;
     unsigned r, i, j, r_count, c_count;
-    DISTINCTSET *rowset = NULL;
+    LibmsiDistinctSet *rowset = NULL;
 
     TRACE("%p %p\n", dv, record);
 
@@ -131,7 +131,7 @@ static unsigned DISTINCT_execute( MSIVIEW *view, MSIRECORD *record )
     /* build it */
     for( i=0; i<r_count; i++ )
     {
-        DISTINCTSET **x = &rowset;
+        LibmsiDistinctSet **x = &rowset;
 
         for( j=1; j<=c_count; j++ )
         {
@@ -167,9 +167,9 @@ static unsigned DISTINCT_execute( MSIVIEW *view, MSIRECORD *record )
     return ERROR_SUCCESS;
 }
 
-static unsigned DISTINCT_close( MSIVIEW *view )
+static unsigned DISTINCT_close( LibmsiView *view )
 {
-    MSIDISTINCTVIEW *dv = (MSIDISTINCTVIEW*)view;
+    LibmsiDistinctView *dv = (LibmsiDistinctView*)view;
 
     TRACE("%p\n", dv );
 
@@ -183,9 +183,9 @@ static unsigned DISTINCT_close( MSIVIEW *view )
     return dv->table->ops->close( dv->table );
 }
 
-static unsigned DISTINCT_get_dimensions( MSIVIEW *view, unsigned *rows, unsigned *cols )
+static unsigned DISTINCT_get_dimensions( LibmsiView *view, unsigned *rows, unsigned *cols )
 {
-    MSIDISTINCTVIEW *dv = (MSIDISTINCTVIEW*)view;
+    LibmsiDistinctView *dv = (LibmsiDistinctView*)view;
 
     TRACE("%p %p %p\n", dv, rows, cols );
 
@@ -202,10 +202,10 @@ static unsigned DISTINCT_get_dimensions( MSIVIEW *view, unsigned *rows, unsigned
     return dv->table->ops->get_dimensions( dv->table, NULL, cols );
 }
 
-static unsigned DISTINCT_get_column_info( MSIVIEW *view, unsigned n, const WCHAR **name,
+static unsigned DISTINCT_get_column_info( LibmsiView *view, unsigned n, const WCHAR **name,
                                       unsigned *type, bool *temporary, const WCHAR **table_name )
 {
-    MSIDISTINCTVIEW *dv = (MSIDISTINCTVIEW*)view;
+    LibmsiDistinctView *dv = (LibmsiDistinctView*)view;
 
     TRACE("%p %d %p %p %p %p\n", dv, n, name, type, temporary, table_name );
 
@@ -216,10 +216,10 @@ static unsigned DISTINCT_get_column_info( MSIVIEW *view, unsigned n, const WCHAR
                                             type, temporary, table_name );
 }
 
-static unsigned DISTINCT_modify( MSIVIEW *view, MSIMODIFY eModifyMode,
-                             MSIRECORD *rec, unsigned row )
+static unsigned DISTINCT_modify( LibmsiView *view, LibmsiModify eModifyMode,
+                             LibmsiRecord *rec, unsigned row )
 {
-    MSIDISTINCTVIEW *dv = (MSIDISTINCTVIEW*)view;
+    LibmsiDistinctView *dv = (LibmsiDistinctView*)view;
 
     TRACE("%p %d %p\n", dv, eModifyMode, rec );
 
@@ -229,9 +229,9 @@ static unsigned DISTINCT_modify( MSIVIEW *view, MSIMODIFY eModifyMode,
     return dv->table->ops->modify( dv->table, eModifyMode, rec, row );
 }
 
-static unsigned DISTINCT_delete( MSIVIEW *view )
+static unsigned DISTINCT_delete( LibmsiView *view )
 {
-    MSIDISTINCTVIEW *dv = (MSIDISTINCTVIEW*)view;
+    LibmsiDistinctView *dv = (LibmsiDistinctView*)view;
 
     TRACE("%p\n", dv );
 
@@ -245,10 +245,10 @@ static unsigned DISTINCT_delete( MSIVIEW *view )
     return ERROR_SUCCESS;
 }
 
-static unsigned DISTINCT_find_matching_rows( MSIVIEW *view, unsigned col,
+static unsigned DISTINCT_find_matching_rows( LibmsiView *view, unsigned col,
     unsigned val, unsigned *row, MSIITERHANDLE *handle )
 {
-    MSIDISTINCTVIEW *dv = (MSIDISTINCTVIEW*)view;
+    LibmsiDistinctView *dv = (LibmsiDistinctView*)view;
     unsigned r;
 
     TRACE("%p, %d, %u, %p\n", view, col, val, *handle);
@@ -266,7 +266,7 @@ static unsigned DISTINCT_find_matching_rows( MSIVIEW *view, unsigned col,
     return r;
 }
 
-static const MSIVIEWOPS distinct_ops =
+static const LibmsiViewOPS distinct_ops =
 {
     DISTINCT_fetch_int,
     NULL,
@@ -289,9 +289,9 @@ static const MSIVIEWOPS distinct_ops =
     NULL,
 };
 
-unsigned DISTINCT_CreateView( MSIDATABASE *db, MSIVIEW **view, MSIVIEW *table )
+unsigned DISTINCT_CreateView( LibmsiDatabase *db, LibmsiView **view, LibmsiView *table )
 {
-    MSIDISTINCTVIEW *dv = NULL;
+    LibmsiDistinctView *dv = NULL;
     unsigned count = 0, r;
 
     TRACE("%p\n", dv );
@@ -314,7 +314,7 @@ unsigned DISTINCT_CreateView( MSIDATABASE *db, MSIVIEW **view, MSIVIEW *table )
     dv->table = table;
     dv->translation = NULL;
     dv->row_count = 0;
-    *view = (MSIVIEW*) dv;
+    *view = (LibmsiView*) dv;
 
     return ERROR_SUCCESS;
 }

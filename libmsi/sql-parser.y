@@ -40,13 +40,13 @@
 static int sql_error(const char *str);
 
 
-typedef struct tag_SQL_input
+typedef struct LibmsiSQLInput
 {
-    MSIDATABASE *db;
+    LibmsiDatabase *db;
     const WCHAR *command;
     unsigned n, len;
     unsigned r;
-    MSIVIEW **view;  /* View structure for the resulting query.  This value
+    LibmsiView **view;  /* View structure for the resulting query.  This value
                       * tracks the view currently being created so we can free
                       * this view on syntax error.
                       */
@@ -84,7 +84,7 @@ static struct expr * EXPR_wildcard( void *info );
     struct sql_str str;
     WCHAR *string;
     column_info *column_list;
-    MSIVIEW *query;
+    LibmsiView *query;
     struct expr *expr;
     uint16_t column_type;
     int integer;
@@ -150,7 +150,7 @@ oneinsert:
     TK_INSERT TK_INTO table TK_LP collist TK_RP TK_VALUES TK_LP constlist TK_RP
         {
             SQL_input *sql = (SQL_input*) info;
-            MSIVIEW *insert = NULL;
+            LibmsiView *insert = NULL;
 
             INSERT_CreateView( sql->db, &insert, $3, $5, $9, false );
             if( !insert )
@@ -161,7 +161,7 @@ oneinsert:
   | TK_INSERT TK_INTO table TK_LP collist TK_RP TK_VALUES TK_LP constlist TK_RP TK_TEMPORARY
         {
             SQL_input *sql = (SQL_input*) info;
-            MSIVIEW *insert = NULL;
+            LibmsiView *insert = NULL;
 
             INSERT_CreateView( sql->db, &insert, $3, $5, $9, true );
             if( !insert )
@@ -175,7 +175,7 @@ onecreate:
     TK_CREATE TK_TABLE table TK_LP table_def TK_RP
         {
             SQL_input* sql = (SQL_input*) info;
-            MSIVIEW *create = NULL;
+            LibmsiView *create = NULL;
             unsigned r;
 
             if( !$5 )
@@ -192,7 +192,7 @@ onecreate:
   | TK_CREATE TK_TABLE table TK_LP table_def TK_RP TK_HOLD
         {
             SQL_input* sql = (SQL_input*) info;
-            MSIVIEW *create = NULL;
+            LibmsiView *create = NULL;
 
             if( !$5 )
                 YYABORT;
@@ -208,7 +208,7 @@ oneupdate:
     TK_UPDATE table TK_SET update_assign_list TK_WHERE expr
         {
             SQL_input* sql = (SQL_input*) info;
-            MSIVIEW *update = NULL;
+            LibmsiView *update = NULL;
 
             UPDATE_CreateView( sql->db, &update, $2, $4, $6 );
             if( !update )
@@ -219,7 +219,7 @@ oneupdate:
   | TK_UPDATE table TK_SET update_assign_list
         {
             SQL_input* sql = (SQL_input*) info;
-            MSIVIEW *update = NULL;
+            LibmsiView *update = NULL;
 
             UPDATE_CreateView( sql->db, &update, $2, $4, NULL );
             if( !update )
@@ -233,7 +233,7 @@ onedelete:
     TK_DELETE from
         {
             SQL_input* sql = (SQL_input*) info;
-            MSIVIEW *delete = NULL;
+            LibmsiView *delete = NULL;
 
             DELETE_CreateView( sql->db, &delete, $2 );
             if( !delete )
@@ -247,7 +247,7 @@ onealter:
     TK_ALTER TK_TABLE table alterop
         {
             SQL_input* sql = (SQL_input*) info;
-            MSIVIEW *alter = NULL;
+            LibmsiView *alter = NULL;
 
             ALTER_CreateView( sql->db, &alter, $3, NULL, $4 );
             if( !alter )
@@ -258,7 +258,7 @@ onealter:
   | TK_ALTER TK_TABLE table TK_ADD column_and_type
         {
             SQL_input *sql = (SQL_input *)info;
-            MSIVIEW *alter = NULL;
+            LibmsiView *alter = NULL;
 
             ALTER_CreateView( sql->db, &alter, $3, $5, 0 );
             if (!alter)
@@ -269,7 +269,7 @@ onealter:
   | TK_ALTER TK_TABLE table TK_ADD column_and_type TK_HOLD
         {
             SQL_input *sql = (SQL_input *)info;
-            MSIVIEW *alter = NULL;
+            LibmsiView *alter = NULL;
 
             ALTER_CreateView( sql->db, &alter, $3, $5, 1 );
             if (!alter)
@@ -294,7 +294,7 @@ onedrop:
     TK_DROP TK_TABLE table
         {
             SQL_input* sql = (SQL_input*) info;
-            MSIVIEW* drop = NULL;
+            LibmsiView* drop = NULL;
             unsigned r;
 
             r = DROP_CreateView( sql->db, &drop, $3 );
@@ -415,7 +415,7 @@ oneselect:
   | TK_SELECT TK_DISTINCT selectfrom
         {
             SQL_input* sql = (SQL_input*) info;
-            MSIVIEW* distinct = NULL;
+            LibmsiView* distinct = NULL;
             unsigned r;
 
             r = DISTINCT_CreateView( sql->db, &distinct, $3 );
@@ -430,7 +430,7 @@ selectfrom:
     selcollist from
         {
             SQL_input* sql = (SQL_input*) info;
-            MSIVIEW* select = NULL;
+            LibmsiView* select = NULL;
             unsigned r;
 
             if( $1 )
@@ -474,7 +474,7 @@ from:
     TK_FROM table
         {
             SQL_input* sql = (SQL_input*) info;
-            MSIVIEW* table = NULL;
+            LibmsiView* table = NULL;
             unsigned r;
 
             r = TABLE_CreateView( sql->db, $2, &table );
@@ -503,7 +503,7 @@ unorderdfrom:
     TK_FROM tablelist
         {
             SQL_input* sql = (SQL_input*) info;
-            MSIVIEW* where = NULL;
+            LibmsiView* where = NULL;
             unsigned r;
 
             r = WHERE_CreateView( sql->db, &where, $2, NULL );
@@ -515,7 +515,7 @@ unorderdfrom:
   | TK_FROM tablelist TK_WHERE expr
         {
             SQL_input* sql = (SQL_input*) info;
-            MSIVIEW* where = NULL;
+            LibmsiView* where = NULL;
             unsigned r;
 
             r = WHERE_CreateView( sql->db, &where, $2, $4 );
@@ -998,7 +998,7 @@ static bool SQL_MarkPrimaryKeys( column_info **cols,
     return found;
 }
 
-unsigned MSI_ParseSQL( MSIDATABASE *db, const WCHAR *command, MSIVIEW **phview,
+unsigned MSI_ParseSQL( LibmsiDatabase *db, const WCHAR *command, LibmsiView **phview,
                    struct list *mem )
 {
     SQL_input sql;

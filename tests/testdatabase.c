@@ -36,8 +36,8 @@ static const WCHAR msifileW[] = {'w','i','n','e','t','e','s','t','-','d','b','.'
 
 static void test_msidatabase(void)
 {
-    MSIOBJECT *hdb = 0;
-    MSIOBJECT *hdb2 = 0;
+    LibmsiObject *hdb = 0;
+    LibmsiObject *hdb2 = 0;
     unsigned res;
 
     DeleteFile(msifile);
@@ -52,7 +52,7 @@ static void test_msidatabase(void)
     ok( res == ERROR_SUCCESS , "Failed to close database\n" );
 
     /* create an empty database */
-    res = MsiOpenDatabase(msifile, MSIDBOPEN_CREATE, &hdb );
+    res = MsiOpenDatabase(msifile, LIBMSI_DB_OPEN_CREATE, &hdb );
     ok( res == ERROR_SUCCESS , "Failed to create database\n" );
 
     res = MsiDatabaseCommit( hdb );
@@ -92,7 +92,7 @@ static void test_msidatabase(void)
 
     ok( INVALID_FILE_ATTRIBUTES != GetFileAttributes( msifile2 ), "committed database should exist\n");
 
-    res = MsiOpenDatabase( msifile, MSIDBOPEN_READONLY, &hdb );
+    res = MsiOpenDatabase( msifile, LIBMSI_DB_OPEN_READONLY, &hdb );
     ok( res == ERROR_SUCCESS , "Failed to open database\n" );
 
     res = MsiDatabaseCommit( hdb );
@@ -101,21 +101,21 @@ static void test_msidatabase(void)
     res = MsiCloseHandle( hdb );
     ok( res == ERROR_SUCCESS , "Failed to close database\n" );
 
-    res = MsiOpenDatabase( msifile, MSIDBOPEN_DIRECT, &hdb );
+    res = MsiOpenDatabase( msifile, LIBMSI_DB_OPEN_DIRECT, &hdb );
     ok( res == ERROR_SUCCESS , "Failed to open database\n" );
 
     res = MsiCloseHandle( hdb );
     ok( res == ERROR_SUCCESS , "Failed to close database\n" );
 
-    res = MsiOpenDatabase( msifile, MSIDBOPEN_TRANSACT, &hdb );
+    res = MsiOpenDatabase( msifile, LIBMSI_DB_OPEN_TRANSACT, &hdb );
     ok( res == ERROR_SUCCESS , "Failed to open database\n" );
 
     res = MsiCloseHandle( hdb );
     ok( res == ERROR_SUCCESS , "Failed to close database\n" );
     ok( INVALID_FILE_ATTRIBUTES != GetFileAttributes( msifile ), "database should exist\n");
 
-    /* MSIDBOPEN_CREATE deletes the database if MsiCommitDatabase isn't called */
-    res = MsiOpenDatabase( msifile, MSIDBOPEN_CREATE, &hdb );
+    /* LIBMSI_DB_OPEN_CREATE deletes the database if MsiCommitDatabase isn't called */
+    res = MsiOpenDatabase( msifile, LIBMSI_DB_OPEN_CREATE, &hdb );
     ok( res == ERROR_SUCCESS , "Failed to open database\n" );
 
     ok( INVALID_FILE_ATTRIBUTES != GetFileAttributes( msifile ), "database should exist\n");
@@ -125,7 +125,7 @@ static void test_msidatabase(void)
 
     ok( INVALID_FILE_ATTRIBUTES == GetFileAttributes( msifile ), "database should exist\n");
 
-    res = MsiOpenDatabase( msifile, MSIDBOPEN_CREATE, &hdb );
+    res = MsiOpenDatabase( msifile, LIBMSI_DB_OPEN_CREATE, &hdb );
     ok( res == ERROR_SUCCESS , "Failed to open database\n" );
 
     res = MsiDatabaseCommit( hdb );
@@ -143,9 +143,9 @@ static void test_msidatabase(void)
     ok( res == true, "Failed to delete database\n" );
 }
 
-static unsigned do_query(MSIOBJECT *hdb, const char *query, MSIOBJECT **phrec)
+static unsigned do_query(LibmsiObject *hdb, const char *query, LibmsiObject **phrec)
 {
-    MSIOBJECT *hview = 0;
+    LibmsiObject *hview = 0;
     unsigned r, ret;
 
     if (phrec)
@@ -168,9 +168,9 @@ static unsigned do_query(MSIOBJECT *hdb, const char *query, MSIOBJECT **phrec)
     return ret;
 }
 
-static unsigned run_query( MSIOBJECT *hdb, MSIOBJECT *hrec, const char *query )
+static unsigned run_query( LibmsiObject *hdb, LibmsiObject *hrec, const char *query )
 {
-    MSIOBJECT *hview = 0;
+    LibmsiObject *hview = 0;
     unsigned r;
 
     r = MsiDatabaseOpenView(hdb, query, &hview);
@@ -184,9 +184,9 @@ static unsigned run_query( MSIOBJECT *hdb, MSIOBJECT *hrec, const char *query )
     return r;
 }
 
-static unsigned run_queryW( MSIOBJECT *hdb, MSIOBJECT *hrec, const WCHAR *query )
+static unsigned run_queryW( LibmsiObject *hdb, LibmsiObject *hrec, const WCHAR *query )
 {
-    MSIOBJECT *hview = 0;
+    LibmsiObject *hview = 0;
     unsigned r;
 
     r = MsiDatabaseOpenViewW(hdb, query, &hview);
@@ -200,7 +200,7 @@ static unsigned run_queryW( MSIOBJECT *hdb, MSIOBJECT *hrec, const WCHAR *query 
     return r;
 }
 
-static unsigned create_component_table( MSIOBJECT *hdb )
+static unsigned create_component_table( LibmsiObject *hdb )
 {
     return run_query( hdb, 0,
             "CREATE TABLE `Component` ( "
@@ -213,7 +213,7 @@ static unsigned create_component_table( MSIOBJECT *hdb )
             "PRIMARY KEY `Component`)" );
 }
 
-static unsigned create_custom_action_table( MSIOBJECT *hdb )
+static unsigned create_custom_action_table( LibmsiObject *hdb )
 {
     return run_query( hdb, 0,
             "CREATE TABLE `CustomAction` ( "
@@ -224,7 +224,7 @@ static unsigned create_custom_action_table( MSIOBJECT *hdb )
             "PRIMARY KEY `Action`)" );
 }
 
-static unsigned create_directory_table( MSIOBJECT *hdb )
+static unsigned create_directory_table( LibmsiObject *hdb )
 {
     return run_query( hdb, 0,
             "CREATE TABLE `Directory` ( "
@@ -234,7 +234,7 @@ static unsigned create_directory_table( MSIOBJECT *hdb )
             "PRIMARY KEY `Directory`)" );
 }
 
-static unsigned create_feature_components_table( MSIOBJECT *hdb )
+static unsigned create_feature_components_table( LibmsiObject *hdb )
 {
     return run_query( hdb, 0,
             "CREATE TABLE `FeatureComponents` ( "
@@ -243,7 +243,7 @@ static unsigned create_feature_components_table( MSIOBJECT *hdb )
             "PRIMARY KEY `Feature_`, `Component_` )" );
 }
 
-static unsigned create_std_dlls_table( MSIOBJECT *hdb )
+static unsigned create_std_dlls_table( LibmsiObject *hdb )
 {
     return run_query( hdb, 0,
             "CREATE TABLE `StdDlls` ( "
@@ -252,7 +252,7 @@ static unsigned create_std_dlls_table( MSIOBJECT *hdb )
             "PRIMARY KEY `File` )" );
 }
 
-static unsigned create_binary_table( MSIOBJECT *hdb )
+static unsigned create_binary_table( LibmsiObject *hdb )
 {
     return run_query( hdb, 0,
             "CREATE TABLE `Binary` ( "
@@ -262,7 +262,7 @@ static unsigned create_binary_table( MSIOBJECT *hdb )
 }
 
 #define make_add_entry(type, qtext) \
-    static unsigned add##_##type##_##entry( MSIOBJECT *hdb, const char *values ) \
+    static unsigned add##_##type##_##entry( LibmsiObject *hdb, const char *values ) \
     { \
         char insert[] = qtext; \
         char *query; \
@@ -296,10 +296,10 @@ make_add_entry(binary,
 
 static void test_msiinsert(void)
 {
-    MSIOBJECT *hdb = 0;
-    MSIOBJECT *hview = 0;
-    MSIOBJECT *hview2 = 0;
-    MSIOBJECT *hrec = 0;
+    LibmsiObject *hdb = 0;
+    LibmsiObject *hview = 0;
+    LibmsiObject *hview2 = 0;
+    LibmsiObject *hrec = 0;
     unsigned r;
     const char *query;
     char buf[80];
@@ -308,7 +308,7 @@ static void test_msiinsert(void)
     DeleteFile(msifile);
 
     /* just MsiOpenDatabase should not create a file */
-    r = MsiOpenDatabase(msifile, MSIDBOPEN_CREATE, &hdb);
+    r = MsiOpenDatabase(msifile, LIBMSI_DB_OPEN_CREATE, &hdb);
     ok(r == ERROR_SUCCESS, "MsiOpenDatabase failed\n");
 
     /* create a table */
@@ -455,9 +455,9 @@ static void test_msiinsert(void)
     ok(r == true, "file didn't exist after commit\n");
 }
 
-static unsigned try_query_param( MSIOBJECT *hdb, const char *szQuery, MSIOBJECT *hrec )
+static unsigned try_query_param( LibmsiObject *hdb, const char *szQuery, LibmsiObject *hrec )
 {
-    MSIOBJECT *htab = 0;
+    LibmsiObject *htab = 0;
     unsigned res;
 
     res = MsiDatabaseOpenView( hdb, szQuery, &htab );
@@ -480,14 +480,14 @@ static unsigned try_query_param( MSIOBJECT *hdb, const char *szQuery, MSIOBJECT 
     return res;
 }
 
-static unsigned try_query( MSIOBJECT *hdb, const char *szQuery )
+static unsigned try_query( LibmsiObject *hdb, const char *szQuery )
 {
     return try_query_param( hdb, szQuery, 0 );
 }
 
-static unsigned try_insert_query( MSIOBJECT *hdb, const char *szQuery )
+static unsigned try_insert_query( LibmsiObject *hdb, const char *szQuery )
 {
-    MSIOBJECT *hrec = 0;
+    LibmsiObject *hrec = 0;
     unsigned r;
 
     hrec = MsiCreateRecord( 1 );
@@ -501,13 +501,13 @@ static unsigned try_insert_query( MSIOBJECT *hdb, const char *szQuery )
 
 static void test_msibadqueries(void)
 {
-    MSIOBJECT *hdb = 0;
+    LibmsiObject *hdb = 0;
     unsigned r;
 
     DeleteFile(msifile);
 
     /* just MsiOpenDatabase should not create a file */
-    r = MsiOpenDatabase(msifile, MSIDBOPEN_CREATE, &hdb);
+    r = MsiOpenDatabase(msifile, LIBMSI_DB_OPEN_CREATE, &hdb);
     ok(r == ERROR_SUCCESS, "MsiOpenDatabase failed\n");
 
     r = MsiDatabaseCommit( hdb );
@@ -517,7 +517,7 @@ static void test_msibadqueries(void)
     ok(r == ERROR_SUCCESS , "Failed to close database\n");
 
     /* open it readonly */
-    r = MsiOpenDatabase(msifile, MSIDBOPEN_READONLY, &hdb );
+    r = MsiOpenDatabase(msifile, LIBMSI_DB_OPEN_READONLY, &hdb );
     ok(r == ERROR_SUCCESS , "Failed to open database r/o\n");
 
     /* add a table to it */
@@ -528,7 +528,7 @@ static void test_msibadqueries(void)
     ok(r == ERROR_SUCCESS , "Failed to close database r/o\n");
 
     /* open it read/write */
-    r = MsiOpenDatabase(msifile, MSIDBOPEN_TRANSACT, &hdb );
+    r = MsiOpenDatabase(msifile, LIBMSI_DB_OPEN_TRANSACT, &hdb );
     ok(r == ERROR_SUCCESS , "Failed to open database r/w\n");
 
     /* a bunch of test queries that fail with the native MSI */
@@ -720,11 +720,11 @@ static void test_msibadqueries(void)
 
 static void test_viewmodify(void)
 {
-    MSIOBJECT *hdb = 0;
-    MSIOBJECT *hview = 0;
-    MSIOBJECT *hrec = 0;
+    LibmsiObject *hdb = 0;
+    LibmsiObject *hview = 0;
+    LibmsiObject *hrec = 0;
     unsigned r;
-    MSIDBERROR err;
+    LibmsiDBError err;
     const char *query;
     char buffer[0x100];
     unsigned sz;
@@ -732,7 +732,7 @@ static void test_viewmodify(void)
     DeleteFile(msifile);
 
     /* just MsiOpenDatabase should not create a file */
-    r = MsiOpenDatabase(msifile, MSIDBOPEN_CREATE, &hdb);
+    r = MsiOpenDatabase(msifile, LIBMSI_DB_OPEN_CREATE, &hdb);
     ok(r == ERROR_SUCCESS, "MsiOpenDatabase failed\n");
 
     query = "CREATE TABLE `phone` ( "
@@ -758,7 +758,7 @@ static void test_viewmodify(void)
     sz = 0;
     /* passing NULL as the 3rd param make function to crash on older platforms */
     err = MsiViewGetError( 0, NULL, &sz );
-    ok(err == MSIDBERROR_INVALIDARG, "MsiViewGetError return\n");
+    ok(err == LIBMSI_DB_ERROR_INVALIDARG, "MsiViewGetError return\n");
 
     /* open a view */
     query = "SELECT * FROM `phone`";
@@ -767,30 +767,30 @@ static void test_viewmodify(void)
 
     /* see what happens with a good hview and bad args */
     err = MsiViewGetError( hview, NULL, NULL );
-    ok(err == MSIDBERROR_INVALIDARG || err == MSIDBERROR_NOERROR,
+    ok(err == LIBMSI_DB_ERROR_INVALIDARG || err == LIBMSI_DB_ERROR_NOERROR,
        "MsiViewGetError returns %u (expected -3)\n", err);
     err = MsiViewGetError( hview, buffer, NULL );
-    ok(err == MSIDBERROR_INVALIDARG, "MsiViewGetError return\n");
+    ok(err == LIBMSI_DB_ERROR_INVALIDARG, "MsiViewGetError return\n");
 
     /* see what happens with a zero length buffer */
     sz = 0;
     buffer[0] = 'x';
     err = MsiViewGetError( hview, buffer, &sz );
-    ok(err == MSIDBERROR_MOREDATA, "MsiViewGetError return\n");
+    ok(err == LIBMSI_DB_ERROR_MOREDATA, "MsiViewGetError return\n");
     ok(buffer[0] == 'x', "buffer cleared\n");
     ok(sz == 0, "size not zero\n");
 
     /* ok this one is strange */
     sz = 0;
     err = MsiViewGetError( hview, NULL, &sz );
-    ok(err == MSIDBERROR_NOERROR, "MsiViewGetError return\n");
+    ok(err == LIBMSI_DB_ERROR_NOERROR, "MsiViewGetError return\n");
     ok(sz == 0, "size not zero\n");
 
     /* see if it really has an error */
     sz = sizeof buffer;
     buffer[0] = 'x';
     err = MsiViewGetError( hview, buffer, &sz );
-    ok(err == MSIDBERROR_NOERROR, "MsiViewGetError return\n");
+    ok(err == LIBMSI_DB_ERROR_NOERROR, "MsiViewGetError return\n");
     ok(buffer[0] == 0, "buffer not cleared\n");
     ok(sz == 0, "size not zero\n");
 
@@ -798,7 +798,7 @@ static void test_viewmodify(void)
     ok(r == ERROR_SUCCESS, "MsiViewExecute failed\n");
 
     /* try some invalid records */
-    r = MsiViewModify(hview, MSIMODIFY_INSERT, 0 );
+    r = MsiViewModify(hview, LIBMSI_MODIFY_INSERT, 0 );
     ok(r == ERROR_INVALID_HANDLE, "MsiViewModify failed\n");
     r = MsiViewModify(hview, -1, 0 );
     ok(r == ERROR_INVALID_HANDLE, "MsiViewModify failed\n");
@@ -811,7 +811,7 @@ static void test_viewmodify(void)
     sz = sizeof buffer;
     buffer[0] = 'x';
     err = MsiViewGetError( hview, buffer, &sz );
-    ok(err == MSIDBERROR_NOERROR, "MsiViewGetError return\n");
+    ok(err == LIBMSI_DB_ERROR_NOERROR, "MsiViewGetError return\n");
     ok(buffer[0] == 0, "buffer not cleared\n");
     ok(sz == 0, "size not zero\n");
 
@@ -830,20 +830,20 @@ static void test_viewmodify(void)
 
     r = MsiViewExecute(hview, 0);
     ok(r == ERROR_SUCCESS, "MsiViewExecute failed\n");
-    r = MsiViewModify(hview, MSIMODIFY_INSERT_TEMPORARY, hrec );
+    r = MsiViewModify(hview, LIBMSI_MODIFY_INSERT_TEMPORARY, hrec );
     ok(r == ERROR_SUCCESS, "MsiViewModify failed\n");
 
     /* validate it */
     r = MsiViewExecute(hview, 0);
     ok(r == ERROR_SUCCESS, "MsiViewExecute failed\n");
 
-    r = MsiViewModify(hview, MSIMODIFY_VALIDATE_NEW, hrec );
+    r = MsiViewModify(hview, LIBMSI_MODIFY_VALIDATE_NEW, hrec );
     ok(r == ERROR_INVALID_DATA, "MsiViewModify failed %u\n", r);
 
     sz = sizeof buffer;
     buffer[0] = 'x';
     err = MsiViewGetError( hview, buffer, &sz );
-    ok(err == MSIDBERROR_DUPLICATEKEY, "MsiViewGetError returned %u\n", err);
+    ok(err == LIBMSI_DB_ERROR_DUPLICATEKEY, "MsiViewGetError returned %u\n", err);
     ok(!strcmp(buffer, "id"), "expected \"id\" c, got \"%s\"\n", buffer);
     ok(sz == 2, "size not 2\n");
 
@@ -852,13 +852,13 @@ static void test_viewmodify(void)
     ok(r == ERROR_SUCCESS, "MsiViewExecute failed\n");
 
     /* should fail ... */
-    r = MsiViewModify(hview, MSIMODIFY_INSERT_TEMPORARY, hrec );
+    r = MsiViewModify(hview, LIBMSI_MODIFY_INSERT_TEMPORARY, hrec );
     ok(r == ERROR_FUNCTION_FAILED, "MsiViewModify failed\n");
 
     /* try to merge the same record */
     r = MsiViewExecute(hview, 0);
     ok(r == ERROR_SUCCESS, "MsiViewExecute failed\n");
-    r = MsiViewModify(hview, MSIMODIFY_MERGE, hrec );
+    r = MsiViewModify(hview, LIBMSI_MODIFY_MERGE, hrec );
     ok(r == ERROR_SUCCESS, "MsiViewModify failed\n");
 
     r = MsiCloseHandle(hrec);
@@ -874,7 +874,7 @@ static void test_viewmodify(void)
     r = MsiRecordSetString(hrec, 3, "7654321");
     ok(r == ERROR_SUCCESS, "failed to set string\n");
 
-    r = MsiViewModify(hview, MSIMODIFY_MERGE, hrec );
+    r = MsiViewModify(hview, LIBMSI_MODIFY_MERGE, hrec );
     ok(r == ERROR_SUCCESS, "MsiViewModify failed\n");
     r = MsiViewExecute(hview, 0);
     ok(r == ERROR_SUCCESS, "MsiViewExecute failed\n");
@@ -914,18 +914,18 @@ static void test_viewmodify(void)
     r = MsiRecordSetString(hrec, 3, "3141592");
     ok(r == ERROR_SUCCESS, "MsiRecordSetString failed\n");
 
-    r = MsiViewModify(hview, MSIMODIFY_UPDATE, hrec);
+    r = MsiViewModify(hview, LIBMSI_MODIFY_UPDATE, hrec);
     ok(r == ERROR_SUCCESS, "MsiViewModify failed\n");
 
     /* do it again */
-    r = MsiViewModify(hview, MSIMODIFY_UPDATE, hrec);
+    r = MsiViewModify(hview, LIBMSI_MODIFY_UPDATE, hrec);
     ok(r == ERROR_SUCCESS, "MsiViewModify failed: %d\n", r);
 
     /* update the view, primary key */
     r = MsiRecordSetInteger(hrec, 1, 5);
     ok(r == ERROR_SUCCESS, "MsiRecordSetInteger failed\n");
 
-    r = MsiViewModify(hview, MSIMODIFY_UPDATE, hrec);
+    r = MsiViewModify(hview, LIBMSI_MODIFY_UPDATE, hrec);
     ok(r == ERROR_FUNCTION_FAILED, "MsiViewModify failed\n");
 
     r = MsiCloseHandle(hrec);
@@ -973,7 +973,7 @@ static void test_viewmodify(void)
     r = MsiRecordSetString(hrec, 3, "112358");
     ok(r == ERROR_SUCCESS, "failed to set string\n");
 
-    r = MsiViewModify(hview, MSIMODIFY_UPDATE, hrec);
+    r = MsiViewModify(hview, LIBMSI_MODIFY_UPDATE, hrec);
     ok(r == ERROR_FUNCTION_FAILED, "Expected ERROR_FUNCTION_FAILED, got %d\n", r);
 
     r = MsiCloseHandle(hrec);
@@ -990,7 +990,7 @@ static void test_viewmodify(void)
     r = MsiRecordSetString(hrec, 3, "112358");
     ok(r == ERROR_SUCCESS, "failed to set string\n");
 
-    r = MsiViewModify(hview, MSIMODIFY_UPDATE, hrec);
+    r = MsiViewModify(hview, LIBMSI_MODIFY_UPDATE, hrec);
     ok(r == ERROR_FUNCTION_FAILED, "MsiViewModify failed\n");
 
     r = MsiCloseHandle(hrec);
@@ -1007,7 +1007,7 @@ static void test_viewmodify(void)
 
     r = MsiViewExecute(hview, 0);
     ok(r == ERROR_SUCCESS, "MsiViewExecute failed\n");
-    r = MsiViewModify(hview, MSIMODIFY_INSERT_TEMPORARY, hrec );
+    r = MsiViewModify(hview, LIBMSI_MODIFY_INSERT_TEMPORARY, hrec );
     ok(r == ERROR_SUCCESS, "MsiViewModify failed\n");
 
     r = MsiCloseHandle(hrec);
@@ -1031,7 +1031,7 @@ static void test_viewmodify(void)
     r = MsiRecordSetString(hrec, 2, "jerry");
     ok(r == ERROR_SUCCESS, "failed to set string\n");
 
-    r = MsiViewModify(hview, MSIMODIFY_UPDATE, hrec);
+    r = MsiViewModify(hview, LIBMSI_MODIFY_UPDATE, hrec);
     ok(r == ERROR_FUNCTION_FAILED, "MsiViewModify failed\n");
 
     r = MsiCloseHandle(hrec);
@@ -1056,7 +1056,7 @@ static void test_viewmodify(void)
     r = MsiRecordSetString(hrec, 2, "jerry");
     ok(r == ERROR_SUCCESS, "failed to set string\n");
 
-    r = MsiViewModify(hview, MSIMODIFY_UPDATE, hrec);
+    r = MsiViewModify(hview, LIBMSI_MODIFY_UPDATE, hrec);
     ok(r == ERROR_FUNCTION_FAILED, "MsiViewModify failed\n");
 
     r = MsiCloseHandle(hrec);
@@ -1070,15 +1070,15 @@ static void test_viewmodify(void)
     ok(r == ERROR_SUCCESS, "MsiOpenDatabase close failed\n");
 }
 
-static MSIOBJECT *create_db(void)
+static LibmsiObject *create_db(void)
 {
-    MSIOBJECT *hdb = 0;
+    LibmsiObject *hdb = 0;
     unsigned res;
 
     DeleteFile(msifile);
 
     /* create an empty database */
-    res = MsiOpenDatabase(msifile, MSIDBOPEN_CREATE, &hdb );
+    res = MsiOpenDatabase(msifile, LIBMSI_DB_OPEN_CREATE, &hdb );
     ok( res == ERROR_SUCCESS , "Failed to create database\n" );
     if( res != ERROR_SUCCESS )
         return hdb;
@@ -1091,9 +1091,9 @@ static MSIOBJECT *create_db(void)
 
 static void test_getcolinfo(void)
 {
-    MSIOBJECT *hdb;
-    MSIOBJECT *hview = 0;
-    MSIOBJECT *rec = 0;
+    LibmsiObject *hdb;
+    LibmsiObject *hview = 0;
+    LibmsiObject *rec = 0;
     unsigned r;
     unsigned sz;
     char buffer[0x20];
@@ -1111,7 +1111,7 @@ static void test_getcolinfo(void)
 
     /* check that NAMES works */
     rec = 0;
-    r = MsiViewGetColumnInfo( hview, MSICOLINFO_NAMES, &rec );
+    r = MsiViewGetColumnInfo( hview, LIBMSI_COL_INFO_NAMES, &rec );
     ok( r == ERROR_SUCCESS, "failed to get names\n");
     sz = sizeof buffer;
     r = MsiRecordGetString(rec, 1, buffer, &sz );
@@ -1122,7 +1122,7 @@ static void test_getcolinfo(void)
 
     /* check that TYPES works */
     rec = 0;
-    r = MsiViewGetColumnInfo( hview, MSICOLINFO_TYPES, &rec );
+    r = MsiViewGetColumnInfo( hview, LIBMSI_COL_INFO_TYPES, &rec );
     ok( r == ERROR_SUCCESS, "failed to get names\n");
     sz = sizeof buffer;
     r = MsiRecordGetString(rec, 1, buffer, &sz );
@@ -1137,10 +1137,10 @@ static void test_getcolinfo(void)
     ok( r == ERROR_INVALID_PARAMETER, "wrong error code\n");
     ok( rec == 0, "returned a record\n");
 
-    r = MsiViewGetColumnInfo( hview, MSICOLINFO_TYPES, NULL );
+    r = MsiViewGetColumnInfo( hview, LIBMSI_COL_INFO_TYPES, NULL );
     ok( r == ERROR_INVALID_PARAMETER, "wrong error code\n");
 
-    r = MsiViewGetColumnInfo( 0, MSICOLINFO_TYPES, &rec );
+    r = MsiViewGetColumnInfo( 0, LIBMSI_COL_INFO_TYPES, &rec );
     ok( r == ERROR_INVALID_HANDLE, "wrong error code\n");
 
     r = MsiViewClose(hview);
@@ -1151,10 +1151,10 @@ static void test_getcolinfo(void)
     ok( r == ERROR_SUCCESS, "failed to close database\n");
 }
 
-static MSIOBJECT *get_column_info(MSIOBJECT *hdb, const char *query, MSICOLINFO type)
+static LibmsiObject *get_column_info(LibmsiObject *hdb, const char *query, LibmsiColInfo type)
 {
-    MSIOBJECT *hview = 0;
-    MSIOBJECT *rec = 0;
+    LibmsiObject *hview = 0;
+    LibmsiObject *rec = 0;
     unsigned r;
 
     r = MsiDatabaseOpenView(hdb, query, &hview);
@@ -1171,10 +1171,10 @@ static MSIOBJECT *get_column_info(MSIOBJECT *hdb, const char *query, MSICOLINFO 
     return rec;
 }
 
-static unsigned get_columns_table_type(MSIOBJECT *hdb, const char *table, unsigned field)
+static unsigned get_columns_table_type(LibmsiObject *hdb, const char *table, unsigned field)
 {
-    MSIOBJECT *hview = 0;
-    MSIOBJECT *rec = 0;
+    LibmsiObject *hview = 0;
+    LibmsiObject *rec = 0;
     unsigned r, type = 0;
     char query[0x100];
 
@@ -1203,7 +1203,7 @@ static unsigned get_columns_table_type(MSIOBJECT *hdb, const char *table, unsign
     return type;
 }
 
-static bool check_record( MSIOBJECT *rec, unsigned field, const char *val )
+static bool check_record( LibmsiObject *rec, unsigned field, const char *val )
 {
     char buffer[0x20];
     unsigned r;
@@ -1216,8 +1216,8 @@ static bool check_record( MSIOBJECT *rec, unsigned field, const char *val )
 
 static void test_viewgetcolumninfo(void)
 {
-    MSIOBJECT *hdb = 0;
-    MSIOBJECT *rec;
+    LibmsiObject *hdb = 0;
+    LibmsiObject *rec;
     unsigned r;
 
     hdb = create_db();
@@ -1236,7 +1236,7 @@ static void test_viewgetcolumninfo(void)
     ok( r == ERROR_SUCCESS , "Failed to create table\n" );
 
     /* check the column types */
-    rec = get_column_info( hdb, "select * from `Properties`", MSICOLINFO_TYPES );
+    rec = get_column_info( hdb, "select * from `Properties`", LIBMSI_COL_INFO_TYPES );
     ok( rec, "failed to get column info record\n" );
 
     ok( check_record( rec, 1, "S255"), "wrong record type\n");
@@ -1259,7 +1259,7 @@ static void test_viewgetcolumninfo(void)
     ok( 0x1d00 == get_columns_table_type(hdb, "Properties", 7 ), "_columns table wrong\n");
 
     /* now try the names */
-    rec = get_column_info( hdb, "select * from `Properties`", MSICOLINFO_NAMES );
+    rec = get_column_info( hdb, "select * from `Properties`", LIBMSI_COL_INFO_NAMES );
     ok( rec, "failed to get column info record\n" );
 
     ok( check_record( rec, 1, "Property"), "wrong record type\n");
@@ -1278,7 +1278,7 @@ static void test_viewgetcolumninfo(void)
     ok( r == ERROR_SUCCESS , "Failed to create table\n" );
 
     /* check the column types */
-    rec = get_column_info( hdb, "select * from `Binary`", MSICOLINFO_TYPES );
+    rec = get_column_info( hdb, "select * from `Binary`", LIBMSI_COL_INFO_TYPES );
     ok( rec, "failed to get column info record\n" );
 
     ok( check_record( rec, 1, "S255"), "wrong record type\n");
@@ -1291,7 +1291,7 @@ static void test_viewgetcolumninfo(void)
     ok( 0x1900 == get_columns_table_type(hdb, "Binary", 2 ), "_columns table wrong\n");
 
     /* now try the names */
-    rec = get_column_info( hdb, "select * from `Binary`", MSICOLINFO_NAMES );
+    rec = get_column_info( hdb, "select * from `Binary`", LIBMSI_COL_INFO_NAMES );
     ok( rec, "failed to get column info record\n" );
 
     ok( check_record( rec, 1, "Name"), "wrong record type\n");
@@ -1306,13 +1306,13 @@ static void test_viewgetcolumninfo(void)
     ok( 0x2d48 == get_columns_table_type(hdb, "UIText", 1 ), "_columns table wrong\n");
     ok( 0x1fff == get_columns_table_type(hdb, "UIText", 2 ), "_columns table wrong\n");
 
-    rec = get_column_info( hdb, "select * from `UIText`", MSICOLINFO_NAMES );
+    rec = get_column_info( hdb, "select * from `UIText`", LIBMSI_COL_INFO_NAMES );
     ok( rec, "failed to get column info record\n" );
     ok( check_record( rec, 1, "Key"), "wrong record type\n");
     ok( check_record( rec, 2, "Text"), "wrong record type\n");
     MsiCloseHandle( rec );
 
-    rec = get_column_info( hdb, "select * from `UIText`", MSICOLINFO_TYPES );
+    rec = get_column_info( hdb, "select * from `UIText`", LIBMSI_COL_INFO_TYPES );
     ok( rec, "failed to get column info record\n" );
     ok( check_record( rec, 1, "s72"), "wrong record type\n");
     ok( check_record( rec, 2, "L255"), "wrong record type\n");
@@ -1323,8 +1323,8 @@ static void test_viewgetcolumninfo(void)
 
 static void test_msiexport(void)
 {
-    MSIOBJECT *hdb = 0;
-    MSIOBJECT *hview = 0;
+    LibmsiObject *hdb = 0;
+    LibmsiObject *hview = 0;
     unsigned r;
     const char *query;
     char path[MAX_PATH];
@@ -1341,7 +1341,7 @@ static void test_msiexport(void)
     DeleteFile(msifile);
 
     /* just MsiOpenDatabase should not create a file */
-    r = MsiOpenDatabase(msifile, MSIDBOPEN_CREATE, &hdb);
+    r = MsiOpenDatabase(msifile, LIBMSI_DB_OPEN_CREATE, &hdb);
     ok(r == ERROR_SUCCESS, "MsiOpenDatabase failed\n");
 
     /* create a table */
@@ -1402,16 +1402,16 @@ static void test_longstrings(void)
     const char insert_query[] = 
         "INSERT INTO `strings` ( `id`, `val` ) VALUES('1', 'Z')";
     char *str;
-    MSIOBJECT *hdb = 0;
-    MSIOBJECT *hview = 0;
-    MSIOBJECT *hrec = 0;
+    LibmsiObject *hdb = 0;
+    LibmsiObject *hview = 0;
+    LibmsiObject *hrec = 0;
     unsigned len;
     unsigned r;
     const unsigned STRING_LENGTH = 0x10005;
 
     DeleteFile(msifile);
     /* just MsiOpenDatabase should not create a file */
-    r = MsiOpenDatabase(msifile, MSIDBOPEN_CREATE, &hdb);
+    r = MsiOpenDatabase(msifile, LIBMSI_DB_OPEN_CREATE, &hdb);
     ok(r == ERROR_SUCCESS, "MsiOpenDatabase failed\n");
 
     /* create a table */
@@ -1434,7 +1434,7 @@ static void test_longstrings(void)
     ok(r == ERROR_SUCCESS, "MsiDatabaseCommit failed\n");
     MsiCloseHandle(hdb);
 
-    r = MsiOpenDatabase(msifile, MSIDBOPEN_READONLY, &hdb);
+    r = MsiOpenDatabase(msifile, LIBMSI_DB_OPEN_READONLY, &hdb);
     ok(r == ERROR_SUCCESS, "MsiOpenDatabase failed\n");
 
     r = MsiDatabaseOpenView(hdb, "select * from `strings` where `id` = 1", &hview);
@@ -1483,10 +1483,10 @@ static void create_file_data(const char *name, const char *data, unsigned size)
  
 static void test_streamtable(void)
 {
-    MSIOBJECT *hdb = 0;
-    MSIOBJECT *rec;
-    MSIOBJECT *view;
-    MSIOBJECT *hsi;
+    LibmsiObject *hdb = 0;
+    LibmsiObject *rec;
+    LibmsiObject *view;
+    LibmsiObject *hsi;
     char file[MAX_PATH];
     char buf[MAX_PATH];
     unsigned size;
@@ -1510,11 +1510,11 @@ static void test_streamtable(void)
 
     MsiCloseHandle( hdb );
 
-    r = MsiOpenDatabase(msifile, MSIDBOPEN_TRANSACT, &hdb );
+    r = MsiOpenDatabase(msifile, LIBMSI_DB_OPEN_TRANSACT, &hdb );
     ok( r == ERROR_SUCCESS , "Failed to open database\n" );
 
     /* check the column types */
-    rec = get_column_info( hdb, "select * from `_Streams`", MSICOLINFO_TYPES );
+    rec = get_column_info( hdb, "select * from `_Streams`", LIBMSI_COL_INFO_TYPES );
     ok( rec, "failed to get column info record\n" );
 
     ok( check_record( rec, 1, "s62"), "wrong record type\n");
@@ -1523,7 +1523,7 @@ static void test_streamtable(void)
     MsiCloseHandle( rec );
 
     /* now try the names */
-    rec = get_column_info( hdb, "select * from `_Streams`", MSICOLINFO_NAMES );
+    rec = get_column_info( hdb, "select * from `_Streams`", LIBMSI_COL_INFO_NAMES );
     ok( rec, "failed to get column info record\n" );
 
     ok( check_record( rec, 1, "Name"), "wrong record type\n");
@@ -1723,8 +1723,8 @@ static void test_streamtable(void)
 
 static void test_binary(void)
 {
-    MSIOBJECT *hdb = 0;
-    MSIOBJECT *rec;
+    LibmsiObject *hdb = 0;
+    LibmsiObject *rec;
     char file[MAX_PATH];
     char buf[MAX_PATH];
     unsigned size;
@@ -1732,7 +1732,7 @@ static void test_binary(void)
     unsigned r;
 
     /* insert a file into the Binary table */
-    r = MsiOpenDatabase(msifile, MSIDBOPEN_CREATE, &hdb );
+    r = MsiOpenDatabase(msifile, LIBMSI_DB_OPEN_CREATE, &hdb );
     ok( r == ERROR_SUCCESS , "Failed to open database\n" );
 
     query = "CREATE TABLE `Binary` ( `Name` CHAR(72) NOT NULL, `ID` INT NOT NULL, `Data` OBJECT  PRIMARY KEY `Name`, `ID`)";
@@ -1759,7 +1759,7 @@ static void test_binary(void)
     ok( r == ERROR_SUCCESS , "Failed to close database\n" );
 
     /* read file from the Stream table */
-    r = MsiOpenDatabase( msifile, MSIDBOPEN_READONLY, &hdb );
+    r = MsiOpenDatabase( msifile, LIBMSI_DB_OPEN_READONLY, &hdb );
     ok( r == ERROR_SUCCESS , "Failed to open database\n" );
 
     query = "SELECT * FROM `_Streams`";
@@ -1807,9 +1807,9 @@ static void test_binary(void)
 
 static void test_where_not_in_selected(void)
 {
-    MSIOBJECT *hdb = 0;
-    MSIOBJECT *rec;
-    MSIOBJECT *view;
+    LibmsiObject *hdb = 0;
+    LibmsiObject *rec;
+    LibmsiObject *view;
     const char *query;
     unsigned r;
 
@@ -1906,9 +1906,9 @@ static void test_where_not_in_selected(void)
 
 static void test_where(void)
 {
-    MSIOBJECT *hdb = 0;
-    MSIOBJECT *rec;
-    MSIOBJECT *view;
+    LibmsiObject *hdb = 0;
+    LibmsiObject *rec;
+    LibmsiObject *view;
     const char *query;
     unsigned r;
     unsigned size;
@@ -2108,7 +2108,7 @@ static void write_file(const char *filename, const char *data, int data_size)
     CloseHandle(hf);
 }
 
-static unsigned add_table_to_db(MSIOBJECT *hdb, const char *table_data)
+static unsigned add_table_to_db(LibmsiObject *hdb, const char *table_data)
 {
     unsigned r;
 
@@ -2121,9 +2121,9 @@ static unsigned add_table_to_db(MSIOBJECT *hdb, const char *table_data)
 
 static void test_suminfo_import(void)
 {
-    MSIOBJECT *hdb;
-    MSIOBJECT *hsi;
-    MSIOBJECT *view = 0;
+    LibmsiObject *hdb;
+    LibmsiObject *hsi;
+    LibmsiObject *view = 0;
     const char *query;
     unsigned r, count, size, type;
     char str_value[50];
@@ -2132,7 +2132,7 @@ static void test_suminfo_import(void)
 
     GetCurrentDirectoryA(MAX_PATH, CURR_DIR);
 
-    r = MsiOpenDatabaseA(msifile, MSIDBOPEN_CREATE, &hdb);
+    r = MsiOpenDatabaseA(msifile, LIBMSI_DB_OPEN_CREATE, &hdb);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %u\n", r);
 
     r = add_table_to_db(hdb, suminfo);
@@ -2246,16 +2246,16 @@ static void test_suminfo_import(void)
 
 static void test_msiimport(void)
 {
-    MSIOBJECT *hdb;
-    MSIOBJECT *view;
-    MSIOBJECT *rec;
+    LibmsiObject *hdb;
+    LibmsiObject *view;
+    LibmsiObject *rec;
     const char *query;
     unsigned r, count;
     signed int i;
 
     GetCurrentDirectoryA(MAX_PATH, CURR_DIR);
 
-    r = MsiOpenDatabaseA(msifile, MSIDBOPEN_CREATE, &hdb);
+    r = MsiOpenDatabaseA(msifile, LIBMSI_DB_OPEN_CREATE, &hdb);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     r = add_table_to_db(hdb, test_data);
@@ -2276,7 +2276,7 @@ static void test_msiimport(void)
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     rec = NULL;
-    r = MsiViewGetColumnInfo(view, MSICOLINFO_NAMES, &rec);
+    r = MsiViewGetColumnInfo(view, LIBMSI_COL_INFO_NAMES, &rec);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
     count = MsiRecordGetFieldCount(rec);
     ok(count == 9, "Expected 9, got %d\n", count);
@@ -2292,7 +2292,7 @@ static void test_msiimport(void)
     MsiCloseHandle(rec);
 
     rec = NULL;
-    r = MsiViewGetColumnInfo(view, MSICOLINFO_TYPES, &rec);
+    r = MsiViewGetColumnInfo(view, LIBMSI_COL_INFO_TYPES, &rec);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
     count = MsiRecordGetFieldCount(rec);
     ok(count == 9, "Expected 9, got %d\n", count);
@@ -2340,7 +2340,7 @@ static void test_msiimport(void)
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     rec = NULL;
-    r = MsiViewGetColumnInfo(view, MSICOLINFO_NAMES, &rec);
+    r = MsiViewGetColumnInfo(view, LIBMSI_COL_INFO_NAMES, &rec);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
     count = MsiRecordGetFieldCount(rec);
     ok(count == 2, "Expected 2, got %d\n", count);
@@ -2350,7 +2350,7 @@ static void test_msiimport(void)
     MsiCloseHandle(rec);
 
     rec = NULL;
-    r = MsiViewGetColumnInfo(view, MSICOLINFO_TYPES, &rec);
+    r = MsiViewGetColumnInfo(view, LIBMSI_COL_INFO_TYPES, &rec);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
     count = MsiRecordGetFieldCount(rec);
     ok(count == 2, "Expected 2, got %d\n", count);
@@ -2392,7 +2392,7 @@ static void test_msiimport(void)
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     rec = NULL;
-    r = MsiViewGetColumnInfo(view, MSICOLINFO_NAMES, &rec);
+    r = MsiViewGetColumnInfo(view, LIBMSI_COL_INFO_NAMES, &rec);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
     count = MsiRecordGetFieldCount(rec);
     ok(count == 6, "Expected 6, got %d\n", count);
@@ -2405,7 +2405,7 @@ static void test_msiimport(void)
     MsiCloseHandle(rec);
 
     rec = NULL;
-    r = MsiViewGetColumnInfo(view, MSICOLINFO_TYPES, &rec);
+    r = MsiViewGetColumnInfo(view, LIBMSI_COL_INFO_TYPES, &rec);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
     count = MsiRecordGetFieldCount(rec);
     ok(count == 6, "Expected 6, got %d\n", count);
@@ -2467,8 +2467,8 @@ static const char bin_import_dat[] = "Name\tData\r\n"
 
 static void test_binary_import(void)
 {
-    MSIOBJECT *hdb = 0;
-    MSIOBJECT *rec;
+    LibmsiObject *hdb = 0;
+    LibmsiObject *rec;
     char file[MAX_PATH];
     char buf[MAX_PATH];
     char path[MAX_PATH];
@@ -2483,7 +2483,7 @@ static void test_binary_import(void)
     create_file_data("bin_import/filename1.ibd", "just some words", 15);
 
     /* import files into database */
-    r = MsiOpenDatabase(msifile, MSIDBOPEN_CREATE, &hdb);
+    r = MsiOpenDatabase(msifile, LIBMSI_DB_OPEN_CREATE, &hdb);
     ok( r == ERROR_SUCCESS , "Failed to open database\n");
 
     GetCurrentDirectory(MAX_PATH, path);
@@ -2520,8 +2520,8 @@ static void test_binary_import(void)
 
 static void test_markers(void)
 {
-    MSIOBJECT *hdb;
-    MSIOBJECT *rec;
+    LibmsiObject *hdb;
+    LibmsiObject *rec;
     const char *query;
     unsigned r;
 
@@ -2707,8 +2707,8 @@ static void test_markers(void)
 static void test_handle_limit(void)
 {
     int i;
-    MSIOBJECT *hdb;
-    MSIOBJECT *hviews[MY_NVIEWS];
+    LibmsiObject *hdb;
+    LibmsiObject *hviews[MY_NVIEWS];
     unsigned r;
 
     /* create an empty db */
@@ -2869,10 +2869,10 @@ static void generate_transform_manual(void)
     IStorage_Release(stg);
 }
 
-static unsigned set_summary_info(MSIOBJECT *hdb)
+static unsigned set_summary_info(LibmsiObject *hdb)
 {
     unsigned res;
-    MSIOBJECT *suminfo;
+    LibmsiObject *suminfo;
 
     /* build summary info */
     res = MsiGetSummaryInformation(hdb, NULL, 7, &suminfo);
@@ -2913,15 +2913,15 @@ static unsigned set_summary_info(MSIOBJECT *hdb)
     return res;
 }
 
-static MSIOBJECT *create_package_db(const char *filename)
+static LibmsiObject *create_package_db(const char *filename)
 {
-    MSIOBJECT *hdb = 0;
+    LibmsiObject *hdb = 0;
     unsigned res;
 
     DeleteFile(msifile);
 
     /* create an empty database */
-    res = MsiOpenDatabase(filename, MSIDBOPEN_CREATE, &hdb );
+    res = MsiOpenDatabase(filename, LIBMSI_DB_OPEN_CREATE, &hdb );
     ok( res == ERROR_SUCCESS , "Failed to create database\n" );
     if( res != ERROR_SUCCESS )
         return hdb;
@@ -2940,10 +2940,10 @@ static MSIOBJECT *create_package_db(const char *filename)
 
 static void test_try_transform(void)
 {
-    MSIOBJECT *hdb;
-    MSIOBJECT *hview;
-    MSIOBJECT *hrec;
-    MSIOBJECT *hpkg = 0;
+    LibmsiObject *hdb;
+    LibmsiObject *hview;
+    LibmsiObject *hrec;
+    LibmsiObject *hpkg = 0;
     const char *query;
     unsigned r;
     unsigned sz;
@@ -2998,7 +2998,7 @@ static void test_try_transform(void)
 
     generate_transform_manual();
 
-    r = MsiOpenDatabase(msifile, MSIDBOPEN_DIRECT, &hdb );
+    r = MsiOpenDatabase(msifile, LIBMSI_DB_OPEN_DIRECT, &hdb );
     ok( r == ERROR_SUCCESS , "Failed to create database\n" );
 
     r = MsiDatabaseApplyTransform( hdb, mstfile, 0 );
@@ -3226,9 +3226,9 @@ static const struct join_res_uint join_res_ninth[] =
 
 static void test_join(void)
 {
-    MSIOBJECT *hdb;
-    MSIOBJECT *hview;
-    MSIOBJECT *hrec;
+    LibmsiObject *hdb;
+    LibmsiObject *hview;
+    LibmsiObject *hrec;
     const char *query;
     char buf[MAX_PATH];
     unsigned r, count;
@@ -3819,22 +3819,22 @@ static void test_join(void)
     r = MsiRecordSetString( hrec, 1, "epicranius" );
     ok( r == ERROR_SUCCESS, "failed to set string: %d\n", r );
 
-    r = MsiViewModify(hview, MSIMODIFY_UPDATE, hrec);
+    r = MsiViewModify(hview, LIBMSI_MODIFY_UPDATE, hrec);
     ok( r == ERROR_SUCCESS, "failed to update row: %d\n", r );
 
     /* try another valid operation for joins */
-    r = MsiViewModify(hview, MSIMODIFY_REFRESH, hrec);
+    r = MsiViewModify(hview, LIBMSI_MODIFY_REFRESH, hrec);
     todo_wine ok( r == ERROR_SUCCESS, "failed to refresh row: %d\n", r );
 
     /* try an invalid operation for joins */
-    r = MsiViewModify(hview, MSIMODIFY_DELETE, hrec);
+    r = MsiViewModify(hview, LIBMSI_MODIFY_DELETE, hrec);
     ok( r == ERROR_FUNCTION_FAILED, "unexpected result: %d\n", r );
 
     r = MsiRecordSetString( hrec, 2, "epicranius" );
     ok( r == ERROR_SUCCESS, "failed to set string: %d\n", r );
 
     /* primary key cannot be updated */
-    r = MsiViewModify(hview, MSIMODIFY_UPDATE, hrec);
+    r = MsiViewModify(hview, LIBMSI_MODIFY_UPDATE, hrec);
     ok( r == ERROR_FUNCTION_FAILED, "failed to update row: %d\n", r );
 
     MsiCloseHandle(hrec);
@@ -3865,56 +3865,56 @@ static void test_join(void)
 
 static void test_temporary_table(void)
 {
-    MSICONDITION cond;
-    MSIOBJECT *hdb = 0;
-    MSIOBJECT *view = 0;
-    MSIOBJECT *rec;
+    LibmsiCondition cond;
+    LibmsiObject *hdb = 0;
+    LibmsiObject *view = 0;
+    LibmsiObject *rec;
     const char *query;
     unsigned r;
     char buf[0x10];
     unsigned sz;
 
     cond = MsiDatabaseIsTablePersistent(0, NULL);
-    ok( cond == MSICONDITION_ERROR, "wrong return condition\n");
+    ok( cond == LIBMSI_CONDITION_ERROR, "wrong return condition\n");
 
     hdb = create_db();
     ok( hdb, "failed to create db\n");
 
     cond = MsiDatabaseIsTablePersistent(hdb, NULL);
-    ok( cond == MSICONDITION_ERROR, "wrong return condition\n");
+    ok( cond == LIBMSI_CONDITION_ERROR, "wrong return condition\n");
 
     cond = MsiDatabaseIsTablePersistent(hdb, "_Tables");
-    ok( cond == MSICONDITION_NONE, "wrong return condition\n");
+    ok( cond == LIBMSI_CONDITION_NONE, "wrong return condition\n");
 
     cond = MsiDatabaseIsTablePersistent(hdb, "_Columns");
-    ok( cond == MSICONDITION_NONE, "wrong return condition\n");
+    ok( cond == LIBMSI_CONDITION_NONE, "wrong return condition\n");
 
     cond = MsiDatabaseIsTablePersistent(hdb, "_Storages");
-    ok( cond == MSICONDITION_NONE, "wrong return condition\n");
+    ok( cond == LIBMSI_CONDITION_NONE, "wrong return condition\n");
 
     cond = MsiDatabaseIsTablePersistent(hdb, "_Streams");
-    ok( cond == MSICONDITION_NONE, "wrong return condition\n");
+    ok( cond == LIBMSI_CONDITION_NONE, "wrong return condition\n");
 
     query = "CREATE TABLE `P` ( `B` SHORT NOT NULL, `C` CHAR(255) PRIMARY KEY `C`)";
     r = run_query(hdb, 0, query);
     ok(r == ERROR_SUCCESS, "failed to add table\n");
 
     cond = MsiDatabaseIsTablePersistent(hdb, "P");
-    ok( cond == MSICONDITION_TRUE, "wrong return condition\n");
+    ok( cond == LIBMSI_CONDITION_TRUE, "wrong return condition\n");
 
     query = "CREATE TABLE `P2` ( `B` SHORT NOT NULL, `C` CHAR(255) PRIMARY KEY `C`) HOLD";
     r = run_query(hdb, 0, query);
     ok(r == ERROR_SUCCESS, "failed to add table\n");
 
     cond = MsiDatabaseIsTablePersistent(hdb, "P2");
-    ok( cond == MSICONDITION_TRUE, "wrong return condition\n");
+    ok( cond == LIBMSI_CONDITION_TRUE, "wrong return condition\n");
 
     query = "CREATE TABLE `T` ( `B` SHORT NOT NULL TEMPORARY, `C` CHAR(255) TEMPORARY PRIMARY KEY `C`) HOLD";
     r = run_query(hdb, 0, query);
     ok(r == ERROR_SUCCESS, "failed to add table\n");
 
     cond = MsiDatabaseIsTablePersistent(hdb, "T");
-    ok( cond == MSICONDITION_FALSE, "wrong return condition\n");
+    ok( cond == LIBMSI_CONDITION_FALSE, "wrong return condition\n");
 
     query = "CREATE TABLE `T2` ( `B` SHORT NOT NULL TEMPORARY, `C` CHAR(255) TEMPORARY PRIMARY KEY `C`)";
     r = run_query(hdb, 0, query);
@@ -3927,21 +3927,21 @@ static void test_temporary_table(void)
        "Expected ERROR_BAD_QUERY_SYNTAX, got %d\n", r);
 
     cond = MsiDatabaseIsTablePersistent(hdb, "T2");
-    ok( cond == MSICONDITION_NONE, "wrong return condition\n");
+    ok( cond == LIBMSI_CONDITION_NONE, "wrong return condition\n");
 
     query = "CREATE TABLE `T3` ( `B` SHORT NOT NULL TEMPORARY, `C` CHAR(255) PRIMARY KEY `C`)";
     r = run_query(hdb, 0, query);
     ok(r == ERROR_SUCCESS, "failed to add table\n");
 
     cond = MsiDatabaseIsTablePersistent(hdb, "T3");
-    ok( cond == MSICONDITION_TRUE, "wrong return condition\n");
+    ok( cond == LIBMSI_CONDITION_TRUE, "wrong return condition\n");
 
     query = "CREATE TABLE `T4` ( `B` SHORT NOT NULL, `C` CHAR(255) TEMPORARY PRIMARY KEY `C`)";
     r = run_query(hdb, 0, query);
     ok(r == ERROR_FUNCTION_FAILED, "failed to add table\n");
 
     cond = MsiDatabaseIsTablePersistent(hdb, "T4");
-    ok( cond == MSICONDITION_NONE, "wrong return condition\n");
+    ok( cond == LIBMSI_CONDITION_NONE, "wrong return condition\n");
 
     query = "CREATE TABLE `T5` ( `B` SHORT NOT NULL TEMP, `C` CHAR(255) TEMP PRIMARY KEY `C`) HOLD";
     r = run_query(hdb, 0, query);
@@ -3953,7 +3953,7 @@ static void test_temporary_table(void)
     ok(r == ERROR_SUCCESS, "failed to query table\n");
 
     rec = NULL;
-    r = MsiViewGetColumnInfo(view, MSICOLINFO_TYPES, &rec);
+    r = MsiViewGetColumnInfo(view, LIBMSI_COL_INFO_TYPES, &rec);
     ok(r == ERROR_SUCCESS, "failed to get column info\n");
 
     sz = sizeof buf;
@@ -3993,8 +3993,8 @@ static void test_temporary_table(void)
 
 static void test_alter(void)
 {
-    MSICONDITION cond;
-    MSIOBJECT *hdb = 0;
+    LibmsiCondition cond;
+    LibmsiObject *hdb = 0;
     const char *query;
     unsigned r;
 
@@ -4006,7 +4006,7 @@ static void test_alter(void)
     ok(r == ERROR_SUCCESS, "failed to add table\n");
 
     cond = MsiDatabaseIsTablePersistent(hdb, "T");
-    ok( cond == MSICONDITION_FALSE, "wrong return condition\n");
+    ok( cond == LIBMSI_CONDITION_FALSE, "wrong return condition\n");
 
     query = "ALTER TABLE `T` HOLD";
     r = run_query(hdb, 0, query);
@@ -4170,15 +4170,15 @@ static void test_alter(void)
 
 static void test_integers(void)
 {
-    MSIOBJECT *hdb = 0;
-    MSIOBJECT *view = 0;
-    MSIOBJECT *rec = 0;
+    LibmsiObject *hdb = 0;
+    LibmsiObject *view = 0;
+    LibmsiObject *rec = 0;
     unsigned count, i;
     const char *query;
     unsigned r;
 
     /* just MsiOpenDatabase should not create a file */
-    r = MsiOpenDatabase(msifile, MSIDBOPEN_CREATE, &hdb);
+    r = MsiOpenDatabase(msifile, LIBMSI_DB_OPEN_CREATE, &hdb);
     ok(r == ERROR_SUCCESS, "MsiOpenDatabase failed\n");
 
     /* create a table */
@@ -4201,7 +4201,7 @@ static void test_integers(void)
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     rec = NULL;
-    r = MsiViewGetColumnInfo(view, MSICOLINFO_NAMES, &rec);
+    r = MsiViewGetColumnInfo(view, LIBMSI_COL_INFO_NAMES, &rec);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
     count = MsiRecordGetFieldCount(rec);
     ok(count == 8, "Expected 8, got %d\n", count);
@@ -4216,7 +4216,7 @@ static void test_integers(void)
     MsiCloseHandle(rec);
 
     rec = NULL;
-    r = MsiViewGetColumnInfo(view, MSICOLINFO_TYPES, &rec);
+    r = MsiViewGetColumnInfo(view, LIBMSI_COL_INFO_TYPES, &rec);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
     count = MsiRecordGetFieldCount(rec);
     ok(count == 8, "Expected 8, got %d\n", count);
@@ -4303,16 +4303,16 @@ static void test_integers(void)
 
 static void test_update(void)
 {
-    MSIOBJECT *hdb = 0;
-    MSIOBJECT *view = 0;
-    MSIOBJECT *rec = 0;
+    LibmsiObject *hdb = 0;
+    LibmsiObject *view = 0;
+    LibmsiObject *rec = 0;
     char result[MAX_PATH];
     const char *query;
     unsigned size;
     unsigned r;
 
     /* just MsiOpenDatabase should not create a file */
-    r = MsiOpenDatabase(msifile, MSIDBOPEN_CREATE, &hdb);
+    r = MsiOpenDatabase(msifile, LIBMSI_DB_OPEN_CREATE, &hdb);
     ok(r == ERROR_SUCCESS, "MsiOpenDatabase failed\n");
 
     /* create the Control table */
@@ -4625,10 +4625,10 @@ static void test_update(void)
 static void test_special_tables(void)
 {
     const char *query;
-    MSIOBJECT *hdb = 0;
+    LibmsiObject *hdb = 0;
     unsigned r;
 
-    r = MsiOpenDatabase(msifile, MSIDBOPEN_CREATE, &hdb);
+    r = MsiOpenDatabase(msifile, LIBMSI_DB_OPEN_CREATE, &hdb);
     ok(r == ERROR_SUCCESS, "MsiOpenDatabase failed\n");
 
     query = "CREATE TABLE `_Properties` ( "
@@ -4663,14 +4663,14 @@ static void test_special_tables(void)
 static void test_tables_order(void)
 {
     const char *query;
-    MSIOBJECT *hdb = 0;
-    MSIOBJECT *hview = 0;
-    MSIOBJECT *hrec = 0;
+    LibmsiObject *hdb = 0;
+    LibmsiObject *hview = 0;
+    LibmsiObject *hrec = 0;
     unsigned r;
     char buffer[100];
     unsigned sz;
 
-    r = MsiOpenDatabase(msifile, MSIDBOPEN_CREATE, &hdb);
+    r = MsiOpenDatabase(msifile, LIBMSI_DB_OPEN_CREATE, &hdb);
     ok(r == ERROR_SUCCESS, "MsiOpenDatabase failed\n");
 
     query = "CREATE TABLE `foo` ( "
@@ -4819,14 +4819,14 @@ static void test_tables_order(void)
 static void test_rows_order(void)
 {
     const char *query;
-    MSIOBJECT *hdb = 0;
-    MSIOBJECT *hview = 0;
-    MSIOBJECT *hrec = 0;
+    LibmsiObject *hdb = 0;
+    LibmsiObject *hview = 0;
+    LibmsiObject *hrec = 0;
     unsigned r;
     char buffer[100];
     unsigned sz;
 
-    r = MsiOpenDatabase(msifile, MSIDBOPEN_CREATE, &hdb);
+    r = MsiOpenDatabase(msifile, LIBMSI_DB_OPEN_CREATE, &hdb);
     ok(r == ERROR_SUCCESS, "MsiOpenDatabase failed\n");
 
     query = "CREATE TABLE `foo` ( "
@@ -4985,15 +4985,15 @@ static void test_collation(void)
     static const WCHAR letter_a_ring[] = {'a',0x30a,0};
     static const WCHAR letter_a_with_ring[] = {0xe5,0};
     const char *query;
-    MSIOBJECT *hdb = 0;
-    MSIOBJECT *hview = 0;
-    MSIOBJECT *hrec = 0;
+    LibmsiObject *hdb = 0;
+    LibmsiObject *hview = 0;
+    LibmsiObject *hrec = 0;
     unsigned r;
     char buffer[100];
     WCHAR bufferW[100];
     unsigned sz;
 
-    r = MsiOpenDatabase(msifile, MSIDBOPEN_CREATE, &hdb);
+    r = MsiOpenDatabase(msifile, LIBMSI_DB_OPEN_CREATE, &hdb);
     ok(r == ERROR_SUCCESS, "MsiOpenDatabase failed\n");
 
     query = "CREATE TABLE `bar` ( "
@@ -5124,10 +5124,10 @@ static void test_collation(void)
 
 static void test_select_markers(void)
 {
-    MSIOBJECT *hdb = 0;
-    MSIOBJECT *rec;
-    MSIOBJECT *view;
-    MSIOBJECT *res;
+    LibmsiObject *hdb = 0;
+    LibmsiObject *rec;
+    LibmsiObject *view;
+    LibmsiObject *res;
     const char *query;
     unsigned r;
     unsigned size;
@@ -5270,16 +5270,16 @@ static void test_select_markers(void)
 
 static void test_viewmodify_update(void)
 {
-    MSIOBJECT *hdb = 0;
-    MSIOBJECT *hview = 0;
-    MSIOBJECT *hrec = 0;
+    LibmsiObject *hdb = 0;
+    LibmsiObject *hview = 0;
+    LibmsiObject *hrec = 0;
     unsigned i, test_max, offset, count;
     const char *query;
     unsigned r;
 
     DeleteFile(msifile);
 
-    r = MsiOpenDatabase(msifile, MSIDBOPEN_CREATE, &hdb);
+    r = MsiOpenDatabase(msifile, LIBMSI_DB_OPEN_CREATE, &hdb);
     ok(r == ERROR_SUCCESS, "MsiOpenDatabase failed\n");
 
     query = "CREATE TABLE `table` (`A` INT, `B` INT PRIMARY KEY `A`)";
@@ -5309,7 +5309,7 @@ static void test_viewmodify_update(void)
     r = MsiRecordSetInteger(hrec, 1, 0);
     ok(r == ERROR_SUCCESS, "failed to set integer\n");
 
-    r = MsiViewModify(hview, MSIMODIFY_UPDATE, hrec);
+    r = MsiViewModify(hview, LIBMSI_MODIFY_UPDATE, hrec);
     ok(r == ERROR_SUCCESS, "MsiViewModify failed: %d\n", r);
 
     r = MsiCloseHandle(hrec);
@@ -5382,7 +5382,7 @@ static void test_viewmodify_update(void)
         r = MsiRecordSetInteger(hrec, 1, 0);
         ok(r == ERROR_SUCCESS, "failed to set integer\n");
 
-        r = MsiViewModify(hview, MSIMODIFY_UPDATE, hrec);
+        r = MsiViewModify(hview, LIBMSI_MODIFY_UPDATE, hrec);
         ok(r == ERROR_SUCCESS, "MsiViewModify failed: %d\n", r);
 
         r = MsiCloseHandle(hrec);
@@ -5484,7 +5484,7 @@ static void test_viewmodify_update(void)
         r = MsiRecordSetInteger( hrec, 2, b + offset);
         ok(r == ERROR_SUCCESS, "Got %d\n", r);
 
-        r = MsiViewModify( hview, MSIMODIFY_UPDATE, hrec );
+        r = MsiViewModify( hview, LIBMSI_MODIFY_UPDATE, hrec );
         ok(r == ERROR_SUCCESS, "Got %d\n", r);
 
         r = MsiCloseHandle(hrec);
@@ -5530,16 +5530,16 @@ static void test_viewmodify_update(void)
 
 static void test_viewmodify_assign(void)
 {
-    MSIOBJECT *hdb = 0;
-    MSIOBJECT *hview = 0;
-    MSIOBJECT *hrec = 0;
+    LibmsiObject *hdb = 0;
+    LibmsiObject *hview = 0;
+    LibmsiObject *hrec = 0;
     const char *query;
     unsigned r;
 
     /* setup database */
     DeleteFile(msifile);
 
-    r = MsiOpenDatabase(msifile, MSIDBOPEN_CREATE, &hdb);
+    r = MsiOpenDatabase(msifile, LIBMSI_DB_OPEN_CREATE, &hdb);
     ok(r == ERROR_SUCCESS, "MsiOpenDatabase failed\n");
 
     query = "CREATE TABLE `table` (`A` INT, `B` INT PRIMARY KEY `A`)";
@@ -5561,7 +5561,7 @@ static void test_viewmodify_assign(void)
     r = MsiRecordSetInteger(hrec, 2, 2);
     ok(r == ERROR_SUCCESS, "failed to set integer\n");
 
-    r = MsiViewModify(hview, MSIMODIFY_ASSIGN, hrec);
+    r = MsiViewModify(hview, LIBMSI_MODIFY_ASSIGN, hrec);
     ok(r == ERROR_SUCCESS, "MsiViewModify failed: %d\n", r);
 
     r = MsiCloseHandle(hrec);
@@ -5611,7 +5611,7 @@ static void test_viewmodify_assign(void)
     r = MsiRecordSetInteger(hrec, 2, 4);
     ok(r == ERROR_SUCCESS, "failed to set integer\n");
 
-    r = MsiViewModify(hview, MSIMODIFY_ASSIGN, hrec);
+    r = MsiViewModify(hview, LIBMSI_MODIFY_ASSIGN, hrec);
     ok(r == ERROR_SUCCESS, "MsiViewModify failed: %d\n", r);
 
     r = MsiCloseHandle(hrec);
@@ -5682,9 +5682,9 @@ static const WCHAR data13[] = { /* _StringPool */
 
 static void test_stringtable(void)
 {
-    MSIOBJECT *hdb = 0;
-    MSIOBJECT *hview = 0;
-    MSIOBJECT *hrec = 0;
+    LibmsiObject *hdb = 0;
+    LibmsiObject *hview = 0;
+    LibmsiObject *hrec = 0;
     IStorage *stg = NULL;
     IStream *stm;
     WCHAR name[0x20];
@@ -5703,7 +5703,7 @@ static void test_stringtable(void)
 
     DeleteFile(msifile);
 
-    r = MsiOpenDatabase(msifile, MSIDBOPEN_CREATE, &hdb);
+    r = MsiOpenDatabase(msifile, LIBMSI_DB_OPEN_CREATE, &hdb);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     query = "CREATE TABLE `MOO` (`A` INT, `B` CHAR(72) PRIMARY KEY `A`)";
@@ -5739,7 +5739,7 @@ static void test_stringtable(void)
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     /* insert a nonpersistent row */
-    r = MsiViewModify(hview, MSIMODIFY_INSERT_TEMPORARY, hrec);
+    r = MsiViewModify(hview, LIBMSI_MODIFY_INSERT_TEMPORARY, hrec);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     r = MsiCloseHandle(hrec);
@@ -5765,7 +5765,7 @@ static void test_stringtable(void)
     r = MsiCloseHandle(hdb);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
-    r = MsiOpenDatabase(msifile, MSIDBOPEN_READONLY, &hdb);
+    r = MsiOpenDatabase(msifile, LIBMSI_DB_OPEN_READONLY, &hdb);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     query = "SELECT * FROM `MOO`";
@@ -5922,9 +5922,9 @@ static void test_stringtable(void)
 
 static void test_viewmodify_delete(void)
 {
-    MSIOBJECT *hdb = 0;
-    MSIOBJECT *hview = 0;
-    MSIOBJECT *hrec = 0;
+    LibmsiObject *hdb = 0;
+    LibmsiObject *hview = 0;
+    LibmsiObject *hrec = 0;
     unsigned r;
     const char *query;
     char buffer[0x100];
@@ -5933,7 +5933,7 @@ static void test_viewmodify_delete(void)
     DeleteFile(msifile);
 
     /* just MsiOpenDatabase should not create a file */
-    r = MsiOpenDatabase(msifile, MSIDBOPEN_CREATE, &hdb);
+    r = MsiOpenDatabase(msifile, LIBMSI_DB_OPEN_CREATE, &hdb);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     query = "CREATE TABLE `phone` ( "
@@ -5966,7 +5966,7 @@ static void test_viewmodify_delete(void)
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     /* delete 1 */
-    r = MsiViewModify(hview, MSIMODIFY_DELETE, hrec);
+    r = MsiViewModify(hview, LIBMSI_MODIFY_DELETE, hrec);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     r = MsiCloseHandle(hrec);
@@ -5975,7 +5975,7 @@ static void test_viewmodify_delete(void)
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     /* delete 2 */
-    r = MsiViewModify(hview, MSIMODIFY_DELETE, hrec);
+    r = MsiViewModify(hview, LIBMSI_MODIFY_DELETE, hrec);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     r = MsiCloseHandle(hrec);
@@ -6102,12 +6102,12 @@ static void test_defaultdatabase(void)
 {
     unsigned r;
     HRESULT hr;
-    MSIOBJECT *hdb;
+    LibmsiObject *hdb;
     IStorage *stg = NULL;
 
     DeleteFile(msifile);
 
-    r = MsiOpenDatabase(msifile, MSIDBOPEN_CREATE, &hdb);
+    r = MsiOpenDatabase(msifile, LIBMSI_DB_OPEN_CREATE, &hdb);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     r = MsiDatabaseCommit(hdb);
@@ -6127,9 +6127,9 @@ static void test_defaultdatabase(void)
 
 static void test_order(void)
 {
-    MSIOBJECT *hdb;
-    MSIOBJECT *hview;
-    MSIOBJECT *hrec;
+    LibmsiObject *hdb;
+    LibmsiObject *hview;
+    LibmsiObject *hrec;
     char buffer[MAX_PATH];
     const char *query;
     unsigned r, sz;
@@ -6387,15 +6387,15 @@ static void test_order(void)
 
 static void test_viewmodify_delete_temporary(void)
 {
-    MSIOBJECT *hdb;
-    MSIOBJECT *hview;
-    MSIOBJECT *hrec;
+    LibmsiObject *hdb;
+    LibmsiObject *hview;
+    LibmsiObject *hrec;
     const char *query;
     unsigned r;
 
     DeleteFile(msifile);
 
-    r = MsiOpenDatabase(msifile, MSIDBOPEN_CREATE, &hdb);
+    r = MsiOpenDatabase(msifile, LIBMSI_DB_OPEN_CREATE, &hdb);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     query = "CREATE TABLE `Table` ( `A` SHORT PRIMARY KEY `A` )";
@@ -6411,7 +6411,7 @@ static void test_viewmodify_delete_temporary(void)
     hrec = MsiCreateRecord(1);
     MsiRecordSetInteger(hrec, 1, 1);
 
-    r = MsiViewModify(hview, MSIMODIFY_INSERT, hrec);
+    r = MsiViewModify(hview, LIBMSI_MODIFY_INSERT, hrec);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     MsiCloseHandle(hrec);
@@ -6419,7 +6419,7 @@ static void test_viewmodify_delete_temporary(void)
     hrec = MsiCreateRecord(1);
     MsiRecordSetInteger(hrec, 1, 2);
 
-    r = MsiViewModify(hview, MSIMODIFY_INSERT_TEMPORARY, hrec);
+    r = MsiViewModify(hview, LIBMSI_MODIFY_INSERT_TEMPORARY, hrec);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     MsiCloseHandle(hrec);
@@ -6427,7 +6427,7 @@ static void test_viewmodify_delete_temporary(void)
     hrec = MsiCreateRecord(1);
     MsiRecordSetInteger(hrec, 1, 3);
 
-    r = MsiViewModify(hview, MSIMODIFY_INSERT, hrec);
+    r = MsiViewModify(hview, LIBMSI_MODIFY_INSERT, hrec);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     MsiCloseHandle(hrec);
@@ -6435,7 +6435,7 @@ static void test_viewmodify_delete_temporary(void)
     hrec = MsiCreateRecord(1);
     MsiRecordSetInteger(hrec, 1, 4);
 
-    r = MsiViewModify(hview, MSIMODIFY_INSERT_TEMPORARY, hrec);
+    r = MsiViewModify(hview, LIBMSI_MODIFY_INSERT_TEMPORARY, hrec);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     MsiCloseHandle(hrec);
@@ -6450,7 +6450,7 @@ static void test_viewmodify_delete_temporary(void)
     r = MsiViewFetch(hview, &hrec);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
-    r = MsiViewModify(hview, MSIMODIFY_DELETE, hrec);
+    r = MsiViewModify(hview, LIBMSI_MODIFY_DELETE, hrec);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     MsiCloseHandle(hrec);
@@ -6465,7 +6465,7 @@ static void test_viewmodify_delete_temporary(void)
     r = MsiViewFetch(hview, &hrec);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
-    r = MsiViewModify(hview, MSIMODIFY_DELETE, hrec);
+    r = MsiViewModify(hview, LIBMSI_MODIFY_DELETE, hrec);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     MsiCloseHandle(hrec);
@@ -6505,9 +6505,9 @@ static void test_viewmodify_delete_temporary(void)
 
 static void test_deleterow(void)
 {
-    MSIOBJECT *hdb;
-    MSIOBJECT *hview;
-    MSIOBJECT *hrec;
+    LibmsiObject *hdb;
+    LibmsiObject *hview;
+    LibmsiObject *hrec;
     const char *query;
     char buf[MAX_PATH];
     unsigned r;
@@ -6515,7 +6515,7 @@ static void test_deleterow(void)
 
     DeleteFile(msifile);
 
-    r = MsiOpenDatabase(msifile, MSIDBOPEN_CREATE, &hdb);
+    r = MsiOpenDatabase(msifile, LIBMSI_DB_OPEN_CREATE, &hdb);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     query = "CREATE TABLE `Table` ( `A` CHAR(72) NOT NULL PRIMARY KEY `A` )";
@@ -6539,7 +6539,7 @@ static void test_deleterow(void)
 
     MsiCloseHandle(hdb);
 
-    r = MsiOpenDatabase(msifile, MSIDBOPEN_READONLY, &hdb);
+    r = MsiOpenDatabase(msifile, LIBMSI_DB_OPEN_READONLY, &hdb);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     query = "SELECT * FROM `Table`";
@@ -6574,9 +6574,9 @@ static const char import_dat[] = "A\n"
 
 static void test_quotes(void)
 {
-    MSIOBJECT *hdb;
-    MSIOBJECT *hview;
-    MSIOBJECT *hrec;
+    LibmsiObject *hdb;
+    LibmsiObject *hview;
+    LibmsiObject *hrec;
     const char *query;
     char buf[MAX_PATH];
     unsigned r;
@@ -6584,7 +6584,7 @@ static void test_quotes(void)
 
     DeleteFile(msifile);
 
-    r = MsiOpenDatabase(msifile, MSIDBOPEN_CREATE, &hdb);
+    r = MsiOpenDatabase(msifile, LIBMSI_DB_OPEN_CREATE, &hdb);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     query = "CREATE TABLE `Table` ( `A` CHAR(72) NOT NULL PRIMARY KEY `A` )";
@@ -6682,9 +6682,9 @@ static void test_quotes(void)
 
 static void test_carriagereturn(void)
 {
-    MSIOBJECT *hdb;
-    MSIOBJECT *hview;
-    MSIOBJECT *hrec;
+    LibmsiObject *hdb;
+    LibmsiObject *hview;
+    LibmsiObject *hrec;
     const char *query;
     char buf[MAX_PATH];
     unsigned r;
@@ -6692,7 +6692,7 @@ static void test_carriagereturn(void)
 
     DeleteFile(msifile);
 
-    r = MsiOpenDatabase(msifile, MSIDBOPEN_CREATE, &hdb);
+    r = MsiOpenDatabase(msifile, LIBMSI_DB_OPEN_CREATE, &hdb);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     query = "CREATE TABLE `Table`\r ( `A` CHAR(72) NOT NULL PRIMARY KEY `A` )";
@@ -6870,9 +6870,9 @@ static void test_carriagereturn(void)
 
 static void test_noquotes(void)
 {
-    MSIOBJECT *hdb;
-    MSIOBJECT *hview;
-    MSIOBJECT *hrec;
+    LibmsiObject *hdb;
+    LibmsiObject *hview;
+    LibmsiObject *hrec;
     const char *query;
     char buf[MAX_PATH];
     unsigned r;
@@ -6880,7 +6880,7 @@ static void test_noquotes(void)
 
     DeleteFile(msifile);
 
-    r = MsiOpenDatabase(msifile, MSIDBOPEN_CREATE, &hdb);
+    r = MsiOpenDatabase(msifile, LIBMSI_DB_OPEN_CREATE, &hdb);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     query = "CREATE TABLE Table ( `A` CHAR(72) NOT NULL PRIMARY KEY `A` )";
@@ -7082,7 +7082,7 @@ static void read_file_data(const char *filename, char *buffer)
 
 static void test_forcecodepage(void)
 {
-    MSIOBJECT *hdb;
+    LibmsiObject *hdb;
     const char *query;
     char buffer[MAX_PATH];
     unsigned r;
@@ -7090,7 +7090,7 @@ static void test_forcecodepage(void)
     DeleteFile(msifile);
     GetCurrentDirectoryA(MAX_PATH, CURR_DIR);
 
-    r = MsiOpenDatabase(msifile, MSIDBOPEN_CREATE, &hdb);
+    r = MsiOpenDatabase(msifile, LIBMSI_DB_OPEN_CREATE, &hdb);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     query = "SELECT * FROM `_ForceCodepage`";
@@ -7114,7 +7114,7 @@ static void test_forcecodepage(void)
 
     MsiCloseHandle(hdb);
 
-    r = MsiOpenDatabase(msifile, MSIDBOPEN_DIRECT, &hdb);
+    r = MsiOpenDatabase(msifile, LIBMSI_DB_OPEN_DIRECT, &hdb);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     query = "SELECT * FROM `_ForceCodepage`";
@@ -7152,9 +7152,9 @@ static void test_forcecodepage(void)
 
 static void test_viewmodify_refresh(void)
 {
-    MSIOBJECT *hdb;
-    MSIOBJECT *hview;
-    MSIOBJECT *hrec;
+    LibmsiObject *hdb;
+    LibmsiObject *hview;
+    LibmsiObject *hrec;
     const char *query;
     char buffer[MAX_PATH];
     unsigned r;
@@ -7162,7 +7162,7 @@ static void test_viewmodify_refresh(void)
 
     DeleteFile(msifile);
 
-    r = MsiOpenDatabase(msifile, MSIDBOPEN_CREATE, &hdb);
+    r = MsiOpenDatabase(msifile, LIBMSI_DB_OPEN_CREATE, &hdb);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     query = "CREATE TABLE `Table` ( `A` CHAR(72) NOT NULL, `B` INT PRIMARY KEY `A` )";
@@ -7186,7 +7186,7 @@ static void test_viewmodify_refresh(void)
     r = run_query(hdb, 0, query);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
-    r = MsiViewModify(hview, MSIMODIFY_REFRESH, hrec);
+    r = MsiViewModify(hview, LIBMSI_MODIFY_REFRESH, hrec);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     size = MAX_PATH;
@@ -7223,7 +7223,7 @@ static void test_viewmodify_refresh(void)
     r = run_query(hdb, 0, query);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
-    r = MsiViewModify(hview, MSIMODIFY_REFRESH, hrec);
+    r = MsiViewModify(hview, LIBMSI_MODIFY_REFRESH, hrec);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     size = MAX_PATH;
@@ -7244,15 +7244,15 @@ static void test_viewmodify_refresh(void)
 
 static void test_where_viewmodify(void)
 {
-    MSIOBJECT *hdb;
-    MSIOBJECT *hview;
-    MSIOBJECT *hrec;
+    LibmsiObject *hdb;
+    LibmsiObject *hview;
+    LibmsiObject *hrec;
     const char *query;
     unsigned r;
 
     DeleteFile(msifile);
 
-    r = MsiOpenDatabase(msifile, MSIDBOPEN_CREATE, &hdb);
+    r = MsiOpenDatabase(msifile, LIBMSI_DB_OPEN_CREATE, &hdb);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     query = "CREATE TABLE `Table` ( `A` INT, `B` INT PRIMARY KEY `A` )";
@@ -7280,7 +7280,7 @@ static void test_where_viewmodify(void)
     MsiRecordSetInteger(hrec, 1, 7);
     MsiRecordSetInteger(hrec, 2, 8);
 
-    r = MsiViewModify(hview, MSIMODIFY_INSERT_TEMPORARY, hrec);
+    r = MsiViewModify(hview, LIBMSI_MODIFY_INSERT_TEMPORARY, hrec);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     MsiCloseHandle(hrec);
@@ -7304,7 +7304,7 @@ static void test_where_viewmodify(void)
 
     MsiRecordSetInteger(hrec, 2, 9);
 
-    r = MsiViewModify(hview, MSIMODIFY_UPDATE, hrec);
+    r = MsiViewModify(hview, LIBMSI_MODIFY_UPDATE, hrec);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     MsiCloseHandle(hrec);
@@ -7330,7 +7330,7 @@ static void test_where_viewmodify(void)
     r = run_query(hdb, 0, query);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
-    r = MsiViewModify(hview, MSIMODIFY_REFRESH, hrec);
+    r = MsiViewModify(hview, LIBMSI_MODIFY_REFRESH, hrec);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     r = MsiRecordGetInteger(hrec, 1);
@@ -7378,9 +7378,9 @@ done:
 
 static void test_storages_table(void)
 {
-    MSIOBJECT *hdb;
-    MSIOBJECT *hview;
-    MSIOBJECT *hrec;
+    LibmsiObject *hdb;
+    LibmsiObject *hview;
+    LibmsiObject *hrec;
     IStorage *stg, *inner;
     IStream *stm;
     char file[MAX_PATH];
@@ -7399,11 +7399,11 @@ static void test_storages_table(void)
 
     MsiCloseHandle(hdb);
 
-    r = MsiOpenDatabase(msifile, MSIDBOPEN_TRANSACT, &hdb);
+    r = MsiOpenDatabase(msifile, LIBMSI_DB_OPEN_TRANSACT, &hdb);
     ok(r == ERROR_SUCCESS , "Failed to open database\n");
 
     /* check the column types */
-    hrec = get_column_info(hdb, "SELECT * FROM `_Storages`", MSICOLINFO_TYPES);
+    hrec = get_column_info(hdb, "SELECT * FROM `_Storages`", LIBMSI_COL_INFO_TYPES);
     ok(hrec, "failed to get column info hrecord\n");
     ok(check_record(hrec, 1, "s62"), "wrong hrecord type\n");
     ok(check_record(hrec, 2, "V0"), "wrong hrecord type\n");
@@ -7411,7 +7411,7 @@ static void test_storages_table(void)
     MsiCloseHandle(hrec);
 
     /* now try the names */
-    hrec = get_column_info(hdb, "SELECT * FROM `_Storages`", MSICOLINFO_NAMES);
+    hrec = get_column_info(hdb, "SELECT * FROM `_Storages`", LIBMSI_COL_INFO_NAMES);
     ok(hrec, "failed to get column info hrecord\n");
     ok(check_record(hrec, 1, "Name"), "wrong hrecord type\n");
     ok(check_record(hrec, 2, "Data"), "wrong hrecord type\n");
@@ -7503,15 +7503,15 @@ static void test_storages_table(void)
 
 static void test_droptable(void)
 {
-    MSIOBJECT *hdb;
-    MSIOBJECT *hview;
-    MSIOBJECT *hrec;
+    LibmsiObject *hdb;
+    LibmsiObject *hview;
+    LibmsiObject *hrec;
     char buf[MAX_PATH];
     const char *query;
     unsigned size;
     unsigned r;
 
-    r = MsiOpenDatabase(msifile, MSIDBOPEN_CREATE, &hdb);
+    r = MsiOpenDatabase(msifile, LIBMSI_DB_OPEN_CREATE, &hdb);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     query = "CREATE TABLE `One` ( `A` INT PRIMARY KEY `A` )";
@@ -7724,19 +7724,19 @@ static void test_droptable(void)
 
 static void test_dbmerge(void)
 {
-    MSIOBJECT *hdb;
-    MSIOBJECT *href;
-    MSIOBJECT *hview;
-    MSIOBJECT *hrec;
+    LibmsiObject *hdb;
+    LibmsiObject *href;
+    LibmsiObject *hview;
+    LibmsiObject *hrec;
     char buf[MAX_PATH];
     const char *query;
     unsigned size;
     unsigned r;
 
-    r = MsiOpenDatabase(msifile, MSIDBOPEN_CREATE, &hdb);
+    r = MsiOpenDatabase(msifile, LIBMSI_DB_OPEN_CREATE, &hdb);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
-    r = MsiOpenDatabase("refdb.msi", MSIDBOPEN_CREATE, &href);
+    r = MsiOpenDatabase("refdb.msi", LIBMSI_DB_OPEN_CREATE, &href);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     /* hDatabase is invalid */
@@ -8052,7 +8052,7 @@ static void test_dbmerge(void)
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     hrec = NULL;
-    r = MsiViewGetColumnInfo(hview, MSICOLINFO_NAMES, &hrec);
+    r = MsiViewGetColumnInfo(hview, LIBMSI_COL_INFO_NAMES, &hrec);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     size = MAX_PATH;
@@ -8069,7 +8069,7 @@ static void test_dbmerge(void)
     MsiCloseHandle(hrec);
 
     hrec = NULL;
-    r = MsiViewGetColumnInfo(hview, MSICOLINFO_TYPES, &hrec);
+    r = MsiViewGetColumnInfo(hview, LIBMSI_COL_INFO_TYPES, &hrec);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     size = MAX_PATH;
@@ -8354,9 +8354,9 @@ static void test_dbmerge(void)
 
 static void test_select_with_tablenames(void)
 {
-    MSIOBJECT *hdb;
-    MSIOBJECT *view;
-    MSIOBJECT *rec;
+    LibmsiObject *hdb;
+    LibmsiObject *view;
+    LibmsiObject *rec;
     const char *query;
     unsigned r;
     int i;
@@ -8441,9 +8441,9 @@ static const unsigned ordervals[6][3] =
 
 static void test_insertorder(void)
 {
-    MSIOBJECT *hdb;
-    MSIOBJECT *view;
-    MSIOBJECT *rec;
+    LibmsiObject *hdb;
+    LibmsiObject *view;
+    LibmsiObject *rec;
     const char *query;
     unsigned r;
     int i;
@@ -8581,9 +8581,9 @@ static void test_insertorder(void)
 
 static void test_columnorder(void)
 {
-    MSIOBJECT *hdb;
-    MSIOBJECT *view;
-    MSIOBJECT *rec;
+    LibmsiObject *hdb;
+    LibmsiObject *view;
+    LibmsiObject *rec;
     char buf[MAX_PATH];
     const char *query;
     unsigned sz;
@@ -8624,7 +8624,7 @@ static void test_columnorder(void)
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     rec = NULL;
-    r = MsiViewGetColumnInfo(view, MSICOLINFO_TYPES, &rec);
+    r = MsiViewGetColumnInfo(view, LIBMSI_COL_INFO_TYPES, &rec);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     sz = MAX_PATH;
@@ -8660,7 +8660,7 @@ static void test_columnorder(void)
     MsiCloseHandle(rec);
 
     rec = NULL;
-    r = MsiViewGetColumnInfo(view, MSICOLINFO_NAMES, &rec);
+    r = MsiViewGetColumnInfo(view, LIBMSI_COL_INFO_NAMES, &rec);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     sz = MAX_PATH;
@@ -8854,7 +8854,7 @@ static void test_columnorder(void)
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     rec = NULL;
-    r = MsiViewGetColumnInfo(view, MSICOLINFO_TYPES, &rec);
+    r = MsiViewGetColumnInfo(view, LIBMSI_COL_INFO_TYPES, &rec);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     sz = MAX_PATH;
@@ -8890,7 +8890,7 @@ static void test_columnorder(void)
     MsiCloseHandle(rec);
 
     rec = NULL;
-    r = MsiViewGetColumnInfo(view, MSICOLINFO_NAMES, &rec);
+    r = MsiViewGetColumnInfo(view, LIBMSI_COL_INFO_NAMES, &rec);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     sz = MAX_PATH;
@@ -9078,9 +9078,9 @@ static void test_columnorder(void)
 
 static void test_createtable(void)
 {
-    MSIOBJECT *hdb;
-    MSIOBJECT *htab = 0;
-    MSIOBJECT *hrec = 0;
+    LibmsiObject *hdb;
+    LibmsiObject *htab = 0;
+    LibmsiObject *hrec = 0;
     const char *query;
     unsigned res;
     unsigned size;
@@ -9098,7 +9098,7 @@ static void test_createtable(void)
         ok(res == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", res);
 
         hrec = NULL;
-        res = MsiViewGetColumnInfo( htab, MSICOLINFO_NAMES, &hrec );
+        res = MsiViewGetColumnInfo( htab, LIBMSI_COL_INFO_NAMES, &hrec );
         todo_wine ok(res == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", res);
 
         size = sizeof(buffer);
@@ -9132,7 +9132,7 @@ static void test_createtable(void)
         ok(res == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", res);
 
         hrec = NULL;
-        res = MsiViewGetColumnInfo( htab, MSICOLINFO_NAMES, &hrec );
+        res = MsiViewGetColumnInfo( htab, LIBMSI_COL_INFO_NAMES, &hrec );
         ok(res == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", res);
 
         buffer[0] = 0;
@@ -9154,7 +9154,7 @@ static void test_createtable(void)
         res = MsiCloseHandle(hdb);
         ok(res == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", res);
 
-        res = MsiOpenDatabase(msifile, MSIDBOPEN_TRANSACT, &hdb );
+        res = MsiOpenDatabase(msifile, LIBMSI_DB_OPEN_TRANSACT, &hdb );
         ok(res == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", res);
 
         query = "SELECT * FROM `a`";
@@ -9162,7 +9162,7 @@ static void test_createtable(void)
         ok(res == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", res);
 
         hrec = NULL;
-        res = MsiViewGetColumnInfo( htab, MSICOLINFO_NAMES, &hrec );
+        res = MsiViewGetColumnInfo( htab, LIBMSI_COL_INFO_NAMES, &hrec );
         ok(res == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", res);
 
         buffer[0] = 0;
@@ -9198,11 +9198,11 @@ static void test_embedded_nulls(void)
         "Control\tDialog\n"
         "LicenseAgreementDlg\ttext\x11\x19text\0text";
     unsigned r, sz;
-    MSIOBJECT *hdb;
-    MSIOBJECT *hrec;
+    LibmsiObject *hdb;
+    LibmsiObject *hrec;
     char buffer[32];
 
-    r = MsiOpenDatabaseA( msifile, MSIDBOPEN_CREATE, &hdb );
+    r = MsiOpenDatabaseA( msifile, LIBMSI_DB_OPEN_CREATE, &hdb );
     ok( r == ERROR_SUCCESS, "failed to open database %u\n", r );
 
     GetCurrentDirectoryA( MAX_PATH, CURR_DIR );
@@ -9227,16 +9227,16 @@ static void test_embedded_nulls(void)
 
 static void test_select_column_names(void)
 {
-    MSIOBJECT *hdb = 0;
-    MSIOBJECT *rec;
-    MSIOBJECT *rec2;
-    MSIOBJECT *view;
+    LibmsiObject *hdb = 0;
+    LibmsiObject *rec;
+    LibmsiObject *rec2;
+    LibmsiObject *view;
     char buffer[32];
     unsigned r, size;
 
     DeleteFile(msifile);
 
-    r = MsiOpenDatabase( msifile, MSIDBOPEN_CREATE, &hdb );
+    r = MsiOpenDatabase( msifile, LIBMSI_DB_OPEN_CREATE, &hdb );
     ok( r == ERROR_SUCCESS , "failed to open database: %u\n", r );
 
     r = try_query( hdb, "CREATE TABLE `t` (`a` CHAR NOT NULL, `b` CHAR PRIMARY KEY `a`)");
@@ -9288,7 +9288,7 @@ static void test_select_column_names(void)
     ok( r == 1, "got %u\n",  r );
 
     rec2 = NULL;
-    r = MsiViewGetColumnInfo( view, MSICOLINFO_NAMES, &rec2 );
+    r = MsiViewGetColumnInfo( view, LIBMSI_COL_INFO_NAMES, &rec2 );
     ok( r == ERROR_SUCCESS, "unexpected result: %u\n", r );
     r = MsiRecordGetFieldCount( rec2 );
     ok( r == 1, "got %u\n",  r );
@@ -9300,7 +9300,7 @@ static void test_select_column_names(void)
     MsiCloseHandle( rec2 );
 
     rec2 = NULL;
-    r = MsiViewGetColumnInfo( view, MSICOLINFO_TYPES, &rec2 );
+    r = MsiViewGetColumnInfo( view, LIBMSI_COL_INFO_TYPES, &rec2 );
     ok( r == ERROR_SUCCESS, "unexpected result: %u\n", r );
     r = MsiRecordGetFieldCount( rec2 );
     ok( r == 1, "got %u\n",  r );

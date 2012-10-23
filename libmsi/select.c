@@ -36,19 +36,19 @@
 
 /* below is the query interface to a table */
 
-typedef struct tagMSISELECTVIEW
+typedef struct LibmsiSelectView
 {
-    MSIVIEW        view;
-    MSIDATABASE   *db;
-    MSIVIEW       *table;
+    LibmsiView        view;
+    LibmsiDatabase   *db;
+    LibmsiView       *table;
     unsigned           num_cols;
     unsigned           max_cols;
     unsigned           cols[1];
-} MSISELECTVIEW;
+} LibmsiSelectView;
 
-static unsigned SELECT_fetch_int( MSIVIEW *view, unsigned row, unsigned col, unsigned *val )
+static unsigned SELECT_fetch_int( LibmsiView *view, unsigned row, unsigned col, unsigned *val )
 {
-    MSISELECTVIEW *sv = (MSISELECTVIEW*)view;
+    LibmsiSelectView *sv = (LibmsiSelectView*)view;
 
     TRACE("%p %d %d %p\n", sv, row, col, val );
 
@@ -67,9 +67,9 @@ static unsigned SELECT_fetch_int( MSIVIEW *view, unsigned row, unsigned col, uns
     return sv->table->ops->fetch_int( sv->table, row, col, val );
 }
 
-static unsigned SELECT_fetch_stream( MSIVIEW *view, unsigned row, unsigned col, IStream **stm)
+static unsigned SELECT_fetch_stream( LibmsiView *view, unsigned row, unsigned col, IStream **stm)
 {
-    MSISELECTVIEW *sv = (MSISELECTVIEW*)view;
+    LibmsiSelectView *sv = (LibmsiSelectView*)view;
 
     TRACE("%p %d %d %p\n", sv, row, col, stm );
 
@@ -88,9 +88,9 @@ static unsigned SELECT_fetch_stream( MSIVIEW *view, unsigned row, unsigned col, 
     return sv->table->ops->fetch_stream( sv->table, row, col, stm );
 }
 
-static unsigned SELECT_get_row( MSIVIEW *view, unsigned row, MSIRECORD **rec )
+static unsigned SELECT_get_row( LibmsiView *view, unsigned row, LibmsiRecord **rec )
 {
-    MSISELECTVIEW *sv = (MSISELECTVIEW *)view;
+    LibmsiSelectView *sv = (LibmsiSelectView *)view;
 
     TRACE("%p %d %p\n", sv, row, rec );
 
@@ -100,11 +100,11 @@ static unsigned SELECT_get_row( MSIVIEW *view, unsigned row, MSIRECORD **rec )
     return msi_view_get_row(sv->db, view, row, rec);
 }
 
-static unsigned SELECT_set_row( MSIVIEW *view, unsigned row, MSIRECORD *rec, unsigned mask )
+static unsigned SELECT_set_row( LibmsiView *view, unsigned row, LibmsiRecord *rec, unsigned mask )
 {
-    MSISELECTVIEW *sv = (MSISELECTVIEW*)view;
+    LibmsiSelectView *sv = (LibmsiSelectView*)view;
     unsigned i, expanded_mask = 0, r = ERROR_SUCCESS, col_count = 0;
-    MSIRECORD *expanded;
+    LibmsiRecord *expanded;
 
     TRACE("%p %d %p %08x\n", sv, row, rec, mask );
 
@@ -142,11 +142,11 @@ static unsigned SELECT_set_row( MSIVIEW *view, unsigned row, MSIRECORD *rec, uns
     return r;
 }
 
-static unsigned SELECT_insert_row( MSIVIEW *view, MSIRECORD *record, unsigned row, bool temporary )
+static unsigned SELECT_insert_row( LibmsiView *view, LibmsiRecord *record, unsigned row, bool temporary )
 {
-    MSISELECTVIEW *sv = (MSISELECTVIEW*)view;
+    LibmsiSelectView *sv = (LibmsiSelectView*)view;
     unsigned i, table_cols, r;
-    MSIRECORD *outrec;
+    LibmsiRecord *outrec;
 
     TRACE("%p %p\n", sv, record );
 
@@ -175,9 +175,9 @@ fail:
     return r;
 }
 
-static unsigned SELECT_execute( MSIVIEW *view, MSIRECORD *record )
+static unsigned SELECT_execute( LibmsiView *view, LibmsiRecord *record )
 {
-    MSISELECTVIEW *sv = (MSISELECTVIEW*)view;
+    LibmsiSelectView *sv = (LibmsiSelectView*)view;
 
     TRACE("%p %p\n", sv, record);
 
@@ -187,9 +187,9 @@ static unsigned SELECT_execute( MSIVIEW *view, MSIRECORD *record )
     return sv->table->ops->execute( sv->table, record );
 }
 
-static unsigned SELECT_close( MSIVIEW *view )
+static unsigned SELECT_close( LibmsiView *view )
 {
-    MSISELECTVIEW *sv = (MSISELECTVIEW*)view;
+    LibmsiSelectView *sv = (LibmsiSelectView*)view;
 
     TRACE("%p\n", sv );
 
@@ -199,9 +199,9 @@ static unsigned SELECT_close( MSIVIEW *view )
     return sv->table->ops->close( sv->table );
 }
 
-static unsigned SELECT_get_dimensions( MSIVIEW *view, unsigned *rows, unsigned *cols )
+static unsigned SELECT_get_dimensions( LibmsiView *view, unsigned *rows, unsigned *cols )
 {
-    MSISELECTVIEW *sv = (MSISELECTVIEW*)view;
+    LibmsiSelectView *sv = (LibmsiSelectView*)view;
 
     TRACE("%p %p %p\n", sv, rows, cols );
 
@@ -214,10 +214,10 @@ static unsigned SELECT_get_dimensions( MSIVIEW *view, unsigned *rows, unsigned *
     return sv->table->ops->get_dimensions( sv->table, rows, NULL );
 }
 
-static unsigned SELECT_get_column_info( MSIVIEW *view, unsigned n, const WCHAR **name,
+static unsigned SELECT_get_column_info( LibmsiView *view, unsigned n, const WCHAR **name,
                                     unsigned *type, bool *temporary, const WCHAR **table_name )
 {
-    MSISELECTVIEW *sv = (MSISELECTVIEW*)view;
+    LibmsiSelectView *sv = (LibmsiSelectView*)view;
 
     TRACE("%p %d %p %p %p %p\n", sv, n, name, type, temporary, table_name );
 
@@ -240,12 +240,12 @@ static unsigned SELECT_get_column_info( MSIVIEW *view, unsigned n, const WCHAR *
                                             type, temporary, table_name );
 }
 
-static unsigned msi_select_update(MSIVIEW *view, MSIRECORD *rec, unsigned row)
+static unsigned msi_select_update(LibmsiView *view, LibmsiRecord *rec, unsigned row)
 {
-    MSISELECTVIEW *sv = (MSISELECTVIEW*)view;
+    LibmsiSelectView *sv = (LibmsiSelectView*)view;
     unsigned r, i, num_columns, col, type, val;
     const WCHAR *str;
-    MSIRECORD *mod;
+    LibmsiRecord *mod;
 
     r = SELECT_get_dimensions(view, NULL, &num_columns);
     if (r != ERROR_SUCCESS)
@@ -290,32 +290,32 @@ static unsigned msi_select_update(MSIVIEW *view, MSIRECORD *rec, unsigned row)
         }
     }
 
-    r = sv->table->ops->modify(sv->table, MSIMODIFY_UPDATE, mod, row);
+    r = sv->table->ops->modify(sv->table, LIBMSI_MODIFY_UPDATE, mod, row);
 
 done:
     msiobj_release(&mod->hdr);
     return r;
 }
 
-static unsigned SELECT_modify( MSIVIEW *view, MSIMODIFY eModifyMode,
-                           MSIRECORD *rec, unsigned row )
+static unsigned SELECT_modify( LibmsiView *view, LibmsiModify eModifyMode,
+                           LibmsiRecord *rec, unsigned row )
 {
-    MSISELECTVIEW *sv = (MSISELECTVIEW*)view;
+    LibmsiSelectView *sv = (LibmsiSelectView*)view;
 
     TRACE("%p %d %p %d\n", sv, eModifyMode, rec, row );
 
     if( !sv->table )
          return ERROR_FUNCTION_FAILED;
 
-    if (eModifyMode == MSIMODIFY_UPDATE)
+    if (eModifyMode == LIBMSI_MODIFY_UPDATE)
         return msi_select_update(view, rec, row);
 
     return sv->table->ops->modify( sv->table, eModifyMode, rec, row );
 }
 
-static unsigned SELECT_delete( MSIVIEW *view )
+static unsigned SELECT_delete( LibmsiView *view )
 {
-    MSISELECTVIEW *sv = (MSISELECTVIEW*)view;
+    LibmsiSelectView *sv = (LibmsiSelectView*)view;
 
     TRACE("%p\n", sv );
 
@@ -328,10 +328,10 @@ static unsigned SELECT_delete( MSIVIEW *view )
     return ERROR_SUCCESS;
 }
 
-static unsigned SELECT_find_matching_rows( MSIVIEW *view, unsigned col,
+static unsigned SELECT_find_matching_rows( LibmsiView *view, unsigned col,
     unsigned val, unsigned *row, MSIITERHANDLE *handle )
 {
-    MSISELECTVIEW *sv = (MSISELECTVIEW*)view;
+    LibmsiSelectView *sv = (LibmsiSelectView*)view;
 
     TRACE("%p, %d, %u, %p\n", view, col, val, *handle);
 
@@ -347,7 +347,7 @@ static unsigned SELECT_find_matching_rows( MSIVIEW *view, unsigned col,
 }
 
 
-static const MSIVIEWOPS select_ops =
+static const LibmsiViewOPS select_ops =
 {
     SELECT_fetch_int,
     SELECT_fetch_stream,
@@ -370,11 +370,11 @@ static const MSIVIEWOPS select_ops =
     NULL,
 };
 
-static unsigned SELECT_AddColumn( MSISELECTVIEW *sv, const WCHAR *name,
+static unsigned SELECT_AddColumn( LibmsiSelectView *sv, const WCHAR *name,
                               const WCHAR *table_name )
 {
     unsigned r, n;
-    MSIVIEW *table;
+    LibmsiView *table;
 
     TRACE("%p adding %s.%s\n", sv, debugstr_w( table_name ),
           debugstr_w( name ));
@@ -418,10 +418,10 @@ static int select_count_columns( const column_info *col )
     return n;
 }
 
-unsigned SELECT_CreateView( MSIDATABASE *db, MSIVIEW **view, MSIVIEW *table,
+unsigned SELECT_CreateView( LibmsiDatabase *db, LibmsiView **view, LibmsiView *table,
                         const column_info *columns )
 {
-    MSISELECTVIEW *sv = NULL;
+    LibmsiSelectView *sv = NULL;
     unsigned count = 0, r = ERROR_SUCCESS;
 
     TRACE("%p\n", sv );

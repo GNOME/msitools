@@ -38,24 +38,24 @@
 #include "query.h"
 
 
-#define MSIFIELD_NULL   0
-#define MSIFIELD_INT    1
-#define MSIFIELD_WSTR   3
-#define MSIFIELD_STREAM 4
-#define MSIFIELD_INTPTR 5
+#define LIBMSI_FIELD_TYPE_NULL   0
+#define LIBMSI_FIELD_TYPE_INT    1
+#define LIBMSI_FIELD_TYPE_WSTR   3
+#define LIBMSI_FIELD_TYPE_STREAM 4
+#define LIBMSI_FIELD_TYPE_INTPTR 5
 
-static void MSI_FreeField( MSIFIELD *field )
+static void MSI_FreeField( LibmsiField *field )
 {
     switch( field->type )
     {
-    case MSIFIELD_NULL:
-    case MSIFIELD_INT:
-    case MSIFIELD_INTPTR:
+    case LIBMSI_FIELD_TYPE_NULL:
+    case LIBMSI_FIELD_TYPE_INT:
+    case LIBMSI_FIELD_TYPE_INTPTR:
         break;
-    case MSIFIELD_WSTR:
+    case LIBMSI_FIELD_TYPE_WSTR:
         msi_free( field->u.szwVal);
         break;
-    case MSIFIELD_STREAM:
+    case LIBMSI_FIELD_TYPE_STREAM:
         IStream_Release( field->u.stream );
         break;
     default:
@@ -63,18 +63,18 @@ static void MSI_FreeField( MSIFIELD *field )
     }
 }
 
-void MSI_CloseRecord( MSIOBJECT *arg )
+void MSI_CloseRecord( LibmsiObject *arg )
 {
-    MSIRECORD *rec = (MSIRECORD *) arg;
+    LibmsiRecord *rec = (LibmsiRecord *) arg;
     unsigned i;
 
     for( i=0; i<=rec->count; i++ )
         MSI_FreeField( &rec->fields[i] );
 }
 
-MSIRECORD *MSI_CreateRecord( unsigned cParams )
+LibmsiRecord *MSI_CreateRecord( unsigned cParams )
 {
-    MSIRECORD *rec;
+    LibmsiRecord *rec;
     unsigned len;
 
     TRACE("%d\n", cParams);
@@ -82,16 +82,16 @@ MSIRECORD *MSI_CreateRecord( unsigned cParams )
     if( cParams>65535 )
         return NULL;
 
-    len = sizeof (MSIRECORD) + sizeof (MSIFIELD)*cParams;
-    rec = alloc_msiobject( MSIOBJECTTYPE_RECORD, len, MSI_CloseRecord );
+    len = sizeof (LibmsiRecord) + sizeof (LibmsiField)*cParams;
+    rec = alloc_msiobject( LIBMSI_OBJECT_TYPE_RECORD, len, MSI_CloseRecord );
     if( rec )
         rec->count = cParams;
     return rec;
 }
 
-MSIOBJECT * MsiCreateRecord( unsigned cParams )
+LibmsiObject * MsiCreateRecord( unsigned cParams )
 {
-    MSIRECORD *rec;
+    LibmsiRecord *rec;
 
     TRACE("%d\n", cParams);
 
@@ -99,19 +99,19 @@ MSIOBJECT * MsiCreateRecord( unsigned cParams )
     return &rec->hdr;
 }
 
-unsigned MSI_RecordGetFieldCount( const MSIRECORD *rec )
+unsigned MSI_RecordGetFieldCount( const LibmsiRecord *rec )
 {
     return rec->count;
 }
 
-unsigned MsiRecordGetFieldCount( MSIOBJECT *handle )
+unsigned MsiRecordGetFieldCount( LibmsiObject *handle )
 {
-    MSIRECORD *rec;
+    LibmsiRecord *rec;
     unsigned ret;
 
     TRACE("%d\n", handle );
 
-    rec = msihandle2msiinfo( handle, MSIOBJECTTYPE_RECORD );
+    rec = msihandle2msiinfo( handle, LIBMSI_OBJECT_TYPE_RECORD );
     if( !rec )
         return -1;
 
@@ -146,8 +146,8 @@ static bool string2intW( const WCHAR *str, int *out )
     return true;
 }
 
-unsigned MSI_RecordCopyField( MSIRECORD *in_rec, unsigned in_n,
-                          MSIRECORD *out_rec, unsigned out_n )
+unsigned MSI_RecordCopyField( LibmsiRecord *in_rec, unsigned in_n,
+                          LibmsiRecord *out_rec, unsigned out_n )
 {
     unsigned r = ERROR_SUCCESS;
 
@@ -158,29 +158,29 @@ unsigned MSI_RecordCopyField( MSIRECORD *in_rec, unsigned in_n,
     else if ( in_rec != out_rec || in_n != out_n )
     {
         WCHAR *str;
-        MSIFIELD *in, *out;
+        LibmsiField *in, *out;
 
         in = &in_rec->fields[in_n];
         out = &out_rec->fields[out_n];
 
         switch ( in->type )
         {
-        case MSIFIELD_NULL:
+        case LIBMSI_FIELD_TYPE_NULL:
             break;
-        case MSIFIELD_INT:
+        case LIBMSI_FIELD_TYPE_INT:
             out->u.iVal = in->u.iVal;
             break;
-        case MSIFIELD_INTPTR:
+        case LIBMSI_FIELD_TYPE_INTPTR:
             out->u.pVal = in->u.pVal;
             break;
-        case MSIFIELD_WSTR:
+        case LIBMSI_FIELD_TYPE_WSTR:
             str = strdupW( in->u.szwVal );
             if ( !str )
                 r = ERROR_OUTOFMEMORY;
             else
                 out->u.szwVal = str;
             break;
-        case MSIFIELD_STREAM:
+        case LIBMSI_FIELD_TYPE_STREAM:
             IStream_AddRef( in->u.stream );
             out->u.stream = in->u.stream;
             break;
@@ -196,7 +196,7 @@ unsigned MSI_RecordCopyField( MSIRECORD *in_rec, unsigned in_n,
     return r;
 }
 
-intptr_t MSI_RecordGetIntPtr( MSIRECORD *rec, unsigned iField )
+intptr_t MSI_RecordGetIntPtr( LibmsiRecord *rec, unsigned iField )
 {
     int ret;
 
@@ -207,11 +207,11 @@ intptr_t MSI_RecordGetIntPtr( MSIRECORD *rec, unsigned iField )
 
     switch( rec->fields[iField].type )
     {
-    case MSIFIELD_INT:
+    case LIBMSI_FIELD_TYPE_INT:
         return rec->fields[iField].u.iVal;
-    case MSIFIELD_INTPTR:
+    case LIBMSI_FIELD_TYPE_INTPTR:
         return rec->fields[iField].u.pVal;
-    case MSIFIELD_WSTR:
+    case LIBMSI_FIELD_TYPE_WSTR:
         if( string2intW( rec->fields[iField].u.szwVal, &ret ) )
             return ret;
         return INTPTR_MIN;
@@ -222,7 +222,7 @@ intptr_t MSI_RecordGetIntPtr( MSIRECORD *rec, unsigned iField )
     return INTPTR_MIN;
 }
 
-int MSI_RecordGetInteger( MSIRECORD *rec, unsigned iField)
+int MSI_RecordGetInteger( LibmsiRecord *rec, unsigned iField)
 {
     int ret = 0;
 
@@ -233,11 +233,11 @@ int MSI_RecordGetInteger( MSIRECORD *rec, unsigned iField)
 
     switch( rec->fields[iField].type )
     {
-    case MSIFIELD_INT:
+    case LIBMSI_FIELD_TYPE_INT:
         return rec->fields[iField].u.iVal;
-    case MSIFIELD_INTPTR:
+    case LIBMSI_FIELD_TYPE_INTPTR:
         return rec->fields[iField].u.pVal;
-    case MSIFIELD_WSTR:
+    case LIBMSI_FIELD_TYPE_WSTR:
         if( string2intW( rec->fields[iField].u.szwVal, &ret ) )
             return ret;
         return MSI_NULL_INTEGER;
@@ -248,14 +248,14 @@ int MSI_RecordGetInteger( MSIRECORD *rec, unsigned iField)
     return MSI_NULL_INTEGER;
 }
 
-int MsiRecordGetInteger( MSIOBJECT *handle, unsigned iField)
+int MsiRecordGetInteger( LibmsiObject *handle, unsigned iField)
 {
-    MSIRECORD *rec;
+    LibmsiRecord *rec;
     unsigned ret;
 
     TRACE("%d %d\n", handle, iField );
 
-    rec = msihandle2msiinfo( handle, MSIOBJECTTYPE_RECORD );
+    rec = msihandle2msiinfo( handle, LIBMSI_OBJECT_TYPE_RECORD );
     if( !rec )
         return MSI_NULL_INTEGER;
 
@@ -267,14 +267,14 @@ int MsiRecordGetInteger( MSIOBJECT *handle, unsigned iField)
     return ret;
 }
 
-unsigned MsiRecordClearData( MSIOBJECT *handle )
+unsigned MsiRecordClearData( LibmsiObject *handle )
 {
-    MSIRECORD *rec;
+    LibmsiRecord *rec;
     unsigned i;
 
     TRACE("%d\n", handle );
 
-    rec = msihandle2msiinfo( handle, MSIOBJECTTYPE_RECORD );
+    rec = msihandle2msiinfo( handle, LIBMSI_OBJECT_TYPE_RECORD );
     if( !rec )
         return ERROR_INVALID_HANDLE;
 
@@ -282,7 +282,7 @@ unsigned MsiRecordClearData( MSIOBJECT *handle )
     for( i=0; i<=rec->count; i++)
     {
         MSI_FreeField( &rec->fields[i] );
-        rec->fields[i].type = MSIFIELD_NULL;
+        rec->fields[i].type = LIBMSI_FIELD_TYPE_NULL;
         rec->fields[i].u.iVal = 0;
     }
     msiobj_unlock( &rec->hdr );
@@ -291,7 +291,7 @@ unsigned MsiRecordClearData( MSIOBJECT *handle )
     return ERROR_SUCCESS;
 }
 
-unsigned MSI_RecordSetIntPtr( MSIRECORD *rec, unsigned iField, intptr_t pVal )
+unsigned MSI_RecordSetIntPtr( LibmsiRecord *rec, unsigned iField, intptr_t pVal )
 {
     TRACE("%p %u %ld\n", rec, iField, pVal);
 
@@ -299,13 +299,13 @@ unsigned MSI_RecordSetIntPtr( MSIRECORD *rec, unsigned iField, intptr_t pVal )
         return ERROR_INVALID_PARAMETER;
 
     MSI_FreeField( &rec->fields[iField] );
-    rec->fields[iField].type = MSIFIELD_INTPTR;
+    rec->fields[iField].type = LIBMSI_FIELD_TYPE_INTPTR;
     rec->fields[iField].u.pVal = pVal;
 
     return ERROR_SUCCESS;
 }
 
-unsigned MSI_RecordSetInteger( MSIRECORD *rec, unsigned iField, int iVal )
+unsigned MSI_RecordSetInteger( LibmsiRecord *rec, unsigned iField, int iVal )
 {
     TRACE("%p %u %d\n", rec, iField, iVal);
 
@@ -313,20 +313,20 @@ unsigned MSI_RecordSetInteger( MSIRECORD *rec, unsigned iField, int iVal )
         return ERROR_INVALID_PARAMETER;
 
     MSI_FreeField( &rec->fields[iField] );
-    rec->fields[iField].type = MSIFIELD_INT;
+    rec->fields[iField].type = LIBMSI_FIELD_TYPE_INT;
     rec->fields[iField].u.iVal = iVal;
 
     return ERROR_SUCCESS;
 }
 
-unsigned MsiRecordSetInteger( MSIOBJECT *handle, unsigned iField, int iVal )
+unsigned MsiRecordSetInteger( LibmsiObject *handle, unsigned iField, int iVal )
 {
-    MSIRECORD *rec;
+    LibmsiRecord *rec;
     unsigned ret;
 
     TRACE("%d %u %d\n", handle, iField, iVal);
 
-    rec = msihandle2msiinfo( handle, MSIOBJECTTYPE_RECORD );
+    rec = msihandle2msiinfo( handle, LIBMSI_OBJECT_TYPE_RECORD );
     if( !rec )
         return ERROR_INVALID_HANDLE;
 
@@ -337,26 +337,26 @@ unsigned MsiRecordSetInteger( MSIOBJECT *handle, unsigned iField, int iVal )
     return ret;
 }
 
-bool MSI_RecordIsNull( MSIRECORD *rec, unsigned iField )
+bool MSI_RecordIsNull( LibmsiRecord *rec, unsigned iField )
 {
     bool r = true;
 
     TRACE("%p %d\n", rec, iField );
 
     r = ( iField > rec->count ) ||
-        ( rec->fields[iField].type == MSIFIELD_NULL );
+        ( rec->fields[iField].type == LIBMSI_FIELD_TYPE_NULL );
 
     return r;
 }
 
-bool MsiRecordIsNull( MSIOBJECT *handle, unsigned iField )
+bool MsiRecordIsNull( LibmsiObject *handle, unsigned iField )
 {
-    MSIRECORD *rec;
+    LibmsiRecord *rec;
     unsigned ret;
 
     TRACE("%d %d\n", handle, iField );
 
-    rec = msihandle2msiinfo( handle, MSIOBJECTTYPE_RECORD );
+    rec = msihandle2msiinfo( handle, LIBMSI_OBJECT_TYPE_RECORD );
     if( !rec )
         return 0;
     msiobj_lock( &rec->hdr );
@@ -367,7 +367,7 @@ bool MsiRecordIsNull( MSIOBJECT *handle, unsigned iField )
 
 }
 
-unsigned MSI_RecordGetStringA(MSIRECORD *rec, unsigned iField,
+unsigned MSI_RecordGetStringA(LibmsiRecord *rec, unsigned iField,
                char *szValue, unsigned *pcchValue)
 {
     unsigned len=0, ret;
@@ -387,13 +387,13 @@ unsigned MSI_RecordGetStringA(MSIRECORD *rec, unsigned iField,
     ret = ERROR_SUCCESS;
     switch( rec->fields[iField].type )
     {
-    case MSIFIELD_INT:
+    case LIBMSI_FIELD_TYPE_INT:
         wsprintfA(buffer, "%d", rec->fields[iField].u.iVal);
         len = lstrlenA( buffer );
         if (szValue)
             lstrcpynA(szValue, buffer, *pcchValue);
         break;
-    case MSIFIELD_WSTR:
+    case LIBMSI_FIELD_TYPE_WSTR:
         len = WideCharToMultiByte( CP_ACP, 0, rec->fields[iField].u.szwVal, -1,
                              NULL, 0 , NULL, NULL);
         if (szValue)
@@ -404,7 +404,7 @@ unsigned MSI_RecordGetStringA(MSIRECORD *rec, unsigned iField,
         if( len )
             len--;
         break;
-    case MSIFIELD_NULL:
+    case LIBMSI_FIELD_TYPE_NULL:
         if( szValue && *pcchValue > 0 )
             szValue[0] = 0;
         break;
@@ -420,15 +420,15 @@ unsigned MSI_RecordGetStringA(MSIRECORD *rec, unsigned iField,
     return ret;
 }
 
-unsigned MsiRecordGetStringA(MSIOBJECT *handle, unsigned iField,
+unsigned MsiRecordGetStringA(LibmsiObject *handle, unsigned iField,
                char *szValue, unsigned *pcchValue)
 {
-    MSIRECORD *rec;
+    LibmsiRecord *rec;
     unsigned ret;
 
     TRACE("%d %d %p %p\n", handle, iField, szValue, pcchValue);
 
-    rec = msihandle2msiinfo( handle, MSIOBJECTTYPE_RECORD );
+    rec = msihandle2msiinfo( handle, LIBMSI_OBJECT_TYPE_RECORD );
     if( !rec )
         return ERROR_INVALID_HANDLE;
     msiobj_lock( &rec->hdr );
@@ -438,18 +438,18 @@ unsigned MsiRecordGetStringA(MSIOBJECT *handle, unsigned iField,
     return ret;
 }
 
-const WCHAR *MSI_RecordGetString( const MSIRECORD *rec, unsigned iField )
+const WCHAR *MSI_RecordGetString( const LibmsiRecord *rec, unsigned iField )
 {
     if( iField > rec->count )
         return NULL;
 
-    if( rec->fields[iField].type != MSIFIELD_WSTR )
+    if( rec->fields[iField].type != LIBMSI_FIELD_TYPE_WSTR )
         return NULL;
 
     return rec->fields[iField].u.szwVal;
 }
 
-unsigned MSI_RecordGetStringW(MSIRECORD *rec, unsigned iField,
+unsigned MSI_RecordGetStringW(LibmsiRecord *rec, unsigned iField,
                WCHAR *szValue, unsigned *pcchValue)
 {
     unsigned len=0, ret;
@@ -470,18 +470,18 @@ unsigned MSI_RecordGetStringW(MSIRECORD *rec, unsigned iField,
     ret = ERROR_SUCCESS;
     switch( rec->fields[iField].type )
     {
-    case MSIFIELD_INT:
+    case LIBMSI_FIELD_TYPE_INT:
         wsprintfW(buffer, szFormat, rec->fields[iField].u.iVal);
         len = lstrlenW( buffer );
         if (szValue)
             lstrcpynW(szValue, buffer, *pcchValue);
         break;
-    case MSIFIELD_WSTR:
+    case LIBMSI_FIELD_TYPE_WSTR:
         len = lstrlenW( rec->fields[iField].u.szwVal );
         if (szValue)
             lstrcpynW(szValue, rec->fields[iField].u.szwVal, *pcchValue);
         break;
-    case MSIFIELD_NULL:
+    case LIBMSI_FIELD_TYPE_NULL:
         if( szValue && *pcchValue > 0 )
             szValue[0] = 0;
         break;
@@ -496,15 +496,15 @@ unsigned MSI_RecordGetStringW(MSIRECORD *rec, unsigned iField,
     return ret;
 }
 
-unsigned MsiRecordGetStringW(MSIOBJECT *handle, unsigned iField,
+unsigned MsiRecordGetStringW(LibmsiObject *handle, unsigned iField,
                WCHAR *szValue, unsigned *pcchValue)
 {
-    MSIRECORD *rec;
+    LibmsiRecord *rec;
     unsigned ret;
 
     TRACE("%d %d %p %p\n", handle, iField, szValue, pcchValue);
 
-    rec = msihandle2msiinfo( handle, MSIOBJECTTYPE_RECORD );
+    rec = msihandle2msiinfo( handle, LIBMSI_OBJECT_TYPE_RECORD );
     if( !rec )
         return ERROR_INVALID_HANDLE;
 
@@ -526,7 +526,7 @@ static unsigned msi_get_stream_size( IStream *stm )
     return stat.cbSize.QuadPart;
 }
 
-static unsigned MSI_RecordDataSize(MSIRECORD *rec, unsigned iField)
+static unsigned MSI_RecordDataSize(LibmsiRecord *rec, unsigned iField)
 {
     TRACE("%p %d\n", rec, iField);
 
@@ -535,26 +535,26 @@ static unsigned MSI_RecordDataSize(MSIRECORD *rec, unsigned iField)
 
     switch( rec->fields[iField].type )
     {
-    case MSIFIELD_INT:
+    case LIBMSI_FIELD_TYPE_INT:
         return sizeof (int);
-    case MSIFIELD_WSTR:
+    case LIBMSI_FIELD_TYPE_WSTR:
         return lstrlenW( rec->fields[iField].u.szwVal );
-    case MSIFIELD_NULL:
+    case LIBMSI_FIELD_TYPE_NULL:
         break;
-    case MSIFIELD_STREAM:
+    case LIBMSI_FIELD_TYPE_STREAM:
         return msi_get_stream_size( rec->fields[iField].u.stream );
     }
     return 0;
 }
 
-unsigned MsiRecordDataSize(MSIOBJECT *handle, unsigned iField)
+unsigned MsiRecordDataSize(LibmsiObject *handle, unsigned iField)
 {
-    MSIRECORD *rec;
+    LibmsiRecord *rec;
     unsigned ret;
 
     TRACE("%d %d\n", handle, iField);
 
-    rec = msihandle2msiinfo( handle, MSIOBJECTTYPE_RECORD );
+    rec = msihandle2msiinfo( handle, LIBMSI_OBJECT_TYPE_RECORD );
     if( !rec )
         return 0;
     msiobj_lock( &rec->hdr );
@@ -564,7 +564,7 @@ unsigned MsiRecordDataSize(MSIOBJECT *handle, unsigned iField)
     return ret;
 }
 
-static unsigned MSI_RecordSetStringA( MSIRECORD *rec, unsigned iField, const char *szValue )
+static unsigned MSI_RecordSetStringA( LibmsiRecord *rec, unsigned iField, const char *szValue )
 {
     WCHAR *str;
 
@@ -577,26 +577,26 @@ static unsigned MSI_RecordSetStringA( MSIRECORD *rec, unsigned iField, const cha
     if( szValue && szValue[0] )
     {
         str = strdupAtoW( szValue );
-        rec->fields[iField].type = MSIFIELD_WSTR;
+        rec->fields[iField].type = LIBMSI_FIELD_TYPE_WSTR;
         rec->fields[iField].u.szwVal = str;
     }
     else
     {
-        rec->fields[iField].type = MSIFIELD_NULL;
+        rec->fields[iField].type = LIBMSI_FIELD_TYPE_NULL;
         rec->fields[iField].u.szwVal = NULL;
     }
 
     return 0;
 }
 
-unsigned MsiRecordSetStringA( MSIOBJECT *handle, unsigned iField, const char *szValue )
+unsigned MsiRecordSetStringA( LibmsiObject *handle, unsigned iField, const char *szValue )
 {
-    MSIRECORD *rec;
+    LibmsiRecord *rec;
     unsigned ret;
 
     TRACE("%d %d %s\n", handle, iField, debugstr_a(szValue));
 
-    rec = msihandle2msiinfo( handle, MSIOBJECTTYPE_RECORD );
+    rec = msihandle2msiinfo( handle, LIBMSI_OBJECT_TYPE_RECORD );
     if( !rec )
         return ERROR_INVALID_HANDLE;
     msiobj_lock( &rec->hdr );
@@ -606,7 +606,7 @@ unsigned MsiRecordSetStringA( MSIOBJECT *handle, unsigned iField, const char *sz
     return ret;
 }
 
-unsigned MSI_RecordSetStringW( MSIRECORD *rec, unsigned iField, const WCHAR *szValue )
+unsigned MSI_RecordSetStringW( LibmsiRecord *rec, unsigned iField, const WCHAR *szValue )
 {
     WCHAR *str;
 
@@ -620,26 +620,26 @@ unsigned MSI_RecordSetStringW( MSIRECORD *rec, unsigned iField, const WCHAR *szV
     if( szValue && szValue[0] )
     {
         str = strdupW( szValue );
-        rec->fields[iField].type = MSIFIELD_WSTR;
+        rec->fields[iField].type = LIBMSI_FIELD_TYPE_WSTR;
         rec->fields[iField].u.szwVal = str;
     }
     else
     {
-        rec->fields[iField].type = MSIFIELD_NULL;
+        rec->fields[iField].type = LIBMSI_FIELD_TYPE_NULL;
         rec->fields[iField].u.szwVal = NULL;
     }
 
     return 0;
 }
 
-unsigned MsiRecordSetStringW( MSIOBJECT *handle, unsigned iField, const WCHAR *szValue )
+unsigned MsiRecordSetStringW( LibmsiObject *handle, unsigned iField, const WCHAR *szValue )
 {
-    MSIRECORD *rec;
+    LibmsiRecord *rec;
     unsigned ret;
 
     TRACE("%d %d %s\n", handle, iField, debugstr_w(szValue));
 
-    rec = msihandle2msiinfo( handle, MSIOBJECTTYPE_RECORD );
+    rec = msihandle2msiinfo( handle, LIBMSI_OBJECT_TYPE_RECORD );
     if( !rec )
         return ERROR_INVALID_HANDLE;
 
@@ -700,19 +700,19 @@ static unsigned RECORD_StreamFromFile(const WCHAR *szFile, IStream **pstm)
     return ERROR_SUCCESS;
 }
 
-unsigned MSI_RecordSetStream(MSIRECORD *rec, unsigned iField, IStream *stream)
+unsigned MSI_RecordSetStream(LibmsiRecord *rec, unsigned iField, IStream *stream)
 {
     if ( (iField == 0) || (iField > rec->count) )
         return ERROR_INVALID_PARAMETER;
 
     MSI_FreeField( &rec->fields[iField] );
-    rec->fields[iField].type = MSIFIELD_STREAM;
+    rec->fields[iField].type = LIBMSI_FIELD_TYPE_STREAM;
     rec->fields[iField].u.stream = stream;
 
     return ERROR_SUCCESS;
 }
 
-unsigned MSI_RecordSetStreamFromFileW(MSIRECORD *rec, unsigned iField, const WCHAR *szFilename)
+unsigned MSI_RecordSetStreamFromFileW(LibmsiRecord *rec, unsigned iField, const WCHAR *szFilename)
 {
     IStream *stm = NULL;
     HRESULT r;
@@ -726,7 +726,7 @@ unsigned MSI_RecordSetStreamFromFileW(MSIRECORD *rec, unsigned iField, const WCH
         LARGE_INTEGER ofs;
         ULARGE_INTEGER cur;
 
-        if( rec->fields[iField].type != MSIFIELD_STREAM )
+        if( rec->fields[iField].type != LIBMSI_FIELD_TYPE_STREAM )
             return ERROR_INVALID_FIELD;
 
         stm = rec->fields[iField].u.stream;
@@ -752,7 +752,7 @@ unsigned MSI_RecordSetStreamFromFileW(MSIRECORD *rec, unsigned iField, const WCH
     return ERROR_SUCCESS;
 }
 
-unsigned MsiRecordSetStreamA(MSIOBJECT *hRecord, unsigned iField, const char *szFilename)
+unsigned MsiRecordSetStreamA(LibmsiObject *hRecord, unsigned iField, const char *szFilename)
 {
     WCHAR *wstr = NULL;
     unsigned ret;
@@ -771,14 +771,14 @@ unsigned MsiRecordSetStreamA(MSIOBJECT *hRecord, unsigned iField, const char *sz
     return ret;
 }
 
-unsigned MsiRecordSetStreamW(MSIOBJECT *handle, unsigned iField, const WCHAR *szFilename)
+unsigned MsiRecordSetStreamW(LibmsiObject *handle, unsigned iField, const WCHAR *szFilename)
 {
-    MSIRECORD *rec;
+    LibmsiRecord *rec;
     unsigned ret;
 
     TRACE("%d %d %s\n", handle, iField, debugstr_w(szFilename));
 
-    rec = msihandle2msiinfo( handle, MSIOBJECTTYPE_RECORD );
+    rec = msihandle2msiinfo( handle, LIBMSI_OBJECT_TYPE_RECORD );
     if( !rec )
         return ERROR_INVALID_HANDLE;
 
@@ -789,7 +789,7 @@ unsigned MsiRecordSetStreamW(MSIOBJECT *handle, unsigned iField, const WCHAR *sz
     return ret;
 }
 
-unsigned MSI_RecordReadStream(MSIRECORD *rec, unsigned iField, char *buf, unsigned *sz)
+unsigned MSI_RecordReadStream(LibmsiRecord *rec, unsigned iField, char *buf, unsigned *sz)
 {
     unsigned count;
     HRESULT r;
@@ -803,13 +803,13 @@ unsigned MSI_RecordReadStream(MSIRECORD *rec, unsigned iField, char *buf, unsign
     if( iField > rec->count)
         return ERROR_INVALID_PARAMETER;
 
-    if ( rec->fields[iField].type == MSIFIELD_NULL )
+    if ( rec->fields[iField].type == LIBMSI_FIELD_TYPE_NULL )
     {
         *sz = 0;
         return ERROR_INVALID_DATA;
     }
 
-    if( rec->fields[iField].type != MSIFIELD_STREAM )
+    if( rec->fields[iField].type != LIBMSI_FIELD_TYPE_STREAM )
         return ERROR_INVALID_DATATYPE;
 
     stm = rec->fields[iField].u.stream;
@@ -847,14 +847,14 @@ unsigned MSI_RecordReadStream(MSIRECORD *rec, unsigned iField, char *buf, unsign
     return ERROR_SUCCESS;
 }
 
-unsigned MsiRecordReadStream(MSIOBJECT *handle, unsigned iField, char *buf, unsigned *sz)
+unsigned MsiRecordReadStream(LibmsiObject *handle, unsigned iField, char *buf, unsigned *sz)
 {
-    MSIRECORD *rec;
+    LibmsiRecord *rec;
     unsigned ret;
 
     TRACE("%d %d %p %p\n", handle, iField, buf, sz);
 
-    rec = msihandle2msiinfo( handle, MSIOBJECTTYPE_RECORD );
+    rec = msihandle2msiinfo( handle, LIBMSI_OBJECT_TYPE_RECORD );
     if( !rec )
         return ERROR_INVALID_HANDLE;
     msiobj_lock( &rec->hdr );
@@ -864,7 +864,7 @@ unsigned MsiRecordReadStream(MSIOBJECT *handle, unsigned iField, char *buf, unsi
     return ret;
 }
 
-unsigned MSI_RecordSetIStream( MSIRECORD *rec, unsigned iField, IStream *stm )
+unsigned MSI_RecordSetIStream( LibmsiRecord *rec, unsigned iField, IStream *stm )
 {
     TRACE("%p %d %p\n", rec, iField, stm);
 
@@ -873,21 +873,21 @@ unsigned MSI_RecordSetIStream( MSIRECORD *rec, unsigned iField, IStream *stm )
 
     MSI_FreeField( &rec->fields[iField] );
 
-    rec->fields[iField].type = MSIFIELD_STREAM;
+    rec->fields[iField].type = LIBMSI_FIELD_TYPE_STREAM;
     rec->fields[iField].u.stream = stm;
     IStream_AddRef( stm );
 
     return ERROR_SUCCESS;
 }
 
-unsigned MSI_RecordGetIStream( MSIRECORD *rec, unsigned iField, IStream **pstm)
+unsigned MSI_RecordGetIStream( LibmsiRecord *rec, unsigned iField, IStream **pstm)
 {
     TRACE("%p %d %p\n", rec, iField, pstm);
 
     if( iField > rec->count )
         return ERROR_INVALID_FIELD;
 
-    if( rec->fields[iField].type != MSIFIELD_STREAM )
+    if( rec->fields[iField].type != LIBMSI_FIELD_TYPE_STREAM )
         return ERROR_INVALID_FIELD;
 
     *pstm = rec->fields[iField].u.stream;
@@ -928,7 +928,7 @@ end:
     return ERROR_SUCCESS;
 }
 
-unsigned MSI_RecordStreamToFile( MSIRECORD *rec, unsigned iField, const WCHAR *name )
+unsigned MSI_RecordStreamToFile( LibmsiRecord *rec, unsigned iField, const WCHAR *name )
 {
     IStream *stm = NULL;
     unsigned r;
@@ -949,9 +949,9 @@ unsigned MSI_RecordStreamToFile( MSIRECORD *rec, unsigned iField, const WCHAR *n
     return r;
 }
 
-MSIRECORD *MSI_CloneRecord(MSIRECORD *rec)
+LibmsiRecord *MSI_CloneRecord(LibmsiRecord *rec)
 {
-    MSIRECORD *clone;
+    LibmsiRecord *clone;
     unsigned r, i, count;
 
     count = MSI_RecordGetFieldCount(rec);
@@ -961,7 +961,7 @@ MSIRECORD *MSI_CloneRecord(MSIRECORD *rec)
 
     for (i = 0; i <= count; i++)
     {
-        if (rec->fields[i].type == MSIFIELD_STREAM)
+        if (rec->fields[i].type == LIBMSI_FIELD_TYPE_STREAM)
         {
             if (FAILED(IStream_Clone(rec->fields[i].u.stream,
                                      &clone->fields[i].u.stream)))
@@ -969,7 +969,7 @@ MSIRECORD *MSI_CloneRecord(MSIRECORD *rec)
                 msiobj_release(&clone->hdr);
                 return NULL;
             }
-            clone->fields[i].type = MSIFIELD_STREAM;
+            clone->fields[i].type = LIBMSI_FIELD_TYPE_STREAM;
         }
         else
         {
@@ -985,27 +985,27 @@ MSIRECORD *MSI_CloneRecord(MSIRECORD *rec)
     return clone;
 }
 
-bool MSI_RecordsAreFieldsEqual(MSIRECORD *a, MSIRECORD *b, unsigned field)
+bool MSI_RecordsAreFieldsEqual(LibmsiRecord *a, LibmsiRecord *b, unsigned field)
 {
     if (a->fields[field].type != b->fields[field].type)
         return false;
 
     switch (a->fields[field].type)
     {
-        case MSIFIELD_NULL:
+        case LIBMSI_FIELD_TYPE_NULL:
             break;
 
-        case MSIFIELD_INT:
+        case LIBMSI_FIELD_TYPE_INT:
             if (a->fields[field].u.iVal != b->fields[field].u.iVal)
                 return false;
             break;
 
-        case MSIFIELD_WSTR:
+        case LIBMSI_FIELD_TYPE_WSTR:
             if (strcmpW(a->fields[field].u.szwVal, b->fields[field].u.szwVal))
                 return false;
             break;
 
-        case MSIFIELD_STREAM:
+        case LIBMSI_FIELD_TYPE_STREAM:
         default:
             return false;
     }
@@ -1013,7 +1013,7 @@ bool MSI_RecordsAreFieldsEqual(MSIRECORD *a, MSIRECORD *b, unsigned field)
 }
 
 
-bool MSI_RecordsAreEqual(MSIRECORD *a, MSIRECORD *b)
+bool MSI_RecordsAreEqual(LibmsiRecord *a, LibmsiRecord *b)
 {
     unsigned i;
 
@@ -1029,7 +1029,7 @@ bool MSI_RecordsAreEqual(MSIRECORD *a, MSIRECORD *b)
     return true;
 }
 
-WCHAR *msi_dup_record_field( MSIRECORD *rec, int field )
+WCHAR *msi_dup_record_field( LibmsiRecord *rec, int field )
 {
     unsigned sz = 0;
     WCHAR *str;

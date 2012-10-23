@@ -36,30 +36,30 @@
 
 /* below is the query interface to a table */
 
-typedef struct tagMSIUPDATEVIEW
+typedef struct LibmsiUpdateView
 {
-    MSIVIEW          view;
-    MSIDATABASE     *db;
-    MSIVIEW         *wv;
+    LibmsiView          view;
+    LibmsiDatabase     *db;
+    LibmsiView         *wv;
     column_info     *vals;
-} MSIUPDATEVIEW;
+} LibmsiUpdateView;
 
-static unsigned UPDATE_fetch_int( MSIVIEW *view, unsigned row, unsigned col, unsigned *val )
+static unsigned UPDATE_fetch_int( LibmsiView *view, unsigned row, unsigned col, unsigned *val )
 {
-    MSIUPDATEVIEW *uv = (MSIUPDATEVIEW*)view;
+    LibmsiUpdateView *uv = (LibmsiUpdateView*)view;
 
     TRACE("%p %d %d %p\n", uv, row, col, val );
 
     return ERROR_FUNCTION_FAILED;
 }
 
-static unsigned UPDATE_execute( MSIVIEW *view, MSIRECORD *record )
+static unsigned UPDATE_execute( LibmsiView *view, LibmsiRecord *record )
 {
-    MSIUPDATEVIEW *uv = (MSIUPDATEVIEW*)view;
+    LibmsiUpdateView *uv = (LibmsiUpdateView*)view;
     unsigned i, r, col_count = 0, row_count = 0;
-    MSIRECORD *values = NULL;
-    MSIRECORD *where = NULL;
-    MSIVIEW *wv;
+    LibmsiRecord *values = NULL;
+    LibmsiRecord *where = NULL;
+    LibmsiView *wv;
     unsigned cols_count, where_count;
     column_info *col = uv->vals;
 
@@ -124,10 +124,10 @@ done:
 }
 
 
-static unsigned UPDATE_close( MSIVIEW *view )
+static unsigned UPDATE_close( LibmsiView *view )
 {
-    MSIUPDATEVIEW *uv = (MSIUPDATEVIEW*)view;
-    MSIVIEW *wv;
+    LibmsiUpdateView *uv = (LibmsiUpdateView*)view;
+    LibmsiView *wv;
 
     TRACE("%p\n", uv);
 
@@ -138,10 +138,10 @@ static unsigned UPDATE_close( MSIVIEW *view )
     return wv->ops->close( wv );
 }
 
-static unsigned UPDATE_get_dimensions( MSIVIEW *view, unsigned *rows, unsigned *cols )
+static unsigned UPDATE_get_dimensions( LibmsiView *view, unsigned *rows, unsigned *cols )
 {
-    MSIUPDATEVIEW *uv = (MSIUPDATEVIEW*)view;
-    MSIVIEW *wv;
+    LibmsiUpdateView *uv = (LibmsiUpdateView*)view;
+    LibmsiView *wv;
 
     TRACE("%p %p %p\n", uv, rows, cols );
 
@@ -152,11 +152,11 @@ static unsigned UPDATE_get_dimensions( MSIVIEW *view, unsigned *rows, unsigned *
     return wv->ops->get_dimensions( wv, rows, cols );
 }
 
-static unsigned UPDATE_get_column_info( MSIVIEW *view, unsigned n, const WCHAR **name,
+static unsigned UPDATE_get_column_info( LibmsiView *view, unsigned n, const WCHAR **name,
                                     unsigned *type, bool *temporary, const WCHAR **table_name )
 {
-    MSIUPDATEVIEW *uv = (MSIUPDATEVIEW*)view;
-    MSIVIEW *wv;
+    LibmsiUpdateView *uv = (LibmsiUpdateView*)view;
+    LibmsiView *wv;
 
     TRACE("%p %d %p %p %p %p\n", uv, n, name, type, temporary, table_name );
 
@@ -167,20 +167,20 @@ static unsigned UPDATE_get_column_info( MSIVIEW *view, unsigned n, const WCHAR *
     return wv->ops->get_column_info( wv, n, name, type, temporary, table_name );
 }
 
-static unsigned UPDATE_modify( MSIVIEW *view, MSIMODIFY eModifyMode,
-                           MSIRECORD *rec, unsigned row )
+static unsigned UPDATE_modify( LibmsiView *view, LibmsiModify eModifyMode,
+                           LibmsiRecord *rec, unsigned row )
 {
-    MSIUPDATEVIEW *uv = (MSIUPDATEVIEW*)view;
+    LibmsiUpdateView *uv = (LibmsiUpdateView*)view;
 
     TRACE("%p %d %p\n", uv, eModifyMode, rec );
 
     return ERROR_FUNCTION_FAILED;
 }
 
-static unsigned UPDATE_delete( MSIVIEW *view )
+static unsigned UPDATE_delete( LibmsiView *view )
 {
-    MSIUPDATEVIEW *uv = (MSIUPDATEVIEW*)view;
-    MSIVIEW *wv;
+    LibmsiUpdateView *uv = (LibmsiUpdateView*)view;
+    LibmsiView *wv;
 
     TRACE("%p\n", uv );
 
@@ -193,7 +193,7 @@ static unsigned UPDATE_delete( MSIVIEW *view )
     return ERROR_SUCCESS;
 }
 
-static unsigned UPDATE_find_matching_rows( MSIVIEW *view, unsigned col, unsigned val, unsigned *row, MSIITERHANDLE *handle )
+static unsigned UPDATE_find_matching_rows( LibmsiView *view, unsigned col, unsigned val, unsigned *row, MSIITERHANDLE *handle )
 {
     TRACE("%p %d %d %p\n", view, col, val, *handle );
 
@@ -201,7 +201,7 @@ static unsigned UPDATE_find_matching_rows( MSIVIEW *view, unsigned col, unsigned
 }
 
 
-static const MSIVIEWOPS update_ops =
+static const LibmsiViewOPS update_ops =
 {
     UPDATE_fetch_int,
     NULL,
@@ -223,12 +223,12 @@ static const MSIVIEWOPS update_ops =
     NULL,
 };
 
-unsigned UPDATE_CreateView( MSIDATABASE *db, MSIVIEW **view, WCHAR *table,
+unsigned UPDATE_CreateView( LibmsiDatabase *db, LibmsiView **view, WCHAR *table,
                         column_info *columns, struct expr *expr )
 {
-    MSIUPDATEVIEW *uv = NULL;
+    LibmsiUpdateView *uv = NULL;
     unsigned r;
-    MSIVIEW *sv = NULL, *wv = NULL;
+    LibmsiView *sv = NULL, *wv = NULL;
 
     TRACE("%p\n", uv );
 
@@ -261,7 +261,7 @@ unsigned UPDATE_CreateView( MSIDATABASE *db, MSIVIEW **view, WCHAR *table,
     uv->db = db;
     uv->vals = columns;
     uv->wv = sv;
-    *view = (MSIVIEW*) uv;
+    *view = (LibmsiView*) uv;
 
     return ERROR_SUCCESS;
 }

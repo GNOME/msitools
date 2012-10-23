@@ -97,47 +97,47 @@ struct expr
     } u;
 };
 
-unsigned MSI_ParseSQL( MSIDATABASE *db, const WCHAR *command, MSIVIEW **phview,
+unsigned MSI_ParseSQL( LibmsiDatabase *db, const WCHAR *command, LibmsiView **phview,
                    struct list *mem );
 
-unsigned TABLE_CreateView( MSIDATABASE *db, const WCHAR *name, MSIVIEW **view );
+unsigned TABLE_CreateView( LibmsiDatabase *db, const WCHAR *name, LibmsiView **view );
 
-unsigned SELECT_CreateView( MSIDATABASE *db, MSIVIEW **view, MSIVIEW *table,
+unsigned SELECT_CreateView( LibmsiDatabase *db, LibmsiView **view, LibmsiView *table,
                         const column_info *columns );
 
-unsigned DISTINCT_CreateView( MSIDATABASE *db, MSIVIEW **view, MSIVIEW *table );
+unsigned DISTINCT_CreateView( LibmsiDatabase *db, LibmsiView **view, LibmsiView *table );
 
-unsigned ORDER_CreateView( MSIDATABASE *db, MSIVIEW **view, MSIVIEW *table,
+unsigned ORDER_CreateView( LibmsiDatabase *db, LibmsiView **view, LibmsiView *table,
                        column_info *columns );
 
-unsigned WHERE_CreateView( MSIDATABASE *db, MSIVIEW **view, WCHAR *tables,
+unsigned WHERE_CreateView( LibmsiDatabase *db, LibmsiView **view, WCHAR *tables,
                        struct expr *cond );
 
-unsigned CREATE_CreateView( MSIDATABASE *db, MSIVIEW **view, const WCHAR *table,
+unsigned CREATE_CreateView( LibmsiDatabase *db, LibmsiView **view, const WCHAR *table,
                         column_info *col_info, bool hold );
 
-unsigned INSERT_CreateView( MSIDATABASE *db, MSIVIEW **view, const WCHAR *table,
+unsigned INSERT_CreateView( LibmsiDatabase *db, LibmsiView **view, const WCHAR *table,
                         column_info *columns, column_info *values, bool temp );
 
-unsigned UPDATE_CreateView( MSIDATABASE *db, MSIVIEW **view, WCHAR *table,
+unsigned UPDATE_CreateView( LibmsiDatabase *db, LibmsiView **view, WCHAR *table,
                         column_info *list, struct expr *expr );
 
-unsigned DELETE_CreateView( MSIDATABASE *db, MSIVIEW **view, MSIVIEW *table );
+unsigned DELETE_CreateView( LibmsiDatabase *db, LibmsiView **view, LibmsiView *table );
 
-unsigned ALTER_CreateView( MSIDATABASE *db, MSIVIEW **view, const WCHAR *name, column_info *colinfo, int hold );
+unsigned ALTER_CreateView( LibmsiDatabase *db, LibmsiView **view, const WCHAR *name, column_info *colinfo, int hold );
 
-unsigned STREAMS_CreateView( MSIDATABASE *db, MSIVIEW **view );
+unsigned STREAMS_CreateView( LibmsiDatabase *db, LibmsiView **view );
 
-unsigned STORAGES_CreateView( MSIDATABASE *db, MSIVIEW **view );
+unsigned STORAGES_CreateView( LibmsiDatabase *db, LibmsiView **view );
 
-unsigned DROP_CreateView( MSIDATABASE *db, MSIVIEW **view, const WCHAR *name );
+unsigned DROP_CreateView( LibmsiDatabase *db, LibmsiView **view, const WCHAR *name );
 
 int sqliteGetToken(const WCHAR *z, int *tokenType, int *skip);
 
-MSIRECORD *msi_query_merge_record( unsigned fields, const column_info *vl, MSIRECORD *rec );
+LibmsiRecord *msi_query_merge_record( unsigned fields, const column_info *vl, LibmsiRecord *rec );
 
-unsigned msi_create_table( MSIDATABASE *db, const WCHAR *name, column_info *col_info,
-                       MSICONDITION persistent );
+unsigned msi_create_table( LibmsiDatabase *db, const WCHAR *name, column_info *col_info,
+                       LibmsiCondition persistent );
 
 #pragma GCC visibility pop
 

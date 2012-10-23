@@ -149,23 +149,23 @@ ok: r == ERROR_SUCCESS
 ok: r == ERROR_SUCCESS
 ok: r == ERROR_SUCCESS
 ok: r == ERROR_SUCCESS
-ok: err == MSIDBERROR_INVALIDARG
+ok: err == LIBMSI_DB_ERROR_INVALIDARG
 ok: r == ERROR_SUCCESS
-ok: err == MSIDBERROR_INVALIDARG || err == MSIDBERROR_NOERROR
-ok: err == MSIDBERROR_INVALIDARG
-ok: err == MSIDBERROR_MOREDATA
+ok: err == LIBMSI_DB_ERROR_INVALIDARG || err == LIBMSI_DB_ERROR_NOERROR
+ok: err == LIBMSI_DB_ERROR_INVALIDARG
+ok: err == LIBMSI_DB_ERROR_MOREDATA
 ok: buffer[0] == 'x'
 ok: sz == 0
-ok: err == MSIDBERROR_NOERROR
+ok: err == LIBMSI_DB_ERROR_NOERROR
 ok: sz == 0
-ok: err == MSIDBERROR_NOERROR
+ok: err == LIBMSI_DB_ERROR_NOERROR
 ok: buffer[0] == 0
 ok: sz == 0
 ok: r == ERROR_SUCCESS
 ok: r == ERROR_INVALID_HANDLE
 ok: r == ERROR_INVALID_HANDLE
 ok: r == ERROR_INVALID_DATA
-ok: err == MSIDBERROR_NOERROR
+ok: err == LIBMSI_DB_ERROR_NOERROR
 ok: buffer[0] == 0
 ok: sz == 0
 ok: r == ERROR_SUCCESS
@@ -176,7 +176,7 @@ ok: r == ERROR_SUCCESS
 ok: r == ERROR_SUCCESS
 ok: r == ERROR_SUCCESS
 ok: r == ERROR_INVALID_DATA
-ok: err == MSIDBERROR_DUPLICATEKEY
+ok: err == LIBMSI_DB_ERROR_DUPLICATEKEY
 ok: !strcmp(buffer, "id")
 ok: sz == 2
 ok: r == ERROR_SUCCESS
@@ -876,28 +876,28 @@ ok: r == ERROR_SUCCESS
 ok: r == ERROR_SUCCESS
 ok: r == ERROR_SUCCESS
 ok: !lstrcmp( buf, "epicranius" )
-ok: cond == MSICONDITION_ERROR
+ok: cond == LIBMSI_CONDITION_ERROR
 ok: res == ERROR_SUCCESS
 ok: res == ERROR_SUCCESS
 ok: hdb
-ok: cond == MSICONDITION_ERROR
-ok: cond == MSICONDITION_NONE
-ok: cond == MSICONDITION_NONE
-ok: cond == MSICONDITION_NONE
-ok: cond == MSICONDITION_NONE
+ok: cond == LIBMSI_CONDITION_ERROR
+ok: cond == LIBMSI_CONDITION_NONE
+ok: cond == LIBMSI_CONDITION_NONE
+ok: cond == LIBMSI_CONDITION_NONE
+ok: cond == LIBMSI_CONDITION_NONE
 ok: r == ERROR_SUCCESS
-ok: cond == MSICONDITION_TRUE
+ok: cond == LIBMSI_CONDITION_TRUE
 ok: r == ERROR_SUCCESS
-ok: cond == MSICONDITION_TRUE
+ok: cond == LIBMSI_CONDITION_TRUE
 ok: r == ERROR_SUCCESS
-ok: cond == MSICONDITION_FALSE
+ok: cond == LIBMSI_CONDITION_FALSE
 ok: r == ERROR_SUCCESS
 ok: r == ERROR_BAD_QUERY_SYNTAX
-ok: cond == MSICONDITION_NONE
+ok: cond == LIBMSI_CONDITION_NONE
 ok: r == ERROR_SUCCESS
-ok: cond == MSICONDITION_TRUE
+ok: cond == LIBMSI_CONDITION_TRUE
 ok: r == ERROR_FUNCTION_FAILED
-ok: cond == MSICONDITION_NONE
+ok: cond == LIBMSI_CONDITION_NONE
 ok: r == ERROR_BAD_QUERY_SYNTAX
 ok: r == ERROR_SUCCESS
 ok: r == ERROR_SUCCESS
@@ -912,7 +912,7 @@ ok: res == ERROR_SUCCESS
 ok: res == ERROR_SUCCESS
 ok: hdb
 ok: r == ERROR_SUCCESS
-ok: cond == MSICONDITION_FALSE
+ok: cond == LIBMSI_CONDITION_FALSE
 ok: r == ERROR_SUCCESS
 ok: r == ERROR_SUCCESS
 ok: r == ERROR_SUCCESS

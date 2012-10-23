@@ -51,22 +51,22 @@
 
 #define IS_INTMSIDBOPEN(x)      (((uintptr_t)(x) >> 16) == 0)
 
-typedef struct tagMSITRANSFORM {
+typedef struct LibmsiTransform {
     struct list entry;
     IStorage *stg;
-} MSITRANSFORM;
+} LibmsiTransform;
 
-typedef struct tagMSISTREAM {
+typedef struct LibmsiStream {
     struct list entry;
     IStorage *stg;
     IStream *stm;
-} MSISTREAM;
+} LibmsiStream;
 
-static unsigned find_open_stream( MSIDATABASE *db, IStorage *stg, const WCHAR *name, IStream **stm )
+static unsigned find_open_stream( LibmsiDatabase *db, IStorage *stg, const WCHAR *name, IStream **stm )
 {
-    MSISTREAM *stream;
+    LibmsiStream *stream;
 
-    LIST_FOR_EACH_ENTRY( stream, &db->streams, MSISTREAM, entry )
+    LIST_FOR_EACH_ENTRY( stream, &db->streams, LibmsiStream, entry )
     {
         HRESULT r;
         STATSTG stat;
@@ -94,7 +94,7 @@ static unsigned find_open_stream( MSIDATABASE *db, IStorage *stg, const WCHAR *n
     return ERROR_FUNCTION_FAILED;
 }
 
-unsigned msi_clone_open_stream( MSIDATABASE *db, IStorage *stg, const WCHAR *name, IStream **stm )
+unsigned msi_clone_open_stream( LibmsiDatabase *db, IStorage *stg, const WCHAR *name, IStream **stm )
 {
     IStream *stream;
 
@@ -124,7 +124,7 @@ unsigned msi_clone_open_stream( MSIDATABASE *db, IStorage *stg, const WCHAR *nam
     return ERROR_FUNCTION_FAILED;
 }
 
-unsigned msi_get_raw_stream( MSIDATABASE *db, const WCHAR *stname, IStream **stm )
+unsigned msi_get_raw_stream( LibmsiDatabase *db, const WCHAR *stname, IStream **stm )
 {
     HRESULT r;
     IStorage *stg;
@@ -140,9 +140,9 @@ unsigned msi_get_raw_stream( MSIDATABASE *db, const WCHAR *stname, IStream **stm
                              STGM_READ | STGM_SHARE_EXCLUSIVE, 0, stm );
     if( FAILED( r ) )
     {
-        MSITRANSFORM *transform;
+        LibmsiTransform *transform;
 
-        LIST_FOR_EACH_ENTRY( transform, &db->transforms, MSITRANSFORM, entry )
+        LIST_FOR_EACH_ENTRY( transform, &db->transforms, LibmsiTransform, entry )
         {
             r = IStorage_OpenStream( transform->stg, stname, NULL,
                                      STGM_READ | STGM_SHARE_EXCLUSIVE, 0, stm );
@@ -157,9 +157,9 @@ unsigned msi_get_raw_stream( MSIDATABASE *db, const WCHAR *stname, IStream **stm
 
     if( SUCCEEDED(r) )
     {
-        MSISTREAM *stream;
+        LibmsiStream *stream;
 
-        if (!(stream = msi_alloc( sizeof(MSISTREAM) ))) return ERROR_NOT_ENOUGH_MEMORY;
+        if (!(stream = msi_alloc( sizeof(LibmsiStream) ))) return ERROR_NOT_ENOUGH_MEMORY;
         stream->stg = stg;
         IStorage_AddRef( stg );
         stream->stm = *stm;
@@ -170,23 +170,23 @@ unsigned msi_get_raw_stream( MSIDATABASE *db, const WCHAR *stname, IStream **stm
     return SUCCEEDED(r) ? ERROR_SUCCESS : ERROR_FUNCTION_FAILED;
 }
 
-static void free_transforms( MSIDATABASE *db )
+static void free_transforms( LibmsiDatabase *db )
 {
     while( !list_empty( &db->transforms ) )
     {
-        MSITRANSFORM *t = LIST_ENTRY( list_head( &db->transforms ),
-                                      MSITRANSFORM, entry );
+        LibmsiTransform *t = LIST_ENTRY( list_head( &db->transforms ),
+                                      LibmsiTransform, entry );
         list_remove( &t->entry );
         IStorage_Release( t->stg );
         msi_free( t );
     }
 }
 
-void msi_destroy_stream( MSIDATABASE *db, const WCHAR *stname )
+void msi_destroy_stream( LibmsiDatabase *db, const WCHAR *stname )
 {
-    MSISTREAM *stream, *stream2;
+    LibmsiStream *stream, *stream2;
 
-    LIST_FOR_EACH_ENTRY_SAFE( stream, stream2, &db->streams, MSISTREAM, entry )
+    LIST_FOR_EACH_ENTRY_SAFE( stream, stream2, &db->streams, LibmsiStream, entry )
     {
         HRESULT r;
         STATSTG stat;
@@ -214,11 +214,11 @@ void msi_destroy_stream( MSIDATABASE *db, const WCHAR *stname )
     }
 }
 
-static void free_streams( MSIDATABASE *db )
+static void free_streams( LibmsiDatabase *db )
 {
     while( !list_empty( &db->streams ) )
     {
-        MSISTREAM *s = LIST_ENTRY(list_head( &db->streams ), MSISTREAM, entry);
+        LibmsiStream *s = LIST_ENTRY(list_head( &db->streams ), LibmsiStream, entry);
         list_remove( &s->entry );
         IStream_Release( s->stm );
         IStorage_Release( s->stg );
@@ -226,9 +226,9 @@ static void free_streams( MSIDATABASE *db )
     }
 }
 
-void append_storage_to_db( MSIDATABASE *db, IStorage *stg )
+void append_storage_to_db( LibmsiDatabase *db, IStorage *stg )
 {
-    MSITRANSFORM *t;
+    LibmsiTransform *t;
 
     t = msi_alloc( sizeof *t );
     t->stg = stg;
@@ -239,9 +239,9 @@ void append_storage_to_db( MSIDATABASE *db, IStorage *stg )
     free_streams( db );
 }
 
-static VOID MSI_CloseDatabase( MSIOBJECT *arg )
+static VOID MSI_CloseDatabase( LibmsiObject *arg )
 {
-    MSIDATABASE *db = (MSIDATABASE *) arg;
+    LibmsiDatabase *db = (LibmsiDatabase *) arg;
 
     msi_free(db->path);
     free_cached_tables( db );
@@ -293,11 +293,11 @@ static HRESULT db_initialize( IStorage *stg, const GUID *clsid )
     return S_OK;
 }
 
-unsigned MSI_OpenDatabaseW(const WCHAR *szDBPath, const WCHAR *szPersist, MSIDATABASE **pdb)
+unsigned MSI_OpenDatabaseW(const WCHAR *szDBPath, const WCHAR *szPersist, LibmsiDatabase **pdb)
 {
     IStorage *stg = NULL;
     HRESULT r;
-    MSIDATABASE *db = NULL;
+    LibmsiDatabase *db = NULL;
     unsigned ret = ERROR_FUNCTION_FAILED;
     const WCHAR *szMode;
     const WCHAR *save_path;
@@ -310,11 +310,11 @@ unsigned MSI_OpenDatabaseW(const WCHAR *szDBPath, const WCHAR *szPersist, MSIDAT
     if( !pdb )
         return ERROR_INVALID_PARAMETER;
 
-    if (szPersist - MSIDBOPEN_PATCHFILE >= MSIDBOPEN_READONLY &&
-        szPersist - MSIDBOPEN_PATCHFILE <= MSIDBOPEN_CREATEDIRECT)
+    if (szPersist - LIBMSI_DB_OPEN_PATCHFILE >= LIBMSI_DB_OPEN_READONLY &&
+        szPersist - LIBMSI_DB_OPEN_PATCHFILE <= LIBMSI_DB_OPEN_CREATEDIRECT)
     {
         TRACE("Database is a patch\n");
-        szPersist -= MSIDBOPEN_PATCHFILE;
+        szPersist -= LIBMSI_DB_OPEN_PATCHFILE;
         patch = true;
     }
 
@@ -326,16 +326,16 @@ unsigned MSI_OpenDatabaseW(const WCHAR *szDBPath, const WCHAR *szPersist, MSIDAT
             return ERROR_OPEN_FAILED;
 
         szDBPath = szPersist;
-        szPersist = MSIDBOPEN_TRANSACT;
+        szPersist = LIBMSI_DB_OPEN_TRANSACT;
         created = true;
     }
 
-    if( szPersist == MSIDBOPEN_READONLY )
+    if( szPersist == LIBMSI_DB_OPEN_READONLY )
     {
         r = StgOpenStorage( szDBPath, NULL,
               STGM_DIRECT|STGM_READ|STGM_SHARE_DENY_WRITE, NULL, 0, &stg);
     }
-    else if( szPersist == MSIDBOPEN_CREATE )
+    else if( szPersist == LIBMSI_DB_OPEN_CREATE )
     {
         r = StgCreateDocfile( szDBPath,
               STGM_CREATE|STGM_TRANSACTED|STGM_READWRITE|STGM_SHARE_EXCLUSIVE, 0, &stg );
@@ -344,7 +344,7 @@ unsigned MSI_OpenDatabaseW(const WCHAR *szDBPath, const WCHAR *szPersist, MSIDAT
             r = db_initialize( stg, patch ? &CLSID_MsiPatch : &CLSID_MsiDatabase );
         created = true;
     }
-    else if( szPersist == MSIDBOPEN_CREATEDIRECT )
+    else if( szPersist == LIBMSI_DB_OPEN_CREATEDIRECT )
     {
         r = StgCreateDocfile( szDBPath,
               STGM_CREATE|STGM_DIRECT|STGM_READWRITE|STGM_SHARE_EXCLUSIVE, 0, &stg );
@@ -353,12 +353,12 @@ unsigned MSI_OpenDatabaseW(const WCHAR *szDBPath, const WCHAR *szPersist, MSIDAT
             r = db_initialize( stg, patch ? &CLSID_MsiPatch : &CLSID_MsiDatabase );
         created = true;
     }
-    else if( szPersist == MSIDBOPEN_TRANSACT )
+    else if( szPersist == LIBMSI_DB_OPEN_TRANSACT )
     {
         r = StgOpenStorage( szDBPath, NULL,
               STGM_TRANSACTED|STGM_READWRITE|STGM_SHARE_DENY_WRITE, NULL, 0, &stg);
     }
-    else if( szPersist == MSIDBOPEN_DIRECT )
+    else if( szPersist == LIBMSI_DB_OPEN_DIRECT )
     {
         r = StgOpenStorage( szDBPath, NULL,
               STGM_DIRECT|STGM_READWRITE|STGM_SHARE_EXCLUSIVE, NULL, 0, &stg);
@@ -399,7 +399,7 @@ unsigned MSI_OpenDatabaseW(const WCHAR *szDBPath, const WCHAR *szPersist, MSIDAT
         goto end;
     }
 
-    db = alloc_msiobject( MSIOBJECTTYPE_DATABASE, sizeof (MSIDATABASE),
+    db = alloc_msiobject( LIBMSI_OBJECT_TYPE_DATABASE, sizeof (LibmsiDatabase),
                               MSI_CloseDatabase );
     if( !db )
     {
@@ -450,9 +450,9 @@ end:
     return ret;
 }
 
-unsigned MsiOpenDatabaseW(const WCHAR *szDBPath, const WCHAR *szPersist, MSIOBJECT **phDB)
+unsigned MsiOpenDatabaseW(const WCHAR *szDBPath, const WCHAR *szPersist, LibmsiObject **phDB)
 {
-    MSIDATABASE *db;
+    LibmsiDatabase *db;
     unsigned ret;
 
     TRACE("%s %s %p\n",debugstr_w(szDBPath),debugstr_w(szPersist), phDB);
@@ -466,7 +466,7 @@ unsigned MsiOpenDatabaseW(const WCHAR *szDBPath, const WCHAR *szPersist, MSIOBJE
     return ret;
 }
 
-unsigned MsiOpenDatabaseA(const char *szDBPath, const char *szPersist, MSIOBJECT **phDB)
+unsigned MsiOpenDatabaseA(const char *szDBPath, const char *szPersist, LibmsiObject **phDB)
 {
     HRESULT r = ERROR_FUNCTION_FAILED;
     WCHAR *szwDBPath = NULL;
@@ -752,11 +752,11 @@ done:
     return postlude;
 }
 
-static unsigned msi_add_table_to_db(MSIDATABASE *db, WCHAR **columns, WCHAR **types, WCHAR **labels, unsigned num_labels, unsigned num_columns)
+static unsigned msi_add_table_to_db(LibmsiDatabase *db, WCHAR **columns, WCHAR **types, WCHAR **labels, unsigned num_labels, unsigned num_columns)
 {
     unsigned r = ERROR_OUTOFMEMORY;
     unsigned size;
-    MSIQUERY *view;
+    LibmsiQuery *view;
     WCHAR *create_sql = NULL;
     WCHAR *prelude;
     WCHAR *columns_sql;
@@ -820,7 +820,7 @@ static WCHAR *msi_import_stream_filename(const WCHAR *path, const WCHAR *name)
 }
 
 static unsigned construct_record(unsigned num_columns, WCHAR **types,
-                             WCHAR **data, WCHAR *path, MSIRECORD **rec)
+                             WCHAR **data, WCHAR *path, LibmsiRecord **rec)
 {
     unsigned i;
 
@@ -863,15 +863,15 @@ static unsigned construct_record(unsigned num_columns, WCHAR **types,
     return ERROR_SUCCESS;
 }
 
-static unsigned msi_add_records_to_table(MSIDATABASE *db, WCHAR **columns, WCHAR **types,
+static unsigned msi_add_records_to_table(LibmsiDatabase *db, WCHAR **columns, WCHAR **types,
                                      WCHAR **labels, WCHAR ***records,
                                      int num_columns, int num_records,
                                      WCHAR *path)
 {
     unsigned r;
     int i;
-    MSIQUERY *view;
-    MSIRECORD *rec;
+    LibmsiQuery *view;
+    LibmsiRecord *rec;
 
     static const WCHAR select[] = {
         'S','E','L','E','C','T',' ','*',' ',
@@ -884,7 +884,7 @@ static unsigned msi_add_records_to_table(MSIDATABASE *db, WCHAR **columns, WCHAR
 
     while (MSI_ViewFetch(view, &rec) != ERROR_NO_MORE_ITEMS)
     {
-        r = MSI_ViewModify(view, MSIMODIFY_DELETE, rec);
+        r = MSI_ViewModify(view, LIBMSI_MODIFY_DELETE, rec);
         msiobj_release(&rec->hdr);
         if (r != ERROR_SUCCESS)
             goto done;
@@ -896,7 +896,7 @@ static unsigned msi_add_records_to_table(MSIDATABASE *db, WCHAR **columns, WCHAR
         if (r != ERROR_SUCCESS)
             goto done;
 
-        r = MSI_ViewModify(view, MSIMODIFY_INSERT, rec);
+        r = MSI_ViewModify(view, LIBMSI_MODIFY_INSERT, rec);
         if (r != ERROR_SUCCESS)
         {
             msiobj_release(&rec->hdr);
@@ -911,7 +911,7 @@ done:
     return r;
 }
 
-static unsigned MSI_DatabaseImport(MSIDATABASE *db, const WCHAR *folder, const WCHAR *file)
+static unsigned MSI_DatabaseImport(LibmsiDatabase *db, const WCHAR *folder, const WCHAR *file)
 {
     unsigned r;
     unsigned len, i;
@@ -1026,14 +1026,14 @@ done:
     return r;
 }
 
-unsigned MsiDatabaseImportW(MSIOBJECT *handle, const WCHAR *szFolder, const WCHAR *szFilename)
+unsigned MsiDatabaseImportW(LibmsiObject *handle, const WCHAR *szFolder, const WCHAR *szFilename)
 {
-    MSIDATABASE *db;
+    LibmsiDatabase *db;
     unsigned r;
 
     TRACE("%x %s %s\n",handle,debugstr_w(szFolder), debugstr_w(szFilename));
 
-    db = msihandle2msiinfo( handle, MSIOBJECTTYPE_DATABASE );
+    db = msihandle2msiinfo( handle, LIBMSI_OBJECT_TYPE_DATABASE );
     if( !db )
         return ERROR_INVALID_HANDLE;
     r = MSI_DatabaseImport( db, szFolder, szFilename );
@@ -1041,7 +1041,7 @@ unsigned MsiDatabaseImportW(MSIOBJECT *handle, const WCHAR *szFolder, const WCHA
     return r;
 }
 
-unsigned MsiDatabaseImportA( MSIOBJECT *handle,
+unsigned MsiDatabaseImportA( LibmsiObject *handle,
                const char *szFolder, const char *szFilename )
 {
     WCHAR *path = NULL;
@@ -1073,7 +1073,7 @@ end:
     return r;
 }
 
-static unsigned msi_export_record( HANDLE handle, MSIRECORD *row, unsigned start )
+static unsigned msi_export_record( HANDLE handle, LibmsiRecord *row, unsigned start )
 {
     unsigned i, count, len, r = ERROR_SUCCESS;
     const char *sep;
@@ -1120,7 +1120,7 @@ static unsigned msi_export_record( HANDLE handle, MSIRECORD *row, unsigned start
     return r;
 }
 
-static unsigned msi_export_row( MSIRECORD *row, void *arg )
+static unsigned msi_export_row( LibmsiRecord *row, void *arg )
 {
     return msi_export_record( arg, row, 1 );
 }
@@ -1140,15 +1140,15 @@ static unsigned msi_export_forcecodepage( HANDLE handle, unsigned codepage )
     return ERROR_SUCCESS;
 }
 
-static unsigned MSI_DatabaseExport( MSIDATABASE *db, const WCHAR *table,
+static unsigned MSI_DatabaseExport( LibmsiDatabase *db, const WCHAR *table,
                const WCHAR *folder, const WCHAR *file )
 {
     static const WCHAR query[] = {
         's','e','l','e','c','t',' ','*',' ','f','r','o','m',' ','%','s',0 };
     static const WCHAR forcecodepage[] = {
         '_','F','o','r','c','e','C','o','d','e','p','a','g','e',0 };
-    MSIRECORD *rec = NULL;
-    MSIQUERY *view = NULL;
+    LibmsiRecord *rec = NULL;
+    LibmsiQuery *view = NULL;
     WCHAR *filename;
     HANDLE handle;
     unsigned len, r;
@@ -1185,7 +1185,7 @@ static unsigned MSI_DatabaseExport( MSIDATABASE *db, const WCHAR *table,
     if (r == ERROR_SUCCESS)
     {
         /* write out row 1, the column names */
-        r = MSI_ViewGetColumnInfo(view, MSICOLINFO_NAMES, &rec);
+        r = MSI_ViewGetColumnInfo(view, LIBMSI_COL_INFO_NAMES, &rec);
         if (r == ERROR_SUCCESS)
         {
             msi_export_record( handle, rec, 1 );
@@ -1193,7 +1193,7 @@ static unsigned MSI_DatabaseExport( MSIDATABASE *db, const WCHAR *table,
         }
 
         /* write out row 2, the column types */
-        r = MSI_ViewGetColumnInfo(view, MSICOLINFO_TYPES, &rec);
+        r = MSI_ViewGetColumnInfo(view, LIBMSI_COL_INFO_TYPES, &rec);
         if (r == ERROR_SUCCESS)
         {
             msi_export_record( handle, rec, 1 );
@@ -1234,16 +1234,16 @@ done:
  *
  * row4 : data <tab> data <tab> data <tab> ... data <cr> <lf>
  */
-unsigned MsiDatabaseExportW( MSIOBJECT *handle, const WCHAR *szTable,
+unsigned MsiDatabaseExportW( LibmsiObject *handle, const WCHAR *szTable,
                const WCHAR *szFolder, const WCHAR *szFilename )
 {
-    MSIDATABASE *db;
+    LibmsiDatabase *db;
     unsigned r;
 
     TRACE("%x %s %s %s\n", handle, debugstr_w(szTable),
           debugstr_w(szFolder), debugstr_w(szFilename));
 
-    db = msihandle2msiinfo( handle, MSIOBJECTTYPE_DATABASE );
+    db = msihandle2msiinfo( handle, LIBMSI_OBJECT_TYPE_DATABASE );
     if( !db )
         return ERROR_INVALID_HANDLE;
     r = MSI_DatabaseExport( db, szTable, szFolder, szFilename );
@@ -1251,7 +1251,7 @@ unsigned MsiDatabaseExportW( MSIOBJECT *handle, const WCHAR *szTable,
     return r;
 }
 
-unsigned MsiDatabaseExportA( MSIOBJECT *handle, const char *szTable,
+unsigned MsiDatabaseExportA( LibmsiObject *handle, const char *szTable,
                const char *szFolder, const char *szFilename )
 {
     WCHAR *path = NULL;
@@ -1293,7 +1293,7 @@ end:
     return r;
 }
 
-unsigned MsiDatabaseMergeA(MSIOBJECT *hDatabase, MSIOBJECT *hDatabaseMerge,
+unsigned MsiDatabaseMergeA(LibmsiObject *hDatabase, LibmsiObject *hDatabaseMerge,
                               const char *szTableName)
 {
     unsigned r;
@@ -1326,15 +1326,15 @@ typedef struct _tagMERGETABLE
 typedef struct _tagMERGEROW
 {
     struct list entry;
-    MSIRECORD *data;
+    LibmsiRecord *data;
 } MERGEROW;
 
 typedef struct _tagMERGEDATA
 {
-    MSIDATABASE *db;
-    MSIDATABASE *merge;
+    LibmsiDatabase *db;
+    LibmsiDatabase *merge;
     MERGETABLE *curtable;
-    MSIQUERY *curview;
+    LibmsiQuery *curview;
     struct list *tabledata;
 } MERGEDATA;
 
@@ -1351,16 +1351,16 @@ static bool merge_type_match(const WCHAR *type1, const WCHAR *type2)
     return !strcmpW( type1, type2 );
 }
 
-static unsigned merge_verify_colnames(MSIQUERY *dbview, MSIQUERY *mergeview)
+static unsigned merge_verify_colnames(LibmsiQuery *dbview, LibmsiQuery *mergeview)
 {
-    MSIRECORD *dbrec, *mergerec;
+    LibmsiRecord *dbrec, *mergerec;
     unsigned r, i, count;
 
-    r = MSI_ViewGetColumnInfo(dbview, MSICOLINFO_NAMES, &dbrec);
+    r = MSI_ViewGetColumnInfo(dbview, LIBMSI_COL_INFO_NAMES, &dbrec);
     if (r != ERROR_SUCCESS)
         return r;
 
-    r = MSI_ViewGetColumnInfo(mergeview, MSICOLINFO_NAMES, &mergerec);
+    r = MSI_ViewGetColumnInfo(mergeview, LIBMSI_COL_INFO_NAMES, &mergerec);
     if (r != ERROR_SUCCESS)
         return r;
 
@@ -1381,11 +1381,11 @@ static unsigned merge_verify_colnames(MSIQUERY *dbview, MSIQUERY *mergeview)
     msiobj_release(&mergerec->hdr);
     dbrec = mergerec = NULL;
 
-    r = MSI_ViewGetColumnInfo(dbview, MSICOLINFO_TYPES, &dbrec);
+    r = MSI_ViewGetColumnInfo(dbview, LIBMSI_COL_INFO_TYPES, &dbrec);
     if (r != ERROR_SUCCESS)
         return r;
 
-    r = MSI_ViewGetColumnInfo(mergeview, MSICOLINFO_TYPES, &mergerec);
+    r = MSI_ViewGetColumnInfo(mergeview, LIBMSI_COL_INFO_TYPES, &mergerec);
     if (r != ERROR_SUCCESS)
         return r;
 
@@ -1410,10 +1410,10 @@ done:
     return r;
 }
 
-static unsigned merge_verify_primary_keys(MSIDATABASE *db, MSIDATABASE *mergedb,
+static unsigned merge_verify_primary_keys(LibmsiDatabase *db, LibmsiDatabase *mergedb,
                                       const WCHAR *table)
 {
-    MSIRECORD *dbrec, *mergerec = NULL;
+    LibmsiRecord *dbrec, *mergerec = NULL;
     unsigned r, i, count;
 
     r = MSI_DatabaseGetPrimaryKeys(db, table, &dbrec);
@@ -1447,15 +1447,15 @@ done:
     return r;
 }
 
-static WCHAR *get_key_value(MSIQUERY *view, const WCHAR *key, MSIRECORD *rec)
+static WCHAR *get_key_value(LibmsiQuery *view, const WCHAR *key, LibmsiRecord *rec)
 {
-    MSIRECORD *colnames;
+    LibmsiRecord *colnames;
     WCHAR *str;
     WCHAR *val;
     unsigned r, i = 0, sz = 0;
     int cmp;
 
-    r = MSI_ViewGetColumnInfo(view, MSICOLINFO_NAMES, &colnames);
+    r = MSI_ViewGetColumnInfo(view, LIBMSI_COL_INFO_NAMES, &colnames);
     if (r != ERROR_SUCCESS)
         return NULL;
 
@@ -1506,8 +1506,8 @@ static WCHAR *get_key_value(MSIQUERY *view, const WCHAR *key, MSIRECORD *rec)
     return val;
 }
 
-static WCHAR *create_diff_row_query(MSIDATABASE *merge, MSIQUERY *view,
-                                    WCHAR *table, MSIRECORD *rec)
+static WCHAR *create_diff_row_query(LibmsiDatabase *merge, LibmsiQuery *view,
+                                    WCHAR *table, LibmsiRecord *rec)
 {
     WCHAR *query = NULL;
     WCHAR *clause = NULL;
@@ -1515,7 +1515,7 @@ static WCHAR *create_diff_row_query(MSIDATABASE *merge, MSIQUERY *view,
     const WCHAR *setptr;
     const WCHAR *key;
     unsigned size, oldsize;
-    MSIRECORD *keys;
+    LibmsiRecord *keys;
     unsigned r, i, count;
 
     static const WCHAR keyset[] = {
@@ -1572,13 +1572,13 @@ done:
     return query;
 }
 
-static unsigned merge_diff_row(MSIRECORD *rec, void *param)
+static unsigned merge_diff_row(LibmsiRecord *rec, void *param)
 {
     MERGEDATA *data = param;
     MERGETABLE *table = data->curtable;
     MERGEROW *mergerow;
-    MSIQUERY *dbview = NULL;
-    MSIRECORD *row = NULL;
+    LibmsiQuery *dbview = NULL;
+    LibmsiRecord *row = NULL;
     WCHAR *query = NULL;
     unsigned r = ERROR_SUCCESS;
 
@@ -1632,10 +1632,10 @@ done:
     return r;
 }
 
-static unsigned msi_get_table_labels(MSIDATABASE *db, const WCHAR *table, WCHAR ***labels, unsigned *numlabels)
+static unsigned msi_get_table_labels(LibmsiDatabase *db, const WCHAR *table, WCHAR ***labels, unsigned *numlabels)
 {
     unsigned r, i, count;
-    MSIRECORD *prec = NULL;
+    LibmsiRecord *prec = NULL;
 
     r = MSI_DatabaseGetPrimaryKeys(db, table, &prec);
     if (r != ERROR_SUCCESS)
@@ -1661,12 +1661,12 @@ end:
     return r;
 }
 
-static unsigned msi_get_query_columns(MSIQUERY *query, WCHAR ***columns, unsigned *numcolumns)
+static unsigned msi_get_query_columns(LibmsiQuery *query, WCHAR ***columns, unsigned *numcolumns)
 {
     unsigned r, i, count;
-    MSIRECORD *prec = NULL;
+    LibmsiRecord *prec = NULL;
 
-    r = MSI_ViewGetColumnInfo(query, MSICOLINFO_NAMES, &prec);
+    r = MSI_ViewGetColumnInfo(query, LIBMSI_COL_INFO_NAMES, &prec);
     if (r != ERROR_SUCCESS)
         return r;
 
@@ -1690,12 +1690,12 @@ end:
     return r;
 }
 
-static unsigned msi_get_query_types(MSIQUERY *query, WCHAR ***types, unsigned *numtypes)
+static unsigned msi_get_query_types(LibmsiQuery *query, WCHAR ***types, unsigned *numtypes)
 {
     unsigned r, i, count;
-    MSIRECORD *prec = NULL;
+    LibmsiRecord *prec = NULL;
 
-    r = MSI_ViewGetColumnInfo(query, MSICOLINFO_TYPES, &prec);
+    r = MSI_ViewGetColumnInfo(query, LIBMSI_COL_INFO_TYPES, &prec);
     if (r != ERROR_SUCCESS)
         return r;
 
@@ -1766,11 +1766,11 @@ static void free_merge_table(MERGETABLE *table)
     msi_free(table);
 }
 
-static unsigned msi_get_merge_table (MSIDATABASE *db, const WCHAR *name, MERGETABLE **ptable)
+static unsigned msi_get_merge_table (LibmsiDatabase *db, const WCHAR *name, MERGETABLE **ptable)
 {
     unsigned r;
     MERGETABLE *table;
-    MSIQUERY *mergeview = NULL;
+    LibmsiQuery *mergeview = NULL;
 
     static const WCHAR query[] = {'S','E','L','E','C','T',' ','*',' ',
         'F','R','O','M',' ','`','%','s','`',0};
@@ -1814,12 +1814,12 @@ err:
     return r;
 }
 
-static unsigned merge_diff_tables(MSIRECORD *rec, void *param)
+static unsigned merge_diff_tables(LibmsiRecord *rec, void *param)
 {
     MERGEDATA *data = param;
     MERGETABLE *table;
-    MSIQUERY *dbview = NULL;
-    MSIQUERY *mergeview = NULL;
+    LibmsiQuery *dbview = NULL;
+    LibmsiQuery *mergeview = NULL;
     const WCHAR *name;
     unsigned r;
 
@@ -1868,13 +1868,13 @@ done:
     return r;
 }
 
-static unsigned gather_merge_data(MSIDATABASE *db, MSIDATABASE *merge,
+static unsigned gather_merge_data(LibmsiDatabase *db, LibmsiDatabase *merge,
                               struct list *tabledata)
 {
     static const WCHAR query[] = {
         'S','E','L','E','C','T',' ','*',' ','F','R','O','M',' ',
         '`','_','T','a','b','l','e','s','`',0};
-    MSIQUERY *view;
+    LibmsiQuery *view;
     MERGEDATA data;
     unsigned r;
 
@@ -1890,11 +1890,11 @@ static unsigned gather_merge_data(MSIDATABASE *db, MSIDATABASE *merge,
     return r;
 }
 
-static unsigned merge_table(MSIDATABASE *db, MERGETABLE *table)
+static unsigned merge_table(LibmsiDatabase *db, MERGETABLE *table)
 {
     unsigned r;
     MERGEROW *row;
-    MSIVIEW *tv;
+    LibmsiView *tv;
 
     if (!TABLE_Exists(db, table->name))
     {
@@ -1920,11 +1920,11 @@ static unsigned merge_table(MSIDATABASE *db, MERGETABLE *table)
     return ERROR_SUCCESS;
 }
 
-static unsigned update_merge_errors(MSIDATABASE *db, const WCHAR *error,
+static unsigned update_merge_errors(LibmsiDatabase *db, const WCHAR *error,
                                 WCHAR *table, unsigned numconflicts)
 {
     unsigned r;
-    MSIQUERY *view;
+    LibmsiQuery *view;
 
     static const WCHAR create[] = {
         'C','R','E','A','T','E',' ','T','A','B','L','E',' ',
@@ -1962,12 +1962,12 @@ static unsigned update_merge_errors(MSIDATABASE *db, const WCHAR *error,
     return r;
 }
 
-unsigned MsiDatabaseMergeW(MSIOBJECT *hDatabase, MSIOBJECT *hDatabaseMerge,
+unsigned MsiDatabaseMergeW(LibmsiObject *hDatabase, LibmsiObject *hDatabaseMerge,
                               const WCHAR *szTableName)
 {
     struct list tabledata = LIST_INIT(tabledata);
     struct list *item, *cursor;
-    MSIDATABASE *db, *merge;
+    LibmsiDatabase *db, *merge;
     MERGETABLE *table;
     bool conflicts;
     unsigned r;
@@ -1978,8 +1978,8 @@ unsigned MsiDatabaseMergeW(MSIOBJECT *hDatabase, MSIOBJECT *hDatabaseMerge,
     if (szTableName && !*szTableName)
         return ERROR_INVALID_TABLE;
 
-    db = msihandle2msiinfo(hDatabase, MSIOBJECTTYPE_DATABASE);
-    merge = msihandle2msiinfo(hDatabaseMerge, MSIOBJECTTYPE_DATABASE);
+    db = msihandle2msiinfo(hDatabase, LIBMSI_OBJECT_TYPE_DATABASE);
+    merge = msihandle2msiinfo(hDatabaseMerge, LIBMSI_OBJECT_TYPE_DATABASE);
     if (!db || !merge)
     {
         r = ERROR_INVALID_HANDLE;
@@ -2026,18 +2026,18 @@ done:
     return r;
 }
 
-MSIDBSTATE MsiGetDatabaseState( MSIOBJECT *handle )
+LibmsiDBState MsiGetDatabaseState( LibmsiObject *handle )
 {
-    MSIDBSTATE ret = MSIDBSTATE_READ;
-    MSIDATABASE *db;
+    LibmsiDBState ret = LIBMSI_DB_STATE_READ;
+    LibmsiDatabase *db;
 
     TRACE("%d\n", handle);
 
-    db = msihandle2msiinfo( handle, MSIOBJECTTYPE_DATABASE );
+    db = msihandle2msiinfo( handle, LIBMSI_OBJECT_TYPE_DATABASE );
     if( !db )
         return ERROR_INVALID_HANDLE;
-    if (db->mode != MSIDBOPEN_READONLY )
-        ret = MSIDBSTATE_WRITE;
+    if (db->mode != LIBMSI_DB_OPEN_READONLY )
+        ret = LIBMSI_DB_STATE_WRITE;
     msiobj_release( &db->hdr );
 
     return ret;
