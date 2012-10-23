@@ -239,7 +239,7 @@ void append_storage_to_db( MSIDATABASE *db, IStorage *stg )
     free_streams( db );
 }
 
-static VOID MSI_CloseDatabase( MSIOBJECTHDR *arg )
+static VOID MSI_CloseDatabase( MSIOBJECT *arg )
 {
     MSIDATABASE *db = (MSIDATABASE *) arg;
 
@@ -398,7 +398,7 @@ UINT MSI_OpenDatabaseW(LPCWSTR szDBPath, LPCWSTR szPersist, MSIDATABASE **pdb)
         goto end;
     }
 
-    db = alloc_msiobject( MSIHANDLETYPE_DATABASE, sizeof (MSIDATABASE),
+    db = alloc_msiobject( MSIOBJECTTYPE_DATABASE, sizeof (MSIDATABASE),
                               MSI_CloseDatabase );
     if( !db )
     {
@@ -449,7 +449,7 @@ end:
     return ret;
 }
 
-UINT WINAPI MsiOpenDatabaseW(LPCWSTR szDBPath, LPCWSTR szPersist, MSIHANDLE *phDB)
+UINT WINAPI MsiOpenDatabaseW(LPCWSTR szDBPath, LPCWSTR szPersist, PMSIOBJECT *phDB)
 {
     MSIDATABASE *db;
     UINT ret;
@@ -459,16 +459,13 @@ UINT WINAPI MsiOpenDatabaseW(LPCWSTR szDBPath, LPCWSTR szPersist, MSIHANDLE *phD
     ret = MSI_OpenDatabaseW( szDBPath, szPersist, &db );
     if( ret == ERROR_SUCCESS )
     {
-        *phDB = alloc_msihandle( &db->hdr );
-        if (! *phDB)
-            ret = ERROR_NOT_ENOUGH_MEMORY;
-        msiobj_release( &db->hdr );
+        *phDB = &db->hdr;
     }
 
     return ret;
 }
 
-UINT WINAPI MsiOpenDatabaseA(LPCSTR szDBPath, LPCSTR szPersist, MSIHANDLE *phDB)
+UINT WINAPI MsiOpenDatabaseA(LPCSTR szDBPath, LPCSTR szPersist, PMSIOBJECT *phDB)
 {
     HRESULT r = ERROR_FUNCTION_FAILED;
     LPWSTR szwDBPath = NULL, szwPersist = NULL;
@@ -1016,14 +1013,14 @@ done:
     return r;
 }
 
-UINT WINAPI MsiDatabaseImportW(MSIHANDLE handle, LPCWSTR szFolder, LPCWSTR szFilename)
+UINT WINAPI MsiDatabaseImportW(PMSIOBJECT handle, LPCWSTR szFolder, LPCWSTR szFilename)
 {
     MSIDATABASE *db;
     UINT r;
 
     TRACE("%x %s %s\n",handle,debugstr_w(szFolder), debugstr_w(szFilename));
 
-    db = msihandle2msiinfo( handle, MSIHANDLETYPE_DATABASE );
+    db = msihandle2msiinfo( handle, MSIOBJECTTYPE_DATABASE );
     if( !db )
         return ERROR_INVALID_HANDLE;
     r = MSI_DatabaseImport( db, szFolder, szFilename );
@@ -1031,7 +1028,7 @@ UINT WINAPI MsiDatabaseImportW(MSIHANDLE handle, LPCWSTR szFolder, LPCWSTR szFil
     return r;
 }
 
-UINT WINAPI MsiDatabaseImportA( MSIHANDLE handle,
+UINT WINAPI MsiDatabaseImportA( PMSIOBJECT handle,
                LPCSTR szFolder, LPCSTR szFilename )
 {
     LPWSTR path = NULL, file = NULL;
@@ -1223,7 +1220,7 @@ done:
  *
  * row4 : data <tab> data <tab> data <tab> ... data <cr> <lf>
  */
-UINT WINAPI MsiDatabaseExportW( MSIHANDLE handle, LPCWSTR szTable,
+UINT WINAPI MsiDatabaseExportW( PMSIOBJECT handle, LPCWSTR szTable,
                LPCWSTR szFolder, LPCWSTR szFilename )
 {
     MSIDATABASE *db;
@@ -1232,7 +1229,7 @@ UINT WINAPI MsiDatabaseExportW( MSIHANDLE handle, LPCWSTR szTable,
     TRACE("%x %s %s %s\n", handle, debugstr_w(szTable),
           debugstr_w(szFolder), debugstr_w(szFilename));
 
-    db = msihandle2msiinfo( handle, MSIHANDLETYPE_DATABASE );
+    db = msihandle2msiinfo( handle, MSIOBJECTTYPE_DATABASE );
     if( !db )
         return ERROR_INVALID_HANDLE;
     r = MSI_DatabaseExport( db, szTable, szFolder, szFilename );
@@ -1240,7 +1237,7 @@ UINT WINAPI MsiDatabaseExportW( MSIHANDLE handle, LPCWSTR szTable,
     return r;
 }
 
-UINT WINAPI MsiDatabaseExportA( MSIHANDLE handle, LPCSTR szTable,
+UINT WINAPI MsiDatabaseExportA( PMSIOBJECT handle, LPCSTR szTable,
                LPCSTR szFolder, LPCSTR szFilename )
 {
     LPWSTR path = NULL, file = NULL, table = NULL;
@@ -1280,7 +1277,7 @@ end:
     return r;
 }
 
-UINT WINAPI MsiDatabaseMergeA(MSIHANDLE hDatabase, MSIHANDLE hDatabaseMerge,
+UINT WINAPI MsiDatabaseMergeA(PMSIOBJECT hDatabase, PMSIOBJECT hDatabaseMerge,
                               LPCSTR szTableName)
 {
     UINT r;
@@ -1945,7 +1942,7 @@ static UINT update_merge_errors(MSIDATABASE *db, LPCWSTR error,
     return r;
 }
 
-UINT WINAPI MsiDatabaseMergeW(MSIHANDLE hDatabase, MSIHANDLE hDatabaseMerge,
+UINT WINAPI MsiDatabaseMergeW(PMSIOBJECT hDatabase, PMSIOBJECT hDatabaseMerge,
                               LPCWSTR szTableName)
 {
     struct list tabledata = LIST_INIT(tabledata);
@@ -1961,8 +1958,8 @@ UINT WINAPI MsiDatabaseMergeW(MSIHANDLE hDatabase, MSIHANDLE hDatabaseMerge,
     if (szTableName && !*szTableName)
         return ERROR_INVALID_TABLE;
 
-    db = msihandle2msiinfo(hDatabase, MSIHANDLETYPE_DATABASE);
-    merge = msihandle2msiinfo(hDatabaseMerge, MSIHANDLETYPE_DATABASE);
+    db = msihandle2msiinfo(hDatabase, MSIOBJECTTYPE_DATABASE);
+    merge = msihandle2msiinfo(hDatabaseMerge, MSIOBJECTTYPE_DATABASE);
     if (!db || !merge)
     {
         r = ERROR_INVALID_HANDLE;
@@ -2009,14 +2006,14 @@ done:
     return r;
 }
 
-MSIDBSTATE WINAPI MsiGetDatabaseState( MSIHANDLE handle )
+MSIDBSTATE WINAPI MsiGetDatabaseState( PMSIOBJECT handle )
 {
     MSIDBSTATE ret = MSIDBSTATE_READ;
     MSIDATABASE *db;
 
     TRACE("%d\n", handle);
 
-    db = msihandle2msiinfo( handle, MSIHANDLETYPE_DATABASE );
+    db = msihandle2msiinfo( handle, MSIOBJECTTYPE_DATABASE );
     if( !db )
         return ERROR_INVALID_HANDLE;
     if (db->mode != MSIDBOPEN_READONLY )

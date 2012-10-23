@@ -50,7 +50,7 @@ static void test_msirecord(void)
 {
     DWORD r, sz;
     INT i;
-    MSIHANDLE h;
+    PMSIOBJECT h;
     char buf[10];
     WCHAR bufW[10];
     const char str[] = "hello";
@@ -383,7 +383,7 @@ static void test_msirecord(void)
 
 static void test_MsiRecordGetString(void)
 {
-    MSIHANDLE rec;
+    PMSIOBJECT rec;
     CHAR buf[MAX_PATH];
     DWORD sz;
     UINT r;
@@ -445,7 +445,7 @@ static void test_MsiRecordGetString(void)
 
 static void test_MsiRecordGetInteger(void)
 {
-    MSIHANDLE rec;
+    PMSIOBJECT rec;
     INT val;
     UINT r;
 
@@ -475,7 +475,7 @@ static void test_MsiRecordGetInteger(void)
 
 static void test_fieldzero(void)
 {
-    MSIHANDLE hdb, hview, rec;
+    PMSIOBJECT hdb, hview, rec;
     CHAR buf[MAX_PATH];
     LPCSTR query;
     DWORD sz;

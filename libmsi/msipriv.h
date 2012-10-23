@@ -55,12 +55,12 @@ typedef struct tagMSITABLE MSITABLE;
 struct string_table;
 typedef struct string_table string_table;
 
-struct tagMSIOBJECTHDR;
-typedef struct tagMSIOBJECTHDR MSIOBJECTHDR;
+struct tagMSIOBJECT;
+typedef struct tagMSIOBJECT MSIOBJECT;
 
-typedef VOID (*msihandledestructor)( MSIOBJECTHDR * );
+typedef VOID (*msihandledestructor)( MSIOBJECT * );
 
-struct tagMSIOBJECTHDR
+struct tagMSIOBJECT
 {
     UINT magic;
     UINT type;
@@ -73,7 +73,7 @@ struct tagMSIOBJECTHDR
 
 typedef struct tagMSIDATABASE
 {
-    MSIOBJECTHDR hdr;
+    MSIOBJECT hdr;
     IStorage *storage;
     string_table *strings;
     UINT bytes_per_strref;
@@ -91,7 +91,7 @@ typedef struct tagMSIVIEW MSIVIEW;
 
 typedef struct tagMSIQUERY
 {
-    MSIOBJECTHDR hdr;
+    MSIOBJECT hdr;
     MSIVIEW *view;
     UINT row;
     MSIDATABASE *db;
@@ -113,7 +113,7 @@ typedef struct tagMSIFIELD
 
 typedef struct tagMSIRECORD
 {
-    MSIOBJECTHDR hdr;
+    MSIOBJECT hdr;
     UINT count;       /* as passed to MsiCreateRecord */
     MSIFIELD fields[1]; /* nb. array size is count+1 */
 } MSIRECORD;
@@ -256,7 +256,7 @@ typedef struct tagMSIVIEWOPS
 
 struct tagMSIVIEW
 {
-    MSIOBJECTHDR hdr;
+    MSIOBJECT hdr;
     const MSIVIEWOPS *ops;
     MSIDBERROR error;
     const WCHAR *error_column;
@@ -266,21 +266,21 @@ struct tagMSIVIEW
 
 typedef struct tagMSISUMMARYINFO
 {
-    MSIOBJECTHDR hdr;
+    MSIOBJECT hdr;
     IStorage *storage;
     DWORD update_count;
     PROPVARIANT property[MSI_MAX_PROPS];
 } MSISUMMARYINFO;
 
-#define MSIHANDLETYPE_ANY 0
-#define MSIHANDLETYPE_DATABASE 1
-#define MSIHANDLETYPE_SUMMARYINFO 2
-#define MSIHANDLETYPE_VIEW 3
-#define MSIHANDLETYPE_RECORD 4
-#define MSIHANDLETYPE_PACKAGE 5
-#define MSIHANDLETYPE_PREVIEW 6
+#define MSIOBJECTTYPE_ANY 0
+#define MSIOBJECTTYPE_DATABASE 1
+#define MSIOBJECTTYPE_SUMMARYINFO 2
+#define MSIOBJECTTYPE_VIEW 3
+#define MSIOBJECTTYPE_RECORD 4
+#define MSIOBJECTTYPE_PACKAGE 5
+#define MSIOBJECTTYPE_PREVIEW 6
 
-#define MSIHANDLE_MAGIC 0x4d434923
+#define PMSIOBJECT_MAGIC 0x4d434923
 
 /* handle unicode/ascii output in the Msi* API functions */
 typedef struct {
@@ -302,14 +302,14 @@ typedef struct {
 UINT msi_strcpy_to_awstring( LPCWSTR str, awstring *awbuf, DWORD *sz );
 
 /* handle functions */
-extern void *msihandle2msiinfo(MSIHANDLE handle, UINT type);
-extern MSIHANDLE alloc_msihandle( MSIOBJECTHDR * );
-extern MSIHANDLE alloc_msi_remote_handle( IUnknown *unk );
+extern void *msihandle2msiinfo(PMSIOBJECT handle, UINT type);
+extern PMSIOBJECT alloc_msihandle( MSIOBJECT * );
+extern PMSIOBJECT alloc_msi_remote_handle( IUnknown *unk );
 extern void *alloc_msiobject(UINT type, UINT size, msihandledestructor destroy );
-extern void msiobj_addref(MSIOBJECTHDR *);
-extern int msiobj_release(MSIOBJECTHDR *);
-extern void msiobj_lock(MSIOBJECTHDR *);
-extern void msiobj_unlock(MSIOBJECTHDR *);
+extern void msiobj_addref(MSIOBJECT *);
+extern int msiobj_release(MSIOBJECT *);
+extern void msiobj_lock(MSIOBJECT *);
+extern void msiobj_unlock(MSIOBJECT *);
 extern void msi_free_handle_table(void);
 
 extern void free_cached_tables( MSIDATABASE *db );
@@ -348,7 +348,7 @@ extern UINT MSI_DatabaseApplyTransformW( MSIDATABASE *db,
 extern void append_storage_to_db( MSIDATABASE *db, IStorage *stg );
 
 /* record internals */
-extern void MSI_CloseRecord( MSIOBJECTHDR * );
+extern void MSI_CloseRecord( MSIOBJECT * );
 extern UINT MSI_RecordSetIStream( MSIRECORD *, UINT, IStream *);
 extern UINT MSI_RecordGetIStream( MSIRECORD *, UINT, IStream **);
 extern const WCHAR *MSI_RecordGetString( const MSIRECORD *, UINT );

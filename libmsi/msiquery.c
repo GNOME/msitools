@@ -39,7 +39,7 @@
 #include "initguid.h"
 
 
-static void MSI_CloseView( MSIOBJECTHDR *arg )
+static void MSI_CloseView( MSIOBJECT *arg )
 {
     MSIQUERY *query = (MSIQUERY*) arg;
     struct list *ptr, *t;
@@ -83,8 +83,8 @@ UINT VIEW_find_column( MSIVIEW *table, LPCWSTR name, LPCWSTR table_name, UINT *n
     return ERROR_INVALID_PARAMETER;
 }
 
-UINT WINAPI MsiDatabaseOpenViewA(MSIHANDLE hdb,
-              LPCSTR szQuery, MSIHANDLE *phView)
+UINT WINAPI MsiDatabaseOpenViewA(PMSIOBJECT hdb,
+              LPCSTR szQuery, PMSIOBJECT *phView)
 {
     UINT r;
     LPWSTR szwQuery;
@@ -118,7 +118,7 @@ UINT MSI_DatabaseOpenViewW(MSIDATABASE *db,
         return ERROR_INVALID_PARAMETER;
 
     /* pre allocate a handle to hold a pointer to the view */
-    query = alloc_msiobject( MSIHANDLETYPE_VIEW, sizeof (MSIQUERY),
+    query = alloc_msiobject( MSIOBJECTTYPE_VIEW, sizeof (MSIQUERY),
                               MSI_CloseView );
     if( !query )
         return ERROR_FUNCTION_FAILED;
@@ -236,8 +236,8 @@ MSIRECORD *MSI_QueryGetRecord( MSIDATABASE *db, LPCWSTR fmt, ... )
     return rec;
 }
 
-UINT WINAPI MsiDatabaseOpenViewW(MSIHANDLE hdb,
-              LPCWSTR szQuery, MSIHANDLE *phView)
+UINT WINAPI MsiDatabaseOpenViewW(PMSIOBJECT hdb,
+              LPCWSTR szQuery, PMSIOBJECT *phView)
 {
     MSIDATABASE *db;
     MSIQUERY *query = NULL;
@@ -245,18 +245,13 @@ UINT WINAPI MsiDatabaseOpenViewW(MSIHANDLE hdb,
 
     TRACE("%s %p\n", debugstr_w(szQuery), phView);
 
-    db = msihandle2msiinfo( hdb, MSIHANDLETYPE_DATABASE );
+    db = msihandle2msiinfo( hdb, MSIOBJECTTYPE_DATABASE );
     if( !db )
         return ERROR_INVALID_HANDLE;
 
     ret = MSI_DatabaseOpenViewW( db, szQuery, &query );
     if( ret == ERROR_SUCCESS )
-    {
-        *phView = alloc_msihandle( &query->hdr );
-        if (! *phView)
-           ret = ERROR_NOT_ENOUGH_MEMORY;
-        msiobj_release( &query->hdr );
-    }
+        *phView = &query->hdr;
     msiobj_release( &db->hdr );
 
     return ret;
@@ -361,7 +356,7 @@ UINT MSI_ViewFetch(MSIQUERY *query, MSIRECORD **prec)
     return r;
 }
 
-UINT WINAPI MsiViewFetch(MSIHANDLE hView, MSIHANDLE *record)
+UINT WINAPI MsiViewFetch(PMSIOBJECT hView, PMSIOBJECT *record)
 {
     MSIQUERY *query;
     MSIRECORD *rec = NULL;
@@ -373,17 +368,12 @@ UINT WINAPI MsiViewFetch(MSIHANDLE hView, MSIHANDLE *record)
         return ERROR_INVALID_PARAMETER;
     *record = 0;
 
-    query = msihandle2msiinfo( hView, MSIHANDLETYPE_VIEW );
+    query = msihandle2msiinfo( hView, MSIOBJECTTYPE_VIEW );
     if( !query )
         return ERROR_INVALID_HANDLE;
     ret = MSI_ViewFetch( query, &rec );
     if( ret == ERROR_SUCCESS )
-    {
-        *record = alloc_msihandle( &rec->hdr );
-        if (! *record)
-           ret = ERROR_NOT_ENOUGH_MEMORY;
-        msiobj_release( &rec->hdr );
-    }
+        *record = &rec->hdr;
     msiobj_release( &query->hdr );
     return ret;
 }
@@ -403,14 +393,14 @@ UINT MSI_ViewClose(MSIQUERY *query)
     return view->ops->close( view );
 }
 
-UINT WINAPI MsiViewClose(MSIHANDLE hView)
+UINT WINAPI MsiViewClose(PMSIOBJECT hView)
 {
     MSIQUERY *query;
     UINT ret;
 
     TRACE("%d\n", hView );
 
-    query = msihandle2msiinfo( hView, MSIHANDLETYPE_VIEW );
+    query = msihandle2msiinfo( hView, MSIOBJECTTYPE_VIEW );
     if( !query )
         return ERROR_INVALID_HANDLE;
 
@@ -435,7 +425,7 @@ UINT MSI_ViewExecute(MSIQUERY *query, MSIRECORD *rec )
     return view->ops->execute( view, rec );
 }
 
-UINT WINAPI MsiViewExecute(MSIHANDLE hView, MSIHANDLE hRec)
+UINT WINAPI MsiViewExecute(PMSIOBJECT hView, PMSIOBJECT hRec)
 {
     MSIQUERY *query;
     MSIRECORD *rec = NULL;
@@ -443,13 +433,13 @@ UINT WINAPI MsiViewExecute(MSIHANDLE hView, MSIHANDLE hRec)
     
     TRACE("%d %d\n", hView, hRec);
 
-    query = msihandle2msiinfo( hView, MSIHANDLETYPE_VIEW );
+    query = msihandle2msiinfo( hView, MSIOBJECTTYPE_VIEW );
     if( !query )
         return ERROR_INVALID_HANDLE;
 
     if( hRec )
     {
-        rec = msihandle2msiinfo( hRec, MSIHANDLETYPE_RECORD );
+        rec = msihandle2msiinfo( hRec, MSIOBJECTTYPE_RECORD );
         if( !rec )
         {
             ret = ERROR_INVALID_HANDLE;
@@ -545,7 +535,7 @@ UINT MSI_ViewGetColumnInfo( MSIQUERY *query, MSICOLINFO info, MSIRECORD **prec )
     return ERROR_SUCCESS;
 }
 
-UINT WINAPI MsiViewGetColumnInfo(MSIHANDLE hView, MSICOLINFO info, MSIHANDLE *hRec)
+UINT WINAPI MsiViewGetColumnInfo(PMSIOBJECT hView, MSICOLINFO info, PMSIOBJECT *hRec)
 {
     MSIQUERY *query = NULL;
     MSIRECORD *rec = NULL;
@@ -559,18 +549,13 @@ UINT WINAPI MsiViewGetColumnInfo(MSIHANDLE hView, MSICOLINFO info, MSIHANDLE *hR
     if( info != MSICOLINFO_NAMES && info != MSICOLINFO_TYPES )
         return ERROR_INVALID_PARAMETER;
 
-    query = msihandle2msiinfo( hView, MSIHANDLETYPE_VIEW );
+    query = msihandle2msiinfo( hView, MSIOBJECTTYPE_VIEW );
     if( !query )
         return ERROR_INVALID_HANDLE;
 
     r = MSI_ViewGetColumnInfo( query, info, &rec );
     if ( r == ERROR_SUCCESS )
-    {
-        *hRec = alloc_msihandle( &rec->hdr );
-        if ( !*hRec )
-            r = ERROR_NOT_ENOUGH_MEMORY;
-        msiobj_release( &rec->hdr );
-    }
+        *hRec = &rec->hdr;
 
     msiobj_release( &query->hdr );
 
@@ -599,8 +584,8 @@ UINT MSI_ViewModify( MSIQUERY *query, MSIMODIFY mode, MSIRECORD *rec )
     return r;
 }
 
-UINT WINAPI MsiViewModify( MSIHANDLE hView, MSIMODIFY eModifyMode,
-                MSIHANDLE hRecord)
+UINT WINAPI MsiViewModify( PMSIOBJECT hView, MSIMODIFY eModifyMode,
+                PMSIOBJECT hRecord)
 {
     MSIQUERY *query = NULL;
     MSIRECORD *rec = NULL;
@@ -608,11 +593,11 @@ UINT WINAPI MsiViewModify( MSIHANDLE hView, MSIMODIFY eModifyMode,
 
     TRACE("%d %x %d\n", hView, eModifyMode, hRecord);
 
-    query = msihandle2msiinfo( hView, MSIHANDLETYPE_VIEW );
+    query = msihandle2msiinfo( hView, MSIOBJECTTYPE_VIEW );
     if( !query )
         return ERROR_INVALID_HANDLE;
 
-    rec = msihandle2msiinfo( hRecord, MSIHANDLETYPE_RECORD );
+    rec = msihandle2msiinfo( hRecord, MSIOBJECTTYPE_RECORD );
     r = MSI_ViewModify( query, eModifyMode, rec );
 
     msiobj_release( &query->hdr );
@@ -622,7 +607,7 @@ UINT WINAPI MsiViewModify( MSIHANDLE hView, MSIMODIFY eModifyMode,
     return r;
 }
 
-MSIDBERROR WINAPI MsiViewGetErrorW( MSIHANDLE handle, LPWSTR buffer, LPDWORD buflen )
+MSIDBERROR WINAPI MsiViewGetErrorW( PMSIOBJECT handle, LPWSTR buffer, LPDWORD buflen )
 {
     MSIQUERY *query;
     const WCHAR *column;
@@ -634,7 +619,7 @@ MSIDBERROR WINAPI MsiViewGetErrorW( MSIHANDLE handle, LPWSTR buffer, LPDWORD buf
     if (!buflen)
         return MSIDBERROR_INVALIDARG;
 
-    query = msihandle2msiinfo( handle, MSIHANDLETYPE_VIEW );
+    query = msihandle2msiinfo( handle, MSIOBJECTTYPE_VIEW );
     if( !query )
         return MSIDBERROR_INVALIDARG;
 
@@ -654,7 +639,7 @@ MSIDBERROR WINAPI MsiViewGetErrorW( MSIHANDLE handle, LPWSTR buffer, LPDWORD buf
     return r;
 }
 
-MSIDBERROR WINAPI MsiViewGetErrorA( MSIHANDLE handle, LPSTR buffer, LPDWORD buflen )
+MSIDBERROR WINAPI MsiViewGetErrorA( PMSIOBJECT handle, LPSTR buffer, LPDWORD buflen )
 {
     MSIQUERY *query;
     const WCHAR *column;
@@ -666,7 +651,7 @@ MSIDBERROR WINAPI MsiViewGetErrorA( MSIHANDLE handle, LPSTR buffer, LPDWORD bufl
     if (!buflen)
         return MSIDBERROR_INVALIDARG;
 
-    query = msihandle2msiinfo( handle, MSIHANDLETYPE_VIEW );
+    query = msihandle2msiinfo( handle, MSIOBJECTTYPE_VIEW );
     if (!query)
         return MSIDBERROR_INVALIDARG;
 
@@ -686,7 +671,7 @@ MSIDBERROR WINAPI MsiViewGetErrorA( MSIHANDLE handle, LPSTR buffer, LPDWORD bufl
     return r;
 }
 
-MSIHANDLE WINAPI MsiGetLastErrorRecord( void )
+PMSIOBJECT WINAPI MsiGetLastErrorRecord( void )
 {
     FIXME("\n");
     return 0;
@@ -728,13 +713,13 @@ end:
     return ret;
 }
 
-UINT WINAPI MsiDatabaseApplyTransformW( MSIHANDLE hdb,
+UINT WINAPI MsiDatabaseApplyTransformW( PMSIOBJECT hdb,
                  LPCWSTR szTransformFile, int iErrorCond)
 {
     MSIDATABASE *db;
     UINT r;
 
-    db = msihandle2msiinfo( hdb, MSIHANDLETYPE_DATABASE );
+    db = msihandle2msiinfo( hdb, MSIOBJECTTYPE_DATABASE );
     if( !db )
         return ERROR_INVALID_HANDLE;
     r = MSI_DatabaseApplyTransformW( db, szTransformFile, iErrorCond );
@@ -742,7 +727,7 @@ UINT WINAPI MsiDatabaseApplyTransformW( MSIHANDLE hdb,
     return r;
 }
 
-UINT WINAPI MsiDatabaseApplyTransformA( MSIHANDLE hdb, 
+UINT WINAPI MsiDatabaseApplyTransformA( PMSIOBJECT hdb, 
                  LPCSTR szTransformFile, int iErrorCond)
 {
     LPWSTR wstr;
@@ -761,14 +746,14 @@ UINT WINAPI MsiDatabaseApplyTransformA( MSIHANDLE hdb,
     return ret;
 }
 
-UINT WINAPI MsiDatabaseCommit( MSIHANDLE hdb )
+UINT WINAPI MsiDatabaseCommit( PMSIOBJECT hdb )
 {
     MSIDATABASE *db;
     UINT r;
 
     TRACE("%d\n", hdb);
 
-    db = msihandle2msiinfo( hdb, MSIHANDLETYPE_DATABASE );
+    db = msihandle2msiinfo( hdb, MSIOBJECTTYPE_DATABASE );
     if( !db )
         return ERROR_INVALID_HANDLE;
 
@@ -869,8 +854,8 @@ UINT MSI_DatabaseGetPrimaryKeys( MSIDATABASE *db,
     return r;
 }
 
-UINT WINAPI MsiDatabaseGetPrimaryKeysW( MSIHANDLE hdb,
-                    LPCWSTR table, MSIHANDLE* phRec )
+UINT WINAPI MsiDatabaseGetPrimaryKeysW( PMSIOBJECT hdb,
+                    LPCWSTR table, PMSIOBJECT* phRec )
 {
     MSIRECORD *rec = NULL;
     MSIDATABASE *db;
@@ -878,25 +863,20 @@ UINT WINAPI MsiDatabaseGetPrimaryKeysW( MSIHANDLE hdb,
 
     TRACE("%d %s %p\n", hdb, debugstr_w(table), phRec);
 
-    db = msihandle2msiinfo( hdb, MSIHANDLETYPE_DATABASE );
+    db = msihandle2msiinfo( hdb, MSIOBJECTTYPE_DATABASE );
     if( !db )
         return ERROR_INVALID_HANDLE;
 
     r = MSI_DatabaseGetPrimaryKeys( db, table, &rec );
     if( r == ERROR_SUCCESS )
-    {
-        *phRec = alloc_msihandle( &rec->hdr );
-        if (! *phRec)
-           r = ERROR_NOT_ENOUGH_MEMORY;
-        msiobj_release( &rec->hdr );
-    }
+        *phRec = &rec->hdr;
     msiobj_release( &db->hdr );
 
     return r;
 }
 
-UINT WINAPI MsiDatabaseGetPrimaryKeysA(MSIHANDLE hdb, 
-                    LPCSTR table, MSIHANDLE* phRec)
+UINT WINAPI MsiDatabaseGetPrimaryKeysA(PMSIOBJECT hdb, 
+                    LPCSTR table, PMSIOBJECT* phRec)
 {
     LPWSTR szwTable = NULL;
     UINT r;
@@ -916,7 +896,7 @@ UINT WINAPI MsiDatabaseGetPrimaryKeysA(MSIHANDLE hdb,
 }
 
 MSICONDITION WINAPI MsiDatabaseIsTablePersistentA(
-              MSIHANDLE hDatabase, LPCSTR szTableName)
+              PMSIOBJECT hDatabase, LPCSTR szTableName)
 {
     LPWSTR szwTableName = NULL;
     MSICONDITION r;
@@ -936,14 +916,14 @@ MSICONDITION WINAPI MsiDatabaseIsTablePersistentA(
 }
 
 MSICONDITION WINAPI MsiDatabaseIsTablePersistentW(
-              MSIHANDLE hDatabase, LPCWSTR szTableName)
+              PMSIOBJECT hDatabase, LPCWSTR szTableName)
 {
     MSIDATABASE *db;
     MSICONDITION r;
 
     TRACE("%x %s\n", hDatabase, debugstr_w(szTableName));
 
-    db = msihandle2msiinfo( hDatabase, MSIHANDLETYPE_DATABASE );
+    db = msihandle2msiinfo( hDatabase, MSIOBJECTTYPE_DATABASE );
     if( !db )
         return MSICONDITION_ERROR;
 

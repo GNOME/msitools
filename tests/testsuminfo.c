@@ -33,7 +33,7 @@ static const WCHAR msifileW[] = {
 
 static void test_suminfo(void)
 {
-    MSIHANDLE hdb = 0, hsuminfo;
+    PMSIOBJECT hdb = 0, hsuminfo;
     UINT r, count, type;
     DWORD sz;
     INT val;
@@ -362,7 +362,7 @@ static void test_create_database_binary(void)
 
 static void test_summary_binary(void)
 {
-    MSIHANDLE hdb = 0, hsuminfo = 0;
+    PMSIOBJECT hdb = 0, hsuminfo = 0;
     UINT r, type, count;
     INT ival;
     DWORD sz;
