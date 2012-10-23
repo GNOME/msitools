@@ -77,9 +77,9 @@ typedef struct LibmsiDatabase
     IStorage *storage;
     string_table *strings;
     unsigned bytes_per_strref;
-    WCHAR *path;
-    WCHAR *deletefile;
-    const WCHAR *mode;
+    char *path;
+    char *deletefile;
+    const char *mode;
     unsigned media_transform_offset;
     unsigned media_transform_disk_id;
     struct list tables;

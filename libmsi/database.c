@@ -20,6 +20,7 @@
 
 #include <stdarg.h>
 #include <stdio.h>
+#include <unistd.h>
 
 #define COBJMACROS
 #define NONAMELESSUNION
@@ -251,7 +252,7 @@ static VOID MSI_CloseDatabase( LibmsiObject *arg )
     IStorage_Release( db->storage );
     if (db->deletefile)
     {
-        DeleteFileW( db->deletefile );
+        unlink( db->deletefile );
         msi_free( db->deletefile );
     }
 }
@@ -293,17 +294,17 @@ static HRESULT db_initialize( IStorage *stg, const GUID *clsid )
     return S_OK;
 }
 
-unsigned MSI_OpenDatabaseW(const WCHAR *szDBPath, const WCHAR *szPersist, LibmsiDatabase **pdb)
+unsigned MSI_OpenDatabase(const char *szDBPath, const char *szPersist, LibmsiDatabase **pdb)
 {
     IStorage *stg = NULL;
     HRESULT r;
     LibmsiDatabase *db = NULL;
     unsigned ret = ERROR_FUNCTION_FAILED;
-    const WCHAR *szMode;
-    const WCHAR *save_path;
+    WCHAR *szwDBPath;
+    const char *szMode;
     STATSTG stat;
     bool created = false, patch = false;
-    WCHAR path[MAX_PATH];
+    char path[MAX_PATH];
 
     TRACE("%s %s\n",debugstr_w(szDBPath),debugstr_w(szPersist) );
 
@@ -318,11 +319,10 @@ unsigned MSI_OpenDatabaseW(const WCHAR *szDBPath, const WCHAR *szPersist, Libmsi
         patch = true;
     }
 
-    save_path = szDBPath;
     szMode = szPersist;
     if( !IS_INTMSIDBOPEN(szPersist) )
     {
-        if (!CopyFileW( szDBPath, szPersist, false ))
+        if (!CopyFileA( szDBPath, szPersist, false ))
             return ERROR_OPEN_FAILED;
 
         szDBPath = szPersist;
@@ -330,14 +330,15 @@ unsigned MSI_OpenDatabaseW(const WCHAR *szDBPath, const WCHAR *szPersist, Libmsi
         created = true;
     }
 
+    szwDBPath = strdupAtoW(szDBPath);
     if( szPersist == LIBMSI_DB_OPEN_READONLY )
     {
-        r = StgOpenStorage( szDBPath, NULL,
+        r = StgOpenStorage( szwDBPath, NULL,
               STGM_DIRECT|STGM_READ|STGM_SHARE_DENY_WRITE, NULL, 0, &stg);
     }
     else if( szPersist == LIBMSI_DB_OPEN_CREATE )
     {
-        r = StgCreateDocfile( szDBPath,
+        r = StgCreateDocfile( szwDBPath,
               STGM_CREATE|STGM_TRANSACTED|STGM_READWRITE|STGM_SHARE_EXCLUSIVE, 0, &stg );
 
         if( SUCCEEDED(r) )
@@ -346,7 +347,7 @@ unsigned MSI_OpenDatabaseW(const WCHAR *szDBPath, const WCHAR *szPersist, Libmsi
     }
     else if( szPersist == LIBMSI_DB_OPEN_CREATEDIRECT )
     {
-        r = StgCreateDocfile( szDBPath,
+        r = StgCreateDocfile( szwDBPath,
               STGM_CREATE|STGM_DIRECT|STGM_READWRITE|STGM_SHARE_EXCLUSIVE, 0, &stg );
 
         if( SUCCEEDED(r) )
@@ -355,12 +356,12 @@ unsigned MSI_OpenDatabaseW(const WCHAR *szDBPath, const WCHAR *szPersist, Libmsi
     }
     else if( szPersist == LIBMSI_DB_OPEN_TRANSACT )
     {
-        r = StgOpenStorage( szDBPath, NULL,
+        r = StgOpenStorage( szwDBPath, NULL,
               STGM_TRANSACTED|STGM_READWRITE|STGM_SHARE_DENY_WRITE, NULL, 0, &stg);
     }
     else if( szPersist == LIBMSI_DB_OPEN_DIRECT )
     {
-        r = StgOpenStorage( szDBPath, NULL,
+        r = StgOpenStorage( szwDBPath, NULL,
               STGM_DIRECT|STGM_READWRITE|STGM_SHARE_EXCLUSIVE, NULL, 0, &stg);
     }
     else
@@ -368,10 +369,11 @@ unsigned MSI_OpenDatabaseW(const WCHAR *szDBPath, const WCHAR *szPersist, Libmsi
         ERR("unknown flag %p\n",szPersist);
         return ERROR_INVALID_PARAMETER;
     }
+    msi_free(szwDBPath);
 
     if( FAILED( r ) || !stg )
     {
-        WARN("open failed r = %08x for %s\n", r, debugstr_w(szDBPath));
+        WARN("open failed r = %08x for %s\n", r, debugstr_a(szDBPath));
         return ERROR_FUNCTION_FAILED;
     }
 
@@ -407,16 +409,16 @@ unsigned MSI_OpenDatabaseW(const WCHAR *szDBPath, const WCHAR *szPersist, Libmsi
         goto end;
     }
 
-    if (!strchrW( save_path, '\\' ))
+    if (!strchr( szDBPath, '\\' ))
     {
-        GetCurrentDirectoryW( MAX_PATH, path );
-        strcatW( path, szBackSlash );
-        strcatW( path, save_path );
+        getcwd( path, MAX_PATH );
+        strcat( path, "\\" );
+        strcat( path, szDBPath );
     }
     else
-        strcpyW( path, save_path );
+        strcpy( path, szDBPath );
 
-    db->path = strdupW( path );
+    db->path = strdup( path );
     db->media_transform_offset = MSI_INITIAL_MEDIA_TRANSFORM_OFFSET;
     db->media_transform_disk_id = MSI_INITIAL_MEDIA_TRANSFORM_DISKID;
 
@@ -426,7 +428,7 @@ unsigned MSI_OpenDatabaseW(const WCHAR *szDBPath, const WCHAR *szPersist, Libmsi
     db->storage = stg;
     db->mode = szMode;
     if (created)
-        db->deletefile = strdupW( szDBPath );
+        db->deletefile = strdup( szDBPath );
     list_init( &db->tables );
     list_init( &db->transforms );
     list_init( &db->streams );
@@ -450,54 +452,20 @@ end:
     return ret;
 }
 
-unsigned MsiOpenDatabaseW(const WCHAR *szDBPath, const WCHAR *szPersist, LibmsiObject **phDB)
+unsigned MsiOpenDatabase(const char *szDBPath, const char *szPersist, LibmsiObject **phDB)
 {
     LibmsiDatabase *db;
     unsigned ret;
 
-    TRACE("%s %s %p\n",debugstr_w(szDBPath),debugstr_w(szPersist), phDB);
+    TRACE("%s %s %p\n",debugstr_a(szDBPath),debugstr_a(szPersist), phDB);
 
-    ret = MSI_OpenDatabaseW( szDBPath, szPersist, &db );
+    ret = MSI_OpenDatabase( szDBPath, szPersist, &db );
     if( ret == ERROR_SUCCESS )
     {
         *phDB = &db->hdr;
     }
 
     return ret;
-}
-
-unsigned MsiOpenDatabaseA(const char *szDBPath, const char *szPersist, LibmsiObject **phDB)
-{
-    HRESULT r = ERROR_FUNCTION_FAILED;
-    WCHAR *szwDBPath = NULL;
-    WCHAR *szwPersist = NULL;
-
-    TRACE("%s %s %p\n", debugstr_a(szDBPath), debugstr_a(szPersist), phDB);
-
-    if( szDBPath )
-    {
-        szwDBPath = strdupAtoW( szDBPath );
-        if( !szwDBPath )
-            goto end;
-    }
-
-    if( !IS_INTMSIDBOPEN(szPersist) )
-    {
-        szwPersist = strdupAtoW( szPersist );
-        if( !szwPersist )
-            goto end;
-    }
-    else
-        szwPersist = (WCHAR *)(uintptr_t)szPersist;
-
-    r = MsiOpenDatabaseW( szwDBPath, szwPersist, phDB );
-
-end:
-    if( !IS_INTMSIDBOPEN(szPersist) )
-        msi_free( szwPersist );
-    msi_free( szwDBPath );
-
-    return r;
 }
 
 static WCHAR *msi_read_text_archive(const WCHAR *path, unsigned *len)

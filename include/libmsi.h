@@ -58,11 +58,11 @@ typedef enum LibmsiModify
     LIBMSI_MODIFY_VALIDATE_DELETE = 11
 } LibmsiModify;
 
-#define LIBMSI_DB_OPEN_READONLY (LPCTSTR)0
-#define LIBMSI_DB_OPEN_TRANSACT (LPCTSTR)1
-#define LIBMSI_DB_OPEN_DIRECT   (LPCTSTR)2
-#define LIBMSI_DB_OPEN_CREATE   (LPCTSTR)3
-#define LIBMSI_DB_OPEN_CREATEDIRECT (LPCTSTR)4
+#define LIBMSI_DB_OPEN_READONLY (const char *)0
+#define LIBMSI_DB_OPEN_TRANSACT (const char *)1
+#define LIBMSI_DB_OPEN_DIRECT   (const char *)2
+#define LIBMSI_DB_OPEN_CREATE   (const char *)3
+#define LIBMSI_DB_OPEN_CREATEDIRECT (const char *)4
 
 #define LIBMSI_DB_OPEN_PATCHFILE 32 / sizeof(*LIBMSI_DB_OPEN_READONLY)
 
@@ -216,9 +216,7 @@ unsigned MsiDatabaseImportA(LibmsiObject *, const char *, const char *);
 unsigned MsiDatabaseImportW(LibmsiObject *, const WCHAR *, const WCHAR *);
 #define     MsiDatabaseImport WINELIB_NAME_AW(MsiDatabaseImport)
 
-unsigned MsiOpenDatabaseW(const WCHAR *, const WCHAR *, LibmsiObject **);
-unsigned MsiOpenDatabaseA(const char *, const char *, LibmsiObject **);
-#define     MsiOpenDatabase WINELIB_NAME_AW(MsiOpenDatabase)
+unsigned MsiOpenDatabase(const char *, const char *, LibmsiObject **);
 
 LibmsiCondition MsiDatabaseIsTablePersistentA(LibmsiObject *, const char *);
 LibmsiCondition MsiDatabaseIsTablePersistentW(LibmsiObject *, const WCHAR *);

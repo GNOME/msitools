@@ -2132,7 +2132,7 @@ static void test_suminfo_import(void)
 
     GetCurrentDirectoryA(MAX_PATH, CURR_DIR);
 
-    r = MsiOpenDatabaseA(msifile, LIBMSI_DB_OPEN_CREATE, &hdb);
+    r = MsiOpenDatabase(msifile, LIBMSI_DB_OPEN_CREATE, &hdb);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %u\n", r);
 
     r = add_table_to_db(hdb, suminfo);
@@ -2255,7 +2255,7 @@ static void test_msiimport(void)
 
     GetCurrentDirectoryA(MAX_PATH, CURR_DIR);
 
-    r = MsiOpenDatabaseA(msifile, LIBMSI_DB_OPEN_CREATE, &hdb);
+    r = MsiOpenDatabase(msifile, LIBMSI_DB_OPEN_CREATE, &hdb);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     r = add_table_to_db(hdb, test_data);
@@ -9202,7 +9202,7 @@ static void test_embedded_nulls(void)
     LibmsiObject *hrec;
     char buffer[32];
 
-    r = MsiOpenDatabaseA( msifile, LIBMSI_DB_OPEN_CREATE, &hdb );
+    r = MsiOpenDatabase( msifile, LIBMSI_DB_OPEN_CREATE, &hdb );
     ok( r == ERROR_SUCCESS, "failed to open database %u\n", r );
 
     GetCurrentDirectoryA( MAX_PATH, CURR_DIR );
