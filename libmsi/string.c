@@ -56,14 +56,14 @@ struct string_table
     unsigned *sorted;              /* index */
 };
 
-static BOOL validate_codepage( unsigned codepage )
+static bool validate_codepage( unsigned codepage )
 {
     if (codepage != CP_ACP && !IsValidCodePage( codepage ))
     {
         WARN("invalid codepage %u\n", codepage);
-        return FALSE;
+        return false;
     }
-    return TRUE;
+    return true;
 }
 
 static string_table *init_stringtable( int entries, unsigned codepage )
@@ -451,12 +451,12 @@ HRESULT msi_init_string_table( IStorage *stg )
     unsigned ret;
 
     /* create the StringPool stream... add the zero string to it*/
-    ret = write_stream_data(stg, szStringPool, zero, sizeof zero, TRUE);
+    ret = write_stream_data(stg, szStringPool, zero, sizeof zero, true);
     if (ret != ERROR_SUCCESS)
         return E_FAIL;
 
     /* create the StringData stream... make it zero length */
-    ret = write_stream_data(stg, szStringData, NULL, 0, TRUE);
+    ret = write_stream_data(stg, szStringData, NULL, 0, true);
     if (ret != ERROR_SUCCESS)
         return E_FAIL;
 
@@ -471,10 +471,10 @@ string_table *msi_load_string_table( IStorage *stg, unsigned *bytes_per_strref )
     unsigned r, datasize = 0, poolsize = 0, codepage;
     unsigned i, count, offset, len, n, refs;
 
-    r = read_stream_data( stg, szStringPool, TRUE, (uint8_t **)&pool, &poolsize );
+    r = read_stream_data( stg, szStringPool, true, (uint8_t **)&pool, &poolsize );
     if( r != ERROR_SUCCESS)
         goto end;
-    r = read_stream_data( stg, szStringData, TRUE, (uint8_t **)&data, &datasize );
+    r = read_stream_data( stg, szStringData, true, (uint8_t **)&data, &datasize );
     if( r != ERROR_SUCCESS)
         goto end;
 
@@ -638,11 +638,11 @@ unsigned msi_save_string_table( const string_table *st, IStorage *storage, unsig
     }
 
     /* write the streams */
-    r = write_stream_data( storage, szStringData, data, datasize, TRUE );
+    r = write_stream_data( storage, szStringData, data, datasize, true );
     TRACE("Wrote StringData r=%08x\n", r);
     if( r )
         goto err;
-    r = write_stream_data( storage, szStringPool, pool, poolsize, TRUE );
+    r = write_stream_data( storage, szStringPool, pool, poolsize, true );
     TRACE("Wrote StringPool r=%08x\n", r);
     if( r )
         goto err;

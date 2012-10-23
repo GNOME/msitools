@@ -42,8 +42,8 @@ typedef struct tagMSICREATEVIEW
     MSIVIEW          view;
     MSIDATABASE     *db;
     const WCHAR *         name;
-    BOOL             bIsTemp;
-    BOOL             hold;
+    bool             bIsTemp;
+    bool             hold;
     column_info     *col_info;
 } MSICREATEVIEW;
 
@@ -59,7 +59,7 @@ static unsigned CREATE_fetch_int( MSIVIEW *view, unsigned row, unsigned col, uns
 static unsigned CREATE_execute( MSIVIEW *view, MSIRECORD *record )
 {
     MSICREATEVIEW *cv = (MSICREATEVIEW*)view;
-    BOOL persist = (cv->bIsTemp) ? MSICONDITION_FALSE : MSICONDITION_TRUE;
+    bool persist = (cv->bIsTemp) ? MSICONDITION_FALSE : MSICONDITION_TRUE;
 
     TRACE("%p Table %s (%s)\n", cv, debugstr_w(cv->name),
           cv->bIsTemp?"temporary":"permanent");
@@ -89,7 +89,7 @@ static unsigned CREATE_get_dimensions( MSIVIEW *view, unsigned *rows, unsigned *
 }
 
 static unsigned CREATE_get_column_info( MSIVIEW *view, unsigned n, const WCHAR **name,
-                                    unsigned *type, BOOL *temporary, const WCHAR **table_name )
+                                    unsigned *type, bool *temporary, const WCHAR **table_name )
 {
     MSICREATEVIEW *cv = (MSICREATEVIEW*)view;
 
@@ -157,13 +157,13 @@ static unsigned check_columns( const column_info *col_info )
 }
 
 unsigned CREATE_CreateView( MSIDATABASE *db, MSIVIEW **view, const WCHAR *table,
-                        column_info *col_info, BOOL hold )
+                        column_info *col_info, bool hold )
 {
     MSICREATEVIEW *cv = NULL;
     unsigned r;
     column_info *col;
-    BOOL temp = TRUE;
-    BOOL tempprim = FALSE;
+    bool temp = true;
+    bool tempprim = false;
 
     TRACE("%p\n", cv );
 
@@ -181,9 +181,9 @@ unsigned CREATE_CreateView( MSIDATABASE *db, MSIVIEW **view, const WCHAR *table,
             col->table = table;
 
         if( !col->temporary )
-            temp = FALSE;
+            temp = false;
         else if ( col->type & MSITYPE_KEY )
-            tempprim = TRUE;
+            tempprim = true;
     }
 
     if ( !temp && tempprim )

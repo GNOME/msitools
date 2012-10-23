@@ -269,7 +269,7 @@ static HRESULT db_initialize( IStorage *stg, const GUID *clsid )
     }
 
     /* create the _Tables stream */
-    hr = write_stream_data( stg, szTables, NULL, 0, TRUE );
+    hr = write_stream_data( stg, szTables, NULL, 0, true );
     if (FAILED( hr ))
     {
         WARN("failed to create _Tables stream 0x%08x\n", hr);
@@ -302,7 +302,7 @@ unsigned MSI_OpenDatabaseW(const WCHAR *szDBPath, const WCHAR *szPersist, MSIDAT
     const WCHAR *szMode;
     const WCHAR *save_path;
     STATSTG stat;
-    BOOL created = FALSE, patch = FALSE;
+    bool created = false, patch = false;
     WCHAR path[MAX_PATH];
 
     TRACE("%s %s\n",debugstr_w(szDBPath),debugstr_w(szPersist) );
@@ -315,19 +315,19 @@ unsigned MSI_OpenDatabaseW(const WCHAR *szDBPath, const WCHAR *szPersist, MSIDAT
     {
         TRACE("Database is a patch\n");
         szPersist -= MSIDBOPEN_PATCHFILE;
-        patch = TRUE;
+        patch = true;
     }
 
     save_path = szDBPath;
     szMode = szPersist;
     if( !IS_INTMSIDBOPEN(szPersist) )
     {
-        if (!CopyFileW( szDBPath, szPersist, FALSE ))
+        if (!CopyFileW( szDBPath, szPersist, false ))
             return ERROR_OPEN_FAILED;
 
         szDBPath = szPersist;
         szPersist = MSIDBOPEN_TRANSACT;
-        created = TRUE;
+        created = true;
     }
 
     if( szPersist == MSIDBOPEN_READONLY )
@@ -342,7 +342,7 @@ unsigned MSI_OpenDatabaseW(const WCHAR *szDBPath, const WCHAR *szPersist, MSIDAT
 
         if( SUCCEEDED(r) )
             r = db_initialize( stg, patch ? &CLSID_MsiPatch : &CLSID_MsiDatabase );
-        created = TRUE;
+        created = true;
     }
     else if( szPersist == MSIDBOPEN_CREATEDIRECT )
     {
@@ -351,7 +351,7 @@ unsigned MSI_OpenDatabaseW(const WCHAR *szDBPath, const WCHAR *szPersist, MSIDAT
 
         if( SUCCEEDED(r) )
             r = db_initialize( stg, patch ? &CLSID_MsiPatch : &CLSID_MsiDatabase );
-        created = TRUE;
+        created = true;
     }
     else if( szPersist == MSIDBOPEN_TRANSACT )
     {
@@ -1338,15 +1338,15 @@ typedef struct _tagMERGEDATA
     struct list *tabledata;
 } MERGEDATA;
 
-static BOOL merge_type_match(const WCHAR *type1, const WCHAR *type2)
+static bool merge_type_match(const WCHAR *type1, const WCHAR *type2)
 {
     if (((type1[0] == 'l') || (type1[0] == 's')) &&
         ((type2[0] == 'l') || (type2[0] == 's')))
-        return TRUE;
+        return true;
 
     if (((type1[0] == 'L') || (type1[0] == 'S')) &&
         ((type2[0] == 'L') || (type2[0] == 'S')))
-        return TRUE;
+        return true;
 
     return !strcmpW( type1, type2 );
 }
@@ -1910,7 +1910,7 @@ static unsigned merge_table(MSIDATABASE *db, MERGETABLE *table)
         if (r != ERROR_SUCCESS)
             return r;
 
-        r = tv->ops->insert_row(tv, row->data, -1, FALSE);
+        r = tv->ops->insert_row(tv, row->data, -1, false);
         tv->ops->delete(tv);
 
         if (r != ERROR_SUCCESS)
@@ -1969,7 +1969,7 @@ unsigned MsiDatabaseMergeW(MSIOBJECT *hDatabase, MSIOBJECT *hDatabaseMerge,
     struct list *item, *cursor;
     MSIDATABASE *db, *merge;
     MERGETABLE *table;
-    BOOL conflicts;
+    bool conflicts;
     unsigned r;
 
     TRACE("(%d, %d, %s)\n", hDatabase, hDatabaseMerge,
@@ -1990,12 +1990,12 @@ unsigned MsiDatabaseMergeW(MSIOBJECT *hDatabase, MSIOBJECT *hDatabaseMerge,
     if (r != ERROR_SUCCESS)
         goto done;
 
-    conflicts = FALSE;
+    conflicts = false;
     LIST_FOR_EACH_ENTRY(table, &tabledata, MERGETABLE, entry)
     {
         if (table->numconflicts)
         {
-            conflicts = TRUE;
+            conflicts = true;
 
             r = update_merge_errors(db, szTableName, table->name,
                                     table->numconflicts);

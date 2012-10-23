@@ -654,7 +654,7 @@ unsigned MsiSummaryInfoGetPropertyA(
     TRACE("%d %d %p %p %p %p %p\n", handle, uiProperty, puiDataType,
           piValue, pftValue, szValueBuf, pcchValueBuf );
 
-    str.unicode = FALSE;
+    str.unicode = false;
     str.str.a = szValueBuf;
 
     return get_prop( handle, uiProperty, puiDataType, piValue,
@@ -670,7 +670,7 @@ unsigned MsiSummaryInfoGetPropertyW(
     TRACE("%d %d %p %p %p %p %p\n", handle, uiProperty, puiDataType,
           piValue, pftValue, szValueBuf, pcchValueBuf );
 
-    str.unicode = TRUE;
+    str.unicode = true;
     str.str.w = szValueBuf;
 
     return get_prop( handle, uiProperty, puiDataType, piValue,
@@ -756,7 +756,7 @@ unsigned MsiSummaryInfoSetPropertyW( MSIOBJECT *handle, unsigned uiProperty,
     if( !si )
         return ERROR_INVALID_HANDLE;
 
-    str.unicode = TRUE;
+    str.unicode = true;
     str.str.w = szValue;
     ret = set_prop( si, uiProperty, type, iValue, pftValue, &str );
 
@@ -788,7 +788,7 @@ unsigned MsiSummaryInfoSetPropertyA( MSIOBJECT *handle, unsigned uiProperty,
     if( !si )
         return ERROR_INVALID_HANDLE;
 
-    str.unicode = FALSE;
+    str.unicode = false;
     str.str.a = szValue;
     ret = set_prop( si, uiProperty, uiDataType, iValue, pftValue, &str );
 
@@ -883,7 +883,7 @@ static unsigned parse_prop( const WCHAR *prop, const WCHAR *value, unsigned *pid
     case MSI_PID_APPNAME:
     case MSI_PID_TITLE:
         str_value->str.w = value;
-        str_value->unicode = TRUE;
+        str_value->unicode = true;
         break;
 
     default:

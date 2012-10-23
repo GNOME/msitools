@@ -27,7 +27,7 @@ ok: r == ERROR_INVALID_PARAMETER
 ok: r==0
 ok: r == 1
 ok: r == ERROR_SUCCESS
-ok: r == TRUE
+ok: r == true
 ok: r == 0
 ok: r == ERROR_SUCCESS
 ok: buf[0] == 0
@@ -36,7 +36,7 @@ ok: r == ERROR_SUCCESS
 ok: bufW[0] == 0
 ok: sz == 0
 ok: r == ERROR_SUCCESS
-ok: r == TRUE
+ok: r == true
 ok: r == 0
 ok: r == ERROR_SUCCESS
 ok: buf[0] == 0
@@ -172,21 +172,21 @@ ok: r == MSI_NULL_INTEGER
 ok: r == ERROR_SUCCESS
 ok: !lstrcmpA(buf, "")
 ok: sz == 0
-ok: r == TRUE
+ok: r == true
 ok: r == MSI_NULL_INTEGER
 ok: r == ERROR_SUCCESS
 ok: r == MSI_NULL_INTEGER
 ok: r == ERROR_SUCCESS
 ok: !lstrcmpA(buf, "")
 ok: sz == 0
-ok: r == TRUE
+ok: r == true
 ok: r == 42
 ok: r == ERROR_SUCCESS
 ok: r == MSI_NULL_INTEGER
 ok: r == ERROR_SUCCESS
 ok: !lstrcmpA(buf, "")
 ok: sz == 0
-ok: r == TRUE
+ok: r == true
 ok: r == ERROR_SUCCESS
 ok: !lstrcmpA(buf, "bologna")
 ok: sz == 7
@@ -204,11 +204,11 @@ ok: r == MSI_NULL_INTEGER
 ok: r == ERROR_SUCCESS
 ok: !lstrcmpA(buf, "drone")
 ok: sz == 5
-ok: r == FALSE
+ok: r == false
 ok: r == ERROR_INVALID_TABLE
 ok: r == ERROR_SUCCESS
 ok: r == ERROR_SUCCESS
 ok: r == ERROR_SUCCESS
 ok: r != MSI_NULL_INTEGER && r != 0
-ok: r == FALSE
+ok: r == false
 ok: r == ERROR_SUCCESS

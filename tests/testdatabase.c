@@ -137,10 +137,10 @@ static void test_msidatabase(void)
     ok( res == ERROR_SUCCESS , "Failed to close database\n" );
 
     res = DeleteFile( msifile2 );
-    ok( res == TRUE, "Failed to delete database\n" );
+    ok( res == true, "Failed to delete database\n" );
 
     res = DeleteFile( msifile );
-    ok( res == TRUE, "Failed to delete database\n" );
+    ok( res == true, "Failed to delete database\n" );
 }
 
 static unsigned do_query(MSIOBJECT *hdb, const char *query, MSIOBJECT **phrec)
@@ -367,7 +367,7 @@ static void test_msiinsert(void)
     ok(r == 3, "record count wrong\n");
 
     r = MsiRecordIsNull(hrec, 0);
-    ok(r == FALSE, "field 0 not null\n");
+    ok(r == false, "field 0 not null\n");
 
     r = MsiRecordGetInteger(hrec, 1);
     ok(r == 1, "field 1 contents wrong\n");
@@ -452,7 +452,7 @@ static void test_msiinsert(void)
     ok(r == ERROR_SUCCESS, "MsiCloseHandle failed\n");
 
     r = DeleteFile(msifile);
-    ok(r == TRUE, "file didn't exist after commit\n");
+    ok(r == true, "file didn't exist after commit\n");
 }
 
 static unsigned try_query_param( MSIOBJECT *hdb, const char *szQuery, MSIOBJECT *hrec )
@@ -715,7 +715,7 @@ static void test_msibadqueries(void)
     ok(r == ERROR_SUCCESS , "Failed to close database transact\n");
 
     r = DeleteFile( msifile );
-    ok(r == TRUE, "file didn't exist after commit\n");
+    ok(r == true, "file didn't exist after commit\n");
 }
 
 static void test_viewmodify(void)
@@ -1203,7 +1203,7 @@ static unsigned get_columns_table_type(MSIOBJECT *hdb, const char *table, unsign
     return type;
 }
 
-static BOOL check_record( MSIOBJECT *rec, unsigned field, const char *val )
+static bool check_record( MSIOBJECT *rec, unsigned field, const char *val )
 {
     char buffer[0x20];
     unsigned r;
@@ -3233,7 +3233,7 @@ static void test_join(void)
     char buf[MAX_PATH];
     unsigned r, count;
     unsigned size, i;
-    BOOL data_correct;
+    bool data_correct;
 
     hdb = create_db();
     ok( hdb, "failed to create db\n");
@@ -3415,7 +3415,7 @@ static void test_join(void)
     ok( r == ERROR_SUCCESS, "failed to execute view: %d\n", r );
 
     i = 0;
-    data_correct = TRUE;
+    data_correct = true;
     while ((r = MsiViewFetch(hview, &hrec)) == ERROR_SUCCESS)
     {
         count = MsiRecordGetFieldCount( hrec );
@@ -3425,13 +3425,13 @@ static void test_join(void)
         r = MsiRecordGetString( hrec, 1, buf, &size );
         ok( r == ERROR_SUCCESS, "failed to get record string: %d\n", r );
         if( lstrcmp( buf, join_res_second[i].one ))
-            data_correct = FALSE;
+            data_correct = false;
 
         size = MAX_PATH;
         r = MsiRecordGetString( hrec, 2, buf, &size );
         ok( r == ERROR_SUCCESS, "failed to get record string: %d\n", r );
         if( lstrcmp( buf, join_res_second[i].two ))
-            data_correct = FALSE;
+            data_correct = false;
 
         i++;
         MsiCloseHandle(hrec);
@@ -3456,7 +3456,7 @@ static void test_join(void)
     ok( r == ERROR_SUCCESS, "failed to execute view: %d\n", r );
 
     i = 0;
-    data_correct = TRUE;
+    data_correct = true;
     while ((r = MsiViewFetch(hview, &hrec)) == ERROR_SUCCESS)
     {
         count = MsiRecordGetFieldCount( hrec );
@@ -3466,13 +3466,13 @@ static void test_join(void)
         r = MsiRecordGetString( hrec, 1, buf, &size );
         ok( r == ERROR_SUCCESS, "failed to get record string: %d\n", r );
         if( lstrcmp( buf, join_res_third[i].one ) )
-            data_correct = FALSE;
+            data_correct = false;
 
         size = MAX_PATH;
         r = MsiRecordGetString( hrec, 2, buf, &size );
         ok( r == ERROR_SUCCESS, "failed to get record string: %d\n", r );
         if( lstrcmp( buf, join_res_third[i].two ) )
-            data_correct = FALSE;
+            data_correct = false;
 
         i++;
         MsiCloseHandle(hrec);
@@ -3497,7 +3497,7 @@ static void test_join(void)
     ok( r == ERROR_SUCCESS, "failed to execute view: %d\n", r );
 
     i = 0;
-    data_correct = TRUE;
+    data_correct = true;
     while ((r = MsiViewFetch(hview, &hrec)) == ERROR_SUCCESS)
     {
         count = MsiRecordGetFieldCount( hrec );
@@ -3507,13 +3507,13 @@ static void test_join(void)
         r = MsiRecordGetString( hrec, 1, buf, &size );
         ok( r == ERROR_SUCCESS, "failed to get record string: %d\n", r );
         if( lstrcmp( buf, join_res_fourth[i].one ))
-            data_correct = FALSE;
+            data_correct = false;
 
         size = MAX_PATH;
         r = MsiRecordGetString( hrec, 2, buf, &size );
         ok( r == ERROR_SUCCESS, "failed to get record string: %d\n", r );
         if( lstrcmp( buf, join_res_fourth[i].two ))
-            data_correct = FALSE;
+            data_correct = false;
 
         i++;
         MsiCloseHandle(hrec);
@@ -3538,7 +3538,7 @@ static void test_join(void)
     ok( r == ERROR_SUCCESS, "failed to execute view: %d\n", r );
 
     i = 0;
-    data_correct = TRUE;
+    data_correct = true;
     while ((r = MsiViewFetch(hview, &hrec)) == ERROR_SUCCESS)
     {
         count = MsiRecordGetFieldCount( hrec );
@@ -3548,13 +3548,13 @@ static void test_join(void)
         r = MsiRecordGetString( hrec, 1, buf, &size );
         ok( r == ERROR_SUCCESS, "failed to get record string: %d\n", r );
         if( lstrcmp( buf, join_res_fifth[i].one ))
-            data_correct = FALSE;
+            data_correct = false;
 
         size = MAX_PATH;
         r = MsiRecordGetString( hrec, 2, buf, &size );
         ok( r == ERROR_SUCCESS, "failed to get record string: %d\n", r );
         if( lstrcmp( buf, join_res_fifth[i].two ))
-            data_correct = FALSE;
+            data_correct = false;
 
         i++;
         MsiCloseHandle(hrec);
@@ -3578,7 +3578,7 @@ static void test_join(void)
     ok( r == ERROR_SUCCESS, "failed to execute view: %d\n", r );
 
     i = 0;
-    data_correct = TRUE;
+    data_correct = true;
     while ((r = MsiViewFetch(hview, &hrec)) == ERROR_SUCCESS)
     {
         count = MsiRecordGetFieldCount( hrec );
@@ -3588,13 +3588,13 @@ static void test_join(void)
         r = MsiRecordGetString( hrec, 1, buf, &size );
         ok( r == ERROR_SUCCESS, "failed to get record string: %d\n", r );
         if( lstrcmp( buf, join_res_sixth[i].one ))
-            data_correct = FALSE;
+            data_correct = false;
 
         size = MAX_PATH;
         r = MsiRecordGetString( hrec, 2, buf, &size );
         ok( r == ERROR_SUCCESS, "failed to get record string: %d\n", r );
         if( lstrcmp( buf, join_res_sixth[i].two ))
-            data_correct = FALSE;
+            data_correct = false;
 
         i++;
         MsiCloseHandle(hrec);
@@ -3619,7 +3619,7 @@ static void test_join(void)
     ok( r == ERROR_SUCCESS, "failed to execute view: %d\n", r );
 
     i = 0;
-    data_correct = TRUE;
+    data_correct = true;
     while ((r = MsiViewFetch(hview, &hrec)) == ERROR_SUCCESS)
     {
         count = MsiRecordGetFieldCount( hrec );
@@ -3629,13 +3629,13 @@ static void test_join(void)
         r = MsiRecordGetString( hrec, 1, buf, &size );
         ok( r == ERROR_SUCCESS, "failed to get record string: %d\n", r );
         if( lstrcmp( buf, join_res_seventh[i].one ))
-            data_correct = FALSE;
+            data_correct = false;
 
         size = MAX_PATH;
         r = MsiRecordGetString( hrec, 2, buf, &size );
         ok( r == ERROR_SUCCESS, "failed to get record string: %d\n", r );
         if( lstrcmp( buf, join_res_seventh[i].two ))
-            data_correct = FALSE;
+            data_correct = false;
 
         i++;
         MsiCloseHandle(hrec);
@@ -3657,7 +3657,7 @@ static void test_join(void)
     ok( r == ERROR_SUCCESS, "failed to execute view: %d\n", r );
 
     i = 0;
-    data_correct = TRUE;
+    data_correct = true;
     while ((r = MsiViewFetch(hview, &hrec)) == ERROR_SUCCESS)
     {
         count = MsiRecordGetFieldCount( hrec );
@@ -3667,13 +3667,13 @@ static void test_join(void)
         r = MsiRecordGetString( hrec, 1, buf, &size );
         ok( r == ERROR_SUCCESS, "failed to get record string: %d\n", r );
         if( lstrcmp( buf, join_res_eighth[i].one ))
-            data_correct = FALSE;
+            data_correct = false;
 
         size = MAX_PATH;
         r = MsiRecordGetString( hrec, 2, buf, &size );
         ok( r == ERROR_SUCCESS, "failed to get record string: %d\n", r );
         if( lstrcmp( buf, join_res_eighth[i].four ))
-            data_correct = FALSE;
+            data_correct = false;
 
         i++;
         MsiCloseHandle(hrec);
@@ -3694,7 +3694,7 @@ static void test_join(void)
     ok( r == ERROR_SUCCESS, "failed to execute view: %d\n", r );
 
     i = 0;
-    data_correct = TRUE;
+    data_correct = true;
     while ((r = MsiViewFetch(hview, &hrec)) == ERROR_SUCCESS)
     {
         count = MsiRecordGetFieldCount( hrec );
@@ -3704,25 +3704,25 @@ static void test_join(void)
         r = MsiRecordGetString( hrec, 1, buf, &size );
         ok( r == ERROR_SUCCESS, "failed to get record string: %d\n", r );
         if( lstrcmp( buf, join_res_eighth[i].one ))
-            data_correct = FALSE;
+            data_correct = false;
 
         size = MAX_PATH;
         r = MsiRecordGetString( hrec, 2, buf, &size );
         ok( r == ERROR_SUCCESS, "failed to get record string: %d\n", r );
         if( lstrcmp( buf, join_res_eighth[i].two ))
-            data_correct = FALSE;
+            data_correct = false;
 
         size = MAX_PATH;
         r = MsiRecordGetString( hrec, 3, buf, &size );
         ok( r == ERROR_SUCCESS, "failed to get record string: %d\n", r );
         if( lstrcmp( buf, join_res_eighth[i].three ))
-            data_correct = FALSE;
+            data_correct = false;
 
         size = MAX_PATH;
         r = MsiRecordGetString( hrec, 4, buf, &size );
         ok( r == ERROR_SUCCESS, "failed to get record string: %d\n", r );
         if( lstrcmp( buf, join_res_eighth[i].four ))
-            data_correct = FALSE;
+            data_correct = false;
 
         i++;
         MsiCloseHandle(hrec);
@@ -3743,7 +3743,7 @@ static void test_join(void)
     ok( r == ERROR_SUCCESS, "failed to execute view: %d\n", r );
 
     i = 0;
-    data_correct = TRUE;
+    data_correct = true;
     while ((r = MsiViewFetch(hview, &hrec)) == ERROR_SUCCESS)
     {
         count = MsiRecordGetFieldCount( hrec );
@@ -3751,27 +3751,27 @@ static void test_join(void)
 
         r = MsiRecordGetInteger( hrec, 1 );
         if( r != join_res_ninth[i].one )
-            data_correct = FALSE;
+            data_correct = false;
 
         r = MsiRecordGetInteger( hrec, 2 );
         if( r != join_res_ninth[i].two )
-            data_correct = FALSE;
+            data_correct = false;
 
         r = MsiRecordGetInteger( hrec, 3 );
         if( r != join_res_ninth[i].three )
-            data_correct = FALSE;
+            data_correct = false;
 
         r = MsiRecordGetInteger( hrec, 4 );
         if( r != join_res_ninth[i].four )
-            data_correct = FALSE;
+            data_correct = false;
 
         r = MsiRecordGetInteger( hrec, 5 );
         if( r != join_res_ninth[i].five )
-            data_correct = FALSE;
+            data_correct = false;
 
         r = MsiRecordGetInteger( hrec, 6);
         if( r != join_res_ninth[i].six )
-            data_correct = FALSE;
+            data_correct = false;
 
         i++;
         MsiCloseHandle(hrec);
@@ -4298,7 +4298,7 @@ static void test_integers(void)
     ok(r == ERROR_SUCCESS, "MsiCloseHandle failed\n");
 
     r = DeleteFile(msifile);
-    ok(r == TRUE, "file didn't exist after commit\n");
+    ok(r == true, "file didn't exist after commit\n");
 }
 
 static void test_update(void)
@@ -5373,7 +5373,7 @@ static void test_viewmodify_update(void)
     r = MsiViewExecute(hview, 0);
     ok(r == ERROR_SUCCESS, "MsiViewExecute failed\n");
 
-    while (TRUE)
+    while (true)
     {
         r = MsiViewFetch(hview, &hrec);
         if (r != ERROR_SUCCESS)
@@ -6057,7 +6057,7 @@ static void enum_stream_names(IStorage *stg)
     ok(hr == S_OK, "Expected S_OK, got %08x\n", hr);
 
     n = 0;
-    while(TRUE)
+    while(true)
     {
         count = 0;
         hr = IEnumSTATSTG_Next(stgenum, 1, &stat, &count);
@@ -7345,20 +7345,20 @@ static void test_where_viewmodify(void)
     MsiCloseHandle(hdb);
 }
 
-static BOOL create_storage(const char *name)
+static bool create_storage(const char *name)
 {
     WCHAR nameW[MAX_PATH];
     IStorage *stg;
     IStream *stm;
     HRESULT hr;
     unsigned count;
-    BOOL res = FALSE;
+    bool res = false;
 
     MultiByteToWideChar(CP_ACP, 0, name, -1, nameW, MAX_PATH);
     hr = StgCreateDocfile(nameW, STGM_CREATE | STGM_READWRITE |
                           STGM_DIRECT | STGM_SHARE_EXCLUSIVE, 0, &stg);
     if (FAILED(hr))
-        return FALSE;
+        return false;
 
     hr = IStorage_CreateStream(stg, nameW, STGM_WRITE | STGM_SHARE_EXCLUSIVE,
                                0, 0, &stm);
@@ -7367,7 +7367,7 @@ static BOOL create_storage(const char *name)
 
     hr = IStream_Write(stm, "stgdata", 8, &count);
     if (SUCCEEDED(hr))
-        res = TRUE;
+        res = true;
 
 done:
     IStream_Release(stm);

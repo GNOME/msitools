@@ -461,7 +461,7 @@ out:
 }
 
 static unsigned msi_set_record_type_string( MSIRECORD *rec, unsigned field,
-                                        unsigned type, BOOL temporary )
+                                        unsigned type, bool temporary )
 {
     static const WCHAR fmt[] = { '%','d',0 };
     WCHAR szType[0x10];
@@ -503,7 +503,7 @@ unsigned MSI_ViewGetColumnInfo( MSIQUERY *query, MSICOLINFO info, MSIRECORD **pr
     MSIRECORD *rec;
     MSIVIEW *view = query->view;
     const WCHAR *name;
-    BOOL temporary;
+    bool temporary;
 
     if( !view )
         return ERROR_FUNCTION_FAILED;

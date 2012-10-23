@@ -25,7 +25,7 @@
 
 static const char *msifile = "winetest-record.msi";
 
-static BOOL create_temp_file(char *name)
+static bool create_temp_file(char *name)
 {
     unsigned r;
     unsigned char buffer[26], i;
@@ -125,7 +125,7 @@ static void test_msirecord(void)
     r = MsiRecordSetString(h, 0, NULL);
     ok(r == ERROR_SUCCESS, "Failed to set null string at 0\n");
     r = MsiRecordIsNull(h, 0);
-    ok(r == TRUE, "null string not null field\n");
+    ok(r == true, "null string not null field\n");
     r = MsiRecordDataSize(h, 0);
     ok(r == 0, "size of string record is strlen\n");
     buf[0] = 0;
@@ -143,7 +143,7 @@ static void test_msirecord(void)
     r = MsiRecordSetString(h, 0, "");
     ok(r == ERROR_SUCCESS, "Failed to set empty string at 0\n");
     r = MsiRecordIsNull(h, 0);
-    ok(r == TRUE, "null string not null field\n");
+    ok(r == true, "null string not null field\n");
     r = MsiRecordDataSize(h, 0);
     ok(r == 0, "size of string record is strlen\n");
     buf[0] = 0;
@@ -497,7 +497,7 @@ static void test_fieldzero(void)
     ok(sz == 0, "Expectd 0, got %d\n", sz);
 
     r = MsiRecordIsNull(rec, 0);
-    ok(r == TRUE, "Expected TRUE, got %d\n", r);
+    ok(r == true, "Expected true, got %d\n", r);
 
     r = MsiRecordGetInteger(rec, 1);
     ok(r == MSI_NULL_INTEGER, "Expected MSI_NULL_INTEGER, got %d\n", r);
@@ -516,7 +516,7 @@ static void test_fieldzero(void)
     ok(sz == 0, "Expectd 0, got %d\n", sz);
 
     r = MsiRecordIsNull(rec, 0);
-    ok(r == TRUE, "Expected TRUE, got %d\n", r);
+    ok(r == true, "Expected true, got %d\n", r);
 
     r = MsiRecordGetInteger(rec, 1);
     ok(r == 42, "Expected 42, got %d\n", r);
@@ -535,7 +535,7 @@ static void test_fieldzero(void)
     ok(sz == 0, "Expectd 0, got %d\n", sz);
 
     r = MsiRecordIsNull(rec, 0);
-    ok(r == TRUE, "Expected TRUE, got %d\n", r);
+    ok(r == true, "Expected true, got %d\n", r);
 
     sz = MAX_PATH;
     lstrcpyA(buf, "apple");
@@ -587,7 +587,7 @@ static void test_fieldzero(void)
     ok(sz == 5, "Expectd 5, got %d\n", sz);
 
     r = MsiRecordIsNull(rec, 0);
-    ok(r == FALSE, "Expected FALSE, got %d\n", r);
+    ok(r == false, "Expected false, got %d\n", r);
 
     MsiCloseHandle(rec);
 
@@ -606,7 +606,7 @@ static void test_fieldzero(void)
     ok(r != MSI_NULL_INTEGER && r != 0, "Expected non-NULL value, got %d\n", r);
 
     r = MsiRecordIsNull(rec, 0);
-    ok(r == FALSE, "Expected FALSE, got %d\n", r);
+    ok(r == false, "Expected false, got %d\n", r);
 
     r = MsiCloseHandle(hview);
     ok(r == ERROR_SUCCESS, "MsiCloseHandle failed\n");

@@ -53,17 +53,17 @@ typedef struct tagMSISTORAGESVIEW
     unsigned row_size;
 } MSISTORAGESVIEW;
 
-static BOOL storages_set_table_size(MSISTORAGESVIEW *sv, unsigned size)
+static bool storages_set_table_size(MSISTORAGESVIEW *sv, unsigned size)
 {
     if (size >= sv->max_storages)
     {
         sv->max_storages *= 2;
         sv->storages = msi_realloc(sv->storages, sv->max_storages * sizeof(STORAGE *));
         if (!sv->storages)
-            return FALSE;
+            return false;
     }
 
-    return TRUE;
+    return true;
 }
 
 static STORAGE *create_storage(MSISTORAGESVIEW *sv, const WCHAR *name, IStorage *stg)
@@ -149,7 +149,7 @@ static HRESULT stream_to_storage(IStream *stm, IStorage **stg)
     if (FAILED(hr) || read != size)
         goto done;
 
-    hr = CreateILockBytesOnHGlobal(NULL, TRUE, &lockbytes);
+    hr = CreateILockBytesOnHGlobal(NULL, true, &lockbytes);
     if (FAILED(hr))
         goto done;
 
@@ -232,7 +232,7 @@ done:
     return r;
 }
 
-static unsigned STORAGES_insert_row(MSIVIEW *view, MSIRECORD *rec, unsigned row, BOOL temporary)
+static unsigned STORAGES_insert_row(MSIVIEW *view, MSIRECORD *rec, unsigned row, bool temporary)
 {
     MSISTORAGESVIEW *sv = (MSISTORAGESVIEW *)view;
 
@@ -278,7 +278,7 @@ static unsigned STORAGES_get_dimensions(MSIVIEW *view, unsigned *rows, unsigned 
 }
 
 static unsigned STORAGES_get_column_info( MSIVIEW *view, unsigned n, const WCHAR **name,
-                                      unsigned *type, BOOL *temporary, const WCHAR **table_name )
+                                      unsigned *type, bool *temporary, const WCHAR **table_name )
 {
     TRACE("(%p, %d, %p, %p, %p, %p)\n", view, n, name, type, temporary,
           table_name);
@@ -299,7 +299,7 @@ static unsigned STORAGES_get_column_info( MSIVIEW *view, unsigned n, const WCHAR
         break;
     }
     if (table_name) *table_name = szStorages;
-    if (temporary) *temporary = FALSE;
+    if (temporary) *temporary = false;
     return ERROR_SUCCESS;
 }
 
@@ -348,7 +348,7 @@ static unsigned storages_modify_assign(MSIVIEW *view, MSIRECORD *rec)
     if (r == ERROR_SUCCESS)
         return storages_modify_update(view, rec);
 
-    return STORAGES_insert_row(view, rec, -1, FALSE);
+    return STORAGES_insert_row(view, rec, -1, false);
 }
 
 static unsigned STORAGES_modify(MSIVIEW *view, MSIMODIFY eModifyMode, MSIRECORD *rec, unsigned row)
@@ -364,7 +364,7 @@ static unsigned STORAGES_modify(MSIVIEW *view, MSIMODIFY eModifyMode, MSIRECORD 
         break;
 
     case MSIMODIFY_INSERT:
-        r = STORAGES_insert_row(view, rec, -1, FALSE);
+        r = STORAGES_insert_row(view, rec, -1, false);
         break;
 
     case MSIMODIFY_UPDATE:
@@ -481,7 +481,7 @@ static int add_storages_to_table(MSISTORAGESVIEW *sv)
     if (!sv->storages)
         return -1;
 
-    while (TRUE)
+    while (true)
     {
         size = 0;
         hr = IEnumSTATSTG_Next(stgenum, 1, &stat, &size);

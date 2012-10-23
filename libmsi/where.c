@@ -382,7 +382,7 @@ static int INT_evaluate_binary( MSIWHEREVIEW *wv, const unsigned rows[],
     {
         if (rl == rr)
         {
-            *val = TRUE;
+            *val = true;
             return ERROR_CONTINUE;
         }
 
@@ -390,7 +390,7 @@ static int INT_evaluate_binary( MSIWHEREVIEW *wv, const unsigned rows[],
         {
             if ((rl == ERROR_CONTINUE && !rval) || (rr == ERROR_CONTINUE && !lval))
             {
-                *val = FALSE;
+                *val = false;
                 return ERROR_SUCCESS;
             }
         }
@@ -398,12 +398,12 @@ static int INT_evaluate_binary( MSIWHEREVIEW *wv, const unsigned rows[],
         {
             if ((rl == ERROR_CONTINUE && rval) || (rr == ERROR_CONTINUE && lval))
             {
-                *val = TRUE;
+                *val = true;
                 return ERROR_SUCCESS;
             }
         }
 
-        *val = TRUE;
+        *val = true;
         return ERROR_CONTINUE;
     }
 
@@ -521,7 +521,7 @@ static unsigned STRCMP_Evaluate( MSIWHEREVIEW *wv, const unsigned rows[], const 
     const WCHAR *l_str, *r_str;
     unsigned r;
 
-    *val = TRUE;
+    *val = true;
     r = STRING_evaluate(wv, rows, expr->left, record, &l_str);
     if (r == ERROR_CONTINUE)
         return r;
@@ -552,7 +552,7 @@ static unsigned WHERE_evaluate( MSIWHEREVIEW *wv, const unsigned rows[],
 
     if( !cond )
     {
-        *val = TRUE;
+        *val = true;
         return ERROR_SUCCESS;
     }
 
@@ -687,7 +687,7 @@ static void add_to_array( JOINTABLE **array, JOINTABLE *elem )
         *array = elem;
 }
 
-static BOOL in_array( JOINTABLE **array, JOINTABLE *elem )
+static bool in_array( JOINTABLE **array, JOINTABLE *elem )
 {
     while (*array && *array != elem)
         array++;
@@ -699,7 +699,7 @@ static BOOL in_array( JOINTABLE **array, JOINTABLE *elem )
                                       a CONST_EXPR comaprison */
 
 static unsigned reorder_check( const struct expr *expr, JOINTABLE **ordered_tables,
-                           BOOL process_joins, JOINTABLE **lastused )
+                           bool process_joins, JOINTABLE **lastused )
 {
     unsigned res = 0;
 
@@ -747,9 +747,9 @@ static JOINTABLE **ordertables( MSIWHEREVIEW *wv )
     if (wv->cond)
     {
         table = NULL;
-        reorder_check(wv->cond, tables, FALSE, &table);
+        reorder_check(wv->cond, tables, false, &table);
         table = NULL;
-        reorder_check(wv->cond, tables, TRUE, &table);
+        reorder_check(wv->cond, tables, true, &table);
     }
 
     table = wv->tables;
@@ -857,7 +857,7 @@ static unsigned WHERE_get_dimensions( MSIVIEW *view, unsigned *rows, unsigned *c
 }
 
 static unsigned WHERE_get_column_info( MSIVIEW *view, unsigned n, const WCHAR **name,
-                                   unsigned *type, BOOL *temporary, const WCHAR **table_name )
+                                   unsigned *type, bool *temporary, const WCHAR **table_name )
 {
     MSIWHEREVIEW *wv = (MSIWHEREVIEW*)view;
     JOINTABLE *table;
@@ -1126,7 +1126,7 @@ static unsigned WHERE_VerifyCondition( MSIWHEREVIEW *wv, struct expr *cond,
     {
         unsigned type;
 
-        *valid = FALSE;
+        *valid = false;
 
         r = parse_column(wv, &cond->u.column, &type);
         if (r != ERROR_SUCCESS)
@@ -1139,7 +1139,7 @@ static unsigned WHERE_VerifyCondition( MSIWHEREVIEW *wv, struct expr *cond,
         else
             cond->type = EXPR_COL_NUMBER;
 
-        *valid = TRUE;
+        *valid = true;
         break;
     }
     case EXPR_COMPLEX:
@@ -1164,7 +1164,7 @@ static unsigned WHERE_VerifyCondition( MSIWHEREVIEW *wv, struct expr *cond,
             case OP_NE:
                 break;
             default:
-                *valid = FALSE;
+                *valid = false;
                 return ERROR_INVALID_PARAMETER;
             }
 
@@ -1177,7 +1177,7 @@ static unsigned WHERE_VerifyCondition( MSIWHEREVIEW *wv, struct expr *cond,
     case EXPR_UNARY:
         if ( cond->u.expr.left->type != EXPR_COLUMN )
         {
-            *valid = FALSE;
+            *valid = false;
             return ERROR_INVALID_PARAMETER;
         }
         r = WHERE_VerifyCondition( wv, cond->u.expr.left, valid );

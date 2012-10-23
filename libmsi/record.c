@@ -123,7 +123,7 @@ unsigned MsiRecordGetFieldCount( MSIOBJECT *handle )
     return ret;
 }
 
-static BOOL string2intW( const WCHAR *str, int *out )
+static bool string2intW( const WCHAR *str, int *out )
 {
     int x = 0;
     const WCHAR *p = str;
@@ -133,7 +133,7 @@ static BOOL string2intW( const WCHAR *str, int *out )
     while ( *p )
     {
         if( (*p < '0') || (*p > '9') )
-            return FALSE;
+            return false;
         x *= 10;
         x += (*p - '0');
         p++;
@@ -143,7 +143,7 @@ static BOOL string2intW( const WCHAR *str, int *out )
         x = -x;
     *out = x; 
 
-    return TRUE;
+    return true;
 }
 
 unsigned MSI_RecordCopyField( MSIRECORD *in_rec, unsigned in_n,
@@ -337,9 +337,9 @@ unsigned MsiRecordSetInteger( MSIOBJECT *handle, unsigned iField, int iVal )
     return ret;
 }
 
-BOOL MSI_RecordIsNull( MSIRECORD *rec, unsigned iField )
+bool MSI_RecordIsNull( MSIRECORD *rec, unsigned iField )
 {
-    BOOL r = TRUE;
+    bool r = true;
 
     TRACE("%p %d\n", rec, iField );
 
@@ -349,7 +349,7 @@ BOOL MSI_RecordIsNull( MSIRECORD *rec, unsigned iField )
     return r;
 }
 
-BOOL MsiRecordIsNull( MSIOBJECT *handle, unsigned iField )
+bool MsiRecordIsNull( MSIOBJECT *handle, unsigned iField )
 {
     MSIRECORD *rec;
     unsigned ret;
@@ -671,7 +671,7 @@ static unsigned RECORD_StreamFromFile(const WCHAR *szFile, IStream **pstm)
         hGlob = GlobalAlloc(GMEM_FIXED, sz);
         if( hGlob )
         {
-            BOOL r = ReadFile(handle, hGlob, sz, &read, NULL);
+            bool r = ReadFile(handle, hGlob, sz, &read, NULL);
             if( !r )
             {
                 GlobalFree(hGlob);
@@ -684,7 +684,7 @@ static unsigned RECORD_StreamFromFile(const WCHAR *szFile, IStream **pstm)
         return ERROR_FUNCTION_FAILED;
 
     /* make a stream out of it, and set the correct file size */
-    hr = CreateStreamOnHGlobal(hGlob, TRUE, pstm);
+    hr = CreateStreamOnHGlobal(hGlob, true, pstm);
     if( FAILED( hr ) )
     {
         GlobalFree(hGlob);
@@ -985,10 +985,10 @@ MSIRECORD *MSI_CloneRecord(MSIRECORD *rec)
     return clone;
 }
 
-BOOL MSI_RecordsAreFieldsEqual(MSIRECORD *a, MSIRECORD *b, unsigned field)
+bool MSI_RecordsAreFieldsEqual(MSIRECORD *a, MSIRECORD *b, unsigned field)
 {
     if (a->fields[field].type != b->fields[field].type)
-        return FALSE;
+        return false;
 
     switch (a->fields[field].type)
     {
@@ -997,36 +997,36 @@ BOOL MSI_RecordsAreFieldsEqual(MSIRECORD *a, MSIRECORD *b, unsigned field)
 
         case MSIFIELD_INT:
             if (a->fields[field].u.iVal != b->fields[field].u.iVal)
-                return FALSE;
+                return false;
             break;
 
         case MSIFIELD_WSTR:
             if (strcmpW(a->fields[field].u.szwVal, b->fields[field].u.szwVal))
-                return FALSE;
+                return false;
             break;
 
         case MSIFIELD_STREAM:
         default:
-            return FALSE;
+            return false;
     }
-    return TRUE;
+    return true;
 }
 
 
-BOOL MSI_RecordsAreEqual(MSIRECORD *a, MSIRECORD *b)
+bool MSI_RecordsAreEqual(MSIRECORD *a, MSIRECORD *b)
 {
     unsigned i;
 
     if (a->count != b->count)
-        return FALSE;
+        return false;
 
     for (i = 0; i <= a->count; i++)
     {
         if (!MSI_RecordsAreFieldsEqual( a, b, i ))
-            return FALSE;
+            return false;
     }
 
-    return TRUE;
+    return true;
 }
 
 WCHAR *msi_dup_record_field( MSIRECORD *rec, int field )

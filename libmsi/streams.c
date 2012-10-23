@@ -52,20 +52,20 @@ typedef struct tagMSISTREAMSVIEW
     unsigned row_size;
 } MSISTREAMSVIEW;
 
-static BOOL streams_set_table_size(MSISTREAMSVIEW *sv, unsigned size)
+static bool streams_set_table_size(MSISTREAMSVIEW *sv, unsigned size)
 {
     if (size >= sv->max_streams)
     {
         sv->max_streams *= 2;
         sv->streams = msi_realloc_zero(sv->streams, sv->max_streams * sizeof(STREAM *));
         if (!sv->streams)
-            return FALSE;
+            return false;
     }
 
-    return TRUE;
+    return true;
 }
 
-static STREAM *create_stream(MSISTREAMSVIEW *sv, const WCHAR *name, BOOL encoded, IStream *stm)
+static STREAM *create_stream(MSISTREAMSVIEW *sv, const WCHAR *name, bool encoded, IStream *stm)
 {
     STREAM *stream;
     WCHAR decoded[MAX_STREAM_NAME_LEN];
@@ -180,17 +180,17 @@ static unsigned STREAMS_set_row(MSIVIEW *view, unsigned row, MSIRECORD *rec, uns
         goto done;
     }
 
-    encname = encode_streamname(FALSE, name);
+    encname = encode_streamname(false, name);
     msi_destroy_stream(sv->db, encname);
 
-    r = write_stream_data(sv->db->storage, name, data, count, FALSE);
+    r = write_stream_data(sv->db->storage, name, data, count, false);
     if (r != ERROR_SUCCESS)
     {
         WARN("failed to write stream data: %d\n", r);
         goto done;
     }
 
-    stream = create_stream(sv, name, FALSE, NULL);
+    stream = create_stream(sv, name, false, NULL);
     if (!stream)
         goto done;
 
@@ -214,7 +214,7 @@ done:
     return r;
 }
 
-static unsigned STREAMS_insert_row(MSIVIEW *view, MSIRECORD *rec, unsigned row, BOOL temporary)
+static unsigned STREAMS_insert_row(MSIVIEW *view, MSIRECORD *rec, unsigned row, bool temporary)
 {
     MSISTREAMSVIEW *sv = (MSISTREAMSVIEW *)view;
     unsigned i;
@@ -267,7 +267,7 @@ static unsigned STREAMS_get_dimensions(MSIVIEW *view, unsigned *rows, unsigned *
 }
 
 static unsigned STREAMS_get_column_info( MSIVIEW *view, unsigned n, const WCHAR **name,
-                                     unsigned *type, BOOL *temporary, const WCHAR **table_name )
+                                     unsigned *type, bool *temporary, const WCHAR **table_name )
 {
     TRACE("(%p, %d, %p, %p, %p, %p)\n", view, n, name, type, temporary,
           table_name);
@@ -288,7 +288,7 @@ static unsigned STREAMS_get_column_info( MSIVIEW *view, unsigned n, const WCHAR 
         break;
     }
     if (table_name) *table_name = szStreams;
-    if (temporary) *temporary = FALSE;
+    if (temporary) *temporary = false;
     return ERROR_SUCCESS;
 }
 
@@ -337,7 +337,7 @@ static unsigned streams_modify_assign(MSIVIEW *view, MSIRECORD *rec)
     if (r == ERROR_SUCCESS)
         return streams_modify_update(view, rec);
 
-    return STREAMS_insert_row(view, rec, -1, FALSE);
+    return STREAMS_insert_row(view, rec, -1, false);
 }
 
 static unsigned STREAMS_modify(MSIVIEW *view, MSIMODIFY eModifyMode, MSIRECORD *rec, unsigned row)
@@ -353,7 +353,7 @@ static unsigned STREAMS_modify(MSIVIEW *view, MSIMODIFY eModifyMode, MSIRECORD *
         break;
 
     case MSIMODIFY_INSERT:
-        r = STREAMS_insert_row(view, rec, -1, FALSE);
+        r = STREAMS_insert_row(view, rec, -1, false);
         break;
 
     case MSIMODIFY_UPDATE:
@@ -474,7 +474,7 @@ static int add_streams_to_table(MSISTREAMSVIEW *sv)
     if (!sv->streams)
         return -1;
 
-    while (TRUE)
+    while (true)
     {
         size = 0;
         hr = IEnumSTATSTG_Next(stgenum, 1, &stat, &size);
@@ -494,7 +494,7 @@ static int add_streams_to_table(MSISTREAMSVIEW *sv)
             continue;
         }
 
-        stream = create_stream(sv, stat.pwcsName, TRUE, NULL);
+        stream = create_stream(sv, stat.pwcsName, true, NULL);
         if (!stream)
         {
             count = -1;
@@ -509,7 +509,7 @@ static int add_streams_to_table(MSISTREAMSVIEW *sv)
         }
         else
         {
-            encname = encode_streamname(FALSE, stat.pwcsName);
+            encname = encode_streamname(false, stat.pwcsName);
             r = msi_get_raw_stream(sv->db, encname, &stream->stream);
             msi_free(encname);
         }

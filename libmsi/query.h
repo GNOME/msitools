@@ -114,10 +114,10 @@ unsigned WHERE_CreateView( MSIDATABASE *db, MSIVIEW **view, WCHAR *tables,
                        struct expr *cond );
 
 unsigned CREATE_CreateView( MSIDATABASE *db, MSIVIEW **view, const WCHAR *table,
-                        column_info *col_info, BOOL hold );
+                        column_info *col_info, bool hold );
 
 unsigned INSERT_CreateView( MSIDATABASE *db, MSIVIEW **view, const WCHAR *table,
-                        column_info *columns, column_info *values, BOOL temp );
+                        column_info *columns, column_info *values, bool temp );
 
 unsigned UPDATE_CreateView( MSIDATABASE *db, MSIVIEW **view, WCHAR *table,
                         column_info *list, struct expr *expr );

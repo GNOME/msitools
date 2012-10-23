@@ -20,6 +20,7 @@
 #define _LIBMSI_H
 
 #include <stdint.h>
+#include <stdbool.h>
 
 struct tagMSIOBJECT;
 typedef struct tagMSIOBJECT MSIOBJECT;
@@ -175,7 +176,7 @@ unsigned MsiRecordGetStringW(MSIOBJECT *,unsigned,WCHAR *,unsigned *);
 unsigned MsiRecordGetFieldCount(MSIOBJECT *);
 int MsiRecordGetInteger(MSIOBJECT *,unsigned);
 unsigned MsiRecordDataSize(MSIOBJECT *,unsigned);
-BOOL MsiRecordIsNull(MSIOBJECT *,unsigned);
+bool MsiRecordIsNull(MSIOBJECT *,unsigned);
 unsigned MsiFormatRecordA(MSIOBJECT *,MSIOBJECT *,char *,unsigned *);
 unsigned MsiFormatRecordW(MSIOBJECT *,MSIOBJECT *,WCHAR *,unsigned *);
 #define     MsiFormatRecord WINELIB_NAME_AW(MsiFormatRecord)

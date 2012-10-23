@@ -142,7 +142,7 @@ static unsigned SELECT_set_row( MSIVIEW *view, unsigned row, MSIRECORD *rec, uns
     return r;
 }
 
-static unsigned SELECT_insert_row( MSIVIEW *view, MSIRECORD *record, unsigned row, BOOL temporary )
+static unsigned SELECT_insert_row( MSIVIEW *view, MSIRECORD *record, unsigned row, bool temporary )
 {
     MSISELECTVIEW *sv = (MSISELECTVIEW*)view;
     unsigned i, table_cols, r;
@@ -215,7 +215,7 @@ static unsigned SELECT_get_dimensions( MSIVIEW *view, unsigned *rows, unsigned *
 }
 
 static unsigned SELECT_get_column_info( MSIVIEW *view, unsigned n, const WCHAR **name,
-                                    unsigned *type, BOOL *temporary, const WCHAR **table_name )
+                                    unsigned *type, bool *temporary, const WCHAR **table_name )
 {
     MSISELECTVIEW *sv = (MSISELECTVIEW*)view;
 
@@ -232,7 +232,7 @@ static unsigned SELECT_get_column_info( MSIVIEW *view, unsigned n, const WCHAR *
     {
         if (name) *name = szEmpty;
         if (type) *type = MSITYPE_UNKNOWN | MSITYPE_VALID;
-        if (temporary) *temporary = FALSE;
+        if (temporary) *temporary = false;
         if (table_name) *table_name = szEmpty;
         return ERROR_SUCCESS;
     }

@@ -56,14 +56,14 @@ typedef struct tagMSICOLUMNINFO
     unsigned    type;
     unsigned    offset;
     int     ref_count;
-    BOOL    temporary;
+    bool    temporary;
     MSICOLUMNHASHENTRY **hash_table;
 } MSICOLUMNINFO;
 
 struct tagMSITABLE
 {
     uint8_t **data;
-    BOOL *data_persistent;
+    bool *data_persistent;
     unsigned row_count;
     struct list entry;
     MSICOLUMNINFO *colinfo;
@@ -125,7 +125,7 @@ static int utf2mime(int x)
     return -1;
 }
 
-WCHAR *encode_streamname(BOOL bTable, const WCHAR *in)
+WCHAR *encode_streamname(bool bTable, const WCHAR *in)
 {
     unsigned count = MAX_STREAM_NAME;
     unsigned ch, next;
@@ -185,7 +185,7 @@ static int mime2utf(int x)
     return '_';
 }
 
-BOOL decode_streamname(const WCHAR *in, WCHAR *out)
+bool decode_streamname(const WCHAR *in, WCHAR *out)
 {
     WCHAR ch;
     unsigned count = 0;
@@ -240,7 +240,7 @@ void enum_stream_names( IStorage *stg )
     IEnumSTATSTG_Release( stgenum );
 }
 
-unsigned read_stream_data( IStorage *stg, const WCHAR *stname, BOOL table,
+unsigned read_stream_data( IStorage *stg, const WCHAR *stname, bool table,
                        uint8_t **pdata, unsigned *psz )
 {
     HRESULT r;
@@ -305,7 +305,7 @@ end:
 }
 
 unsigned write_stream_data( IStorage *stg, const WCHAR *stname,
-                        const void *data, unsigned sz, BOOL bTable )
+                        const void *data, unsigned sz, bool bTable )
 {
     HRESULT r;
     unsigned ret = ERROR_FUNCTION_FAILED;
@@ -411,7 +411,7 @@ static unsigned read_table_from_storage( MSIDATABASE *db, MSITABLE *t, IStorage 
     row_size_mem = msi_table_get_row_size( db, t->colinfo, t->col_count, LONG_STR_BYTES );
 
     /* if we can't read the table, just assume that it's empty */
-    read_stream_data( stg, t->name, TRUE, &rawdata, &rawsize );
+    read_stream_data( stg, t->name, true, &rawdata, &rawsize );
     if( !rawdata )
         return ERROR_SUCCESS;
 
@@ -427,7 +427,7 @@ static unsigned read_table_from_storage( MSIDATABASE *db, MSITABLE *t, IStorage 
     t->data = msi_alloc_zero( t->row_count * sizeof (uint16_t*) );
     if( !t->data )
         goto err;
-    t->data_persistent = msi_alloc_zero( t->row_count * sizeof(BOOL));
+    t->data_persistent = msi_alloc_zero( t->row_count * sizeof(bool));
     if ( !t->data_persistent )
         goto err;
 
@@ -440,7 +440,7 @@ static unsigned read_table_from_storage( MSIDATABASE *db, MSITABLE *t, IStorage 
         t->data[i] = msi_alloc( row_size_mem );
         if( !t->data[i] )
             goto err;
-        t->data_persistent[i] = TRUE;
+        t->data_persistent[i] = true;
 
         for (j = 0; j < t->col_count; j++)
         {
@@ -844,7 +844,7 @@ unsigned msi_create_table( MSIDATABASE *db, const WCHAR *name, column_info *col_
             if( r )
                 goto err;
 
-            r = tv->ops->insert_row( tv, rec, -1, FALSE );
+            r = tv->ops->insert_row( tv, rec, -1, false );
             if( r )
                 goto err;
 
@@ -937,7 +937,7 @@ static unsigned save_table( MSIDATABASE *db, const MSITABLE *t, unsigned bytes_p
     }
 
     TRACE("writing %d bytes\n", rawsize);
-    r = write_stream_data( db->storage, t->name, rawdata, rawsize, TRUE );
+    r = write_stream_data( db->storage, t->name, rawdata, rawsize, true );
 
 err:
     msi_free( rawdata );
@@ -971,36 +971,36 @@ static void msi_update_table_columns( MSIDATABASE *db, const WCHAR *name )
 }
 
 /* try to find the table name in the _Tables table */
-BOOL TABLE_Exists( MSIDATABASE *db, const WCHAR *name )
+bool TABLE_Exists( MSIDATABASE *db, const WCHAR *name )
 {
     unsigned r, table_id, i;
     MSITABLE *table;
 
     if( !strcmpW( name, szTables ) || !strcmpW( name, szColumns ) ||
         !strcmpW( name, szStreams ) || !strcmpW( name, szStorages ) )
-        return TRUE;
+        return true;
 
     r = msi_string2idW( db->strings, name, &table_id );
     if( r != ERROR_SUCCESS )
     {
         TRACE("Couldn't find id for %s\n", debugstr_w(name));
-        return FALSE;
+        return false;
     }
 
     r = get_table( db, szTables, &table );
     if( r != ERROR_SUCCESS )
     {
         ERR("table %s not available\n", debugstr_w(szTables));
-        return FALSE;
+        return false;
     }
 
     for( i = 0; i < table->row_count; i++ )
     {
         if( read_table_int( table->data, i, 0, LONG_STR_BYTES ) == table_id )
-            return TRUE;
+            return true;
     }
 
-    return FALSE;
+    return false;
 }
 
 /* below is the query interface to a table */
@@ -1162,7 +1162,7 @@ static unsigned TABLE_fetch_stream( MSIVIEW *view, unsigned row, unsigned col, I
         return r;
     }
 
-    encname = encode_streamname( FALSE, full_name );
+    encname = encode_streamname( false, full_name );
     r = msi_get_raw_stream( tv->db, encname, stm );
     if( r )
         ERR("fetching stream %s, error = %d\n",debugstr_w(full_name), r);
@@ -1315,7 +1315,7 @@ static unsigned TABLE_set_row( MSIVIEW *view, unsigned row, MSIRECORD *rec, unsi
 
     for ( i = 0; i < tv->num_cols; i++ )
     {
-        BOOL persistent;
+        bool persistent;
 
         /* only update the fields specified in the mask */
         if ( !(mask&(1<<i)) )
@@ -1386,17 +1386,17 @@ static unsigned TABLE_set_row( MSIVIEW *view, unsigned row, MSIRECORD *rec, unsi
     return r;
 }
 
-static unsigned table_create_new_row( MSIVIEW *view, unsigned *num, BOOL temporary )
+static unsigned table_create_new_row( MSIVIEW *view, unsigned *num, bool temporary )
 {
     MSITABLEVIEW *tv = (MSITABLEVIEW*)view;
     uint8_t **p, *row;
-    BOOL *b;
+    bool *b;
     unsigned sz;
     uint8_t ***data_ptr;
-    BOOL **data_persist_ptr;
+    bool **data_persist_ptr;
     unsigned *row_count;
 
-    TRACE("%p %s\n", view, temporary ? "TRUE" : "FALSE");
+    TRACE("%p %s\n", view, temporary ? "true" : "false");
 
     if( !tv->table )
         return ERROR_INVALID_PARAMETER;
@@ -1422,7 +1422,7 @@ static unsigned table_create_new_row( MSIVIEW *view, unsigned *num, BOOL tempora
         return ERROR_NOT_ENOUGH_MEMORY;
     }
 
-    sz = (*row_count + 1) * sizeof (BOOL);
+    sz = (*row_count + 1) * sizeof (bool);
     if( *data_persist_ptr )
         b = msi_realloc( *data_persist_ptr, sz );
     else
@@ -1482,7 +1482,7 @@ static unsigned TABLE_get_dimensions( MSIVIEW *view, unsigned *rows, unsigned *c
 }
 
 static unsigned TABLE_get_column_info( MSIVIEW *view,
-                unsigned n, const WCHAR **name, unsigned *type, BOOL *temporary,
+                unsigned n, const WCHAR **name, unsigned *type, bool *temporary,
                 const WCHAR **table_name )
 {
     MSITABLEVIEW *tv = (MSITABLEVIEW*)view;
@@ -1619,12 +1619,12 @@ static int find_insert_index( MSITABLEVIEW *tv, MSIRECORD *rec )
     return high + 1;
 }
 
-static unsigned TABLE_insert_row( MSIVIEW *view, MSIRECORD *rec, unsigned row, BOOL temporary )
+static unsigned TABLE_insert_row( MSIVIEW *view, MSIRECORD *rec, unsigned row, bool temporary )
 {
     MSITABLEVIEW *tv = (MSITABLEVIEW*)view;
     unsigned i, r;
 
-    TRACE("%p %p %s\n", tv, rec, temporary ? "TRUE" : "FALSE" );
+    TRACE("%p %p %s\n", tv, rec, temporary ? "true" : "false" );
 
     /* check that the key is unique - can we find a matching row? */
     r = table_validate_new( tv, rec, NULL );
@@ -1728,7 +1728,7 @@ static unsigned msi_table_assign(MSIVIEW *view, MSIRECORD *rec)
     if (r == ERROR_SUCCESS)
         return TABLE_set_row(view, row, rec, (1 << tv->num_cols) - 1);
     else
-        return TABLE_insert_row( view, rec, -1, FALSE );
+        return TABLE_insert_row( view, rec, -1, false );
 }
 
 static unsigned modify_delete_row( MSIVIEW *view, MSIRECORD *rec )
@@ -1790,14 +1790,14 @@ static unsigned TABLE_modify( MSIVIEW *view, MSIMODIFY eModifyMode,
         r = table_validate_new( tv, rec, NULL );
         if (r != ERROR_SUCCESS)
             break;
-        r = TABLE_insert_row( view, rec, -1, FALSE );
+        r = TABLE_insert_row( view, rec, -1, false );
         break;
 
     case MSIMODIFY_INSERT_TEMPORARY:
         r = table_validate_new( tv, rec, NULL );
         if (r != ERROR_SUCCESS)
             break;
-        r = TABLE_insert_row( view, rec, -1, TRUE );
+        r = TABLE_insert_row( view, rec, -1, true );
         break;
 
     case MSIMODIFY_REFRESH:
@@ -1819,7 +1819,7 @@ static unsigned TABLE_modify( MSIVIEW *view, MSIMODIFY eModifyMode,
         {
             r = table_validate_new( tv, rec, NULL );
             if (r == ERROR_SUCCESS)
-                r = TABLE_insert_row( view, rec, -1, FALSE );
+                r = TABLE_insert_row( view, rec, -1, false );
         }
         break;
 
@@ -2019,7 +2019,7 @@ static unsigned TABLE_release(MSIVIEW *view)
 }
 
 static unsigned TABLE_add_column(MSIVIEW *view, const WCHAR *table, unsigned number,
-                             const WCHAR *column, unsigned type, BOOL hold)
+                             const WCHAR *column, unsigned type, bool hold)
 {
     MSITABLEVIEW *tv = (MSITABLEVIEW*)view;
     MSITABLE *msitable;
@@ -2035,7 +2035,7 @@ static unsigned TABLE_add_column(MSIVIEW *view, const WCHAR *table, unsigned num
     MSI_RecordSetStringW(rec, 3, column);
     MSI_RecordSetInteger(rec, 4, type);
 
-    r = TABLE_insert_row(&tv->view, rec, -1, FALSE);
+    r = TABLE_insert_row(&tv->view, rec, -1, false);
     if (r != ERROR_SUCCESS)
         goto done;
 
@@ -2281,7 +2281,7 @@ static unsigned msi_record_encoded_stream_name( const MSITABLEVIEW *tv, MSIRECOR
             continue;
     }
 
-    *pstname = encode_streamname( FALSE, stname );
+    *pstname = encode_streamname( false, stname );
     msi_free( stname );
 
     return ERROR_SUCCESS;
@@ -2530,7 +2530,7 @@ static unsigned msi_table_load_transform( MSIDATABASE *db, IStorage *stg,
     TRACE("%p %p %p %s\n", db, stg, st, debugstr_w(name) );
 
     /* read the transform data */
-    read_stream_data( stg, name, TRUE, &rawdata, &rawsize );
+    read_stream_data( stg, name, true, &rawdata, &rawsize );
     if ( !rawdata )
     {
         TRACE("table %s empty\n", debugstr_w(name) );
@@ -2664,7 +2664,7 @@ static unsigned msi_table_load_transform( MSIDATABASE *db, IStorage *stg,
             else
             {
                 TRACE("inserting row\n");
-                r = TABLE_insert_row( &tv->view, rec, -1, FALSE );
+                r = TABLE_insert_row( &tv->view, rec, -1, false );
                 if (r != ERROR_SUCCESS)
                     WARN("failed to insert row %u\n", r);
             }
@@ -2716,7 +2716,7 @@ unsigned msi_table_apply_transform( MSIDATABASE *db, IStorage *stg )
 
     list_init(&transforms);
 
-    while ( TRUE )
+    while ( true )
     {
         MSITABLEVIEW *tv = NULL;
         WCHAR name[0x40];

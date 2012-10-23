@@ -42,7 +42,7 @@ typedef struct tagMSIINSERTVIEW
     MSIVIEW          view;
     MSIVIEW         *table;
     MSIDATABASE     *db;
-    BOOL             bIsTemp;
+    bool             bIsTemp;
     MSIVIEW         *sv;
     column_info     *vals;
 } MSIINSERTVIEW;
@@ -105,7 +105,7 @@ err:
 /* checks to see if the column order specified in the INSERT query
  * matches the column order of the table
  */
-static BOOL msi_columns_in_order(MSIINSERTVIEW *iv, unsigned col_count)
+static bool msi_columns_in_order(MSIINSERTVIEW *iv, unsigned col_count)
 {
     const WCHAR *a;
     const WCHAR *b;
@@ -116,9 +116,9 @@ static BOOL msi_columns_in_order(MSIINSERTVIEW *iv, unsigned col_count)
         iv->sv->ops->get_column_info(iv->sv, i, &a, NULL, NULL, NULL);
         iv->table->ops->get_column_info(iv->table, i, &b, NULL, NULL, NULL);
 
-        if (strcmpW( a, b )) return FALSE;
+        if (strcmpW( a, b )) return false;
     }
-    return TRUE;
+    return true;
 }
 
 /* rearranges the data in the record to be inserted based on column order,
@@ -177,29 +177,29 @@ err:
     return r;
 }
 
-static BOOL row_has_null_primary_keys(MSIINSERTVIEW *iv, MSIRECORD *row)
+static bool row_has_null_primary_keys(MSIINSERTVIEW *iv, MSIRECORD *row)
 {
     unsigned r, i, col_count, type;
 
     r = iv->table->ops->get_dimensions( iv->table, NULL, &col_count );
     if (r != ERROR_SUCCESS)
-        return FALSE;
+        return false;
 
     for (i = 1; i <= col_count; i++)
     {
         r = iv->table->ops->get_column_info(iv->table, i, NULL, &type,
                                             NULL, NULL);
         if (r != ERROR_SUCCESS)
-            return FALSE;
+            return false;
 
         if (!(type & MSITYPE_KEY))
             continue;
 
         if (MSI_RecordIsNull(row, i))
-            return TRUE;
+            return true;
     }
 
-    return FALSE;
+    return false;
 }
 
 static unsigned INSERT_execute( MSIVIEW *view, MSIRECORD *record )
@@ -279,7 +279,7 @@ static unsigned INSERT_get_dimensions( MSIVIEW *view, unsigned *rows, unsigned *
 }
 
 static unsigned INSERT_get_column_info( MSIVIEW *view, unsigned n, const WCHAR **name,
-                                    unsigned *type, BOOL *temporary, const WCHAR **table_name )
+                                    unsigned *type, bool *temporary, const WCHAR **table_name )
 {
     MSIINSERTVIEW *iv = (MSIINSERTVIEW*)view;
     MSIVIEW *sv;
@@ -359,7 +359,7 @@ static unsigned count_column_info( const column_info *ci )
 }
 
 unsigned INSERT_CreateView( MSIDATABASE *db, MSIVIEW **view, const WCHAR *table,
-                        column_info *columns, column_info *values, BOOL temp )
+                        column_info *columns, column_info *values, bool temp )
 {
     MSIINSERTVIEW *iv = NULL;
     unsigned r;

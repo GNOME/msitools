@@ -61,7 +61,7 @@ static WCHAR *parser_add_table( void *info, const WCHAR *list, const WCHAR *tabl
 static void *parser_alloc( void *info, unsigned int sz );
 static column_info *parser_alloc_column( void *info, const WCHAR *table, const WCHAR *column );
 
-static BOOL SQL_MarkPrimaryKeys( column_info **cols, column_info *keys);
+static bool SQL_MarkPrimaryKeys( column_info **cols, column_info *keys);
 
 static struct expr * EXPR_complex( void *info, struct expr *l, unsigned op, struct expr *r );
 static struct expr * EXPR_unary( void *info, struct expr *l, unsigned op );
@@ -152,7 +152,7 @@ oneinsert:
             SQL_input *sql = (SQL_input*) info;
             MSIVIEW *insert = NULL;
 
-            INSERT_CreateView( sql->db, &insert, $3, $5, $9, FALSE );
+            INSERT_CreateView( sql->db, &insert, $3, $5, $9, false );
             if( !insert )
                 YYABORT;
 
@@ -163,7 +163,7 @@ oneinsert:
             SQL_input *sql = (SQL_input*) info;
             MSIVIEW *insert = NULL;
 
-            INSERT_CreateView( sql->db, &insert, $3, $5, $9, TRUE );
+            INSERT_CreateView( sql->db, &insert, $3, $5, $9, true );
             if( !insert )
                 YYABORT;
 
@@ -180,7 +180,7 @@ onecreate:
 
             if( !$5 )
                 YYABORT;
-            r = CREATE_CreateView( sql->db, &create, $3, $5, FALSE );
+            r = CREATE_CreateView( sql->db, &create, $3, $5, false );
             if( !create )
             {
                 sql->r = r;
@@ -196,7 +196,7 @@ onecreate:
 
             if( !$5 )
                 YYABORT;
-            CREATE_CreateView( sql->db, &create, $3, $5, TRUE );
+            CREATE_CreateView( sql->db, &create, $3, $5, true );
             if( !create )
                 YYABORT;
 
@@ -337,7 +337,7 @@ column_and_type:
         {
             $$ = $1;
             $$->type = ($2 | MSITYPE_VALID);
-            $$->temporary = $2 & MSITYPE_TEMPORARY ? TRUE : FALSE;
+            $$->temporary = $2 & MSITYPE_TEMPORARY ? true : false;
         }
     ;
 
@@ -971,11 +971,11 @@ static void swap_columns( column_info **cols, column_info *A, int idx )
       *cols = A;
 }
 
-static BOOL SQL_MarkPrimaryKeys( column_info **cols,
+static bool SQL_MarkPrimaryKeys( column_info **cols,
                                  column_info *keys )
 {
     column_info *k;
-    BOOL found = TRUE;
+    bool found = true;
     int count;
 
     for( k = keys, count = 0; k && found; k = k->next, count++ )
@@ -983,13 +983,13 @@ static BOOL SQL_MarkPrimaryKeys( column_info **cols,
         column_info *c;
         int idx;
 
-        found = FALSE;
+        found = false;
         for( c = *cols, idx = 0; c && !found; c = c->next, idx++ )
         {
             if( strcmpW( k->column, c->column ) )
                 continue;
             c->type |= MSITYPE_KEY;
-            found = TRUE;
+            found = true;
             if (idx != count)
                 swap_columns( cols, c, count );
         }

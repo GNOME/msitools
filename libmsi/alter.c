@@ -74,7 +74,7 @@ static unsigned ITERATE_columns(MSIRECORD *row, void *param)
     return ERROR_SUCCESS;
 }
 
-static BOOL check_column_exists(MSIDATABASE *db, const WCHAR *table, const WCHAR *column)
+static bool check_column_exists(MSIDATABASE *db, const WCHAR *table, const WCHAR *column)
 {
     MSIQUERY *view;
     MSIRECORD *rec;
@@ -89,7 +89,7 @@ static BOOL check_column_exists(MSIDATABASE *db, const WCHAR *table, const WCHAR
 
     r = MSI_OpenQuery(db, &view, query, table, column);
     if (r != ERROR_SUCCESS)
-        return FALSE;
+        return false;
 
     r = MSI_ViewExecute(view, NULL);
     if (r != ERROR_SUCCESS)
@@ -188,7 +188,7 @@ static unsigned ALTER_get_dimensions( MSIVIEW *view, unsigned *rows, unsigned *c
 }
 
 static unsigned ALTER_get_column_info( MSIVIEW *view, unsigned n, const WCHAR **name,
-                                   unsigned *type, BOOL *temporary, const WCHAR **table_name )
+                                   unsigned *type, bool *temporary, const WCHAR **table_name )
 {
     MSIALTERVIEW *av = (MSIALTERVIEW*)view;
 

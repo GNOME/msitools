@@ -153,7 +153,7 @@ static unsigned UPDATE_get_dimensions( MSIVIEW *view, unsigned *rows, unsigned *
 }
 
 static unsigned UPDATE_get_column_info( MSIVIEW *view, unsigned n, const WCHAR **name,
-                                    unsigned *type, BOOL *temporary, const WCHAR **table_name )
+                                    unsigned *type, bool *temporary, const WCHAR **table_name )
 {
     MSIUPDATEVIEW *uv = (MSIUPDATEVIEW*)view;
     MSIVIEW *wv;
