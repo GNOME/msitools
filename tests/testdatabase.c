@@ -36,7 +36,8 @@ static const WCHAR msifileW[] = {'w','i','n','e','t','e','s','t','-','d','b','.'
 
 static void test_msidatabase(void)
 {
-    PMSIOBJECT hdb = 0, hdb2 = 0;
+    MSIOBJECT *hdb = 0;
+    MSIOBJECT *hdb2 = 0;
     UINT res;
 
     DeleteFile(msifile);
@@ -142,9 +143,9 @@ static void test_msidatabase(void)
     ok( res == TRUE, "Failed to delete database\n" );
 }
 
-static UINT do_query(PMSIOBJECT hdb, const char *query, PMSIOBJECT *phrec)
+static UINT do_query(MSIOBJECT *hdb, const char *query, MSIOBJECT **phrec)
 {
-    PMSIOBJECT hview = 0;
+    MSIOBJECT *hview = 0;
     UINT r, ret;
 
     if (phrec)
@@ -167,9 +168,9 @@ static UINT do_query(PMSIOBJECT hdb, const char *query, PMSIOBJECT *phrec)
     return ret;
 }
 
-static UINT run_query( PMSIOBJECT hdb, PMSIOBJECT hrec, const char *query )
+static UINT run_query( MSIOBJECT *hdb, MSIOBJECT *hrec, const char *query )
 {
-    PMSIOBJECT hview = 0;
+    MSIOBJECT *hview = 0;
     UINT r;
 
     r = MsiDatabaseOpenView(hdb, query, &hview);
@@ -183,9 +184,9 @@ static UINT run_query( PMSIOBJECT hdb, PMSIOBJECT hrec, const char *query )
     return r;
 }
 
-static UINT run_queryW( PMSIOBJECT hdb, PMSIOBJECT hrec, const WCHAR *query )
+static UINT run_queryW( MSIOBJECT *hdb, MSIOBJECT *hrec, const WCHAR *query )
 {
-    PMSIOBJECT hview = 0;
+    MSIOBJECT *hview = 0;
     UINT r;
 
     r = MsiDatabaseOpenViewW(hdb, query, &hview);
@@ -199,7 +200,7 @@ static UINT run_queryW( PMSIOBJECT hdb, PMSIOBJECT hrec, const WCHAR *query )
     return r;
 }
 
-static UINT create_component_table( PMSIOBJECT hdb )
+static UINT create_component_table( MSIOBJECT *hdb )
 {
     return run_query( hdb, 0,
             "CREATE TABLE `Component` ( "
@@ -212,7 +213,7 @@ static UINT create_component_table( PMSIOBJECT hdb )
             "PRIMARY KEY `Component`)" );
 }
 
-static UINT create_custom_action_table( PMSIOBJECT hdb )
+static UINT create_custom_action_table( MSIOBJECT *hdb )
 {
     return run_query( hdb, 0,
             "CREATE TABLE `CustomAction` ( "
@@ -223,7 +224,7 @@ static UINT create_custom_action_table( PMSIOBJECT hdb )
             "PRIMARY KEY `Action`)" );
 }
 
-static UINT create_directory_table( PMSIOBJECT hdb )
+static UINT create_directory_table( MSIOBJECT *hdb )
 {
     return run_query( hdb, 0,
             "CREATE TABLE `Directory` ( "
@@ -233,7 +234,7 @@ static UINT create_directory_table( PMSIOBJECT hdb )
             "PRIMARY KEY `Directory`)" );
 }
 
-static UINT create_feature_components_table( PMSIOBJECT hdb )
+static UINT create_feature_components_table( MSIOBJECT *hdb )
 {
     return run_query( hdb, 0,
             "CREATE TABLE `FeatureComponents` ( "
@@ -242,7 +243,7 @@ static UINT create_feature_components_table( PMSIOBJECT hdb )
             "PRIMARY KEY `Feature_`, `Component_` )" );
 }
 
-static UINT create_std_dlls_table( PMSIOBJECT hdb )
+static UINT create_std_dlls_table( MSIOBJECT *hdb )
 {
     return run_query( hdb, 0,
             "CREATE TABLE `StdDlls` ( "
@@ -251,7 +252,7 @@ static UINT create_std_dlls_table( PMSIOBJECT hdb )
             "PRIMARY KEY `File` )" );
 }
 
-static UINT create_binary_table( PMSIOBJECT hdb )
+static UINT create_binary_table( MSIOBJECT *hdb )
 {
     return run_query( hdb, 0,
             "CREATE TABLE `Binary` ( "
@@ -261,7 +262,7 @@ static UINT create_binary_table( PMSIOBJECT hdb )
 }
 
 #define make_add_entry(type, qtext) \
-    static UINT add##_##type##_##entry( PMSIOBJECT hdb, const char *values ) \
+    static UINT add##_##type##_##entry( MSIOBJECT *hdb, const char *values ) \
     { \
         char insert[] = qtext; \
         char *query; \
@@ -295,7 +296,10 @@ make_add_entry(binary,
 
 static void test_msiinsert(void)
 {
-    PMSIOBJECT hdb = 0, hview = 0, hview2 = 0, hrec = 0;
+    MSIOBJECT *hdb = 0;
+    MSIOBJECT *hview = 0;
+    MSIOBJECT *hview2 = 0;
+    MSIOBJECT *hrec = 0;
     UINT r;
     const char *query;
     char buf[80];
@@ -451,9 +455,9 @@ static void test_msiinsert(void)
     ok(r == TRUE, "file didn't exist after commit\n");
 }
 
-static UINT try_query_param( PMSIOBJECT hdb, const CHAR *szQuery, PMSIOBJECT hrec )
+static UINT try_query_param( MSIOBJECT *hdb, const CHAR *szQuery, MSIOBJECT *hrec )
 {
-    PMSIOBJECT htab = 0;
+    MSIOBJECT *htab = 0;
     UINT res;
 
     res = MsiDatabaseOpenView( hdb, szQuery, &htab );
@@ -476,14 +480,14 @@ static UINT try_query_param( PMSIOBJECT hdb, const CHAR *szQuery, PMSIOBJECT hre
     return res;
 }
 
-static UINT try_query( PMSIOBJECT hdb, const CHAR *szQuery )
+static UINT try_query( MSIOBJECT *hdb, const CHAR *szQuery )
 {
     return try_query_param( hdb, szQuery, 0 );
 }
 
-static UINT try_insert_query( PMSIOBJECT hdb, const CHAR *szQuery )
+static UINT try_insert_query( MSIOBJECT *hdb, const CHAR *szQuery )
 {
-    PMSIOBJECT hrec = 0;
+    MSIOBJECT *hrec = 0;
     UINT r;
 
     hrec = MsiCreateRecord( 1 );
@@ -497,7 +501,7 @@ static UINT try_insert_query( PMSIOBJECT hdb, const CHAR *szQuery )
 
 static void test_msibadqueries(void)
 {
-    PMSIOBJECT hdb = 0;
+    MSIOBJECT *hdb = 0;
     UINT r;
 
     DeleteFile(msifile);
@@ -716,7 +720,9 @@ static void test_msibadqueries(void)
 
 static void test_viewmodify(void)
 {
-    PMSIOBJECT hdb = 0, hview = 0, hrec = 0;
+    MSIOBJECT *hdb = 0;
+    MSIOBJECT *hview = 0;
+    MSIOBJECT *hrec = 0;
     UINT r;
     MSIDBERROR err;
     const char *query;
@@ -1064,9 +1070,9 @@ static void test_viewmodify(void)
     ok(r == ERROR_SUCCESS, "MsiOpenDatabase close failed\n");
 }
 
-static PMSIOBJECT create_db(void)
+static MSIOBJECT *create_db(void)
 {
-    PMSIOBJECT hdb = 0;
+    MSIOBJECT *hdb = 0;
     UINT res;
 
     DeleteFile(msifile);
@@ -1085,7 +1091,9 @@ static PMSIOBJECT create_db(void)
 
 static void test_getcolinfo(void)
 {
-    PMSIOBJECT hdb, hview = 0, rec = 0;
+    MSIOBJECT *hdb;
+    MSIOBJECT *hview = 0;
+    MSIOBJECT *rec = 0;
     UINT r;
     DWORD sz;
     char buffer[0x20];
@@ -1143,9 +1151,10 @@ static void test_getcolinfo(void)
     ok( r == ERROR_SUCCESS, "failed to close database\n");
 }
 
-static PMSIOBJECT get_column_info(PMSIOBJECT hdb, const char *query, MSICOLINFO type)
+static MSIOBJECT *get_column_info(MSIOBJECT *hdb, const char *query, MSICOLINFO type)
 {
-    PMSIOBJECT hview = 0, rec = 0;
+    MSIOBJECT *hview = 0;
+    MSIOBJECT *rec = 0;
     UINT r;
 
     r = MsiDatabaseOpenView(hdb, query, &hview);
@@ -1162,9 +1171,10 @@ static PMSIOBJECT get_column_info(PMSIOBJECT hdb, const char *query, MSICOLINFO 
     return rec;
 }
 
-static UINT get_columns_table_type(PMSIOBJECT hdb, const char *table, UINT field)
+static UINT get_columns_table_type(MSIOBJECT *hdb, const char *table, UINT field)
 {
-    PMSIOBJECT hview = 0, rec = 0;
+    MSIOBJECT *hview = 0;
+    MSIOBJECT *rec = 0;
     UINT r, type = 0;
     char query[0x100];
 
@@ -1193,7 +1203,7 @@ static UINT get_columns_table_type(PMSIOBJECT hdb, const char *table, UINT field
     return type;
 }
 
-static BOOL check_record( PMSIOBJECT rec, UINT field, const CHAR *val )
+static BOOL check_record( MSIOBJECT *rec, UINT field, const CHAR *val )
 {
     CHAR buffer[0x20];
     UINT r;
@@ -1206,7 +1216,8 @@ static BOOL check_record( PMSIOBJECT rec, UINT field, const CHAR *val )
 
 static void test_viewgetcolumninfo(void)
 {
-    PMSIOBJECT hdb = 0, rec;
+    MSIOBJECT *hdb = 0;
+    MSIOBJECT *rec;
     UINT r;
 
     hdb = create_db();
@@ -1312,7 +1323,8 @@ static void test_viewgetcolumninfo(void)
 
 static void test_msiexport(void)
 {
-    PMSIOBJECT hdb = 0, hview = 0;
+    MSIOBJECT *hdb = 0;
+    MSIOBJECT *hview = 0;
     UINT r;
     const char *query;
     char path[MAX_PATH];
@@ -1390,7 +1402,9 @@ static void test_longstrings(void)
     const char insert_query[] = 
         "INSERT INTO `strings` ( `id`, `val` ) VALUES('1', 'Z')";
     char *str;
-    PMSIOBJECT hdb = 0, hview = 0, hrec = 0;
+    MSIOBJECT *hdb = 0;
+    MSIOBJECT *hview = 0;
+    MSIOBJECT *hrec = 0;
     DWORD len;
     UINT r;
     const DWORD STRING_LENGTH = 0x10005;
@@ -1469,7 +1483,10 @@ static void create_file_data(const CHAR *name, const CHAR *data, DWORD size)
  
 static void test_streamtable(void)
 {
-    PMSIOBJECT hdb = 0, rec, view, hsi;
+    MSIOBJECT *hdb = 0;
+    MSIOBJECT *rec;
+    MSIOBJECT *view;
+    MSIOBJECT *hsi;
     char file[MAX_PATH];
     char buf[MAX_PATH];
     DWORD size;
@@ -1706,7 +1723,8 @@ static void test_streamtable(void)
 
 static void test_binary(void)
 {
-    PMSIOBJECT hdb = 0, rec;
+    MSIOBJECT *hdb = 0;
+    MSIOBJECT *rec;
     char file[MAX_PATH];
     char buf[MAX_PATH];
     DWORD size;
@@ -1789,7 +1807,9 @@ static void test_binary(void)
 
 static void test_where_not_in_selected(void)
 {
-    PMSIOBJECT hdb = 0, rec, view;
+    MSIOBJECT *hdb = 0;
+    MSIOBJECT *rec;
+    MSIOBJECT *view;
     const CHAR *query;
     UINT r;
 
@@ -1886,7 +1906,9 @@ static void test_where_not_in_selected(void)
 
 static void test_where(void)
 {
-    PMSIOBJECT hdb = 0, rec, view;
+    MSIOBJECT *hdb = 0;
+    MSIOBJECT *rec;
+    MSIOBJECT *view;
     const CHAR *query;
     UINT r;
     DWORD size;
@@ -2086,7 +2108,7 @@ static void write_file(const CHAR *filename, const char *data, int data_size)
     CloseHandle(hf);
 }
 
-static UINT add_table_to_db(PMSIOBJECT hdb, const CHAR *table_data)
+static UINT add_table_to_db(MSIOBJECT *hdb, const CHAR *table_data)
 {
     UINT r;
 
@@ -2099,7 +2121,9 @@ static UINT add_table_to_db(PMSIOBJECT hdb, const CHAR *table_data)
 
 static void test_suminfo_import(void)
 {
-    PMSIOBJECT hdb, hsi, view = 0;
+    MSIOBJECT *hdb;
+    MSIOBJECT *hsi;
+    MSIOBJECT *view = 0;
     const CHAR *query;
     UINT r, count, size, type;
     char str_value[50];
@@ -2222,7 +2246,9 @@ static void test_suminfo_import(void)
 
 static void test_msiimport(void)
 {
-    PMSIOBJECT hdb, view, rec;
+    MSIOBJECT *hdb;
+    MSIOBJECT *view;
+    MSIOBJECT *rec;
     const CHAR *query;
     UINT r, count;
     signed int i;
@@ -2441,7 +2467,8 @@ static const CHAR bin_import_dat[] = "Name\tData\r\n"
 
 static void test_binary_import(void)
 {
-    PMSIOBJECT hdb = 0, rec;
+    MSIOBJECT *hdb = 0;
+    MSIOBJECT *rec;
     char file[MAX_PATH];
     char buf[MAX_PATH];
     char path[MAX_PATH];
@@ -2493,7 +2520,8 @@ static void test_binary_import(void)
 
 static void test_markers(void)
 {
-    PMSIOBJECT hdb, rec;
+    MSIOBJECT *hdb;
+    MSIOBJECT *rec;
     const CHAR *query;
     UINT r;
 
@@ -2679,8 +2707,8 @@ static void test_markers(void)
 static void test_handle_limit(void)
 {
     int i;
-    PMSIOBJECT hdb;
-    PMSIOBJECT hviews[MY_NVIEWS];
+    MSIOBJECT *hdb;
+    MSIOBJECT *hviews[MY_NVIEWS];
     UINT r;
 
     /* create an empty db */
@@ -2841,10 +2869,10 @@ static void generate_transform_manual(void)
     IStorage_Release(stg);
 }
 
-static UINT set_summary_info(PMSIOBJECT hdb)
+static UINT set_summary_info(MSIOBJECT *hdb)
 {
     UINT res;
-    PMSIOBJECT suminfo;
+    MSIOBJECT *suminfo;
 
     /* build summary info */
     res = MsiGetSummaryInformation(hdb, NULL, 7, &suminfo);
@@ -2885,9 +2913,9 @@ static UINT set_summary_info(PMSIOBJECT hdb)
     return res;
 }
 
-static PMSIOBJECT create_package_db(const CHAR *filename)
+static MSIOBJECT *create_package_db(const CHAR *filename)
 {
-    PMSIOBJECT hdb = 0;
+    MSIOBJECT *hdb = 0;
     UINT res;
 
     DeleteFile(msifile);
@@ -2912,7 +2940,10 @@ static PMSIOBJECT create_package_db(const CHAR *filename)
 
 static void test_try_transform(void)
 {
-    PMSIOBJECT hdb, hview, hrec, hpkg = 0;
+    MSIOBJECT *hdb;
+    MSIOBJECT *hview;
+    MSIOBJECT *hrec;
+    MSIOBJECT *hpkg = 0;
     const CHAR *query;
     UINT r;
     DWORD sz;
@@ -3195,7 +3226,9 @@ static const struct join_res_uint join_res_ninth[] =
 
 static void test_join(void)
 {
-    PMSIOBJECT hdb, hview, hrec;
+    MSIOBJECT *hdb;
+    MSIOBJECT *hview;
+    MSIOBJECT *hrec;
     const CHAR *query;
     CHAR buf[MAX_PATH];
     UINT r, count;
@@ -3833,7 +3866,9 @@ static void test_join(void)
 static void test_temporary_table(void)
 {
     MSICONDITION cond;
-    PMSIOBJECT hdb = 0, view = 0, rec;
+    MSIOBJECT *hdb = 0;
+    MSIOBJECT *view = 0;
+    MSIOBJECT *rec;
     const char *query;
     UINT r;
     char buf[0x10];
@@ -3959,7 +3994,7 @@ static void test_temporary_table(void)
 static void test_alter(void)
 {
     MSICONDITION cond;
-    PMSIOBJECT hdb = 0;
+    MSIOBJECT *hdb = 0;
     const char *query;
     UINT r;
 
@@ -4135,7 +4170,9 @@ static void test_alter(void)
 
 static void test_integers(void)
 {
-    PMSIOBJECT hdb = 0, view = 0, rec = 0;
+    MSIOBJECT *hdb = 0;
+    MSIOBJECT *view = 0;
+    MSIOBJECT *rec = 0;
     DWORD count, i;
     const char *query;
     UINT r;
@@ -4266,7 +4303,9 @@ static void test_integers(void)
 
 static void test_update(void)
 {
-    PMSIOBJECT hdb = 0, view = 0, rec = 0;
+    MSIOBJECT *hdb = 0;
+    MSIOBJECT *view = 0;
+    MSIOBJECT *rec = 0;
     CHAR result[MAX_PATH];
     const char *query;
     DWORD size;
@@ -4586,7 +4625,7 @@ static void test_update(void)
 static void test_special_tables(void)
 {
     const char *query;
-    PMSIOBJECT hdb = 0;
+    MSIOBJECT *hdb = 0;
     UINT r;
 
     r = MsiOpenDatabase(msifile, MSIDBOPEN_CREATE, &hdb);
@@ -4624,7 +4663,9 @@ static void test_special_tables(void)
 static void test_tables_order(void)
 {
     const char *query;
-    PMSIOBJECT hdb = 0, hview = 0, hrec = 0;
+    MSIOBJECT *hdb = 0;
+    MSIOBJECT *hview = 0;
+    MSIOBJECT *hrec = 0;
     UINT r;
     char buffer[100];
     DWORD sz;
@@ -4778,7 +4819,9 @@ static void test_tables_order(void)
 static void test_rows_order(void)
 {
     const char *query;
-    PMSIOBJECT hdb = 0, hview = 0, hrec = 0;
+    MSIOBJECT *hdb = 0;
+    MSIOBJECT *hview = 0;
+    MSIOBJECT *hrec = 0;
     UINT r;
     char buffer[100];
     DWORD sz;
@@ -4942,7 +4985,9 @@ static void test_collation(void)
     static const WCHAR letter_a_ring[] = {'a',0x30a,0};
     static const WCHAR letter_a_with_ring[] = {0xe5,0};
     const char *query;
-    PMSIOBJECT hdb = 0, hview = 0, hrec = 0;
+    MSIOBJECT *hdb = 0;
+    MSIOBJECT *hview = 0;
+    MSIOBJECT *hrec = 0;
     UINT r;
     char buffer[100];
     WCHAR bufferW[100];
@@ -5079,7 +5124,10 @@ static void test_collation(void)
 
 static void test_select_markers(void)
 {
-    PMSIOBJECT hdb = 0, rec, view, res;
+    MSIOBJECT *hdb = 0;
+    MSIOBJECT *rec;
+    MSIOBJECT *view;
+    MSIOBJECT *res;
     const CHAR *query;
     UINT r;
     DWORD size;
@@ -5222,7 +5270,9 @@ static void test_select_markers(void)
 
 static void test_viewmodify_update(void)
 {
-    PMSIOBJECT hdb = 0, hview = 0, hrec = 0;
+    MSIOBJECT *hdb = 0;
+    MSIOBJECT *hview = 0;
+    MSIOBJECT *hrec = 0;
     UINT i, test_max, offset, count;
     const char *query;
     UINT r;
@@ -5480,7 +5530,9 @@ static void test_viewmodify_update(void)
 
 static void test_viewmodify_assign(void)
 {
-    PMSIOBJECT hdb = 0, hview = 0, hrec = 0;
+    MSIOBJECT *hdb = 0;
+    MSIOBJECT *hview = 0;
+    MSIOBJECT *hrec = 0;
     const char *query;
     UINT r;
 
@@ -5630,7 +5682,9 @@ static const WCHAR data13[] = { /* _StringPool */
 
 static void test_stringtable(void)
 {
-    PMSIOBJECT hdb = 0, hview = 0, hrec = 0;
+    MSIOBJECT *hdb = 0;
+    MSIOBJECT *hview = 0;
+    MSIOBJECT *hrec = 0;
     IStorage *stg = NULL;
     IStream *stm;
     WCHAR name[0x20];
@@ -5868,7 +5922,9 @@ static void test_stringtable(void)
 
 static void test_viewmodify_delete(void)
 {
-    PMSIOBJECT hdb = 0, hview = 0, hrec = 0;
+    MSIOBJECT *hdb = 0;
+    MSIOBJECT *hview = 0;
+    MSIOBJECT *hrec = 0;
     UINT r;
     const char *query;
     char buffer[0x100];
@@ -6046,7 +6102,7 @@ static void test_defaultdatabase(void)
 {
     UINT r;
     HRESULT hr;
-    PMSIOBJECT hdb;
+    MSIOBJECT *hdb;
     IStorage *stg = NULL;
 
     DeleteFile(msifile);
@@ -6071,7 +6127,9 @@ static void test_defaultdatabase(void)
 
 static void test_order(void)
 {
-    PMSIOBJECT hdb, hview, hrec;
+    MSIOBJECT *hdb;
+    MSIOBJECT *hview;
+    MSIOBJECT *hrec;
     CHAR buffer[MAX_PATH];
     const CHAR *query;
     UINT r, sz;
@@ -6329,7 +6387,9 @@ static void test_order(void)
 
 static void test_viewmodify_delete_temporary(void)
 {
-    PMSIOBJECT hdb, hview, hrec;
+    MSIOBJECT *hdb;
+    MSIOBJECT *hview;
+    MSIOBJECT *hrec;
     const char *query;
     UINT r;
 
@@ -6445,7 +6505,9 @@ static void test_viewmodify_delete_temporary(void)
 
 static void test_deleterow(void)
 {
-    PMSIOBJECT hdb, hview, hrec;
+    MSIOBJECT *hdb;
+    MSIOBJECT *hview;
+    MSIOBJECT *hrec;
     const char *query;
     char buf[MAX_PATH];
     UINT r;
@@ -6512,7 +6574,9 @@ static const CHAR import_dat[] = "A\n"
 
 static void test_quotes(void)
 {
-    PMSIOBJECT hdb, hview, hrec;
+    MSIOBJECT *hdb;
+    MSIOBJECT *hview;
+    MSIOBJECT *hrec;
     const char *query;
     char buf[MAX_PATH];
     UINT r;
@@ -6618,7 +6682,9 @@ static void test_quotes(void)
 
 static void test_carriagereturn(void)
 {
-    PMSIOBJECT hdb, hview, hrec;
+    MSIOBJECT *hdb;
+    MSIOBJECT *hview;
+    MSIOBJECT *hrec;
     const char *query;
     char buf[MAX_PATH];
     UINT r;
@@ -6804,7 +6870,9 @@ static void test_carriagereturn(void)
 
 static void test_noquotes(void)
 {
-    PMSIOBJECT hdb, hview, hrec;
+    MSIOBJECT *hdb;
+    MSIOBJECT *hview;
+    MSIOBJECT *hrec;
     const char *query;
     char buf[MAX_PATH];
     UINT r;
@@ -7014,7 +7082,7 @@ static void read_file_data(const CHAR *filename, CHAR *buffer)
 
 static void test_forcecodepage(void)
 {
-    PMSIOBJECT hdb;
+    MSIOBJECT *hdb;
     const char *query;
     char buffer[MAX_PATH];
     UINT r;
@@ -7084,7 +7152,9 @@ static void test_forcecodepage(void)
 
 static void test_viewmodify_refresh(void)
 {
-    PMSIOBJECT hdb, hview, hrec;
+    MSIOBJECT *hdb;
+    MSIOBJECT *hview;
+    MSIOBJECT *hrec;
     const char *query;
     char buffer[MAX_PATH];
     UINT r;
@@ -7174,7 +7244,9 @@ static void test_viewmodify_refresh(void)
 
 static void test_where_viewmodify(void)
 {
-    PMSIOBJECT hdb, hview, hrec;
+    MSIOBJECT *hdb;
+    MSIOBJECT *hview;
+    MSIOBJECT *hrec;
     const char *query;
     UINT r;
 
@@ -7306,7 +7378,9 @@ done:
 
 static void test_storages_table(void)
 {
-    PMSIOBJECT hdb, hview, hrec;
+    MSIOBJECT *hdb;
+    MSIOBJECT *hview;
+    MSIOBJECT *hrec;
     IStorage *stg, *inner;
     IStream *stm;
     char file[MAX_PATH];
@@ -7429,7 +7503,9 @@ static void test_storages_table(void)
 
 static void test_droptable(void)
 {
-    PMSIOBJECT hdb, hview, hrec;
+    MSIOBJECT *hdb;
+    MSIOBJECT *hview;
+    MSIOBJECT *hrec;
     CHAR buf[MAX_PATH];
     const CHAR *query;
     DWORD size;
@@ -7648,7 +7724,10 @@ static void test_droptable(void)
 
 static void test_dbmerge(void)
 {
-    PMSIOBJECT hdb, href, hview, hrec;
+    MSIOBJECT *hdb;
+    MSIOBJECT *href;
+    MSIOBJECT *hview;
+    MSIOBJECT *hrec;
     CHAR buf[MAX_PATH];
     const CHAR *query;
     DWORD size;
@@ -8275,7 +8354,9 @@ static void test_dbmerge(void)
 
 static void test_select_with_tablenames(void)
 {
-    PMSIOBJECT hdb, view, rec;
+    MSIOBJECT *hdb;
+    MSIOBJECT *view;
+    MSIOBJECT *rec;
     const CHAR *query;
     UINT r;
     int i;
@@ -8360,7 +8441,9 @@ static const UINT ordervals[6][3] =
 
 static void test_insertorder(void)
 {
-    PMSIOBJECT hdb, view, rec;
+    MSIOBJECT *hdb;
+    MSIOBJECT *view;
+    MSIOBJECT *rec;
     const CHAR *query;
     UINT r;
     int i;
@@ -8498,7 +8581,9 @@ static void test_insertorder(void)
 
 static void test_columnorder(void)
 {
-    PMSIOBJECT hdb, view, rec;
+    MSIOBJECT *hdb;
+    MSIOBJECT *view;
+    MSIOBJECT *rec;
     char buf[MAX_PATH];
     const CHAR *query;
     DWORD sz;
@@ -8993,7 +9078,9 @@ static void test_columnorder(void)
 
 static void test_createtable(void)
 {
-    PMSIOBJECT hdb, htab = 0, hrec = 0;
+    MSIOBJECT *hdb;
+    MSIOBJECT *htab = 0;
+    MSIOBJECT *hrec = 0;
     const CHAR *query;
     UINT res;
     DWORD size;
@@ -9111,7 +9198,8 @@ static void test_embedded_nulls(void)
         "Control\tDialog\n"
         "LicenseAgreementDlg\ttext\x11\x19text\0text";
     UINT r, sz;
-    PMSIOBJECT hdb, hrec;
+    MSIOBJECT *hdb;
+    MSIOBJECT *hrec;
     char buffer[32];
 
     r = MsiOpenDatabaseA( msifile, MSIDBOPEN_CREATE, &hdb );
@@ -9139,7 +9227,10 @@ static void test_embedded_nulls(void)
 
 static void test_select_column_names(void)
 {
-    PMSIOBJECT hdb = 0, rec, rec2, view;
+    MSIOBJECT *hdb = 0;
+    MSIOBJECT *rec;
+    MSIOBJECT *rec2;
+    MSIOBJECT *view;
     char buffer[32];
     UINT r, size;
 

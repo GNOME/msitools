@@ -41,7 +41,7 @@ static CRITICAL_SECTION_DEBUG MSI_object_cs_debug =
 };
 static CRITICAL_SECTION MSI_object_cs = { &MSI_object_cs_debug, -1, 0, 0, 0, 0 };
 
-void *msihandle2msiinfo(PMSIOBJECT obj, UINT type)
+void *msihandle2msiinfo(MSIOBJECT *obj, UINT type)
 {
     if( !obj )
         return NULL;
@@ -107,7 +107,7 @@ int msiobj_release( MSIOBJECT *obj )
 /***********************************************************
  *   MsiCloseHandle   [MSI.@]
  */
-UINT WINAPI MsiCloseHandle(PMSIOBJECT obj)
+UINT WINAPI MsiCloseHandle(MSIOBJECT *obj)
 {
     TRACE("%x\n",obj);
 

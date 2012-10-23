@@ -456,8 +456,8 @@ MSISUMMARYINFO *MSI_GetSummaryInformationW( IStorage *stg, UINT uiUpdateCount )
     return si;
 }
 
-UINT WINAPI MsiGetSummaryInformationW( PMSIOBJECT hDatabase, 
-              const WCHAR *szDatabase, UINT uiUpdateCount, PMSIOBJECT *pHandle )
+UINT WINAPI MsiGetSummaryInformationW( MSIOBJECT *hDatabase, 
+              const WCHAR *szDatabase, UINT uiUpdateCount, MSIOBJECT **pHandle )
 {
     MSISUMMARYINFO *si;
     MSIDATABASE *db;
@@ -495,8 +495,8 @@ UINT WINAPI MsiGetSummaryInformationW( PMSIOBJECT hDatabase,
     return ret;
 }
 
-UINT WINAPI MsiGetSummaryInformationA(PMSIOBJECT hDatabase, 
-              const CHAR *szDatabase, UINT uiUpdateCount, PMSIOBJECT *pHandle)
+UINT WINAPI MsiGetSummaryInformationA(MSIOBJECT *hDatabase, 
+              const CHAR *szDatabase, UINT uiUpdateCount, MSIOBJECT **pHandle)
 {
     WCHAR *szwDatabase = NULL;
     UINT ret;
@@ -518,7 +518,7 @@ UINT WINAPI MsiGetSummaryInformationA(PMSIOBJECT hDatabase,
     return ret;
 }
 
-UINT WINAPI MsiSummaryInfoGetPropertyCount(PMSIOBJECT hSummaryInfo, UINT *pCount)
+UINT WINAPI MsiSummaryInfoGetPropertyCount(MSIOBJECT *hSummaryInfo, UINT *pCount)
 {
     MSISUMMARYINFO *si;
 
@@ -535,7 +535,7 @@ UINT WINAPI MsiSummaryInfoGetPropertyCount(PMSIOBJECT hSummaryInfo, UINT *pCount
     return ERROR_SUCCESS;
 }
 
-static UINT get_prop( PMSIOBJECT handle, UINT uiProperty, UINT *puiDataType,
+static UINT get_prop( MSIOBJECT *handle, UINT uiProperty, UINT *puiDataType,
           INT *piValue, FILETIME *pftValue, awstring *str, DWORD *pcchValueBuf)
 {
     MSISUMMARYINFO *si;
@@ -646,7 +646,7 @@ WCHAR *msi_get_suminfo_product( IStorage *stg )
 }
 
 UINT WINAPI MsiSummaryInfoGetPropertyA(
-      PMSIOBJECT handle, UINT uiProperty, UINT *puiDataType, INT *piValue,
+      MSIOBJECT *handle, UINT uiProperty, UINT *puiDataType, INT *piValue,
       FILETIME *pftValue, CHAR *szValueBuf, DWORD *pcchValueBuf)
 {
     awstring str;
@@ -662,7 +662,7 @@ UINT WINAPI MsiSummaryInfoGetPropertyA(
 }
 
 UINT WINAPI MsiSummaryInfoGetPropertyW(
-      PMSIOBJECT handle, UINT uiProperty, UINT *puiDataType, INT *piValue,
+      MSIOBJECT *handle, UINT uiProperty, UINT *puiDataType, INT *piValue,
       FILETIME *pftValue, WCHAR *szValueBuf, DWORD *pcchValueBuf)
 {
     awstring str;
@@ -732,7 +732,7 @@ static UINT set_prop( MSISUMMARYINFO *si, UINT uiProperty, UINT type,
     return ERROR_SUCCESS;
 }
 
-UINT WINAPI MsiSummaryInfoSetPropertyW( PMSIOBJECT handle, UINT uiProperty,
+UINT WINAPI MsiSummaryInfoSetPropertyW( MSIOBJECT *handle, UINT uiProperty,
                UINT uiDataType, INT iValue, FILETIME* pftValue, const WCHAR *szValue )
 {
     awcstring str;
@@ -764,7 +764,7 @@ UINT WINAPI MsiSummaryInfoSetPropertyW( PMSIOBJECT handle, UINT uiProperty,
     return ret;
 }
 
-UINT WINAPI MsiSummaryInfoSetPropertyA( PMSIOBJECT handle, UINT uiProperty,
+UINT WINAPI MsiSummaryInfoSetPropertyA( MSIOBJECT *handle, UINT uiProperty,
                UINT uiDataType, INT iValue, FILETIME* pftValue, const CHAR *szValue )
 {
     awcstring str;
@@ -934,7 +934,7 @@ end:
     return r;
 }
 
-UINT WINAPI MsiSummaryInfoPersist( PMSIOBJECT handle )
+UINT WINAPI MsiSummaryInfoPersist( MSIOBJECT *handle )
 {
     MSISUMMARYINFO *si;
     UINT ret;
@@ -951,7 +951,7 @@ UINT WINAPI MsiSummaryInfoPersist( PMSIOBJECT handle )
     return ret;
 }
 
-UINT WINAPI MsiCreateTransformSummaryInfoA( PMSIOBJECT db, PMSIOBJECT db_ref, const CHAR *transform, int error, int validation )
+UINT WINAPI MsiCreateTransformSummaryInfoA( MSIOBJECT *db, MSIOBJECT *db_ref, const CHAR *transform, int error, int validation )
 {
     UINT r;
     WCHAR *transformW = NULL;
@@ -966,7 +966,7 @@ UINT WINAPI MsiCreateTransformSummaryInfoA( PMSIOBJECT db, PMSIOBJECT db_ref, co
     return r;
 }
 
-UINT WINAPI MsiCreateTransformSummaryInfoW( PMSIOBJECT db, PMSIOBJECT db_ref, const WCHAR *transform, int error, int validation )
+UINT WINAPI MsiCreateTransformSummaryInfoW( MSIOBJECT *db, MSIOBJECT *db_ref, const WCHAR *transform, int error, int validation )
 {
     FIXME("%u, %u, %s, %d, %d\n", db, db_ref, debugstr_w(transform), error, validation);
     return ERROR_FUNCTION_FAILED;

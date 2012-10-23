@@ -280,8 +280,6 @@ typedef struct tagMSISUMMARYINFO
 #define MSIOBJECTTYPE_PACKAGE 5
 #define MSIOBJECTTYPE_PREVIEW 6
 
-#define PMSIOBJECT_MAGIC 0x4d434923
-
 /* handle unicode/ascii output in the Msi* API functions */
 typedef struct {
     BOOL unicode;
@@ -302,9 +300,9 @@ typedef struct {
 UINT msi_strcpy_to_awstring( const WCHAR *str, awstring *awbuf, DWORD *sz );
 
 /* handle functions */
-extern void *msihandle2msiinfo(PMSIOBJECT handle, UINT type);
-extern PMSIOBJECT alloc_msihandle( MSIOBJECT * );
-extern PMSIOBJECT alloc_msi_remote_handle( IUnknown *unk );
+extern void *msihandle2msiinfo(MSIOBJECT *handle, UINT type);
+extern MSIOBJECT *alloc_msihandle( MSIOBJECT * );
+extern MSIOBJECT *alloc_msi_remote_handle( IUnknown *unk );
 extern void *alloc_msiobject(UINT type, UINT size, msihandledestructor destroy );
 extern void msiobj_addref(MSIOBJECT *);
 extern int msiobj_release(MSIOBJECT *);

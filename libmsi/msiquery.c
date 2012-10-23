@@ -84,8 +84,8 @@ UINT VIEW_find_column( MSIVIEW *table, const WCHAR *name, const WCHAR *table_nam
     return ERROR_INVALID_PARAMETER;
 }
 
-UINT WINAPI MsiDatabaseOpenViewA(PMSIOBJECT hdb,
-              const CHAR *szQuery, PMSIOBJECT *phView)
+UINT WINAPI MsiDatabaseOpenViewA(MSIOBJECT *hdb,
+              const CHAR *szQuery, MSIOBJECT **phView)
 {
     UINT r;
     WCHAR *szwQuery;
@@ -237,8 +237,8 @@ MSIRECORD *MSI_QueryGetRecord( MSIDATABASE *db, const WCHAR *fmt, ... )
     return rec;
 }
 
-UINT WINAPI MsiDatabaseOpenViewW(PMSIOBJECT hdb,
-              const WCHAR *szQuery, PMSIOBJECT *phView)
+UINT WINAPI MsiDatabaseOpenViewW(MSIOBJECT *hdb,
+              const WCHAR *szQuery, MSIOBJECT **phView)
 {
     MSIDATABASE *db;
     MSIQUERY *query = NULL;
@@ -357,7 +357,7 @@ UINT MSI_ViewFetch(MSIQUERY *query, MSIRECORD **prec)
     return r;
 }
 
-UINT WINAPI MsiViewFetch(PMSIOBJECT hView, PMSIOBJECT *record)
+UINT WINAPI MsiViewFetch(MSIOBJECT *hView, MSIOBJECT **record)
 {
     MSIQUERY *query;
     MSIRECORD *rec = NULL;
@@ -394,7 +394,7 @@ UINT MSI_ViewClose(MSIQUERY *query)
     return view->ops->close( view );
 }
 
-UINT WINAPI MsiViewClose(PMSIOBJECT hView)
+UINT WINAPI MsiViewClose(MSIOBJECT *hView)
 {
     MSIQUERY *query;
     UINT ret;
@@ -426,7 +426,7 @@ UINT MSI_ViewExecute(MSIQUERY *query, MSIRECORD *rec )
     return view->ops->execute( view, rec );
 }
 
-UINT WINAPI MsiViewExecute(PMSIOBJECT hView, PMSIOBJECT hRec)
+UINT WINAPI MsiViewExecute(MSIOBJECT *hView, MSIOBJECT *hRec)
 {
     MSIQUERY *query;
     MSIRECORD *rec = NULL;
@@ -536,7 +536,7 @@ UINT MSI_ViewGetColumnInfo( MSIQUERY *query, MSICOLINFO info, MSIRECORD **prec )
     return ERROR_SUCCESS;
 }
 
-UINT WINAPI MsiViewGetColumnInfo(PMSIOBJECT hView, MSICOLINFO info, PMSIOBJECT *hRec)
+UINT WINAPI MsiViewGetColumnInfo(MSIOBJECT *hView, MSICOLINFO info, MSIOBJECT **hRec)
 {
     MSIQUERY *query = NULL;
     MSIRECORD *rec = NULL;
@@ -585,8 +585,8 @@ UINT MSI_ViewModify( MSIQUERY *query, MSIMODIFY mode, MSIRECORD *rec )
     return r;
 }
 
-UINT WINAPI MsiViewModify( PMSIOBJECT hView, MSIMODIFY eModifyMode,
-                PMSIOBJECT hRecord)
+UINT WINAPI MsiViewModify( MSIOBJECT *hView, MSIMODIFY eModifyMode,
+                MSIOBJECT *hRecord)
 {
     MSIQUERY *query = NULL;
     MSIRECORD *rec = NULL;
@@ -608,7 +608,7 @@ UINT WINAPI MsiViewModify( PMSIOBJECT hView, MSIMODIFY eModifyMode,
     return r;
 }
 
-MSIDBERROR WINAPI MsiViewGetErrorW( PMSIOBJECT handle, WCHAR *buffer, DWORD *buflen )
+MSIDBERROR WINAPI MsiViewGetErrorW( MSIOBJECT *handle, WCHAR *buffer, DWORD *buflen )
 {
     MSIQUERY *query;
     const WCHAR *column;
@@ -640,7 +640,7 @@ MSIDBERROR WINAPI MsiViewGetErrorW( PMSIOBJECT handle, WCHAR *buffer, DWORD *buf
     return r;
 }
 
-MSIDBERROR WINAPI MsiViewGetErrorA( PMSIOBJECT handle, CHAR *buffer, DWORD *buflen )
+MSIDBERROR WINAPI MsiViewGetErrorA( MSIOBJECT *handle, CHAR *buffer, DWORD *buflen )
 {
     MSIQUERY *query;
     const WCHAR *column;
@@ -672,7 +672,7 @@ MSIDBERROR WINAPI MsiViewGetErrorA( PMSIOBJECT handle, CHAR *buffer, DWORD *bufl
     return r;
 }
 
-PMSIOBJECT WINAPI MsiGetLastErrorRecord( void )
+MSIOBJECT *WINAPI MsiGetLastErrorRecord( void )
 {
     FIXME("\n");
     return 0;
@@ -714,7 +714,7 @@ end:
     return ret;
 }
 
-UINT WINAPI MsiDatabaseApplyTransformW( PMSIOBJECT hdb,
+UINT WINAPI MsiDatabaseApplyTransformW( MSIOBJECT *hdb,
                  const WCHAR *szTransformFile, int iErrorCond)
 {
     MSIDATABASE *db;
@@ -728,7 +728,7 @@ UINT WINAPI MsiDatabaseApplyTransformW( PMSIOBJECT hdb,
     return r;
 }
 
-UINT WINAPI MsiDatabaseApplyTransformA( PMSIOBJECT hdb, 
+UINT WINAPI MsiDatabaseApplyTransformA( MSIOBJECT *hdb, 
                  const CHAR *szTransformFile, int iErrorCond)
 {
     WCHAR *wstr;
@@ -747,7 +747,7 @@ UINT WINAPI MsiDatabaseApplyTransformA( PMSIOBJECT hdb,
     return ret;
 }
 
-UINT WINAPI MsiDatabaseCommit( PMSIOBJECT hdb )
+UINT WINAPI MsiDatabaseCommit( MSIOBJECT *hdb )
 {
     MSIDATABASE *db;
     UINT r;
@@ -856,8 +856,8 @@ UINT MSI_DatabaseGetPrimaryKeys( MSIDATABASE *db,
     return r;
 }
 
-UINT WINAPI MsiDatabaseGetPrimaryKeysW( PMSIOBJECT hdb,
-                    const WCHAR *table, PMSIOBJECT* phRec )
+UINT WINAPI MsiDatabaseGetPrimaryKeysW( MSIOBJECT *hdb,
+                    const WCHAR *table, MSIOBJECT **phRec )
 {
     MSIRECORD *rec = NULL;
     MSIDATABASE *db;
@@ -877,8 +877,8 @@ UINT WINAPI MsiDatabaseGetPrimaryKeysW( PMSIOBJECT hdb,
     return r;
 }
 
-UINT WINAPI MsiDatabaseGetPrimaryKeysA(PMSIOBJECT hdb, 
-                    const CHAR *table, PMSIOBJECT* phRec)
+UINT WINAPI MsiDatabaseGetPrimaryKeysA(MSIOBJECT *hdb, 
+                    const CHAR *table, MSIOBJECT **phRec)
 {
     WCHAR *szwTable = NULL;
     UINT r;
@@ -898,7 +898,7 @@ UINT WINAPI MsiDatabaseGetPrimaryKeysA(PMSIOBJECT hdb,
 }
 
 MSICONDITION WINAPI MsiDatabaseIsTablePersistentA(
-              PMSIOBJECT hDatabase, const CHAR *szTableName)
+              MSIOBJECT *hDatabase, const CHAR *szTableName)
 {
     WCHAR *szwTableName = NULL;
     MSICONDITION r;
@@ -918,7 +918,7 @@ MSICONDITION WINAPI MsiDatabaseIsTablePersistentA(
 }
 
 MSICONDITION WINAPI MsiDatabaseIsTablePersistentW(
-              PMSIOBJECT hDatabase, const WCHAR *szTableName)
+              MSIOBJECT *hDatabase, const WCHAR *szTableName)
 {
     MSIDATABASE *db;
     MSICONDITION r;

@@ -20,7 +20,7 @@
 #define _LIBMSI_H
 
 struct tagMSIOBJECT;
-typedef struct tagMSIOBJECT MSIOBJECT, *PMSIOBJECT;
+typedef struct tagMSIOBJECT MSIOBJECT;
 
 typedef enum tagMSICONDITION
 {
@@ -148,97 +148,97 @@ extern "C" {
 
 
 /* view manipulation */
-UINT WINAPI MsiViewFetch(PMSIOBJECT,PMSIOBJECT*);
-UINT WINAPI MsiViewExecute(PMSIOBJECT,PMSIOBJECT);
-UINT WINAPI MsiViewClose(PMSIOBJECT);
-UINT WINAPI MsiDatabaseOpenViewA(PMSIOBJECT,const CHAR *,PMSIOBJECT*);
-UINT WINAPI MsiDatabaseOpenViewW(PMSIOBJECT,const WCHAR *,PMSIOBJECT*);
+UINT WINAPI MsiViewFetch(MSIOBJECT *,MSIOBJECT **);
+UINT WINAPI MsiViewExecute(MSIOBJECT *,MSIOBJECT *);
+UINT WINAPI MsiViewClose(MSIOBJECT *);
+UINT WINAPI MsiDatabaseOpenViewA(MSIOBJECT *,const CHAR *,MSIOBJECT **);
+UINT WINAPI MsiDatabaseOpenViewW(MSIOBJECT *,const WCHAR *,MSIOBJECT **);
 #define     MsiDatabaseOpenView WINELIB_NAME_AW(MsiDatabaseOpenView)
-MSIDBERROR WINAPI MsiViewGetErrorA(PMSIOBJECT,CHAR *,DWORD *);
-MSIDBERROR WINAPI MsiViewGetErrorW(PMSIOBJECT,WCHAR *,DWORD *);
+MSIDBERROR WINAPI MsiViewGetErrorA(MSIOBJECT *,CHAR *,DWORD *);
+MSIDBERROR WINAPI MsiViewGetErrorW(MSIOBJECT *,WCHAR *,DWORD *);
 #define     MsiViewGetError WINELIB_NAME_AW(MsiViewGetError)
 
-MSIDBSTATE WINAPI MsiGetDatabaseState(PMSIOBJECT);
+MSIDBSTATE WINAPI MsiGetDatabaseState(MSIOBJECT *);
 
 /* record manipulation */
-PMSIOBJECT WINAPI MsiCreateRecord(UINT);
-UINT WINAPI MsiRecordClearData(PMSIOBJECT);
-UINT WINAPI MsiRecordSetInteger(PMSIOBJECT,UINT,int);
-UINT WINAPI MsiRecordSetStringA(PMSIOBJECT,UINT,const CHAR *);
-UINT WINAPI MsiRecordSetStringW(PMSIOBJECT,UINT,const WCHAR *);
+MSIOBJECT *WINAPI MsiCreateRecord(UINT);
+UINT WINAPI MsiRecordClearData(MSIOBJECT *);
+UINT WINAPI MsiRecordSetInteger(MSIOBJECT *,UINT,int);
+UINT WINAPI MsiRecordSetStringA(MSIOBJECT *,UINT,const CHAR *);
+UINT WINAPI MsiRecordSetStringW(MSIOBJECT *,UINT,const WCHAR *);
 #define     MsiRecordSetString WINELIB_NAME_AW(MsiRecordSetString)
-UINT WINAPI MsiRecordGetStringA(PMSIOBJECT,UINT,CHAR *,DWORD *);
-UINT WINAPI MsiRecordGetStringW(PMSIOBJECT,UINT,WCHAR *,DWORD *);
+UINT WINAPI MsiRecordGetStringA(MSIOBJECT *,UINT,CHAR *,DWORD *);
+UINT WINAPI MsiRecordGetStringW(MSIOBJECT *,UINT,WCHAR *,DWORD *);
 #define     MsiRecordGetString WINELIB_NAME_AW(MsiRecordGetString)
-UINT WINAPI MsiRecordGetFieldCount(PMSIOBJECT);
-int WINAPI MsiRecordGetInteger(PMSIOBJECT,UINT);
-UINT WINAPI MsiRecordDataSize(PMSIOBJECT,UINT);
-BOOL WINAPI MsiRecordIsNull(PMSIOBJECT,UINT);
-UINT WINAPI MsiFormatRecordA(PMSIOBJECT,PMSIOBJECT,CHAR *,DWORD *);
-UINT WINAPI MsiFormatRecordW(PMSIOBJECT,PMSIOBJECT,WCHAR *,DWORD *);
+UINT WINAPI MsiRecordGetFieldCount(MSIOBJECT *);
+int WINAPI MsiRecordGetInteger(MSIOBJECT *,UINT);
+UINT WINAPI MsiRecordDataSize(MSIOBJECT *,UINT);
+BOOL WINAPI MsiRecordIsNull(MSIOBJECT *,UINT);
+UINT WINAPI MsiFormatRecordA(MSIOBJECT *,MSIOBJECT *,CHAR *,DWORD *);
+UINT WINAPI MsiFormatRecordW(MSIOBJECT *,MSIOBJECT *,WCHAR *,DWORD *);
 #define     MsiFormatRecord WINELIB_NAME_AW(MsiFormatRecord)
-UINT WINAPI MsiRecordSetStreamA(PMSIOBJECT,UINT,const CHAR *);
-UINT WINAPI MsiRecordSetStreamW(PMSIOBJECT,UINT,const WCHAR *);
+UINT WINAPI MsiRecordSetStreamA(MSIOBJECT *,UINT,const CHAR *);
+UINT WINAPI MsiRecordSetStreamW(MSIOBJECT *,UINT,const WCHAR *);
 #define     MsiRecordSetStream WINELIB_NAME_AW(MsiRecordSetStream)
-UINT WINAPI MsiRecordReadStream(PMSIOBJECT,UINT,char*,DWORD *);
+UINT WINAPI MsiRecordReadStream(MSIOBJECT *,UINT,char*,DWORD *);
 
-UINT WINAPI MsiDatabaseGetPrimaryKeysA(PMSIOBJECT,const CHAR *,PMSIOBJECT*);
-UINT WINAPI MsiDatabaseGetPrimaryKeysW(PMSIOBJECT,const WCHAR *,PMSIOBJECT*);
+UINT WINAPI MsiDatabaseGetPrimaryKeysA(MSIOBJECT *,const CHAR *,MSIOBJECT **);
+UINT WINAPI MsiDatabaseGetPrimaryKeysW(MSIOBJECT *,const WCHAR *,MSIOBJECT **);
 #define     MsiDatabaseGetPrimaryKeys WINELIB_NAME_AW(MsiDatabaseGetPrimaryKeys)
 
 /* database transforms */
-UINT WINAPI MsiDatabaseApplyTransformA(PMSIOBJECT,const CHAR *,int);
-UINT WINAPI MsiDatabaseApplyTransformW(PMSIOBJECT,const WCHAR *,int);
+UINT WINAPI MsiDatabaseApplyTransformA(MSIOBJECT *,const CHAR *,int);
+UINT WINAPI MsiDatabaseApplyTransformW(MSIOBJECT *,const WCHAR *,int);
 #define     MsiDatabaseApplyTransform WINELIB_NAME_AW(MsiDatabaseApplyTransform)
 
-UINT WINAPI MsiViewGetColumnInfo(PMSIOBJECT, MSICOLINFO, PMSIOBJECT*);
+UINT WINAPI MsiViewGetColumnInfo(MSIOBJECT *, MSICOLINFO, MSIOBJECT **);
 
-UINT WINAPI MsiCreateTransformSummaryInfoA(PMSIOBJECT, PMSIOBJECT, const CHAR *, int, int);
-UINT WINAPI MsiCreateTransformSummaryInfoW(PMSIOBJECT, PMSIOBJECT, const WCHAR *, int, int);
+UINT WINAPI MsiCreateTransformSummaryInfoA(MSIOBJECT *, MSIOBJECT *, const CHAR *, int, int);
+UINT WINAPI MsiCreateTransformSummaryInfoW(MSIOBJECT *, MSIOBJECT *, const WCHAR *, int, int);
 #define     MsiCreateTransformSummaryInfo WINELIB_NAME_AW(MsiCreateTransformSummaryInfo)
 
-UINT WINAPI MsiGetSummaryInformationA(PMSIOBJECT, const CHAR *, UINT, PMSIOBJECT *);
-UINT WINAPI MsiGetSummaryInformationW(PMSIOBJECT, const WCHAR *, UINT, PMSIOBJECT *);
+UINT WINAPI MsiGetSummaryInformationA(MSIOBJECT *, const CHAR *, UINT, MSIOBJECT **);
+UINT WINAPI MsiGetSummaryInformationW(MSIOBJECT *, const WCHAR *, UINT, MSIOBJECT **);
 #define     MsiGetSummaryInformation WINELIB_NAME_AW(MsiGetSummaryInformation)
 
-UINT WINAPI MsiSummaryInfoGetPropertyA(PMSIOBJECT,UINT,UINT *,INT *,FILETIME*,CHAR *,DWORD *);
-UINT WINAPI MsiSummaryInfoGetPropertyW(PMSIOBJECT,UINT,UINT *,INT *,FILETIME*,WCHAR *,DWORD *);
+UINT WINAPI MsiSummaryInfoGetPropertyA(MSIOBJECT *,UINT,UINT *,INT *,FILETIME*,CHAR *,DWORD *);
+UINT WINAPI MsiSummaryInfoGetPropertyW(MSIOBJECT *,UINT,UINT *,INT *,FILETIME*,WCHAR *,DWORD *);
 #define     MsiSummaryInfoGetProperty WINELIB_NAME_AW(MsiSummaryInfoGetProperty)
 
-UINT WINAPI MsiSummaryInfoSetPropertyA(PMSIOBJECT, UINT, UINT, INT, FILETIME*, const CHAR *);
-UINT WINAPI MsiSummaryInfoSetPropertyW(PMSIOBJECT, UINT, UINT, INT, FILETIME*, const WCHAR *);
+UINT WINAPI MsiSummaryInfoSetPropertyA(MSIOBJECT *, UINT, UINT, INT, FILETIME*, const CHAR *);
+UINT WINAPI MsiSummaryInfoSetPropertyW(MSIOBJECT *, UINT, UINT, INT, FILETIME*, const WCHAR *);
 #define     MsiSummaryInfoSetProperty WINELIB_NAME_AW(MsiSummaryInfoSetProperty)
 
-UINT WINAPI MsiDatabaseExportA(PMSIOBJECT, const CHAR *, const CHAR *, const CHAR *);
-UINT WINAPI MsiDatabaseExportW(PMSIOBJECT, const WCHAR *, const WCHAR *, const WCHAR *);
+UINT WINAPI MsiDatabaseExportA(MSIOBJECT *, const CHAR *, const CHAR *, const CHAR *);
+UINT WINAPI MsiDatabaseExportW(MSIOBJECT *, const WCHAR *, const WCHAR *, const WCHAR *);
 #define     MsiDatabaseExport WINELIB_NAME_AW(MsiDatabaseExport)
 
-UINT WINAPI MsiDatabaseImportA(PMSIOBJECT, const CHAR *, const CHAR *);
-UINT WINAPI MsiDatabaseImportW(PMSIOBJECT, const WCHAR *, const WCHAR *);
+UINT WINAPI MsiDatabaseImportA(MSIOBJECT *, const CHAR *, const CHAR *);
+UINT WINAPI MsiDatabaseImportW(MSIOBJECT *, const WCHAR *, const WCHAR *);
 #define     MsiDatabaseImport WINELIB_NAME_AW(MsiDatabaseImport)
 
-UINT WINAPI MsiOpenDatabaseW(const WCHAR *, const WCHAR *, PMSIOBJECT*);
-UINT WINAPI MsiOpenDatabaseA(const CHAR *, const CHAR *, PMSIOBJECT*);
+UINT WINAPI MsiOpenDatabaseW(const WCHAR *, const WCHAR *, MSIOBJECT **);
+UINT WINAPI MsiOpenDatabaseA(const CHAR *, const CHAR *, MSIOBJECT **);
 #define     MsiOpenDatabase WINELIB_NAME_AW(MsiOpenDatabase)
 
-MSICONDITION WINAPI MsiDatabaseIsTablePersistentA(PMSIOBJECT, const CHAR *);
-MSICONDITION WINAPI MsiDatabaseIsTablePersistentW(PMSIOBJECT, const WCHAR *);
+MSICONDITION WINAPI MsiDatabaseIsTablePersistentA(MSIOBJECT *, const CHAR *);
+MSICONDITION WINAPI MsiDatabaseIsTablePersistentW(MSIOBJECT *, const WCHAR *);
 #define     MsiDatabaseIsTablePersistent WINELIB_NAME_AW(MsiDatabaseIsTablePersistent)
 
-UINT WINAPI MsiSummaryInfoPersist(PMSIOBJECT);
-UINT WINAPI MsiSummaryInfoGetPropertyCount(PMSIOBJECT,UINT *);
+UINT WINAPI MsiSummaryInfoPersist(MSIOBJECT *);
+UINT WINAPI MsiSummaryInfoGetPropertyCount(MSIOBJECT *,UINT *);
 
-UINT WINAPI MsiViewModify(PMSIOBJECT, MSIMODIFY, PMSIOBJECT);
+UINT WINAPI MsiViewModify(MSIOBJECT *, MSIMODIFY, MSIOBJECT *);
 
-UINT WINAPI MsiDatabaseMergeA(PMSIOBJECT, PMSIOBJECT, const CHAR *);
-UINT WINAPI MsiDatabaseMergeW(PMSIOBJECT, PMSIOBJECT, const WCHAR *);
+UINT WINAPI MsiDatabaseMergeA(MSIOBJECT *, MSIOBJECT *, const CHAR *);
+UINT WINAPI MsiDatabaseMergeW(MSIOBJECT *, MSIOBJECT *, const WCHAR *);
 #define     MsiDatabaseMerge WINELIB_NAME_AW(MsiDatabaseMerge)
 
 /* Non Unicode */
-UINT WINAPI MsiDatabaseCommit(PMSIOBJECT);
-UINT WINAPI MsiCloseHandle(PMSIOBJECT);
+UINT WINAPI MsiDatabaseCommit(MSIOBJECT *);
+UINT WINAPI MsiCloseHandle(MSIOBJECT *);
 
-PMSIOBJECT WINAPI MsiGetLastErrorRecord(void);
+MSIOBJECT *WINAPI MsiGetLastErrorRecord(void);
 
 #ifdef __cplusplus
 }
