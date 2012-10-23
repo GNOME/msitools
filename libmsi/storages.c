@@ -28,7 +28,6 @@
 #include "winuser.h"
 #include "winerror.h"
 #include "ole2.h"
-#include "msi.h"
 #include "msiquery.h"
 #include "objbase.h"
 #include "msipriv.h"

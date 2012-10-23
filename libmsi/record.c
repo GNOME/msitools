@@ -29,7 +29,6 @@
 #include "winerror.h"
 #include "wine/debug.h"
 #include "wine/unicode.h"
-#include "msi.h"
 #include "msiquery.h"
 #include "msipriv.h"
 #include "objidl.h"

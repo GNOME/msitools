@@ -25,7 +25,6 @@
 #include "windef.h"
 #include "winbase.h"
 #include "winerror.h"
-#include "msi.h"
 #include "msiquery.h"
 #include "objbase.h"
 #include "msipriv.h"

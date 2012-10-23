@@ -6,7 +6,6 @@ AM_YFLAGS = -d
 BUILT_SOURCES = sql-parser.c sql-parser.h
 
 noinst_HEADERS = \
-	msi.h \
 	msipriv.h \
 	msiquery.h \
 	msiserver.h \

@@ -30,7 +30,6 @@
 #include "shlwapi.h"
 #include "wine/debug.h"
 #include "wine/unicode.h"
-#include "msi.h"
 #include "msiquery.h"
 #include "msidefs.h"
 #include "msipriv.h"

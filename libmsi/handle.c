@@ -27,7 +27,6 @@
 #include "winreg.h"
 #include "shlwapi.h"
 #include "wine/debug.h"
-#include "msi.h"
 #include "msiquery.h"
 #include "msipriv.h"
 
