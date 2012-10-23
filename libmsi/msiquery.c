@@ -678,17 +678,20 @@ LibmsiObject * MsiGetLastErrorRecord( void )
     return 0;
 }
 
-unsigned MSI_DatabaseApplyTransformW( LibmsiDatabase *db,
-                 const WCHAR *szTransformFile, int iErrorCond )
+unsigned MSI_DatabaseApplyTransform( LibmsiDatabase *db,
+                 const char *szTransformFile, int iErrorCond )
 {
     HRESULT r;
     unsigned ret = ERROR_FUNCTION_FAILED;
     IStorage *stg = NULL;
     STATSTG stat;
+    WCHAR *szwTransformFile = NULL;
 
-    TRACE("%p %s %d\n", db, debugstr_w(szTransformFile), iErrorCond);
+    TRACE("%p %s %d\n", db, debugstr_a(szTransformFile), iErrorCond);
+    szwTransformFile = strdupAtoW(szTransformFile);
+    if (!szwTransformFile) goto end;
 
-    r = StgOpenStorage( szTransformFile, NULL,
+    r = StgOpenStorage( szwTransformFile, NULL,
            STGM_DIRECT|STGM_READ|STGM_SHARE_DENY_WRITE, NULL, 0, &stg);
     if ( FAILED(r) )
     {
@@ -709,13 +712,14 @@ unsigned MSI_DatabaseApplyTransformW( LibmsiDatabase *db,
     ret = msi_table_apply_transform( db, stg );
 
 end:
+    msi_free(szwTransformFile);
     IStorage_Release( stg );
 
     return ret;
 }
 
-unsigned MsiDatabaseApplyTransformW( LibmsiObject *hdb,
-                 const WCHAR *szTransformFile, int iErrorCond)
+unsigned MsiDatabaseApplyTransform( LibmsiObject *hdb,
+                 const char *szTransformFile, int iErrorCond)
 {
     LibmsiDatabase *db;
     unsigned r;
@@ -723,28 +727,9 @@ unsigned MsiDatabaseApplyTransformW( LibmsiObject *hdb,
     db = msihandle2msiinfo( hdb, LIBMSI_OBJECT_TYPE_DATABASE );
     if( !db )
         return ERROR_INVALID_HANDLE;
-    r = MSI_DatabaseApplyTransformW( db, szTransformFile, iErrorCond );
+    r = MSI_DatabaseApplyTransform( db, szTransformFile, iErrorCond );
     msiobj_release( &db->hdr );
     return r;
-}
-
-unsigned MsiDatabaseApplyTransformA( LibmsiObject *hdb, 
-                 const char *szTransformFile, int iErrorCond)
-{
-    WCHAR *wstr;
-    unsigned ret;
-
-    TRACE("%d %s %d\n", hdb, debugstr_a(szTransformFile), iErrorCond);
-
-    wstr = strdupAtoW( szTransformFile );
-    if( szTransformFile && !wstr )
-        return ERROR_NOT_ENOUGH_MEMORY;
-
-    ret = MsiDatabaseApplyTransformW( hdb, wstr, iErrorCond);
-
-    msi_free( wstr );
-
-    return ret;
 }
 
 unsigned MsiDatabaseCommit( LibmsiObject *hdb )

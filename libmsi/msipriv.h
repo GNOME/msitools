@@ -341,8 +341,8 @@ extern unsigned write_stream_data( IStorage *stg, const WCHAR *stname,
 
 /* transform functions */
 extern unsigned msi_table_apply_transform( LibmsiDatabase *db, IStorage *stg );
-extern unsigned MSI_DatabaseApplyTransformW( LibmsiDatabase *db,
-                 const WCHAR *szTransformFile, int iErrorCond );
+extern unsigned MSI_DatabaseApplyTransform( LibmsiDatabase *db,
+                 const char *szTransformFile, int iErrorCond );
 extern void append_storage_to_db( LibmsiDatabase *db, IStorage *stg );
 
 /* record internals */

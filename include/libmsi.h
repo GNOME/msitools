@@ -189,9 +189,7 @@ unsigned MsiDatabaseGetPrimaryKeysW(LibmsiObject *,const WCHAR *,LibmsiObject **
 #define     MsiDatabaseGetPrimaryKeys WINELIB_NAME_AW(MsiDatabaseGetPrimaryKeys)
 
 /* database transforms */
-unsigned MsiDatabaseApplyTransformA(LibmsiObject *,const char *,int);
-unsigned MsiDatabaseApplyTransformW(LibmsiObject *,const WCHAR *,int);
-#define     MsiDatabaseApplyTransform WINELIB_NAME_AW(MsiDatabaseApplyTransform)
+unsigned MsiDatabaseApplyTransform(LibmsiObject *,const char *,int);
 
 unsigned MsiViewGetColumnInfo(LibmsiObject *, LibmsiColInfo, LibmsiObject **);
 
