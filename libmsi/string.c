@@ -213,7 +213,7 @@ static void set_st_entry( string_table *st, unsigned n, WCHAR *str, uint16_t ref
         st->freeslot = n + 1;
 }
 
-static unsigned msi_string2idA( const string_table *st, const CHAR *buffer, unsigned *id )
+static unsigned msi_string2idA( const string_table *st, const char *buffer, unsigned *id )
 {
     unsigned sz;
     unsigned r = ERROR_INVALID_PARAMETER;
@@ -241,7 +241,7 @@ static unsigned msi_string2idA( const string_table *st, const CHAR *buffer, unsi
     return r;
 }
 
-static int msi_addstring( string_table *st, unsigned n, const CHAR *data, int len, uint16_t refcount, enum StringPersistence persistence )
+static int msi_addstring( string_table *st, unsigned n, const char *data, int len, uint16_t refcount, enum StringPersistence persistence )
 {
     WCHAR *str;
     int sz;
@@ -357,7 +357,7 @@ const WCHAR *msi_string_lookup_id( const string_table *st, unsigned id )
  *
  *  Returned string is not nul terminated.
  */
-static unsigned msi_id2stringA( const string_table *st, unsigned id, CHAR *buffer, unsigned *sz )
+static unsigned msi_id2stringA( const string_table *st, unsigned id, char *buffer, unsigned *sz )
 {
     unsigned len, lenW;
     const WCHAR *str;
@@ -466,7 +466,7 @@ HRESULT msi_init_string_table( IStorage *stg )
 string_table *msi_load_string_table( IStorage *stg, unsigned *bytes_per_strref )
 {
     string_table *st = NULL;
-    CHAR *data = NULL;
+    char *data = NULL;
     uint16_t *pool = NULL;
     unsigned r, datasize = 0, poolsize = 0, codepage;
     unsigned i, count, offset, len, n, refs;
@@ -553,7 +553,7 @@ unsigned msi_save_string_table( const string_table *st, IStorage *storage, unsig
 {
     unsigned i, datasize = 0, poolsize = 0, sz, used, r, codepage, n;
     unsigned ret = ERROR_FUNCTION_FAILED;
-    CHAR *data = NULL;
+    char *data = NULL;
     uint16_t *pool = NULL;
 
     TRACE("\n");

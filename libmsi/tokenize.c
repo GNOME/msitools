@@ -93,7 +93,7 @@ static int compKeyword(const void *m1, const void *m2){
   const char *q = k->zName;
 
   for (; *p; p++, q++) {
-    CHAR c;
+    char c;
     if ((uint16_t) *p > 127)
       return 1;
     c = *p;

@@ -368,10 +368,10 @@ BOOL MsiRecordIsNull( MSIOBJECT *handle, unsigned iField )
 }
 
 unsigned MSI_RecordGetStringA(MSIRECORD *rec, unsigned iField,
-               CHAR *szValue, unsigned *pcchValue)
+               char *szValue, unsigned *pcchValue)
 {
     unsigned len=0, ret;
-    CHAR buffer[16];
+    char buffer[16];
 
     TRACE("%p %d %p %p\n", rec, iField, szValue, pcchValue);
 
@@ -421,7 +421,7 @@ unsigned MSI_RecordGetStringA(MSIRECORD *rec, unsigned iField,
 }
 
 unsigned MsiRecordGetStringA(MSIOBJECT *handle, unsigned iField,
-               CHAR *szValue, unsigned *pcchValue)
+               char *szValue, unsigned *pcchValue)
 {
     MSIRECORD *rec;
     unsigned ret;
@@ -564,7 +564,7 @@ unsigned MsiRecordDataSize(MSIOBJECT *handle, unsigned iField)
     return ret;
 }
 
-static unsigned MSI_RecordSetStringA( MSIRECORD *rec, unsigned iField, const CHAR *szValue )
+static unsigned MSI_RecordSetStringA( MSIRECORD *rec, unsigned iField, const char *szValue )
 {
     WCHAR *str;
 
@@ -589,7 +589,7 @@ static unsigned MSI_RecordSetStringA( MSIRECORD *rec, unsigned iField, const CHA
     return 0;
 }
 
-unsigned MsiRecordSetStringA( MSIOBJECT *handle, unsigned iField, const CHAR *szValue )
+unsigned MsiRecordSetStringA( MSIOBJECT *handle, unsigned iField, const char *szValue )
 {
     MSIRECORD *rec;
     unsigned ret;
@@ -752,7 +752,7 @@ unsigned MSI_RecordSetStreamFromFileW(MSIRECORD *rec, unsigned iField, const WCH
     return ERROR_SUCCESS;
 }
 
-unsigned MsiRecordSetStreamA(MSIOBJECT *hRecord, unsigned iField, const CHAR *szFilename)
+unsigned MsiRecordSetStreamA(MSIOBJECT *hRecord, unsigned iField, const char *szFilename)
 {
     WCHAR *wstr = NULL;
     unsigned ret;

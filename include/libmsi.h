@@ -153,10 +153,10 @@ extern "C" {
 unsigned MsiViewFetch(MSIOBJECT *,MSIOBJECT **);
 unsigned MsiViewExecute(MSIOBJECT *,MSIOBJECT *);
 unsigned MsiViewClose(MSIOBJECT *);
-unsigned MsiDatabaseOpenViewA(MSIOBJECT *,const CHAR *,MSIOBJECT **);
+unsigned MsiDatabaseOpenViewA(MSIOBJECT *,const char *,MSIOBJECT **);
 unsigned MsiDatabaseOpenViewW(MSIOBJECT *,const WCHAR *,MSIOBJECT **);
 #define     MsiDatabaseOpenView WINELIB_NAME_AW(MsiDatabaseOpenView)
-MSIDBERROR MsiViewGetErrorA(MSIOBJECT *,CHAR *,unsigned *);
+MSIDBERROR MsiViewGetErrorA(MSIOBJECT *,char *,unsigned *);
 MSIDBERROR MsiViewGetErrorW(MSIOBJECT *,WCHAR *,unsigned *);
 #define     MsiViewGetError WINELIB_NAME_AW(MsiViewGetError)
 
@@ -166,64 +166,64 @@ MSIDBSTATE MsiGetDatabaseState(MSIOBJECT *);
 MSIOBJECT * MsiCreateRecord(unsigned);
 unsigned MsiRecordClearData(MSIOBJECT *);
 unsigned MsiRecordSetInteger(MSIOBJECT *,unsigned,int);
-unsigned MsiRecordSetStringA(MSIOBJECT *,unsigned,const CHAR *);
+unsigned MsiRecordSetStringA(MSIOBJECT *,unsigned,const char *);
 unsigned MsiRecordSetStringW(MSIOBJECT *,unsigned,const WCHAR *);
 #define     MsiRecordSetString WINELIB_NAME_AW(MsiRecordSetString)
-unsigned MsiRecordGetStringA(MSIOBJECT *,unsigned,CHAR *,unsigned *);
+unsigned MsiRecordGetStringA(MSIOBJECT *,unsigned,char *,unsigned *);
 unsigned MsiRecordGetStringW(MSIOBJECT *,unsigned,WCHAR *,unsigned *);
 #define     MsiRecordGetString WINELIB_NAME_AW(MsiRecordGetString)
 unsigned MsiRecordGetFieldCount(MSIOBJECT *);
 int MsiRecordGetInteger(MSIOBJECT *,unsigned);
 unsigned MsiRecordDataSize(MSIOBJECT *,unsigned);
 BOOL MsiRecordIsNull(MSIOBJECT *,unsigned);
-unsigned MsiFormatRecordA(MSIOBJECT *,MSIOBJECT *,CHAR *,unsigned *);
+unsigned MsiFormatRecordA(MSIOBJECT *,MSIOBJECT *,char *,unsigned *);
 unsigned MsiFormatRecordW(MSIOBJECT *,MSIOBJECT *,WCHAR *,unsigned *);
 #define     MsiFormatRecord WINELIB_NAME_AW(MsiFormatRecord)
-unsigned MsiRecordSetStreamA(MSIOBJECT *,unsigned,const CHAR *);
+unsigned MsiRecordSetStreamA(MSIOBJECT *,unsigned,const char *);
 unsigned MsiRecordSetStreamW(MSIOBJECT *,unsigned,const WCHAR *);
 #define     MsiRecordSetStream WINELIB_NAME_AW(MsiRecordSetStream)
 unsigned MsiRecordReadStream(MSIOBJECT *,unsigned,char*,unsigned *);
 
-unsigned MsiDatabaseGetPrimaryKeysA(MSIOBJECT *,const CHAR *,MSIOBJECT **);
+unsigned MsiDatabaseGetPrimaryKeysA(MSIOBJECT *,const char *,MSIOBJECT **);
 unsigned MsiDatabaseGetPrimaryKeysW(MSIOBJECT *,const WCHAR *,MSIOBJECT **);
 #define     MsiDatabaseGetPrimaryKeys WINELIB_NAME_AW(MsiDatabaseGetPrimaryKeys)
 
 /* database transforms */
-unsigned MsiDatabaseApplyTransformA(MSIOBJECT *,const CHAR *,int);
+unsigned MsiDatabaseApplyTransformA(MSIOBJECT *,const char *,int);
 unsigned MsiDatabaseApplyTransformW(MSIOBJECT *,const WCHAR *,int);
 #define     MsiDatabaseApplyTransform WINELIB_NAME_AW(MsiDatabaseApplyTransform)
 
 unsigned MsiViewGetColumnInfo(MSIOBJECT *, MSICOLINFO, MSIOBJECT **);
 
-unsigned MsiCreateTransformSummaryInfoA(MSIOBJECT *, MSIOBJECT *, const CHAR *, int, int);
+unsigned MsiCreateTransformSummaryInfoA(MSIOBJECT *, MSIOBJECT *, const char *, int, int);
 unsigned MsiCreateTransformSummaryInfoW(MSIOBJECT *, MSIOBJECT *, const WCHAR *, int, int);
 #define     MsiCreateTransformSummaryInfo WINELIB_NAME_AW(MsiCreateTransformSummaryInfo)
 
-unsigned MsiGetSummaryInformationA(MSIOBJECT *, const CHAR *, unsigned, MSIOBJECT **);
+unsigned MsiGetSummaryInformationA(MSIOBJECT *, const char *, unsigned, MSIOBJECT **);
 unsigned MsiGetSummaryInformationW(MSIOBJECT *, const WCHAR *, unsigned, MSIOBJECT **);
 #define     MsiGetSummaryInformation WINELIB_NAME_AW(MsiGetSummaryInformation)
 
-unsigned MsiSummaryInfoGetPropertyA(MSIOBJECT *,unsigned,unsigned *,int *,FILETIME*,CHAR *,unsigned *);
+unsigned MsiSummaryInfoGetPropertyA(MSIOBJECT *,unsigned,unsigned *,int *,FILETIME*,char *,unsigned *);
 unsigned MsiSummaryInfoGetPropertyW(MSIOBJECT *,unsigned,unsigned *,int *,FILETIME*,WCHAR *,unsigned *);
 #define     MsiSummaryInfoGetProperty WINELIB_NAME_AW(MsiSummaryInfoGetProperty)
 
-unsigned MsiSummaryInfoSetPropertyA(MSIOBJECT *, unsigned, unsigned, int, FILETIME*, const CHAR *);
+unsigned MsiSummaryInfoSetPropertyA(MSIOBJECT *, unsigned, unsigned, int, FILETIME*, const char *);
 unsigned MsiSummaryInfoSetPropertyW(MSIOBJECT *, unsigned, unsigned, int, FILETIME*, const WCHAR *);
 #define     MsiSummaryInfoSetProperty WINELIB_NAME_AW(MsiSummaryInfoSetProperty)
 
-unsigned MsiDatabaseExportA(MSIOBJECT *, const CHAR *, const CHAR *, const CHAR *);
+unsigned MsiDatabaseExportA(MSIOBJECT *, const char *, const char *, const char *);
 unsigned MsiDatabaseExportW(MSIOBJECT *, const WCHAR *, const WCHAR *, const WCHAR *);
 #define     MsiDatabaseExport WINELIB_NAME_AW(MsiDatabaseExport)
 
-unsigned MsiDatabaseImportA(MSIOBJECT *, const CHAR *, const CHAR *);
+unsigned MsiDatabaseImportA(MSIOBJECT *, const char *, const char *);
 unsigned MsiDatabaseImportW(MSIOBJECT *, const WCHAR *, const WCHAR *);
 #define     MsiDatabaseImport WINELIB_NAME_AW(MsiDatabaseImport)
 
 unsigned MsiOpenDatabaseW(const WCHAR *, const WCHAR *, MSIOBJECT **);
-unsigned MsiOpenDatabaseA(const CHAR *, const CHAR *, MSIOBJECT **);
+unsigned MsiOpenDatabaseA(const char *, const char *, MSIOBJECT **);
 #define     MsiOpenDatabase WINELIB_NAME_AW(MsiOpenDatabase)
 
-MSICONDITION MsiDatabaseIsTablePersistentA(MSIOBJECT *, const CHAR *);
+MSICONDITION MsiDatabaseIsTablePersistentA(MSIOBJECT *, const char *);
 MSICONDITION MsiDatabaseIsTablePersistentW(MSIOBJECT *, const WCHAR *);
 #define     MsiDatabaseIsTablePersistent WINELIB_NAME_AW(MsiDatabaseIsTablePersistent)
 
@@ -232,7 +232,7 @@ unsigned MsiSummaryInfoGetPropertyCount(MSIOBJECT *,unsigned *);
 
 unsigned MsiViewModify(MSIOBJECT *, MSIMODIFY, MSIOBJECT *);
 
-unsigned MsiDatabaseMergeA(MSIOBJECT *, MSIOBJECT *, const CHAR *);
+unsigned MsiDatabaseMergeA(MSIOBJECT *, MSIOBJECT *, const char *);
 unsigned MsiDatabaseMergeW(MSIOBJECT *, MSIOBJECT *, const WCHAR *);
 #define     MsiDatabaseMerge WINELIB_NAME_AW(MsiDatabaseMerge)
 

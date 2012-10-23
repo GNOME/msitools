@@ -284,7 +284,7 @@ typedef struct tagMSISUMMARYINFO
 typedef struct {
     BOOL unicode;
     union {
-       CHAR *a;
+       char *a;
        WCHAR *w;
     } str;
 } awstring;
@@ -292,7 +292,7 @@ typedef struct {
 typedef struct {
     BOOL unicode;
     union {
-       const CHAR *a;
+       const char *a;
        const WCHAR *w;
     } str;
 } awcstring;
@@ -356,7 +356,7 @@ extern unsigned MSI_RecordSetIntPtr( MSIRECORD *, unsigned, intptr_t );
 extern unsigned MSI_RecordSetStringW( MSIRECORD *, unsigned, const WCHAR *);
 extern BOOL MSI_RecordIsNull( MSIRECORD *, unsigned );
 extern unsigned MSI_RecordGetStringW( MSIRECORD *, unsigned, WCHAR *, unsigned *);
-extern unsigned MSI_RecordGetStringA( MSIRECORD *, unsigned, CHAR *, unsigned *);
+extern unsigned MSI_RecordGetStringA( MSIRECORD *, unsigned, char *, unsigned *);
 extern int MSI_RecordGetInteger( MSIRECORD *, unsigned );
 extern intptr_t MSI_RecordGetIntPtr( MSIRECORD *, unsigned );
 extern unsigned MSI_RecordReadStream( MSIRECORD *, unsigned, char *, unsigned *);
@@ -549,7 +549,7 @@ static inline BOOL msi_free( void *mem )
 
 static inline char *strdupWtoA( const WCHAR *str )
 {
-    CHAR *ret = NULL;
+    char *ret = NULL;
     unsigned len;
 
     if (!str) return ret;
@@ -560,7 +560,7 @@ static inline char *strdupWtoA( const WCHAR *str )
     return ret;
 }
 
-static inline WCHAR *strdupAtoW( const CHAR *str )
+static inline WCHAR *strdupAtoW( const char *str )
 {
     WCHAR *ret = NULL;
     unsigned len;

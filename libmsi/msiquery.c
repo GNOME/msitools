@@ -85,7 +85,7 @@ unsigned VIEW_find_column( MSIVIEW *table, const WCHAR *name, const WCHAR *table
 }
 
 unsigned MsiDatabaseOpenViewA(MSIOBJECT *hdb,
-              const CHAR *szQuery, MSIOBJECT **phView)
+              const char *szQuery, MSIOBJECT **phView)
 {
     unsigned r;
     WCHAR *szwQuery;
@@ -640,7 +640,7 @@ MSIDBERROR MsiViewGetErrorW( MSIOBJECT *handle, WCHAR *buffer, unsigned *buflen 
     return r;
 }
 
-MSIDBERROR MsiViewGetErrorA( MSIOBJECT *handle, CHAR *buffer, unsigned *buflen )
+MSIDBERROR MsiViewGetErrorA( MSIOBJECT *handle, char *buffer, unsigned *buflen )
 {
     MSIQUERY *query;
     const WCHAR *column;
@@ -729,7 +729,7 @@ unsigned MsiDatabaseApplyTransformW( MSIOBJECT *hdb,
 }
 
 unsigned MsiDatabaseApplyTransformA( MSIOBJECT *hdb, 
-                 const CHAR *szTransformFile, int iErrorCond)
+                 const char *szTransformFile, int iErrorCond)
 {
     WCHAR *wstr;
     unsigned ret;
@@ -878,7 +878,7 @@ unsigned MsiDatabaseGetPrimaryKeysW( MSIOBJECT *hdb,
 }
 
 unsigned MsiDatabaseGetPrimaryKeysA(MSIOBJECT *hdb, 
-                    const CHAR *table, MSIOBJECT **phRec)
+                    const char *table, MSIOBJECT **phRec)
 {
     WCHAR *szwTable = NULL;
     unsigned r;
@@ -898,7 +898,7 @@ unsigned MsiDatabaseGetPrimaryKeysA(MSIOBJECT *hdb,
 }
 
 MSICONDITION MsiDatabaseIsTablePersistentA(
-              MSIOBJECT *hDatabase, const CHAR *szTableName)
+              MSIOBJECT *hDatabase, const char *szTableName)
 {
     WCHAR *szwTableName = NULL;
     MSICONDITION r;

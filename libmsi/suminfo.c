@@ -208,7 +208,7 @@ static void read_properties_from_data( PROPVARIANT *prop, uint8_t *data, unsigne
         property.vt = propdata->type;
         if( propdata->type == VT_LPSTR)
         {
-            CHAR *str = msi_alloc( propdata->u.str.len );
+            char *str = msi_alloc( propdata->u.str.len );
             memcpy( str, propdata->u.str.str, propdata->u.str.len );
             str[ propdata->u.str.len - 1 ] = 0;
             property.pszVal = str;
@@ -322,7 +322,7 @@ static unsigned write_filetime( uint8_t *data, unsigned ofs, const FILETIME *ft 
     return 8;
 }
 
-static unsigned write_string( uint8_t *data, unsigned ofs, const CHAR *str )
+static unsigned write_string( uint8_t *data, unsigned ofs, const char *str )
 {
     unsigned len = lstrlenA( str ) + 1;
     write_dword( data, ofs, len );
@@ -496,7 +496,7 @@ unsigned MsiGetSummaryInformationW( MSIOBJECT *hDatabase,
 }
 
 unsigned MsiGetSummaryInformationA(MSIOBJECT *hDatabase, 
-              const CHAR *szDatabase, unsigned uiUpdateCount, MSIOBJECT **pHandle)
+              const char *szDatabase, unsigned uiUpdateCount, MSIOBJECT **pHandle)
 {
     WCHAR *szwDatabase = NULL;
     unsigned ret;
@@ -647,7 +647,7 @@ WCHAR *msi_get_suminfo_product( IStorage *stg )
 
 unsigned MsiSummaryInfoGetPropertyA(
       MSIOBJECT *handle, unsigned uiProperty, unsigned *puiDataType, int *piValue,
-      FILETIME *pftValue, CHAR *szValueBuf, unsigned *pcchValueBuf)
+      FILETIME *pftValue, char *szValueBuf, unsigned *pcchValueBuf)
 {
     awstring str;
 
@@ -765,7 +765,7 @@ unsigned MsiSummaryInfoSetPropertyW( MSIOBJECT *handle, unsigned uiProperty,
 }
 
 unsigned MsiSummaryInfoSetPropertyA( MSIOBJECT *handle, unsigned uiProperty,
-               unsigned uiDataType, int iValue, FILETIME* pftValue, const CHAR *szValue )
+               unsigned uiDataType, int iValue, FILETIME* pftValue, const char *szValue )
 {
     awcstring str;
     MSISUMMARYINFO *si;
@@ -951,7 +951,7 @@ unsigned MsiSummaryInfoPersist( MSIOBJECT *handle )
     return ret;
 }
 
-unsigned MsiCreateTransformSummaryInfoA( MSIOBJECT *db, MSIOBJECT *db_ref, const CHAR *transform, int error, int validation )
+unsigned MsiCreateTransformSummaryInfoA( MSIOBJECT *db, MSIOBJECT *db_ref, const char *transform, int error, int validation )
 {
     unsigned r;
     WCHAR *transformW = NULL;

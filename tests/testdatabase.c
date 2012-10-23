@@ -455,7 +455,7 @@ static void test_msiinsert(void)
     ok(r == TRUE, "file didn't exist after commit\n");
 }
 
-static unsigned try_query_param( MSIOBJECT *hdb, const CHAR *szQuery, MSIOBJECT *hrec )
+static unsigned try_query_param( MSIOBJECT *hdb, const char *szQuery, MSIOBJECT *hrec )
 {
     MSIOBJECT *htab = 0;
     unsigned res;
@@ -480,12 +480,12 @@ static unsigned try_query_param( MSIOBJECT *hdb, const CHAR *szQuery, MSIOBJECT 
     return res;
 }
 
-static unsigned try_query( MSIOBJECT *hdb, const CHAR *szQuery )
+static unsigned try_query( MSIOBJECT *hdb, const char *szQuery )
 {
     return try_query_param( hdb, szQuery, 0 );
 }
 
-static unsigned try_insert_query( MSIOBJECT *hdb, const CHAR *szQuery )
+static unsigned try_insert_query( MSIOBJECT *hdb, const char *szQuery )
 {
     MSIOBJECT *hrec = 0;
     unsigned r;
@@ -1203,9 +1203,9 @@ static unsigned get_columns_table_type(MSIOBJECT *hdb, const char *table, unsign
     return type;
 }
 
-static BOOL check_record( MSIOBJECT *rec, unsigned field, const CHAR *val )
+static BOOL check_record( MSIOBJECT *rec, unsigned field, const char *val )
 {
-    CHAR buffer[0x20];
+    char buffer[0x20];
     unsigned r;
     unsigned sz;
 
@@ -1458,7 +1458,7 @@ static void test_longstrings(void)
     DeleteFile(msifile);
 }
 
-static void create_file_data(const CHAR *name, const CHAR *data, unsigned size)
+static void create_file_data(const char *name, const char *data, unsigned size)
 {
     HANDLE file;
     unsigned written;
@@ -1728,7 +1728,7 @@ static void test_binary(void)
     char file[MAX_PATH];
     char buf[MAX_PATH];
     unsigned size;
-    const CHAR *query;
+    const char *query;
     unsigned r;
 
     /* insert a file into the Binary table */
@@ -1810,7 +1810,7 @@ static void test_where_not_in_selected(void)
     MSIOBJECT *hdb = 0;
     MSIOBJECT *rec;
     MSIOBJECT *view;
-    const CHAR *query;
+    const char *query;
     unsigned r;
 
     hdb = create_db();
@@ -1909,10 +1909,10 @@ static void test_where(void)
     MSIOBJECT *hdb = 0;
     MSIOBJECT *rec;
     MSIOBJECT *view;
-    const CHAR *query;
+    const char *query;
     unsigned r;
     unsigned size;
-    CHAR buf[MAX_PATH];
+    char buf[MAX_PATH];
     unsigned count;
 
     hdb = create_db();
@@ -2054,32 +2054,32 @@ static void test_where(void)
     DeleteFile(msifile);
 }
 
-static CHAR CURR_DIR[MAX_PATH];
+static char CURR_DIR[MAX_PATH];
 
-static const CHAR test_data[] = "FirstPrimaryColumn\tSecondPrimaryColumn\tShortInt\tShortIntNullable\tLongInt\tLongIntNullable\tString\tLocalizableString\tLocalizableStringNullable\n"
+static const char test_data[] = "FirstPrimaryColumn\tSecondPrimaryColumn\tShortInt\tShortIntNullable\tLongInt\tLongIntNullable\tString\tLocalizableString\tLocalizableStringNullable\n"
                                 "s255\ti2\ti2\tI2\ti4\tI4\tS255\tS0\ts0\n"
                                 "TestTable\tFirstPrimaryColumn\n"
                                 "stringage\t5\t2\t\t2147483640\t-2147483640\tanother string\tlocalizable\tduh\n";
 
-static const CHAR two_primary[] = "PrimaryOne\tPrimaryTwo\n"
+static const char two_primary[] = "PrimaryOne\tPrimaryTwo\n"
                                   "s255\ts255\n"
                                   "TwoPrimary\tPrimaryOne\tPrimaryTwo\n"
                                   "papaya\tleaf\n"
                                   "papaya\tflower\n";
 
-static const CHAR endlines1[] = "A\tB\tC\tD\tE\tF\r\n"
+static const char endlines1[] = "A\tB\tC\tD\tE\tF\r\n"
                                 "s72\ts72\ts72\ts72\ts72\ts72\n"
                                 "Table\tA\r\n"
                                 "a\tb\tc\td\te\tf\n"
                                 "g\th\ti\t\rj\tk\tl\r\n";
 
-static const CHAR endlines2[] = "A\tB\tC\tD\tE\tF\r"
+static const char endlines2[] = "A\tB\tC\tD\tE\tF\r"
                                 "s72\ts72\ts72\ts72\ts72\ts72\n"
                                 "Table2\tA\r\n"
                                 "a\tb\tc\td\te\tf\n"
                                 "g\th\ti\tj\tk\tl\r\n";
 
-static const CHAR suminfo[] = "PropertyId\tValue\n"
+static const char suminfo[] = "PropertyId\tValue\n"
                               "i2\tl255\n"
                               "_SummaryInformation\tPropertyId\n"
                               "1\t1252\n"
@@ -2097,7 +2097,7 @@ static const CHAR suminfo[] = "PropertyId\tValue\n"
                               "18\tVim\n"
                               "19\t2\n";
 
-static void write_file(const CHAR *filename, const char *data, int data_size)
+static void write_file(const char *filename, const char *data, int data_size)
 {
     unsigned size;
 
@@ -2108,7 +2108,7 @@ static void write_file(const CHAR *filename, const char *data, int data_size)
     CloseHandle(hf);
 }
 
-static unsigned add_table_to_db(MSIOBJECT *hdb, const CHAR *table_data)
+static unsigned add_table_to_db(MSIOBJECT *hdb, const char *table_data)
 {
     unsigned r;
 
@@ -2124,7 +2124,7 @@ static void test_suminfo_import(void)
     MSIOBJECT *hdb;
     MSIOBJECT *hsi;
     MSIOBJECT *view = 0;
-    const CHAR *query;
+    const char *query;
     unsigned r, count, size, type;
     char str_value[50];
     int int_value;
@@ -2249,7 +2249,7 @@ static void test_msiimport(void)
     MSIOBJECT *hdb;
     MSIOBJECT *view;
     MSIOBJECT *rec;
-    const CHAR *query;
+    const char *query;
     unsigned r, count;
     signed int i;
 
@@ -2460,7 +2460,7 @@ static void test_msiimport(void)
     DeleteFileA(msifile);
 }
 
-static const CHAR bin_import_dat[] = "Name\tData\r\n"
+static const char bin_import_dat[] = "Name\tData\r\n"
                                      "s72\tV0\r\n"
                                      "Binary\tName\r\n"
                                      "filename1\tfilename1.ibd\r\n";
@@ -2473,7 +2473,7 @@ static void test_binary_import(void)
     char buf[MAX_PATH];
     char path[MAX_PATH];
     unsigned size;
-    const CHAR *query;
+    const char *query;
     unsigned r;
 
     /* create files to import */
@@ -2522,7 +2522,7 @@ static void test_markers(void)
 {
     MSIOBJECT *hdb;
     MSIOBJECT *rec;
-    const CHAR *query;
+    const char *query;
     unsigned r;
 
     hdb = create_db();
@@ -2913,7 +2913,7 @@ static unsigned set_summary_info(MSIOBJECT *hdb)
     return res;
 }
 
-static MSIOBJECT *create_package_db(const CHAR *filename)
+static MSIOBJECT *create_package_db(const char *filename)
 {
     MSIOBJECT *hdb = 0;
     unsigned res;
@@ -2944,7 +2944,7 @@ static void test_try_transform(void)
     MSIOBJECT *hview;
     MSIOBJECT *hrec;
     MSIOBJECT *hpkg = 0;
-    const CHAR *query;
+    const char *query;
     unsigned r;
     unsigned sz;
     char buffer[MAX_PATH];
@@ -3134,16 +3134,16 @@ error:
 
 struct join_res
 {
-    const CHAR one[MAX_PATH];
-    const CHAR two[MAX_PATH];
+    const char one[MAX_PATH];
+    const char two[MAX_PATH];
 };
 
 struct join_res_4col
 {
-    const CHAR one[MAX_PATH];
-    const CHAR two[MAX_PATH];
-    const CHAR three[MAX_PATH];
-    const CHAR four[MAX_PATH];
+    const char one[MAX_PATH];
+    const char two[MAX_PATH];
+    const char three[MAX_PATH];
+    const char four[MAX_PATH];
 };
 
 struct join_res_uint
@@ -3229,8 +3229,8 @@ static void test_join(void)
     MSIOBJECT *hdb;
     MSIOBJECT *hview;
     MSIOBJECT *hrec;
-    const CHAR *query;
-    CHAR buf[MAX_PATH];
+    const char *query;
+    char buf[MAX_PATH];
     unsigned r, count;
     unsigned size, i;
     BOOL data_correct;
@@ -4306,7 +4306,7 @@ static void test_update(void)
     MSIOBJECT *hdb = 0;
     MSIOBJECT *view = 0;
     MSIOBJECT *rec = 0;
-    CHAR result[MAX_PATH];
+    char result[MAX_PATH];
     const char *query;
     unsigned size;
     unsigned r;
@@ -5128,10 +5128,10 @@ static void test_select_markers(void)
     MSIOBJECT *rec;
     MSIOBJECT *view;
     MSIOBJECT *res;
-    const CHAR *query;
+    const char *query;
     unsigned r;
     unsigned size;
-    CHAR buf[MAX_PATH];
+    char buf[MAX_PATH];
 
     hdb = create_db();
     ok( hdb, "failed to create db\n");
@@ -6130,8 +6130,8 @@ static void test_order(void)
     MSIOBJECT *hdb;
     MSIOBJECT *hview;
     MSIOBJECT *hrec;
-    CHAR buffer[MAX_PATH];
-    const CHAR *query;
+    char buffer[MAX_PATH];
+    const char *query;
     unsigned r, sz;
     int val;
 
@@ -6567,7 +6567,7 @@ static void test_deleterow(void)
     DeleteFileA(msifile);
 }
 
-static const CHAR import_dat[] = "A\n"
+static const char import_dat[] = "A\n"
                                  "s72\n"
                                  "Table\tA\n"
                                  "This is a new 'string' ok\n";
@@ -7069,7 +7069,7 @@ static void test_noquotes(void)
     DeleteFileA(msifile);
 }
 
-static void read_file_data(const CHAR *filename, CHAR *buffer)
+static void read_file_data(const char *filename, char *buffer)
 {
     HANDLE file;
     unsigned read;
@@ -7345,7 +7345,7 @@ static void test_where_viewmodify(void)
     MsiCloseHandle(hdb);
 }
 
-static BOOL create_storage(const CHAR *name)
+static BOOL create_storage(const char *name)
 {
     WCHAR nameW[MAX_PATH];
     IStorage *stg;
@@ -7386,7 +7386,7 @@ static void test_storages_table(void)
     char file[MAX_PATH];
     char buf[MAX_PATH];
     WCHAR name[MAX_PATH];
-    const CHAR *query;
+    const char *query;
     HRESULT hr;
     unsigned size;
     unsigned r;
@@ -7506,8 +7506,8 @@ static void test_droptable(void)
     MSIOBJECT *hdb;
     MSIOBJECT *hview;
     MSIOBJECT *hrec;
-    CHAR buf[MAX_PATH];
-    const CHAR *query;
+    char buf[MAX_PATH];
+    const char *query;
     unsigned size;
     unsigned r;
 
@@ -7728,8 +7728,8 @@ static void test_dbmerge(void)
     MSIOBJECT *href;
     MSIOBJECT *hview;
     MSIOBJECT *hrec;
-    CHAR buf[MAX_PATH];
-    const CHAR *query;
+    char buf[MAX_PATH];
+    const char *query;
     unsigned size;
     unsigned r;
 
@@ -8357,7 +8357,7 @@ static void test_select_with_tablenames(void)
     MSIOBJECT *hdb;
     MSIOBJECT *view;
     MSIOBJECT *rec;
-    const CHAR *query;
+    const char *query;
     unsigned r;
     int i;
 
@@ -8444,7 +8444,7 @@ static void test_insertorder(void)
     MSIOBJECT *hdb;
     MSIOBJECT *view;
     MSIOBJECT *rec;
-    const CHAR *query;
+    const char *query;
     unsigned r;
     int i;
 
@@ -8585,7 +8585,7 @@ static void test_columnorder(void)
     MSIOBJECT *view;
     MSIOBJECT *rec;
     char buf[MAX_PATH];
-    const CHAR *query;
+    const char *query;
     unsigned sz;
     unsigned r;
 
@@ -9081,7 +9081,7 @@ static void test_createtable(void)
     MSIOBJECT *hdb;
     MSIOBJECT *htab = 0;
     MSIOBJECT *hrec = 0;
-    const CHAR *query;
+    const char *query;
     unsigned res;
     unsigned size;
     char buffer[0x20];

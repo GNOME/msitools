@@ -384,7 +384,7 @@ static void test_msirecord(void)
 static void test_MsiRecordGetString(void)
 {
     MSIOBJECT *rec;
-    CHAR buf[MAX_PATH];
+    char buf[MAX_PATH];
     unsigned sz;
     unsigned r;
 
@@ -478,8 +478,8 @@ static void test_fieldzero(void)
     MSIOBJECT *hdb;
     MSIOBJECT *hview;
     MSIOBJECT *rec;
-    CHAR buf[MAX_PATH];
-    const CHAR *query;
+    char buf[MAX_PATH];
+    const char *query;
     unsigned sz;
     unsigned r;
 

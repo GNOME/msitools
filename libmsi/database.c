@@ -466,7 +466,7 @@ unsigned MsiOpenDatabaseW(const WCHAR *szDBPath, const WCHAR *szPersist, MSIOBJE
     return ret;
 }
 
-unsigned MsiOpenDatabaseA(const CHAR *szDBPath, const CHAR *szPersist, MSIOBJECT **phDB)
+unsigned MsiOpenDatabaseA(const char *szDBPath, const char *szPersist, MSIOBJECT **phDB)
 {
     HRESULT r = ERROR_FUNCTION_FAILED;
     WCHAR *szwDBPath = NULL;
@@ -503,7 +503,7 @@ end:
 static WCHAR *msi_read_text_archive(const WCHAR *path, unsigned *len)
 {
     HANDLE file;
-    CHAR *data = NULL;
+    char *data = NULL;
     WCHAR *wdata = NULL;
     unsigned read, size = 0;
 
@@ -1042,7 +1042,7 @@ unsigned MsiDatabaseImportW(MSIOBJECT *handle, const WCHAR *szFolder, const WCHA
 }
 
 unsigned MsiDatabaseImportA( MSIOBJECT *handle,
-               const CHAR *szFolder, const CHAR *szFilename )
+               const char *szFolder, const char *szFilename )
 {
     WCHAR *path = NULL;
     WCHAR *file = NULL;
@@ -1251,8 +1251,8 @@ unsigned MsiDatabaseExportW( MSIOBJECT *handle, const WCHAR *szTable,
     return r;
 }
 
-unsigned MsiDatabaseExportA( MSIOBJECT *handle, const CHAR *szTable,
-               const CHAR *szFolder, const CHAR *szFilename )
+unsigned MsiDatabaseExportA( MSIOBJECT *handle, const char *szTable,
+               const char *szFolder, const char *szFilename )
 {
     WCHAR *path = NULL;
     WCHAR *file = NULL;
@@ -1294,7 +1294,7 @@ end:
 }
 
 unsigned MsiDatabaseMergeA(MSIOBJECT *hDatabase, MSIOBJECT *hDatabaseMerge,
-                              const CHAR *szTableName)
+                              const char *szTableName)
 {
     unsigned r;
     WCHAR *table;
