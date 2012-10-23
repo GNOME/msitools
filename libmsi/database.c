@@ -21,6 +21,8 @@
 #include <stdarg.h>
 #include <stdio.h>
 #include <unistd.h>
+#include <fcntl.h>
+#include <sys/stat.h>
 
 #define COBJMACROS
 #define NONAMELESSUNION
@@ -468,32 +470,35 @@ unsigned MsiOpenDatabase(const char *szDBPath, const char *szPersist, LibmsiObje
     return ret;
 }
 
-static WCHAR *msi_read_text_archive(const WCHAR *path, unsigned *len)
+static WCHAR *msi_read_text_archive(const char *path, unsigned *len)
 {
-    HANDLE file;
+    int fd;
+    struct stat st;
     char *data = NULL;
     WCHAR *wdata = NULL;
-    unsigned read, size = 0;
+    ssize_t nread;
 
-    file = CreateFileW( path, GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, 0, NULL );
-    if (file == INVALID_HANDLE_VALUE)
+    /* TODO g_file_get_contents */
+    fd = open( path, O_RDONLY | O_BINARY);
+    if (fd == -1)
         return NULL;
 
-    size = GetFileSize( file, NULL );
-    if (!(data = msi_alloc( size ))) goto done;
+    fstat (fd, &st);
+    if (!(data = msi_alloc( st.st_size ))) goto done;
 
-    if (!ReadFile( file, data, size, &read, NULL ) || read != size) goto done;
+    nread = read(fd, data, st.st_size);
+    if (nread != st.st_size) goto done;
 
-    while (!data[size - 1]) size--;
-    *len = MultiByteToWideChar( CP_ACP, 0, data, size, NULL, 0 );
+    while (!data[st.st_size - 1]) st.st_size--;
+    *len = MultiByteToWideChar( CP_ACP, 0, data, st.st_size, NULL, 0 );
     if ((wdata = msi_alloc( (*len + 1) * sizeof(WCHAR) )))
     {
-        MultiByteToWideChar( CP_ACP, 0, data, size, wdata, *len );
+        MultiByteToWideChar( CP_ACP, 0, data, st.st_size, wdata, *len );
         wdata[*len] = 0;
     }
 
 done:
-    CloseHandle( file );
+    close( fd );
     msi_free( data );
     return wdata;
 }
@@ -879,16 +884,17 @@ done:
     return r;
 }
 
-static unsigned MSI_DatabaseImport(LibmsiDatabase *db, const WCHAR *folder, const WCHAR *file)
+static unsigned MSI_DatabaseImport(LibmsiDatabase *db, const char *folder, const char *file)
 {
-    unsigned r;
+    unsigned r = ERROR_OUTOFMEMORY;
     unsigned len, i;
     unsigned num_labels, num_types;
     unsigned num_columns, num_records = 0;
+    char *path;
+    WCHAR *szwPath;
     WCHAR **columns;
     WCHAR **types;
     WCHAR **labels;
-    WCHAR *path;
     WCHAR *ptr;
     WCHAR *data;
     WCHAR ***records = NULL;
@@ -899,21 +905,27 @@ static unsigned MSI_DatabaseImport(LibmsiDatabase *db, const WCHAR *folder, cons
     static const WCHAR forcecodepage[] =
         {'_','F','o','r','c','e','C','o','d','e','p','a','g','e',0};
 
-    TRACE("%p %s %s\n", db, debugstr_w(folder), debugstr_w(file) );
+    TRACE("%p %s %s\n", db, debugstr_a(folder), debugstr_w(file) );
 
     if( folder == NULL || file == NULL )
         return ERROR_INVALID_PARAMETER;
 
-    len = strlenW(folder) + strlenW(szBackSlash) + strlenW(file) + 1;
-    path = msi_alloc( len * sizeof(WCHAR) );
+    len = strlen(folder) + 1 + strlen(file) + 1;
+    path = msi_alloc( len );
     if (!path)
         return ERROR_OUTOFMEMORY;
 
-    strcpyW( path, folder );
-    strcatW( path, szBackSlash );
-    strcatW( path, file );
+    strcpy( path, folder );
+    strcat( path, "\\" );
+    strcat( path, file );
+
+    szwPath = strdupAtoW(path);
+    if (!szwPath)
+        goto done;
 
     data = msi_read_text_archive( path, &len );
+    if (!data)
+        goto done;
 
     ptr = data;
     msi_parse_line( &ptr, &columns, &num_columns, &len );
@@ -976,10 +988,11 @@ static unsigned MSI_DatabaseImport(LibmsiDatabase *db, const WCHAR *folder, cons
             }
         }
 
-        r = msi_add_records_to_table( db, columns, types, labels, records, num_columns, num_records, path );
+        r = msi_add_records_to_table( db, columns, types, labels, records, num_columns, num_records, szwPath );
     }
 
 done:
+    msi_free(szwPath);
     msi_free(path);
     msi_free(data);
     msi_free(columns);
@@ -994,7 +1007,7 @@ done:
     return r;
 }
 
-unsigned MsiDatabaseImportW(LibmsiObject *handle, const WCHAR *szFolder, const WCHAR *szFilename)
+unsigned MsiDatabaseImport(LibmsiObject *handle, const char *szFolder, const char *szFilename)
 {
     LibmsiDatabase *db;
     unsigned r;
@@ -1006,38 +1019,6 @@ unsigned MsiDatabaseImportW(LibmsiObject *handle, const WCHAR *szFolder, const W
         return ERROR_INVALID_HANDLE;
     r = MSI_DatabaseImport( db, szFolder, szFilename );
     msiobj_release( &db->hdr );
-    return r;
-}
-
-unsigned MsiDatabaseImportA( LibmsiObject *handle,
-               const char *szFolder, const char *szFilename )
-{
-    WCHAR *path = NULL;
-    WCHAR *file = NULL;
-    unsigned r = ERROR_OUTOFMEMORY;
-
-    TRACE("%x %s %s\n", handle, debugstr_a(szFolder), debugstr_a(szFilename));
-
-    if( szFolder )
-    {
-        path = strdupAtoW( szFolder );
-        if( !path )
-            goto end;
-    }
-
-    if( szFilename )
-    {
-        file = strdupAtoW( szFilename );
-        if( !file )
-            goto end;
-    }
-
-    r = MsiDatabaseImportW( handle, path, file );
-
-end:
-    msi_free( path );
-    msi_free( file );
-
     return r;
 }
 

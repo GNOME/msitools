@@ -212,9 +212,7 @@ unsigned MsiDatabaseExportA(LibmsiObject *, const char *, const char *, const ch
 unsigned MsiDatabaseExportW(LibmsiObject *, const WCHAR *, const WCHAR *, const WCHAR *);
 #define     MsiDatabaseExport WINELIB_NAME_AW(MsiDatabaseExport)
 
-unsigned MsiDatabaseImportA(LibmsiObject *, const char *, const char *);
-unsigned MsiDatabaseImportW(LibmsiObject *, const WCHAR *, const WCHAR *);
-#define     MsiDatabaseImport WINELIB_NAME_AW(MsiDatabaseImport)
+unsigned MsiDatabaseImport(LibmsiObject *, const char *, const char *);
 
 unsigned MsiOpenDatabase(const char *, const char *, LibmsiObject **);
 

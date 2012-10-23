@@ -2113,7 +2113,7 @@ static unsigned add_table_to_db(LibmsiObject *hdb, const char *table_data)
     unsigned r;
 
     write_file("temp_file", table_data, (strlen(table_data) - 1) * sizeof(char));
-    r = MsiDatabaseImportA(hdb, CURR_DIR, "temp_file");
+    r = MsiDatabaseImport(hdb, CURR_DIR, "temp_file");
     DeleteFileA("temp_file");
 
     return r;
@@ -6648,7 +6648,7 @@ static void test_quotes(void)
 
     write_file("import.idt", import_dat, (sizeof(import_dat) - 1) * sizeof(char));
 
-    r = MsiDatabaseImportA(hdb, CURR_DIR, "import.idt");
+    r = MsiDatabaseImport(hdb, CURR_DIR, "import.idt");
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     DeleteFileA("import.idt");
@@ -7130,7 +7130,7 @@ static void test_forcecodepage(void)
 
     create_file_data("forcecodepage.idt", "\r\n\r\n850\t_ForceCodepage\r\n", 0);
 
-    r = MsiDatabaseImportA(hdb, CURR_DIR, "forcecodepage.idt");
+    r = MsiDatabaseImport(hdb, CURR_DIR, "forcecodepage.idt");
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     r = MsiDatabaseExport(hdb, "_ForceCodepage", CURR_DIR, "forcecodepage.idt");
@@ -7142,7 +7142,7 @@ static void test_forcecodepage(void)
 
     create_file_data("forcecodepage.idt", "\r\n\r\n9999\t_ForceCodepage\r\n", 0);
 
-    r = MsiDatabaseImportA(hdb, CURR_DIR, "forcecodepage.idt");
+    r = MsiDatabaseImport(hdb, CURR_DIR, "forcecodepage.idt");
     ok(r == ERROR_FUNCTION_FAILED, "Expected ERROR_FUNCTION_FAILED, got %d\n", r);
 
     MsiCloseHandle(hdb);
@@ -8179,7 +8179,7 @@ static void test_dbmerge(void)
     create_file_data("codepage.idt", "\r\n\r\n850\t_ForceCodepage\r\n", 0);
 
     GetCurrentDirectoryA(MAX_PATH, buf);
-    r = MsiDatabaseImportA(hdb, buf, "codepage.idt");
+    r = MsiDatabaseImport(hdb, buf, "codepage.idt");
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     query = "DROP TABLE `One`";
@@ -9207,7 +9207,7 @@ static void test_embedded_nulls(void)
 
     GetCurrentDirectoryA( MAX_PATH, CURR_DIR );
     write_file( "temp_file", control_table, sizeof(control_table) );
-    r = MsiDatabaseImportA( hdb, CURR_DIR, "temp_file" );
+    r = MsiDatabaseImport( hdb, CURR_DIR, "temp_file" );
     ok( r == ERROR_SUCCESS, "failed to import table %u\n", r );
     DeleteFileA( "temp_file" );
 
