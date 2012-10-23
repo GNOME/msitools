@@ -204,12 +204,12 @@ unsigned MsiGetSummaryInformationA(LibmsiObject *, const char *, unsigned, Libms
 unsigned MsiGetSummaryInformationW(LibmsiObject *, const WCHAR *, unsigned, LibmsiObject **);
 #define     MsiGetSummaryInformation WINELIB_NAME_AW(MsiGetSummaryInformation)
 
-unsigned MsiSummaryInfoGetPropertyA(LibmsiObject *,unsigned,unsigned *,int *,FILETIME*,char *,unsigned *);
-unsigned MsiSummaryInfoGetPropertyW(LibmsiObject *,unsigned,unsigned *,int *,FILETIME*,WCHAR *,unsigned *);
+unsigned MsiSummaryInfoGetPropertyA(LibmsiObject *,unsigned,unsigned *,int *,uint64_t*,char *,unsigned *);
+unsigned MsiSummaryInfoGetPropertyW(LibmsiObject *,unsigned,unsigned *,int *,uint64_t*,WCHAR *,unsigned *);
 #define     MsiSummaryInfoGetProperty WINELIB_NAME_AW(MsiSummaryInfoGetProperty)
 
-unsigned MsiSummaryInfoSetPropertyA(LibmsiObject *, unsigned, unsigned, int, FILETIME*, const char *);
-unsigned MsiSummaryInfoSetPropertyW(LibmsiObject *, unsigned, unsigned, int, FILETIME*, const WCHAR *);
+unsigned MsiSummaryInfoSetPropertyA(LibmsiObject *, unsigned, unsigned, int, uint64_t*, const char *);
+unsigned MsiSummaryInfoSetPropertyW(LibmsiObject *, unsigned, unsigned, int, uint64_t*, const WCHAR *);
 #define     MsiSummaryInfoSetProperty WINELIB_NAME_AW(MsiSummaryInfoSetProperty)
 
 unsigned MsiDatabaseExportA(LibmsiObject *, const char *, const char *, const char *);

@@ -19,6 +19,7 @@
  */
 
 #include <stdarg.h>
+#include <time.h>
 
 #define COBJMACROS
 #define NONAMELESSUNION
@@ -69,7 +70,7 @@ typedef struct {
     union {
         int i4;
         short i2;
-        FILETIME ft;
+        uint64_t ft;
         struct {
             unsigned len;
             uint8_t str[1];
@@ -198,7 +199,7 @@ static void read_properties_from_data( PROPVARIANT *prop, uint8_t *data, unsigne
         /* check we don't run off the end of the data */
         size = sz - idofs[i].dwOffset - sizeof(unsigned);
         if( sizeof(unsigned) > size ||
-            ( propdata->type == VT_FILETIME && sizeof(FILETIME) > size ) ||
+            ( propdata->type == VT_FILETIME && sizeof(uint64_t) > size ) ||
             ( propdata->type == VT_LPSTR && (propdata->u.str.len + sizeof(unsigned)) > size ) )
         {
             ERR("not enough data\n");
@@ -214,7 +215,10 @@ static void read_properties_from_data( PROPVARIANT *prop, uint8_t *data, unsigne
             property.pszVal = str;
         }
         else if( propdata->type == VT_FILETIME )
-            property.filetime = propdata->u.ft;
+	{
+            property.filetime.dwLowDateTime = (unsigned) (propdata->u.ft & 0xFFFFFFFFULL);
+            property.filetime.dwHighDateTime = (unsigned) (propdata->u.ft >> 32);
+	}
         else if( propdata->type == VT_I2 )
             property.iVal = propdata->u.i2;
         else if( propdata->type == VT_I4 )
@@ -315,10 +319,10 @@ static unsigned write_dword( uint8_t *data, unsigned ofs, unsigned val )
     return 4;
 }
 
-static unsigned write_filetime( uint8_t *data, unsigned ofs, const FILETIME *ft )
+static unsigned write_filetime( uint8_t *data, unsigned ofs, const uint64_t *ft )
 {
-    write_dword( data, ofs, ft->dwLowDateTime );
-    write_dword( data, ofs + 4, ft->dwHighDateTime );
+    write_dword( data, ofs, (*ft) & 0xFFFFFFFFUL );
+    write_dword( data, ofs + 4, (*ft) >> 32 );
     return 8;
 }
 
@@ -348,9 +352,11 @@ static unsigned write_property_to_data( const PROPVARIANT *prop, uint8_t *data )
     case VT_I4:
         sz += write_dword( data, sz, prop->lVal );
         break;
-    case VT_FILETIME:
-        sz += write_filetime( data, sz, &prop->filetime );
+    case VT_FILETIME: {
+        uint64_t i8 = prop->filetime.dwLowDateTime | ((uint64_t)prop->filetime.dwHighDateTime << 32);
+        sz += write_filetime( data, sz, &i8 );
         break;
+    }
     case VT_LPSTR:
         sz += write_string( data, sz, prop->pszVal );
         break;
@@ -536,7 +542,7 @@ unsigned MsiSummaryInfoGetPropertyCount(LibmsiObject *hSummaryInfo, unsigned *pC
 }
 
 static unsigned get_prop( LibmsiObject *handle, unsigned uiProperty, unsigned *puiDataType,
-          int *piValue, FILETIME *pftValue, awstring *str, unsigned *pcchValueBuf)
+          int *piValue, uint64_t *pftValue, awstring *str, unsigned *pcchValueBuf)
 {
     LibmsiSummaryInfo *si;
     PROPVARIANT *prop;
@@ -593,7 +599,7 @@ static unsigned get_prop( LibmsiObject *handle, unsigned uiProperty, unsigned *p
         break;
     case VT_FILETIME:
         if( pftValue )
-            *pftValue = prop->filetime;
+            *pftValue = prop->filetime.dwLowDateTime | ((uint64_t)prop->filetime.dwHighDateTime << 32);
         break;
     case VT_EMPTY:
         break;
@@ -647,7 +653,7 @@ WCHAR *msi_get_suminfo_product( IStorage *stg )
 
 unsigned MsiSummaryInfoGetPropertyA(
       LibmsiObject *handle, unsigned uiProperty, unsigned *puiDataType, int *piValue,
-      FILETIME *pftValue, char *szValueBuf, unsigned *pcchValueBuf)
+      uint64_t *pftValue, char *szValueBuf, unsigned *pcchValueBuf)
 {
     awstring str;
 
@@ -663,7 +669,7 @@ unsigned MsiSummaryInfoGetPropertyA(
 
 unsigned MsiSummaryInfoGetPropertyW(
       LibmsiObject *handle, unsigned uiProperty, unsigned *puiDataType, int *piValue,
-      FILETIME *pftValue, WCHAR *szValueBuf, unsigned *pcchValueBuf)
+      uint64_t *pftValue, WCHAR *szValueBuf, unsigned *pcchValueBuf)
 {
     awstring str;
 
@@ -678,7 +684,7 @@ unsigned MsiSummaryInfoGetPropertyW(
 }
 
 static unsigned set_prop( LibmsiSummaryInfo *si, unsigned uiProperty, unsigned type,
-               int iValue, FILETIME* pftValue, awcstring *str )
+               int iValue, uint64_t* pftValue, awcstring *str )
 {
     PROPVARIANT *prop;
     unsigned len;
@@ -709,7 +715,8 @@ static unsigned set_prop( LibmsiSummaryInfo *si, unsigned uiProperty, unsigned t
         prop->iVal = iValue;
         break;
     case VT_FILETIME:
-        prop->filetime = *pftValue;
+        prop->filetime.dwLowDateTime = (unsigned) (*pftValue);
+        prop->filetime.dwHighDateTime = (unsigned) (*pftValue >> 32);
         break;
     case VT_LPSTR:
         if( str->unicode )
@@ -733,7 +740,7 @@ static unsigned set_prop( LibmsiSummaryInfo *si, unsigned uiProperty, unsigned t
 }
 
 unsigned MsiSummaryInfoSetPropertyW( LibmsiObject *handle, unsigned uiProperty,
-               unsigned uiDataType, int iValue, FILETIME* pftValue, const WCHAR *szValue )
+               unsigned uiDataType, int iValue, uint64_t* pftValue, const WCHAR *szValue )
 {
     awcstring str;
     LibmsiSummaryInfo *si;
@@ -765,7 +772,7 @@ unsigned MsiSummaryInfoSetPropertyW( LibmsiObject *handle, unsigned uiProperty,
 }
 
 unsigned MsiSummaryInfoSetPropertyA( LibmsiObject *handle, unsigned uiProperty,
-               unsigned uiDataType, int iValue, FILETIME* pftValue, const char *szValue )
+               unsigned uiDataType, int iValue, uint64_t* pftValue, const char *szValue )
 {
     awcstring str;
     LibmsiSummaryInfo *si;
@@ -813,48 +820,52 @@ static unsigned suminfo_persist( LibmsiSummaryInfo *si )
     return ret;
 }
 
-static void parse_filetime( const WCHAR *str, FILETIME *ft )
+static void parse_filetime( const WCHAR *str, uint64_t *ft )
 {
-    SYSTEMTIME lt, utc;
+    struct tm tm;
+    time_t t;
     const WCHAR *p = str;
     WCHAR *end;
 
-    memset( &lt, 0, sizeof(lt) );
 
     /* YYYY/MM/DD hh:mm:ss */
 
     while ( *p == ' ' || *p == '\t' ) p++;
 
-    lt.wYear = strtolW( p, &end, 10 );
+    tm.tm_year = strtolW( p, &end, 10 );
     if (*end != '/') return;
     p = end + 1;
 
-    lt.wMonth = strtolW( p, &end, 10 );
+    tm.tm_mon = strtolW( p, &end, 10 ) - 1;
     if (*end != '/') return;
     p = end + 1;
 
-    lt.wDay = strtolW( p, &end, 10 );
+    tm.tm_mday = strtolW( p, &end, 10 );
     if (*end != ' ') return;
     p = end + 1;
 
     while ( *p == ' ' || *p == '\t' ) p++;
 
-    lt.wHour = strtolW( p, &end, 10 );
+    tm.tm_hour = strtolW( p, &end, 10 );
     if (*end != ':') return;
     p = end + 1;
 
-    lt.wMinute = strtolW( p, &end, 10 );
+    tm.tm_min = strtolW( p, &end, 10 );
     if (*end != ':') return;
     p = end + 1;
 
-    lt.wSecond = strtolW( p, &end, 10 );
+    tm.tm_sec = strtolW( p, &end, 10 );
 
-    TzSpecificLocalTimeToSystemTime( NULL, &lt, &utc );
-    SystemTimeToFileTime( &utc, ft );
+    t = mktime(&tm);
+
+    /* Add number of seconds between 1601-01-01 and 1970-01-01,
+     * then convert to 100 ns units.
+     */
+    *ft = (t + 134774ULL * 86400ULL) * 10000000ULL;
 }
 
 static unsigned parse_prop( const WCHAR *prop, const WCHAR *value, unsigned *pid, int *int_value,
-                        FILETIME *ft_value, awcstring *str_value )
+                        uint64_t *ft_value, awcstring *str_value )
 {
     *pid = atoiW( prop );
     switch (*pid)
@@ -913,7 +924,7 @@ unsigned msi_add_suminfo( LibmsiDatabase *db, WCHAR ***records, int num_records,
         {
             unsigned pid;
             int int_value = 0;
-            FILETIME ft_value;
+            uint64_t ft_value;
             awcstring str_value;
 
             r = parse_prop( records[i][j], records[i][j + 1], &pid, &int_value, &ft_value, &str_value );

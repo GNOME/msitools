@@ -38,7 +38,7 @@ static void test_suminfo(void)
     unsigned r, count, type;
     unsigned sz;
     int val;
-    FILETIME ft;
+    uint64_t ft;
     char buf[0x10];
 
     DeleteFile(msifile);

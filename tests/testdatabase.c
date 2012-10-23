@@ -2128,7 +2128,7 @@ static void test_suminfo_import(void)
     unsigned r, count, size, type;
     char str_value[50];
     int int_value;
-    FILETIME ft_value;
+    uint64_t ft_value;
 
     GetCurrentDirectoryA(MAX_PATH, CURR_DIR);
 
