@@ -29,7 +29,7 @@
 #include "shlwapi.h"
 #include "debug.h"
 #include "unicode.h"
-#include "msiquery.h"
+#include "libmsi.h"
 #include "msipriv.h"
 #include "objidl.h"
 #include "propvarutil.h"
@@ -106,29 +106,29 @@ static UINT get_type( UINT uiProperty )
 {
     switch( uiProperty )
     {
-    case PID_CODEPAGE:
+    case MSI_PID_CODEPAGE:
          return VT_I2;
 
-    case PID_SUBJECT:
-    case PID_AUTHOR:
-    case PID_KEYWORDS:
-    case PID_COMMENTS:
-    case PID_TEMPLATE:
-    case PID_LASTAUTHOR:
-    case PID_REVNUMBER:
-    case PID_APPNAME:
-    case PID_TITLE:
+    case MSI_PID_SUBJECT:
+    case MSI_PID_AUTHOR:
+    case MSI_PID_KEYWORDS:
+    case MSI_PID_COMMENTS:
+    case MSI_PID_TEMPLATE:
+    case MSI_PID_LASTAUTHOR:
+    case MSI_PID_REVNUMBER:
+    case MSI_PID_APPNAME:
+    case MSI_PID_TITLE:
          return VT_LPSTR;
 
-    case PID_LASTPRINTED:
-    case PID_CREATE_DTM:
-    case PID_LASTSAVE_DTM:
+    case MSI_PID_LASTPRINTED:
+    case MSI_PID_CREATE_DTM:
+    case MSI_PID_LASTSAVE_DTM:
          return VT_FILETIME;
 
-    case PID_WORDCOUNT:
-    case PID_CHARCOUNT:
-    case PID_SECURITY:
-    case PID_PAGECOUNT:
+    case MSI_PID_WORDCOUNT:
+    case MSI_PID_CHARCOUNT:
+    case MSI_PID_SECURITY:
+    case MSI_PID_PAGECOUNT:
          return VT_I4;
     }
     return VT_EMPTY;
@@ -643,7 +643,7 @@ LPWSTR msi_get_suminfo_product( IStorage *stg )
         ERR("no summary information!\n");
         return NULL;
     }
-    prod = msi_suminfo_dup_string( si, PID_REVNUMBER );
+    prod = msi_suminfo_dup_string( si, MSI_PID_REVNUMBER );
     msiobj_release( &si->hdr );
     return prod;
 }
@@ -862,29 +862,29 @@ static UINT parse_prop( LPCWSTR prop, LPCWSTR value, UINT *pid, INT *int_value,
     *pid = atoiW( prop );
     switch (*pid)
     {
-    case PID_CODEPAGE:
-    case PID_WORDCOUNT:
-    case PID_CHARCOUNT:
-    case PID_SECURITY:
-    case PID_PAGECOUNT:
+    case MSI_PID_CODEPAGE:
+    case MSI_PID_WORDCOUNT:
+    case MSI_PID_CHARCOUNT:
+    case MSI_PID_SECURITY:
+    case MSI_PID_PAGECOUNT:
         *int_value = atoiW( value );
         break;
 
-    case PID_LASTPRINTED:
-    case PID_CREATE_DTM:
-    case PID_LASTSAVE_DTM:
+    case MSI_PID_LASTPRINTED:
+    case MSI_PID_CREATE_DTM:
+    case MSI_PID_LASTSAVE_DTM:
         parse_filetime( value, ft_value );
         break;
 
-    case PID_SUBJECT:
-    case PID_AUTHOR:
-    case PID_KEYWORDS:
-    case PID_COMMENTS:
-    case PID_TEMPLATE:
-    case PID_LASTAUTHOR:
-    case PID_REVNUMBER:
-    case PID_APPNAME:
-    case PID_TITLE:
+    case MSI_PID_SUBJECT:
+    case MSI_PID_AUTHOR:
+    case MSI_PID_KEYWORDS:
+    case MSI_PID_COMMENTS:
+    case MSI_PID_TEMPLATE:
+    case MSI_PID_LASTAUTHOR:
+    case MSI_PID_REVNUMBER:
+    case MSI_PID_APPNAME:
+    case MSI_PID_TITLE:
         str_value->str.w = value;
         str_value->unicode = TRUE;
         break;

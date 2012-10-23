@@ -26,7 +26,7 @@
 #include "winbase.h"
 #include "winerror.h"
 #include "ole2.h"
-#include "msiquery.h"
+#include "libmsi.h"
 #include "objbase.h"
 #include "msipriv.h"
 #include "query.h"

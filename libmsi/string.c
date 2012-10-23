@@ -30,7 +30,7 @@
 #include "winerror.h"
 #include "debug.h"
 #include "unicode.h"
-#include "msiquery.h"
+#include "libmsi.h"
 #include "objbase.h"
 #include "objidl.h"
 #include "msipriv.h"
