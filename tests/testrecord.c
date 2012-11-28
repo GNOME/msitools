@@ -570,6 +570,7 @@ static void test_fieldzero(void)
     r = MsiCloseHandle(hview);
     ok(r == ERROR_SUCCESS, "MsiCloseHandle failed\n");
 
+    rec = NULL;
     r = MsiDatabaseGetPrimaryKeysA(hdb, "drone", &rec);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 

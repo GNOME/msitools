@@ -1150,7 +1150,7 @@ static MSIHANDLE get_column_info(MSIHANDLE hdb, const char *query, MSICOLINFO ty
 
     r = MsiDatabaseOpenView(hdb, query, &hview);
     if( r != ERROR_SUCCESS )
-        return r;
+        return rec;
 
     r = MsiViewExecute(hview, 0);
     if( r == ERROR_SUCCESS )
@@ -1514,6 +1514,7 @@ static void test_streamtable(void)
 
     MsiCloseHandle( rec );
 
+    view = NULL;
     r = MsiDatabaseOpenView( hdb,
             "SELECT * FROM `_Streams` WHERE `Name` = '\5SummaryInformation'", &view );
     ok( r == ERROR_SUCCESS, "Failed to open database view: %u\n", r );
@@ -1540,6 +1541,7 @@ static void test_streamtable(void)
 
     MsiCloseHandle( hsi );
 
+    view = NULL;
     r = MsiDatabaseOpenView( hdb,
             "SELECT * FROM `_Streams` WHERE `Name` = '\5SummaryInformation'", &view );
     ok( r == ERROR_SUCCESS, "Failed to open database view: %u\n", r );
@@ -1565,6 +1567,7 @@ static void test_streamtable(void)
 
     DeleteFile("test.txt");
 
+    view = NULL;
     r = MsiDatabaseOpenView( hdb,
             "INSERT INTO `_Streams` ( `Name`, `Data` ) VALUES ( ?, ? )", &view );
     ok( r == ERROR_SUCCESS, "Failed to open database view: %d\n", r);
@@ -1587,6 +1590,7 @@ static void test_streamtable(void)
 
     DeleteFile("test1.txt");
 
+    view = NULL;
     r = MsiDatabaseOpenView( hdb,
             "INSERT INTO `_Streams` ( `Name`, `Data` ) VALUES ( ?, ? )", &view );
     ok( r == ERROR_SUCCESS, "Failed to open database view: %d\n", r);
@@ -1598,6 +1602,7 @@ static void test_streamtable(void)
     MsiViewClose( view );
     MsiCloseHandle( view );
 
+    view = NULL;
     r = MsiDatabaseOpenView( hdb,
             "SELECT `Name`, `Data` FROM `_Streams` WHERE `Name` = 'data'", &view );
     ok( r == ERROR_SUCCESS, "Failed to open database view: %d\n", r);
@@ -1623,6 +1628,7 @@ static void test_streamtable(void)
     MsiViewClose( view );
     MsiCloseHandle( view );
 
+    view = NULL;
     r = MsiDatabaseOpenView( hdb,
             "SELECT `Name`, `Data` FROM `_Streams` WHERE `Name` = 'data1'", &view );
     ok( r == ERROR_SUCCESS, "Failed to open database view: %d\n", r);
@@ -1657,6 +1663,7 @@ static void test_streamtable(void)
 
     DeleteFile("test2.txt");
 
+    view = NULL;
     r = MsiDatabaseOpenView( hdb,
             "UPDATE `_Streams` SET `Data` = ? WHERE `Name` = 'data1'", &view );
     ok( r == ERROR_SUCCESS, "Failed to open database view: %d\n", r);
@@ -1668,6 +1675,7 @@ static void test_streamtable(void)
     MsiViewClose( view );
     MsiCloseHandle( view );
 
+    view = NULL;
     r = MsiDatabaseOpenView( hdb,
             "SELECT `Name`, `Data` FROM `_Streams` WHERE `Name` = 'data1'", &view );
     ok( r == ERROR_SUCCESS, "Failed to open database view: %d\n", r);
@@ -1845,6 +1853,8 @@ static void test_where_not_in_selected(void)
             "( `Action`, `Type` ) "
             "VALUES ( 'build2', 34)");
     ok(r == S_OK, "cannot add entry to CATable table:%d\n", r );
+
+    view = NULL;
     query = "Select IESTable.Condition from CATable, IESTable where "
             "CATable.Action = IESTable.Action and CATable.Type = 32";
     r = MsiDatabaseOpenView(hdb, query, &view);
@@ -1930,6 +1940,7 @@ static void test_where(void)
     MsiCloseHandle( rec );
 
     query = "SELECT `DiskId` FROM `Media` WHERE `LastSequence` >= 1 AND DiskId >= 0";
+    view = NULL;
     r = MsiDatabaseOpenView(hdb, query, &view);
     ok( r == ERROR_SUCCESS, "failed to open view: %d\n", r );
 
@@ -2001,8 +2012,10 @@ static void test_where(void)
     MsiRecordSetString(rec, 1, "");
 
     query = "SELECT * FROM `Media` WHERE `DiskPrompt` = ?";
+    view = NULL;
     r = MsiDatabaseOpenView(hdb, query, &view);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+
     r = MsiViewExecute(view, rec);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
@@ -2103,6 +2116,7 @@ static void test_suminfo_import(void)
 
     /* _SummaryInformation is not imported as a regular table... */
 
+    view = NULL;
     query = "SELECT * FROM `_SummaryInformation`";
     r = MsiDatabaseOpenViewA(hdb, query, &view);
     ok(r == ERROR_BAD_QUERY_SYNTAX, "Expected ERROR_BAD_QUERY_SYNTAX, got %u\n", r);
@@ -2230,10 +2244,12 @@ static void test_msiimport(void)
     r = add_table_to_db(hdb, endlines2);
     ok(r == ERROR_FUNCTION_FAILED, "Expected ERROR_FUNCTION_FAILED, got %d\n", r);
 
+    view = NULL;
     query = "SELECT * FROM `TestTable`";
     r = MsiDatabaseOpenView(hdb, query, &view);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
+    rec = NULL;
     r = MsiViewGetColumnInfo(view, MSICOLINFO_NAMES, &rec);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
     count = MsiRecordGetFieldCount(rec);
@@ -2249,6 +2265,7 @@ static void test_msiimport(void)
     ok(check_record(rec, 9, "LocalizableStringNullable"), "Expected LocalizableStringNullable\n");
     MsiCloseHandle(rec);
 
+    rec = NULL;
     r = MsiViewGetColumnInfo(view, MSICOLINFO_TYPES, &rec);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
     count = MsiRecordGetFieldCount(rec);
@@ -2291,10 +2308,12 @@ static void test_msiimport(void)
     MsiViewClose(view);
     MsiCloseHandle(view);
 
+    view = NULL;
     query = "SELECT * FROM `TwoPrimary`";
     r = MsiDatabaseOpenView(hdb, query, &view);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
+    rec = NULL;
     r = MsiViewGetColumnInfo(view, MSICOLINFO_NAMES, &rec);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
     count = MsiRecordGetFieldCount(rec);
@@ -2304,6 +2323,7 @@ static void test_msiimport(void)
 
     MsiCloseHandle(rec);
 
+    rec = NULL;
     r = MsiViewGetColumnInfo(view, MSICOLINFO_TYPES, &rec);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
     count = MsiRecordGetFieldCount(rec);
@@ -2340,10 +2360,12 @@ static void test_msiimport(void)
 
     MsiCloseHandle(view);
 
+    view = NULL;
     query = "SELECT * FROM `Table`";
     r = MsiDatabaseOpenView(hdb, query, &view);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
+    rec = NULL;
     r = MsiViewGetColumnInfo(view, MSICOLINFO_NAMES, &rec);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
     count = MsiRecordGetFieldCount(rec);
@@ -2356,6 +2378,7 @@ static void test_msiimport(void)
     ok(check_record(rec, 6, "F"), "Expected F\n");
     MsiCloseHandle(rec);
 
+    rec = NULL;
     r = MsiViewGetColumnInfo(view, MSICOLINFO_TYPES, &rec);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
     count = MsiRecordGetFieldCount(rec);
@@ -2371,6 +2394,7 @@ static void test_msiimport(void)
     MsiViewClose(view);
     MsiCloseHandle(view);
 
+    view = NULL;
     query = "SELECT * FROM `Table`";
     r = MsiDatabaseOpenView(hdb, query, &view);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
@@ -3861,6 +3885,7 @@ static void test_temporary_table(void)
     r = run_query(hdb, 0, query);
     ok(r == ERROR_SUCCESS, "failed to add table\n");
 
+    view = NULL;
     query = "SELECT * FROM `T2`";
     r = MsiDatabaseOpenView(hdb, query, &view);
     ok(r == ERROR_BAD_QUERY_SYNTAX,
@@ -3887,9 +3912,12 @@ static void test_temporary_table(void)
     r = run_query(hdb, 0, query);
     ok(r == ERROR_BAD_QUERY_SYNTAX, "failed to add table\n");
 
+    view = NULL;
     query = "select * from `T`";
     r = MsiDatabaseOpenView(hdb, query, &view);
     ok(r == ERROR_SUCCESS, "failed to query table\n");
+
+    rec = NULL;
     r = MsiViewGetColumnInfo(view, MSICOLINFO_TYPES, &rec);
     ok(r == ERROR_SUCCESS, "failed to get column info\n");
 
@@ -4135,6 +4163,7 @@ static void test_integers(void)
     r = MsiDatabaseOpenView(hdb, query, &view);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
+    rec = NULL;
     r = MsiViewGetColumnInfo(view, MSICOLINFO_NAMES, &rec);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
     count = MsiRecordGetFieldCount(rec);
@@ -4149,6 +4178,7 @@ static void test_integers(void)
     ok(check_record(rec, 8, "eight"), "Expected eight\n");
     MsiCloseHandle(rec);
 
+    rec = NULL;
     r = MsiViewGetColumnInfo(view, MSICOLINFO_TYPES, &rec);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
     count = MsiRecordGetFieldCount(rec);
@@ -4167,6 +4197,7 @@ static void test_integers(void)
     MsiCloseHandle(view);
 
     /* insert values into it, NULL where NOT NULL is specified */
+    view = NULL;
     query = "INSERT INTO `integers` ( `one`, `two`, `three`, `four`, `five`, `six`, `seven`, `eight` )"
         "VALUES('', '', '', '', '', '', '', '')";
     r = MsiDatabaseOpenView(hdb, query, &view);
@@ -4187,6 +4218,7 @@ static void test_integers(void)
     MsiCloseHandle(rec);
 
     /* insert legitimate values into it */
+    view = NULL;
     query = "INSERT INTO `integers` ( `one`, `two`, `three`, `four`, `five`, `six`, `seven`, `eight` )"
         "VALUES('', '2', '', '4', '5', '6', '7', '8')";
     r = MsiDatabaseOpenView(hdb, query, &view);
@@ -4260,6 +4292,7 @@ static void test_update(void)
     ok(r == ERROR_SUCCESS, "MsiCloseHandle failed\n");
 
     /* add a control */
+    view = NULL;
     query = "INSERT INTO `Control` ( "
         "`Dialog_`, `Control`, `Type`, `X`, `Y`, `Width`, `Height`, "
         "`Property`, `Text`, `Control_Next`, `Help` )"
@@ -4274,6 +4307,7 @@ static void test_update(void)
     ok(r == ERROR_SUCCESS, "MsiCloseHandle failed\n");
 
     /* add a second control */
+    view = NULL;
     query = "INSERT INTO `Control` ( "
         "`Dialog_`, `Control`, `Type`, `X`, `Y`, `Width`, `Height`, "
         "`Property`, `Text`, `Control_Next`, `Help` )"
@@ -4288,6 +4322,7 @@ static void test_update(void)
     ok(r == ERROR_SUCCESS, "MsiCloseHandle failed\n");
 
     /* add a third control */
+    view = NULL;
     query = "INSERT INTO `Control` ( "
         "`Dialog_`, `Control`, `Type`, `X`, `Y`, `Width`, `Height`, "
         "`Property`, `Text`, `Control_Next`, `Help` )"
@@ -4302,21 +4337,25 @@ static void test_update(void)
     ok(r == ERROR_SUCCESS, "MsiCloseHandle failed\n");
 
     /* bad table */
+    view = NULL;
     query = "UPDATE `NotATable` SET `Text` = 'this is text' WHERE `Dialog_` = 'ErrorDialog'";
     r = MsiDatabaseOpenView(hdb, query, &view);
     ok(r == ERROR_BAD_QUERY_SYNTAX, "Expected ERROR_BAD_QUERY_SYNTAX, got %d\n", r);
 
     /* bad set column */
+    view = NULL;
     query = "UPDATE `Control` SET `NotAColumn` = 'this is text' WHERE `Dialog_` = 'ErrorDialog'";
     r = MsiDatabaseOpenView(hdb, query, &view);
     ok(r == ERROR_BAD_QUERY_SYNTAX, "Expected ERROR_BAD_QUERY_SYNTAX, got %d\n", r);
 
     /* bad where condition */
+    view = NULL;
     query = "UPDATE `Control` SET `Text` = 'this is text' WHERE `NotAColumn` = 'ErrorDialog'";
     r = MsiDatabaseOpenView(hdb, query, &view);
     ok(r == ERROR_BAD_QUERY_SYNTAX, "Expected ERROR_BAD_QUERY_SYNTAX, got %d\n", r);
 
     /* just the dialog_ specified */
+    view = NULL;
     query = "UPDATE `Control` SET `Text` = 'this is text' WHERE `Dialog_` = 'ErrorDialog'";
     r = MsiDatabaseOpenView(hdb, query, &view);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
@@ -4328,6 +4367,7 @@ static void test_update(void)
     ok(r == ERROR_SUCCESS, "MsiCloseHandle failed\n");
 
     /* check the modified text */
+    view = NULL;
     query = "SELECT `Text` FROM `Control` WHERE `Control` = 'ErrorText'";
     r = MsiDatabaseOpenView(hdb, query, &view);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
@@ -4363,6 +4403,7 @@ static void test_update(void)
     ok(r == ERROR_SUCCESS, "MsiCloseHandle failed\n");
 
     /* dialog_ and control specified */
+    view = NULL;
     query = "UPDATE `Control` SET `Text` = 'this is text' WHERE `Dialog_` = 'ErrorDialog' AND `Control` = 'ErrorText'";
     r = MsiDatabaseOpenView(hdb, query, &view);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
@@ -4374,6 +4415,7 @@ static void test_update(void)
     ok(r == ERROR_SUCCESS, "MsiCloseHandle failed\n");
 
     /* check the modified text */
+    view = NULL;
     query = "SELECT `Text` FROM `Control` WHERE `Control` = 'ErrorText'";
     r = MsiDatabaseOpenView(hdb, query, &view);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
@@ -4409,6 +4451,7 @@ static void test_update(void)
     ok(r == ERROR_SUCCESS, "MsiCloseHandle failed\n");
 
     /* no where condition */
+    view = NULL;
     query = "UPDATE `Control` SET `Text` = 'this is text'";
     r = MsiDatabaseOpenView(hdb, query, &view);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
@@ -4420,6 +4463,7 @@ static void test_update(void)
     ok(r == ERROR_SUCCESS, "MsiCloseHandle failed\n");
 
     /* check the modified text */
+    view = NULL;
     query = "SELECT `Text` FROM `Control`";
     r = MsiDatabaseOpenView(hdb, query, &view);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
@@ -4494,6 +4538,7 @@ static void test_update(void)
 
     MsiCloseHandle(rec);
 
+    view = NULL;
     query = "SELECT `Pear` FROM `Apple` ORDER BY `Orange`";
     r = MsiDatabaseOpenView(hdb, query, &view);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
@@ -5067,6 +5112,7 @@ static void test_select_markers(void)
     MsiRecordSetString(rec, 1, "apple");
     MsiRecordSetString(rec, 2, "two");
 
+    view = NULL;
     query = "SELECT * FROM `Table` WHERE `One`=? AND `Two`=? ORDER BY `Three`";
     r = MsiDatabaseOpenView(hdb, query, &view);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
@@ -5121,6 +5167,7 @@ static void test_select_markers(void)
     MsiRecordSetString(rec, 1, "one");
     MsiRecordSetInteger(rec, 2, 1);
 
+    view = NULL;
     query = "SELECT * FROM `Table` WHERE `Two`<>? AND `Three`>? ORDER BY `Three`";
     r = MsiDatabaseOpenView(hdb, query, &view);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
@@ -6916,6 +6963,7 @@ static void test_noquotes(void)
     r = run_query(hdb, 0, query);
     ok(r == ERROR_BAD_QUERY_SYNTAX, "Expected ERROR_BAD_QUERY_SYNTAX, got %d\n", r);
 
+    hview = NULL;
     query = "SELECT * FROM Table2";
     r = MsiDatabaseOpenView(hdb, query, &hview);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
@@ -7924,6 +7972,7 @@ static void test_dbmerge(void)
     r = MsiDatabaseOpenViewA(hdb, "SELECT * FROM `MergeErrors`", &hview);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
+    hrec = NULL;
     r = MsiViewGetColumnInfo(hview, MSICOLINFO_NAMES, &hrec);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
@@ -7940,6 +7989,7 @@ static void test_dbmerge(void)
 
     MsiCloseHandle(hrec);
 
+    hrec = NULL;
     r = MsiViewGetColumnInfo(hview, MSICOLINFO_TYPES, &hrec);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
@@ -8268,6 +8318,7 @@ static void test_select_with_tablenames(void)
     /* Test that selection based on prefixing the column with the table
      * actually selects the right data */
 
+    view = NULL;
     query = "SELECT T1.A, T2.B FROM T1,T2";
     r = MsiDatabaseOpenView(hdb, query, &view);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
@@ -8374,6 +8425,7 @@ static void test_insertorder(void)
     ok(r == ERROR_BAD_QUERY_SYNTAX,
        "Expected ERROR_BAD_QUERY_SYNTAX, got %d\n", r);
 
+    view = NULL;
     query = "SELECT * FROM `T`";
     r = MsiDatabaseOpenView(hdb, query, &view);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
@@ -8411,6 +8463,7 @@ static void test_insertorder(void)
     r = run_query(hdb, 0, query);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
+    view = NULL;
     query = "SELECT * FROM `T`";
     r = MsiDatabaseOpenView(hdb, query, &view);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
@@ -8480,10 +8533,12 @@ static void test_columnorder(void)
     r = run_query(hdb, 0, query);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
+    view = NULL;
     query = "SELECT * FROM `T`";
     r = MsiDatabaseOpenView(hdb, query, &view);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
+    rec = NULL;
     r = MsiViewGetColumnInfo(view, MSICOLINFO_TYPES, &rec);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
@@ -8519,6 +8574,7 @@ static void test_columnorder(void)
 
     MsiCloseHandle(rec);
 
+    rec = NULL;
     r = MsiViewGetColumnInfo(view, MSICOLINFO_NAMES, &rec);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
@@ -8588,6 +8644,7 @@ static void test_columnorder(void)
 
     MsiCloseHandle(rec);
 
+    view = NULL;
     query = "SELECT * FROM `_Columns` WHERE `Table` = 'T'";
     r = MsiDatabaseOpenView(hdb, query, &view);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
@@ -8706,10 +8763,12 @@ static void test_columnorder(void)
     r = run_query(hdb, 0, query);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
+    view = NULL;
     query = "SELECT * FROM `Z`";
     r = MsiDatabaseOpenView(hdb, query, &view);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
+    rec = NULL;
     r = MsiViewGetColumnInfo(view, MSICOLINFO_TYPES, &rec);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
@@ -8745,6 +8804,7 @@ static void test_columnorder(void)
 
     MsiCloseHandle(rec);
 
+    rec = NULL;
     r = MsiViewGetColumnInfo(view, MSICOLINFO_NAMES, &rec);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
@@ -8814,6 +8874,7 @@ static void test_columnorder(void)
 
     MsiCloseHandle(rec);
 
+    view = NULL;
     query = "SELECT * FROM `_Columns` WHERE `Table` = 'T'";
     r = MsiDatabaseOpenView(hdb, query, &view);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
@@ -8949,6 +9010,7 @@ static void test_createtable(void)
         res = MsiViewExecute( htab, hrec );
         ok(res == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", res);
 
+        hrec = NULL;
         res = MsiViewGetColumnInfo( htab, MSICOLINFO_NAMES, &hrec );
         todo_wine ok(res == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", res);
 
@@ -8982,6 +9044,7 @@ static void test_createtable(void)
         res = MsiDatabaseOpenView( hdb, query, &htab );
         ok(res == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", res);
 
+        hrec = NULL;
         res = MsiViewGetColumnInfo( htab, MSICOLINFO_NAMES, &hrec );
         ok(res == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", res);
 
@@ -9011,6 +9074,7 @@ static void test_createtable(void)
         res = MsiDatabaseOpenView( hdb, query, &htab );
         ok(res == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", res);
 
+        hrec = NULL;
         res = MsiViewGetColumnInfo( htab, MSICOLINFO_NAMES, &hrec );
         ok(res == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", res);
 
@@ -9120,6 +9184,7 @@ static void test_select_column_names(void)
     r = try_query( hdb, "INSERT INTO `t` ( `a`, `b` ) VALUES( '3', '4' )" );
     ok( r == ERROR_SUCCESS , "query failed: %u\n", r );
 
+    view = NULL;
     r = MsiDatabaseOpenView( hdb, "SELECT '' FROM `t`", &view );
     ok( r == ERROR_SUCCESS, "failed to open database view: %u\n", r );
 
@@ -9130,6 +9195,8 @@ static void test_select_column_names(void)
     ok( r == ERROR_SUCCESS, "unexpected result: %u\n", r );
     r = MsiRecordGetFieldCount( rec );
     ok( r == 1, "got %u\n",  r );
+
+    rec2 = NULL;
     r = MsiViewGetColumnInfo( view, MSICOLINFO_NAMES, &rec2 );
     ok( r == ERROR_SUCCESS, "unexpected result: %u\n", r );
     r = MsiRecordGetFieldCount( rec2 );
@@ -9140,6 +9207,8 @@ static void test_select_column_names(void)
     ok( r == ERROR_SUCCESS, "unexpected result: %u\n", r );
     ok( !buffer[0], "got \"%s\"\n", buffer );
     MsiCloseHandle( rec2 );
+
+    rec2 = NULL;
     r = MsiViewGetColumnInfo( view, MSICOLINFO_TYPES, &rec2 );
     ok( r == ERROR_SUCCESS, "unexpected result: %u\n", r );
     r = MsiRecordGetFieldCount( rec2 );
@@ -9174,6 +9243,7 @@ static void test_select_column_names(void)
     MsiViewClose( view );
     MsiCloseHandle( view );
 
+    view = NULL;
     r = MsiDatabaseOpenView( hdb, "SELECT `a`, '' FROM `t`", &view );
     ok( r == ERROR_SUCCESS, "failed to open database view: %u\n", r );
 
@@ -9207,6 +9277,7 @@ static void test_select_column_names(void)
     MsiViewClose( view );
     MsiCloseHandle( view );
 
+    view = NULL;
     r = MsiDatabaseOpenView( hdb, "SELECT '', `a` FROM `t`", &view );
     ok( r == ERROR_SUCCESS, "failed to open database view: %u\n", r );
 
@@ -9250,6 +9321,7 @@ static void test_select_column_names(void)
     MsiViewClose( view );
     MsiCloseHandle( view );
 
+    view = NULL;
     r = MsiDatabaseOpenView( hdb, "SELECT `a`, '', `b` FROM `t`", &view );
     ok( r == ERROR_SUCCESS, "failed to open database view: %u\n", r );
 
