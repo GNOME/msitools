@@ -58,12 +58,24 @@ struct string_table
 
 static bool validate_codepage( unsigned codepage )
 {
-    if (codepage != CP_ACP && !IsValidCodePage( codepage ))
-    {
-        WARN("invalid codepage %u\n", codepage);
+    switch (codepage) {
+    case 0: /* CP_ACP */
+    case 37: case 424: case 437: case 500: case 737: case 775: case 850:
+    case 852: case 855: case 856: case 857: case 860: case 861: case 862:
+    case 863: case 864: case 865: case 866: case 869: case 874: case 875:
+    case 878: case 932: case 936: case 949: case 950: case 1006: case 1026:
+    case 1250: case 1251: case 1252: case 1253: case 1254: case 1255:
+    case 1256: case 1257: case 1258: case 1361:
+    case 10000: case 10006: case 10007: case 10029: case 10079: case 10081:
+    case 20127: case 20866: case 20932: case 21866: case 28591: case 28592:
+    case 28593: case 28594: case 28595: case 28596: case 28597: case 28598:
+    case 28599: case 28600: case 28603: case 28604: case 28605: case 28606:
+    case 65000: case 65001:
+        return true;
+
+    default:
         return false;
     }
-    return true;
 }
 
 static string_table *init_stringtable( int entries, unsigned codepage )
