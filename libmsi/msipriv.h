@@ -363,7 +363,7 @@ extern unsigned MSI_RecordReadStream( LibmsiRecord *, unsigned, char *, unsigned
 extern unsigned MSI_RecordSetStream(LibmsiRecord *, unsigned, IStream *);
 extern unsigned MSI_RecordGetFieldCount( const LibmsiRecord *rec );
 extern unsigned MSI_RecordStreamToFile( LibmsiRecord *, unsigned, const WCHAR *);
-extern unsigned MSI_RecordSetStreamFromFileW( LibmsiRecord *, unsigned, const WCHAR *);
+extern unsigned MSI_RecordSetStreamFromFile( LibmsiRecord *, unsigned, const char *);
 extern unsigned MSI_RecordCopyField( LibmsiRecord *, unsigned, LibmsiRecord *, unsigned );
 extern LibmsiRecord *MSI_CloneRecord( LibmsiRecord * );
 extern bool MSI_RecordsAreEqual( LibmsiRecord *, LibmsiRecord * );

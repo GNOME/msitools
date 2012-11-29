@@ -651,7 +651,7 @@ unsigned MsiRecordSetStringW( LibmsiObject *handle, unsigned iField, const WCHAR
 }
 
 /* read the data in a file into an IStream */
-static unsigned RECORD_StreamFromFile(const WCHAR *szFile, IStream **pstm)
+static unsigned RECORD_StreamFromFile(const char *szFile, IStream **pstm)
 {
     unsigned sz, szHighWord = 0, read;
     HANDLE handle;
@@ -662,7 +662,7 @@ static unsigned RECORD_StreamFromFile(const WCHAR *szFile, IStream **pstm)
     TRACE("reading %s\n", debugstr_w(szFile));
 
     /* read the file into memory */
-    handle = CreateFileW(szFile, GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, 0, NULL);
+    handle = CreateFileA(szFile, GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, 0, NULL);
     if( handle == INVALID_HANDLE_VALUE )
         return GetLastError();
     sz = GetFileSize(handle, &szHighWord);
@@ -712,7 +712,7 @@ unsigned MSI_RecordSetStream(LibmsiRecord *rec, unsigned iField, IStream *stream
     return ERROR_SUCCESS;
 }
 
-unsigned MSI_RecordSetStreamFromFileW(LibmsiRecord *rec, unsigned iField, const WCHAR *szFilename)
+unsigned MSI_RecordSetStreamFromFile(LibmsiRecord *rec, unsigned iField, const char *szFilename)
 {
     IStream *stm = NULL;
     HRESULT r;
@@ -752,26 +752,7 @@ unsigned MSI_RecordSetStreamFromFileW(LibmsiRecord *rec, unsigned iField, const 
     return ERROR_SUCCESS;
 }
 
-unsigned MsiRecordSetStreamA(LibmsiObject *hRecord, unsigned iField, const char *szFilename)
-{
-    WCHAR *wstr = NULL;
-    unsigned ret;
-
-    TRACE("%d %d %s\n", hRecord, iField, debugstr_a(szFilename));
-
-    if( szFilename )
-    {
-        wstr = strdupAtoW( szFilename );
-        if( !wstr )
-             return ERROR_OUTOFMEMORY;
-    }
-    ret = MsiRecordSetStreamW(hRecord, iField, wstr);
-    msi_free(wstr);
-
-    return ret;
-}
-
-unsigned MsiRecordSetStreamW(LibmsiObject *handle, unsigned iField, const WCHAR *szFilename)
+unsigned MsiRecordSetStream(LibmsiObject *handle, unsigned iField, const char *szFilename)
 {
     LibmsiRecord *rec;
     unsigned ret;
@@ -783,7 +764,7 @@ unsigned MsiRecordSetStreamW(LibmsiObject *handle, unsigned iField, const WCHAR 
         return ERROR_INVALID_HANDLE;
 
     msiobj_lock( &rec->hdr );
-    ret = MSI_RecordSetStreamFromFileW( rec, iField, szFilename );
+    ret = MSI_RecordSetStreamFromFile( rec, iField, szFilename );
     msiobj_unlock( &rec->hdr );
     msiobj_release( &rec->hdr );
     return ret;

@@ -180,9 +180,8 @@ bool MsiRecordIsNull(LibmsiObject *,unsigned);
 unsigned MsiFormatRecordA(LibmsiObject *,LibmsiObject *,char *,unsigned *);
 unsigned MsiFormatRecordW(LibmsiObject *,LibmsiObject *,WCHAR *,unsigned *);
 #define     MsiFormatRecord WINELIB_NAME_AW(MsiFormatRecord)
-unsigned MsiRecordSetStreamA(LibmsiObject *,unsigned,const char *);
-unsigned MsiRecordSetStreamW(LibmsiObject *,unsigned,const WCHAR *);
-#define     MsiRecordSetStream WINELIB_NAME_AW(MsiRecordSetStream)
+
+unsigned MsiRecordSetStream(LibmsiObject *,unsigned,const char *);
 unsigned MsiRecordReadStream(LibmsiObject *,unsigned,char*,unsigned *);
 
 unsigned MsiDatabaseGetPrimaryKeysA(LibmsiObject *,const char *,LibmsiObject **);

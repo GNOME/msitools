@@ -767,33 +767,35 @@ done:
     return r;
 }
 
-static WCHAR *msi_import_stream_filename(const WCHAR *path, const WCHAR *name)
+static char *msi_import_stream_filename(const char *path, const WCHAR *name)
 {
     unsigned len;
-    WCHAR *fullname;
-    WCHAR *ptr;
+    char *ascii_name = strdupWtoA(name);
+    char *fullname;
+    char *ptr;
 
-    len = strlenW(path) + strlenW(name) + 1;
-    fullname = msi_alloc(len*sizeof(WCHAR));
+    len = strlen(path) + strlen(ascii_name) + 1;
+    fullname = msi_alloc(len);
     if (!fullname)
        return NULL;
 
-    strcpyW( fullname, path );
+    strcpy( fullname, path );
 
     /* chop off extension from path */
-    ptr = strrchrW(fullname, '.');
+    ptr = strrchr(fullname, '.');
     if (!ptr)
     {
         msi_free (fullname);
         return NULL;
     }
     *ptr++ = '\\';
-    strcpyW( ptr, name );
+    strcpy( ptr, ascii_name );
+    msi_free( ascii_name );
     return fullname;
 }
 
 static unsigned construct_record(unsigned num_columns, WCHAR **types,
-                             WCHAR **data, WCHAR *path, LibmsiRecord **rec)
+                             WCHAR **data, const char *path, LibmsiRecord **rec)
 {
     unsigned i;
 
@@ -816,11 +818,11 @@ static unsigned construct_record(unsigned num_columns, WCHAR **types,
                 if (*data[i])
                 {
                     unsigned r;
-                    WCHAR *file = msi_import_stream_filename(path, data[i]);
+                    char *file = msi_import_stream_filename(path, data[i]);
                     if (!file)
                         return ERROR_FUNCTION_FAILED;
 
-                    r = MSI_RecordSetStreamFromFileW(*rec, i + 1, file);
+                    r = MSI_RecordSetStreamFromFile(*rec, i + 1, file);
                     msi_free (file);
                     if (r != ERROR_SUCCESS)
                         return ERROR_FUNCTION_FAILED;
@@ -839,7 +841,7 @@ static unsigned construct_record(unsigned num_columns, WCHAR **types,
 static unsigned msi_add_records_to_table(LibmsiDatabase *db, WCHAR **columns, WCHAR **types,
                                      WCHAR **labels, WCHAR ***records,
                                      int num_columns, int num_records,
-                                     WCHAR *path)
+                                     const char *path)
 {
     unsigned r;
     int i;
@@ -891,7 +893,6 @@ static unsigned MSI_DatabaseImport(LibmsiDatabase *db, const char *folder, const
     unsigned num_labels, num_types;
     unsigned num_columns, num_records = 0;
     char *path;
-    WCHAR *szwPath;
     WCHAR **columns;
     WCHAR **types;
     WCHAR **labels;
@@ -918,10 +919,6 @@ static unsigned MSI_DatabaseImport(LibmsiDatabase *db, const char *folder, const
     strcpy( path, folder );
     strcat( path, "\\" );
     strcat( path, file );
-
-    szwPath = strdupAtoW(path);
-    if (!szwPath)
-        goto done;
 
     data = msi_read_text_archive( path, &len );
     if (!data)
@@ -988,11 +985,10 @@ static unsigned MSI_DatabaseImport(LibmsiDatabase *db, const char *folder, const
             }
         }
 
-        r = msi_add_records_to_table( db, columns, types, labels, records, num_columns, num_records, szwPath );
+        r = msi_add_records_to_table( db, columns, types, labels, records, num_columns, num_records, path );
     }
 
 done:
-    msi_free(szwPath);
     msi_free(path);
     msi_free(data);
     msi_free(columns);

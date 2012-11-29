@@ -8246,7 +8246,7 @@ static void test_dbmerge(void)
 
     create_file("binary.dat");
     hrec = MsiCreateRecord(1);
-    MsiRecordSetStreamA(hrec, 1, "binary.dat");
+    MsiRecordSetStream(hrec, 1, "binary.dat");
 
     query = "INSERT INTO `One` ( `A`, `B` ) VALUES ( 1, ? )";
     r = run_query(href, hrec, query);
