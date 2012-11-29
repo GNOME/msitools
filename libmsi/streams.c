@@ -464,7 +464,6 @@ static int add_streams_to_table(LibmsiStreamSVIEW *sv)
     STREAM *stream = NULL;
     HRESULT hr;
     unsigned r, count = 0, size;
-    WCHAR *encname;
 
     hr = IStorage_EnumElements(sv->db->storage, 0, NULL, 0, &stgenum);
     if (FAILED(hr))
@@ -503,17 +502,7 @@ static int add_streams_to_table(LibmsiStreamSVIEW *sv)
             break;
         }
 
-        /* these streams appear to be unencoded */
-        if (*stat.pwcsName == 0x0005)
-        {
-            r = msi_get_raw_stream(sv->db, stat.pwcsName, &stream->stream);
-        }
-        else
-        {
-            encname = encode_streamname(false, stat.pwcsName);
-            r = msi_get_raw_stream(sv->db, encname, &stream->stream);
-            msi_free(encname);
-        }
+        r = msi_get_raw_stream(sv->db, stat.pwcsName, &stream->stream);
         CoTaskMemFree(stat.pwcsName);
 
         if (r != ERROR_SUCCESS)
