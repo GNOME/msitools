@@ -596,19 +596,19 @@ unsigned msi_save_string_table( const string_table *st, IStorage *storage, unsig
     else
         *bytes_per_strref = sizeof(uint16_t);
 
-    n = 1;
-    for( i=1; i<st->maxcount; i++ )
+    i = 1;
+    for( n=1; n<st->maxcount; n++ )
     {
-        if( !st->strings[i].persistent_refcount )
+        if( !st->strings[n].persistent_refcount )
         {
-            pool[ n*2 ] = 0;
-            pool[ n*2 + 1] = 0;
-            n++;
+            pool[ i*2 ] = 0;
+            pool[ i*2 + 1] = 0;
+            i++;
             continue;
         }
 
         sz = datasize - used;
-        r = msi_id2stringA( st, i, data+used, &sz );
+        r = msi_id2stringA( st, n, data+used, &sz );
         if( r != ERROR_SUCCESS )
         {
             ERR("failed to fetch string\n");
@@ -616,20 +616,20 @@ unsigned msi_save_string_table( const string_table *st, IStorage *storage, unsig
         }
 
         if (sz)
-            pool[ n*2 + 1 ] = st->strings[i].persistent_refcount;
+            pool[ i*2 + 1 ] = st->strings[n].persistent_refcount;
         else
-            pool[ n*2 + 1 ] = 0;
+            pool[ i*2 + 1 ] = 0;
         if (sz < 0x10000)
         {
-            pool[ n*2 ] = sz;
-            n++;
+            pool[ i*2 ] = sz;
+            i++;
         }
         else
         {
-            pool[ n*2 ] = 0;
-            pool[ n*2 + 2 ] = sz&0xffff;
-            pool[ n*2 + 3 ] = (sz>>16);
-            n += 2;
+            pool[ i*2 ] = 0;
+            pool[ i*2 + 2 ] = sz&0xffff;
+            pool[ i*2 + 3 ] = (sz>>16);
+            i += 2;
         }
         used += sz;
         if( used > datasize  )
