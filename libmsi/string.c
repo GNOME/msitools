@@ -562,7 +562,7 @@ unsigned msi_save_string_table( const string_table *st, IStorage *storage, unsig
     unsigned i, datasize = 0, poolsize = 0, sz, used, r, codepage, n;
     unsigned ret = ERROR_FUNCTION_FAILED;
     char *data = NULL;
-    uint16_t *pool = NULL;
+    uint8_t *pool = NULL;
 
     TRACE("\n");
 
@@ -586,11 +586,13 @@ unsigned msi_save_string_table( const string_table *st, IStorage *storage, unsig
 
     used = 0;
     codepage = st->codepage;
-    pool[0] = codepage & 0xffff;
-    pool[1] = codepage >> 16;
+    pool[0] = codepage & 0xff;
+    pool[1] = codepage >> 8;
+    pool[2] = codepage >> 16;
+    pool[3] = codepage >> 24;
     if (st->maxcount > 0xffff)
     {
-        pool[1] |= 0x8000;
+        pool[3] |= 0x80;
         *bytes_per_strref = LONG_STR_BYTES;
     }
     else
@@ -601,8 +603,10 @@ unsigned msi_save_string_table( const string_table *st, IStorage *storage, unsig
     {
         if( !st->strings[n].persistent_refcount )
         {
-            pool[ i*2 ] = 0;
-            pool[ i*2 + 1] = 0;
+            pool[ i*4 ] = 0;
+            pool[ i*4 + 1] = 0;
+            pool[ i*4 + 2] = 0;
+            pool[ i*4 + 3] = 0;
             i++;
             continue;
         }
@@ -615,22 +619,30 @@ unsigned msi_save_string_table( const string_table *st, IStorage *storage, unsig
             sz = 0;
         }
 
-        if (sz)
-            pool[ i*2 + 1 ] = st->strings[n].persistent_refcount;
-        else
-            pool[ i*2 + 1 ] = 0;
-        if (sz < 0x10000)
+        if (sz == 0) {
+            pool[ i*4 ] = 0;
+            pool[ i*4 + 1 ] = 0;
+            pool[ i*4 + 2 ] = 0;
+            pool[ i*4 + 3 ] = 0;
+            i++;
+            continue;
+        }
+
+        if (sz >= 0x10000)
         {
-            pool[ i*2 ] = sz;
+            /* Write a dummy entry, with the high part of the length
+             * in the reference count.  */
+            pool[ i*4 ] = 0;
+            pool[ i*4 + 1 ] = 0;
+            pool[ i*4 + 2 ] = (sz >> 16);
+            pool[ i*4 + 3 ] = (sz >> 24);
             i++;
         }
-        else
-        {
-            pool[ i*2 ] = 0;
-            pool[ i*2 + 2 ] = sz&0xffff;
-            pool[ i*2 + 3 ] = (sz>>16);
-            i += 2;
-        }
+        pool[ i*4 ]     = sz;
+        pool[ i*4 + 1 ] = sz >> 8;
+        pool[ i*4 + 2 ] = st->strings[n].persistent_refcount;
+        pool[ i*4 + 3 ] = st->strings[n].persistent_refcount >> 8;
+        i++;
         used += sz;
         if( used > datasize  )
         {
