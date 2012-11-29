@@ -372,7 +372,7 @@ extern bool MSI_RecordsAreFieldsEqual(LibmsiRecord *a, LibmsiRecord *b, unsigned
 /* stream internals */
 extern void enum_stream_names( IStorage *stg );
 extern WCHAR *encode_streamname(bool bTable, const WCHAR *in);
-extern bool decode_streamname(const WCHAR *in, WCHAR *out);
+extern void decode_streamname(const WCHAR *in, WCHAR *out);
 
 /* database internals */
 extern unsigned msi_get_raw_stream( LibmsiDatabase *, const WCHAR *, IStream **);
@@ -561,6 +561,32 @@ static inline char *strcpynA( char *dst, const char *src, unsigned count )
     }
     if (count) *d = 0;
     return dst;
+}
+
+static inline char *strdupWtoUTF8( const WCHAR *str )
+{
+    char *ret = NULL;
+    unsigned len;
+
+    if (!str) return ret;
+    len = WideCharToMultiByte( CP_UTF8, 0, str, -1, NULL, 0, NULL, NULL);
+    ret = msi_alloc( len );
+    if (ret)
+        WideCharToMultiByte( CP_UTF8, 0, str, -1, ret, len, NULL, NULL );
+    return ret;
+}
+
+static inline WCHAR *strdupUTF8toW( const char *str )
+{
+    WCHAR *ret = NULL;
+    unsigned len;
+
+    if (!str) return ret;
+    len = MultiByteToWideChar( CP_UTF8, 0, str, -1, NULL, 0 );
+    ret = msi_alloc( len * sizeof(WCHAR) );
+    if (ret)
+        MultiByteToWideChar( CP_UTF8, 0, str, -1, ret, len );
+    return ret;
 }
 
 static inline char *strdupWtoA( const WCHAR *str )

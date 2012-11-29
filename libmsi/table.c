@@ -185,30 +185,52 @@ static int mime2utf(int x)
     return '_';
 }
 
-bool decode_streamname(const WCHAR *in, WCHAR *out)
+void decode_streamname(const WCHAR *in, WCHAR *out)
 {
-    WCHAR ch;
     unsigned count = 0;
+    uint8_t *enc_utf8 = strdupWtoUTF8(in);
+    uint8_t *p = enc_utf8;
 
-    while ( (ch = *in++) )
+    uint8_t *dec_utf8 = strdup(enc_utf8);
+    uint8_t *q = dec_utf8;
+
+    while ( *p )
     {
-        if( (ch >= 0x3800 ) && (ch < 0x4840 ) )
+        uint8_t ch = *p;
+        if( (ch == 0xe3 && p[1] >= 0xa0) || (ch == 0xe4 && p[1] < 0xa0) )
         {
-            if( ch >= 0x4800 )
-                ch = mime2utf(ch-0x4800);
-            else
-            {
-                ch -= 0x3800;
-                *out++ = mime2utf(ch&0x3f);
-                count++;
-                ch = mime2utf((ch>>6)&0x3f);
-            }
+            /* UTF-8 encoding of 0x3800..0x47ff.  */
+            *q++ = mime2utf(p[2]&0x7f);
+            *q++ = mime2utf(p[1]^0xa0);
+            p += 3;
+            count += 2;
+            continue;
         }
-        *out++ = ch;
+        if( ch == 0xe4 && p[1] == 0xa0 ) {
+            /* UTF-8 encoding of 0x4800..0x483f.  */
+            *q++ = mime2utf(p[2]&0x7f);
+            p += 3;
+            count++;
+            continue;
+        }
+        *q++ = *p++;
+        if( ch >= 0xc1) {
+            *q++ = *p++;
+        }
+        if( ch >= 0xe0) {
+            *q++ = *p++;
+        }
+        if( ch >= 0xf0) {
+            *q++ = *p++;
+        }
         count++;
     }
-    *out = 0;
-    return count;
+    *q = 0;
+    msi_free(enc_utf8);
+
+    /* convert UTF8 to WCHAR */
+    MultiByteToWideChar( CP_UTF8, 0, dec_utf8, -1, out, count + 1 );
+    msi_free(dec_utf8);
 }
 
 void enum_stream_names( IStorage *stg )
