@@ -129,43 +129,61 @@ WCHAR *encode_streamname(bool bTable, const WCHAR *in)
 {
     unsigned count = MAX_STREAM_NAME;
     unsigned ch, next;
-    WCHAR *out;
-    WCHAR *p;
+    WCHAR *out_wc;
+    CHAR *out;
+    CHAR *p;
 
     if( !bTable )
         count = strlenW( in )+2;
-    if (!(out = msi_alloc( count*sizeof(WCHAR) ))) return NULL;
+    if (!(out = msi_alloc( count*3 ))) return NULL;
     p = out;
 
     if( bTable )
     {
-         *p++ = 0x4840;
-         count --;
+        /* UTF-8 encoding of 0x4840.  */
+        *p++ = 0xe4;
+        *p++ = 0xa1;
+        *p++ = 0x80;
+        count --;
     }
-    while( count -- ) 
+    while( count -- )
     {
         ch = *in++;
         if( !ch )
         {
             *p = ch;
-            return out;
+
+            /* Convert UTF-8 to WCHAR */
+	    out_wc = strdupUTF8toW(out);
+	    msi_free(out);
+            return out_wc;
         }
         if( ( ch < 0x80 ) && ( utf2mime(ch) >= 0 ) )
         {
-            ch = utf2mime(ch) + 0x4800;
+            ch = utf2mime(ch);
             next = *in;
-            if( next && (next<0x80) )
-            {
+            if( next && (next<0x80) ) {
                 next = utf2mime(next);
-                if( next != -1 )
-                {
-                     next += 0x3ffffc0;
-                     ch += (next<<6);
-                     in++;
-                }
+            } else {
+                next = -1;
             }
+            if( next == -1 )
+            {
+                /* UTF-8 encoding of 0x4800..0x483f.  */
+                *p++ = 0xe4;
+                *p++ = 0xa0;
+                *p++ = 0x80 | ch;
+            } else {
+                /* UTF-8 encoding of 0x3800..0x47ff.  */
+                *p++ = 0xe3 + (next >> 5);
+                *p++ = 0xa0 ^ next;
+                *p++ = 0x80 | ch;
+                in++;
+            }
+        } else {
+            // *p++ = ch;
+            p += WideCharToMultiByte( CP_UTF8, 0, &ch, 1, p, 5, NULL, NULL );
         }
-        *p++ = ch;
     }
     ERR("Failed to encode stream name (%s)\n",debugstr_w(in));
     msi_free( out );
