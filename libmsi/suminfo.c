@@ -20,6 +20,7 @@
 
 #include <stdarg.h>
 #include <time.h>
+#include <assert.h>
 
 #define COBJMACROS
 #define NONAMELESSUNION
@@ -514,7 +515,7 @@ LibmsiResult libmsi_summary_info_get_property(
 
     if ( uiProperty >= MSI_MAX_PROPS )
     {
-        if (puiDataType) *puiDataType = VT_EMPTY;
+        if (puiDataType) *puiDataType = LIBMSI_PROPERTY_TYPE_EMPTY;
         return LIBMSI_RESULT_UNKNOWN_PROPERTY;
     }
 
@@ -524,20 +525,26 @@ LibmsiResult libmsi_summary_info_get_property(
     msiobj_addref( &si->hdr );
     prop = &si->property[uiProperty];
 
-    if( puiDataType )
-        *puiDataType = prop->vt;
-
     switch( prop->vt )
     {
     case VT_I2:
+        if( puiDataType )
+            *puiDataType = LIBMSI_PROPERTY_TYPE_INT;
+
         if( piValue )
             *piValue = prop->iVal;
         break;
     case VT_I4:
+        if( puiDataType )
+            *puiDataType = LIBMSI_PROPERTY_TYPE_INT;
+
         if( piValue )
             *piValue = prop->lVal;
         break;
     case VT_LPSTR:
+        if( puiDataType )
+            *puiDataType = LIBMSI_PROPERTY_TYPE_STRING;
+
         if( pcchValueBuf )
         {
             unsigned len = 0;
@@ -551,10 +558,16 @@ LibmsiResult libmsi_summary_info_get_property(
         }
         break;
     case VT_FILETIME:
+        if( puiDataType )
+            *puiDataType = LIBMSI_PROPERTY_TYPE_FILETIME;
+
         if( pftValue )
             *pftValue = prop->filetime.dwLowDateTime | ((uint64_t)prop->filetime.dwHighDateTime << 32);
         break;
     case VT_EMPTY:
+        if( puiDataType )
+            *puiDataType = LIBMSI_PROPERTY_TYPE_EMPTY;
+
         break;
     default:
         FIXME("Unknown property variant type\n");
@@ -604,28 +617,17 @@ WCHAR *msi_get_suminfo_product( IStorage *stg )
     return prod;
 }
 
-LibmsiResult libmsi_summary_info_set_property( LibmsiSummaryInfo *si, unsigned uiProperty,
-               unsigned uiDataType, int iValue, uint64_t* pftValue, const char *szValue )
+static LibmsiResult _libmsi_summary_info_set_property( LibmsiSummaryInfo *si, unsigned uiProperty,
+               unsigned type, int iValue, uint64_t* pftValue, const char *szValue )
 {
     PROPVARIANT *prop;
     unsigned len;
     unsigned ret;
-    int type;
 
-    TRACE("%p %u %u %i %p %p\n", si, uiProperty, type, iValue,
-          pftValue, szValue );
-
-    if( !si )
-        return LIBMSI_RESULT_INVALID_HANDLE;
-
-    type = get_type( uiProperty );
-    if( type == VT_EMPTY || type != uiDataType )
-        return LIBMSI_RESULT_DATATYPE_MISMATCH;
-
-    if( uiDataType == VT_LPSTR && !szValue )
+    if( type == VT_LPSTR && !szValue )
         return LIBMSI_RESULT_INVALID_PARAMETER;
 
-    if( uiDataType == VT_FILETIME && !pftValue )
+    if( type == VT_FILETIME && !pftValue )
         return LIBMSI_RESULT_INVALID_PARAMETER;
 
     msiobj_addref( &si->hdr);
@@ -671,6 +673,42 @@ LibmsiResult libmsi_summary_info_set_property( LibmsiSummaryInfo *si, unsigned u
 end:
     msiobj_release( &si->hdr );
     return ret;
+}
+
+LibmsiResult libmsi_summary_info_set_property( LibmsiSummaryInfo *si, unsigned uiProperty,
+               unsigned uiDataType, int iValue, uint64_t* pftValue, const char *szValue )
+{
+    int type;
+
+    TRACE("%p %u %u %i %p %p\n", si, uiProperty, type, iValue,
+          pftValue, szValue );
+
+    if( !si )
+        return LIBMSI_RESULT_INVALID_HANDLE;
+
+    type = get_type( uiProperty );
+    switch (type) {
+    case VT_EMPTY:
+        return LIBMSI_RESULT_DATATYPE_MISMATCH;
+    case VT_I2:
+    case VT_I4:
+        if (uiDataType != LIBMSI_PROPERTY_TYPE_INT) {
+            return LIBMSI_RESULT_DATATYPE_MISMATCH;
+        }
+        break;
+    case VT_LPSTR:
+        if (uiDataType != LIBMSI_PROPERTY_TYPE_STRING) {
+            return LIBMSI_RESULT_DATATYPE_MISMATCH;
+        }
+        break;
+    case VT_FILETIME:
+        if (uiDataType != LIBMSI_PROPERTY_TYPE_FILETIME) {
+            return LIBMSI_RESULT_DATATYPE_MISMATCH;
+        }
+        break;
+    }
+
+    return _libmsi_summary_info_set_property( si, uiProperty, type, iValue, pftValue, szValue );
 }
 
 static unsigned suminfo_persist( LibmsiSummaryInfo *si )
@@ -800,7 +838,8 @@ unsigned msi_add_suminfo( LibmsiDatabase *db, WCHAR ***records, int num_records,
             if (r != LIBMSI_RESULT_SUCCESS)
                 goto end;
 
-            r = libmsi_summary_info_set_property( si, pid, get_type(pid), int_value, &ft_value, str_value );
+            assert( get_type(pid) != VT_EMPTY );
+            r = _libmsi_summary_info_set_property( si, pid, get_type(pid), int_value, &ft_value, str_value );
             if (r != LIBMSI_RESULT_SUCCESS)
                 goto end;
 

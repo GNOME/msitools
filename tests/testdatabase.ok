@@ -2761,45 +2761,45 @@ ok: r == LIBMSI_RESULT_SUCCESS
 ok: r == LIBMSI_RESULT_SUCCESS
 ok: count == 14
 ok: r == LIBMSI_RESULT_SUCCESS
-ok: type == VT_I2
+ok: type == LIBMSI_PROPERTY_TYPE_INT
 ok: int_value == 1252
 ok: r == LIBMSI_RESULT_SUCCESS
-ok: type == VT_LPSTR
+ok: type == LIBMSI_PROPERTY_TYPE_STRING
 ok: size == 18
 ok: !strcmp(str_value, "Installer Database")
 ok: r == LIBMSI_RESULT_SUCCESS
-ok: type == VT_LPSTR
+ok: type == LIBMSI_PROPERTY_TYPE_STRING
 ok: !strcmp(str_value, "Installer description")
 ok: r == LIBMSI_RESULT_SUCCESS
-ok: type == VT_LPSTR
+ok: type == LIBMSI_PROPERTY_TYPE_STRING
 ok: !strcmp(str_value, "WineHQ")
 ok: r == LIBMSI_RESULT_SUCCESS
-ok: type == VT_LPSTR
+ok: type == LIBMSI_PROPERTY_TYPE_STRING
 ok: !strcmp(str_value, "Installer")
 ok: r == LIBMSI_RESULT_SUCCESS
-ok: type == VT_LPSTR
+ok: type == LIBMSI_PROPERTY_TYPE_STRING
 ok: !strcmp(str_value, "Installer comments")
 ok: r == LIBMSI_RESULT_SUCCESS
-ok: type == VT_LPSTR
+ok: type == LIBMSI_PROPERTY_TYPE_STRING
 ok: !strcmp(str_value, "Intel;1033,2057")
 ok: r == LIBMSI_RESULT_SUCCESS
-ok: type == VT_LPSTR
+ok: type == LIBMSI_PROPERTY_TYPE_STRING
 ok: !strcmp(str_value, "{12345678-1234-1234-1234-123456789012}")
 ok: r == LIBMSI_RESULT_SUCCESS
-ok: type == VT_FILETIME
+ok: type == LIBMSI_PROPERTY_TYPE_FILETIME
 ok: r == LIBMSI_RESULT_SUCCESS
-ok: type == VT_FILETIME
+ok: type == LIBMSI_PROPERTY_TYPE_FILETIME
 ok: r == LIBMSI_RESULT_SUCCESS
-ok: type == VT_I4
+ok: type == LIBMSI_PROPERTY_TYPE_INT
 ok: int_value == 200
 ok: r == LIBMSI_RESULT_SUCCESS
-ok: type == VT_I4
+ok: type == LIBMSI_PROPERTY_TYPE_INT
 ok: int_value == 2
 ok: r == LIBMSI_RESULT_SUCCESS
-ok: type == VT_I4
+ok: type == LIBMSI_PROPERTY_TYPE_INT
 ok: int_value == 2
 ok: r == LIBMSI_RESULT_SUCCESS
-ok: type == VT_LPSTR
+ok: type == LIBMSI_PROPERTY_TYPE_STRING
 ok: !strcmp(str_value, "Vim")
 ok: res == LIBMSI_RESULT_SUCCESS
 ok: res == LIBMSI_RESULT_SUCCESS

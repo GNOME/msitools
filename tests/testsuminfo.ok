@@ -18,7 +18,7 @@ ok: val == 1234
 ok: r == LIBMSI_RESULT_SUCCESS
 ok: buf[0]=='x'
 ok: sz == 0x10
-ok: type == VT_EMPTY
+ok: type == LIBMSI_PROPERTY_TYPE_EMPTY
 ok: r == LIBMSI_RESULT_FUNCTION_FAILED
 ok: r == LIBMSI_RESULT_FUNCTION_FAILED
 ok: r == LIBMSI_RESULT_FUNCTION_FAILED
@@ -40,11 +40,11 @@ ok: r == LIBMSI_RESULT_DATATYPE_MISMATCH
 ok: r == LIBMSI_RESULT_SUCCESS
 ok: r == LIBMSI_RESULT_MORE_DATA
 ok: sz == 4
-ok: type == VT_LPSTR
+ok: type == LIBMSI_PROPERTY_TYPE_STRING
 ok: !strcmp(buf,"M")
 ok: r == LIBMSI_RESULT_MORE_DATA
 ok: sz == 4
-ok: type == VT_LPSTR
+ok: type == LIBMSI_PROPERTY_TYPE_STRING
 ok: !strcmp(buf,"Mik")
 ok: r == LIBMSI_RESULT_SUCCESS
 ok: r == LIBMSI_RESULT_FUNCTION_FAILED

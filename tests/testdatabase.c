@@ -1536,7 +1536,7 @@ static void test_streamtable(void)
     r = libmsi_database_get_summary_info( hdb, 1, &hsi );
     ok( r == LIBMSI_RESULT_SUCCESS, "Failed to get summary information handle: %u\n", r );
 
-    r = libmsi_summary_info_set_property( hsi, MSI_PID_SECURITY, VT_I4, 2, NULL, NULL );
+    r = libmsi_summary_info_set_property( hsi, MSI_PID_SECURITY, LIBMSI_PROPERTY_TYPE_INT, 2, NULL, NULL );
     ok( r == LIBMSI_RESULT_SUCCESS, "Failed to set property: %u\n", r );
 
     r = libmsi_summary_info_persist( hsi );
@@ -2143,13 +2143,13 @@ static void test_suminfo_import(void)
 
     r = libmsi_summary_info_get_property(hsi, MSI_PID_CODEPAGE, &type, &int_value, NULL, NULL, NULL);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %u\n", r);
-    ok(type ==  VT_I2, "Expected VT_I2, got %u\n", type);
+    ok(type ==  LIBMSI_PROPERTY_TYPE_INT, "Expected VT_I2, got %u\n", type);
     ok(int_value == 1252, "Expected 1252, got %d\n", int_value);
 
     size = sizeof(str_value);
     r = libmsi_summary_info_get_property(hsi, MSI_PID_TITLE, &type, NULL, NULL, str_value, &size);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %u\n", r);
-    ok(type == VT_LPSTR, "Expected VT_LPSTR, got %u\n", type);
+    ok(type == LIBMSI_PROPERTY_TYPE_STRING, "Expected VT_LPSTR, got %u\n", type);
     ok(size == 18, "Expected 18, got %u\n", size);
     ok(!strcmp(str_value, "Installer Database"),
        "Expected \"Installer Database\", got %s\n", str_value);
@@ -2157,72 +2157,72 @@ static void test_suminfo_import(void)
     size = sizeof(str_value);
     r = libmsi_summary_info_get_property(hsi, MSI_PID_SUBJECT, &type, NULL, NULL, str_value, &size);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %u\n", r);
-    ok(type == VT_LPSTR, "Expected VT_LPSTR, got %u\n", type);
+    ok(type == LIBMSI_PROPERTY_TYPE_STRING, "Expected VT_LPSTR, got %u\n", type);
     ok(!strcmp(str_value, "Installer description"),
        "Expected \"Installer description\", got %s\n", str_value);
 
     size = sizeof(str_value);
     r = libmsi_summary_info_get_property(hsi, MSI_PID_AUTHOR, &type, NULL, NULL, str_value, &size);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %u\n", r);
-    ok(type == VT_LPSTR, "Expected VT_LPSTR, got %u\n", type);
+    ok(type == LIBMSI_PROPERTY_TYPE_STRING, "Expected VT_LPSTR, got %u\n", type);
     ok(!strcmp(str_value, "WineHQ"),
        "Expected \"WineHQ\", got %s\n", str_value);
 
     size = sizeof(str_value);
     r = libmsi_summary_info_get_property(hsi, MSI_PID_KEYWORDS, &type, NULL, NULL, str_value, &size);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %u\n", r);
-    ok(type == VT_LPSTR, "Expected VT_LPSTR, got %u\n", type);
+    ok(type == LIBMSI_PROPERTY_TYPE_STRING, "Expected VT_LPSTR, got %u\n", type);
     ok(!strcmp(str_value, "Installer"),
        "Expected \"Installer\", got %s\n", str_value);
 
     size = sizeof(str_value);
     r = libmsi_summary_info_get_property(hsi, MSI_PID_COMMENTS, &type, NULL, NULL, str_value, &size);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %u\n", r);
-    ok(type == VT_LPSTR, "Expected VT_LPSTR, got %u\n", type);
+    ok(type == LIBMSI_PROPERTY_TYPE_STRING, "Expected VT_LPSTR, got %u\n", type);
     ok(!strcmp(str_value, "Installer comments"),
        "Expected \"Installer comments\", got %s\n", str_value);
 
     size = sizeof(str_value);
     r = libmsi_summary_info_get_property(hsi, MSI_PID_TEMPLATE, &type, NULL, NULL, str_value, &size);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %u\n", r);
-    ok(type == VT_LPSTR, "Expected VT_LPSTR, got %u\n", type);
+    ok(type == LIBMSI_PROPERTY_TYPE_STRING, "Expected VT_LPSTR, got %u\n", type);
     ok(!strcmp(str_value, "Intel;1033,2057"),
        "Expected \"Intel;1033,2057\", got %s\n", str_value);
 
     size = sizeof(str_value);
     r = libmsi_summary_info_get_property(hsi, MSI_PID_REVNUMBER, &type, NULL, NULL, str_value, &size);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %u\n", r);
-    ok(type == VT_LPSTR, "Expected VT_LPSTR, got %u\n", type);
+    ok(type == LIBMSI_PROPERTY_TYPE_STRING, "Expected VT_LPSTR, got %u\n", type);
     ok(!strcmp(str_value, "{12345678-1234-1234-1234-123456789012}"),
        "Expected \"{12345678-1234-1234-1234-123456789012}\", got %s\n", str_value);
 
     r = libmsi_summary_info_get_property(hsi, MSI_PID_CREATE_DTM, &type, NULL, &ft_value, NULL, NULL);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %u\n", r);
-    ok(type == VT_FILETIME, "Expected VT_FILETIME, got %u\n", type);
+    ok(type == LIBMSI_PROPERTY_TYPE_FILETIME, "Expected VT_FILETIME, got %u\n", type);
 
     r = libmsi_summary_info_get_property(hsi, MSI_PID_LASTSAVE_DTM, &type, NULL, &ft_value, NULL, NULL);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %u\n", r);
-    ok(type == VT_FILETIME, "Expected VT_FILETIME, got %u\n", type);
+    ok(type == LIBMSI_PROPERTY_TYPE_FILETIME, "Expected VT_FILETIME, got %u\n", type);
 
     r = libmsi_summary_info_get_property(hsi, MSI_PID_PAGECOUNT, &type, &int_value, NULL, NULL, NULL);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %u\n", r);
-    ok(type ==  VT_I4, "Expected VT_I4, got %u\n", type);
+    ok(type ==  LIBMSI_PROPERTY_TYPE_INT, "Expected VT_I4, got %u\n", type);
     ok(int_value == 200, "Expected 200, got %d\n", int_value);
 
     r = libmsi_summary_info_get_property(hsi, MSI_PID_WORDCOUNT, &type, &int_value, NULL, NULL, NULL);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %u\n", r);
-    ok(type ==  VT_I4, "Expected VT_I4, got %u\n", type);
+    ok(type ==  LIBMSI_PROPERTY_TYPE_INT, "Expected VT_I4, got %u\n", type);
     ok(int_value == 2, "Expected 2, got %d\n", int_value);
 
     r = libmsi_summary_info_get_property(hsi, MSI_PID_SECURITY, &type, &int_value, NULL, NULL, NULL);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %u\n", r);
-    ok(type ==  VT_I4, "Expected VT_I4, got %u\n", type);
+    ok(type ==  LIBMSI_PROPERTY_TYPE_INT, "Expected VT_I4, got %u\n", type);
     ok(int_value == 2, "Expected 2, got %d\n", int_value);
 
     size = sizeof(str_value);
     r = libmsi_summary_info_get_property(hsi, MSI_PID_APPNAME, &type, NULL, NULL, str_value, &size);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %u\n", r);
-    ok(type == VT_LPSTR, "Expected VT_LPSTR, got %u\n", type);
+    ok(type == LIBMSI_PROPERTY_TYPE_STRING, "Expected VT_LPSTR, got %u\n", type);
     ok(!strcmp(str_value, "Vim"), "Expected \"Vim\", got %s\n", str_value);
 
     libmsi_unref(hsi);
@@ -2864,30 +2864,30 @@ static unsigned set_summary_info(LibmsiDatabase *hdb)
     res = libmsi_database_get_summary_info(hdb, 7, &suminfo);
     ok( res == LIBMSI_RESULT_SUCCESS , "Failed to open summaryinfo\n" );
 
-    res = libmsi_summary_info_set_property(suminfo,2, VT_LPSTR, 0,NULL,
+    res = libmsi_summary_info_set_property(suminfo,2, LIBMSI_PROPERTY_TYPE_STRING, 0,NULL,
                         "Installation Database");
     ok( res == LIBMSI_RESULT_SUCCESS , "Failed to set summary info\n" );
 
-    res = libmsi_summary_info_set_property(suminfo,3, VT_LPSTR, 0,NULL,
+    res = libmsi_summary_info_set_property(suminfo,3, LIBMSI_PROPERTY_TYPE_STRING, 0,NULL,
                         "Installation Database");
     ok( res == LIBMSI_RESULT_SUCCESS , "Failed to set summary info\n" );
 
-    res = libmsi_summary_info_set_property(suminfo,4, VT_LPSTR, 0,NULL,
+    res = libmsi_summary_info_set_property(suminfo,4, LIBMSI_PROPERTY_TYPE_STRING, 0,NULL,
                         "Wine Hackers");
     ok( res == LIBMSI_RESULT_SUCCESS , "Failed to set summary info\n" );
 
-    res = libmsi_summary_info_set_property(suminfo,7, VT_LPSTR, 0,NULL,
+    res = libmsi_summary_info_set_property(suminfo,7, LIBMSI_PROPERTY_TYPE_STRING, 0,NULL,
                     ";1033,2057");
     ok( res == LIBMSI_RESULT_SUCCESS , "Failed to set summary info\n" );
 
-    res = libmsi_summary_info_set_property(suminfo,9, VT_LPSTR, 0,NULL,
+    res = libmsi_summary_info_set_property(suminfo,9, LIBMSI_PROPERTY_TYPE_STRING, 0,NULL,
                     "{913B8D18-FBB6-4CAC-A239-C74C11E3FA74}");
     ok( res == LIBMSI_RESULT_SUCCESS , "Failed to set summary info\n" );
 
-    res = libmsi_summary_info_set_property(suminfo, 14, VT_I4, 100, NULL, NULL);
+    res = libmsi_summary_info_set_property(suminfo, 14, LIBMSI_PROPERTY_TYPE_INT, 100, NULL, NULL);
     ok( res == LIBMSI_RESULT_SUCCESS , "Failed to set summary info\n" );
 
-    res = libmsi_summary_info_set_property(suminfo, 15, VT_I4, 0, NULL, NULL);
+    res = libmsi_summary_info_set_property(suminfo, 15, LIBMSI_PROPERTY_TYPE_INT, 0, NULL, NULL);
     ok( res == LIBMSI_RESULT_SUCCESS , "Failed to set summary info\n" );
 
     res = libmsi_summary_info_persist(suminfo);

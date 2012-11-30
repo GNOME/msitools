@@ -58,6 +58,14 @@ typedef enum LibmsiResult
     LIBMSI_RESULT_INVALID_DATATYPE = 1804
 } LibmsiResult;
 
+typedef enum LibmsiPropertyType
+{
+   LIBMSI_PROPERTY_TYPE_EMPTY = 0,
+   LIBMSI_PROPERTY_TYPE_INT = 1,
+   LIBMSI_PROPERTY_TYPE_STRING = 2,
+   LIBMSI_PROPERTY_TYPE_FILETIME = 3,
+} LibmsiPropertyType;
+
 #define MSI_NULL_INTEGER 0x80000000
 
 typedef enum LibmsiColInfo
@@ -197,9 +205,9 @@ LibmsiResult libmsi_database_apply_transform(LibmsiDatabase *,const char *,int);
 
 LibmsiResult libmsi_query_get_column_info(LibmsiQuery *, LibmsiColInfo, LibmsiRecord **);
 
-LibmsiResult libmsi_summary_info_get_property(LibmsiSummaryInfo *,unsigned,unsigned *,int *,uint64_t*,char *,unsigned *);
+LibmsiResult libmsi_summary_info_get_property(LibmsiSummaryInfo *, LibmsiPropertyType,unsigned *,int *,uint64_t*,char *,unsigned *);
 
-LibmsiResult libmsi_summary_info_set_property(LibmsiSummaryInfo *, unsigned, unsigned, int, uint64_t*, const char *);
+LibmsiResult libmsi_summary_info_set_property(LibmsiSummaryInfo *, LibmsiPropertyType, unsigned, int, uint64_t*, const char *);
 
 LibmsiResult libmsi_database_export(LibmsiDatabase *, const char *, int fd);
 
