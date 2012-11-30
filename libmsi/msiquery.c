@@ -438,9 +438,7 @@ unsigned MsiViewExecute(LibmsiObject *hView, LibmsiObject *hRec)
         }
     }
 
-    msiobj_lock( &rec->hdr );
     ret = MSI_ViewExecute( query, rec );
-    msiobj_unlock( &rec->hdr );
 
 out:
     msiobj_release( &query->hdr );

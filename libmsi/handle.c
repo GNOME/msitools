@@ -31,16 +31,6 @@
 #include "msipriv.h"
 
 
-static CRITICAL_SECTION MSI_object_cs;
-static CRITICAL_SECTION_DEBUG MSI_object_cs_debug =
-{
-    0, 0, &MSI_object_cs,
-    { &MSI_object_cs_debug.ProcessLocksList, 
-      &MSI_object_cs_debug.ProcessLocksList },
-      0, 0, { (uintptr_t)(__FILE__ ": MSI_object_cs") }
-};
-static CRITICAL_SECTION MSI_object_cs = { &MSI_object_cs_debug, -1, 0, 0, 0, 0 };
-
 void *msihandle2msiinfo(LibmsiObject *obj, unsigned type)
 {
     if( !obj )
@@ -73,16 +63,6 @@ void msiobj_addref( LibmsiObject *info )
         return;
 
     InterlockedIncrement(&info->refcount);
-}
-
-void msiobj_lock( LibmsiObject *obj )
-{
-    EnterCriticalSection( &MSI_object_cs );
-}
-
-void msiobj_unlock( LibmsiObject *obj )
-{
-    LeaveCriticalSection( &MSI_object_cs );
 }
 
 int msiobj_release( LibmsiObject *obj )

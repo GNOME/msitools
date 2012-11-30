@@ -301,14 +301,9 @@ unsigned msi_strcpy_to_awstring( const WCHAR *str, awstring *awbuf, unsigned *sz
 
 /* handle functions */
 extern void *msihandle2msiinfo(LibmsiObject *handle, unsigned type);
-extern LibmsiObject *alloc_msihandle( LibmsiObject * );
-extern LibmsiObject *alloc_msi_remote_handle( IUnknown *unk );
 extern void *alloc_msiobject(unsigned type, unsigned size, msihandledestructor destroy );
 extern void msiobj_addref(LibmsiObject *);
 extern int msiobj_release(LibmsiObject *);
-extern void msiobj_lock(LibmsiObject *);
-extern void msiobj_unlock(LibmsiObject *);
-extern void msi_free_handle_table(void);
 
 extern void free_cached_tables( LibmsiDatabase *db );
 extern unsigned MSI_CommitTables( LibmsiDatabase *db );
