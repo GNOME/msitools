@@ -21,6 +21,7 @@
 #define COBJMACROS
 
 #include <stdarg.h>
+#include <assert.h>
 
 #include "windef.h"
 #include "winbase.h"
@@ -38,6 +39,7 @@ void *alloc_msiobject(unsigned size, msihandledestructor destroy )
     info = msi_alloc_zero( size );
     if( info )
     {
+        info->magic = 0xC007C0DE;
         info->refcount = 1;
         info->destructor = destroy;
     }
@@ -50,6 +52,7 @@ void msiobj_addref( LibmsiObject *info )
     if( !info )
         return;
 
+    assert(info->magic == 0xC007C0DE);
     InterlockedIncrement(&info->refcount);
 }
 
@@ -60,11 +63,13 @@ int msiobj_release( LibmsiObject *obj )
     if( !obj )
         return -1;
 
+    assert(obj->magic == 0xC007C0DE);
     ret = InterlockedDecrement( &obj->refcount );
     if( ret==0 )
     {
         if( obj->destructor )
             obj->destructor( obj );
+        obj->magic = 0xDEADB0D7;
         msi_free( obj );
         TRACE("object %p destroyed\n", obj);
     }
