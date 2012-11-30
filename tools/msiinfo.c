@@ -25,6 +25,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
 
 static const char *program_name;
 
@@ -83,6 +84,65 @@ static void cmd_usage(FILE *out, struct Command *cmd)
     exit (out == stderr);
 }
 
+static void print_libmsi_error(LibmsiResult r)
+{
+    switch (r)
+    {
+    case LIBMSI_RESULT_SUCCESS:
+        abort();
+    case LIBMSI_RESULT_CONTINUE:
+        fprintf(stderr, "%s: internal error (continue)\n", program_name);
+        exit(1);
+    case LIBMSI_RESULT_MORE_DATA:
+        fprintf(stderr, "%s: internal error (more data)\n", program_name);
+        exit(1);
+    case LIBMSI_RESULT_INVALID_HANDLE:
+        fprintf(stderr, "%s: internal error (invalid handle)\n", program_name);
+        exit(1);
+    case LIBMSI_RESULT_NOT_ENOUGH_MEMORY:
+    case LIBMSI_RESULT_OUTOFMEMORY:
+        fprintf(stderr, "%s: out of memory\n", program_name);
+        exit(1);
+    case LIBMSI_RESULT_INVALID_DATA:
+        fprintf(stderr, "%s: invalid data\n", program_name);
+        exit(1);
+    case LIBMSI_RESULT_INVALID_PARAMETER:
+        fprintf(stderr, "%s: invalid parameter\n", program_name);
+        exit(1);
+    case LIBMSI_RESULT_OPEN_FAILED:
+        fprintf(stderr, "%s: open failed\n", program_name);
+        exit(1);
+    case LIBMSI_RESULT_CALL_NOT_IMPLEMENTED:
+        fprintf(stderr, "%s: not implemented\n", program_name);
+        exit(1);
+    case LIBMSI_RESULT_NO_MORE_ITEMS:
+    case LIBMSI_RESULT_NOT_FOUND:
+        fprintf(stderr, "%s: not found\n", program_name);
+        exit(1);
+    case LIBMSI_RESULT_UNKNOWN_PROPERTY:
+        fprintf(stderr, "%s: unknown property\n", program_name);
+        exit(1);
+    case LIBMSI_RESULT_BAD_QUERY_SYNTAX:
+        fprintf(stderr, "%s: bad query syntax\n", program_name);
+        exit(1);
+    case LIBMSI_RESULT_INVALID_FIELD:
+        fprintf(stderr, "%s: invalid field\n", program_name);
+        exit(1);
+    case LIBMSI_RESULT_FUNCTION_FAILED:
+        fprintf(stderr, "%s: internal error (function failed)\n", program_name);
+        exit(1);
+    case LIBMSI_RESULT_INVALID_TABLE:
+        fprintf(stderr, "%s: invalid table\n", program_name);
+        exit(1);
+    case LIBMSI_RESULT_DATATYPE_MISMATCH:
+        fprintf(stderr, "%s: datatype mismatch\n", program_name);
+        exit(1);
+    case LIBMSI_RESULT_INVALID_DATATYPE:
+        fprintf(stderr, "%s: invalid datatype\n", program_name);
+        exit(1);
+    }
+}
+
 static struct Command *find_cmd(const char *s)
 {
     int i;
@@ -95,6 +155,63 @@ static struct Command *find_cmd(const char *s)
 
     fprintf(stderr, "%s: Unrecognized command '%s'\n", program_name, s);
     return NULL;
+}
+
+static LibmsiResult print_strings_from_query(LibmsiQuery *query)
+{
+    LibmsiRecord *rec = NULL;
+    LibmsiResult r;
+    char name[PATH_MAX];
+
+    while ((r = libmsi_query_fetch(query, &rec)) == LIBMSI_RESULT_SUCCESS) {
+        size_t size = PATH_MAX;
+        r = libmsi_record_get_string(rec, 1, name, &size);
+        if (r) {
+            print_libmsi_error(r);
+        }
+
+        puts(name);
+        libmsi_unref(rec);
+    }
+
+    if (r == LIBMSI_RESULT_NO_MORE_ITEMS) {
+        r = LIBMSI_RESULT_SUCCESS;
+    }
+    return r;
+}
+
+static int cmd_streams(struct Command *cmd, int argc, char **argv)
+{
+    LibmsiDatabase *db = NULL;
+    LibmsiQuery *query = NULL;
+    LibmsiResult r;
+
+    if (argc != 2) {
+        cmd_usage(stderr, cmd);
+    }
+
+    r = libmsi_database_open(argv[1], LIBMSI_DB_OPEN_READONLY, &db);
+    if (r) {
+        print_libmsi_error(r);
+    }
+
+    r = libmsi_database_open_query(db, "SELECT `Name` FROM `_Streams`", &query);
+    if (r) {
+        print_libmsi_error(r);
+    }
+
+    r = libmsi_query_execute(query, NULL);
+    if (r) {
+        print_libmsi_error(r);
+    }
+
+    r = print_strings_from_query(query);
+    if (r) {
+        print_libmsi_error(r);
+    }
+
+    libmsi_unref(query);
+    libmsi_unref(db);
 }
 
 static int cmd_version(struct Command *cmd, int argc, char **argv)
@@ -121,6 +238,12 @@ static struct Command cmds[] = {
         .opts = "[SUBCOMMAND]",
         .desc = "Show program or subcommand usage",
         .func = cmd_help,
+    },
+    {
+        .cmd = "streams",
+        .opts = "FILE",
+        .desc = "List streams in a .msi file",
+        .func = cmd_streams,
     },
     {
         .cmd = "-h",
