@@ -67,7 +67,7 @@ LibmsiRecord *msi_query_merge_record( unsigned fields, const column_info *vl, Li
     LibmsiRecord *merged;
     unsigned wildcard_count = 1, i;
 
-    merged = MSI_CreateRecord( fields );
+    merged = MsiCreateRecord( fields );
     for( i=1; i <= fields; i++ )
     {
         if( !vl )
@@ -82,7 +82,7 @@ LibmsiRecord *msi_query_merge_record( unsigned fields, const column_info *vl, Li
             MSI_RecordSetStringW( merged, i, vl->val->u.sval );
             break;
         case EXPR_IVAL:
-            MSI_RecordSetInteger( merged, i, vl->val->u.ival );
+            MsiRecordSetInteger( merged, i, vl->val->u.ival );
             break;
         case EXPR_WILDCARD:
             if( !rec )
@@ -136,7 +136,7 @@ static unsigned msi_arrange_record(LibmsiInsertView *iv, LibmsiRecord **values)
     if (r != ERROR_SUCCESS)
         return r;
 
-    val_count = MSI_RecordGetFieldCount(*values);
+    val_count = MsiRecordGetFieldCount(*values);
 
     /* check to see if the columns are arranged already
      * to avoid unnecessary copying
@@ -144,7 +144,7 @@ static unsigned msi_arrange_record(LibmsiInsertView *iv, LibmsiRecord **values)
     if (col_count == val_count && msi_columns_in_order(iv, col_count))
         return ERROR_SUCCESS;
 
-    padded = MSI_CreateRecord(col_count);
+    padded = MsiCreateRecord(col_count);
     if (!padded)
         return ERROR_OUTOFMEMORY;
 
@@ -195,7 +195,7 @@ static bool row_has_null_primary_keys(LibmsiInsertView *iv, LibmsiRecord *row)
         if (!(type & MSITYPE_KEY))
             continue;
 
-        if (MSI_RecordIsNull(row, i))
+        if (MsiRecordIsNull(row, i))
             return true;
     }
 

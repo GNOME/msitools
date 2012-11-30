@@ -31,25 +31,13 @@
 #include "msipriv.h"
 
 
-void *msihandle2msiinfo(LibmsiObject *obj, unsigned type)
-{
-    if( !obj )
-        return NULL;
-    if( type && obj->type != type )
-        return NULL;
-
-    msiobj_addref( obj );
-    return obj;
-}
-
-void *alloc_msiobject(unsigned type, unsigned size, msihandledestructor destroy )
+void *alloc_msiobject(unsigned size, msihandledestructor destroy )
 {
     LibmsiObject *info;
 
     info = msi_alloc_zero( size );
     if( info )
     {
-        info->type = type;
         info->refcount = 1;
         info->destructor = destroy;
     }
@@ -87,7 +75,7 @@ int msiobj_release( LibmsiObject *obj )
 /***********************************************************
  *   MsiCloseHandle   [MSI.@]
  */
-unsigned MsiCloseHandle(LibmsiObject *obj)
+unsigned MsiCloseHandle(void *obj)
 {
     TRACE("%x\n",obj);
 

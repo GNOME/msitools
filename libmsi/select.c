@@ -121,7 +121,7 @@ static unsigned SELECT_set_row( LibmsiView *view, unsigned row, LibmsiRecord *re
         return r;
 
     /* expand the record to the right size for the underlying table */
-    expanded = MSI_CreateRecord( col_count );
+    expanded = MsiCreateRecord( col_count );
     if ( !expanded )
         return ERROR_FUNCTION_FAILED;
 
@@ -158,7 +158,7 @@ static unsigned SELECT_insert_row( LibmsiView *view, LibmsiRecord *record, unsig
     if (r != ERROR_SUCCESS)
         return r;
 
-    outrec = MSI_CreateRecord( table_cols + 1 );
+    outrec = MsiCreateRecord( table_cols + 1 );
 
     for (i=0; i<sv->num_cols; i++)
     {
@@ -274,13 +274,13 @@ static unsigned msi_select_update(LibmsiView *view, LibmsiRecord *rec, unsigned 
         }
         else if (type & MSITYPE_STRING)
         {
-            str = MSI_RecordGetString(rec, i + 1);
+            str = MSI_RecordGetStringRaw(rec, i + 1);
             r = MSI_RecordSetStringW(mod, col, str);
         }
         else
         {
-            val = MSI_RecordGetInteger(rec, i + 1);
-            r = MSI_RecordSetInteger(mod, col, val);
+            val = MsiRecordGetInteger(rec, i + 1);
+            r = MsiRecordSetInteger(mod, col, val);
         }
 
         if (r != ERROR_SUCCESS)

@@ -22,8 +22,10 @@
 #include <stdint.h>
 #include <stdbool.h>
 
-struct LibmsiObject;
-typedef struct LibmsiObject LibmsiObject;
+typedef struct LibmsiQuery LibmsiQuery;
+typedef struct LibmsiDatabase LibmsiDatabase;
+typedef struct LibmsiRecord LibmsiRecord;
+typedef struct LibmsiSummaryInfo LibmsiSummaryInfo;
 
 typedef enum LibmsiCondition
 {
@@ -143,58 +145,58 @@ extern "C" {
 
 
 /* view manipulation */
-unsigned MsiQueryFetch(LibmsiObject *,LibmsiObject **);
-unsigned MsiQueryExecute(LibmsiObject *,LibmsiObject *);
-unsigned MsiQueryClose(LibmsiObject *);
-unsigned MsiDatabaseOpenQuery(LibmsiObject *,const char *,LibmsiObject **);
-LibmsiDBError MsiQueryGetError(LibmsiObject *,char *,unsigned *);
+unsigned MsiQueryFetch(LibmsiQuery *,LibmsiRecord **);
+unsigned MsiQueryExecute(LibmsiQuery *,LibmsiRecord *);
+unsigned MsiQueryClose(LibmsiQuery *);
+unsigned MsiDatabaseOpenQuery(LibmsiDatabase *,const char *,LibmsiQuery **);
+LibmsiDBError MsiQueryGetError(LibmsiQuery *,char *,unsigned *);
 
-LibmsiDBState MsiGetDatabaseState(LibmsiObject *);
+LibmsiDBState MsiGetDatabaseState(LibmsiDatabase *);
 
 /* record manipulation */
-LibmsiObject * MsiCreateRecord(unsigned);
-unsigned MsiRecordClearData(LibmsiObject *);
-unsigned MsiRecordSetInteger(LibmsiObject *,unsigned,int);
-unsigned MsiRecordSetString(LibmsiObject *,unsigned,const char *);
-unsigned MsiRecordGetString(LibmsiObject *,unsigned,char *,unsigned *);
-unsigned MsiRecordGetFieldCount(LibmsiObject *);
-int MsiRecordGetInteger(LibmsiObject *,unsigned);
-unsigned MsiRecordDataSize(LibmsiObject *,unsigned);
-bool MsiRecordIsNull(LibmsiObject *,unsigned);
+LibmsiRecord * MsiCreateRecord(unsigned);
+unsigned MsiRecordClearData(LibmsiRecord *);
+unsigned MsiRecordSetInteger(LibmsiRecord *,unsigned,int);
+unsigned MsiRecordSetString(LibmsiRecord *,unsigned,const char *);
+unsigned MsiRecordGetString(const LibmsiRecord *,unsigned,char *,unsigned *);
+unsigned MsiRecordGetFieldCount(const LibmsiRecord *);
+int MsiRecordGetInteger(const LibmsiRecord *,unsigned);
+unsigned MsiRecordDataSize(const LibmsiRecord *,unsigned);
+bool MsiRecordIsNull(const LibmsiRecord *,unsigned);
 
-unsigned MsiRecordSetStream(LibmsiObject *,unsigned,const char *);
-unsigned MsiRecordReadStream(LibmsiObject *,unsigned,char*,unsigned *);
+unsigned MsiRecordSetStream(LibmsiRecord *,unsigned,const char *);
+unsigned MsiRecordReadStream(LibmsiRecord *,unsigned,char*,unsigned *);
 
-unsigned MsiDatabaseGetPrimaryKeys(LibmsiObject *,const char *,LibmsiObject **);
+unsigned MsiDatabaseGetPrimaryKeys(LibmsiDatabase *,const char *,LibmsiRecord **);
 
 /* database transforms */
-unsigned MsiDatabaseApplyTransform(LibmsiObject *,const char *,int);
+unsigned MsiDatabaseApplyTransform(LibmsiDatabase *,const char *,int);
 
-unsigned MsiQueryGetColumnInfo(LibmsiObject *, LibmsiColInfo, LibmsiObject **);
+unsigned MsiQueryGetColumnInfo(LibmsiQuery *, LibmsiColInfo, LibmsiRecord **);
 
-unsigned MsiSummaryInfoGetProperty(LibmsiObject *,unsigned,unsigned *,int *,uint64_t*,char *,unsigned *);
+unsigned MsiSummaryInfoGetProperty(LibmsiSummaryInfo *,unsigned,unsigned *,int *,uint64_t*,char *,unsigned *);
 
-unsigned MsiSummaryInfoSetProperty(LibmsiObject *, unsigned, unsigned, int, uint64_t*, const char *);
+unsigned MsiSummaryInfoSetProperty(LibmsiSummaryInfo *, unsigned, unsigned, int, uint64_t*, const char *);
 
-unsigned MsiDatabaseExport(LibmsiObject *, const char *, int fd);
+unsigned MsiDatabaseExport(LibmsiDatabase *, const char *, int fd);
 
-unsigned MsiDatabaseImport(LibmsiObject *, const char *, const char *);
+unsigned MsiDatabaseImport(LibmsiDatabase *, const char *, const char *);
 
-unsigned MsiOpenDatabase(const char *, const char *, LibmsiObject **);
+unsigned MsiOpenDatabase(const char *, const char *, LibmsiDatabase **);
 
-LibmsiCondition MsiDatabaseIsTablePersistent(LibmsiObject *, const char *);
+LibmsiCondition MsiDatabaseIsTablePersistent(LibmsiDatabase *, const char *);
 
-unsigned MsiSummaryInfoPersist(LibmsiObject *);
-unsigned MsiSummaryInfoGetPropertyCount(LibmsiObject *,unsigned *);
+unsigned MsiSummaryInfoPersist(LibmsiSummaryInfo *);
+unsigned MsiSummaryInfoGetPropertyCount(LibmsiSummaryInfo *,unsigned *);
 
-unsigned MsiQueryModify(LibmsiObject *, LibmsiModify, LibmsiObject *);
+unsigned MsiQueryModify(LibmsiQuery *, LibmsiModify, LibmsiRecord *);
 
-unsigned MsiDatabaseMerge(LibmsiObject *, LibmsiObject *, const char *);
+unsigned MsiDatabaseMerge(LibmsiDatabase *, LibmsiDatabase *, const char *);
 
 /* Non Unicode */
-unsigned MsiGetSummaryInformation(LibmsiObject *, unsigned, LibmsiObject **);
-unsigned MsiDatabaseCommit(LibmsiObject *);
-unsigned MsiCloseHandle(LibmsiObject *);
+unsigned MsiGetSummaryInformation(LibmsiDatabase *, unsigned, LibmsiSummaryInfo **);
+unsigned MsiDatabaseCommit(LibmsiDatabase *);
+unsigned MsiCloseHandle(void *);
 
 #ifdef __cplusplus
 }

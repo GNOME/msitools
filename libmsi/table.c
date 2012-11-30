@@ -826,7 +826,7 @@ unsigned msi_create_table( LibmsiDatabase *db, const WCHAR *name, column_info *c
     if( r )
         goto err;
 
-    rec = MSI_CreateRecord( 1 );
+    rec = MsiCreateRecord( 1 );
     if( !rec )
         goto err;
 
@@ -857,7 +857,7 @@ unsigned msi_create_table( LibmsiDatabase *db, const WCHAR *name, column_info *c
         if( r )
             goto err;
 
-        rec = MSI_CreateRecord( 4 );
+        rec = MsiCreateRecord( 4 );
         if( !rec )
             goto err;
 
@@ -872,7 +872,7 @@ unsigned msi_create_table( LibmsiDatabase *db, const WCHAR *name, column_info *c
         nField = 1;
         for( col = col_info; col; col = col->next )
         {
-            r = MSI_RecordSetInteger( rec, 2, nField );
+            r = MsiRecordSetInteger( rec, 2, nField );
             if( r )
                 goto err;
 
@@ -880,7 +880,7 @@ unsigned msi_create_table( LibmsiDatabase *db, const WCHAR *name, column_info *c
             if( r )
                 goto err;
 
-            r = MSI_RecordSetInteger( rec, 4, col->type );
+            r = MsiRecordSetInteger( rec, 4, col->type );
             if( r )
                 goto err;
 
@@ -1272,7 +1272,7 @@ static unsigned msi_addstreamW( LibmsiDatabase *db, const WCHAR *name, IStream *
 
     TRACE("%p %s %p\n", db, debugstr_w(name), data);
 
-    rec = MSI_CreateRecord( 2 );
+    rec = MsiCreateRecord( 2 );
     if ( !rec )
         return ERROR_OUTOFMEMORY;
 
@@ -1303,7 +1303,7 @@ static unsigned get_table_value_from_record( LibmsiTableVIEW *tv, LibmsiRecord *
 
     if ( (iField <= 0) ||
          (iField > tv->num_cols) ||
-          MSI_RecordIsNull( rec, iField ) )
+          MsiRecordIsNull( rec, iField ) )
         return ERROR_FUNCTION_FAILED;
 
     columninfo = tv->columns[ iField - 1 ];
@@ -1314,7 +1314,7 @@ static unsigned get_table_value_from_record( LibmsiTableVIEW *tv, LibmsiRecord *
     }
     else if ( columninfo.type & MSITYPE_STRING )
     {
-        const WCHAR *sval = MSI_RecordGetString( rec, iField );
+        const WCHAR *sval = MSI_RecordGetStringRaw( rec, iField );
         if (sval)
         {
             r = msi_string2idW(tv->db->strings, sval, pvalue);
@@ -1325,7 +1325,7 @@ static unsigned get_table_value_from_record( LibmsiTableVIEW *tv, LibmsiRecord *
     }
     else if ( bytes_per_column( tv->db, &columninfo, LONG_STR_BYTES ) == 2 )
     {
-        *pvalue = 0x8000 + MSI_RecordGetInteger( rec, iField );
+        *pvalue = 0x8000 + MsiRecordGetInteger( rec, iField );
         if ( *pvalue & 0xffff0000 )
         {
             ERR("field %u value %d out of range\n", iField, *pvalue - 0x8000);
@@ -1334,7 +1334,7 @@ static unsigned get_table_value_from_record( LibmsiTableVIEW *tv, LibmsiRecord *
     }
     else
     {
-        int ival = MSI_RecordGetInteger( rec, iField );
+        int ival = MsiRecordGetInteger( rec, iField );
         *pvalue = ival ^ 0x80000000;
     }
 
@@ -1366,7 +1366,7 @@ static unsigned TABLE_set_row( LibmsiView *view, unsigned row, LibmsiRecord *rec
         /* FIXME: should we allow updating keys? */
 
         val = 0;
-        if ( !MSI_RecordIsNull( rec, i + 1 ) )
+        if ( !MsiRecordIsNull( rec, i + 1 ) )
         {
             r = get_table_value_from_record (tv, rec, i + 1, &val);
             if ( MSITYPE_IS_BINARY(tv->columns[ i ].type) )
@@ -1401,7 +1401,7 @@ static unsigned TABLE_set_row( LibmsiView *view, unsigned row, LibmsiRecord *rec
 
                 if ( r != ERROR_SUCCESS )
                 {
-                    const WCHAR *sval = MSI_RecordGetString( rec, i + 1 );
+                    const WCHAR *sval = MSI_RecordGetStringRaw( rec, i + 1 );
                     val = msi_addstringW( tv->db->strings, sval, -1, 1,
                       persistent ? StringPersistent : StringNonPersistent );
                 }
@@ -1573,7 +1573,7 @@ static unsigned table_validate_new( LibmsiTableVIEW *tv, LibmsiRecord *rec, unsi
         {
             const WCHAR *str;
 
-            str = MSI_RecordGetString( rec, i+1 );
+            str = MSI_RecordGetStringRaw( rec, i+1 );
             if (str == NULL || str[0] == 0)
             {
                 if (column) *column = i;
@@ -1584,7 +1584,7 @@ static unsigned table_validate_new( LibmsiTableVIEW *tv, LibmsiRecord *rec, unsi
         {
             unsigned n;
 
-            n = MSI_RecordGetInteger( rec, i+1 );
+            n = MsiRecordGetInteger( rec, i+1 );
             if (n == MSI_NULL_INTEGER)
             {
                 if (column) *column = i;
@@ -1795,7 +1795,7 @@ static unsigned msi_refresh_record( LibmsiView *view, LibmsiRecord *rec, unsigne
     /* Close the original record */
     MSI_CloseRecord(&rec->hdr);
 
-    count = MSI_RecordGetFieldCount(rec);
+    count = MsiRecordGetFieldCount(rec);
     for (i = 0; i < count; i++)
         MSI_RecordCopyField(curr, i + 1, rec, i + 1);
 
@@ -1994,12 +1994,12 @@ static unsigned TABLE_remove_column(LibmsiView *view, const WCHAR *table, unsign
     LibmsiView *columns = NULL;
     unsigned row, r;
 
-    rec = MSI_CreateRecord(2);
+    rec = MsiCreateRecord(2);
     if (!rec)
         return ERROR_OUTOFMEMORY;
 
     MSI_RecordSetStringW(rec, 1, table);
-    MSI_RecordSetInteger(rec, 2, number);
+    MsiRecordSetInteger(rec, 2, number);
 
     r = TABLE_CreateView(tv->db, szColumns, &columns);
     if (r != ERROR_SUCCESS)
@@ -2066,14 +2066,14 @@ static unsigned TABLE_add_column(LibmsiView *view, const WCHAR *table, unsigned 
     LibmsiRecord *rec;
     unsigned r, i;
 
-    rec = MSI_CreateRecord(4);
+    rec = MsiCreateRecord(4);
     if (!rec)
         return ERROR_OUTOFMEMORY;
 
     MSI_RecordSetStringW(rec, 1, table);
-    MSI_RecordSetInteger(rec, 2, number);
+    MsiRecordSetInteger(rec, 2, number);
     MSI_RecordSetStringW(rec, 3, column);
-    MSI_RecordSetInteger(rec, 4, type);
+    MsiRecordSetInteger(rec, 4, type);
 
     r = TABLE_insert_row(&tv->view, rec, -1, false);
     if (r != ERROR_SUCCESS)
@@ -2117,7 +2117,7 @@ static unsigned TABLE_drop(LibmsiView *view)
             return r;
     }
 
-    rec = MSI_CreateRecord(1);
+    rec = MsiCreateRecord(1);
     if (!rec)
         return ERROR_OUTOFMEMORY;
 
@@ -2344,7 +2344,7 @@ static LibmsiRecord *msi_get_transform_record( const LibmsiTableVIEW *tv, const 
     mask = rawdata[0] | (rawdata[1] << 8);
     rawdata += 2;
 
-    rec = MSI_CreateRecord( tv->num_cols );
+    rec = MsiCreateRecord( tv->num_cols );
     if( !rec )
         return rec;
 
@@ -2399,13 +2399,13 @@ static LibmsiRecord *msi_get_transform_record( const LibmsiTableVIEW *tv, const 
             case 2:
                 val = read_raw_int(rawdata, ofs, n);
                 if (val)
-                    MSI_RecordSetInteger( rec, i+1, val-0x8000 );
+                    MsiRecordSetInteger( rec, i+1, val-0x8000 );
                 TRACE(" field %d [0x%04x]\n", i+1, val );
                 break;
             case 4:
                 val = read_raw_int(rawdata, ofs, n);
                 if (val)
-                    MSI_RecordSetInteger( rec, i+1, val^0x80000000 );
+                    MsiRecordSetInteger( rec, i+1, val^0x80000000 );
                 TRACE(" field %d [0x%08x]\n", i+1, val );
                 break;
             default:
@@ -2422,17 +2422,17 @@ static void dump_record( LibmsiRecord *rec )
 {
     unsigned i, n;
 
-    n = MSI_RecordGetFieldCount( rec );
+    n = MsiRecordGetFieldCount( rec );
     for( i=1; i<=n; i++ )
     {
         const WCHAR *sval;
 
-        if( MSI_RecordIsNull( rec, i ) )
+        if( MsiRecordIsNull( rec, i ) )
             TRACE("row -> []\n");
-        else if( (sval = MSI_RecordGetString( rec, i )) )
+        else if( (sval = MSI_RecordGetStringRaw( rec, i )) )
             TRACE("row -> [%s]\n", debugstr_w(sval));
         else
-            TRACE("row -> [0x%08x]\n", MSI_RecordGetInteger( rec, i ) );
+            TRACE("row -> [0x%08x]\n", MsiRecordGetInteger( rec, i ) );
     }
 }
 
@@ -2465,7 +2465,7 @@ static unsigned* msi_record_to_row( const LibmsiTableVIEW *tv, LibmsiRecord *rec
         if ( ( tv->columns[i].type & MSITYPE_STRING ) &&
              ! MSITYPE_IS_BINARY(tv->columns[i].type) )
         {
-            str = MSI_RecordGetString( rec, i+1 );
+            str = MSI_RecordGetStringRaw( rec, i+1 );
             if (str)
             {
                 r = msi_string2idW( tv->db->strings, str, &data[i] );
@@ -2482,7 +2482,7 @@ static unsigned* msi_record_to_row( const LibmsiTableVIEW *tv, LibmsiRecord *rec
         }
         else
         {
-            data[i] = MSI_RecordGetInteger( rec, i+1 );
+            data[i] = MsiRecordGetInteger( rec, i+1 );
 
             if (data[i] == MSI_NULL_INTEGER)
                 data[i] = 0;
@@ -2654,7 +2654,7 @@ static unsigned msi_table_load_transform( LibmsiDatabase *db, IStorage *stg,
             if (!strcmpW( name, szColumns ))
             {
                 MSI_RecordGetStringW( rec, 1, table, &sz );
-                number = MSI_RecordGetInteger( rec, 2 );
+                number = MsiRecordGetInteger( rec, 2 );
 
                 /*
                  * Native msi seems writes nul into the Number (2nd) column of
@@ -2670,7 +2670,7 @@ static unsigned msi_table_load_transform( LibmsiDatabase *db, IStorage *stg,
                     }
 
                     /* fix nul column numbers */
-                    MSI_RecordSetInteger( rec, 2, ++colcol );
+                    MsiRecordSetInteger( rec, 2, ++colcol );
                 }
             }
 

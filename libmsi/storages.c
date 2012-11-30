@@ -195,7 +195,7 @@ static unsigned STORAGES_set_row(LibmsiView *view, unsigned row, LibmsiRecord *r
         return r;
     }
 
-    name = strdupW(MSI_RecordGetString(rec, 1));
+    name = strdupW(MSI_RecordGetStringRaw(rec, 1));
     if (!name)
     {
         r = ERROR_OUTOFMEMORY;
@@ -308,7 +308,7 @@ static unsigned storages_find_row(LibmsiStorageView *sv, LibmsiRecord *rec, unsi
     const WCHAR *str;
     unsigned r, i, id, data;
 
-    str = MSI_RecordGetString(rec, 1);
+    str = MSI_RecordGetStringRaw(rec, 1);
     r = msi_string2idW(sv->db->strings, str, &id);
     if (r != ERROR_SUCCESS)
         return r;

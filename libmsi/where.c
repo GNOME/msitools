@@ -323,7 +323,7 @@ static unsigned WHERE_set_row( LibmsiView *view, unsigned row, LibmsiRecord *rec
             continue;
         }
 
-        reduced = MSI_CreateRecord(col_count);
+        reduced = MsiCreateRecord(col_count);
         if (!reduced)
             return ERROR_FUNCTION_FAILED;
 
@@ -503,7 +503,7 @@ static unsigned STRING_evaluate( LibmsiWhereView *wv, const unsigned rows[],
         break;
 
     case EXPR_WILDCARD:
-        *str = MSI_RecordGetString(record, ++wv->rec_index);
+        *str = MSI_RecordGetStringRaw(record, ++wv->rec_index);
         break;
 
     default:
@@ -587,7 +587,7 @@ static unsigned WHERE_evaluate( LibmsiWhereView *wv, const unsigned rows[],
         return STRCMP_Evaluate( wv, rows, &cond->u.expr, val, record );
 
     case EXPR_WILDCARD:
-        *val = MSI_RecordGetInteger( record, ++wv->rec_index );
+        *val = MsiRecordGetInteger( record, ++wv->rec_index );
         return ERROR_SUCCESS;
 
     default:
@@ -881,7 +881,7 @@ static unsigned join_find_row( LibmsiWhereView *wv, LibmsiRecord *rec, unsigned 
     const WCHAR *str;
     unsigned r, i, id, data;
 
-    str = MSI_RecordGetString( rec, 1 );
+    str = MSI_RecordGetStringRaw( rec, 1 );
     r = msi_string2idW( wv->db->strings, str, &id );
     if (r != ERROR_SUCCESS)
         return r;
@@ -915,9 +915,9 @@ static unsigned join_modify_update( LibmsiView *view, LibmsiRecord *rec )
     if (r != ERROR_SUCCESS)
         return r;
 
-    assert(MSI_RecordGetFieldCount(rec) == MSI_RecordGetFieldCount(current));
+    assert(MsiRecordGetFieldCount(rec) == MsiRecordGetFieldCount(current));
 
-    for (i = MSI_RecordGetFieldCount(rec); i > 0; i--)
+    for (i = MsiRecordGetFieldCount(rec); i > 0; i--)
     {
         if (!MSI_RecordsAreFieldsEqual(rec, current, i))
             mask |= 1 << (i - 1);

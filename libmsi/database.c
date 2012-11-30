@@ -296,7 +296,7 @@ static HRESULT db_initialize( IStorage *stg, const GUID *clsid )
     return S_OK;
 }
 
-unsigned MSI_OpenDatabase(const char *szDBPath, const char *szPersist, LibmsiDatabase **pdb)
+unsigned MsiOpenDatabase(const char *szDBPath, const char *szPersist, LibmsiDatabase **pdb)
 {
     IStorage *stg = NULL;
     HRESULT r;
@@ -308,7 +308,7 @@ unsigned MSI_OpenDatabase(const char *szDBPath, const char *szPersist, LibmsiDat
     bool created = false, patch = false;
     char path[MAX_PATH];
 
-    TRACE("%s %s\n",debugstr_w(szDBPath),debugstr_w(szPersist) );
+    TRACE("%s %p\n",debugstr_a(szDBPath),szPersist );
 
     if( !pdb )
         return ERROR_INVALID_PARAMETER;
@@ -403,8 +403,7 @@ unsigned MSI_OpenDatabase(const char *szDBPath, const char *szPersist, LibmsiDat
         goto end;
     }
 
-    db = alloc_msiobject( LIBMSI_OBJECT_TYPE_DATABASE, sizeof (LibmsiDatabase),
-                              MSI_CloseDatabase );
+    db = alloc_msiobject( sizeof (LibmsiDatabase), MSI_CloseDatabase );
     if( !db )
     {
         FIXME("Failed to allocate a handle\n");
@@ -450,22 +449,6 @@ end:
         msiobj_release( &db->hdr );
     if( stg )
         IStorage_Release( stg );
-
-    return ret;
-}
-
-unsigned MsiOpenDatabase(const char *szDBPath, const char *szPersist, LibmsiObject **phDB)
-{
-    LibmsiDatabase *db;
-    unsigned ret;
-
-    TRACE("%s %s %p\n",debugstr_a(szDBPath),debugstr_a(szPersist), phDB);
-
-    ret = MSI_OpenDatabase( szDBPath, szPersist, &db );
-    if( ret == ERROR_SUCCESS )
-    {
-        *phDB = &db->hdr;
-    }
 
     return ret;
 }
@@ -756,7 +739,7 @@ static unsigned msi_add_table_to_db(LibmsiDatabase *db, WCHAR **columns, WCHAR *
         goto done;
 
     r = MSI_QueryExecute(view, NULL);
-    MSI_QueryClose(view);
+    MsiQueryClose(view);
     msiobj_release(&view->hdr);
 
 done:
@@ -799,7 +782,7 @@ static unsigned construct_record(unsigned num_columns, WCHAR **types,
 {
     unsigned i;
 
-    *rec = MSI_CreateRecord(num_columns);
+    *rec = MsiCreateRecord(num_columns);
     if (!*rec)
         return ERROR_OUTOFMEMORY;
 
@@ -812,7 +795,7 @@ static unsigned construct_record(unsigned num_columns, WCHAR **types,
                 break;
             case 'I': case 'i':
                 if (*data[i])
-                    MSI_RecordSetInteger(*rec, i + 1, atoiW(data[i]));
+                    MsiRecordSetInteger(*rec, i + 1, atoiW(data[i]));
                 break;
             case 'V': case 'v':
                 if (*data[i])
@@ -906,7 +889,7 @@ static unsigned MSI_DatabaseImport(LibmsiDatabase *db, const char *folder, const
     static const WCHAR forcecodepage[] =
         {'_','F','o','r','c','e','C','o','d','e','p','a','g','e',0};
 
-    TRACE("%p %s %s\n", db, debugstr_a(folder), debugstr_w(file) );
+    TRACE("%p %s %s\n", db, debugstr_a(folder), debugstr_a(file) );
 
     if( folder == NULL || file == NULL )
         return ERROR_INVALID_PARAMETER;
@@ -1003,16 +986,16 @@ done:
     return r;
 }
 
-unsigned MsiDatabaseImport(LibmsiObject *handle, const char *szFolder, const char *szFilename)
+unsigned MsiDatabaseImport(LibmsiDatabase *db, const char *szFolder, const char *szFilename)
 {
-    LibmsiDatabase *db;
     unsigned r;
 
-    TRACE("%x %s %s\n",handle,debugstr_w(szFolder), debugstr_w(szFilename));
+    TRACE("%x %s %s\n",db,debugstr_a(szFolder), debugstr_a(szFilename));
 
-    db = msihandle2msiinfo( handle, LIBMSI_OBJECT_TYPE_DATABASE );
     if( !db )
         return ERROR_INVALID_HANDLE;
+
+    msiobj_addref( &db->hdr );
     r = MSI_DatabaseImport( db, szFolder, szFilename );
     msiobj_release( &db->hdr );
     return r;
@@ -1030,11 +1013,11 @@ static unsigned msi_export_record( int fd, LibmsiRecord *row, unsigned start )
     if ( !buffer )
         return ERROR_OUTOFMEMORY;
 
-    count = MSI_RecordGetFieldCount( row );
+    count = MsiRecordGetFieldCount( row );
     for ( i=start; i<=count; i++ )
     {
         sz = len;
-        r = MSI_RecordGetStringA( row, i, buffer, &sz );
+        r = MsiRecordGetString( row, i, buffer, &sz );
         if (r == ERROR_MORE_DATA)
         {
             char *p = msi_realloc( buffer, sz + 1 );
@@ -1044,7 +1027,7 @@ static unsigned msi_export_record( int fd, LibmsiRecord *row, unsigned start )
             buffer = p;
         }
         sz = len;
-        r = MSI_RecordGetStringA( row, i, buffer, &sz );
+        r = MsiRecordGetString( row, i, buffer, &sz );
         if (r != ERROR_SUCCESS)
             break;
 
@@ -1097,8 +1080,7 @@ static unsigned MSI_DatabaseExport( LibmsiDatabase *db, const WCHAR *table,
     LibmsiQuery *view = NULL;
     unsigned r;
 
-    TRACE("%p %s %s %s\n", db, debugstr_w(table),
-          debugstr_w(folder), debugstr_w(file) );
+    TRACE("%p %s %d\n", db, debugstr_w(table), fd );
 
     if (!strcmpW( table, forcecodepage ))
     {
@@ -1159,17 +1141,15 @@ done:
  *
  * row4 : data <tab> data <tab> data <tab> ... data <cr> <lf>
  */
-unsigned MsiDatabaseExport( LibmsiObject *handle, const char *szTable,
+unsigned MsiDatabaseExport( LibmsiDatabase *db, const char *szTable,
                int fd )
 {
-    LibmsiDatabase *db;
     WCHAR *path = NULL;
     WCHAR *file = NULL;
     WCHAR *table = NULL;
     unsigned r = ERROR_OUTOFMEMORY;
 
-    TRACE("%x %s %s %s\n", handle, debugstr_a(szTable),
-          debugstr_a(szFolder), debugstr_a(szFilename));
+    TRACE("%x %s %d\n", db, debugstr_a(szTable), fd);
 
     if( szTable )
     {
@@ -1178,9 +1158,10 @@ unsigned MsiDatabaseExport( LibmsiObject *handle, const char *szTable,
             goto end;
     }
 
-    db = msihandle2msiinfo( handle, LIBMSI_OBJECT_TYPE_DATABASE );
     if( !db )
         return ERROR_INVALID_HANDLE;
+
+    msiobj_addref ( &db->hdr );
     r = MSI_DatabaseExport( db, table, fd );
     msiobj_release( &db->hdr );
 
@@ -1247,13 +1228,13 @@ static unsigned merge_verify_colnames(LibmsiQuery *dbview, LibmsiQuery *mergevie
     if (r != ERROR_SUCCESS)
         return r;
 
-    count = MSI_RecordGetFieldCount(dbrec);
+    count = MsiRecordGetFieldCount(dbrec);
     for (i = 1; i <= count; i++)
     {
-        if (!MSI_RecordGetString(mergerec, i))
+        if (!MSI_RecordGetStringRaw(mergerec, i))
             break;
 
-        if (strcmpW( MSI_RecordGetString( dbrec, i ), MSI_RecordGetString( mergerec, i ) ))
+        if (strcmpW( MSI_RecordGetStringRaw( dbrec, i ), MSI_RecordGetStringRaw( mergerec, i ) ))
         {
             r = ERROR_DATATYPE_MISMATCH;
             goto done;
@@ -1272,14 +1253,14 @@ static unsigned merge_verify_colnames(LibmsiQuery *dbview, LibmsiQuery *mergevie
     if (r != ERROR_SUCCESS)
         return r;
 
-    count = MSI_RecordGetFieldCount(dbrec);
+    count = MsiRecordGetFieldCount(dbrec);
     for (i = 1; i <= count; i++)
     {
-        if (!MSI_RecordGetString(mergerec, i))
+        if (!MSI_RecordGetStringRaw(mergerec, i))
             break;
 
-        if (!merge_type_match(MSI_RecordGetString(dbrec, i),
-                     MSI_RecordGetString(mergerec, i)))
+        if (!merge_type_match(MSI_RecordGetStringRaw(dbrec, i),
+                     MSI_RecordGetStringRaw(mergerec, i)))
         {
             r = ERROR_DATATYPE_MISMATCH;
             break;
@@ -1307,8 +1288,8 @@ static unsigned merge_verify_primary_keys(LibmsiDatabase *db, LibmsiDatabase *me
     if (r != ERROR_SUCCESS)
         goto done;
 
-    count = MSI_RecordGetFieldCount(dbrec);
-    if (count != MSI_RecordGetFieldCount(mergerec))
+    count = MsiRecordGetFieldCount(dbrec);
+    if (count != MsiRecordGetFieldCount(mergerec))
     {
         r = ERROR_DATATYPE_MISMATCH;
         goto done;
@@ -1316,7 +1297,7 @@ static unsigned merge_verify_primary_keys(LibmsiDatabase *db, LibmsiDatabase *me
 
     for (i = 1; i <= count; i++)
     {
-        if (strcmpW( MSI_RecordGetString( dbrec, i ), MSI_RecordGetString( mergerec, i ) ))
+        if (strcmpW( MSI_RecordGetStringRaw( dbrec, i ), MSI_RecordGetStringRaw( mergerec, i ) ))
         {
             r = ERROR_DATATYPE_MISMATCH;
             goto done;
@@ -1356,7 +1337,7 @@ static WCHAR *get_key_value(LibmsiQuery *view, const WCHAR *key, LibmsiRecord *r
         return NULL;
     sz++;
 
-    if (MSI_RecordGetString(rec, i))  /* check record field is a string */
+    if (MSI_RecordGetStringRaw(rec, i))  /* check record field is a string */
     {
         /* quote string record fields */
         const WCHAR szQuote[] = {'\'', 0};
@@ -1418,10 +1399,10 @@ static WCHAR *create_diff_row_query(LibmsiDatabase *merge, LibmsiQuery *view,
         goto done;
 
     size = 1;
-    count = MSI_RecordGetFieldCount(keys);
+    count = MsiRecordGetFieldCount(keys);
     for (i = 1; i <= count; i++)
     {
-        key = MSI_RecordGetString(keys, i);
+        key = MSI_RecordGetStringRaw(keys, i);
         val = get_key_value(view, key, rec);
 
         if (i == count)
@@ -1524,7 +1505,7 @@ static unsigned msi_get_table_labels(LibmsiDatabase *db, const WCHAR *table, WCH
     if (r != ERROR_SUCCESS)
         return r;
 
-    count = MSI_RecordGetFieldCount(prec);
+    count = MsiRecordGetFieldCount(prec);
     *numlabels = count + 1;
     *labels = msi_alloc((*numlabels)*sizeof(WCHAR *));
     if (!*labels)
@@ -1536,7 +1517,7 @@ static unsigned msi_get_table_labels(LibmsiDatabase *db, const WCHAR *table, WCH
     (*labels)[0] = strdupW(table);
     for (i=1; i<=count; i++ )
     {
-        (*labels)[i] = strdupW(MSI_RecordGetString(prec, i));
+        (*labels)[i] = strdupW(MSI_RecordGetStringRaw(prec, i));
     }
 
 end:
@@ -1553,7 +1534,7 @@ static unsigned msi_get_query_columns(LibmsiQuery *query, WCHAR ***columns, unsi
     if (r != ERROR_SUCCESS)
         return r;
 
-    count = MSI_RecordGetFieldCount(prec);
+    count = MsiRecordGetFieldCount(prec);
     *columns = msi_alloc(count*sizeof(WCHAR *));
     if (!*columns)
     {
@@ -1563,7 +1544,7 @@ static unsigned msi_get_query_columns(LibmsiQuery *query, WCHAR ***columns, unsi
 
     for (i=1; i<=count; i++ )
     {
-        (*columns)[i-1] = strdupW(MSI_RecordGetString(prec, i));
+        (*columns)[i-1] = strdupW(MSI_RecordGetStringRaw(prec, i));
     }
 
     *numcolumns = count;
@@ -1582,7 +1563,7 @@ static unsigned msi_get_query_types(LibmsiQuery *query, WCHAR ***types, unsigned
     if (r != ERROR_SUCCESS)
         return r;
 
-    count = MSI_RecordGetFieldCount(prec);
+    count = MsiRecordGetFieldCount(prec);
     *types = msi_alloc(count*sizeof(WCHAR *));
     if (!*types)
     {
@@ -1593,7 +1574,7 @@ static unsigned msi_get_query_types(LibmsiQuery *query, WCHAR ***types, unsigned
     *numtypes = count;
     for (i=1; i<=count; i++ )
     {
-        (*types)[i-1] = strdupW(MSI_RecordGetString(prec, i));
+        (*types)[i-1] = strdupW(MSI_RecordGetStringRaw(prec, i));
     }
 
 end:
@@ -1709,7 +1690,7 @@ static unsigned merge_diff_tables(LibmsiRecord *rec, void *param)
     static const WCHAR query[] = {'S','E','L','E','C','T',' ','*',' ',
         'F','R','O','M',' ','`','%','s','`',0};
 
-    name = MSI_RecordGetString(rec, 1);
+    name = MSI_RecordGetStringRaw(rec, 1);
 
     r = MSI_OpenQuery(data->merge, &mergeview, query, name);
     if (r != ERROR_SUCCESS)
@@ -1845,32 +1826,28 @@ static unsigned update_merge_errors(LibmsiDatabase *db, const WCHAR *error,
     return r;
 }
 
-unsigned MsiDatabaseMerge(LibmsiObject *hDatabase, LibmsiObject *hDatabaseMerge,
+unsigned MsiDatabaseMerge(LibmsiDatabase *db, LibmsiDatabase *merge,
                               const char *szTableName)
 {
     struct list tabledata = LIST_INIT(tabledata);
     struct list *item, *cursor;
-    LibmsiDatabase *db, *merge;
     WCHAR *szwTableName;
     MERGETABLE *table;
     bool conflicts;
     unsigned r;
 
-    TRACE("(%d, %d, %s)\n", hDatabase, hDatabaseMerge,
-          debugstr_w(szTableName));
+    TRACE("(%d, %d, %s)\n", db, merge,
+          debugstr_a(szTableName));
 
     if (szTableName && !*szTableName)
         return ERROR_INVALID_TABLE;
 
-    szwTableName = strdupAtoW(szTableName);
-    db = msihandle2msiinfo(hDatabase, LIBMSI_OBJECT_TYPE_DATABASE);
-    merge = msihandle2msiinfo(hDatabaseMerge, LIBMSI_OBJECT_TYPE_DATABASE);
     if (!db || !merge)
-    {
-        r = ERROR_INVALID_HANDLE;
-        goto done;
-    }
+        return ERROR_INVALID_HANDLE;
 
+    szwTableName = strdupAtoW(szTableName);
+    msiobj_addref( &db->hdr );
+    msiobj_addref( &merge->hdr );
     r = gather_merge_data(db, merge, &tabledata);
     if (r != ERROR_SUCCESS)
         goto done;
@@ -1911,16 +1888,16 @@ done:
     return r;
 }
 
-LibmsiDBState MsiGetDatabaseState( LibmsiObject *handle )
+LibmsiDBState MsiGetDatabaseState( LibmsiDatabase *db )
 {
     LibmsiDBState ret = LIBMSI_DB_STATE_READ;
-    LibmsiDatabase *db;
 
-    TRACE("%d\n", handle);
+    TRACE("%d\n", db);
 
-    db = msihandle2msiinfo( handle, LIBMSI_OBJECT_TYPE_DATABASE );
     if( !db )
         return ERROR_INVALID_HANDLE;
+
+    msiobj_addref( &db->hdr );
     if (db->mode != LIBMSI_DB_OPEN_READONLY )
         ret = LIBMSI_DB_STATE_WRITE;
     msiobj_release( &db->hdr );

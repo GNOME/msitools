@@ -84,15 +84,13 @@ unsigned VIEW_find_column( LibmsiView *table, const WCHAR *name, const WCHAR *ta
     return ERROR_INVALID_PARAMETER;
 }
 
-unsigned MsiDatabaseOpenQuery(LibmsiObject *hdb,
-              const char *szQuery, LibmsiObject **phView)
+unsigned MsiDatabaseOpenQuery(LibmsiDatabase *db,
+              const char *szQuery, LibmsiQuery **pQuery)
 {
     unsigned r;
     WCHAR *szwQuery;
-    LibmsiDatabase *db;
-    LibmsiQuery *query = NULL;
 
-    TRACE("%d %s %p\n", hdb, debugstr_a(szQuery), phView);
+    TRACE("%d %s %p\n", db, debugstr_a(szQuery), pQuery);
 
     if( szQuery )
     {
@@ -103,15 +101,11 @@ unsigned MsiDatabaseOpenQuery(LibmsiObject *hdb,
     else
         szwQuery = NULL;
 
-    TRACE("%s %p\n", debugstr_w(szQuery), phView);
-
-    db = msihandle2msiinfo( hdb, LIBMSI_OBJECT_TYPE_DATABASE );
     if( !db )
         return ERROR_INVALID_HANDLE;
+    msiobj_addref( &db->hdr);
 
-    r = MSI_DatabaseOpenQueryW( db, szwQuery, &query );
-    if( r == ERROR_SUCCESS )
-        *phView = &query->hdr;
+    r = MSI_DatabaseOpenQueryW( db, szwQuery, pQuery );
     msiobj_release( &db->hdr );
 
     msi_free( szwQuery );
@@ -130,8 +124,7 @@ unsigned MSI_DatabaseOpenQueryW(LibmsiDatabase *db,
         return ERROR_INVALID_PARAMETER;
 
     /* pre allocate a handle to hold a pointer to the view */
-    query = alloc_msiobject( LIBMSI_OBJECT_TYPE_QUERY, sizeof (LibmsiQuery),
-                              MSI_CloseQuery );
+    query = alloc_msiobject( sizeof (LibmsiQuery), MSI_CloseQuery );
     if( !query )
         return ERROR_FUNCTION_FAILED;
 
@@ -201,7 +194,7 @@ unsigned MSI_IterateRecords( LibmsiQuery *view, unsigned *count,
             break;
     }
 
-    MSI_QueryClose( view );
+    MsiQueryClose( view );
 
     if( count )
         *count = n;
@@ -242,7 +235,7 @@ LibmsiRecord *MSI_QueryGetRecord( LibmsiDatabase *db, const WCHAR *fmt, ... )
     {
         MSI_QueryExecute( view, NULL );
         MSI_QueryFetch( view, &rec );
-        MSI_QueryClose( view );
+        MsiQueryClose( view );
         msiobj_release( &view->hdr );
     }
     return rec;
@@ -264,7 +257,7 @@ unsigned msi_view_get_row(LibmsiDatabase *db, LibmsiView *view, unsigned row, Li
     if (row >= row_count)
         return ERROR_NO_MORE_ITEMS;
 
-    *rec = MSI_CreateRecord(col_count);
+    *rec = MsiCreateRecord(col_count);
     if (!*rec)
         return ERROR_FUNCTION_FAILED;
 
@@ -317,9 +310,9 @@ unsigned msi_view_get_row(LibmsiDatabase *db, LibmsiView *view, unsigned row, Li
         else
         {
             if ((type & MSI_DATASIZEMASK) == 2)
-                MSI_RecordSetInteger(*rec, i, ival - (1<<15));
+                MsiRecordSetInteger(*rec, i, ival - (1<<15));
             else
-                MSI_RecordSetInteger(*rec, i, ival - (1<<31));
+                MsiRecordSetInteger(*rec, i, ival - (1<<31));
         }
     }
 
@@ -347,55 +340,42 @@ unsigned MSI_QueryFetch(LibmsiQuery *query, LibmsiRecord **prec)
     return r;
 }
 
-unsigned MsiQueryFetch(LibmsiObject *hView, LibmsiObject **record)
+unsigned MsiQueryFetch(LibmsiQuery *query, LibmsiRecord **record)
 {
-    LibmsiQuery *query;
-    LibmsiRecord *rec = NULL;
     unsigned ret;
 
-    TRACE("%d %p\n", hView, record);
+    TRACE("%d %p\n", query, record);
 
     if( !record )
         return ERROR_INVALID_PARAMETER;
     *record = 0;
 
-    query = msihandle2msiinfo( hView, LIBMSI_OBJECT_TYPE_QUERY );
     if( !query )
         return ERROR_INVALID_HANDLE;
-    ret = MSI_QueryFetch( query, &rec );
-    if( ret == ERROR_SUCCESS )
-        *record = &rec->hdr;
+    msiobj_addref( &query->hdr);
+    ret = MSI_QueryFetch( query, record );
     msiobj_release( &query->hdr );
     return ret;
 }
 
-unsigned MSI_QueryClose(LibmsiQuery *query)
+unsigned MsiQueryClose(LibmsiQuery *query)
 {
     LibmsiView *view;
+    unsigned ret;
 
     TRACE("%p\n", query );
 
+    if( !query )
+        return ERROR_INVALID_HANDLE;
+
+    msiobj_addref( &query->hdr );
     view = query->view;
     if( !view )
         return ERROR_FUNCTION_FAILED;
     if( !view->ops->close )
         return ERROR_FUNCTION_FAILED;
 
-    return view->ops->close( view );
-}
-
-unsigned MsiQueryClose(LibmsiObject *hView)
-{
-    LibmsiQuery *query;
-    unsigned ret;
-
-    TRACE("%d\n", hView );
-
-    query = msihandle2msiinfo( hView, LIBMSI_OBJECT_TYPE_QUERY );
-    if( !query )
-        return ERROR_INVALID_HANDLE;
-
-    ret = MSI_QueryClose( query );
+    ret = view->ops->close( view );
     msiobj_release( &query->hdr );
     return ret;
 }
@@ -416,31 +396,21 @@ unsigned MSI_QueryExecute(LibmsiQuery *query, LibmsiRecord *rec )
     return view->ops->execute( view, rec );
 }
 
-unsigned MsiQueryExecute(LibmsiObject *hView, LibmsiObject *hRec)
+unsigned MsiQueryExecute(LibmsiQuery *query, LibmsiRecord *rec)
 {
-    LibmsiQuery *query;
-    LibmsiRecord *rec = NULL;
     unsigned ret;
     
-    TRACE("%d %d\n", hView, hRec);
+    TRACE("%d %d\n", query, rec);
 
-    query = msihandle2msiinfo( hView, LIBMSI_OBJECT_TYPE_QUERY );
     if( !query )
         return ERROR_INVALID_HANDLE;
+    msiobj_addref( &query->hdr );
 
-    if( hRec )
-    {
-        rec = msihandle2msiinfo( hRec, LIBMSI_OBJECT_TYPE_RECORD );
-        if( !rec )
-        {
-            ret = ERROR_INVALID_HANDLE;
-            goto out;
-        }
-    }
+    if( rec )
+        msiobj_addref( &rec->hdr );
 
     ret = MSI_QueryExecute( query, rec );
 
-out:
     msiobj_release( &query->hdr );
     if( rec )
         msiobj_release( &rec->hdr );
@@ -505,7 +475,7 @@ unsigned MSI_QueryGetColumnInfo( LibmsiQuery *query, LibmsiColInfo info, LibmsiR
     if( !count )
         return ERROR_INVALID_PARAMETER;
 
-    rec = MSI_CreateRecord( count );
+    rec = MsiCreateRecord( count );
     if( !rec )
         return ERROR_FUNCTION_FAILED;
 
@@ -524,28 +494,23 @@ unsigned MSI_QueryGetColumnInfo( LibmsiQuery *query, LibmsiColInfo info, LibmsiR
     return ERROR_SUCCESS;
 }
 
-unsigned MsiQueryGetColumnInfo(LibmsiObject *hView, LibmsiColInfo info, LibmsiObject **hRec)
+unsigned MsiQueryGetColumnInfo(LibmsiQuery *query, LibmsiColInfo info, LibmsiRecord **prec)
 {
-    LibmsiQuery *query = NULL;
-    LibmsiRecord *rec = NULL;
     unsigned r;
 
-    TRACE("%d %d %p\n", hView, info, hRec);
+    TRACE("%d %d %p\n", query, info, prec);
 
-    if( !hRec )
+    if( !prec )
         return ERROR_INVALID_PARAMETER;
 
     if( info != LIBMSI_COL_INFO_NAMES && info != LIBMSI_COL_INFO_TYPES )
         return ERROR_INVALID_PARAMETER;
 
-    query = msihandle2msiinfo( hView, LIBMSI_OBJECT_TYPE_QUERY );
     if( !query )
         return ERROR_INVALID_HANDLE;
 
-    r = MSI_QueryGetColumnInfo( query, info, &rec );
-    if ( r == ERROR_SUCCESS )
-        *hRec = &rec->hdr;
-
+    msiobj_addref ( &query->hdr );
+    r = MSI_QueryGetColumnInfo( query, info, prec );
     msiobj_release( &query->hdr );
 
     return r;
@@ -573,20 +538,21 @@ unsigned MSI_QueryModify( LibmsiQuery *query, LibmsiModify mode, LibmsiRecord *r
     return r;
 }
 
-unsigned MsiQueryModify( LibmsiObject *hView, LibmsiModify eModifyMode,
-                LibmsiObject *hRecord)
+unsigned MsiQueryModify( LibmsiQuery *query, LibmsiModify eModifyMode,
+                LibmsiRecord *rec)
 {
-    LibmsiQuery *query = NULL;
-    LibmsiRecord *rec = NULL;
     unsigned r = ERROR_FUNCTION_FAILED;
 
-    TRACE("%d %x %d\n", hView, eModifyMode, hRecord);
+    TRACE("%d %x %d\n", query, eModifyMode, rec);
 
-    query = msihandle2msiinfo( hView, LIBMSI_OBJECT_TYPE_QUERY );
     if( !query )
         return ERROR_INVALID_HANDLE;
 
-    rec = msihandle2msiinfo( hRecord, LIBMSI_OBJECT_TYPE_RECORD );
+    msiobj_addref( &query->hdr);
+
+    if (rec)
+        msiobj_addref( &rec->hdr);
+
     r = MSI_QueryModify( query, eModifyMode, rec );
 
     msiobj_release( &query->hdr );
@@ -596,22 +562,21 @@ unsigned MsiQueryModify( LibmsiObject *hView, LibmsiModify eModifyMode,
     return r;
 }
 
-LibmsiDBError MsiQueryGetError( LibmsiObject *handle, char *buffer, unsigned *buflen )
+LibmsiDBError MsiQueryGetError( LibmsiQuery *query, char *buffer, unsigned *buflen )
 {
-    LibmsiQuery *query;
     const WCHAR *column;
     LibmsiDBError r;
     unsigned len;
 
-    TRACE("%u %p %p\n", handle, buffer, buflen);
+    TRACE("%u %p %p\n", query, buffer, buflen);
 
     if (!buflen)
         return LIBMSI_DB_ERROR_INVALIDARG;
 
-    query = msihandle2msiinfo( handle, LIBMSI_OBJECT_TYPE_QUERY );
     if (!query)
         return LIBMSI_DB_ERROR_INVALIDARG;
 
+    msiobj_addref( &query->hdr);
     if ((r = query->view->error)) column = query->view->error_column;
     else column = szEmpty;
 
@@ -668,13 +633,12 @@ end:
     return ret;
 }
 
-unsigned MsiDatabaseApplyTransform( LibmsiObject *hdb,
+unsigned MsiDatabaseApplyTransform( LibmsiDatabase *db,
                  const char *szTransformFile, int iErrorCond)
 {
-    LibmsiDatabase *db;
     unsigned r;
 
-    db = msihandle2msiinfo( hdb, LIBMSI_OBJECT_TYPE_DATABASE );
+    msiobj_addref( &db->hdr );
     if( !db )
         return ERROR_INVALID_HANDLE;
     r = MSI_DatabaseApplyTransform( db, szTransformFile, iErrorCond );
@@ -682,14 +646,13 @@ unsigned MsiDatabaseApplyTransform( LibmsiObject *hdb,
     return r;
 }
 
-unsigned MsiDatabaseCommit( LibmsiObject *hdb )
+unsigned MsiDatabaseCommit( LibmsiDatabase *db )
 {
-    LibmsiDatabase *db;
     unsigned r;
 
-    TRACE("%d\n", hdb);
+    TRACE("%d\n", db);
 
-    db = msihandle2msiinfo( hdb, LIBMSI_OBJECT_TYPE_DATABASE );
+    msiobj_addref( &db->hdr );
     if( !db )
         return ERROR_INVALID_HANDLE;
 
@@ -730,7 +693,7 @@ static unsigned msi_primary_key_iterator( LibmsiRecord *rec, void *param )
     const WCHAR *table;
     unsigned type;
 
-    type = MSI_RecordGetInteger( rec, 4 );
+    type = MsiRecordGetInteger( rec, 4 );
     if( type & MSITYPE_KEY )
     {
         info->n++;
@@ -738,11 +701,11 @@ static unsigned msi_primary_key_iterator( LibmsiRecord *rec, void *param )
         {
             if ( info->n == 1 )
             {
-                table = MSI_RecordGetString( rec, 1 );
+                table = MSI_RecordGetStringRaw( rec, 1 );
                 MSI_RecordSetStringW( info->rec, 0, table);
             }
 
-            name = MSI_RecordGetString( rec, 3 );
+            name = MSI_RecordGetStringRaw( rec, 3 );
             MSI_RecordSetStringW( info->rec, info->n, name );
         }
     }
@@ -778,7 +741,7 @@ unsigned MSI_DatabaseGetPrimaryKeys( LibmsiDatabase *db,
         TRACE("Found %d primary keys\n", info.n );
 
         /* allocate a record and fill in the names of the tables */
-        info.rec = MSI_CreateRecord( info.n );
+        info.rec = MsiCreateRecord( info.n );
         info.n = 0;
         r = MSI_IterateRecords( query, 0, msi_primary_key_iterator, &info );
         if( r == ERROR_SUCCESS )
@@ -791,15 +754,13 @@ unsigned MSI_DatabaseGetPrimaryKeys( LibmsiDatabase *db,
     return r;
 }
 
-unsigned MsiDatabaseGetPrimaryKeys(LibmsiObject *hdb, 
-                    const char *table, LibmsiObject **phRec)
+unsigned MsiDatabaseGetPrimaryKeys(LibmsiDatabase *db, 
+                    const char *table, LibmsiRecord **prec)
 {
-    LibmsiRecord *rec = NULL;
-    LibmsiDatabase *db;
     WCHAR *szwTable = NULL;
     unsigned r;
 
-    TRACE("%d %s %p\n", hdb, debugstr_a(table), phRec);
+    TRACE("%d %s %p\n", db, debugstr_a(table), prec);
 
     if( table )
     {
@@ -808,13 +769,11 @@ unsigned MsiDatabaseGetPrimaryKeys(LibmsiObject *hdb,
             return ERROR_OUTOFMEMORY;
     }
 
-    db = msihandle2msiinfo( hdb, LIBMSI_OBJECT_TYPE_DATABASE );
     if( !db )
         return ERROR_INVALID_HANDLE;
 
-    r = MSI_DatabaseGetPrimaryKeys( db, szwTable, &rec );
-    if( r == ERROR_SUCCESS )
-        *phRec = &rec->hdr;
+    msiobj_addref( &db->hdr );
+    r = MSI_DatabaseGetPrimaryKeys( db, szwTable, prec );
     msiobj_release( &db->hdr );
     msi_free( szwTable );
 
@@ -822,13 +781,12 @@ unsigned MsiDatabaseGetPrimaryKeys(LibmsiObject *hdb,
 }
 
 LibmsiCondition MsiDatabaseIsTablePersistent(
-              LibmsiObject *hDatabase, const char *szTableName)
+              LibmsiDatabase *db, const char *szTableName)
 {
     WCHAR *szwTableName = NULL;
-    LibmsiDatabase *db;
     LibmsiCondition r;
 
-    TRACE("%x %s\n", hDatabase, debugstr_a(szTableName));
+    TRACE("%x %s\n", db, debugstr_a(szTableName));
 
     if( szTableName )
     {
@@ -837,7 +795,7 @@ LibmsiCondition MsiDatabaseIsTablePersistent(
             return LIBMSI_CONDITION_ERROR;
     }
 
-    db = msihandle2msiinfo( hDatabase, LIBMSI_OBJECT_TYPE_DATABASE );
+    msiobj_addref( &db->hdr );
     if( !db )
         return LIBMSI_CONDITION_ERROR;
 

@@ -33,8 +33,8 @@ static const WCHAR msifileW[] = {
 
 static void test_suminfo(void)
 {
-    LibmsiObject *hdb = 0;
-    LibmsiObject *hsuminfo;
+    LibmsiDatabase *hdb = 0;
+    LibmsiSummaryInfo *hsuminfo;
     unsigned r, count, type;
     unsigned sz;
     int val;
@@ -370,8 +370,8 @@ static void test_create_database_binary(void)
 
 static void test_summary_binary(void)
 {
-    LibmsiObject *hdb = 0;
-    LibmsiObject *hsuminfo = 0;
+    LibmsiDatabase *hdb = 0;
+    LibmsiSummaryInfo *hsuminfo = 0;
     unsigned r, type, count;
     int ival;
     unsigned sz;

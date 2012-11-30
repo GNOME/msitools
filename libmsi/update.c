@@ -68,7 +68,7 @@ static unsigned UPDATE_execute( LibmsiView *view, LibmsiRecord *record )
     /* extract the where markers from the record */
     if (record)
     {
-        r = MSI_RecordGetFieldCount(record);
+        r = MsiRecordGetFieldCount(record);
 
         for (i = 0; col; col = col->next)
             i++;
@@ -78,7 +78,7 @@ static unsigned UPDATE_execute( LibmsiView *view, LibmsiRecord *record )
 
         if (where_count > 0)
         {
-            where = MSI_CreateRecord(where_count);
+            where = MsiCreateRecord(where_count);
 
             if (where)
                 for (i = 1; i <= where_count; i++)

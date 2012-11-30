@@ -63,7 +63,6 @@ typedef VOID (*msihandledestructor)( LibmsiObject * );
 struct LibmsiObject
 {
     unsigned magic;
-    unsigned type;
     LONG refcount;
     msihandledestructor destructor;
 };
@@ -272,14 +271,6 @@ typedef struct LibmsiSummaryInfo
     PROPVARIANT property[MSI_MAX_PROPS];
 } LibmsiSummaryInfo;
 
-#define LIBMSI_OBJECT_TYPE_ANY 0
-#define LIBMSI_OBJECT_TYPE_DATABASE 1
-#define LIBMSI_OBJECT_TYPE_SUMMARYINFO 2
-#define LIBMSI_OBJECT_TYPE_QUERY 3
-#define LIBMSI_OBJECT_TYPE_RECORD 4
-#define LIBMSI_OBJECT_TYPE_PACKAGE 5
-#define LIBMSI_OBJECT_TYPE_PREVIEW 6
-
 /* handle unicode/ascii output in the Msi* API functions */
 typedef struct {
     bool unicode;
@@ -300,8 +291,7 @@ typedef struct {
 unsigned msi_strcpy_to_awstring( const WCHAR *str, awstring *awbuf, unsigned *sz );
 
 /* handle functions */
-extern void *msihandle2msiinfo(LibmsiObject *handle, unsigned type);
-extern void *alloc_msiobject(unsigned type, unsigned size, msihandledestructor destroy );
+extern void *alloc_msiobject(unsigned size, msihandledestructor destroy );
 extern void msiobj_addref(LibmsiObject *);
 extern int msiobj_release(LibmsiObject *);
 
@@ -343,26 +333,20 @@ extern void append_storage_to_db( LibmsiDatabase *db, IStorage *stg );
 /* record internals */
 extern void MSI_CloseRecord( LibmsiObject * );
 extern unsigned MSI_RecordSetIStream( LibmsiRecord *, unsigned, IStream *);
-extern unsigned MSI_RecordGetIStream( LibmsiRecord *, unsigned, IStream **);
-extern const WCHAR *MSI_RecordGetString( const LibmsiRecord *, unsigned );
-extern LibmsiRecord *MSI_CreateRecord( unsigned );
-extern unsigned MSI_RecordSetInteger( LibmsiRecord *, unsigned, int );
+extern unsigned MSI_RecordGetIStream( const LibmsiRecord *, unsigned, IStream **);
+extern const WCHAR *MSI_RecordGetStringRaw( const LibmsiRecord *, unsigned );
 extern unsigned MSI_RecordSetIntPtr( LibmsiRecord *, unsigned, intptr_t );
 extern unsigned MSI_RecordSetStringW( LibmsiRecord *, unsigned, const WCHAR *);
-extern bool MSI_RecordIsNull( LibmsiRecord *, unsigned );
-extern unsigned MSI_RecordGetStringW( LibmsiRecord *, unsigned, WCHAR *, unsigned *);
-extern unsigned MSI_RecordGetStringA( LibmsiRecord *, unsigned, char *, unsigned *);
-extern int MSI_RecordGetInteger( LibmsiRecord *, unsigned );
-extern intptr_t MSI_RecordGetIntPtr( LibmsiRecord *, unsigned );
-extern unsigned MSI_RecordReadStream( LibmsiRecord *, unsigned, char *, unsigned *);
+extern unsigned MSI_RecordGetStringW( const LibmsiRecord *, unsigned, WCHAR *, unsigned *);
+extern intptr_t MSI_RecordGetIntPtr( const LibmsiRecord *, unsigned );
+extern unsigned MSI_RecordReadStream( const LibmsiRecord *, unsigned, char *, unsigned *);
 extern unsigned MSI_RecordSetStream(LibmsiRecord *, unsigned, IStream *);
-extern unsigned MSI_RecordGetFieldCount( const LibmsiRecord *rec );
-extern unsigned MSI_RecordStreamToFile( LibmsiRecord *, unsigned, const WCHAR *);
+extern unsigned MSI_RecordStreamToFile( const LibmsiRecord *, unsigned, const WCHAR *);
 extern unsigned MSI_RecordSetStreamFromFile( LibmsiRecord *, unsigned, const char *);
 extern unsigned MSI_RecordCopyField( LibmsiRecord *, unsigned, LibmsiRecord *, unsigned );
 extern LibmsiRecord *MSI_CloneRecord( LibmsiRecord * );
-extern bool MSI_RecordsAreEqual( LibmsiRecord *, LibmsiRecord * );
-extern bool MSI_RecordsAreFieldsEqual(LibmsiRecord *a, LibmsiRecord *b, unsigned field);
+extern bool MSI_RecordsAreEqual( const LibmsiRecord *, const LibmsiRecord * );
+extern bool MSI_RecordsAreFieldsEqual(const LibmsiRecord *a, const LibmsiRecord *b, unsigned field);
 
 /* stream internals */
 extern void enum_stream_names( IStorage *stg );
@@ -373,7 +357,6 @@ extern void decode_streamname(const WCHAR *in, WCHAR *out);
 extern unsigned msi_get_raw_stream( LibmsiDatabase *, const WCHAR *, IStream **);
 extern unsigned msi_clone_open_stream( LibmsiDatabase *, IStorage *, const WCHAR *, IStream ** );
 void msi_destroy_stream( LibmsiDatabase *, const WCHAR * );
-extern unsigned MSI_OpenDatabaseW( const WCHAR *, const WCHAR *, LibmsiDatabase **);
 extern unsigned MSI_DatabaseOpenQueryW(LibmsiDatabase *, const WCHAR *, LibmsiQuery **);
 extern unsigned MSI_OpenQuery( LibmsiDatabase *, LibmsiQuery **, const WCHAR *, ... );
 typedef unsigned (*record_func)( LibmsiRecord *, void *);
@@ -384,7 +367,6 @@ extern unsigned MSI_DatabaseGetPrimaryKeys( LibmsiDatabase *, const WCHAR *, Lib
 /* view internals */
 extern unsigned MSI_QueryExecute( LibmsiQuery*, LibmsiRecord * );
 extern unsigned MSI_QueryFetch( LibmsiQuery*, LibmsiRecord ** );
-extern unsigned MSI_QueryClose( LibmsiQuery* );
 extern unsigned MSI_QueryGetColumnInfo(LibmsiQuery *, LibmsiColInfo, LibmsiRecord **);
 extern unsigned MSI_QueryModify( LibmsiQuery *, LibmsiModify, LibmsiRecord * );
 extern unsigned VIEW_find_column( LibmsiView *, const WCHAR *, const WCHAR *, unsigned *);

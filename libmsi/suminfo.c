@@ -441,8 +441,7 @@ LibmsiSummaryInfo *MSI_GetSummaryInformation( IStorage *stg, unsigned uiUpdateCo
 
     TRACE("%p %d\n", stg, uiUpdateCount );
 
-    si = alloc_msiobject( LIBMSI_OBJECT_TYPE_SUMMARYINFO, 
-                  sizeof (LibmsiSummaryInfo), MSI_CloseSummaryInfo );
+    si = alloc_msiobject( sizeof (LibmsiSummaryInfo), MSI_CloseSummaryInfo );
     if( !si )
         return si;
 
@@ -462,26 +461,25 @@ LibmsiSummaryInfo *MSI_GetSummaryInformation( IStorage *stg, unsigned uiUpdateCo
     return si;
 }
 
-unsigned MsiGetSummaryInformation( LibmsiObject *hDatabase, 
-              unsigned uiUpdateCount, LibmsiObject **pHandle )
+unsigned MsiGetSummaryInformation( LibmsiDatabase *db, 
+              unsigned uiUpdateCount, LibmsiSummaryInfo **psi )
 {
     LibmsiSummaryInfo *si;
-    LibmsiDatabase *db;
     unsigned ret = ERROR_FUNCTION_FAILED;
 
-    TRACE("%d %d %p\n", hDatabase, uiUpdateCount, pHandle);
+    TRACE("%d %d %p\n", db, uiUpdateCount, psi);
 
-    if( !pHandle )
+    if( !psi )
         return ERROR_INVALID_PARAMETER;
 
-    db = msihandle2msiinfo( hDatabase, LIBMSI_OBJECT_TYPE_DATABASE );
     if( !db )
         return ERROR_INVALID_HANDLE;
 
+    msiobj_addref( &db->hdr);
     si = MSI_GetSummaryInformation( db->storage, uiUpdateCount );
     if (si)
     {
-        *pHandle = &si->hdr;
+        *psi = si;
         ret = ERROR_SUCCESS;
     }
 
@@ -489,16 +487,14 @@ unsigned MsiGetSummaryInformation( LibmsiObject *hDatabase,
     return ret;
 }
 
-unsigned MsiSummaryInfoGetPropertyCount(LibmsiObject *hSummaryInfo, unsigned *pCount)
+unsigned MsiSummaryInfoGetPropertyCount(LibmsiSummaryInfo *si, unsigned *pCount)
 {
-    LibmsiSummaryInfo *si;
+    TRACE("%d %p\n", si, pCount);
 
-    TRACE("%d %p\n", hSummaryInfo, pCount);
-
-    si = msihandle2msiinfo( hSummaryInfo, LIBMSI_OBJECT_TYPE_SUMMARYINFO );
     if( !si )
         return ERROR_INVALID_HANDLE;
 
+    msiobj_addref( &si->hdr );
     if( pCount )
         *pCount = get_property_count( si->property );
     msiobj_release( &si->hdr );
@@ -507,14 +503,13 @@ unsigned MsiSummaryInfoGetPropertyCount(LibmsiObject *hSummaryInfo, unsigned *pC
 }
 
 unsigned MsiSummaryInfoGetProperty(
-      LibmsiObject *handle, unsigned uiProperty, unsigned *puiDataType, int *piValue,
+      LibmsiSummaryInfo *si, unsigned uiProperty, unsigned *puiDataType, int *piValue,
       uint64_t *pftValue, char *szValueBuf, unsigned *pcchValueBuf)
 {
-    LibmsiSummaryInfo *si;
     PROPVARIANT *prop;
     unsigned ret = ERROR_SUCCESS;
 
-    TRACE("%d %d %p %p %p %p %p\n", handle, uiProperty, puiDataType,
+    TRACE("%d %d %p %p %p %p %p\n", si, uiProperty, puiDataType,
           piValue, pftValue, szValueBuf, pcchValueBuf);
 
     if ( uiProperty >= MSI_MAX_PROPS )
@@ -523,10 +518,10 @@ unsigned MsiSummaryInfoGetProperty(
         return ERROR_UNKNOWN_PROPERTY;
     }
 
-    si = msihandle2msiinfo( handle, LIBMSI_OBJECT_TYPE_SUMMARYINFO );
     if( !si )
         return ERROR_INVALID_HANDLE;
 
+    msiobj_addref( &si->hdr );
     prop = &si->property[uiProperty];
 
     if( puiDataType )
@@ -609,10 +604,9 @@ WCHAR *msi_get_suminfo_product( IStorage *stg )
     return prod;
 }
 
-unsigned MsiSummaryInfoSetProperty( LibmsiObject *handle, unsigned uiProperty,
+unsigned MsiSummaryInfoSetProperty( LibmsiSummaryInfo *si, unsigned uiProperty,
                unsigned uiDataType, int iValue, uint64_t* pftValue, const char *szValue )
 {
-    LibmsiSummaryInfo *si;
     PROPVARIANT *prop;
     unsigned len;
     unsigned ret;
@@ -620,6 +614,9 @@ unsigned MsiSummaryInfoSetProperty( LibmsiObject *handle, unsigned uiProperty,
 
     TRACE("%p %u %u %i %p %p\n", si, uiProperty, type, iValue,
           pftValue, szValue );
+
+    if( !si )
+        return ERROR_INVALID_HANDLE;
 
     type = get_type( uiProperty );
     if( type == VT_EMPTY || type != uiDataType )
@@ -631,9 +628,7 @@ unsigned MsiSummaryInfoSetProperty( LibmsiObject *handle, unsigned uiProperty,
     if( uiDataType == VT_FILETIME && !pftValue )
         return ERROR_INVALID_PARAMETER;
 
-    si = msihandle2msiinfo( handle, LIBMSI_OBJECT_TYPE_SUMMARYINFO );
-    if( !si )
-        return ERROR_INVALID_HANDLE;
+    msiobj_addref( &si->hdr);
 
     prop = &si->property[uiProperty];
 
@@ -805,7 +800,7 @@ unsigned msi_add_suminfo( LibmsiDatabase *db, WCHAR ***records, int num_records,
             if (r != ERROR_SUCCESS)
                 goto end;
 
-            r = MsiSummaryInfoSetProperty( &si->hdr, pid, get_type(pid), int_value, &ft_value, str_value );
+            r = MsiSummaryInfoSetProperty( si, pid, get_type(pid), int_value, &ft_value, str_value );
             if (r != ERROR_SUCCESS)
                 goto end;
 
@@ -821,19 +816,17 @@ end:
     return r;
 }
 
-unsigned MsiSummaryInfoPersist( LibmsiObject *handle )
+unsigned MsiSummaryInfoPersist( LibmsiSummaryInfo *si )
 {
-    LibmsiSummaryInfo *si;
     unsigned ret;
 
-    TRACE("%d\n", handle );
+    TRACE("%d\n", si );
 
-    si = msihandle2msiinfo( handle, LIBMSI_OBJECT_TYPE_SUMMARYINFO );
     if( !si )
         return ERROR_INVALID_HANDLE;
 
+    msiobj_addref( &si->hdr);
     ret = suminfo_persist( si );
-
     msiobj_release( &si->hdr );
     return ret;
 }

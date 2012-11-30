@@ -50,7 +50,7 @@ static void test_msirecord(void)
 {
     unsigned r, sz;
     int i;
-    LibmsiObject *h;
+    LibmsiRecord *h;
     char buf[10];
     const char str[] = "hello";
     char filename[MAX_PATH];
@@ -355,7 +355,7 @@ static void test_msirecord(void)
 
 static void test_MsiRecordGetString(void)
 {
-    LibmsiObject *rec;
+    LibmsiRecord *rec;
     char buf[MAX_PATH];
     unsigned sz;
     unsigned r;
@@ -417,7 +417,7 @@ static void test_MsiRecordGetString(void)
 
 static void test_MsiRecordGetInteger(void)
 {
-    LibmsiObject *rec;
+    LibmsiRecord *rec;
     int val;
     unsigned r;
 
@@ -447,9 +447,9 @@ static void test_MsiRecordGetInteger(void)
 
 static void test_fieldzero(void)
 {
-    LibmsiObject *hdb;
-    LibmsiObject *hview;
-    LibmsiObject *rec;
+    LibmsiDatabase *hdb;
+    LibmsiQuery *hview;
+    LibmsiRecord *rec;
     char buf[MAX_PATH];
     const char *query;
     unsigned sz;

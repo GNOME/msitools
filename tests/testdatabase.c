@@ -38,8 +38,8 @@ static const WCHAR msifileW[] = {'w','i','n','e','t','e','s','t','-','d','b','.'
 
 static void test_msidatabase(void)
 {
-    LibmsiObject *hdb = 0;
-    LibmsiObject *hdb2 = 0;
+    LibmsiDatabase *hdb = 0;
+    LibmsiDatabase *hdb2 = 0;
     unsigned res;
 
     DeleteFile(msifile);
@@ -145,9 +145,9 @@ static void test_msidatabase(void)
     ok( res == true, "Failed to delete database\n" );
 }
 
-static unsigned do_query(LibmsiObject *hdb, const char *sql, LibmsiObject **phrec)
+static unsigned do_query(LibmsiDatabase *hdb, const char *sql, LibmsiRecord **phrec)
 {
-    LibmsiObject *hquery = 0;
+    LibmsiQuery *hquery = 0;
     unsigned r, ret;
 
     if (phrec)
@@ -170,9 +170,9 @@ static unsigned do_query(LibmsiObject *hdb, const char *sql, LibmsiObject **phre
     return ret;
 }
 
-static unsigned run_query( LibmsiObject *hdb, LibmsiObject *hrec, const char *sql )
+static unsigned run_query( LibmsiDatabase *hdb, LibmsiRecord *hrec, const char *sql )
 {
-    LibmsiObject *hquery = 0;
+    LibmsiQuery *hquery = 0;
     unsigned r;
 
     r = MsiDatabaseOpenQuery(hdb, sql, &hquery);
@@ -186,7 +186,7 @@ static unsigned run_query( LibmsiObject *hdb, LibmsiObject *hrec, const char *sq
     return r;
 }
 
-static unsigned create_component_table( LibmsiObject *hdb )
+static unsigned create_component_table( LibmsiDatabase *hdb )
 {
     return run_query( hdb, 0,
             "CREATE TABLE `Component` ( "
@@ -199,7 +199,7 @@ static unsigned create_component_table( LibmsiObject *hdb )
             "PRIMARY KEY `Component`)" );
 }
 
-static unsigned create_custom_action_table( LibmsiObject *hdb )
+static unsigned create_custom_action_table( LibmsiDatabase *hdb )
 {
     return run_query( hdb, 0,
             "CREATE TABLE `CustomAction` ( "
@@ -210,7 +210,7 @@ static unsigned create_custom_action_table( LibmsiObject *hdb )
             "PRIMARY KEY `Action`)" );
 }
 
-static unsigned create_directory_table( LibmsiObject *hdb )
+static unsigned create_directory_table( LibmsiDatabase *hdb )
 {
     return run_query( hdb, 0,
             "CREATE TABLE `Directory` ( "
@@ -220,7 +220,7 @@ static unsigned create_directory_table( LibmsiObject *hdb )
             "PRIMARY KEY `Directory`)" );
 }
 
-static unsigned create_feature_components_table( LibmsiObject *hdb )
+static unsigned create_feature_components_table( LibmsiDatabase *hdb )
 {
     return run_query( hdb, 0,
             "CREATE TABLE `FeatureComponents` ( "
@@ -229,7 +229,7 @@ static unsigned create_feature_components_table( LibmsiObject *hdb )
             "PRIMARY KEY `Feature_`, `Component_` )" );
 }
 
-static unsigned create_std_dlls_table( LibmsiObject *hdb )
+static unsigned create_std_dlls_table( LibmsiDatabase *hdb )
 {
     return run_query( hdb, 0,
             "CREATE TABLE `StdDlls` ( "
@@ -238,7 +238,7 @@ static unsigned create_std_dlls_table( LibmsiObject *hdb )
             "PRIMARY KEY `File` )" );
 }
 
-static unsigned create_binary_table( LibmsiObject *hdb )
+static unsigned create_binary_table( LibmsiDatabase *hdb )
 {
     return run_query( hdb, 0,
             "CREATE TABLE `Binary` ( "
@@ -248,7 +248,7 @@ static unsigned create_binary_table( LibmsiObject *hdb )
 }
 
 #define make_add_entry(type, qtext) \
-    static unsigned add##_##type##_##entry( LibmsiObject *hdb, const char *values ) \
+    static unsigned add##_##type##_##entry( LibmsiDatabase *hdb, const char *values ) \
     { \
         char insert[] = qtext; \
         char *sql; \
@@ -282,10 +282,10 @@ make_add_entry(binary,
 
 static void test_msiinsert(void)
 {
-    LibmsiObject *hdb = 0;
-    LibmsiObject *hquery = 0;
-    LibmsiObject *hquery2 = 0;
-    LibmsiObject *hrec = 0;
+    LibmsiDatabase *hdb = 0;
+    LibmsiQuery *hquery = 0;
+    LibmsiQuery *hquery2 = 0;
+    LibmsiRecord *hrec = 0;
     unsigned r;
     const char *sql;
     char buf[80];
@@ -441,9 +441,9 @@ static void test_msiinsert(void)
     ok(r == true, "file didn't exist after commit\n");
 }
 
-static unsigned try_query_param( LibmsiObject *hdb, const char *szQuery, LibmsiObject *hrec )
+static unsigned try_query_param( LibmsiDatabase *hdb, const char *szQuery, LibmsiRecord *hrec )
 {
-    LibmsiObject *htab = 0;
+    LibmsiQuery *htab = 0;
     unsigned res;
 
     res = MsiDatabaseOpenQuery( hdb, szQuery, &htab );
@@ -466,14 +466,14 @@ static unsigned try_query_param( LibmsiObject *hdb, const char *szQuery, LibmsiO
     return res;
 }
 
-static unsigned try_query( LibmsiObject *hdb, const char *szQuery )
+static unsigned try_query( LibmsiDatabase *hdb, const char *szQuery )
 {
     return try_query_param( hdb, szQuery, 0 );
 }
 
-static unsigned try_insert_query( LibmsiObject *hdb, const char *szQuery )
+static unsigned try_insert_query( LibmsiDatabase *hdb, const char *szQuery )
 {
-    LibmsiObject *hrec = 0;
+    LibmsiRecord *hrec = 0;
     unsigned r;
 
     hrec = MsiCreateRecord( 1 );
@@ -487,7 +487,7 @@ static unsigned try_insert_query( LibmsiObject *hdb, const char *szQuery )
 
 static void test_msibadqueries(void)
 {
-    LibmsiObject *hdb = 0;
+    LibmsiDatabase *hdb = 0;
     unsigned r;
 
     DeleteFile(msifile);
@@ -706,9 +706,9 @@ static void test_msibadqueries(void)
 
 static void test_querymodify(void)
 {
-    LibmsiObject *hdb = 0;
-    LibmsiObject *hquery = 0;
-    LibmsiObject *hrec = 0;
+    LibmsiDatabase *hdb = 0;
+    LibmsiQuery *hquery = 0;
+    LibmsiRecord *hrec = 0;
     unsigned r;
     LibmsiDBError err;
     const char *sql;
@@ -1056,9 +1056,9 @@ static void test_querymodify(void)
     ok(r == ERROR_SUCCESS, "MsiOpenDatabase close failed\n");
 }
 
-static LibmsiObject *create_db(void)
+static LibmsiDatabase *create_db(void)
 {
-    LibmsiObject *hdb = 0;
+    LibmsiDatabase *hdb = 0;
     unsigned res;
 
     DeleteFile(msifile);
@@ -1077,9 +1077,9 @@ static LibmsiObject *create_db(void)
 
 static void test_getcolinfo(void)
 {
-    LibmsiObject *hdb;
-    LibmsiObject *hquery = 0;
-    LibmsiObject *rec = 0;
+    LibmsiDatabase *hdb;
+    LibmsiQuery *hquery = 0;
+    LibmsiRecord *rec = 0;
     unsigned r;
     unsigned sz;
     char buffer[0x20];
@@ -1137,10 +1137,10 @@ static void test_getcolinfo(void)
     ok( r == ERROR_SUCCESS, "failed to close database\n");
 }
 
-static LibmsiObject *get_column_info(LibmsiObject *hdb, const char *sql, LibmsiColInfo type)
+static LibmsiRecord *get_column_info(LibmsiDatabase *hdb, const char *sql, LibmsiColInfo type)
 {
-    LibmsiObject *hquery = 0;
-    LibmsiObject *rec = 0;
+    LibmsiQuery *hquery = 0;
+    LibmsiRecord *rec = 0;
     unsigned r;
 
     r = MsiDatabaseOpenQuery(hdb, sql, &hquery);
@@ -1157,10 +1157,10 @@ static LibmsiObject *get_column_info(LibmsiObject *hdb, const char *sql, LibmsiC
     return rec;
 }
 
-static unsigned get_columns_table_type(LibmsiObject *hdb, const char *table, unsigned field)
+static unsigned get_columns_table_type(LibmsiDatabase *hdb, const char *table, unsigned field)
 {
-    LibmsiObject *hquery = 0;
-    LibmsiObject *rec = 0;
+    LibmsiQuery *hquery = 0;
+    LibmsiRecord *rec = 0;
     unsigned r, type = 0;
     char sql[0x100];
 
@@ -1189,7 +1189,7 @@ static unsigned get_columns_table_type(LibmsiObject *hdb, const char *table, uns
     return type;
 }
 
-static bool check_record( LibmsiObject *rec, unsigned field, const char *val )
+static bool check_record( LibmsiRecord *rec, unsigned field, const char *val )
 {
     char buffer[0x20];
     unsigned r;
@@ -1202,8 +1202,8 @@ static bool check_record( LibmsiObject *rec, unsigned field, const char *val )
 
 static void test_querygetcolumninfo(void)
 {
-    LibmsiObject *hdb = 0;
-    LibmsiObject *rec;
+    LibmsiDatabase *hdb = 0;
+    LibmsiRecord *rec;
     unsigned r;
 
     hdb = create_db();
@@ -1309,8 +1309,8 @@ static void test_querygetcolumninfo(void)
 
 static void test_msiexport(void)
 {
-    LibmsiObject *hdb = 0;
-    LibmsiObject *hquery = 0;
+    LibmsiDatabase *hdb = 0;
+    LibmsiQuery *hquery = 0;
     unsigned r;
     const char *sql;
     int fd;
@@ -1388,9 +1388,9 @@ static void test_longstrings(void)
     const char insert_query[] = 
         "INSERT INTO `strings` ( `id`, `val` ) VALUES('1', 'Z')";
     char *str;
-    LibmsiObject *hdb = 0;
-    LibmsiObject *hquery = 0;
-    LibmsiObject *hrec = 0;
+    LibmsiDatabase *hdb = 0;
+    LibmsiQuery *hquery = 0;
+    LibmsiRecord *hrec = 0;
     unsigned len;
     unsigned r;
     const unsigned STRING_LENGTH = 0x10005;
@@ -1469,10 +1469,10 @@ static void create_file_data(const char *name, const char *data, unsigned size)
  
 static void test_streamtable(void)
 {
-    LibmsiObject *hdb = 0;
-    LibmsiObject *rec;
-    LibmsiObject *query;
-    LibmsiObject *hsi;
+    LibmsiDatabase *hdb = 0;
+    LibmsiRecord *rec;
+    LibmsiQuery *query;
+    LibmsiSummaryInfo *hsi;
     char file[MAX_PATH];
     char buf[MAX_PATH];
     unsigned size;
@@ -1709,8 +1709,8 @@ static void test_streamtable(void)
 
 static void test_binary(void)
 {
-    LibmsiObject *hdb = 0;
-    LibmsiObject *rec;
+    LibmsiDatabase *hdb = 0;
+    LibmsiRecord *rec;
     char file[MAX_PATH];
     char buf[MAX_PATH];
     unsigned size;
@@ -1793,9 +1793,9 @@ static void test_binary(void)
 
 static void test_where_not_in_selected(void)
 {
-    LibmsiObject *hdb = 0;
-    LibmsiObject *rec;
-    LibmsiObject *query;
+    LibmsiDatabase *hdb = 0;
+    LibmsiRecord *rec;
+    LibmsiQuery *query;
     const char *sql;
     unsigned r;
 
@@ -1892,9 +1892,9 @@ static void test_where_not_in_selected(void)
 
 static void test_where(void)
 {
-    LibmsiObject *hdb = 0;
-    LibmsiObject *rec;
-    LibmsiObject *query;
+    LibmsiDatabase *hdb = 0;
+    LibmsiRecord *rec;
+    LibmsiQuery *query;
     const char *sql;
     unsigned r;
     unsigned size;
@@ -2094,7 +2094,7 @@ static void write_file(const char *filename, const char *data, int data_size)
     CloseHandle(hf);
 }
 
-static unsigned add_table_to_db(LibmsiObject *hdb, const char *table_data)
+static unsigned add_table_to_db(LibmsiDatabase *hdb, const char *table_data)
 {
     unsigned r;
 
@@ -2107,9 +2107,9 @@ static unsigned add_table_to_db(LibmsiObject *hdb, const char *table_data)
 
 static void test_suminfo_import(void)
 {
-    LibmsiObject *hdb;
-    LibmsiObject *hsi;
-    LibmsiObject *query = 0;
+    LibmsiDatabase *hdb;
+    LibmsiSummaryInfo *hsi;
+    LibmsiQuery *query = 0;
     const char *sql;
     unsigned r, count, size, type;
     char str_value[50];
@@ -2232,9 +2232,9 @@ static void test_suminfo_import(void)
 
 static void test_msiimport(void)
 {
-    LibmsiObject *hdb;
-    LibmsiObject *query;
-    LibmsiObject *rec;
+    LibmsiDatabase *hdb;
+    LibmsiQuery *query;
+    LibmsiRecord *rec;
     const char *sql;
     unsigned r, count;
     signed int i;
@@ -2453,8 +2453,8 @@ static const char bin_import_dat[] = "Name\tData\r\n"
 
 static void test_binary_import(void)
 {
-    LibmsiObject *hdb = 0;
-    LibmsiObject *rec;
+    LibmsiDatabase *hdb = 0;
+    LibmsiRecord *rec;
     char file[MAX_PATH];
     char buf[MAX_PATH];
     char path[MAX_PATH];
@@ -2506,8 +2506,8 @@ static void test_binary_import(void)
 
 static void test_markers(void)
 {
-    LibmsiObject *hdb;
-    LibmsiObject *rec;
+    LibmsiDatabase *hdb;
+    LibmsiRecord *rec;
     const char *sql;
     unsigned r;
 
@@ -2693,8 +2693,8 @@ static void test_markers(void)
 static void test_handle_limit(void)
 {
     int i;
-    LibmsiObject *hdb;
-    LibmsiObject *hqueries[MY_NQUERIES];
+    LibmsiDatabase *hdb;
+    LibmsiQuery *hqueries[MY_NQUERIES];
     unsigned r;
 
     /* create an empty db */
@@ -2855,10 +2855,10 @@ static void generate_transform_manual(void)
     IStorage_Release(stg);
 }
 
-static unsigned set_summary_info(LibmsiObject *hdb)
+static unsigned set_summary_info(LibmsiDatabase *hdb)
 {
     unsigned res;
-    LibmsiObject *suminfo;
+    LibmsiSummaryInfo *suminfo;
 
     /* build summary info */
     res = MsiGetSummaryInformation(hdb, 7, &suminfo);
@@ -2899,9 +2899,9 @@ static unsigned set_summary_info(LibmsiObject *hdb)
     return res;
 }
 
-static LibmsiObject *create_package_db(const char *filename)
+static LibmsiDatabase *create_package_db(const char *filename)
 {
-    LibmsiObject *hdb = 0;
+    LibmsiDatabase *hdb = 0;
     unsigned res;
 
     DeleteFile(msifile);
@@ -2926,10 +2926,9 @@ static LibmsiObject *create_package_db(const char *filename)
 
 static void test_try_transform(void)
 {
-    LibmsiObject *hdb;
-    LibmsiObject *hquery;
-    LibmsiObject *hrec;
-    LibmsiObject *hpkg = 0;
+    LibmsiDatabase *hdb;
+    LibmsiQuery *hquery;
+    LibmsiRecord *hrec;
     const char *sql;
     unsigned r;
     unsigned sz;
@@ -3095,6 +3094,8 @@ static void test_try_transform(void)
     MsiCloseHandle(hquery);
 
 #if 0
+    LibmsiObject *hpkg = 0;
+
     /* check that the property was added */
     r = package_from_db(hdb, &hpkg);
     if (r == ERROR_INSTALL_PACKAGE_REJECTED)
@@ -3108,9 +3109,9 @@ static void test_try_transform(void)
     r = MsiGetProperty(hpkg, "prop", buffer, &sz);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
     ok(!strcmp(buffer, "val"), "Expected val, got %s\n", buffer);
-#endif
 
     MsiCloseHandle(hpkg);
+#endif
 
 error:
     MsiCloseHandle(hdb);
@@ -3212,9 +3213,9 @@ static const struct join_res_uint join_res_ninth[] =
 
 static void test_join(void)
 {
-    LibmsiObject *hdb;
-    LibmsiObject *hquery;
-    LibmsiObject *hrec;
+    LibmsiDatabase *hdb;
+    LibmsiQuery *hquery;
+    LibmsiRecord *hrec;
     const char *sql;
     char buf[MAX_PATH];
     unsigned r, count;
@@ -3852,9 +3853,9 @@ static void test_join(void)
 static void test_temporary_table(void)
 {
     LibmsiCondition cond;
-    LibmsiObject *hdb = 0;
-    LibmsiObject *query = 0;
-    LibmsiObject *rec;
+    LibmsiDatabase *hdb = 0;
+    LibmsiQuery *query = 0;
+    LibmsiRecord *rec;
     const char *sql;
     unsigned r;
     char buf[0x10];
@@ -3980,7 +3981,7 @@ static void test_temporary_table(void)
 static void test_alter(void)
 {
     LibmsiCondition cond;
-    LibmsiObject *hdb = 0;
+    LibmsiDatabase *hdb = 0;
     const char *sql;
     unsigned r;
 
@@ -4156,9 +4157,9 @@ static void test_alter(void)
 
 static void test_integers(void)
 {
-    LibmsiObject *hdb = 0;
-    LibmsiObject *query = 0;
-    LibmsiObject *rec = 0;
+    LibmsiDatabase *hdb = 0;
+    LibmsiQuery *query = 0;
+    LibmsiRecord *rec = 0;
     unsigned count, i;
     const char *sql;
     unsigned r;
@@ -4289,9 +4290,9 @@ static void test_integers(void)
 
 static void test_update(void)
 {
-    LibmsiObject *hdb = 0;
-    LibmsiObject *query = 0;
-    LibmsiObject *rec = 0;
+    LibmsiDatabase *hdb = 0;
+    LibmsiQuery *query = 0;
+    LibmsiRecord *rec = 0;
     char result[MAX_PATH];
     const char *sql;
     unsigned size;
@@ -4611,7 +4612,7 @@ static void test_update(void)
 static void test_special_tables(void)
 {
     const char *sql;
-    LibmsiObject *hdb = 0;
+    LibmsiDatabase *hdb = 0;
     unsigned r;
 
     r = MsiOpenDatabase(msifile, LIBMSI_DB_OPEN_CREATE, &hdb);
@@ -4649,9 +4650,9 @@ static void test_special_tables(void)
 static void test_tables_order(void)
 {
     const char *sql;
-    LibmsiObject *hdb = 0;
-    LibmsiObject *hquery = 0;
-    LibmsiObject *hrec = 0;
+    LibmsiDatabase *hdb = 0;
+    LibmsiQuery *hquery = 0;
+    LibmsiRecord *hrec = 0;
     unsigned r;
     char buffer[100];
     unsigned sz;
@@ -4805,9 +4806,9 @@ static void test_tables_order(void)
 static void test_rows_order(void)
 {
     const char *sql;
-    LibmsiObject *hdb = 0;
-    LibmsiObject *hquery = 0;
-    LibmsiObject *hrec = 0;
+    LibmsiDatabase *hdb = 0;
+    LibmsiQuery *hquery = 0;
+    LibmsiRecord *hrec = 0;
     unsigned r;
     char buffer[100];
     unsigned sz;
@@ -4957,9 +4958,9 @@ static void test_collation(void)
     static const char letter_a_ring[] = "a\xcc\x8a";
     static const char letter_a_with_ring[] = "\xc3\xa5";
     const char *sql;
-    LibmsiObject *hdb = 0;
-    LibmsiObject *hquery = 0;
-    LibmsiObject *hrec = 0;
+    LibmsiDatabase *hdb = 0;
+    LibmsiQuery *hquery = 0;
+    LibmsiRecord *hrec = 0;
     unsigned r;
     char buffer[100];
     unsigned sz;
@@ -5095,10 +5096,10 @@ static void test_collation(void)
 
 static void test_select_markers(void)
 {
-    LibmsiObject *hdb = 0;
-    LibmsiObject *rec;
-    LibmsiObject *query;
-    LibmsiObject *res;
+    LibmsiDatabase *hdb = 0;
+    LibmsiRecord *rec;
+    LibmsiQuery *query;
+    LibmsiRecord *res;
     const char *sql;
     unsigned r;
     unsigned size;
@@ -5241,9 +5242,9 @@ static void test_select_markers(void)
 
 static void test_querymodify_update(void)
 {
-    LibmsiObject *hdb = 0;
-    LibmsiObject *hquery = 0;
-    LibmsiObject *hrec = 0;
+    LibmsiDatabase *hdb = 0;
+    LibmsiQuery *hquery = 0;
+    LibmsiRecord *hrec = 0;
     unsigned i, test_max, offset, count;
     const char *sql;
     unsigned r;
@@ -5501,9 +5502,9 @@ static void test_querymodify_update(void)
 
 static void test_querymodify_assign(void)
 {
-    LibmsiObject *hdb = 0;
-    LibmsiObject *hquery = 0;
-    LibmsiObject *hrec = 0;
+    LibmsiDatabase *hdb = 0;
+    LibmsiQuery *hquery = 0;
+    LibmsiRecord *hrec = 0;
     const char *sql;
     unsigned r;
 
@@ -5653,9 +5654,9 @@ static const WCHAR data13[] = { /* _StringPool */
 
 static void test_stringtable(void)
 {
-    LibmsiObject *hdb = 0;
-    LibmsiObject *hquery = 0;
-    LibmsiObject *hrec = 0;
+    LibmsiDatabase *hdb = 0;
+    LibmsiQuery *hquery = 0;
+    LibmsiRecord *hrec = 0;
     IStorage *stg = NULL;
     IStream *stm;
     WCHAR name[0x20];
@@ -5893,9 +5894,9 @@ static void test_stringtable(void)
 
 static void test_querymodify_delete(void)
 {
-    LibmsiObject *hdb = 0;
-    LibmsiObject *hquery = 0;
-    LibmsiObject *hrec = 0;
+    LibmsiDatabase *hdb = 0;
+    LibmsiQuery *hquery = 0;
+    LibmsiRecord *hrec = 0;
     unsigned r;
     const char *sql;
     char buffer[0x100];
@@ -6073,7 +6074,7 @@ static void test_defaultdatabase(void)
 {
     unsigned r;
     HRESULT hr;
-    LibmsiObject *hdb;
+    LibmsiDatabase *hdb;
     IStorage *stg = NULL;
 
     DeleteFile(msifile);
@@ -6098,9 +6099,9 @@ static void test_defaultdatabase(void)
 
 static void test_order(void)
 {
-    LibmsiObject *hdb;
-    LibmsiObject *hquery;
-    LibmsiObject *hrec;
+    LibmsiDatabase *hdb;
+    LibmsiQuery *hquery;
+    LibmsiRecord *hrec;
     char buffer[MAX_PATH];
     const char *sql;
     unsigned r, sz;
@@ -6358,9 +6359,9 @@ static void test_order(void)
 
 static void test_querymodify_delete_temporary(void)
 {
-    LibmsiObject *hdb;
-    LibmsiObject *hquery;
-    LibmsiObject *hrec;
+    LibmsiDatabase *hdb;
+    LibmsiQuery *hquery;
+    LibmsiRecord *hrec;
     const char *sql;
     unsigned r;
 
@@ -6476,9 +6477,9 @@ static void test_querymodify_delete_temporary(void)
 
 static void test_deleterow(void)
 {
-    LibmsiObject *hdb;
-    LibmsiObject *hquery;
-    LibmsiObject *hrec;
+    LibmsiDatabase *hdb;
+    LibmsiQuery *hquery;
+    LibmsiRecord *hrec;
     const char *sql;
     char buf[MAX_PATH];
     unsigned r;
@@ -6545,9 +6546,9 @@ static const char import_dat[] = "A\n"
 
 static void test_quotes(void)
 {
-    LibmsiObject *hdb;
-    LibmsiObject *hquery;
-    LibmsiObject *hrec;
+    LibmsiDatabase *hdb;
+    LibmsiQuery *hquery;
+    LibmsiRecord *hrec;
     const char *sql;
     char buf[MAX_PATH];
     unsigned r;
@@ -6653,9 +6654,9 @@ static void test_quotes(void)
 
 static void test_carriagereturn(void)
 {
-    LibmsiObject *hdb;
-    LibmsiObject *hquery;
-    LibmsiObject *hrec;
+    LibmsiDatabase *hdb;
+    LibmsiQuery *hquery;
+    LibmsiRecord *hrec;
     const char *sql;
     char buf[MAX_PATH];
     unsigned r;
@@ -6841,9 +6842,9 @@ static void test_carriagereturn(void)
 
 static void test_noquotes(void)
 {
-    LibmsiObject *hdb;
-    LibmsiObject *hquery;
-    LibmsiObject *hrec;
+    LibmsiDatabase *hdb;
+    LibmsiQuery *hquery;
+    LibmsiRecord *hrec;
     const char *sql;
     char buf[MAX_PATH];
     unsigned r;
@@ -7053,7 +7054,7 @@ static void read_file_data(const char *filename, char *buffer)
 
 static void test_forcecodepage(void)
 {
-    LibmsiObject *hdb;
+    LibmsiDatabase *hdb;
     const char *sql;
     char buffer[MAX_PATH];
     unsigned r;
@@ -7132,9 +7133,9 @@ static void test_forcecodepage(void)
 
 static void test_querymodify_refresh(void)
 {
-    LibmsiObject *hdb;
-    LibmsiObject *hquery;
-    LibmsiObject *hrec;
+    LibmsiDatabase *hdb;
+    LibmsiQuery *hquery;
+    LibmsiRecord *hrec;
     const char *sql;
     char buffer[MAX_PATH];
     unsigned r;
@@ -7224,9 +7225,9 @@ static void test_querymodify_refresh(void)
 
 static void test_where_querymodify(void)
 {
-    LibmsiObject *hdb;
-    LibmsiObject *hquery;
-    LibmsiObject *hrec;
+    LibmsiDatabase *hdb;
+    LibmsiQuery *hquery;
+    LibmsiRecord *hrec;
     const char *sql;
     unsigned r;
 
@@ -7358,9 +7359,9 @@ done:
 
 static void test_storages_table(void)
 {
-    LibmsiObject *hdb;
-    LibmsiObject *hquery;
-    LibmsiObject *hrec;
+    LibmsiDatabase *hdb;
+    LibmsiQuery *hquery;
+    LibmsiRecord *hrec;
     IStorage *stg, *inner;
     IStream *stm;
     char file[MAX_PATH];
@@ -7483,9 +7484,9 @@ static void test_storages_table(void)
 
 static void test_droptable(void)
 {
-    LibmsiObject *hdb;
-    LibmsiObject *hquery;
-    LibmsiObject *hrec;
+    LibmsiDatabase *hdb;
+    LibmsiQuery *hquery;
+    LibmsiRecord *hrec;
     char buf[MAX_PATH];
     const char *sql;
     unsigned size;
@@ -7704,10 +7705,10 @@ static void test_droptable(void)
 
 static void test_dbmerge(void)
 {
-    LibmsiObject *hdb;
-    LibmsiObject *href;
-    LibmsiObject *hquery;
-    LibmsiObject *hrec;
+    LibmsiDatabase *hdb;
+    LibmsiDatabase *href;
+    LibmsiQuery *hquery;
+    LibmsiRecord *hrec;
     char buf[MAX_PATH];
     const char *sql;
     unsigned size;
@@ -8334,9 +8335,9 @@ static void test_dbmerge(void)
 
 static void test_select_with_tablenames(void)
 {
-    LibmsiObject *hdb;
-    LibmsiObject *query;
-    LibmsiObject *rec;
+    LibmsiDatabase *hdb;
+    LibmsiQuery *query;
+    LibmsiRecord *rec;
     const char *sql;
     unsigned r;
     int i;
@@ -8421,9 +8422,9 @@ static const unsigned ordervals[6][3] =
 
 static void test_insertorder(void)
 {
-    LibmsiObject *hdb;
-    LibmsiObject *query;
-    LibmsiObject *rec;
+    LibmsiDatabase *hdb;
+    LibmsiQuery *query;
+    LibmsiRecord *rec;
     const char *sql;
     unsigned r;
     int i;
@@ -8561,9 +8562,9 @@ static void test_insertorder(void)
 
 static void test_columnorder(void)
 {
-    LibmsiObject *hdb;
-    LibmsiObject *query;
-    LibmsiObject *rec;
+    LibmsiDatabase *hdb;
+    LibmsiQuery *query;
+    LibmsiRecord *rec;
     char buf[MAX_PATH];
     const char *sql;
     unsigned sz;
@@ -9058,9 +9059,9 @@ static void test_columnorder(void)
 
 static void test_createtable(void)
 {
-    LibmsiObject *hdb;
-    LibmsiObject *htab = 0;
-    LibmsiObject *hrec = 0;
+    LibmsiDatabase *hdb;
+    LibmsiQuery *htab = 0;
+    LibmsiRecord *hrec = 0;
     const char *sql;
     unsigned res;
     unsigned size;
@@ -9178,8 +9179,8 @@ static void test_embedded_nulls(void)
         "Control\tDialog\n"
         "LicenseAgreementDlg\ttext\x11\x19text\0text";
     unsigned r, sz;
-    LibmsiObject *hdb;
-    LibmsiObject *hrec;
+    LibmsiDatabase *hdb;
+    LibmsiRecord *hrec;
     char buffer[32];
 
     r = MsiOpenDatabase( msifile, LIBMSI_DB_OPEN_CREATE, &hdb );
@@ -9207,10 +9208,10 @@ static void test_embedded_nulls(void)
 
 static void test_select_column_names(void)
 {
-    LibmsiObject *hdb = 0;
-    LibmsiObject *rec;
-    LibmsiObject *rec2;
-    LibmsiObject *query;
+    LibmsiDatabase *hdb = 0;
+    LibmsiRecord *rec;
+    LibmsiRecord *rec2;
+    LibmsiQuery *query;
     char buffer[32];
     unsigned r, size;
 

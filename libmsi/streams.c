@@ -174,7 +174,7 @@ static unsigned STREAMS_set_row(LibmsiView *view, unsigned row, LibmsiRecord *re
         goto done;
     }
 
-    name = strdupW(MSI_RecordGetString(rec, 1));
+    name = strdupW(MSI_RecordGetStringRaw(rec, 1));
     if (!name)
     {
         WARN("failed to retrieve stream name\n");
@@ -298,7 +298,7 @@ static unsigned streams_find_row(LibmsiStreamSVIEW *sv, LibmsiRecord *rec, unsig
     const WCHAR *str;
     unsigned r, i, id, data;
 
-    str = MSI_RecordGetString(rec, 1);
+    str = MSI_RecordGetStringRaw(rec, 1);
     r = msi_string2idW(sv->db->strings, str, &id);
     if (r != ERROR_SUCCESS)
         return r;
