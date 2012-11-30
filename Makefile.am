@@ -1,4 +1,13 @@
 ACLOCAL_AMFLAGS = -I m4
-SUBDIRS = libmsi tests
+SUBDIRS = libmsi . tests
 
-noinst_HEADERS = include/debug.h include/libmsi.h
+noinst_HEADERS = include/debug.h
+dist_include_HEADERS = include/libmsi.h
+
+AM_CPPFLAGS = -Iinclude -I$(srcdir)/include
+AM_LDFLAGS = -Llibmsi
+
+bin_PROGRAMS = msiinfo
+msiinfo_SOURCES = tools/msiinfo.c
+msiinfo_LDADD = -lmsi
+msiinfo_DEPENDENCIES = libmsi/libmsi.la
