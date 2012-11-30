@@ -248,6 +248,94 @@ static int cmd_tables(struct Command *cmd, int argc, char **argv)
     libmsi_unref(db);
 }
 
+static void print_suminfo(LibmsiSummaryInfo *si, int prop, const char *name)
+{
+    unsigned type;
+    int val;
+    uint64_t valtime;
+    char *buf;
+    size_t sz;
+    unsigned r;
+    time_t t;
+
+    sz = 0;
+    r = libmsi_summary_info_get_property(si, prop, &type, &val, &valtime, NULL, &sz);
+    if (r && r != LIBMSI_RESULT_MORE_DATA) {
+        print_libmsi_error(r);
+    }
+
+    switch (type) {
+    case LIBMSI_PROPERTY_TYPE_INT:
+        printf ("%s: %d (%x)\n", name, val, val);
+        break;
+
+    case LIBMSI_PROPERTY_TYPE_STRING:
+        buf = malloc(++sz);
+        r = libmsi_summary_info_get_property(si, prop, NULL, NULL, NULL, buf, &sz);
+        if (r) {
+            print_libmsi_error(r);
+        }
+        printf ("%s: %s\n", name, buf);
+	free(buf);
+        break;
+
+    case LIBMSI_PROPERTY_TYPE_FILETIME:
+        /* Convert nanoseconds since 1601 to seconds since Unix epoch.  */
+        t = (valtime / 10000000) - (uint64_t) 134774 * 86400;
+        printf ("%s: %s", name, ctime(&t));
+        break;
+
+    case LIBMSI_PROPERTY_TYPE_EMPTY:
+	break;
+
+    default:
+	abort();
+    }
+}
+
+static int cmd_suminfo(struct Command *cmd, int argc, char **argv)
+{
+    LibmsiDatabase *db = NULL;
+    LibmsiSummaryInfo *si = NULL;
+    LibmsiResult r;
+
+    if (argc != 2) {
+        cmd_usage(stderr, cmd);
+    }
+
+    r = libmsi_database_open(argv[1], LIBMSI_DB_OPEN_READONLY, &db);
+    if (r) {
+        print_libmsi_error(r);
+    }
+
+    r = libmsi_database_get_summary_info(db, 0, &si);
+    if (r) {
+        print_libmsi_error(r);
+    }
+
+    print_suminfo(si, MSI_PID_TITLE, "Title");
+    print_suminfo(si, MSI_PID_SUBJECT, "Subject");
+    print_suminfo(si, MSI_PID_AUTHOR, "Author");
+    print_suminfo(si, MSI_PID_KEYWORDS, "Keywords");
+    print_suminfo(si, MSI_PID_COMMENTS, "Comments");
+    print_suminfo(si, MSI_PID_TEMPLATE, "Template");
+    print_suminfo(si, MSI_PID_LASTAUTHOR, "Last author");
+    print_suminfo(si, MSI_PID_REVNUMBER, "Revision number");
+    print_suminfo(si, MSI_PID_EDITTIME, "Edittime");
+    print_suminfo(si, MSI_PID_LASTPRINTED, "Last printed");
+    print_suminfo(si, MSI_PID_CREATE_DTM, "Created");
+    print_suminfo(si, MSI_PID_LASTSAVE_DTM, "Last saved");
+    print_suminfo(si, MSI_PID_MSIVERSION, "Version");
+    print_suminfo(si, MSI_PID_MSISOURCE, "Source");
+    print_suminfo(si, MSI_PID_MSIRESTRICT, "Restrict");
+    print_suminfo(si, MSI_PID_THUMBNAIL, "Thumbnail");
+    print_suminfo(si, MSI_PID_APPNAME, "Application");
+    print_suminfo(si, MSI_PID_SECURITY, "Security");
+
+    libmsi_unref(db);
+    libmsi_unref(si);
+}
+
 static int cmd_export(struct Command *cmd, int argc, char **argv)
 {
     LibmsiDatabase *db = NULL;
@@ -312,6 +400,12 @@ static struct Command cmds[] = {
         .opts = "FILE TABLE",
         .desc = "Export a table in text form from an .msi file",
         .func = cmd_export,
+    },
+    {
+        .cmd = "suminfo",
+        .opts = "FILE TABLE",
+        .desc = "Print summary information",
+        .func = cmd_suminfo,
     },
     {
         .cmd = "-h",
