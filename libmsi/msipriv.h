@@ -275,7 +275,7 @@ typedef struct LibmsiSummaryInfo
 #define LIBMSI_OBJECT_TYPE_ANY 0
 #define LIBMSI_OBJECT_TYPE_DATABASE 1
 #define LIBMSI_OBJECT_TYPE_SUMMARYINFO 2
-#define LIBMSI_OBJECT_TYPE_VIEW 3
+#define LIBMSI_OBJECT_TYPE_QUERY 3
 #define LIBMSI_OBJECT_TYPE_RECORD 4
 #define LIBMSI_OBJECT_TYPE_PACKAGE 5
 #define LIBMSI_OBJECT_TYPE_PREVIEW 6
@@ -374,7 +374,7 @@ extern unsigned msi_get_raw_stream( LibmsiDatabase *, const WCHAR *, IStream **)
 extern unsigned msi_clone_open_stream( LibmsiDatabase *, IStorage *, const WCHAR *, IStream ** );
 void msi_destroy_stream( LibmsiDatabase *, const WCHAR * );
 extern unsigned MSI_OpenDatabaseW( const WCHAR *, const WCHAR *, LibmsiDatabase **);
-extern unsigned MSI_DatabaseOpenViewW(LibmsiDatabase *, const WCHAR *, LibmsiQuery **);
+extern unsigned MSI_DatabaseOpenQueryW(LibmsiDatabase *, const WCHAR *, LibmsiQuery **);
 extern unsigned MSI_OpenQuery( LibmsiDatabase *, LibmsiQuery **, const WCHAR *, ... );
 typedef unsigned (*record_func)( LibmsiRecord *, void *);
 extern unsigned MSI_IterateRecords( LibmsiQuery *, unsigned *, record_func, void *);
@@ -382,11 +382,11 @@ extern LibmsiRecord *MSI_QueryGetRecord( LibmsiDatabase *db, const WCHAR *query,
 extern unsigned MSI_DatabaseGetPrimaryKeys( LibmsiDatabase *, const WCHAR *, LibmsiRecord **);
 
 /* view internals */
-extern unsigned MSI_ViewExecute( LibmsiQuery*, LibmsiRecord * );
-extern unsigned MSI_ViewFetch( LibmsiQuery*, LibmsiRecord ** );
-extern unsigned MSI_ViewClose( LibmsiQuery* );
-extern unsigned MSI_ViewGetColumnInfo(LibmsiQuery *, LibmsiColInfo, LibmsiRecord **);
-extern unsigned MSI_ViewModify( LibmsiQuery *, LibmsiModify, LibmsiRecord * );
+extern unsigned MSI_QueryExecute( LibmsiQuery*, LibmsiRecord * );
+extern unsigned MSI_QueryFetch( LibmsiQuery*, LibmsiRecord ** );
+extern unsigned MSI_QueryClose( LibmsiQuery* );
+extern unsigned MSI_QueryGetColumnInfo(LibmsiQuery *, LibmsiColInfo, LibmsiRecord **);
+extern unsigned MSI_QueryModify( LibmsiQuery *, LibmsiModify, LibmsiRecord * );
 extern unsigned VIEW_find_column( LibmsiView *, const WCHAR *, const WCHAR *, unsigned *);
 extern unsigned msi_view_get_row(LibmsiDatabase *, LibmsiView *, unsigned, LibmsiRecord **);
 

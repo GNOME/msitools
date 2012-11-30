@@ -143,11 +143,11 @@ extern "C" {
 
 
 /* view manipulation */
-unsigned MsiViewFetch(LibmsiObject *,LibmsiObject **);
-unsigned MsiViewExecute(LibmsiObject *,LibmsiObject *);
-unsigned MsiViewClose(LibmsiObject *);
-unsigned MsiDatabaseOpenView(LibmsiObject *,const char *,LibmsiObject **);
-LibmsiDBError MsiViewGetError(LibmsiObject *,char *,unsigned *);
+unsigned MsiQueryFetch(LibmsiObject *,LibmsiObject **);
+unsigned MsiQueryExecute(LibmsiObject *,LibmsiObject *);
+unsigned MsiQueryClose(LibmsiObject *);
+unsigned MsiDatabaseOpenQuery(LibmsiObject *,const char *,LibmsiObject **);
+LibmsiDBError MsiQueryGetError(LibmsiObject *,char *,unsigned *);
 
 LibmsiDBState MsiGetDatabaseState(LibmsiObject *);
 
@@ -170,7 +170,7 @@ unsigned MsiDatabaseGetPrimaryKeys(LibmsiObject *,const char *,LibmsiObject **);
 /* database transforms */
 unsigned MsiDatabaseApplyTransform(LibmsiObject *,const char *,int);
 
-unsigned MsiViewGetColumnInfo(LibmsiObject *, LibmsiColInfo, LibmsiObject **);
+unsigned MsiQueryGetColumnInfo(LibmsiObject *, LibmsiColInfo, LibmsiObject **);
 
 unsigned MsiSummaryInfoGetProperty(LibmsiObject *,unsigned,unsigned *,int *,uint64_t*,char *,unsigned *);
 
@@ -187,7 +187,7 @@ LibmsiCondition MsiDatabaseIsTablePersistent(LibmsiObject *, const char *);
 unsigned MsiSummaryInfoPersist(LibmsiObject *);
 unsigned MsiSummaryInfoGetPropertyCount(LibmsiObject *,unsigned *);
 
-unsigned MsiViewModify(LibmsiObject *, LibmsiModify, LibmsiObject *);
+unsigned MsiQueryModify(LibmsiObject *, LibmsiModify, LibmsiObject *);
 
 unsigned MsiDatabaseMerge(LibmsiObject *, LibmsiObject *, const char *);
 

@@ -751,12 +751,12 @@ static unsigned msi_add_table_to_db(LibmsiDatabase *db, WCHAR **columns, WCHAR *
     strcatW(create_sql, columns_sql);
     strcatW(create_sql, postlude);
 
-    r = MSI_DatabaseOpenViewW( db, create_sql, &view );
+    r = MSI_DatabaseOpenQueryW( db, create_sql, &view );
     if (r != ERROR_SUCCESS)
         goto done;
 
-    r = MSI_ViewExecute(view, NULL);
-    MSI_ViewClose(view);
+    r = MSI_QueryExecute(view, NULL);
+    MSI_QueryClose(view);
     msiobj_release(&view->hdr);
 
 done:
@@ -857,9 +857,9 @@ static unsigned msi_add_records_to_table(LibmsiDatabase *db, WCHAR **columns, WC
     if (r != ERROR_SUCCESS)
         return r;
 
-    while (MSI_ViewFetch(view, &rec) != ERROR_NO_MORE_ITEMS)
+    while (MSI_QueryFetch(view, &rec) != ERROR_NO_MORE_ITEMS)
     {
-        r = MSI_ViewModify(view, LIBMSI_MODIFY_DELETE, rec);
+        r = MSI_QueryModify(view, LIBMSI_MODIFY_DELETE, rec);
         msiobj_release(&rec->hdr);
         if (r != ERROR_SUCCESS)
             goto done;
@@ -871,7 +871,7 @@ static unsigned msi_add_records_to_table(LibmsiDatabase *db, WCHAR **columns, WC
         if (r != ERROR_SUCCESS)
             goto done;
 
-        r = MSI_ViewModify(view, LIBMSI_MODIFY_INSERT, rec);
+        r = MSI_QueryModify(view, LIBMSI_MODIFY_INSERT, rec);
         if (r != ERROR_SUCCESS)
         {
             msiobj_release(&rec->hdr);
@@ -1111,7 +1111,7 @@ static unsigned MSI_DatabaseExport( LibmsiDatabase *db, const WCHAR *table,
     if (r == ERROR_SUCCESS)
     {
         /* write out row 1, the column names */
-        r = MSI_ViewGetColumnInfo(view, LIBMSI_COL_INFO_NAMES, &rec);
+        r = MSI_QueryGetColumnInfo(view, LIBMSI_COL_INFO_NAMES, &rec);
         if (r == ERROR_SUCCESS)
         {
             msi_export_record( fd, rec, 1 );
@@ -1119,7 +1119,7 @@ static unsigned MSI_DatabaseExport( LibmsiDatabase *db, const WCHAR *table,
         }
 
         /* write out row 2, the column types */
-        r = MSI_ViewGetColumnInfo(view, LIBMSI_COL_INFO_TYPES, &rec);
+        r = MSI_QueryGetColumnInfo(view, LIBMSI_COL_INFO_TYPES, &rec);
         if (r == ERROR_SUCCESS)
         {
             msi_export_record( fd, rec, 1 );
@@ -1239,11 +1239,11 @@ static unsigned merge_verify_colnames(LibmsiQuery *dbview, LibmsiQuery *mergevie
     LibmsiRecord *dbrec, *mergerec;
     unsigned r, i, count;
 
-    r = MSI_ViewGetColumnInfo(dbview, LIBMSI_COL_INFO_NAMES, &dbrec);
+    r = MSI_QueryGetColumnInfo(dbview, LIBMSI_COL_INFO_NAMES, &dbrec);
     if (r != ERROR_SUCCESS)
         return r;
 
-    r = MSI_ViewGetColumnInfo(mergeview, LIBMSI_COL_INFO_NAMES, &mergerec);
+    r = MSI_QueryGetColumnInfo(mergeview, LIBMSI_COL_INFO_NAMES, &mergerec);
     if (r != ERROR_SUCCESS)
         return r;
 
@@ -1264,11 +1264,11 @@ static unsigned merge_verify_colnames(LibmsiQuery *dbview, LibmsiQuery *mergevie
     msiobj_release(&mergerec->hdr);
     dbrec = mergerec = NULL;
 
-    r = MSI_ViewGetColumnInfo(dbview, LIBMSI_COL_INFO_TYPES, &dbrec);
+    r = MSI_QueryGetColumnInfo(dbview, LIBMSI_COL_INFO_TYPES, &dbrec);
     if (r != ERROR_SUCCESS)
         return r;
 
-    r = MSI_ViewGetColumnInfo(mergeview, LIBMSI_COL_INFO_TYPES, &mergerec);
+    r = MSI_QueryGetColumnInfo(mergeview, LIBMSI_COL_INFO_TYPES, &mergerec);
     if (r != ERROR_SUCCESS)
         return r;
 
@@ -1338,7 +1338,7 @@ static WCHAR *get_key_value(LibmsiQuery *view, const WCHAR *key, LibmsiRecord *r
     unsigned r, i = 0, sz = 0;
     int cmp;
 
-    r = MSI_ViewGetColumnInfo(view, LIBMSI_COL_INFO_NAMES, &colnames);
+    r = MSI_QueryGetColumnInfo(view, LIBMSI_COL_INFO_NAMES, &colnames);
     if (r != ERROR_SUCCESS)
         return NULL;
 
@@ -1471,15 +1471,15 @@ static unsigned merge_diff_row(LibmsiRecord *rec, void *param)
         if (!query)
             return ERROR_OUTOFMEMORY;
 
-        r = MSI_DatabaseOpenViewW(data->db, query, &dbview);
+        r = MSI_DatabaseOpenQueryW(data->db, query, &dbview);
         if (r != ERROR_SUCCESS)
             goto done;
 
-        r = MSI_ViewExecute(dbview, NULL);
+        r = MSI_QueryExecute(dbview, NULL);
         if (r != ERROR_SUCCESS)
             goto done;
 
-        r = MSI_ViewFetch(dbview, &row);
+        r = MSI_QueryFetch(dbview, &row);
         if (r == ERROR_SUCCESS && !MSI_RecordsAreEqual(rec, row))
         {
             table->numconflicts++;
@@ -1549,7 +1549,7 @@ static unsigned msi_get_query_columns(LibmsiQuery *query, WCHAR ***columns, unsi
     unsigned r, i, count;
     LibmsiRecord *prec = NULL;
 
-    r = MSI_ViewGetColumnInfo(query, LIBMSI_COL_INFO_NAMES, &prec);
+    r = MSI_QueryGetColumnInfo(query, LIBMSI_COL_INFO_NAMES, &prec);
     if (r != ERROR_SUCCESS)
         return r;
 
@@ -1578,7 +1578,7 @@ static unsigned msi_get_query_types(LibmsiQuery *query, WCHAR ***types, unsigned
     unsigned r, i, count;
     LibmsiRecord *prec = NULL;
 
-    r = MSI_ViewGetColumnInfo(query, LIBMSI_COL_INFO_TYPES, &prec);
+    r = MSI_QueryGetColumnInfo(query, LIBMSI_COL_INFO_TYPES, &prec);
     if (r != ERROR_SUCCESS)
         return r;
 
@@ -1761,7 +1761,7 @@ static unsigned gather_merge_data(LibmsiDatabase *db, LibmsiDatabase *merge,
     MERGEDATA data;
     unsigned r;
 
-    r = MSI_DatabaseOpenViewW(merge, query, &view);
+    r = MSI_DatabaseOpenQueryW(merge, query, &view);
     if (r != ERROR_SUCCESS)
         return r;
 
@@ -1830,7 +1830,7 @@ static unsigned update_merge_errors(LibmsiDatabase *db, const WCHAR *error,
         if (r != ERROR_SUCCESS)
             return r;
 
-        r = MSI_ViewExecute(view, NULL);
+        r = MSI_QueryExecute(view, NULL);
         msiobj_release(&view->hdr);
         if (r != ERROR_SUCCESS)
             return r;
@@ -1840,7 +1840,7 @@ static unsigned update_merge_errors(LibmsiDatabase *db, const WCHAR *error,
     if (r != ERROR_SUCCESS)
         return r;
 
-    r = MSI_ViewExecute(view, NULL);
+    r = MSI_QueryExecute(view, NULL);
     msiobj_release(&view->hdr);
     return r;
 }

@@ -91,11 +91,11 @@ static bool check_column_exists(LibmsiDatabase *db, const WCHAR *table, const WC
     if (r != ERROR_SUCCESS)
         return false;
 
-    r = MSI_ViewExecute(view, NULL);
+    r = MSI_QueryExecute(view, NULL);
     if (r != ERROR_SUCCESS)
         goto done;
 
-    r = MSI_ViewFetch(view, &rec);
+    r = MSI_QueryFetch(view, &rec);
     if (r == ERROR_SUCCESS)
         msiobj_release(&rec->hdr);
 

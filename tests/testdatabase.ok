@@ -594,8 +594,8 @@ ok: r == ERROR_SUCCESS
 ok: res == ERROR_SUCCESS
 ok: res == ERROR_SUCCESS
 ok: hdb
-ok: i == MY_NVIEWS
-ok: i == MY_NVIEWS
+ok: i == MY_NQUERIES
+ok: i == MY_NQUERIES
 ok: r == ERROR_SUCCESS
 ok: res == ERROR_SUCCESS
 ok: res == ERROR_SUCCESS

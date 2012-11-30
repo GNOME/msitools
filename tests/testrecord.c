@@ -524,23 +524,23 @@ static void test_fieldzero(void)
     query = "CREATE TABLE `drone` ( "
            "`id` INT, `name` CHAR(32), `number` CHAR(32) "
            "PRIMARY KEY `id`)";
-    r = MsiDatabaseOpenView(hdb, query, &hview);
+    r = MsiDatabaseOpenQuery(hdb, query, &hview);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-    r = MsiViewExecute(hview, 0);
+    r = MsiQueryExecute(hview, 0);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-    r = MsiViewClose(hview);
-    ok(r == ERROR_SUCCESS, "MsiViewClose failed\n");
+    r = MsiQueryClose(hview);
+    ok(r == ERROR_SUCCESS, "MsiQueryClose failed\n");
     r = MsiCloseHandle(hview);
     ok(r == ERROR_SUCCESS, "MsiCloseHandle failed\n");
 
     query = "INSERT INTO `drone` ( `id`, `name`, `number` )"
            "VALUES('1', 'Abe', '8675309')";
-    r = MsiDatabaseOpenView(hdb, query, &hview);
-    ok(r == ERROR_SUCCESS, "MsiDatabaseOpenView failed\n");
-    r = MsiViewExecute(hview, 0);
-    ok(r == ERROR_SUCCESS, "MsiViewExecute failed\n");
-    r = MsiViewClose(hview);
-    ok(r == ERROR_SUCCESS, "MsiViewClose failed\n");
+    r = MsiDatabaseOpenQuery(hdb, query, &hview);
+    ok(r == ERROR_SUCCESS, "MsiDatabaseOpenQuery failed\n");
+    r = MsiQueryExecute(hview, 0);
+    ok(r == ERROR_SUCCESS, "MsiQueryExecute failed\n");
+    r = MsiQueryClose(hview);
+    ok(r == ERROR_SUCCESS, "MsiQueryClose failed\n");
     r = MsiCloseHandle(hview);
     ok(r == ERROR_SUCCESS, "MsiCloseHandle failed\n");
 
@@ -567,11 +567,11 @@ static void test_fieldzero(void)
     ok(r == ERROR_INVALID_TABLE, "Expected ERROR_INVALID_TABLE, got %d\n", r);
 
     query = "SELECT * FROM `drone` WHERE `id` = 1";
-    r = MsiDatabaseOpenView(hdb, query, &hview);
+    r = MsiDatabaseOpenQuery(hdb, query, &hview);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-    r = MsiViewExecute(hview, 0);
+    r = MsiQueryExecute(hview, 0);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-    r = MsiViewFetch(hview, &rec);
+    r = MsiQueryFetch(hview, &rec);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     r = MsiRecordGetInteger(rec, 0);

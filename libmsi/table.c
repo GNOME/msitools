@@ -1284,11 +1284,11 @@ static unsigned msi_addstreamW( LibmsiDatabase *db, const WCHAR *name, IStream *
     if ( r != ERROR_SUCCESS )
        goto err;
 
-    r = MSI_DatabaseOpenViewW( db, insert, &query );
+    r = MSI_DatabaseOpenQueryW( db, insert, &query );
     if ( r != ERROR_SUCCESS )
        goto err;
 
-    r = MSI_ViewExecute( query, rec );
+    r = MSI_QueryExecute( query, rec );
 
 err:
     msiobj_release( &query->hdr );
@@ -1735,7 +1735,7 @@ static unsigned msi_table_update(LibmsiView *view, LibmsiRecord *rec, unsigned r
     LibmsiTableVIEW *tv = (LibmsiTableVIEW *)view;
     unsigned r, new_row;
 
-    /* FIXME: MsiViewFetch should set rec index 0 to some ID that
+    /* FIXME: MsiQueryFetch should set rec index 0 to some ID that
      * sets the fetched record apart from other records
      */
 

@@ -39,7 +39,7 @@
 #include "initguid.h"
 
 
-static void MSI_CloseView( LibmsiObject *arg )
+static void MSI_CloseQuery( LibmsiObject *arg )
 {
     LibmsiQuery *query = (LibmsiQuery*) arg;
     struct list *ptr, *t;
@@ -84,7 +84,7 @@ unsigned VIEW_find_column( LibmsiView *table, const WCHAR *name, const WCHAR *ta
     return ERROR_INVALID_PARAMETER;
 }
 
-unsigned MsiDatabaseOpenView(LibmsiObject *hdb,
+unsigned MsiDatabaseOpenQuery(LibmsiObject *hdb,
               const char *szQuery, LibmsiObject **phView)
 {
     unsigned r;
@@ -109,7 +109,7 @@ unsigned MsiDatabaseOpenView(LibmsiObject *hdb,
     if( !db )
         return ERROR_INVALID_HANDLE;
 
-    r = MSI_DatabaseOpenViewW( db, szwQuery, &query );
+    r = MSI_DatabaseOpenQueryW( db, szwQuery, &query );
     if( r == ERROR_SUCCESS )
         *phView = &query->hdr;
     msiobj_release( &db->hdr );
@@ -118,7 +118,7 @@ unsigned MsiDatabaseOpenView(LibmsiObject *hdb,
     return r;
 }
 
-unsigned MSI_DatabaseOpenViewW(LibmsiDatabase *db,
+unsigned MSI_DatabaseOpenQueryW(LibmsiDatabase *db,
               const WCHAR *szQuery, LibmsiQuery **pView)
 {
     LibmsiQuery *query;
@@ -130,8 +130,8 @@ unsigned MSI_DatabaseOpenViewW(LibmsiDatabase *db,
         return ERROR_INVALID_PARAMETER;
 
     /* pre allocate a handle to hold a pointer to the view */
-    query = alloc_msiobject( LIBMSI_OBJECT_TYPE_VIEW, sizeof (LibmsiQuery),
-                              MSI_CloseView );
+    query = alloc_msiobject( LIBMSI_OBJECT_TYPE_QUERY, sizeof (LibmsiQuery),
+                              MSI_CloseQuery );
     if( !query )
         return ERROR_FUNCTION_FAILED;
 
@@ -170,7 +170,7 @@ unsigned MSI_OpenQuery( LibmsiDatabase *db, LibmsiQuery **view, const WCHAR *fmt
         msi_free( query );
     }
     /* perform the query */
-    r = MSI_DatabaseOpenViewW(db, query, view);
+    r = MSI_DatabaseOpenQueryW(db, query, view);
     msi_free(query);
     return r;
 }
@@ -181,7 +181,7 @@ unsigned MSI_IterateRecords( LibmsiQuery *view, unsigned *count,
     LibmsiRecord *rec = NULL;
     unsigned r, n = 0, max = 0;
 
-    r = MSI_ViewExecute( view, NULL );
+    r = MSI_QueryExecute( view, NULL );
     if( r != ERROR_SUCCESS )
         return r;
 
@@ -191,7 +191,7 @@ unsigned MSI_IterateRecords( LibmsiQuery *view, unsigned *count,
     /* iterate a query */
     for( n = 0; (max == 0) || (n < max); n++ )
     {
-        r = MSI_ViewFetch( view, &rec );
+        r = MSI_QueryFetch( view, &rec );
         if( r != ERROR_SUCCESS )
             break;
         if (func)
@@ -201,7 +201,7 @@ unsigned MSI_IterateRecords( LibmsiQuery *view, unsigned *count,
             break;
     }
 
-    MSI_ViewClose( view );
+    MSI_QueryClose( view );
 
     if( count )
         *count = n;
@@ -235,14 +235,14 @@ LibmsiRecord *MSI_QueryGetRecord( LibmsiDatabase *db, const WCHAR *fmt, ... )
         msi_free( query );
     }
     /* perform the query */
-    r = MSI_DatabaseOpenViewW(db, query, &view);
+    r = MSI_DatabaseOpenQueryW(db, query, &view);
     msi_free(query);
 
     if( r == ERROR_SUCCESS )
     {
-        MSI_ViewExecute( view, NULL );
-        MSI_ViewFetch( view, &rec );
-        MSI_ViewClose( view );
+        MSI_QueryExecute( view, NULL );
+        MSI_QueryFetch( view, &rec );
+        MSI_QueryClose( view );
         msiobj_release( &view->hdr );
     }
     return rec;
@@ -326,7 +326,7 @@ unsigned msi_view_get_row(LibmsiDatabase *db, LibmsiView *view, unsigned row, Li
     return ERROR_SUCCESS;
 }
 
-unsigned MSI_ViewFetch(LibmsiQuery *query, LibmsiRecord **prec)
+unsigned MSI_QueryFetch(LibmsiQuery *query, LibmsiRecord **prec)
 {
     LibmsiView *view;
     unsigned r;
@@ -347,7 +347,7 @@ unsigned MSI_ViewFetch(LibmsiQuery *query, LibmsiRecord **prec)
     return r;
 }
 
-unsigned MsiViewFetch(LibmsiObject *hView, LibmsiObject **record)
+unsigned MsiQueryFetch(LibmsiObject *hView, LibmsiObject **record)
 {
     LibmsiQuery *query;
     LibmsiRecord *rec = NULL;
@@ -359,17 +359,17 @@ unsigned MsiViewFetch(LibmsiObject *hView, LibmsiObject **record)
         return ERROR_INVALID_PARAMETER;
     *record = 0;
 
-    query = msihandle2msiinfo( hView, LIBMSI_OBJECT_TYPE_VIEW );
+    query = msihandle2msiinfo( hView, LIBMSI_OBJECT_TYPE_QUERY );
     if( !query )
         return ERROR_INVALID_HANDLE;
-    ret = MSI_ViewFetch( query, &rec );
+    ret = MSI_QueryFetch( query, &rec );
     if( ret == ERROR_SUCCESS )
         *record = &rec->hdr;
     msiobj_release( &query->hdr );
     return ret;
 }
 
-unsigned MSI_ViewClose(LibmsiQuery *query)
+unsigned MSI_QueryClose(LibmsiQuery *query)
 {
     LibmsiView *view;
 
@@ -384,23 +384,23 @@ unsigned MSI_ViewClose(LibmsiQuery *query)
     return view->ops->close( view );
 }
 
-unsigned MsiViewClose(LibmsiObject *hView)
+unsigned MsiQueryClose(LibmsiObject *hView)
 {
     LibmsiQuery *query;
     unsigned ret;
 
     TRACE("%d\n", hView );
 
-    query = msihandle2msiinfo( hView, LIBMSI_OBJECT_TYPE_VIEW );
+    query = msihandle2msiinfo( hView, LIBMSI_OBJECT_TYPE_QUERY );
     if( !query )
         return ERROR_INVALID_HANDLE;
 
-    ret = MSI_ViewClose( query );
+    ret = MSI_QueryClose( query );
     msiobj_release( &query->hdr );
     return ret;
 }
 
-unsigned MSI_ViewExecute(LibmsiQuery *query, LibmsiRecord *rec )
+unsigned MSI_QueryExecute(LibmsiQuery *query, LibmsiRecord *rec )
 {
     LibmsiView *view;
 
@@ -416,7 +416,7 @@ unsigned MSI_ViewExecute(LibmsiQuery *query, LibmsiRecord *rec )
     return view->ops->execute( view, rec );
 }
 
-unsigned MsiViewExecute(LibmsiObject *hView, LibmsiObject *hRec)
+unsigned MsiQueryExecute(LibmsiObject *hView, LibmsiObject *hRec)
 {
     LibmsiQuery *query;
     LibmsiRecord *rec = NULL;
@@ -424,7 +424,7 @@ unsigned MsiViewExecute(LibmsiObject *hView, LibmsiObject *hRec)
     
     TRACE("%d %d\n", hView, hRec);
 
-    query = msihandle2msiinfo( hView, LIBMSI_OBJECT_TYPE_VIEW );
+    query = msihandle2msiinfo( hView, LIBMSI_OBJECT_TYPE_QUERY );
     if( !query )
         return ERROR_INVALID_HANDLE;
 
@@ -438,7 +438,7 @@ unsigned MsiViewExecute(LibmsiObject *hView, LibmsiObject *hRec)
         }
     }
 
-    ret = MSI_ViewExecute( query, rec );
+    ret = MSI_QueryExecute( query, rec );
 
 out:
     msiobj_release( &query->hdr );
@@ -485,7 +485,7 @@ static unsigned msi_set_record_type_string( LibmsiRecord *rec, unsigned field,
     return MSI_RecordSetStringW( rec, field, szType );
 }
 
-unsigned MSI_ViewGetColumnInfo( LibmsiQuery *query, LibmsiColInfo info, LibmsiRecord **prec )
+unsigned MSI_QueryGetColumnInfo( LibmsiQuery *query, LibmsiColInfo info, LibmsiRecord **prec )
 {
     unsigned r = ERROR_FUNCTION_FAILED, i, count = 0, type;
     LibmsiRecord *rec;
@@ -524,7 +524,7 @@ unsigned MSI_ViewGetColumnInfo( LibmsiQuery *query, LibmsiColInfo info, LibmsiRe
     return ERROR_SUCCESS;
 }
 
-unsigned MsiViewGetColumnInfo(LibmsiObject *hView, LibmsiColInfo info, LibmsiObject **hRec)
+unsigned MsiQueryGetColumnInfo(LibmsiObject *hView, LibmsiColInfo info, LibmsiObject **hRec)
 {
     LibmsiQuery *query = NULL;
     LibmsiRecord *rec = NULL;
@@ -538,11 +538,11 @@ unsigned MsiViewGetColumnInfo(LibmsiObject *hView, LibmsiColInfo info, LibmsiObj
     if( info != LIBMSI_COL_INFO_NAMES && info != LIBMSI_COL_INFO_TYPES )
         return ERROR_INVALID_PARAMETER;
 
-    query = msihandle2msiinfo( hView, LIBMSI_OBJECT_TYPE_VIEW );
+    query = msihandle2msiinfo( hView, LIBMSI_OBJECT_TYPE_QUERY );
     if( !query )
         return ERROR_INVALID_HANDLE;
 
-    r = MSI_ViewGetColumnInfo( query, info, &rec );
+    r = MSI_QueryGetColumnInfo( query, info, &rec );
     if ( r == ERROR_SUCCESS )
         *hRec = &rec->hdr;
 
@@ -551,7 +551,7 @@ unsigned MsiViewGetColumnInfo(LibmsiObject *hView, LibmsiColInfo info, LibmsiObj
     return r;
 }
 
-unsigned MSI_ViewModify( LibmsiQuery *query, LibmsiModify mode, LibmsiRecord *rec )
+unsigned MSI_QueryModify( LibmsiQuery *query, LibmsiModify mode, LibmsiRecord *rec )
 {
     LibmsiView *view = NULL;
     unsigned r;
@@ -573,7 +573,7 @@ unsigned MSI_ViewModify( LibmsiQuery *query, LibmsiModify mode, LibmsiRecord *re
     return r;
 }
 
-unsigned MsiViewModify( LibmsiObject *hView, LibmsiModify eModifyMode,
+unsigned MsiQueryModify( LibmsiObject *hView, LibmsiModify eModifyMode,
                 LibmsiObject *hRecord)
 {
     LibmsiQuery *query = NULL;
@@ -582,12 +582,12 @@ unsigned MsiViewModify( LibmsiObject *hView, LibmsiModify eModifyMode,
 
     TRACE("%d %x %d\n", hView, eModifyMode, hRecord);
 
-    query = msihandle2msiinfo( hView, LIBMSI_OBJECT_TYPE_VIEW );
+    query = msihandle2msiinfo( hView, LIBMSI_OBJECT_TYPE_QUERY );
     if( !query )
         return ERROR_INVALID_HANDLE;
 
     rec = msihandle2msiinfo( hRecord, LIBMSI_OBJECT_TYPE_RECORD );
-    r = MSI_ViewModify( query, eModifyMode, rec );
+    r = MSI_QueryModify( query, eModifyMode, rec );
 
     msiobj_release( &query->hdr );
     if( rec )
@@ -596,7 +596,7 @@ unsigned MsiViewModify( LibmsiObject *hView, LibmsiModify eModifyMode,
     return r;
 }
 
-LibmsiDBError MsiViewGetError( LibmsiObject *handle, char *buffer, unsigned *buflen )
+LibmsiDBError MsiQueryGetError( LibmsiObject *handle, char *buffer, unsigned *buflen )
 {
     LibmsiQuery *query;
     const WCHAR *column;
@@ -608,7 +608,7 @@ LibmsiDBError MsiViewGetError( LibmsiObject *handle, char *buffer, unsigned *buf
     if (!buflen)
         return LIBMSI_DB_ERROR_INVALIDARG;
 
-    query = msihandle2msiinfo( handle, LIBMSI_OBJECT_TYPE_VIEW );
+    query = msihandle2msiinfo( handle, LIBMSI_OBJECT_TYPE_QUERY );
     if (!query)
         return LIBMSI_DB_ERROR_INVALIDARG;
 
