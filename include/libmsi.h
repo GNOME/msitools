@@ -196,8 +196,6 @@ unsigned MsiGetSummaryInformation(LibmsiObject *, unsigned, LibmsiObject **);
 unsigned MsiDatabaseCommit(LibmsiObject *);
 unsigned MsiCloseHandle(LibmsiObject *);
 
-LibmsiObject * MsiGetLastErrorRecord(void);
-
 #ifdef __cplusplus
 }
 #endif

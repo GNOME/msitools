@@ -628,12 +628,6 @@ LibmsiDBError MsiQueryGetError( LibmsiObject *handle, char *buffer, unsigned *bu
     return r;
 }
 
-LibmsiObject * MsiGetLastErrorRecord( void )
-{
-    FIXME("\n");
-    return 0;
-}
-
 unsigned MSI_DatabaseApplyTransform( LibmsiDatabase *db,
                  const char *szTransformFile, int iErrorCond )
 {
