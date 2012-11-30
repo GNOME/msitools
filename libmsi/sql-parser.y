@@ -298,7 +298,7 @@ onedrop:
             unsigned r;
 
             r = drop_view_create( sql->db, &drop, $3 );
-            if( r != ERROR_SUCCESS || !$$ )
+            if( r != LIBMSI_RESULT_SUCCESS || !$$ )
                 YYABORT;
 
             PARSER_BUBBLE_UP_VIEW( sql, $$, drop );
@@ -419,7 +419,7 @@ oneselect:
             unsigned r;
 
             r = distinct_view_create( sql->db, &distinct, $3 );
-            if (r != ERROR_SUCCESS)
+            if (r != LIBMSI_RESULT_SUCCESS)
                 YYABORT;
 
             PARSER_BUBBLE_UP_VIEW( sql, $$, distinct );
@@ -436,7 +436,7 @@ selectfrom:
             if( $1 )
             {
                 r = select_view_create( sql->db, &select, $2, $1 );
-                if (r != ERROR_SUCCESS)
+                if (r != LIBMSI_RESULT_SUCCESS)
                     YYABORT;
 
                 PARSER_BUBBLE_UP_VIEW( sql, $$, select );
@@ -478,7 +478,7 @@ from:
             unsigned r;
 
             r = table_view_create( sql->db, $2, &table );
-            if( r != ERROR_SUCCESS || !$$ )
+            if( r != LIBMSI_RESULT_SUCCESS || !$$ )
                 YYABORT;
 
             PARSER_BUBBLE_UP_VIEW( sql, $$, table );
@@ -490,7 +490,7 @@ from:
             if( $4 )
             {
                 r = $1->ops->sort( $1, $4 );
-                if ( r != ERROR_SUCCESS)
+                if ( r != LIBMSI_RESULT_SUCCESS)
                     YYABORT;
             }
 
@@ -507,7 +507,7 @@ unorderdfrom:
             unsigned r;
 
             r = where_view_create( sql->db, &where, $2, NULL );
-            if( r != ERROR_SUCCESS )
+            if( r != LIBMSI_RESULT_SUCCESS )
                 YYABORT;
 
             PARSER_BUBBLE_UP_VIEW( sql, $$, where );
@@ -519,7 +519,7 @@ unorderdfrom:
             unsigned r;
 
             r = where_view_create( sql->db, &where, $2, $4 );
-            if( r != ERROR_SUCCESS )
+            if( r != LIBMSI_RESULT_SUCCESS )
                 YYABORT;
 
             PARSER_BUBBLE_UP_VIEW( sql, $$, where );
@@ -730,7 +730,7 @@ table:
 id:
     TK_ID
         {
-            if ( sql_unescape_string( info, &$1, &$$ ) != ERROR_SUCCESS || !$$ )
+            if ( sql_unescape_string( info, &$1, &$$ ) != LIBMSI_RESULT_SUCCESS || !$$ )
                 YYABORT;
         }
     ;
@@ -738,7 +738,7 @@ id:
 string:
     TK_STRING
         {
-            if ( sql_unescape_string( info, &$1, &$$ ) != ERROR_SUCCESS || !$$ )
+            if ( sql_unescape_string( info, &$1, &$$ ) != LIBMSI_RESULT_SUCCESS || !$$ )
                 YYABORT;
         }
     ;
@@ -829,7 +829,7 @@ unsigned sql_unescape_string( void *info, const struct sql_str *strdata, WCHAR *
     /* match quotes */
     if( ( (p[0]=='`') && (p[len-1]!='`') ) ||
         ( (p[0]=='\'') && (p[len-1]!='\'') ) )
-        return ERROR_FUNCTION_FAILED;
+        return LIBMSI_RESULT_FUNCTION_FAILED;
 
     /* if there's quotes, remove them */
     if( ( (p[0]=='`') && (p[len-1]=='`') ) ||
@@ -840,11 +840,11 @@ unsigned sql_unescape_string( void *info, const struct sql_str *strdata, WCHAR *
     }
     *str = parser_alloc( info, (len + 1)*sizeof(WCHAR) );
     if( !*str )
-        return ERROR_OUTOFMEMORY;
+        return LIBMSI_RESULT_OUTOFMEMORY;
     memcpy( *str, p, len*sizeof(WCHAR) );
     (*str)[len]=0;
 
-    return ERROR_SUCCESS;
+    return LIBMSI_RESULT_SUCCESS;
 }
 
 INT sql_atoi( void *info )
@@ -936,7 +936,7 @@ static struct expr * build_expr_sval( void *info, const struct sql_str *str )
     if( e )
     {
         e->type = EXPR_SVAL;
-        if( sql_unescape_string( info, str, (WCHAR **)&e->u.sval ) != ERROR_SUCCESS )
+        if( sql_unescape_string( info, str, (WCHAR **)&e->u.sval ) != LIBMSI_RESULT_SUCCESS )
             return NULL; /* e will be freed by query destructor */
     }
     return e;
@@ -1010,7 +1010,7 @@ unsigned _libmsi_parse_sql( LibmsiDatabase *db, const WCHAR *command, LibmsiView
     sql.command = command;
     sql.n = 0;
     sql.len = 0;
-    sql.r = ERROR_BAD_QUERY_SYNTAX;
+    sql.r = LIBMSI_RESULT_BAD_QUERY_SYNTAX;
     sql.view = phview;
     sql.mem = mem;
 
@@ -1027,5 +1027,5 @@ unsigned _libmsi_parse_sql( LibmsiDatabase *db, const WCHAR *command, LibmsiView
         return sql.r;
     }
 
-    return ERROR_SUCCESS;
+    return LIBMSI_RESULT_SUCCESS;
 }

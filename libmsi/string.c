@@ -228,7 +228,7 @@ static void set_st_entry( string_table *st, unsigned n, WCHAR *str, uint16_t ref
 static unsigned _libmsi_id_from_string( const string_table *st, const char *buffer, unsigned *id )
 {
     unsigned sz;
-    unsigned r = ERROR_INVALID_PARAMETER;
+    unsigned r = LIBMSI_RESULT_INVALID_PARAMETER;
     WCHAR *str;
 
     TRACE("Finding string %s in string table\n", debugstr_a(buffer) );
@@ -236,7 +236,7 @@ static unsigned _libmsi_id_from_string( const string_table *st, const char *buff
     if( buffer[0] == 0 )
     {
         *id = 0;
-        return ERROR_SUCCESS;
+        return LIBMSI_RESULT_SUCCESS;
     }
 
     sz = MultiByteToWideChar( st->codepage, 0, buffer, -1, NULL, 0 );
@@ -244,7 +244,7 @@ static unsigned _libmsi_id_from_string( const string_table *st, const char *buff
         return r;
     str = msi_alloc( sz*sizeof(WCHAR) );
     if( !str )
-        return ERROR_NOT_ENOUGH_MEMORY;
+        return LIBMSI_RESULT_NOT_ENOUGH_MEMORY;
     MultiByteToWideChar( st->codepage, 0, buffer, -1, str, sz );
 
     r = _libmsi_id_from_stringW( st, str, id );
@@ -270,7 +270,7 @@ static int msi_addstring( string_table *st, unsigned n, const char *data, int le
     }
     else
     {
-        if( ERROR_SUCCESS == _libmsi_id_from_string( st, data, &n ) )
+        if( LIBMSI_RESULT_SUCCESS == _libmsi_id_from_string( st, data, &n ) )
         {
             if (persistence == StringPersistent)
                 st->strings[n].persistent_refcount += refcount;
@@ -314,7 +314,7 @@ int _libmsi_add_string( string_table *st, const WCHAR *data, int len, uint16_t r
     if( !data[0] )
         return 0;
 
-    if( _libmsi_id_from_stringW( st, data, &n ) == ERROR_SUCCESS )
+    if( _libmsi_id_from_stringW( st, data, &n ) == LIBMSI_RESULT_SUCCESS )
     {
         if (persistence == StringPersistent)
             st->strings[n].persistent_refcount += refcount;
@@ -378,17 +378,17 @@ static unsigned _libmsi_string_id( const string_table *st, unsigned id, char *bu
 
     str = msi_string_lookup_id( st, id );
     if( !str )
-        return ERROR_FUNCTION_FAILED;
+        return LIBMSI_RESULT_FUNCTION_FAILED;
 
     lenW = strlenW( str );
     len = WideCharToMultiByte( st->codepage, 0, str, lenW, NULL, 0, NULL, NULL );
     if( *sz < len )
     {
         *sz = len;
-        return ERROR_MORE_DATA;
+        return LIBMSI_RESULT_MORE_DATA;
     }
     *sz = WideCharToMultiByte( st->codepage, 0, str, lenW, buffer, *sz, NULL, NULL );
-    return ERROR_SUCCESS;
+    return LIBMSI_RESULT_SUCCESS;
 }
 
 /*
@@ -414,11 +414,11 @@ unsigned _libmsi_id_from_stringW( const string_table *st, const WCHAR *str, unsi
         else
         {
             *id = st->sorted[i];
-            return ERROR_SUCCESS;
+            return LIBMSI_RESULT_SUCCESS;
         }
     }
 
-    return ERROR_INVALID_PARAMETER;
+    return LIBMSI_RESULT_INVALID_PARAMETER;
 }
 
 static void string_totalsize( const string_table *st, unsigned *datasize, unsigned *poolsize )
@@ -464,12 +464,12 @@ HRESULT msi_init_string_table( IStorage *stg )
 
     /* create the StringPool stream... add the zero string to it*/
     ret = write_stream_data(stg, szStringPool, zero, sizeof zero, true);
-    if (ret != ERROR_SUCCESS)
+    if (ret != LIBMSI_RESULT_SUCCESS)
         return E_FAIL;
 
     /* create the StringData stream... make it zero length */
     ret = write_stream_data(stg, szStringData, NULL, 0, true);
-    if (ret != ERROR_SUCCESS)
+    if (ret != LIBMSI_RESULT_SUCCESS)
         return E_FAIL;
 
     return S_OK;
@@ -484,10 +484,10 @@ string_table *msi_load_string_table( IStorage *stg, unsigned *bytes_per_strref )
     unsigned i, count, offset, len, n, refs;
 
     r = read_stream_data( stg, szStringPool, true, (uint8_t **)&pool, &poolsize );
-    if( r != ERROR_SUCCESS)
+    if( r != LIBMSI_RESULT_SUCCESS)
         goto end;
     r = read_stream_data( stg, szStringData, true, (uint8_t **)&data, &datasize );
-    if( r != ERROR_SUCCESS)
+    if( r != LIBMSI_RESULT_SUCCESS)
         goto end;
 
     if ( (poolsize > 4) && (pool[3] & 0x80) )
@@ -560,7 +560,7 @@ end:
 unsigned msi_save_string_table( const string_table *st, IStorage *storage, unsigned *bytes_per_strref )
 {
     unsigned i, datasize = 0, poolsize = 0, sz, used, r, codepage, n;
-    unsigned ret = ERROR_FUNCTION_FAILED;
+    unsigned ret = LIBMSI_RESULT_FUNCTION_FAILED;
     char *data = NULL;
     uint8_t *pool = NULL;
 
@@ -613,7 +613,7 @@ unsigned msi_save_string_table( const string_table *st, IStorage *storage, unsig
 
         sz = datasize - used;
         r = _libmsi_string_id( st, n, data+used, &sz );
-        if( r != ERROR_SUCCESS )
+        if( r != LIBMSI_RESULT_SUCCESS )
         {
             ERR("failed to fetch string\n");
             sz = 0;
@@ -667,7 +667,7 @@ unsigned msi_save_string_table( const string_table *st, IStorage *storage, unsig
     if( r )
         goto err;
 
-    ret = ERROR_SUCCESS;
+    ret = LIBMSI_RESULT_SUCCESS;
 
 err:
     msi_free( data );
@@ -686,7 +686,7 @@ unsigned msi_set_string_table_codepage( string_table *st, unsigned codepage )
     if (validate_codepage( codepage ))
     {
         st->codepage = codepage;
-        return ERROR_SUCCESS;
+        return LIBMSI_RESULT_SUCCESS;
     }
-    return ERROR_FUNCTION_FAILED;
+    return LIBMSI_RESULT_FUNCTION_FAILED;
 }

@@ -2,12 +2,12 @@ ok: r==-1
 ok: r==0
 ok: GetLastError()==0
 ok: r == MSI_NULL_INTEGER
-ok: r == ERROR_INVALID_HANDLE
-ok: r == ERROR_INVALID_HANDLE
+ok: r == LIBMSI_RESULT_INVALID_HANDLE
+ok: r == LIBMSI_RESULT_INVALID_HANDLE
 ok: h==0
 ok: h==0
 ok: GetLastError()==0
-ok: r == ERROR_INVALID_HANDLE
+ok: r == LIBMSI_RESULT_INVALID_HANDLE
 ok: r == 0
 ok: h!=0
 ok: r==0
@@ -15,188 +15,188 @@ ok: r
 ok: r
 ok: r
 ok: r==0
-ok: r==ERROR_SUCCESS
+ok: r==LIBMSI_RESULT_SUCCESS
 ok: sz==0
 ok: buf[0]==0
-ok: r == ERROR_SUCCESS
+ok: r == LIBMSI_RESULT_SUCCESS
 ok: r==0
 ok: r==sizeof(unsigned)
-ok: r == ERROR_SUCCESS
-ok: r == ERROR_INVALID_PARAMETER
-ok: r == ERROR_INVALID_PARAMETER
+ok: r == LIBMSI_RESULT_SUCCESS
+ok: r == LIBMSI_RESULT_INVALID_PARAMETER
+ok: r == LIBMSI_RESULT_INVALID_PARAMETER
 ok: r==0
 ok: r == 1
-ok: r == ERROR_SUCCESS
+ok: r == LIBMSI_RESULT_SUCCESS
 ok: r == true
 ok: r == 0
-ok: r == ERROR_SUCCESS
+ok: r == LIBMSI_RESULT_SUCCESS
 ok: buf[0] == 0
 ok: sz == 0
-ok: r == ERROR_SUCCESS
+ok: r == LIBMSI_RESULT_SUCCESS
 ok: r == true
 ok: r == 0
-ok: r == ERROR_SUCCESS
+ok: r == LIBMSI_RESULT_SUCCESS
 ok: buf[0] == 0
 ok: sz == 0
-ok: r == ERROR_SUCCESS
+ok: r == LIBMSI_RESULT_SUCCESS
 ok: r == MSI_NULL_INTEGER
 ok: r==sizeof str-1
-ok: r == ERROR_SUCCESS
+ok: r == LIBMSI_RESULT_SUCCESS
 ok: 0==strcmp(buf,str)
 ok: sz == sizeof str-1
-ok: r == ERROR_MORE_DATA
+ok: r == LIBMSI_RESULT_MORE_DATA
 ok: sz == sizeof str-1
 ok: 0==strncmp(buf,str,sizeof str-3)
 ok: buf[sizeof str - 3]==0
-ok: r == ERROR_SUCCESS
+ok: r == LIBMSI_RESULT_SUCCESS
 ok: sz == sizeof str-1
 ok: 0==strcmp(buf,str)
-ok: r == ERROR_MORE_DATA
+ok: r == LIBMSI_RESULT_MORE_DATA
 ok: sz == 5
 ok: 0==memcmp(buf,str,4)
-ok: r == ERROR_MORE_DATA
+ok: r == LIBMSI_RESULT_MORE_DATA
 ok: sz == 5
 ok: 'x'==buf[0]
-ok: r == ERROR_SUCCESS
-ok: r == ERROR_SUCCESS
+ok: r == LIBMSI_RESULT_SUCCESS
+ok: r == LIBMSI_RESULT_SUCCESS
 ok: r
-ok: i == ERROR_SUCCESS
+ok: i == LIBMSI_RESULT_SUCCESS
 ok: i == 42
-ok: i == ERROR_SUCCESS
+ok: i == LIBMSI_RESULT_SUCCESS
 ok: i == -42
-ok: i == ERROR_SUCCESS
+ok: i == LIBMSI_RESULT_SUCCESS
 ok: i == MSI_NULL_INTEGER
-ok: i == ERROR_SUCCESS
+ok: i == LIBMSI_RESULT_SUCCESS
 ok: i == MSI_NULL_INTEGER
-ok: i == ERROR_SUCCESS
+ok: i == LIBMSI_RESULT_SUCCESS
 ok: i == MSI_NULL_INTEGER
-ok: i == ERROR_SUCCESS
+ok: i == LIBMSI_RESULT_SUCCESS
 ok: i == MSI_NULL_INTEGER
-ok: i == ERROR_SUCCESS
+ok: i == LIBMSI_RESULT_SUCCESS
 ok: i == -1530494976
-ok: i == ERROR_SUCCESS
+ok: i == LIBMSI_RESULT_SUCCESS
 ok: i == 2147483647
-ok: i == ERROR_SUCCESS
+ok: i == LIBMSI_RESULT_SUCCESS
 ok: i == -2147483647
-ok: i == ERROR_SUCCESS
+ok: i == LIBMSI_RESULT_SUCCESS
 ok: i == 1
-ok: i == ERROR_SUCCESS
+ok: i == LIBMSI_RESULT_SUCCESS
 ok: i == MSI_NULL_INTEGER
-ok: i == ERROR_SUCCESS
+ok: i == LIBMSI_RESULT_SUCCESS
 ok: i == MSI_NULL_INTEGER
-ok: i == ERROR_SUCCESS
+ok: i == LIBMSI_RESULT_SUCCESS
 ok: i == MSI_NULL_INTEGER
-ok: r == ERROR_SUCCESS
-ok: r == ERROR_SUCCESS
+ok: r == LIBMSI_RESULT_SUCCESS
+ok: r == LIBMSI_RESULT_SUCCESS
 ok: sz == 2
-ok: r == ERROR_SUCCESS
+ok: r == LIBMSI_RESULT_SUCCESS
 ok: 0==strcmp(buf,"32")
-ok: r == ERROR_SUCCESS
-ok: r == ERROR_SUCCESS
+ok: r == LIBMSI_RESULT_SUCCESS
+ok: r == LIBMSI_RESULT_SUCCESS
 ok: sz == 3
-ok: r == ERROR_SUCCESS
+ok: r == LIBMSI_RESULT_SUCCESS
 ok: 0==strcmp(buf,"-32")
-ok: r == ERROR_INVALID_PARAMETER
-ok: r == ERROR_INVALID_DATATYPE
+ok: r == LIBMSI_RESULT_INVALID_PARAMETER
+ok: r == LIBMSI_RESULT_INVALID_DATATYPE
 ok: sz == sizeof buf
 ok: r == 0
 ok: r == 4
-ok: r == ERROR_SUCCESS
+ok: r == LIBMSI_RESULT_SUCCESS
 ok: h
-ok: r == ERROR_INVALID_PARAMETER
-ok: r == ERROR_SUCCESS
-ok: r == ERROR_INVALID_PARAMETER
-ok: r == ERROR_INVALID_PARAMETER
-ok: r == ERROR_SUCCESS
+ok: r == LIBMSI_RESULT_INVALID_PARAMETER
+ok: r == LIBMSI_RESULT_SUCCESS
+ok: r == LIBMSI_RESULT_INVALID_PARAMETER
+ok: r == LIBMSI_RESULT_INVALID_PARAMETER
+ok: r == LIBMSI_RESULT_SUCCESS
 ok: sz==26
-ok: r == ERROR_SUCCESS
+ok: r == LIBMSI_RESULT_SUCCESS
 ok: sz==0
-ok: r == ERROR_SUCCESS
+ok: r == LIBMSI_RESULT_SUCCESS
 ok: sz==sizeof buf
 ok: !strncmp(buf,"abcdefghij",10)
-ok: r == ERROR_SUCCESS
+ok: r == LIBMSI_RESULT_SUCCESS
 ok: sz==sizeof buf
 ok: !strncmp(buf,"klmnopqrst",10)
-ok: r == ERROR_SUCCESS
+ok: r == LIBMSI_RESULT_SUCCESS
 ok: sz==6
 ok: !strcmp(buf,"uvwxyz")
-ok: r == ERROR_SUCCESS
+ok: r == LIBMSI_RESULT_SUCCESS
 ok: sz==0
 ok: buf[0]==0
-ok: r == ERROR_SUCCESS
-ok: r == ERROR_SUCCESS
+ok: r == LIBMSI_RESULT_SUCCESS
+ok: r == LIBMSI_RESULT_SUCCESS
 ok: sz==26
 ok: r == 26
-ok: r == ERROR_SUCCESS
+ok: r == LIBMSI_RESULT_SUCCESS
 ok: rec != 0
-ok: r == ERROR_SUCCESS
+ok: r == LIBMSI_RESULT_SUCCESS
 ok: sz == 0
-ok: r == ERROR_SUCCESS
+ok: r == LIBMSI_RESULT_SUCCESS
 ok: !strcmp(buf, "")
 ok: sz == 0
-ok: r == ERROR_SUCCESS
+ok: r == LIBMSI_RESULT_SUCCESS
 ok: !strcmp(buf, "")
 ok: sz == 0
 ok: rec != 0
-ok: r == ERROR_SUCCESS
-ok: r == ERROR_SUCCESS
+ok: r == LIBMSI_RESULT_SUCCESS
+ok: r == LIBMSI_RESULT_SUCCESS
 ok: sz == 1
-ok: r == ERROR_SUCCESS
+ok: r == LIBMSI_RESULT_SUCCESS
 ok: !strcmp(buf, "5")
 ok: sz == 1
-ok: r == ERROR_SUCCESS
-ok: r == ERROR_SUCCESS
+ok: r == LIBMSI_RESULT_SUCCESS
+ok: r == LIBMSI_RESULT_SUCCESS
 ok: !strcmp(buf, "-5")
 ok: sz == 2
 ok: rec != 0
-ok: r == ERROR_SUCCESS
+ok: r == LIBMSI_RESULT_SUCCESS
 ok: val == 5
-ok: r == ERROR_SUCCESS
+ok: r == LIBMSI_RESULT_SUCCESS
 ok: val == -5
-ok: r == ERROR_SUCCESS
+ok: r == LIBMSI_RESULT_SUCCESS
 ok: val == MSI_NULL_INTEGER
 ok: rec != 0
 ok: r == MSI_NULL_INTEGER
-ok: r == ERROR_SUCCESS
+ok: r == LIBMSI_RESULT_SUCCESS
 ok: !strcmp(buf, "")
 ok: sz == 0
 ok: r == true
 ok: r == MSI_NULL_INTEGER
-ok: r == ERROR_SUCCESS
+ok: r == LIBMSI_RESULT_SUCCESS
 ok: r == MSI_NULL_INTEGER
-ok: r == ERROR_SUCCESS
+ok: r == LIBMSI_RESULT_SUCCESS
 ok: !strcmp(buf, "")
 ok: sz == 0
 ok: r == true
 ok: r == 42
-ok: r == ERROR_SUCCESS
+ok: r == LIBMSI_RESULT_SUCCESS
 ok: r == MSI_NULL_INTEGER
-ok: r == ERROR_SUCCESS
+ok: r == LIBMSI_RESULT_SUCCESS
 ok: !strcmp(buf, "")
 ok: sz == 0
 ok: r == true
-ok: r == ERROR_SUCCESS
+ok: r == LIBMSI_RESULT_SUCCESS
 ok: !strcmp(buf, "bologna")
 ok: sz == 7
-ok: r == ERROR_SUCCESS
-ok: r == ERROR_SUCCESS
-ok: r == ERROR_SUCCESS
-ok: r == ERROR_SUCCESS
-ok: r == ERROR_SUCCESS
-ok: r == ERROR_SUCCESS
-ok: r == ERROR_SUCCESS
-ok: r == ERROR_SUCCESS
-ok: r == ERROR_SUCCESS
-ok: r == ERROR_SUCCESS
+ok: r == LIBMSI_RESULT_SUCCESS
+ok: r == LIBMSI_RESULT_SUCCESS
+ok: r == LIBMSI_RESULT_SUCCESS
+ok: r == LIBMSI_RESULT_SUCCESS
+ok: r == LIBMSI_RESULT_SUCCESS
+ok: r == LIBMSI_RESULT_SUCCESS
+ok: r == LIBMSI_RESULT_SUCCESS
+ok: r == LIBMSI_RESULT_SUCCESS
+ok: r == LIBMSI_RESULT_SUCCESS
+ok: r == LIBMSI_RESULT_SUCCESS
 ok: r == MSI_NULL_INTEGER
-ok: r == ERROR_SUCCESS
+ok: r == LIBMSI_RESULT_SUCCESS
 ok: !strcmp(buf, "drone")
 ok: sz == 5
 ok: r == false
-ok: r == ERROR_INVALID_TABLE
-ok: r == ERROR_SUCCESS
-ok: r == ERROR_SUCCESS
-ok: r == ERROR_SUCCESS
+ok: r == LIBMSI_RESULT_INVALID_TABLE
+ok: r == LIBMSI_RESULT_SUCCESS
+ok: r == LIBMSI_RESULT_SUCCESS
+ok: r == LIBMSI_RESULT_SUCCESS
 ok: r != MSI_NULL_INTEGER && r != 0
 ok: r == false
-ok: r == ERROR_SUCCESS
+ok: r == LIBMSI_RESULT_SUCCESS

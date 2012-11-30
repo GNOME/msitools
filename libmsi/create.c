@@ -53,7 +53,7 @@ static unsigned create_view_fetch_int( LibmsiView *view, unsigned row, unsigned 
 
     TRACE("%p %d %d %p\n", cv, row, col, val );
 
-    return ERROR_FUNCTION_FAILED;
+    return LIBMSI_RESULT_FUNCTION_FAILED;
 }
 
 static unsigned create_view_execute( LibmsiView *view, LibmsiRecord *record )
@@ -65,7 +65,7 @@ static unsigned create_view_execute( LibmsiView *view, LibmsiRecord *record )
           cv->bIsTemp?"temporary":"permanent");
 
     if (cv->bIsTemp && !cv->hold)
-        return ERROR_SUCCESS;
+        return LIBMSI_RESULT_SUCCESS;
 
     return msi_create_table( cv->db, cv->name, cv->col_info, persist );
 }
@@ -76,7 +76,7 @@ static unsigned create_view_close( LibmsiView *view )
 
     TRACE("%p\n", cv);
 
-    return ERROR_SUCCESS;
+    return LIBMSI_RESULT_SUCCESS;
 }
 
 static unsigned create_view_get_dimensions( LibmsiView *view, unsigned *rows, unsigned *cols )
@@ -85,7 +85,7 @@ static unsigned create_view_get_dimensions( LibmsiView *view, unsigned *rows, un
 
     TRACE("%p %p %p\n", cv, rows, cols );
 
-    return ERROR_FUNCTION_FAILED;
+    return LIBMSI_RESULT_FUNCTION_FAILED;
 }
 
 static unsigned create_view_get_column_info( LibmsiView *view, unsigned n, const WCHAR **name,
@@ -95,7 +95,7 @@ static unsigned create_view_get_column_info( LibmsiView *view, unsigned n, const
 
     TRACE("%p %d %p %p %p %p\n", cv, n, name, type, temporary, table_name );
 
-    return ERROR_FUNCTION_FAILED;
+    return LIBMSI_RESULT_FUNCTION_FAILED;
 }
 
 static unsigned create_view_modify( LibmsiView *view, LibmsiModify eModifyMode,
@@ -105,7 +105,7 @@ static unsigned create_view_modify( LibmsiView *view, LibmsiModify eModifyMode,
 
     TRACE("%p %d %p\n", cv, eModifyMode, rec );
 
-    return ERROR_FUNCTION_FAILED;
+    return LIBMSI_RESULT_FUNCTION_FAILED;
 }
 
 static unsigned create_view_delete( LibmsiView *view )
@@ -117,7 +117,7 @@ static unsigned create_view_delete( LibmsiView *view )
     msiobj_release( &cv->db->hdr );
     msi_free( cv );
 
-    return ERROR_SUCCESS;
+    return LIBMSI_RESULT_SUCCESS;
 }
 
 static const LibmsiViewOps create_ops =
@@ -151,9 +151,9 @@ static unsigned check_columns( const column_info *col_info )
     for( c1 = col_info; c1; c1 = c1->next )
         for( c2 = c1->next; c2; c2 = c2->next )
             if (!strcmpW( c1->column, c2->column ))
-                return ERROR_BAD_QUERY_SYNTAX;
+                return LIBMSI_RESULT_BAD_QUERY_SYNTAX;
 
-    return ERROR_SUCCESS;
+    return LIBMSI_RESULT_SUCCESS;
 }
 
 unsigned create_view_create( LibmsiDatabase *db, LibmsiView **view, const WCHAR *table,
@@ -168,12 +168,12 @@ unsigned create_view_create( LibmsiDatabase *db, LibmsiView **view, const WCHAR 
     TRACE("%p\n", cv );
 
     r = check_columns( col_info );
-    if( r != ERROR_SUCCESS )
+    if( r != LIBMSI_RESULT_SUCCESS )
         return r;
 
     cv = alloc_msiobject( sizeof *cv, NULL );
     if( !cv )
-        return ERROR_FUNCTION_FAILED;
+        return LIBMSI_RESULT_FUNCTION_FAILED;
 
     for( col = col_info; col; col = col->next )
     {
@@ -189,7 +189,7 @@ unsigned create_view_create( LibmsiDatabase *db, LibmsiView **view, const WCHAR 
     if ( !temp && tempprim )
     {
         msi_free( cv );
-        return ERROR_FUNCTION_FAILED;
+        return LIBMSI_RESULT_FUNCTION_FAILED;
     }
 
     /* fill the structure */
@@ -202,5 +202,5 @@ unsigned create_view_create( LibmsiDatabase *db, LibmsiView **view, const WCHAR 
     cv->hold = hold;
     *view = (LibmsiView*) cv;
 
-    return ERROR_SUCCESS;
+    return LIBMSI_RESULT_SUCCESS;
 }

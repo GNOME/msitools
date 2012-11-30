@@ -61,7 +61,7 @@ unsigned _libmsi_view_find_column( LibmsiView *table, const WCHAR *name, const W
     unsigned i, count, r;
 
     r = table->ops->get_dimensions( table, NULL, &count );
-    if( r != ERROR_SUCCESS )
+    if( r != LIBMSI_RESULT_SUCCESS )
         return r;
 
     for( i=1; i<=count; i++ )
@@ -70,7 +70,7 @@ unsigned _libmsi_view_find_column( LibmsiView *table, const WCHAR *name, const W
 
         r = table->ops->get_column_info( table, i, &col_name, NULL,
                                          NULL, &haystack_table_name );
-        if( r != ERROR_SUCCESS )
+        if( r != LIBMSI_RESULT_SUCCESS )
             return r;
         x = strcmpW( name, col_name );
         if( table_name )
@@ -78,13 +78,13 @@ unsigned _libmsi_view_find_column( LibmsiView *table, const WCHAR *name, const W
         if( !x )
         {
             *n = i;
-            return ERROR_SUCCESS;
+            return LIBMSI_RESULT_SUCCESS;
         }
     }
-    return ERROR_INVALID_PARAMETER;
+    return LIBMSI_RESULT_INVALID_PARAMETER;
 }
 
-unsigned libmsi_database_open_query(LibmsiDatabase *db,
+LibmsiResult libmsi_database_open_query(LibmsiDatabase *db,
               const char *szQuery, LibmsiQuery **pQuery)
 {
     unsigned r;
@@ -96,13 +96,13 @@ unsigned libmsi_database_open_query(LibmsiDatabase *db,
     {
         szwQuery = strdupAtoW( szQuery );
         if( !szwQuery )
-            return ERROR_FUNCTION_FAILED;
+            return LIBMSI_RESULT_FUNCTION_FAILED;
     }
     else
         szwQuery = NULL;
 
     if( !db )
-        return ERROR_INVALID_HANDLE;
+        return LIBMSI_RESULT_INVALID_HANDLE;
     msiobj_addref( &db->hdr);
 
     r = _libmsi_database_open_query( db, szwQuery, pQuery );
@@ -121,19 +121,19 @@ unsigned _libmsi_database_open_query(LibmsiDatabase *db,
     TRACE("%s %p\n", debugstr_w(szQuery), pView);
 
     if( !szQuery)
-        return ERROR_INVALID_PARAMETER;
+        return LIBMSI_RESULT_INVALID_PARAMETER;
 
     /* pre allocate a handle to hold a pointer to the view */
     query = alloc_msiobject( sizeof (LibmsiQuery), _libmsi_query_destroy );
     if( !query )
-        return ERROR_FUNCTION_FAILED;
+        return LIBMSI_RESULT_FUNCTION_FAILED;
 
     msiobj_addref( &db->hdr );
     query->db = db;
     list_init( &query->mem );
 
     r = _libmsi_parse_sql( db, szQuery, &query->view, &query->mem );
-    if( r == ERROR_SUCCESS )
+    if( r == LIBMSI_RESULT_SUCCESS )
     {
         msiobj_addref( &query->hdr );
         *pView = query;
@@ -175,7 +175,7 @@ unsigned _libmsi_query_iterate_records( LibmsiQuery *view, unsigned *count,
     unsigned r, n = 0, max = 0;
 
     r = _libmsi_query_execute( view, NULL );
-    if( r != ERROR_SUCCESS )
+    if( r != LIBMSI_RESULT_SUCCESS )
         return r;
 
     if( count )
@@ -185,12 +185,12 @@ unsigned _libmsi_query_iterate_records( LibmsiQuery *view, unsigned *count,
     for( n = 0; (max == 0) || (n < max); n++ )
     {
         r = _libmsi_query_fetch( view, &rec );
-        if( r != ERROR_SUCCESS )
+        if( r != LIBMSI_RESULT_SUCCESS )
             break;
         if (func)
             r = func( rec, param );
         msiobj_release( &rec->hdr );
-        if( r != ERROR_SUCCESS )
+        if( r != LIBMSI_RESULT_SUCCESS )
             break;
     }
 
@@ -199,8 +199,8 @@ unsigned _libmsi_query_iterate_records( LibmsiQuery *view, unsigned *count,
     if( count )
         *count = n;
 
-    if( r == ERROR_NO_MORE_ITEMS )
-        r = ERROR_SUCCESS;
+    if( r == LIBMSI_RESULT_NO_MORE_ITEMS )
+        r = LIBMSI_RESULT_SUCCESS;
 
     return r;
 }
@@ -231,7 +231,7 @@ LibmsiRecord *_libmsi_query_get_record( LibmsiDatabase *db, const WCHAR *fmt, ..
     r = _libmsi_database_open_query(db, query, &view);
     msi_free(query);
 
-    if( r == ERROR_SUCCESS )
+    if( r == LIBMSI_RESULT_SUCCESS )
     {
         _libmsi_query_execute( view, NULL );
         _libmsi_query_fetch( view, &rec );
@@ -252,14 +252,14 @@ unsigned msi_view_get_row(LibmsiDatabase *db, LibmsiView *view, unsigned row, Li
         return ret;
 
     if (!col_count)
-        return ERROR_INVALID_PARAMETER;
+        return LIBMSI_RESULT_INVALID_PARAMETER;
 
     if (row >= row_count)
-        return ERROR_NO_MORE_ITEMS;
+        return LIBMSI_RESULT_NO_MORE_ITEMS;
 
     *rec = libmsi_record_create(col_count);
     if (!*rec)
-        return ERROR_FUNCTION_FAILED;
+        return LIBMSI_RESULT_FUNCTION_FAILED;
 
     for (i = 1; i <= col_count; i++)
     {
@@ -275,7 +275,7 @@ unsigned msi_view_get_row(LibmsiDatabase *db, LibmsiView *view, unsigned row, Li
             IStream *stm = NULL;
 
             ret = view->ops->fetch_stream(view, row, i, &stm);
-            if ((ret == ERROR_SUCCESS) && stm)
+            if ((ret == LIBMSI_RESULT_SUCCESS) && stm)
             {
                 _libmsi_record_set_IStream(*rec, i, stm);
                 IStream_Release(stm);
@@ -316,22 +316,22 @@ unsigned msi_view_get_row(LibmsiDatabase *db, LibmsiView *view, unsigned row, Li
         }
     }
 
-    return ERROR_SUCCESS;
+    return LIBMSI_RESULT_SUCCESS;
 }
 
-unsigned _libmsi_query_fetch(LibmsiQuery *query, LibmsiRecord **prec)
+LibmsiResult _libmsi_query_fetch(LibmsiQuery *query, LibmsiRecord **prec)
 {
     LibmsiView *view;
-    unsigned r;
+    LibmsiResult r;
 
     TRACE("%p %p\n", query, prec );
 
     view = query->view;
     if( !view )
-        return ERROR_FUNCTION_FAILED;
+        return LIBMSI_RESULT_FUNCTION_FAILED;
 
     r = msi_view_get_row(query->db, view, query->row, prec);
-    if (r == ERROR_SUCCESS)
+    if (r == LIBMSI_RESULT_SUCCESS)
     {
         query->row ++;
         _libmsi_record_set_int_ptr(*prec, 0, (intptr_t)query);
@@ -340,25 +340,25 @@ unsigned _libmsi_query_fetch(LibmsiQuery *query, LibmsiRecord **prec)
     return r;
 }
 
-unsigned libmsi_query_fetch(LibmsiQuery *query, LibmsiRecord **record)
+LibmsiResult libmsi_query_fetch(LibmsiQuery *query, LibmsiRecord **record)
 {
     unsigned ret;
 
     TRACE("%d %p\n", query, record);
 
     if( !record )
-        return ERROR_INVALID_PARAMETER;
+        return LIBMSI_RESULT_INVALID_PARAMETER;
     *record = 0;
 
     if( !query )
-        return ERROR_INVALID_HANDLE;
+        return LIBMSI_RESULT_INVALID_HANDLE;
     msiobj_addref( &query->hdr);
     ret = _libmsi_query_fetch( query, record );
     msiobj_release( &query->hdr );
     return ret;
 }
 
-unsigned libmsi_query_close(LibmsiQuery *query)
+LibmsiResult libmsi_query_close(LibmsiQuery *query)
 {
     LibmsiView *view;
     unsigned ret;
@@ -366,21 +366,21 @@ unsigned libmsi_query_close(LibmsiQuery *query)
     TRACE("%p\n", query );
 
     if( !query )
-        return ERROR_INVALID_HANDLE;
+        return LIBMSI_RESULT_INVALID_HANDLE;
 
     msiobj_addref( &query->hdr );
     view = query->view;
     if( !view )
-        return ERROR_FUNCTION_FAILED;
+        return LIBMSI_RESULT_FUNCTION_FAILED;
     if( !view->ops->close )
-        return ERROR_FUNCTION_FAILED;
+        return LIBMSI_RESULT_FUNCTION_FAILED;
 
     ret = view->ops->close( view );
     msiobj_release( &query->hdr );
     return ret;
 }
 
-unsigned _libmsi_query_execute(LibmsiQuery *query, LibmsiRecord *rec )
+LibmsiResult _libmsi_query_execute(LibmsiQuery *query, LibmsiRecord *rec )
 {
     LibmsiView *view;
 
@@ -388,22 +388,22 @@ unsigned _libmsi_query_execute(LibmsiQuery *query, LibmsiRecord *rec )
 
     view = query->view;
     if( !view )
-        return ERROR_FUNCTION_FAILED;
+        return LIBMSI_RESULT_FUNCTION_FAILED;
     if( !view->ops->execute )
-        return ERROR_FUNCTION_FAILED;
+        return LIBMSI_RESULT_FUNCTION_FAILED;
     query->row = 0;
 
     return view->ops->execute( view, rec );
 }
 
-unsigned libmsi_query_execute(LibmsiQuery *query, LibmsiRecord *rec)
+LibmsiResult libmsi_query_execute(LibmsiQuery *query, LibmsiRecord *rec)
 {
-    unsigned ret;
+    LibmsiResult ret;
     
     TRACE("%d %d\n", query, rec);
 
     if( !query )
-        return ERROR_INVALID_HANDLE;
+        return LIBMSI_RESULT_INVALID_HANDLE;
     msiobj_addref( &query->hdr );
 
     if( rec )
@@ -457,33 +457,33 @@ static unsigned msi_set_record_type_string( LibmsiRecord *rec, unsigned field,
 
 unsigned _libmsi_query_get_column_info( LibmsiQuery *query, LibmsiColInfo info, LibmsiRecord **prec )
 {
-    unsigned r = ERROR_FUNCTION_FAILED, i, count = 0, type;
+    unsigned r = LIBMSI_RESULT_FUNCTION_FAILED, i, count = 0, type;
     LibmsiRecord *rec;
     LibmsiView *view = query->view;
     const WCHAR *name;
     bool temporary;
 
     if( !view )
-        return ERROR_FUNCTION_FAILED;
+        return LIBMSI_RESULT_FUNCTION_FAILED;
 
     if( !view->ops->get_dimensions )
-        return ERROR_FUNCTION_FAILED;
+        return LIBMSI_RESULT_FUNCTION_FAILED;
 
     r = view->ops->get_dimensions( view, NULL, &count );
-    if( r != ERROR_SUCCESS )
+    if( r != LIBMSI_RESULT_SUCCESS )
         return r;
     if( !count )
-        return ERROR_INVALID_PARAMETER;
+        return LIBMSI_RESULT_INVALID_PARAMETER;
 
     rec = libmsi_record_create( count );
     if( !rec )
-        return ERROR_FUNCTION_FAILED;
+        return LIBMSI_RESULT_FUNCTION_FAILED;
 
     for( i=0; i<count; i++ )
     {
         name = NULL;
         r = view->ops->get_column_info( view, i+1, &name, &type, &temporary, NULL );
-        if( r != ERROR_SUCCESS )
+        if( r != LIBMSI_RESULT_SUCCESS )
             continue;
         if (info == LIBMSI_COL_INFO_NAMES)
             _libmsi_record_set_stringW( rec, i+1, name );
@@ -491,23 +491,23 @@ unsigned _libmsi_query_get_column_info( LibmsiQuery *query, LibmsiColInfo info, 
             msi_set_record_type_string( rec, i+1, type, temporary );
     }
     *prec = rec;
-    return ERROR_SUCCESS;
+    return LIBMSI_RESULT_SUCCESS;
 }
 
-unsigned libmsi_query_get_column_info(LibmsiQuery *query, LibmsiColInfo info, LibmsiRecord **prec)
+LibmsiResult libmsi_query_get_column_info(LibmsiQuery *query, LibmsiColInfo info, LibmsiRecord **prec)
 {
     unsigned r;
 
     TRACE("%d %d %p\n", query, info, prec);
 
     if( !prec )
-        return ERROR_INVALID_PARAMETER;
+        return LIBMSI_RESULT_INVALID_PARAMETER;
 
     if( info != LIBMSI_COL_INFO_NAMES && info != LIBMSI_COL_INFO_TYPES )
-        return ERROR_INVALID_PARAMETER;
+        return LIBMSI_RESULT_INVALID_PARAMETER;
 
     if( !query )
-        return ERROR_INVALID_HANDLE;
+        return LIBMSI_RESULT_INVALID_HANDLE;
 
     msiobj_addref ( &query->hdr );
     r = _libmsi_query_get_column_info( query, info, prec );
@@ -522,31 +522,31 @@ unsigned _libmsi_query_modify( LibmsiQuery *query, LibmsiModify mode, LibmsiReco
     unsigned r;
 
     if ( !query || !rec )
-        return ERROR_INVALID_HANDLE;
+        return LIBMSI_RESULT_INVALID_HANDLE;
 
     view = query->view;
     if ( !view  || !view->ops->modify)
-        return ERROR_FUNCTION_FAILED;
+        return LIBMSI_RESULT_FUNCTION_FAILED;
 
     if ( mode == LIBMSI_MODIFY_UPDATE && _libmsi_record_get_int_ptr( rec, 0 ) != (intptr_t)query )
-        return ERROR_FUNCTION_FAILED;
+        return LIBMSI_RESULT_FUNCTION_FAILED;
 
     r = view->ops->modify( view, mode, rec, query->row );
-    if (mode == LIBMSI_MODIFY_DELETE && r == ERROR_SUCCESS)
+    if (mode == LIBMSI_MODIFY_DELETE && r == LIBMSI_RESULT_SUCCESS)
         query->row--;
 
     return r;
 }
 
-unsigned libmsi_query_modify( LibmsiQuery *query, LibmsiModify eModifyMode,
+LibmsiResult libmsi_query_modify( LibmsiQuery *query, LibmsiModify eModifyMode,
                 LibmsiRecord *rec)
 {
-    unsigned r = ERROR_FUNCTION_FAILED;
+    unsigned r = LIBMSI_RESULT_FUNCTION_FAILED;
 
     TRACE("%d %x %d\n", query, eModifyMode, rec);
 
     if( !query )
-        return ERROR_INVALID_HANDLE;
+        return LIBMSI_RESULT_INVALID_HANDLE;
 
     msiobj_addref( &query->hdr);
 
@@ -597,7 +597,7 @@ unsigned _libmsi_database_apply_transform( LibmsiDatabase *db,
                  const char *szTransformFile, int iErrorCond )
 {
     HRESULT r;
-    unsigned ret = ERROR_FUNCTION_FAILED;
+    unsigned ret = LIBMSI_RESULT_FUNCTION_FAILED;
     IStorage *stg = NULL;
     STATSTG stat;
     WCHAR *szwTransformFile = NULL;
@@ -633,20 +633,20 @@ end:
     return ret;
 }
 
-unsigned libmsi_database_apply_transform( LibmsiDatabase *db,
+LibmsiResult libmsi_database_apply_transform( LibmsiDatabase *db,
                  const char *szTransformFile, int iErrorCond)
 {
     unsigned r;
 
     msiobj_addref( &db->hdr );
     if( !db )
-        return ERROR_INVALID_HANDLE;
+        return LIBMSI_RESULT_INVALID_HANDLE;
     r = _libmsi_database_apply_transform( db, szTransformFile, iErrorCond );
     msiobj_release( &db->hdr );
     return r;
 }
 
-unsigned libmsi_database_commit( LibmsiDatabase *db )
+LibmsiResult libmsi_database_commit( LibmsiDatabase *db )
 {
     unsigned r;
 
@@ -654,24 +654,24 @@ unsigned libmsi_database_commit( LibmsiDatabase *db )
 
     msiobj_addref( &db->hdr );
     if( !db )
-        return ERROR_INVALID_HANDLE;
+        return LIBMSI_RESULT_INVALID_HANDLE;
 
     if (db->mode == LIBMSI_DB_OPEN_READONLY)
     {
         msiobj_release( &db->hdr );
-        return ERROR_SUCCESS;
+        return LIBMSI_RESULT_SUCCESS;
     }
 
     /* FIXME: lock the database */
 
     r = _libmsi_database_commit_tables( db );
-    if (r != ERROR_SUCCESS) ERR("Failed to commit tables!\n");
+    if (r != LIBMSI_RESULT_SUCCESS) ERR("Failed to commit tables!\n");
 
     /* FIXME: unlock the database */
 
     msiobj_release( &db->hdr );
 
-    if (r == ERROR_SUCCESS)
+    if (r == LIBMSI_RESULT_SUCCESS)
     {
         msi_free( db->deletefile );
         db->deletefile = NULL;
@@ -710,7 +710,7 @@ static unsigned msi_primary_key_iterator( LibmsiRecord *rec, void *param )
         }
     }
 
-    return ERROR_SUCCESS;
+    return LIBMSI_RESULT_SUCCESS;
 }
 
 unsigned _libmsi_database_get_primary_keys( LibmsiDatabase *db,
@@ -726,17 +726,17 @@ unsigned _libmsi_database_get_primary_keys( LibmsiDatabase *db,
     unsigned r;
 
     if (!table_view_exists( db, table ))
-        return ERROR_INVALID_TABLE;
+        return LIBMSI_RESULT_INVALID_TABLE;
 
     r = _libmsi_query_open( db, &query, sql, table );
-    if( r != ERROR_SUCCESS )
+    if( r != LIBMSI_RESULT_SUCCESS )
         return r;
 
     /* count the number of primary key records */
     info.n = 0;
     info.rec = 0;
     r = _libmsi_query_iterate_records( query, 0, msi_primary_key_iterator, &info );
-    if( r == ERROR_SUCCESS )
+    if( r == LIBMSI_RESULT_SUCCESS )
     {
         TRACE("Found %d primary keys\n", info.n );
 
@@ -744,7 +744,7 @@ unsigned _libmsi_database_get_primary_keys( LibmsiDatabase *db,
         info.rec = libmsi_record_create( info.n );
         info.n = 0;
         r = _libmsi_query_iterate_records( query, 0, msi_primary_key_iterator, &info );
-        if( r == ERROR_SUCCESS )
+        if( r == LIBMSI_RESULT_SUCCESS )
             *prec = info.rec;
         else
             msiobj_release( &info.rec->hdr );
@@ -754,7 +754,7 @@ unsigned _libmsi_database_get_primary_keys( LibmsiDatabase *db,
     return r;
 }
 
-unsigned libmsi_database_get_primary_keys(LibmsiDatabase *db, 
+LibmsiResult libmsi_database_get_primary_keys(LibmsiDatabase *db, 
                     const char *table, LibmsiRecord **prec)
 {
     WCHAR *szwTable = NULL;
@@ -766,11 +766,11 @@ unsigned libmsi_database_get_primary_keys(LibmsiDatabase *db,
     {
         szwTable = strdupAtoW( table );
         if( !szwTable )
-            return ERROR_OUTOFMEMORY;
+            return LIBMSI_RESULT_OUTOFMEMORY;
     }
 
     if( !db )
-        return ERROR_INVALID_HANDLE;
+        return LIBMSI_RESULT_INVALID_HANDLE;
 
     msiobj_addref( &db->hdr );
     r = _libmsi_database_get_primary_keys( db, szwTable, prec );

@@ -59,7 +59,7 @@ static unsigned delete_view_fetch_int( LibmsiView *view, unsigned row, unsigned 
 
     TRACE("%p %d %d %p\n", dv, row, col, val );
 
-    return ERROR_FUNCTION_FAILED;
+    return LIBMSI_RESULT_FUNCTION_FAILED;
 }
 
 static unsigned delete_view_fetch_stream( LibmsiView *view, unsigned row, unsigned col, IStream **stm)
@@ -68,7 +68,7 @@ static unsigned delete_view_fetch_stream( LibmsiView *view, unsigned row, unsign
 
     TRACE("%p %d %d %p\n", dv, row, col, stm );
 
-    return ERROR_FUNCTION_FAILED;
+    return LIBMSI_RESULT_FUNCTION_FAILED;
 }
 
 static unsigned delete_view_execute( LibmsiView *view, LibmsiRecord *record )
@@ -79,14 +79,14 @@ static unsigned delete_view_execute( LibmsiView *view, LibmsiRecord *record )
     TRACE("%p %p\n", dv, record);
 
     if( !dv->table )
-         return ERROR_FUNCTION_FAILED;
+         return LIBMSI_RESULT_FUNCTION_FAILED;
 
     r = dv->table->ops->execute( dv->table, record );
-    if( r != ERROR_SUCCESS )
+    if( r != LIBMSI_RESULT_SUCCESS )
         return r;
 
     r = dv->table->ops->get_dimensions( dv->table, &rows, &cols );
-    if( r != ERROR_SUCCESS )
+    if( r != LIBMSI_RESULT_SUCCESS )
         return r;
 
     TRACE("deleting %d rows\n", rows);
@@ -95,7 +95,7 @@ static unsigned delete_view_execute( LibmsiView *view, LibmsiRecord *record )
     for ( i=0; i<rows; i++ )
         dv->table->ops->delete_row( dv->table, i );
 
-    return ERROR_SUCCESS;
+    return LIBMSI_RESULT_SUCCESS;
 }
 
 static unsigned delete_view_close( LibmsiView *view )
@@ -105,7 +105,7 @@ static unsigned delete_view_close( LibmsiView *view )
     TRACE("%p\n", dv );
 
     if( !dv->table )
-         return ERROR_FUNCTION_FAILED;
+         return LIBMSI_RESULT_FUNCTION_FAILED;
 
     return dv->table->ops->close( dv->table );
 }
@@ -117,7 +117,7 @@ static unsigned delete_view_get_dimensions( LibmsiView *view, unsigned *rows, un
     TRACE("%p %p %p\n", dv, rows, cols );
 
     if( !dv->table )
-         return ERROR_FUNCTION_FAILED;
+         return LIBMSI_RESULT_FUNCTION_FAILED;
 
     *rows = 0;
 
@@ -132,7 +132,7 @@ static unsigned delete_view_get_column_info( LibmsiView *view, unsigned n, const
     TRACE("%p %d %p %p %p %p\n", dv, n, name, type, temporary, table_name );
 
     if( !dv->table )
-         return ERROR_FUNCTION_FAILED;
+         return LIBMSI_RESULT_FUNCTION_FAILED;
 
     return dv->table->ops->get_column_info( dv->table, n, name,
                                             type, temporary, table_name);
@@ -145,7 +145,7 @@ static unsigned delete_view_modify( LibmsiView *view, LibmsiModify eModifyMode,
 
     TRACE("%p %d %p\n", dv, eModifyMode, rec );
 
-    return ERROR_FUNCTION_FAILED;
+    return LIBMSI_RESULT_FUNCTION_FAILED;
 }
 
 static unsigned delete_view_delete( LibmsiView *view )
@@ -159,7 +159,7 @@ static unsigned delete_view_delete( LibmsiView *view )
 
     msi_free( dv );
 
-    return ERROR_SUCCESS;
+    return LIBMSI_RESULT_SUCCESS;
 }
 
 static unsigned delete_view_find_matching_rows( LibmsiView *view, unsigned col,
@@ -167,7 +167,7 @@ static unsigned delete_view_find_matching_rows( LibmsiView *view, unsigned col,
 {
     TRACE("%p, %d, %u, %p\n", view, col, val, *handle);
 
-    return ERROR_FUNCTION_FAILED;
+    return LIBMSI_RESULT_FUNCTION_FAILED;
 }
 
 
@@ -202,7 +202,7 @@ unsigned delete_view_create( LibmsiDatabase *db, LibmsiView **view, LibmsiView *
 
     dv = alloc_msiobject( sizeof *dv, NULL );
     if( !dv )
-        return ERROR_FUNCTION_FAILED;
+        return LIBMSI_RESULT_FUNCTION_FAILED;
     
     /* fill the structure */
     dv->view.ops = &delete_ops;
@@ -211,5 +211,5 @@ unsigned delete_view_create( LibmsiDatabase *db, LibmsiView **view, LibmsiView *
 
     *view = &dv->view;
 
-    return ERROR_SUCCESS;
+    return LIBMSI_RESULT_SUCCESS;
 }

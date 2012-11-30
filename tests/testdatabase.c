@@ -45,98 +45,98 @@ static void test_msidatabase(void)
     DeleteFile(msifile);
 
     res = libmsi_database_open( msifile, msifile2, &hdb );
-    ok( res == ERROR_OPEN_FAILED, "expected failure\n");
+    ok( res == LIBMSI_RESULT_OPEN_FAILED, "expected failure\n");
 
     res = libmsi_database_open( msifile, (LPSTR) 0xff, &hdb );
-    ok( res == ERROR_INVALID_PARAMETER, "expected failure\n");
+    ok( res == LIBMSI_RESULT_INVALID_PARAMETER, "expected failure\n");
 
     res = libmsi_unref( hdb );
-    ok( res == ERROR_SUCCESS , "Failed to close database\n" );
+    ok( res == LIBMSI_RESULT_SUCCESS , "Failed to close database\n" );
 
     /* create an empty database */
     res = libmsi_database_open(msifile, LIBMSI_DB_OPEN_CREATE, &hdb );
-    ok( res == ERROR_SUCCESS , "Failed to create database\n" );
+    ok( res == LIBMSI_RESULT_SUCCESS , "Failed to create database\n" );
 
     res = libmsi_database_commit( hdb );
-    ok( res == ERROR_SUCCESS , "Failed to commit database\n" );
+    ok( res == LIBMSI_RESULT_SUCCESS , "Failed to commit database\n" );
 
     ok( INVALID_FILE_ATTRIBUTES != GetFileAttributes( msifile ), "database should exist\n");
 
     res = libmsi_unref( hdb );
-    ok( res == ERROR_SUCCESS , "Failed to close database\n" );
+    ok( res == LIBMSI_RESULT_SUCCESS , "Failed to close database\n" );
     res = libmsi_database_open( msifile, msifile2, &hdb2 );
-    ok( res == ERROR_SUCCESS , "Failed to open database\n" );
+    ok( res == LIBMSI_RESULT_SUCCESS , "Failed to open database\n" );
 
     ok( INVALID_FILE_ATTRIBUTES != GetFileAttributes( msifile2 ), "database should exist\n");
 
     res = libmsi_database_commit( hdb2 );
-    ok( res == ERROR_SUCCESS , "Failed to commit database\n" );
+    ok( res == LIBMSI_RESULT_SUCCESS , "Failed to commit database\n" );
 
     res = libmsi_unref( hdb2 );
-    ok( res == ERROR_SUCCESS , "Failed to close database\n" );
+    ok( res == LIBMSI_RESULT_SUCCESS , "Failed to close database\n" );
 
     res = libmsi_database_open( msifile, msifile2, &hdb2 );
-    ok( res == ERROR_SUCCESS , "Failed to open database\n" );
+    ok( res == LIBMSI_RESULT_SUCCESS , "Failed to open database\n" );
 
     res = libmsi_unref( hdb2 );
-    ok( res == ERROR_SUCCESS , "Failed to close database\n" );
+    ok( res == LIBMSI_RESULT_SUCCESS , "Failed to close database\n" );
 
     ok( INVALID_FILE_ATTRIBUTES == GetFileAttributes( msifile2 ), "uncommitted database should not exist\n");
 
     res = libmsi_database_open( msifile, msifile2, &hdb2 );
-    ok( res == ERROR_SUCCESS , "Failed to close database\n" );
+    ok( res == LIBMSI_RESULT_SUCCESS , "Failed to close database\n" );
 
     res = libmsi_database_commit( hdb2 );
-    ok( res == ERROR_SUCCESS , "Failed to commit database\n" );
+    ok( res == LIBMSI_RESULT_SUCCESS , "Failed to commit database\n" );
 
     res = libmsi_unref( hdb2 );
-    ok( res == ERROR_SUCCESS , "Failed to close database\n" );
+    ok( res == LIBMSI_RESULT_SUCCESS , "Failed to close database\n" );
 
     ok( INVALID_FILE_ATTRIBUTES != GetFileAttributes( msifile2 ), "committed database should exist\n");
 
     res = libmsi_database_open( msifile, LIBMSI_DB_OPEN_READONLY, &hdb );
-    ok( res == ERROR_SUCCESS , "Failed to open database\n" );
+    ok( res == LIBMSI_RESULT_SUCCESS , "Failed to open database\n" );
 
     res = libmsi_database_commit( hdb );
-    ok( res == ERROR_SUCCESS , "Failed to commit database\n" );
+    ok( res == LIBMSI_RESULT_SUCCESS , "Failed to commit database\n" );
 
     res = libmsi_unref( hdb );
-    ok( res == ERROR_SUCCESS , "Failed to close database\n" );
+    ok( res == LIBMSI_RESULT_SUCCESS , "Failed to close database\n" );
 
     res = libmsi_database_open( msifile, LIBMSI_DB_OPEN_DIRECT, &hdb );
-    ok( res == ERROR_SUCCESS , "Failed to open database\n" );
+    ok( res == LIBMSI_RESULT_SUCCESS , "Failed to open database\n" );
 
     res = libmsi_unref( hdb );
-    ok( res == ERROR_SUCCESS , "Failed to close database\n" );
+    ok( res == LIBMSI_RESULT_SUCCESS , "Failed to close database\n" );
 
     res = libmsi_database_open( msifile, LIBMSI_DB_OPEN_TRANSACT, &hdb );
-    ok( res == ERROR_SUCCESS , "Failed to open database\n" );
+    ok( res == LIBMSI_RESULT_SUCCESS , "Failed to open database\n" );
 
     res = libmsi_unref( hdb );
-    ok( res == ERROR_SUCCESS , "Failed to close database\n" );
+    ok( res == LIBMSI_RESULT_SUCCESS , "Failed to close database\n" );
     ok( INVALID_FILE_ATTRIBUTES != GetFileAttributes( msifile ), "database should exist\n");
 
     /* LIBMSI_DB_OPEN_CREATE deletes the database if MsiCommitDatabase isn't called */
     res = libmsi_database_open( msifile, LIBMSI_DB_OPEN_CREATE, &hdb );
-    ok( res == ERROR_SUCCESS , "Failed to open database\n" );
+    ok( res == LIBMSI_RESULT_SUCCESS , "Failed to open database\n" );
 
     ok( INVALID_FILE_ATTRIBUTES != GetFileAttributes( msifile ), "database should exist\n");
 
     res = libmsi_unref( hdb );
-    ok( res == ERROR_SUCCESS , "Failed to close database\n" );
+    ok( res == LIBMSI_RESULT_SUCCESS , "Failed to close database\n" );
 
     ok( INVALID_FILE_ATTRIBUTES == GetFileAttributes( msifile ), "database should exist\n");
 
     res = libmsi_database_open( msifile, LIBMSI_DB_OPEN_CREATE, &hdb );
-    ok( res == ERROR_SUCCESS , "Failed to open database\n" );
+    ok( res == LIBMSI_RESULT_SUCCESS , "Failed to open database\n" );
 
     res = libmsi_database_commit( hdb );
-    ok( res == ERROR_SUCCESS , "Failed to commit database\n" );
+    ok( res == LIBMSI_RESULT_SUCCESS , "Failed to commit database\n" );
 
     ok( INVALID_FILE_ATTRIBUTES != GetFileAttributes( msifile ), "database should exist\n");
 
     res = libmsi_unref( hdb );
-    ok( res == ERROR_SUCCESS , "Failed to close database\n" );
+    ok( res == LIBMSI_RESULT_SUCCESS , "Failed to close database\n" );
 
     res = DeleteFile( msifile2 );
     ok( res == true, "Failed to delete database\n" );
@@ -155,17 +155,17 @@ static unsigned do_query(LibmsiDatabase *hdb, const char *sql, LibmsiRecord **ph
 
     /* open a select query */
     r = libmsi_database_open_query(hdb, sql, &hquery);
-    if (r != ERROR_SUCCESS)
+    if (r != LIBMSI_RESULT_SUCCESS)
         return r;
     r = libmsi_query_execute(hquery, 0);
-    if (r != ERROR_SUCCESS)
+    if (r != LIBMSI_RESULT_SUCCESS)
         return r;
     ret = libmsi_query_fetch(hquery, phrec);
     r = libmsi_query_close(hquery);
-    if (r != ERROR_SUCCESS)
+    if (r != LIBMSI_RESULT_SUCCESS)
         return r;
     r = libmsi_unref(hquery);
-    if (r != ERROR_SUCCESS)
+    if (r != LIBMSI_RESULT_SUCCESS)
         return r;
     return ret;
 }
@@ -176,11 +176,11 @@ static unsigned run_query( LibmsiDatabase *hdb, LibmsiRecord *hrec, const char *
     unsigned r;
 
     r = libmsi_database_open_query(hdb, sql, &hquery);
-    if( r != ERROR_SUCCESS )
+    if( r != LIBMSI_RESULT_SUCCESS )
         return r;
 
     r = libmsi_query_execute(hquery, hrec);
-    if( r == ERROR_SUCCESS )
+    if( r == LIBMSI_RESULT_SUCCESS )
         r = libmsi_query_close(hquery);
     libmsi_unref(hquery);
     return r;
@@ -295,58 +295,58 @@ static void test_msiinsert(void)
 
     /* just libmsi_database_open should not create a file */
     r = libmsi_database_open(msifile, LIBMSI_DB_OPEN_CREATE, &hdb);
-    ok(r == ERROR_SUCCESS, "libmsi_database_open failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_database_open failed\n");
 
     /* create a table */
     sql = "CREATE TABLE `phone` ( "
             "`id` INT, `name` CHAR(32), `number` CHAR(32) "
             "PRIMARY KEY `id`)";
     r = libmsi_database_open_query(hdb, sql, &hquery);
-    ok(r == ERROR_SUCCESS, "libmsi_database_open_query failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_database_open_query failed\n");
     r = libmsi_query_execute(hquery, 0);
-    ok(r == ERROR_SUCCESS, "libmsi_query_execute failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_query_execute failed\n");
     r = libmsi_query_close(hquery);
-    ok(r == ERROR_SUCCESS, "libmsi_query_close failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_query_close failed\n");
     r = libmsi_unref(hquery);
-    ok(r == ERROR_SUCCESS, "libmsi_unref failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_unref failed\n");
 
     sql = "SELECT * FROM phone WHERE number = '8675309'";
     r = libmsi_database_open_query(hdb, sql, &hquery2);
-    ok(r == ERROR_SUCCESS, "libmsi_database_open_query failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_database_open_query failed\n");
     r = libmsi_query_execute(hquery2, 0);
-    ok(r == ERROR_SUCCESS, "libmsi_query_execute failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_query_execute failed\n");
     r = libmsi_query_fetch(hquery2, &hrec);
-    ok(r == ERROR_NO_MORE_ITEMS, "libmsi_query_fetch produced items\n");
+    ok(r == LIBMSI_RESULT_NO_MORE_ITEMS, "libmsi_query_fetch produced items\n");
 
     /* insert a value into it */
     sql = "INSERT INTO `phone` ( `id`, `name`, `number` )"
         "VALUES('1', 'Abe', '8675309')";
     r = libmsi_database_open_query(hdb, sql, &hquery);
-    ok(r == ERROR_SUCCESS, "libmsi_database_open_query failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_database_open_query failed\n");
     r = libmsi_query_execute(hquery, 0);
-    ok(r == ERROR_SUCCESS, "libmsi_query_execute failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_query_execute failed\n");
     r = libmsi_query_close(hquery);
-    ok(r == ERROR_SUCCESS, "libmsi_query_close failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_query_close failed\n");
     r = libmsi_unref(hquery);
-    ok(r == ERROR_SUCCESS, "libmsi_unref failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_unref failed\n");
 
     r = libmsi_query_fetch(hquery2, &hrec);
-    ok(r == ERROR_NO_MORE_ITEMS, "libmsi_query_fetch produced items\n");
+    ok(r == LIBMSI_RESULT_NO_MORE_ITEMS, "libmsi_query_fetch produced items\n");
     r = libmsi_query_execute(hquery2, 0);
-    ok(r == ERROR_SUCCESS, "libmsi_query_execute failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_query_execute failed\n");
     r = libmsi_query_fetch(hquery2, &hrec);
-    ok(r == ERROR_SUCCESS, "libmsi_query_fetch failed: %u\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_query_fetch failed: %u\n", r);
 
     r = libmsi_unref(hrec);
-    ok(r == ERROR_SUCCESS, "libmsi_unref failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_unref failed\n");
     r = libmsi_query_close(hquery2);
-    ok(r == ERROR_SUCCESS, "libmsi_query_close failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_query_close failed\n");
     r = libmsi_unref(hquery2);
-    ok(r == ERROR_SUCCESS, "libmsi_unref failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_unref failed\n");
 
     sql = "SELECT * FROM `phone` WHERE `id` = 1";
     r = do_query(hdb, sql, &hrec);
-    ok(r == ERROR_SUCCESS, "libmsi_query_fetch failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_query_fetch failed\n");
 
     /* check the record contains what we put in it */
     r = libmsi_record_get_field_count(hrec);
@@ -359,83 +359,83 @@ static void test_msiinsert(void)
     ok(r == 1, "field 1 contents wrong\n");
     sz = sizeof buf;
     r = libmsi_record_get_string(hrec, 2, buf, &sz);
-    ok(r == ERROR_SUCCESS, "field 2 content fetch failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "field 2 content fetch failed\n");
     ok(!strcmp(buf,"Abe"), "field 2 content incorrect\n");
     sz = sizeof buf;
     r = libmsi_record_get_string(hrec, 3, buf, &sz);
-    ok(r == ERROR_SUCCESS, "field 3 content fetch failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "field 3 content fetch failed\n");
     ok(!strcmp(buf,"8675309"), "field 3 content incorrect\n");
 
     r = libmsi_unref(hrec);
-    ok(r == ERROR_SUCCESS, "libmsi_unref failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_unref failed\n");
 
     /* open a select query */
     hrec = 100;
     sql = "SELECT * FROM `phone` WHERE `id` >= 10";
     r = do_query(hdb, sql, &hrec);
-    ok(r == ERROR_NO_MORE_ITEMS, "libmsi_query_fetch failed\n");
+    ok(r == LIBMSI_RESULT_NO_MORE_ITEMS, "libmsi_query_fetch failed\n");
     ok(hrec == 0, "hrec should be null\n");
 
     r = libmsi_unref(hrec);
-    ok(r == ERROR_SUCCESS, "libmsi_unref failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_unref failed\n");
 
     sql = "SELECT * FROM `phone` WHERE `id` < 0";
     r = do_query(hdb, sql, &hrec);
-    ok(r == ERROR_NO_MORE_ITEMS, "libmsi_query_fetch failed\n");
+    ok(r == LIBMSI_RESULT_NO_MORE_ITEMS, "libmsi_query_fetch failed\n");
 
     sql = "SELECT * FROM `phone` WHERE `id` <= 0";
     r = do_query(hdb, sql, &hrec);
-    ok(r == ERROR_NO_MORE_ITEMS, "libmsi_query_fetch failed\n");
+    ok(r == LIBMSI_RESULT_NO_MORE_ITEMS, "libmsi_query_fetch failed\n");
 
     sql = "SELECT * FROM `phone` WHERE `id` <> 1";
     r = do_query(hdb, sql, &hrec);
-    ok(r == ERROR_NO_MORE_ITEMS, "libmsi_query_fetch failed\n");
+    ok(r == LIBMSI_RESULT_NO_MORE_ITEMS, "libmsi_query_fetch failed\n");
 
     sql = "SELECT * FROM `phone` WHERE `id` > 10";
     r = do_query(hdb, sql, &hrec);
-    ok(r == ERROR_NO_MORE_ITEMS, "libmsi_query_fetch failed\n");
+    ok(r == LIBMSI_RESULT_NO_MORE_ITEMS, "libmsi_query_fetch failed\n");
 
     /* now try a few bad INSERT xqueries */
     sql = "INSERT INTO `phone` ( `id`, `name`, `number` )"
         "VALUES(?, ?)";
     r = libmsi_database_open_query(hdb, sql, &hquery);
-    ok(r == ERROR_BAD_QUERY_SYNTAX, "libmsi_database_open_query failed\n");
+    ok(r == LIBMSI_RESULT_BAD_QUERY_SYNTAX, "libmsi_database_open_query failed\n");
 
     /* construct a record to insert */
     hrec = libmsi_record_create(4);
     r = libmsi_record_set_int(hrec, 1, 2);
-    ok(r == ERROR_SUCCESS, "libmsi_record_set_int failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_record_set_int failed\n");
     r = libmsi_record_set_string(hrec, 2, "Adam");
-    ok(r == ERROR_SUCCESS, "libmsi_record_set_string failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_record_set_string failed\n");
     r = libmsi_record_set_string(hrec, 3, "96905305");
-    ok(r == ERROR_SUCCESS, "libmsi_record_set_string failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_record_set_string failed\n");
 
     /* insert another value, using a record and wildcards */
     sql = "INSERT INTO `phone` ( `id`, `name`, `number` )"
         "VALUES(?, ?, ?)";
     r = libmsi_database_open_query(hdb, sql, &hquery);
-    ok(r == ERROR_SUCCESS, "libmsi_database_open_query failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_database_open_query failed\n");
 
-    if (r == ERROR_SUCCESS)
+    if (r == LIBMSI_RESULT_SUCCESS)
     {
         r = libmsi_query_execute(hquery, hrec);
-        ok(r == ERROR_SUCCESS, "libmsi_query_execute failed\n");
+        ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_query_execute failed\n");
         r = libmsi_query_close(hquery);
-        ok(r == ERROR_SUCCESS, "libmsi_query_close failed\n");
+        ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_query_close failed\n");
         r = libmsi_unref(hquery);
-        ok(r == ERROR_SUCCESS, "libmsi_unref failed\n");
+        ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_unref failed\n");
     }
     r = libmsi_unref(hrec);
-    ok(r == ERROR_SUCCESS, "libmsi_unref failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_unref failed\n");
 
     r = libmsi_query_fetch(0, NULL);
-    ok(r == ERROR_INVALID_PARAMETER, "libmsi_query_fetch failed\n");
+    ok(r == LIBMSI_RESULT_INVALID_PARAMETER, "libmsi_query_fetch failed\n");
 
     r = libmsi_database_commit(hdb);
-    ok(r == ERROR_SUCCESS, "libmsi_database_commit failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_database_commit failed\n");
 
     r = libmsi_unref(hdb);
-    ok(r == ERROR_SUCCESS, "libmsi_unref failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_unref failed\n");
 
     r = DeleteFile(msifile);
     ok(r == true, "file didn't exist after commit\n");
@@ -447,20 +447,20 @@ static unsigned try_query_param( LibmsiDatabase *hdb, const char *szQuery, Libms
     unsigned res;
 
     res = libmsi_database_open_query( hdb, szQuery, &htab );
-    if(res == ERROR_SUCCESS )
+    if(res == LIBMSI_RESULT_SUCCESS )
     {
         unsigned r;
 
         r = libmsi_query_execute( htab, hrec );
-        if(r != ERROR_SUCCESS )
+        if(r != LIBMSI_RESULT_SUCCESS )
             res = r;
 
         r = libmsi_query_close( htab );
-        if(r != ERROR_SUCCESS )
+        if(r != LIBMSI_RESULT_SUCCESS )
             res = r;
 
         r = libmsi_unref( htab );
-        if(r != ERROR_SUCCESS )
+        if(r != LIBMSI_RESULT_SUCCESS )
             res = r;
     }
     return res;
@@ -494,211 +494,211 @@ static void test_msibadqueries(void)
 
     /* just libmsi_database_open should not create a file */
     r = libmsi_database_open(msifile, LIBMSI_DB_OPEN_CREATE, &hdb);
-    ok(r == ERROR_SUCCESS, "libmsi_database_open failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_database_open failed\n");
 
     r = libmsi_database_commit( hdb );
-    ok(r == ERROR_SUCCESS , "Failed to commit database\n");
+    ok(r == LIBMSI_RESULT_SUCCESS , "Failed to commit database\n");
 
     r = libmsi_unref( hdb );
-    ok(r == ERROR_SUCCESS , "Failed to close database\n");
+    ok(r == LIBMSI_RESULT_SUCCESS , "Failed to close database\n");
 
     /* open it readonly */
     r = libmsi_database_open(msifile, LIBMSI_DB_OPEN_READONLY, &hdb );
-    ok(r == ERROR_SUCCESS , "Failed to open database r/o\n");
+    ok(r == LIBMSI_RESULT_SUCCESS , "Failed to open database r/o\n");
 
     /* add a table to it */
     r = try_query( hdb, "select * from _Tables");
-    ok(r == ERROR_SUCCESS , "query 1 failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS , "query 1 failed\n");
 
     r = libmsi_unref( hdb );
-    ok(r == ERROR_SUCCESS , "Failed to close database r/o\n");
+    ok(r == LIBMSI_RESULT_SUCCESS , "Failed to close database r/o\n");
 
     /* open it read/write */
     r = libmsi_database_open(msifile, LIBMSI_DB_OPEN_TRANSACT, &hdb );
-    ok(r == ERROR_SUCCESS , "Failed to open database r/w\n");
+    ok(r == LIBMSI_RESULT_SUCCESS , "Failed to open database r/w\n");
 
     /* a bunch of test queries that fail with the native MSI */
 
     r = try_query( hdb, "CREATE TABLE");
-    ok(r == ERROR_BAD_QUERY_SYNTAX , "invalid query 2a return code\n");
+    ok(r == LIBMSI_RESULT_BAD_QUERY_SYNTAX , "invalid query 2a return code\n");
 
     r = try_query( hdb, "CREATE TABLE `a`");
-    ok(r == ERROR_BAD_QUERY_SYNTAX , "invalid query 2b return code\n");
+    ok(r == LIBMSI_RESULT_BAD_QUERY_SYNTAX , "invalid query 2b return code\n");
 
     r = try_query( hdb, "CREATE TABLE `a` ()");
-    ok(r == ERROR_BAD_QUERY_SYNTAX , "invalid query 2c return code\n");
+    ok(r == LIBMSI_RESULT_BAD_QUERY_SYNTAX , "invalid query 2c return code\n");
 
     r = try_query( hdb, "CREATE TABLE `a` (`b`)");
-    ok(r == ERROR_BAD_QUERY_SYNTAX , "invalid query 2d return code\n");
+    ok(r == LIBMSI_RESULT_BAD_QUERY_SYNTAX , "invalid query 2d return code\n");
 
     r = try_query( hdb, "CREATE TABLE `a` (`b` CHAR(72) )");
-    ok(r == ERROR_BAD_QUERY_SYNTAX , "invalid query 2e return code\n");
+    ok(r == LIBMSI_RESULT_BAD_QUERY_SYNTAX , "invalid query 2e return code\n");
 
     r = try_query( hdb, "CREATE TABLE `a` (`b` CHAR(72) NOT NULL)");
-    ok(r == ERROR_BAD_QUERY_SYNTAX , "invalid query 2f return code\n");
+    ok(r == LIBMSI_RESULT_BAD_QUERY_SYNTAX , "invalid query 2f return code\n");
 
     r = try_query( hdb, "CREATE TABLE `a` (`b` CHAR(72) NOT NULL PRIMARY)");
-    ok(r == ERROR_BAD_QUERY_SYNTAX , "invalid query 2g return code\n");
+    ok(r == LIBMSI_RESULT_BAD_QUERY_SYNTAX , "invalid query 2g return code\n");
 
     r = try_query( hdb, "CREATE TABLE `a` (`b` CHAR(72) NOT NULL PRIMARY KEY)");
-    ok(r == ERROR_BAD_QUERY_SYNTAX , "invalid query 2h return code\n");
+    ok(r == LIBMSI_RESULT_BAD_QUERY_SYNTAX , "invalid query 2h return code\n");
 
     r = try_query( hdb, "CREATE TABLE `a` (`b` CHAR(72) NOT NULL PRIMARY KEY)");
-    ok(r == ERROR_BAD_QUERY_SYNTAX , "invalid query 2i return code\n");
+    ok(r == LIBMSI_RESULT_BAD_QUERY_SYNTAX , "invalid query 2i return code\n");
 
     r = try_query( hdb, "CREATE TABLE `a` (`b` CHAR(72) NOT NULL PRIMARY KEY 'b')");
-    ok(r == ERROR_BAD_QUERY_SYNTAX , "invalid query 2j return code\n");
+    ok(r == LIBMSI_RESULT_BAD_QUERY_SYNTAX , "invalid query 2j return code\n");
 
     r = try_query( hdb, "CREATE TABLE `a` (`b` CHAR(72) NOT NULL PRIMARY KEY `b')");
-    ok(r == ERROR_BAD_QUERY_SYNTAX , "invalid query 2k return code\n");
+    ok(r == LIBMSI_RESULT_BAD_QUERY_SYNTAX , "invalid query 2k return code\n");
 
     r = try_query( hdb, "CREATE TABLE `a` (`b` CHAR(72) NOT NULL PRIMARY KEY `b')");
-    ok(r == ERROR_BAD_QUERY_SYNTAX , "invalid query 2l return code\n");
+    ok(r == LIBMSI_RESULT_BAD_QUERY_SYNTAX , "invalid query 2l return code\n");
 
     r = try_query( hdb, "CREATE TABLE `a` (`b` CHA(72) NOT NULL PRIMARY KEY `b`)");
-    ok(r == ERROR_BAD_QUERY_SYNTAX , "invalid query 2m return code\n");
+    ok(r == LIBMSI_RESULT_BAD_QUERY_SYNTAX , "invalid query 2m return code\n");
 
     r = try_query( hdb, "CREATE TABLE `a` (`b` CHAR(-1) NOT NULL PRIMARY KEY `b`)");
-    ok(r == ERROR_BAD_QUERY_SYNTAX , "invalid query 2n return code\n");
+    ok(r == LIBMSI_RESULT_BAD_QUERY_SYNTAX , "invalid query 2n return code\n");
 
     r = try_query( hdb, "CREATE TABLE `a` (`b` CHAR(720) NOT NULL PRIMARY KEY `b`)");
-    ok(r == ERROR_BAD_QUERY_SYNTAX , "invalid query 2o return code\n");
+    ok(r == LIBMSI_RESULT_BAD_QUERY_SYNTAX , "invalid query 2o return code\n");
 
     r = try_query( hdb, "CREATE TABLE `a` (`b` CHAR(72) NOT NULL KEY `b`)");
-    ok(r == ERROR_BAD_QUERY_SYNTAX , "invalid query 2p return code\n");
+    ok(r == LIBMSI_RESULT_BAD_QUERY_SYNTAX , "invalid query 2p return code\n");
 
     r = try_query( hdb, "CREATE TABLE `a` (`` CHAR(72) NOT NULL PRIMARY KEY `b`)");
-    ok(r == ERROR_BAD_QUERY_SYNTAX , "invalid query 2p return code\n");
+    ok(r == LIBMSI_RESULT_BAD_QUERY_SYNTAX , "invalid query 2p return code\n");
 
     r = try_query( hdb, "CREATE TABLE `a` (`b` CHAR(72) NOT NULL PRIMARY KEY `b`)");
-    ok(r == ERROR_SUCCESS , "valid query 2z failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS , "valid query 2z failed\n");
 
     r = try_query( hdb, "CREATE TABLE `a` (`b` CHAR(72) NOT NULL PRIMARY KEY `b`)");
-    ok(r == ERROR_BAD_QUERY_SYNTAX , "created same table again\n");
+    ok(r == LIBMSI_RESULT_BAD_QUERY_SYNTAX , "created same table again\n");
 
     r = try_query( hdb, "CREATE TABLE `aa` (`b` CHAR(72) NOT NULL, `c` "
           "CHAR(72), `d` CHAR(255) NOT NULL LOCALIZABLE PRIMARY KEY `b`)");
-    ok(r == ERROR_SUCCESS , "query 4 failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS , "query 4 failed\n");
 
     r = libmsi_database_commit( hdb );
-    ok(r == ERROR_SUCCESS , "Failed to commit database after write\n");
+    ok(r == LIBMSI_RESULT_SUCCESS , "Failed to commit database after write\n");
 
     r = try_query( hdb, "CREATE TABLE `blah` (`foo` CHAR(72) NOT NULL "
                           "PRIMARY KEY `foo`)");
-    ok(r == ERROR_SUCCESS , "query 4 failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS , "query 4 failed\n");
 
     r = try_insert_query( hdb, "insert into a  ( `b` ) VALUES ( ? )");
-    ok(r == ERROR_SUCCESS , "failed to insert record in db\n");
+    ok(r == LIBMSI_RESULT_SUCCESS , "failed to insert record in db\n");
 
     r = libmsi_database_commit( hdb );
-    ok(r == ERROR_SUCCESS , "Failed to commit database after write\n");
+    ok(r == LIBMSI_RESULT_SUCCESS , "Failed to commit database after write\n");
 
     r = try_query( hdb, "CREATE TABLE `boo` (`foo` CHAR(72) NOT NULL "
                           "PRIMARY KEY `ba`)");
-    ok(r != ERROR_SUCCESS , "query 5 succeeded\n");
+    ok(r != LIBMSI_RESULT_SUCCESS , "query 5 succeeded\n");
 
     r = try_query( hdb,"CREATE TABLE `bee` (`foo` CHAR(72) NOT NULL )");
-    ok(r != ERROR_SUCCESS , "query 6 succeeded\n");
+    ok(r != LIBMSI_RESULT_SUCCESS , "query 6 succeeded\n");
 
     r = try_query( hdb, "CREATE TABLE `temp` (`t` CHAR(72) NOT NULL "
                           "PRIMARY KEY `t`)");
-    ok(r == ERROR_SUCCESS , "query 7 failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS , "query 7 failed\n");
 
     r = try_query( hdb, "CREATE TABLE `c` (`b` CHAR NOT NULL PRIMARY KEY `b`)");
-    ok(r == ERROR_SUCCESS , "query 8 failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS , "query 8 failed\n");
 
     r = try_query( hdb, "select * from c");
-    ok(r == ERROR_SUCCESS , "query failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS , "query failed\n");
 
     r = try_query( hdb, "select * from c where b = 'x");
-    ok(r == ERROR_BAD_QUERY_SYNTAX, "query failed\n");
+    ok(r == LIBMSI_RESULT_BAD_QUERY_SYNTAX, "query failed\n");
 
     r = try_query( hdb, "select * from c where b = 'x'");
-    ok(r == ERROR_SUCCESS, "query failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "query failed\n");
 
     r = try_query( hdb, "select * from 'c'");
-    ok(r == ERROR_BAD_QUERY_SYNTAX, "query failed\n");
+    ok(r == LIBMSI_RESULT_BAD_QUERY_SYNTAX, "query failed\n");
 
     r = try_query( hdb, "select * from ''");
-    ok(r == ERROR_BAD_QUERY_SYNTAX, "query failed\n");
+    ok(r == LIBMSI_RESULT_BAD_QUERY_SYNTAX, "query failed\n");
 
     r = try_query( hdb, "select * from c where b = x");
-    ok(r == ERROR_BAD_QUERY_SYNTAX, "query failed\n");
+    ok(r == LIBMSI_RESULT_BAD_QUERY_SYNTAX, "query failed\n");
 
     r = try_query( hdb, "select * from c where b = \"x\"");
-    ok(r == ERROR_BAD_QUERY_SYNTAX, "query failed\n");
+    ok(r == LIBMSI_RESULT_BAD_QUERY_SYNTAX, "query failed\n");
 
     r = try_query( hdb, "select * from c where b = 'x'");
-    ok(r == ERROR_SUCCESS, "query failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "query failed\n");
 
     r = try_query( hdb, "select * from c where b = '\"x'");
-    ok(r == ERROR_SUCCESS, "query failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "query failed\n");
 
     if (0)  /* FIXME: this query causes trouble with other tests */
     {
         r = try_query( hdb, "select * from c where b = '\\\'x'");
-        ok(r == ERROR_BAD_QUERY_SYNTAX, "query failed\n");
+        ok(r == LIBMSI_RESULT_BAD_QUERY_SYNTAX, "query failed\n");
     }
 
     r = try_query( hdb, "select * from 'c'");
-    ok(r == ERROR_BAD_QUERY_SYNTAX, "query failed\n");
+    ok(r == LIBMSI_RESULT_BAD_QUERY_SYNTAX, "query failed\n");
 
     r = try_query( hdb, "select `c`.`b` from `c` order by `c`.`order`");
-    ok( r == ERROR_BAD_QUERY_SYNTAX, "query failed: %u\n", r );
+    ok( r == LIBMSI_RESULT_BAD_QUERY_SYNTAX, "query failed: %u\n", r );
 
     r = try_query( hdb, "select `c`.b` from `c`");
-    ok( r == ERROR_SUCCESS, "query failed: %u\n", r );
+    ok( r == LIBMSI_RESULT_SUCCESS, "query failed: %u\n", r );
 
     r = try_query( hdb, "select `c`.`b from `c`");
-    ok( r == ERROR_BAD_QUERY_SYNTAX, "query failed: %u\n", r );
+    ok( r == LIBMSI_RESULT_BAD_QUERY_SYNTAX, "query failed: %u\n", r );
 
     r = try_query( hdb, "select `c`.b from `c`");
-    ok( r == ERROR_SUCCESS, "query failed: %u\n", r );
+    ok( r == LIBMSI_RESULT_SUCCESS, "query failed: %u\n", r );
 
     r = try_query( hdb, "select `c.`b` from `c`");
-    ok( r == ERROR_BAD_QUERY_SYNTAX, "query failed: %u\n", r );
+    ok( r == LIBMSI_RESULT_BAD_QUERY_SYNTAX, "query failed: %u\n", r );
 
     r = try_query( hdb, "select c`.`b` from `c`");
-    ok( r == ERROR_SUCCESS, "query failed: %u\n", r );
+    ok( r == LIBMSI_RESULT_SUCCESS, "query failed: %u\n", r );
 
     r = try_query( hdb, "select c.`b` from `c`");
-    ok( r == ERROR_SUCCESS, "query failed: %u\n", r );
+    ok( r == LIBMSI_RESULT_SUCCESS, "query failed: %u\n", r );
 
     r = try_query( hdb, "select `c`.`b` from c`");
-    ok( r == ERROR_SUCCESS, "query failed: %u\n", r );
+    ok( r == LIBMSI_RESULT_SUCCESS, "query failed: %u\n", r );
 
     r = try_query( hdb, "select `c`.`b` from `c");
-    ok( r == ERROR_BAD_QUERY_SYNTAX, "query failed: %u\n", r );
+    ok( r == LIBMSI_RESULT_BAD_QUERY_SYNTAX, "query failed: %u\n", r );
 
     r = try_query( hdb, "select `c`.`b` from c");
-    ok( r == ERROR_SUCCESS, "query failed: %u\n", r );
+    ok( r == LIBMSI_RESULT_SUCCESS, "query failed: %u\n", r );
 
     r = try_query( hdb, "CREATE TABLE `\5a` (`b` CHAR NOT NULL PRIMARY KEY `b`)" );
-    ok( r == ERROR_SUCCESS , "query failed: %u\n", r );
+    ok( r == LIBMSI_RESULT_SUCCESS , "query failed: %u\n", r );
 
     r = try_query( hdb, "SELECT * FROM \5a" );
-    ok( r == ERROR_SUCCESS , "query failed: %u\n", r );
+    ok( r == LIBMSI_RESULT_SUCCESS , "query failed: %u\n", r );
 
     r = try_query( hdb, "CREATE TABLE `a\5` (`b` CHAR NOT NULL PRIMARY KEY `b`)" );
-    ok( r == ERROR_SUCCESS , "query failed: %u\n", r );
+    ok( r == LIBMSI_RESULT_SUCCESS , "query failed: %u\n", r );
 
     r = try_query( hdb, "SELECT * FROM a\5" );
-    ok( r == ERROR_SUCCESS , "query failed: %u\n", r );
+    ok( r == LIBMSI_RESULT_SUCCESS , "query failed: %u\n", r );
 
     r = try_query( hdb, "CREATE TABLE `-a` (`b` CHAR NOT NULL PRIMARY KEY `b`)" );
-    ok( r == ERROR_SUCCESS , "query failed: %u\n", r );
+    ok( r == LIBMSI_RESULT_SUCCESS , "query failed: %u\n", r );
 
     r = try_query( hdb, "SELECT * FROM -a" );
-    todo_wine ok( r == ERROR_SUCCESS , "query failed: %u\n", r );
+    todo_wine ok( r == LIBMSI_RESULT_SUCCESS , "query failed: %u\n", r );
 
     r = try_query( hdb, "CREATE TABLE `a-` (`b` CHAR NOT NULL PRIMARY KEY `b`)" );
-    ok( r == ERROR_SUCCESS , "query failed: %u\n", r );
+    ok( r == LIBMSI_RESULT_SUCCESS , "query failed: %u\n", r );
 
     r = try_query( hdb, "SELECT * FROM a-" );
-    ok( r == ERROR_SUCCESS , "query failed: %u\n", r );
+    ok( r == LIBMSI_RESULT_SUCCESS , "query failed: %u\n", r );
 
     r = libmsi_unref( hdb );
-    ok(r == ERROR_SUCCESS , "Failed to close database transact\n");
+    ok(r == LIBMSI_RESULT_SUCCESS , "Failed to close database transact\n");
 
     r = DeleteFile( msifile );
     ok(r == true, "file didn't exist after commit\n");
@@ -719,13 +719,13 @@ static void test_querymodify(void)
 
     /* just libmsi_database_open should not create a file */
     r = libmsi_database_open(msifile, LIBMSI_DB_OPEN_CREATE, &hdb);
-    ok(r == ERROR_SUCCESS, "libmsi_database_open failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_database_open failed\n");
 
     sql = "CREATE TABLE `phone` ( "
             "`id` INT, `name` CHAR(32), `number` CHAR(32) "
             "PRIMARY KEY `id`)";
     r = run_query( hdb, 0, sql );
-    ok(r == ERROR_SUCCESS, "query failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "query failed\n");
 
     sql = "CREATE TABLE `_Validation` ( "
             "`Table` CHAR(32) NOT NULL, `Column` CHAR(32) NOT NULL, "
@@ -733,12 +733,12 @@ static void test_querymodify(void)
             "`KeyTable` CHAR(255), `KeyColumn` SHORT, `Category` CHAR(32), "
             "`Set` CHAR(255), `Description` CHAR(255) PRIMARY KEY `Table`, `Column`)";
     r = run_query( hdb, 0, sql );
-    ok(r == ERROR_SUCCESS, "query failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "query failed\n");
 
     sql = "INSERT INTO `_Validation` ( `Table`, `Column`, `Nullable` ) "
             "VALUES('phone', 'id', 'N')";
     r = run_query( hdb, 0, sql );
-    ok(r == ERROR_SUCCESS, "query failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "query failed\n");
 
     /* check what the error function reports without doing anything */
     sz = 0;
@@ -749,7 +749,7 @@ static void test_querymodify(void)
     /* open a query */
     sql = "SELECT * FROM `phone`";
     r = libmsi_database_open_query(hdb, sql, &hquery);
-    ok(r == ERROR_SUCCESS, "libmsi_database_open_query failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_database_open_query failed\n");
 
     /* see what happens with a good hquery and bad args */
     err = libmsi_query_get_error( hquery, NULL, NULL );
@@ -781,18 +781,18 @@ static void test_querymodify(void)
     ok(sz == 0, "size not zero\n");
 
     r = libmsi_query_execute(hquery, 0);
-    ok(r == ERROR_SUCCESS, "libmsi_query_execute failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_query_execute failed\n");
 
     /* try some invalid records */
     r = libmsi_query_modify(hquery, LIBMSI_MODIFY_INSERT, 0 );
-    ok(r == ERROR_INVALID_HANDLE, "libmsi_query_modify failed\n");
+    ok(r == LIBMSI_RESULT_INVALID_HANDLE, "libmsi_query_modify failed\n");
     r = libmsi_query_modify(hquery, -1, 0 );
-    ok(r == ERROR_INVALID_HANDLE, "libmsi_query_modify failed\n");
+    ok(r == LIBMSI_RESULT_INVALID_HANDLE, "libmsi_query_modify failed\n");
 
     /* try an small record */
     hrec = libmsi_record_create(1);
     r = libmsi_query_modify(hquery, -1, hrec );
-    ok(r == ERROR_INVALID_DATA, "libmsi_query_modify failed\n");
+    ok(r == LIBMSI_RESULT_INVALID_DATA, "libmsi_query_modify failed\n");
 
     sz = sizeof buffer;
     buffer[0] = 'x';
@@ -802,29 +802,29 @@ static void test_querymodify(void)
     ok(sz == 0, "size not zero\n");
 
     r = libmsi_unref(hrec);
-    ok(r == ERROR_SUCCESS, "failed to close record\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "failed to close record\n");
 
     /* insert a valid record */
     hrec = libmsi_record_create(3);
 
     r = libmsi_record_set_int(hrec, 1, 1);
-    ok(r == ERROR_SUCCESS, "failed to set integer\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "failed to set integer\n");
     r = libmsi_record_set_string(hrec, 2, "bob");
-    ok(r == ERROR_SUCCESS, "failed to set string\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "failed to set string\n");
     r = libmsi_record_set_string(hrec, 3, "7654321");
-    ok(r == ERROR_SUCCESS, "failed to set string\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "failed to set string\n");
 
     r = libmsi_query_execute(hquery, 0);
-    ok(r == ERROR_SUCCESS, "libmsi_query_execute failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_query_execute failed\n");
     r = libmsi_query_modify(hquery, LIBMSI_MODIFY_INSERT_TEMPORARY, hrec );
-    ok(r == ERROR_SUCCESS, "libmsi_query_modify failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_query_modify failed\n");
 
     /* validate it */
     r = libmsi_query_execute(hquery, 0);
-    ok(r == ERROR_SUCCESS, "libmsi_query_execute failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_query_execute failed\n");
 
     r = libmsi_query_modify(hquery, LIBMSI_MODIFY_VALIDATE_NEW, hrec );
-    ok(r == ERROR_INVALID_DATA, "libmsi_query_modify failed %u\n", r);
+    ok(r == LIBMSI_RESULT_INVALID_DATA, "libmsi_query_modify failed %u\n", r);
 
     sz = sizeof buffer;
     buffer[0] = 'x';
@@ -835,225 +835,225 @@ static void test_querymodify(void)
 
     /* insert the same thing again */
     r = libmsi_query_execute(hquery, 0);
-    ok(r == ERROR_SUCCESS, "libmsi_query_execute failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_query_execute failed\n");
 
     /* should fail ... */
     r = libmsi_query_modify(hquery, LIBMSI_MODIFY_INSERT_TEMPORARY, hrec );
-    ok(r == ERROR_FUNCTION_FAILED, "libmsi_query_modify failed\n");
+    ok(r == LIBMSI_RESULT_FUNCTION_FAILED, "libmsi_query_modify failed\n");
 
     /* try to merge the same record */
     r = libmsi_query_execute(hquery, 0);
-    ok(r == ERROR_SUCCESS, "libmsi_query_execute failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_query_execute failed\n");
     r = libmsi_query_modify(hquery, LIBMSI_MODIFY_MERGE, hrec );
-    ok(r == ERROR_SUCCESS, "libmsi_query_modify failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_query_modify failed\n");
 
     r = libmsi_unref(hrec);
-    ok(r == ERROR_SUCCESS, "failed to close record\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "failed to close record\n");
 
     /* try merging a new record */
     hrec = libmsi_record_create(3);
 
     r = libmsi_record_set_int(hrec, 1, 10);
-    ok(r == ERROR_SUCCESS, "failed to set integer\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "failed to set integer\n");
     r = libmsi_record_set_string(hrec, 2, "pepe");
-    ok(r == ERROR_SUCCESS, "failed to set string\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "failed to set string\n");
     r = libmsi_record_set_string(hrec, 3, "7654321");
-    ok(r == ERROR_SUCCESS, "failed to set string\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "failed to set string\n");
 
     r = libmsi_query_modify(hquery, LIBMSI_MODIFY_MERGE, hrec );
-    ok(r == ERROR_SUCCESS, "libmsi_query_modify failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_query_modify failed\n");
     r = libmsi_query_execute(hquery, 0);
-    ok(r == ERROR_SUCCESS, "libmsi_query_execute failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_query_execute failed\n");
 
     r = libmsi_unref(hrec);
-    ok(r == ERROR_SUCCESS, "failed to close record\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "failed to close record\n");
 
     r = libmsi_query_close(hquery);
-    ok(r == ERROR_SUCCESS, "libmsi_query_close failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_query_close failed\n");
     r = libmsi_unref(hquery);
-    ok(r == ERROR_SUCCESS, "libmsi_unref failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_unref failed\n");
 
     sql = "SELECT * FROM `phone`";
     r = libmsi_database_open_query(hdb, sql, &hquery);
-    ok(r == ERROR_SUCCESS, "libmsi_database_open_query failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_database_open_query failed\n");
 
     r = libmsi_query_execute(hquery, 0);
-    ok(r == ERROR_SUCCESS, "libmsi_query_execute failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_query_execute failed\n");
 
     r = libmsi_query_fetch(hquery, &hrec);
-    ok(r == ERROR_SUCCESS, "libmsi_query_fetch failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_query_fetch failed\n");
 
     r = libmsi_record_get_integer(hrec, 1);
     ok(r == 1, "Expected 1, got %d\n", r);
 
     sz = sizeof(buffer);
     r = libmsi_record_get_string(hrec, 2, buffer, &sz);
-    ok(r == ERROR_SUCCESS, "libmsi_record_get_string failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_record_get_string failed\n");
     ok(!strcmp(buffer, "bob"), "Expected bob, got %s\n", buffer);
 
     sz = sizeof(buffer);
     r = libmsi_record_get_string(hrec, 3, buffer, &sz);
-    ok(r == ERROR_SUCCESS, "libmsi_record_get_string failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_record_get_string failed\n");
     ok(!strcmp(buffer, "7654321"), "Expected 7654321, got %s\n", buffer);
 
     /* update the query, non-primary key */
     r = libmsi_record_set_string(hrec, 3, "3141592");
-    ok(r == ERROR_SUCCESS, "libmsi_record_set_string failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_record_set_string failed\n");
 
     r = libmsi_query_modify(hquery, LIBMSI_MODIFY_UPDATE, hrec);
-    ok(r == ERROR_SUCCESS, "libmsi_query_modify failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_query_modify failed\n");
 
     /* do it again */
     r = libmsi_query_modify(hquery, LIBMSI_MODIFY_UPDATE, hrec);
-    ok(r == ERROR_SUCCESS, "libmsi_query_modify failed: %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_query_modify failed: %d\n", r);
 
     /* update the query, primary key */
     r = libmsi_record_set_int(hrec, 1, 5);
-    ok(r == ERROR_SUCCESS, "libmsi_record_set_int failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_record_set_int failed\n");
 
     r = libmsi_query_modify(hquery, LIBMSI_MODIFY_UPDATE, hrec);
-    ok(r == ERROR_FUNCTION_FAILED, "libmsi_query_modify failed\n");
+    ok(r == LIBMSI_RESULT_FUNCTION_FAILED, "libmsi_query_modify failed\n");
 
     r = libmsi_unref(hrec);
-    ok(r == ERROR_SUCCESS, "failed to close record\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "failed to close record\n");
 
     r = libmsi_query_close(hquery);
-    ok(r == ERROR_SUCCESS, "libmsi_query_close failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_query_close failed\n");
     r = libmsi_unref(hquery);
-    ok(r == ERROR_SUCCESS, "libmsi_unref failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_unref failed\n");
 
     sql = "SELECT * FROM `phone`";
     r = libmsi_database_open_query(hdb, sql, &hquery);
-    ok(r == ERROR_SUCCESS, "libmsi_database_open_query failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_database_open_query failed\n");
 
     r = libmsi_query_execute(hquery, 0);
-    ok(r == ERROR_SUCCESS, "libmsi_query_execute failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_query_execute failed\n");
 
     r = libmsi_query_fetch(hquery, &hrec);
-    ok(r == ERROR_SUCCESS, "libmsi_query_fetch failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_query_fetch failed\n");
 
     r = libmsi_record_get_integer(hrec, 1);
     ok(r == 1, "Expected 1, got %d\n", r);
 
     sz = sizeof(buffer);
     r = libmsi_record_get_string(hrec, 2, buffer, &sz);
-    ok(r == ERROR_SUCCESS, "libmsi_record_get_string failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_record_get_string failed\n");
     ok(!strcmp(buffer, "bob"), "Expected bob, got %s\n", buffer);
 
     sz = sizeof(buffer);
     r = libmsi_record_get_string(hrec, 3, buffer, &sz);
-    ok(r == ERROR_SUCCESS, "libmsi_record_get_string failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_record_get_string failed\n");
     ok(!strcmp(buffer, "3141592"), "Expected 3141592, got %s\n", buffer);
 
     r = libmsi_unref(hrec);
-    ok(r == ERROR_SUCCESS, "failed to close record\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "failed to close record\n");
 
     /* use a record that doesn't come from a query fetch */
     hrec = libmsi_record_create(3);
     ok(hrec != 0, "libmsi_record_create failed\n");
 
     r = libmsi_record_set_int(hrec, 1, 3);
-    ok(r == ERROR_SUCCESS, "failed to set integer\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "failed to set integer\n");
     r = libmsi_record_set_string(hrec, 2, "jane");
-    ok(r == ERROR_SUCCESS, "failed to set string\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "failed to set string\n");
     r = libmsi_record_set_string(hrec, 3, "112358");
-    ok(r == ERROR_SUCCESS, "failed to set string\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "failed to set string\n");
 
     r = libmsi_query_modify(hquery, LIBMSI_MODIFY_UPDATE, hrec);
-    ok(r == ERROR_FUNCTION_FAILED, "Expected ERROR_FUNCTION_FAILED, got %d\n", r);
+    ok(r == LIBMSI_RESULT_FUNCTION_FAILED, "Expected LIBMSI_RESULT_FUNCTION_FAILED, got %d\n", r);
 
     r = libmsi_unref(hrec);
-    ok(r == ERROR_SUCCESS, "failed to close record\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "failed to close record\n");
 
     /* use a record that doesn't come from a query fetch, primary key matches */
     hrec = libmsi_record_create(3);
     ok(hrec != 0, "libmsi_record_create failed\n");
 
     r = libmsi_record_set_int(hrec, 1, 1);
-    ok(r == ERROR_SUCCESS, "failed to set integer\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "failed to set integer\n");
     r = libmsi_record_set_string(hrec, 2, "jane");
-    ok(r == ERROR_SUCCESS, "failed to set string\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "failed to set string\n");
     r = libmsi_record_set_string(hrec, 3, "112358");
-    ok(r == ERROR_SUCCESS, "failed to set string\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "failed to set string\n");
 
     r = libmsi_query_modify(hquery, LIBMSI_MODIFY_UPDATE, hrec);
-    ok(r == ERROR_FUNCTION_FAILED, "libmsi_query_modify failed\n");
+    ok(r == LIBMSI_RESULT_FUNCTION_FAILED, "libmsi_query_modify failed\n");
 
     r = libmsi_unref(hrec);
-    ok(r == ERROR_SUCCESS, "failed to close record\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "failed to close record\n");
 
     hrec = libmsi_record_create(3);
 
     r = libmsi_record_set_int(hrec, 1, 2);
-    ok(r == ERROR_SUCCESS, "failed to set integer\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "failed to set integer\n");
     r = libmsi_record_set_string(hrec, 2, "nick");
-    ok(r == ERROR_SUCCESS, "failed to set string\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "failed to set string\n");
     r = libmsi_record_set_string(hrec, 3, "141421");
-    ok(r == ERROR_SUCCESS, "failed to set string\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "failed to set string\n");
 
     r = libmsi_query_execute(hquery, 0);
-    ok(r == ERROR_SUCCESS, "libmsi_query_execute failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_query_execute failed\n");
     r = libmsi_query_modify(hquery, LIBMSI_MODIFY_INSERT_TEMPORARY, hrec );
-    ok(r == ERROR_SUCCESS, "libmsi_query_modify failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_query_modify failed\n");
 
     r = libmsi_unref(hrec);
-    ok(r == ERROR_SUCCESS, "libmsi_unref failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_unref failed\n");
     r = libmsi_query_close(hquery);
-    ok(r == ERROR_SUCCESS, "libmsi_query_close failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_query_close failed\n");
     r = libmsi_unref(hquery);
-    ok(r == ERROR_SUCCESS, "libmsi_unref failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_unref failed\n");
 
     sql = "SELECT * FROM `phone` WHERE `id` = 1";
     r = libmsi_database_open_query(hdb, sql, &hquery);
-    ok(r == ERROR_SUCCESS, "libmsi_database_open_query failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_database_open_query failed\n");
     r = libmsi_query_execute(hquery, 0);
-    ok(r == ERROR_SUCCESS, "libmsi_query_execute failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_query_execute failed\n");
     r = libmsi_query_fetch(hquery, &hrec);
-    ok(r == ERROR_SUCCESS, "libmsi_query_fetch failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_query_fetch failed\n");
 
     /* change the id to match the second row */
     r = libmsi_record_set_int(hrec, 1, 2);
-    ok(r == ERROR_SUCCESS, "failed to set integer\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "failed to set integer\n");
     r = libmsi_record_set_string(hrec, 2, "jerry");
-    ok(r == ERROR_SUCCESS, "failed to set string\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "failed to set string\n");
 
     r = libmsi_query_modify(hquery, LIBMSI_MODIFY_UPDATE, hrec);
-    ok(r == ERROR_FUNCTION_FAILED, "libmsi_query_modify failed\n");
+    ok(r == LIBMSI_RESULT_FUNCTION_FAILED, "libmsi_query_modify failed\n");
 
     r = libmsi_unref(hrec);
-    ok(r == ERROR_SUCCESS, "failed to close record\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "failed to close record\n");
     r = libmsi_query_close(hquery);
-    ok(r == ERROR_SUCCESS, "libmsi_query_close failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_query_close failed\n");
     r = libmsi_unref(hquery);
-    ok(r == ERROR_SUCCESS, "libmsi_unref failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_unref failed\n");
 
     /* broader search */
     sql = "SELECT * FROM `phone` ORDER BY `id`";
     r = libmsi_database_open_query(hdb, sql, &hquery);
-    ok(r == ERROR_SUCCESS, "libmsi_database_open_query failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_database_open_query failed\n");
     r = libmsi_query_execute(hquery, 0);
-    ok(r == ERROR_SUCCESS, "libmsi_query_execute failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_query_execute failed\n");
     r = libmsi_query_fetch(hquery, &hrec);
-    ok(r == ERROR_SUCCESS, "libmsi_query_fetch failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_query_fetch failed\n");
 
     /* change the id to match the second row */
     r = libmsi_record_set_int(hrec, 1, 2);
-    ok(r == ERROR_SUCCESS, "failed to set integer\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "failed to set integer\n");
     r = libmsi_record_set_string(hrec, 2, "jerry");
-    ok(r == ERROR_SUCCESS, "failed to set string\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "failed to set string\n");
 
     r = libmsi_query_modify(hquery, LIBMSI_MODIFY_UPDATE, hrec);
-    ok(r == ERROR_FUNCTION_FAILED, "libmsi_query_modify failed\n");
+    ok(r == LIBMSI_RESULT_FUNCTION_FAILED, "libmsi_query_modify failed\n");
 
     r = libmsi_unref(hrec);
-    ok(r == ERROR_SUCCESS, "failed to close record\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "failed to close record\n");
     r = libmsi_query_close(hquery);
-    ok(r == ERROR_SUCCESS, "libmsi_query_close failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_query_close failed\n");
     r = libmsi_unref(hquery);
-    ok(r == ERROR_SUCCESS, "libmsi_unref failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_unref failed\n");
 
     r = libmsi_unref( hdb );
-    ok(r == ERROR_SUCCESS, "libmsi_database_open close failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_database_open close failed\n");
 }
 
 static LibmsiDatabase *create_db(void)
@@ -1065,12 +1065,12 @@ static LibmsiDatabase *create_db(void)
 
     /* create an empty database */
     res = libmsi_database_open(msifile, LIBMSI_DB_OPEN_CREATE, &hdb );
-    ok( res == ERROR_SUCCESS , "Failed to create database\n" );
-    if( res != ERROR_SUCCESS )
+    ok( res == LIBMSI_RESULT_SUCCESS , "Failed to create database\n" );
+    if( res != LIBMSI_RESULT_SUCCESS )
         return hdb;
 
     res = libmsi_database_commit( hdb );
-    ok( res == ERROR_SUCCESS , "Failed to commit database\n" );
+    ok( res == LIBMSI_RESULT_SUCCESS , "Failed to commit database\n" );
 
     return hdb;
 }
@@ -1090,51 +1090,51 @@ static void test_getcolinfo(void)
 
     /* tables should be present */
     r = libmsi_database_open_query(hdb, "select * from _Tables", &hquery);
-    ok( r == ERROR_SUCCESS, "failed to open query\n");
+    ok( r == LIBMSI_RESULT_SUCCESS, "failed to open query\n");
 
     r = libmsi_query_execute(hquery, 0);
-    ok( r == ERROR_SUCCESS, "failed to execute query\n");
+    ok( r == LIBMSI_RESULT_SUCCESS, "failed to execute query\n");
 
     /* check that NAMES works */
     rec = 0;
     r = libmsi_query_get_column_info( hquery, LIBMSI_COL_INFO_NAMES, &rec );
-    ok( r == ERROR_SUCCESS, "failed to get names\n");
+    ok( r == LIBMSI_RESULT_SUCCESS, "failed to get names\n");
     sz = sizeof buffer;
     r = libmsi_record_get_string(rec, 1, buffer, &sz );
-    ok( r == ERROR_SUCCESS, "failed to get string\n");
+    ok( r == LIBMSI_RESULT_SUCCESS, "failed to get string\n");
     ok( !strcmp(buffer,"Name"), "_Tables has wrong column name\n");
     r = libmsi_unref( rec );
-    ok( r == ERROR_SUCCESS, "failed to close record handle\n");
+    ok( r == LIBMSI_RESULT_SUCCESS, "failed to close record handle\n");
 
     /* check that TYPES works */
     rec = 0;
     r = libmsi_query_get_column_info( hquery, LIBMSI_COL_INFO_TYPES, &rec );
-    ok( r == ERROR_SUCCESS, "failed to get names\n");
+    ok( r == LIBMSI_RESULT_SUCCESS, "failed to get names\n");
     sz = sizeof buffer;
     r = libmsi_record_get_string(rec, 1, buffer, &sz );
-    ok( r == ERROR_SUCCESS, "failed to get string\n");
+    ok( r == LIBMSI_RESULT_SUCCESS, "failed to get string\n");
     ok( !strcmp(buffer,"s64"), "_Tables has wrong column type\n");
     r = libmsi_unref( rec );
-    ok( r == ERROR_SUCCESS, "failed to close record handle\n");
+    ok( r == LIBMSI_RESULT_SUCCESS, "failed to close record handle\n");
 
     /* check that invalid values fail */
     rec = 0;
     r = libmsi_query_get_column_info( hquery, 100, &rec );
-    ok( r == ERROR_INVALID_PARAMETER, "wrong error code\n");
+    ok( r == LIBMSI_RESULT_INVALID_PARAMETER, "wrong error code\n");
     ok( rec == 0, "returned a record\n");
 
     r = libmsi_query_get_column_info( hquery, LIBMSI_COL_INFO_TYPES, NULL );
-    ok( r == ERROR_INVALID_PARAMETER, "wrong error code\n");
+    ok( r == LIBMSI_RESULT_INVALID_PARAMETER, "wrong error code\n");
 
     r = libmsi_query_get_column_info( 0, LIBMSI_COL_INFO_TYPES, &rec );
-    ok( r == ERROR_INVALID_HANDLE, "wrong error code\n");
+    ok( r == LIBMSI_RESULT_INVALID_HANDLE, "wrong error code\n");
 
     r = libmsi_query_close(hquery);
-    ok( r == ERROR_SUCCESS, "failed to close query\n");
+    ok( r == LIBMSI_RESULT_SUCCESS, "failed to close query\n");
     r = libmsi_unref(hquery);
-    ok( r == ERROR_SUCCESS, "failed to close query handle\n");
+    ok( r == LIBMSI_RESULT_SUCCESS, "failed to close query handle\n");
     r = libmsi_unref(hdb);
-    ok( r == ERROR_SUCCESS, "failed to close database\n");
+    ok( r == LIBMSI_RESULT_SUCCESS, "failed to close database\n");
 }
 
 static LibmsiRecord *get_column_info(LibmsiDatabase *hdb, const char *sql, LibmsiColInfo type)
@@ -1144,11 +1144,11 @@ static LibmsiRecord *get_column_info(LibmsiDatabase *hdb, const char *sql, Libms
     unsigned r;
 
     r = libmsi_database_open_query(hdb, sql, &hquery);
-    if( r != ERROR_SUCCESS )
+    if( r != LIBMSI_RESULT_SUCCESS )
         return rec;
 
     r = libmsi_query_execute(hquery, 0);
-    if( r == ERROR_SUCCESS )
+    if( r == LIBMSI_RESULT_SUCCESS )
     {
         libmsi_query_get_column_info( hquery, type, &rec );
     }
@@ -1167,16 +1167,16 @@ static unsigned get_columns_table_type(LibmsiDatabase *hdb, const char *table, u
     sprintf(sql, "select * from `_Columns` where  `Table` = '%s'", table );
 
     r = libmsi_database_open_query(hdb, sql, &hquery);
-    if( r != ERROR_SUCCESS )
+    if( r != LIBMSI_RESULT_SUCCESS )
         return r;
 
     r = libmsi_query_execute(hquery, 0);
-    if( r == ERROR_SUCCESS )
+    if( r == LIBMSI_RESULT_SUCCESS )
     {
         while (1)
         {
             r = libmsi_query_fetch( hquery, &rec );
-            if( r != ERROR_SUCCESS)
+            if( r != LIBMSI_RESULT_SUCCESS)
                 break;
             r = libmsi_record_get_integer( rec, 2 );
             if (r == field)
@@ -1197,7 +1197,7 @@ static bool check_record( LibmsiRecord *rec, unsigned field, const char *val )
 
     sz = sizeof buffer;
     r = libmsi_record_get_string( rec, field, buffer, &sz );
-    return (r == ERROR_SUCCESS ) && !strcmp(val, buffer);
+    return (r == LIBMSI_RESULT_SUCCESS ) && !strcmp(val, buffer);
 }
 
 static void test_querygetcolumninfo(void)
@@ -1219,7 +1219,7 @@ static void test_querygetcolumninfo(void)
 	    "  `Longvalue` LONG, "
 	    "  `Longcharvalue` LONGCHAR "
 	    "  PRIMARY KEY `Property`)" );
-    ok( r == ERROR_SUCCESS , "Failed to create table\n" );
+    ok( r == LIBMSI_RESULT_SUCCESS , "Failed to create table\n" );
 
     /* check the column types */
     rec = get_column_info( hdb, "select * from `Properties`", LIBMSI_COL_INFO_TYPES );
@@ -1261,7 +1261,7 @@ static void test_querygetcolumninfo(void)
     r = run_query( hdb, 0,
             "CREATE TABLE `Binary` "
             "( `Name` CHAR(255), `Data` OBJECT  PRIMARY KEY `Name`)" );
-    ok( r == ERROR_SUCCESS , "Failed to create table\n" );
+    ok( r == LIBMSI_RESULT_SUCCESS , "Failed to create table\n" );
 
     /* check the column types */
     rec = get_column_info( hdb, "select * from `Binary`", LIBMSI_COL_INFO_TYPES );
@@ -1287,7 +1287,7 @@ static void test_querygetcolumninfo(void)
     r = run_query( hdb, 0,
             "CREATE TABLE `UIText` "
             "( `Key` CHAR(72) NOT NULL, `Text` CHAR(255) LOCALIZABLE PRIMARY KEY `Key`)" );
-    ok( r == ERROR_SUCCESS , "Failed to create table\n" );
+    ok( r == LIBMSI_RESULT_SUCCESS , "Failed to create table\n" );
 
     ok( 0x2d48 == get_columns_table_type(hdb, "UIText", 1 ), "_columns table wrong\n");
     ok( 0x1fff == get_columns_table_type(hdb, "UIText", 2 ), "_columns table wrong\n");
@@ -1328,38 +1328,38 @@ static void test_msiexport(void)
 
     /* just libmsi_database_open should not create a file */
     r = libmsi_database_open(msifile, LIBMSI_DB_OPEN_CREATE, &hdb);
-    ok(r == ERROR_SUCCESS, "libmsi_database_open failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_database_open failed\n");
 
     /* create a table */
     sql = "CREATE TABLE `phone` ( "
             "`id` INT, `name` CHAR(32), `number` CHAR(32) "
             "PRIMARY KEY `id`)";
     r = libmsi_database_open_query(hdb, sql, &hquery);
-    ok(r == ERROR_SUCCESS, "libmsi_database_open_query failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_database_open_query failed\n");
     r = libmsi_query_execute(hquery, 0);
-    ok(r == ERROR_SUCCESS, "libmsi_query_execute failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_query_execute failed\n");
     r = libmsi_query_close(hquery);
-    ok(r == ERROR_SUCCESS, "libmsi_query_close failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_query_close failed\n");
     r = libmsi_unref(hquery);
-    ok(r == ERROR_SUCCESS, "libmsi_unref failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_unref failed\n");
 
     /* insert a value into it */
     sql = "INSERT INTO `phone` ( `id`, `name`, `number` )"
         "VALUES('1', 'Abe', '8675309')";
     r = libmsi_database_open_query(hdb, sql, &hquery);
-    ok(r == ERROR_SUCCESS, "libmsi_database_open_query failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_database_open_query failed\n");
     r = libmsi_query_execute(hquery, 0);
-    ok(r == ERROR_SUCCESS, "libmsi_query_execute failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_query_execute failed\n");
     r = libmsi_query_close(hquery);
-    ok(r == ERROR_SUCCESS, "libmsi_query_close failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_query_close failed\n");
     r = libmsi_unref(hquery);
-    ok(r == ERROR_SUCCESS, "libmsi_unref failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_unref failed\n");
 
     fd = open(file, O_WRONLY | O_BINARY | O_CREAT, 0644);
     ok(fd != -1, "open failed\n");
 
     r = libmsi_database_export(hdb, "phone", fd);
-    ok(r == ERROR_SUCCESS, "libmsi_database_export failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_database_export failed\n");
 
     close(fd);
 
@@ -1398,12 +1398,12 @@ static void test_longstrings(void)
     DeleteFile(msifile);
     /* just libmsi_database_open should not create a file */
     r = libmsi_database_open(msifile, LIBMSI_DB_OPEN_CREATE, &hdb);
-    ok(r == ERROR_SUCCESS, "libmsi_database_open failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_database_open failed\n");
 
     /* create a table */
     r = try_query( hdb, 
         "CREATE TABLE `strings` ( `id` INT, `val` CHAR(0) PRIMARY KEY `id`)");
-    ok(r == ERROR_SUCCESS, "query failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "query failed\n");
 
     /* try a insert a very long string */
     str = HeapAlloc(GetProcessHeap(), 0, STRING_LENGTH+sizeof insert_query);
@@ -1412,31 +1412,31 @@ static void test_longstrings(void)
     memset(str+len, 'Z', STRING_LENGTH);
     strcpy(str+len+STRING_LENGTH, insert_query+len+1);
     r = try_query( hdb, str );
-    ok(r == ERROR_SUCCESS, "libmsi_database_open_query failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_database_open_query failed\n");
 
     HeapFree(GetProcessHeap(), 0, str);
 
     r = libmsi_database_commit(hdb);
-    ok(r == ERROR_SUCCESS, "libmsi_database_commit failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_database_commit failed\n");
     libmsi_unref(hdb);
 
     r = libmsi_database_open(msifile, LIBMSI_DB_OPEN_READONLY, &hdb);
-    ok(r == ERROR_SUCCESS, "libmsi_database_open failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_database_open failed\n");
 
     r = libmsi_database_open_query(hdb, "select * from `strings` where `id` = 1", &hquery);
-    ok(r == ERROR_SUCCESS, "libmsi_database_open_query failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_database_open_query failed\n");
 
     r = libmsi_query_execute(hquery, 0);
-    ok(r == ERROR_SUCCESS, "libmsi_query_execute failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_query_execute failed\n");
 
     r = libmsi_query_fetch(hquery, &hrec);
-    ok(r == ERROR_SUCCESS, "libmsi_query_fetch failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_query_fetch failed\n");
 
     libmsi_query_close(hquery);
     libmsi_unref(hquery);
 
     r = libmsi_record_get_string(hrec, 2, NULL, &len);
-    ok(r == ERROR_SUCCESS, "libmsi_query_fetch failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_query_fetch failed\n");
     ok(len == STRING_LENGTH, "string length wrong\n");
 
     libmsi_unref(hrec);
@@ -1484,20 +1484,20 @@ static void test_streamtable(void)
     r = run_query( hdb, 0,
             "CREATE TABLE `Properties` "
             "( `Property` CHAR(255), `Value` CHAR(1)  PRIMARY KEY `Property`)" );
-    ok( r == ERROR_SUCCESS , "Failed to create table\n" );
+    ok( r == LIBMSI_RESULT_SUCCESS , "Failed to create table\n" );
 
     r = run_query( hdb, 0,
             "INSERT INTO `Properties` "
             "( `Value`, `Property` ) VALUES ( 'Prop', 'value' )" );
-    ok( r == ERROR_SUCCESS, "Failed to add to table\n" );
+    ok( r == LIBMSI_RESULT_SUCCESS, "Failed to add to table\n" );
 
     r = libmsi_database_commit( hdb );
-    ok( r == ERROR_SUCCESS , "Failed to commit database\n" );
+    ok( r == LIBMSI_RESULT_SUCCESS , "Failed to commit database\n" );
 
     libmsi_unref( hdb );
 
     r = libmsi_database_open(msifile, LIBMSI_DB_OPEN_TRANSACT, &hdb );
-    ok( r == ERROR_SUCCESS , "Failed to open database\n" );
+    ok( r == LIBMSI_RESULT_SUCCESS , "Failed to open database\n" );
 
     /* check the column types */
     rec = get_column_info( hdb, "select * from `_Streams`", LIBMSI_COL_INFO_TYPES );
@@ -1520,13 +1520,13 @@ static void test_streamtable(void)
     query = NULL;
     r = libmsi_database_open_query( hdb,
             "SELECT * FROM `_Streams` WHERE `Name` = '\5SummaryInformation'", &query );
-    ok( r == ERROR_SUCCESS, "Failed to open database query: %u\n", r );
+    ok( r == LIBMSI_RESULT_SUCCESS, "Failed to open database query: %u\n", r );
 
     r = libmsi_query_execute( query, 0 );
-    ok( r == ERROR_SUCCESS, "Failed to execute query: %u\n", r );
+    ok( r == LIBMSI_RESULT_SUCCESS, "Failed to execute query: %u\n", r );
 
     r = libmsi_query_fetch( query, &rec );
-    ok( r == ERROR_NO_MORE_ITEMS, "Unexpected result: %u\n", r );
+    ok( r == LIBMSI_RESULT_NO_MORE_ITEMS, "Unexpected result: %u\n", r );
 
     libmsi_unref( rec );
     libmsi_query_close( query );
@@ -1534,26 +1534,26 @@ static void test_streamtable(void)
 
     /* create a summary information stream */
     r = libmsi_database_get_summary_info( hdb, 1, &hsi );
-    ok( r == ERROR_SUCCESS, "Failed to get summary information handle: %u\n", r );
+    ok( r == LIBMSI_RESULT_SUCCESS, "Failed to get summary information handle: %u\n", r );
 
     r = libmsi_summary_info_set_property( hsi, MSI_PID_SECURITY, VT_I4, 2, NULL, NULL );
-    ok( r == ERROR_SUCCESS, "Failed to set property: %u\n", r );
+    ok( r == LIBMSI_RESULT_SUCCESS, "Failed to set property: %u\n", r );
 
     r = libmsi_summary_info_persist( hsi );
-    ok( r == ERROR_SUCCESS, "Failed to save summary information: %u\n", r );
+    ok( r == LIBMSI_RESULT_SUCCESS, "Failed to save summary information: %u\n", r );
 
     libmsi_unref( hsi );
 
     query = NULL;
     r = libmsi_database_open_query( hdb,
             "SELECT * FROM `_Streams` WHERE `Name` = '\5SummaryInformation'", &query );
-    ok( r == ERROR_SUCCESS, "Failed to open database query: %u\n", r );
+    ok( r == LIBMSI_RESULT_SUCCESS, "Failed to open database query: %u\n", r );
 
     r = libmsi_query_execute( query, 0 );
-    ok( r == ERROR_SUCCESS, "Failed to execute query: %u\n", r );
+    ok( r == LIBMSI_RESULT_SUCCESS, "Failed to execute query: %u\n", r );
 
     r = libmsi_query_fetch( query, &rec );
-    ok( r == ERROR_SUCCESS, "Unexpected result: %u\n", r );
+    ok( r == LIBMSI_RESULT_SUCCESS, "Unexpected result: %u\n", r );
 
     libmsi_unref( rec );
     libmsi_query_close( query );
@@ -1566,17 +1566,17 @@ static void test_streamtable(void)
     libmsi_record_set_string( rec, 1, "data" );
 
     r = libmsi_record_load_stream( rec, 2, "test.txt" );
-    ok( r == ERROR_SUCCESS, "Failed to add stream data to the record: %d\n", r);
+    ok( r == LIBMSI_RESULT_SUCCESS, "Failed to add stream data to the record: %d\n", r);
 
     DeleteFile("test.txt");
 
     query = NULL;
     r = libmsi_database_open_query( hdb,
             "INSERT INTO `_Streams` ( `Name`, `Data` ) VALUES ( ?, ? )", &query );
-    ok( r == ERROR_SUCCESS, "Failed to open database query: %d\n", r);
+    ok( r == LIBMSI_RESULT_SUCCESS, "Failed to open database query: %d\n", r);
 
     r = libmsi_query_execute( query, rec );
-    ok( r == ERROR_SUCCESS, "Failed to execute query: %d\n", r);
+    ok( r == LIBMSI_RESULT_SUCCESS, "Failed to execute query: %d\n", r);
 
     libmsi_unref( rec );
     libmsi_query_close( query );
@@ -1589,17 +1589,17 @@ static void test_streamtable(void)
     libmsi_record_set_string( rec, 1, "data1" );
 
     r = libmsi_record_load_stream( rec, 2, "test1.txt" );
-    ok( r == ERROR_SUCCESS, "Failed to add stream data to the record: %d\n", r);
+    ok( r == LIBMSI_RESULT_SUCCESS, "Failed to add stream data to the record: %d\n", r);
 
     DeleteFile("test1.txt");
 
     query = NULL;
     r = libmsi_database_open_query( hdb,
             "INSERT INTO `_Streams` ( `Name`, `Data` ) VALUES ( ?, ? )", &query );
-    ok( r == ERROR_SUCCESS, "Failed to open database query: %d\n", r);
+    ok( r == LIBMSI_RESULT_SUCCESS, "Failed to open database query: %d\n", r);
 
     r = libmsi_query_execute( query, rec );
-    ok( r == ERROR_SUCCESS, "Failed to execute query: %d\n", r);
+    ok( r == LIBMSI_RESULT_SUCCESS, "Failed to execute query: %d\n", r);
 
     libmsi_unref( rec );
     libmsi_query_close( query );
@@ -1608,23 +1608,23 @@ static void test_streamtable(void)
     query = NULL;
     r = libmsi_database_open_query( hdb,
             "SELECT `Name`, `Data` FROM `_Streams` WHERE `Name` = 'data'", &query );
-    ok( r == ERROR_SUCCESS, "Failed to open database query: %d\n", r);
+    ok( r == LIBMSI_RESULT_SUCCESS, "Failed to open database query: %d\n", r);
 
     r = libmsi_query_execute( query, 0 );
-    ok( r == ERROR_SUCCESS, "Failed to execute query: %d\n", r);
+    ok( r == LIBMSI_RESULT_SUCCESS, "Failed to execute query: %d\n", r);
 
     r = libmsi_query_fetch( query, &rec );
-    ok( r == ERROR_SUCCESS, "Failed to fetch record: %d\n", r);
+    ok( r == LIBMSI_RESULT_SUCCESS, "Failed to fetch record: %d\n", r);
 
     size = MAX_PATH;
     r = libmsi_record_get_string( rec, 1, file, &size );
-    ok( r == ERROR_SUCCESS, "Failed to get string: %d\n", r);
+    ok( r == LIBMSI_RESULT_SUCCESS, "Failed to get string: %d\n", r);
     ok( !strcmp(file, "data"), "Expected 'data', got %s\n", file);
 
     size = MAX_PATH;
     memset(buf, 0, MAX_PATH);
     r = libmsi_record_save_stream( rec, 2, buf, &size );
-    ok( r == ERROR_SUCCESS, "Failed to get stream: %d\n", r);
+    ok( r == LIBMSI_RESULT_SUCCESS, "Failed to get stream: %d\n", r);
     ok( !strcmp(buf, "test.txt\n"), "Expected 'test.txt\\n', got %s\n", buf);
 
     libmsi_unref( rec );
@@ -1634,23 +1634,23 @@ static void test_streamtable(void)
     query = NULL;
     r = libmsi_database_open_query( hdb,
             "SELECT `Name`, `Data` FROM `_Streams` WHERE `Name` = 'data1'", &query );
-    ok( r == ERROR_SUCCESS, "Failed to open database query: %d\n", r);
+    ok( r == LIBMSI_RESULT_SUCCESS, "Failed to open database query: %d\n", r);
 
     r = libmsi_query_execute( query, 0 );
-    ok( r == ERROR_SUCCESS, "Failed to execute query: %d\n", r);
+    ok( r == LIBMSI_RESULT_SUCCESS, "Failed to execute query: %d\n", r);
 
     r = libmsi_query_fetch( query, &rec );
-    ok( r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok( r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     size = MAX_PATH;
     r = libmsi_record_get_string( rec, 1, file, &size );
-    ok( r == ERROR_SUCCESS, "Failed to get string: %d\n", r);
+    ok( r == LIBMSI_RESULT_SUCCESS, "Failed to get string: %d\n", r);
     ok( !strcmp(file, "data1"), "Expected 'data1', got %s\n", file);
 
     size = MAX_PATH;
     memset(buf, 0, MAX_PATH);
     r = libmsi_record_save_stream( rec, 2, buf, &size );
-    ok( r == ERROR_SUCCESS, "Failed to get stream: %d\n", r);
+    ok( r == LIBMSI_RESULT_SUCCESS, "Failed to get stream: %d\n", r);
     ok( !strcmp(buf, "test1.txt\n"), "Expected 'test1.txt\\n', got %s\n", buf);
 
     libmsi_unref( rec );
@@ -1662,17 +1662,17 @@ static void test_streamtable(void)
     rec = libmsi_record_create( 1 );
 
     r = libmsi_record_load_stream( rec, 1, "test2.txt" );
-    ok( r == ERROR_SUCCESS, "Failed to add stream data to the record: %d\n", r);
+    ok( r == LIBMSI_RESULT_SUCCESS, "Failed to add stream data to the record: %d\n", r);
 
     DeleteFile("test2.txt");
 
     query = NULL;
     r = libmsi_database_open_query( hdb,
             "UPDATE `_Streams` SET `Data` = ? WHERE `Name` = 'data1'", &query );
-    ok( r == ERROR_SUCCESS, "Failed to open database query: %d\n", r);
+    ok( r == LIBMSI_RESULT_SUCCESS, "Failed to open database query: %d\n", r);
 
     r = libmsi_query_execute( query, rec );
-    ok( r == ERROR_SUCCESS, "Failed to execute query: %d\n", r);
+    ok( r == LIBMSI_RESULT_SUCCESS, "Failed to execute query: %d\n", r);
 
     libmsi_unref( rec );
     libmsi_query_close( query );
@@ -1681,23 +1681,23 @@ static void test_streamtable(void)
     query = NULL;
     r = libmsi_database_open_query( hdb,
             "SELECT `Name`, `Data` FROM `_Streams` WHERE `Name` = 'data1'", &query );
-    ok( r == ERROR_SUCCESS, "Failed to open database query: %d\n", r);
+    ok( r == LIBMSI_RESULT_SUCCESS, "Failed to open database query: %d\n", r);
 
     r = libmsi_query_execute( query, 0 );
-    ok( r == ERROR_SUCCESS, "Failed to execute query: %d\n", r);
+    ok( r == LIBMSI_RESULT_SUCCESS, "Failed to execute query: %d\n", r);
 
     r = libmsi_query_fetch( query, &rec );
-    ok( r == ERROR_SUCCESS, "Failed to fetch record: %d\n", r);
+    ok( r == LIBMSI_RESULT_SUCCESS, "Failed to fetch record: %d\n", r);
 
     size = MAX_PATH;
     r = libmsi_record_get_string( rec, 1, file, &size );
-    ok( r == ERROR_SUCCESS, "Failed to get string: %d\n", r);
+    ok( r == LIBMSI_RESULT_SUCCESS, "Failed to get string: %d\n", r);
     ok( !strcmp(file, "data1"), "Expected 'data1', got %s\n", file);
 
     size = MAX_PATH;
     memset(buf, 0, MAX_PATH);
     r = libmsi_record_save_stream( rec, 2, buf, &size );
-    ok( r == ERROR_SUCCESS, "Failed to get stream: %d\n", r);
+    ok( r == LIBMSI_RESULT_SUCCESS, "Failed to get stream: %d\n", r);
     todo_wine ok( !strcmp(buf, "test2.txt\n"), "Expected 'test2.txt\\n', got %s\n", buf);
 
     libmsi_unref( rec );
@@ -1719,74 +1719,74 @@ static void test_binary(void)
 
     /* insert a file into the Binary table */
     r = libmsi_database_open(msifile, LIBMSI_DB_OPEN_CREATE, &hdb );
-    ok( r == ERROR_SUCCESS , "Failed to open database\n" );
+    ok( r == LIBMSI_RESULT_SUCCESS , "Failed to open database\n" );
 
     sql = "CREATE TABLE `Binary` ( `Name` CHAR(72) NOT NULL, `ID` INT NOT NULL, `Data` OBJECT  PRIMARY KEY `Name`, `ID`)";
     r = run_query( hdb, 0, sql );
-    ok( r == ERROR_SUCCESS, "Cannot create Binary table: %d\n", r );
+    ok( r == LIBMSI_RESULT_SUCCESS, "Cannot create Binary table: %d\n", r );
 
     create_file( "test.txt" );
     rec = libmsi_record_create( 1 );
     r = libmsi_record_load_stream( rec, 1, "test.txt" );
-    ok( r == ERROR_SUCCESS, "Failed to add stream data to the record: %d\n", r);
+    ok( r == LIBMSI_RESULT_SUCCESS, "Failed to add stream data to the record: %d\n", r);
     DeleteFile( "test.txt" );
 
     sql = "INSERT INTO `Binary` ( `Name`, `ID`, `Data` ) VALUES ( 'filename1', 1, ? )";
     r = run_query( hdb, rec, sql );
-    ok( r == ERROR_SUCCESS, "Insert into Binary table failed: %d\n", r );
+    ok( r == LIBMSI_RESULT_SUCCESS, "Insert into Binary table failed: %d\n", r );
 
     r = libmsi_unref( rec );
-    ok( r == ERROR_SUCCESS , "Failed to close record handle\n" );
+    ok( r == LIBMSI_RESULT_SUCCESS , "Failed to close record handle\n" );
 
     r = libmsi_database_commit( hdb );
-    ok( r == ERROR_SUCCESS , "Failed to commit database\n" );
+    ok( r == LIBMSI_RESULT_SUCCESS , "Failed to commit database\n" );
 
     r = libmsi_unref( hdb );
-    ok( r == ERROR_SUCCESS , "Failed to close database\n" );
+    ok( r == LIBMSI_RESULT_SUCCESS , "Failed to close database\n" );
 
     /* read file from the Stream table */
     r = libmsi_database_open( msifile, LIBMSI_DB_OPEN_READONLY, &hdb );
-    ok( r == ERROR_SUCCESS , "Failed to open database\n" );
+    ok( r == LIBMSI_RESULT_SUCCESS , "Failed to open database\n" );
 
     sql = "SELECT * FROM `_Streams`";
     r = do_query( hdb, sql, &rec );
-    ok( r == ERROR_SUCCESS, "SELECT query failed: %d\n", r );
+    ok( r == LIBMSI_RESULT_SUCCESS, "SELECT query failed: %d\n", r );
 
     size = MAX_PATH;
     r = libmsi_record_get_string( rec, 1, file, &size );
-    ok( r == ERROR_SUCCESS, "Failed to get string: %d\n", r );
+    ok( r == LIBMSI_RESULT_SUCCESS, "Failed to get string: %d\n", r );
     ok( !strcmp(file, "Binary.filename1.1"), "Expected 'Binary.filename1.1', got %s\n", file );
 
     size = MAX_PATH;
     memset( buf, 0, MAX_PATH );
     r = libmsi_record_save_stream( rec, 2, buf, &size );
-    ok( r == ERROR_SUCCESS, "Failed to get stream: %d\n", r );
+    ok( r == LIBMSI_RESULT_SUCCESS, "Failed to get stream: %d\n", r );
     ok( !strcmp(buf, "test.txt\n"), "Expected 'test.txt\\n', got %s\n", buf );
 
     r = libmsi_unref( rec );
-    ok( r == ERROR_SUCCESS , "Failed to close record handle\n" );
+    ok( r == LIBMSI_RESULT_SUCCESS , "Failed to close record handle\n" );
 
     /* read file from the Binary table */
     sql = "SELECT * FROM `Binary`";
     r = do_query( hdb, sql, &rec );
-    ok( r == ERROR_SUCCESS, "SELECT query failed: %d\n", r );
+    ok( r == LIBMSI_RESULT_SUCCESS, "SELECT query failed: %d\n", r );
 
     size = MAX_PATH;
     r = libmsi_record_get_string( rec, 1, file, &size );
-    ok( r == ERROR_SUCCESS, "Failed to get string: %d\n", r );
+    ok( r == LIBMSI_RESULT_SUCCESS, "Failed to get string: %d\n", r );
     ok( !strcmp(file, "filename1"), "Expected 'filename1', got %s\n", file );
 
     size = MAX_PATH;
     memset( buf, 0, MAX_PATH );
     r = libmsi_record_save_stream( rec, 3, buf, &size );
-    ok( r == ERROR_SUCCESS, "Failed to get stream: %d\n", r );
+    ok( r == LIBMSI_RESULT_SUCCESS, "Failed to get stream: %d\n", r );
     ok( !strcmp(buf, "test.txt\n"), "Expected 'test.txt\\n', got %s\n", buf );
 
     r = libmsi_unref( rec );
-    ok( r == ERROR_SUCCESS , "Failed to close record handle\n" );
+    ok( r == LIBMSI_RESULT_SUCCESS , "Failed to close record handle\n" );
 
     r = libmsi_unref( hdb );
-    ok( r == ERROR_SUCCESS , "Failed to close database\n" );
+    ok( r == LIBMSI_RESULT_SUCCESS , "Failed to close database\n" );
 
     DeleteFile( msifile );
 }
@@ -1864,19 +1864,19 @@ static void test_where_not_in_selected(void)
     sql = "Select IESTable.Condition from CATable, IESTable where "
             "CATable.Action = IESTable.Action and CATable.Type = 32";
     r = libmsi_database_open_query(hdb, sql, &query);
-    ok( r == ERROR_SUCCESS, "failed to open query: %d\n", r );
+    ok( r == LIBMSI_RESULT_SUCCESS, "failed to open query: %d\n", r );
 
     r = libmsi_query_execute(query, 0);
-    ok( r == ERROR_SUCCESS, "failed to execute query: %d\n", r );
+    ok( r == LIBMSI_RESULT_SUCCESS, "failed to execute query: %d\n", r );
 
     r = libmsi_query_fetch(query, &rec);
-    ok( r == ERROR_SUCCESS, "failed to fetch query: %d\n", r );
+    ok( r == LIBMSI_RESULT_SUCCESS, "failed to fetch query: %d\n", r );
 
     ok( check_record( rec, 1, "cond2"), "wrong condition\n");
 
     libmsi_unref( rec );
     r = libmsi_query_fetch(query, &rec);
-    ok( r == ERROR_SUCCESS, "failed to fetch query: %d\n", r );
+    ok( r == LIBMSI_RESULT_SUCCESS, "failed to fetch query: %d\n", r );
 
     ok( check_record( rec, 1, "cond3"), "wrong condition\n");
 
@@ -1932,13 +1932,13 @@ static void test_where(void)
 
     sql = "SELECT * FROM `Media`";
     r = do_query(hdb, sql, &rec);
-    ok(r == ERROR_SUCCESS, "libmsi_query_fetch failed: %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_query_fetch failed: %d\n", r);
     ok( check_record( rec, 4, "zero.cab"), "wrong cabinet\n");
     libmsi_unref( rec );
 
     sql = "SELECT * FROM `Media` WHERE `LastSequence` >= 1";
     r = do_query(hdb, sql, &rec);
-    ok(r == ERROR_SUCCESS, "libmsi_query_fetch failed: %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_query_fetch failed: %d\n", r);
     ok( check_record( rec, 4, "one.cab"), "wrong cabinet\n");
 
     r = libmsi_record_get_integer(rec, 1);
@@ -1950,36 +1950,36 @@ static void test_where(void)
     sql = "SELECT `DiskId` FROM `Media` WHERE `LastSequence` >= 1 AND DiskId >= 0";
     query = NULL;
     r = libmsi_database_open_query(hdb, sql, &query);
-    ok( r == ERROR_SUCCESS, "failed to open query: %d\n", r );
+    ok( r == LIBMSI_RESULT_SUCCESS, "failed to open query: %d\n", r );
 
     r = libmsi_query_execute(query, 0);
-    ok( r == ERROR_SUCCESS, "failed to execute query: %d\n", r );
+    ok( r == LIBMSI_RESULT_SUCCESS, "failed to execute query: %d\n", r );
 
     r = libmsi_query_fetch(query, &rec);
-    ok( r == ERROR_SUCCESS, "failed to fetch query: %d\n", r );
+    ok( r == LIBMSI_RESULT_SUCCESS, "failed to fetch query: %d\n", r );
 
     count = libmsi_record_get_field_count( rec );
     ok( count == 1, "Expected 1 record fields, got %d\n", count );
 
     size = MAX_PATH;
     r = libmsi_record_get_string( rec, 1, buf, &size );
-    ok( r == ERROR_SUCCESS, "failed to get record string: %d\n", r );
+    ok( r == LIBMSI_RESULT_SUCCESS, "failed to get record string: %d\n", r );
     ok( !strcmp( buf, "2" ),
         "For (row %d, column 1) expected '%d', got %s\n", 0, 2, buf );
     libmsi_unref( rec );
 
     r = libmsi_query_fetch(query, &rec);
-    ok( r == ERROR_SUCCESS, "failed to fetch query: %d\n", r );
+    ok( r == LIBMSI_RESULT_SUCCESS, "failed to fetch query: %d\n", r );
 
     size = MAX_PATH;
     r = libmsi_record_get_string( rec, 1, buf, &size );
-    ok( r == ERROR_SUCCESS, "failed to get record string: %d\n", r );
+    ok( r == LIBMSI_RESULT_SUCCESS, "failed to get record string: %d\n", r );
     ok( !strcmp( buf, "3" ),
         "For (row %d, column 1) expected '%d', got %s\n", 1, 3, buf );
     libmsi_unref( rec );
 
     r = libmsi_query_fetch(query, &rec);
-    ok( r == ERROR_NO_MORE_ITEMS, "expected no more items: %d\n", r );
+    ok( r == LIBMSI_RESULT_NO_MORE_ITEMS, "expected no more items: %d\n", r );
 
     libmsi_query_close(query);
     libmsi_unref(query);
@@ -1989,31 +1989,31 @@ static void test_where(void)
     rec = 0;
     sql = "SELECT * FROM `Media` WHERE `DiskPrompt` IS NULL";
     r = do_query(hdb, sql, &rec);
-    ok( r == ERROR_SUCCESS, "query failed: %d\n", r );
+    ok( r == LIBMSI_RESULT_SUCCESS, "query failed: %d\n", r );
     libmsi_unref( rec );
 
     rec = 0;
     sql = "SELECT * FROM `Media` WHERE `DiskPrompt` < 'Cabinet'";
     r = do_query(hdb, sql, &rec);
-    ok( r == ERROR_BAD_QUERY_SYNTAX, "query failed: %d\n", r );
+    ok( r == LIBMSI_RESULT_BAD_QUERY_SYNTAX, "query failed: %d\n", r );
     libmsi_unref( rec );
 
     rec = 0;
     sql = "SELECT * FROM `Media` WHERE `DiskPrompt` > 'Cabinet'";
     r = do_query(hdb, sql, &rec);
-    ok( r == ERROR_BAD_QUERY_SYNTAX, "query failed: %d\n", r );
+    ok( r == LIBMSI_RESULT_BAD_QUERY_SYNTAX, "query failed: %d\n", r );
     libmsi_unref( rec );
 
     rec = 0;
     sql = "SELECT * FROM `Media` WHERE `DiskPrompt` <> 'Cabinet'";
     r = do_query(hdb, sql, &rec);
-    ok( r == ERROR_SUCCESS, "query failed: %d\n", r );
+    ok( r == LIBMSI_RESULT_SUCCESS, "query failed: %d\n", r );
     libmsi_unref( rec );
 
     rec = 0;
     sql = "SELECT * FROM `Media` WHERE `DiskPrompt` = 'Cabinet'";
     r = do_query(hdb, sql, &rec);
-    ok( r == ERROR_NO_MORE_ITEMS, "query failed: %d\n", r );
+    ok( r == LIBMSI_RESULT_NO_MORE_ITEMS, "query failed: %d\n", r );
     libmsi_unref( rec );
 
     rec = libmsi_record_create(1);
@@ -2022,15 +2022,15 @@ static void test_where(void)
     sql = "SELECT * FROM `Media` WHERE `DiskPrompt` = ?";
     query = NULL;
     r = libmsi_database_open_query(hdb, sql, &query);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     r = libmsi_query_execute(query, rec);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     libmsi_unref(rec);
 
     r = libmsi_query_fetch(query, &rec);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     libmsi_unref(rec);
     libmsi_query_close(query);
@@ -2119,36 +2119,36 @@ static void test_suminfo_import(void)
     GetCurrentDirectoryA(MAX_PATH, CURR_DIR);
 
     r = libmsi_database_open(msifile, LIBMSI_DB_OPEN_CREATE, &hdb);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %u\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %u\n", r);
 
     r = add_table_to_db(hdb, suminfo);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %u\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %u\n", r);
 
     /* _SummaryInformation is not imported as a regular table... */
 
     query = NULL;
     sql = "SELECT * FROM `_SummaryInformation`";
     r = libmsi_database_open_query(hdb, sql, &query);
-    ok(r == ERROR_BAD_QUERY_SYNTAX, "Expected ERROR_BAD_QUERY_SYNTAX, got %u\n", r);
+    ok(r == LIBMSI_RESULT_BAD_QUERY_SYNTAX, "Expected LIBMSI_RESULT_BAD_QUERY_SYNTAX, got %u\n", r);
     libmsi_unref(query);
 
     /* ...its data is added to the special summary information stream */
 
     r = libmsi_database_get_summary_info(hdb, 0, &hsi);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %u\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %u\n", r);
 
     r = libmsi_summary_info_get_property_count(hsi, &count);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %u\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %u\n", r);
     ok(count == 14, "Expected 14, got %u\n", count);
 
     r = libmsi_summary_info_get_property(hsi, MSI_PID_CODEPAGE, &type, &int_value, NULL, NULL, NULL);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %u\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %u\n", r);
     ok(type ==  VT_I2, "Expected VT_I2, got %u\n", type);
     ok(int_value == 1252, "Expected 1252, got %d\n", int_value);
 
     size = sizeof(str_value);
     r = libmsi_summary_info_get_property(hsi, MSI_PID_TITLE, &type, NULL, NULL, str_value, &size);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %u\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %u\n", r);
     ok(type == VT_LPSTR, "Expected VT_LPSTR, got %u\n", type);
     ok(size == 18, "Expected 18, got %u\n", size);
     ok(!strcmp(str_value, "Installer Database"),
@@ -2156,72 +2156,72 @@ static void test_suminfo_import(void)
 
     size = sizeof(str_value);
     r = libmsi_summary_info_get_property(hsi, MSI_PID_SUBJECT, &type, NULL, NULL, str_value, &size);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %u\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %u\n", r);
     ok(type == VT_LPSTR, "Expected VT_LPSTR, got %u\n", type);
     ok(!strcmp(str_value, "Installer description"),
        "Expected \"Installer description\", got %s\n", str_value);
 
     size = sizeof(str_value);
     r = libmsi_summary_info_get_property(hsi, MSI_PID_AUTHOR, &type, NULL, NULL, str_value, &size);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %u\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %u\n", r);
     ok(type == VT_LPSTR, "Expected VT_LPSTR, got %u\n", type);
     ok(!strcmp(str_value, "WineHQ"),
        "Expected \"WineHQ\", got %s\n", str_value);
 
     size = sizeof(str_value);
     r = libmsi_summary_info_get_property(hsi, MSI_PID_KEYWORDS, &type, NULL, NULL, str_value, &size);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %u\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %u\n", r);
     ok(type == VT_LPSTR, "Expected VT_LPSTR, got %u\n", type);
     ok(!strcmp(str_value, "Installer"),
        "Expected \"Installer\", got %s\n", str_value);
 
     size = sizeof(str_value);
     r = libmsi_summary_info_get_property(hsi, MSI_PID_COMMENTS, &type, NULL, NULL, str_value, &size);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %u\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %u\n", r);
     ok(type == VT_LPSTR, "Expected VT_LPSTR, got %u\n", type);
     ok(!strcmp(str_value, "Installer comments"),
        "Expected \"Installer comments\", got %s\n", str_value);
 
     size = sizeof(str_value);
     r = libmsi_summary_info_get_property(hsi, MSI_PID_TEMPLATE, &type, NULL, NULL, str_value, &size);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %u\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %u\n", r);
     ok(type == VT_LPSTR, "Expected VT_LPSTR, got %u\n", type);
     ok(!strcmp(str_value, "Intel;1033,2057"),
        "Expected \"Intel;1033,2057\", got %s\n", str_value);
 
     size = sizeof(str_value);
     r = libmsi_summary_info_get_property(hsi, MSI_PID_REVNUMBER, &type, NULL, NULL, str_value, &size);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %u\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %u\n", r);
     ok(type == VT_LPSTR, "Expected VT_LPSTR, got %u\n", type);
     ok(!strcmp(str_value, "{12345678-1234-1234-1234-123456789012}"),
        "Expected \"{12345678-1234-1234-1234-123456789012}\", got %s\n", str_value);
 
     r = libmsi_summary_info_get_property(hsi, MSI_PID_CREATE_DTM, &type, NULL, &ft_value, NULL, NULL);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %u\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %u\n", r);
     ok(type == VT_FILETIME, "Expected VT_FILETIME, got %u\n", type);
 
     r = libmsi_summary_info_get_property(hsi, MSI_PID_LASTSAVE_DTM, &type, NULL, &ft_value, NULL, NULL);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %u\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %u\n", r);
     ok(type == VT_FILETIME, "Expected VT_FILETIME, got %u\n", type);
 
     r = libmsi_summary_info_get_property(hsi, MSI_PID_PAGECOUNT, &type, &int_value, NULL, NULL, NULL);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %u\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %u\n", r);
     ok(type ==  VT_I4, "Expected VT_I4, got %u\n", type);
     ok(int_value == 200, "Expected 200, got %d\n", int_value);
 
     r = libmsi_summary_info_get_property(hsi, MSI_PID_WORDCOUNT, &type, &int_value, NULL, NULL, NULL);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %u\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %u\n", r);
     ok(type ==  VT_I4, "Expected VT_I4, got %u\n", type);
     ok(int_value == 2, "Expected 2, got %d\n", int_value);
 
     r = libmsi_summary_info_get_property(hsi, MSI_PID_SECURITY, &type, &int_value, NULL, NULL, NULL);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %u\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %u\n", r);
     ok(type ==  VT_I4, "Expected VT_I4, got %u\n", type);
     ok(int_value == 2, "Expected 2, got %d\n", int_value);
 
     size = sizeof(str_value);
     r = libmsi_summary_info_get_property(hsi, MSI_PID_APPNAME, &type, NULL, NULL, str_value, &size);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %u\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %u\n", r);
     ok(type == VT_LPSTR, "Expected VT_LPSTR, got %u\n", type);
     ok(!strcmp(str_value, "Vim"), "Expected \"Vim\", got %s\n", str_value);
 
@@ -2242,28 +2242,28 @@ static void test_msiimport(void)
     GetCurrentDirectoryA(MAX_PATH, CURR_DIR);
 
     r = libmsi_database_open(msifile, LIBMSI_DB_OPEN_CREATE, &hdb);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     r = add_table_to_db(hdb, test_data);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     r = add_table_to_db(hdb, two_primary);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     r = add_table_to_db(hdb, endlines1);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     r = add_table_to_db(hdb, endlines2);
-    ok(r == ERROR_FUNCTION_FAILED, "Expected ERROR_FUNCTION_FAILED, got %d\n", r);
+    ok(r == LIBMSI_RESULT_FUNCTION_FAILED, "Expected LIBMSI_RESULT_FUNCTION_FAILED, got %d\n", r);
 
     query = NULL;
     sql = "SELECT * FROM `TestTable`";
     r = libmsi_database_open_query(hdb, sql, &query);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     rec = NULL;
     r = libmsi_query_get_column_info(query, LIBMSI_COL_INFO_NAMES, &rec);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     count = libmsi_record_get_field_count(rec);
     ok(count == 9, "Expected 9, got %d\n", count);
     ok(check_record(rec, 1, "FirstPrimaryColumn"), "Expected FirstPrimaryColumn\n");
@@ -2279,7 +2279,7 @@ static void test_msiimport(void)
 
     rec = NULL;
     r = libmsi_query_get_column_info(query, LIBMSI_COL_INFO_TYPES, &rec);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     count = libmsi_record_get_field_count(rec);
     ok(count == 9, "Expected 9, got %d\n", count);
     ok(check_record(rec, 1, "s255"), "Expected s255\n");
@@ -2295,7 +2295,7 @@ static void test_msiimport(void)
 
     sql = "SELECT * FROM `TestTable`";
     r = do_query(hdb, sql, &rec);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     ok(check_record(rec, 1, "stringage"), "Expected 'stringage'\n");
     ok(check_record(rec, 7, "another string"), "Expected 'another string'\n");
     ok(check_record(rec, 8, "localizable"), "Expected 'localizable'\n");
@@ -2323,11 +2323,11 @@ static void test_msiimport(void)
     query = NULL;
     sql = "SELECT * FROM `TwoPrimary`";
     r = libmsi_database_open_query(hdb, sql, &query);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     rec = NULL;
     r = libmsi_query_get_column_info(query, LIBMSI_COL_INFO_NAMES, &rec);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     count = libmsi_record_get_field_count(rec);
     ok(count == 2, "Expected 2, got %d\n", count);
     ok(check_record(rec, 1, "PrimaryOne"), "Expected PrimaryOne\n");
@@ -2337,7 +2337,7 @@ static void test_msiimport(void)
 
     rec = NULL;
     r = libmsi_query_get_column_info(query, LIBMSI_COL_INFO_TYPES, &rec);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     count = libmsi_record_get_field_count(rec);
     ok(count == 2, "Expected 2, got %d\n", count);
     ok(check_record(rec, 1, "s255"), "Expected s255\n");
@@ -2345,10 +2345,10 @@ static void test_msiimport(void)
     libmsi_unref(rec);
 
     r = libmsi_query_execute(query, 0);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     r = libmsi_query_fetch(query, &rec);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     ok(check_record(rec, 1, "papaya"), "Expected 'papaya'\n");
     ok(check_record(rec, 2, "leaf"), "Expected 'leaf'\n");
@@ -2356,7 +2356,7 @@ static void test_msiimport(void)
     libmsi_unref(rec);
 
     r = libmsi_query_fetch(query, &rec);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     ok(check_record(rec, 1, "papaya"), "Expected 'papaya'\n");
     ok(check_record(rec, 2, "flower"), "Expected 'flower'\n");
@@ -2364,22 +2364,22 @@ static void test_msiimport(void)
     libmsi_unref(rec);
 
     r = libmsi_query_fetch(query, &rec);
-    ok(r == ERROR_NO_MORE_ITEMS,
-       "Expected ERROR_NO_MORE_ITEMS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_NO_MORE_ITEMS,
+       "Expected LIBMSI_RESULT_NO_MORE_ITEMS, got %d\n", r);
 
     r = libmsi_query_close(query);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     libmsi_unref(query);
 
     query = NULL;
     sql = "SELECT * FROM `Table`";
     r = libmsi_database_open_query(hdb, sql, &query);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     rec = NULL;
     r = libmsi_query_get_column_info(query, LIBMSI_COL_INFO_NAMES, &rec);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     count = libmsi_record_get_field_count(rec);
     ok(count == 6, "Expected 6, got %d\n", count);
     ok(check_record(rec, 1, "A"), "Expected A\n");
@@ -2392,7 +2392,7 @@ static void test_msiimport(void)
 
     rec = NULL;
     r = libmsi_query_get_column_info(query, LIBMSI_COL_INFO_TYPES, &rec);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     count = libmsi_record_get_field_count(rec);
     ok(count == 6, "Expected 6, got %d\n", count);
     ok(check_record(rec, 1, "s72"), "Expected s72\n");
@@ -2409,13 +2409,13 @@ static void test_msiimport(void)
     query = NULL;
     sql = "SELECT * FROM `Table`";
     r = libmsi_database_open_query(hdb, sql, &query);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     r = libmsi_query_execute(query, 0);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     r = libmsi_query_fetch(query, &rec);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     ok(check_record(rec, 1, "a"), "Expected 'a'\n");
     ok(check_record(rec, 2, "b"), "Expected 'b'\n");
     ok(check_record(rec, 3, "c"), "Expected 'c'\n");
@@ -2426,7 +2426,7 @@ static void test_msiimport(void)
     libmsi_unref(rec);
 
     r = libmsi_query_fetch(query, &rec);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     ok(check_record(rec, 1, "g"), "Expected 'g'\n");
     ok(check_record(rec, 2, "h"), "Expected 'h'\n");
     ok(check_record(rec, 3, "i"), "Expected 'i'\n");
@@ -2437,8 +2437,8 @@ static void test_msiimport(void)
     libmsi_unref(rec);
 
     r = libmsi_query_fetch(query, &rec);
-    ok(r == ERROR_NO_MORE_ITEMS,
-       "Expected ERROR_NO_MORE_ITEMS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_NO_MORE_ITEMS,
+       "Expected LIBMSI_RESULT_NO_MORE_ITEMS, got %d\n", r);
 
     libmsi_query_close(query);
     libmsi_unref(query);
@@ -2470,34 +2470,34 @@ static void test_binary_import(void)
 
     /* import files into database */
     r = libmsi_database_open(msifile, LIBMSI_DB_OPEN_CREATE, &hdb);
-    ok( r == ERROR_SUCCESS , "Failed to open database\n");
+    ok( r == LIBMSI_RESULT_SUCCESS , "Failed to open database\n");
 
     GetCurrentDirectory(MAX_PATH, path);
     r = libmsi_database_import(hdb, path, "bin_import.idt");
-    ok(r == ERROR_SUCCESS , "Failed to import Binary table\n");
+    ok(r == LIBMSI_RESULT_SUCCESS , "Failed to import Binary table\n");
 
     /* read file from the Binary table */
     sql = "SELECT * FROM `Binary`";
     r = do_query(hdb, sql, &rec);
-    ok(r == ERROR_SUCCESS, "SELECT query failed: %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "SELECT query failed: %d\n", r);
 
     size = MAX_PATH;
     r = libmsi_record_get_string(rec, 1, file, &size);
-    ok(r == ERROR_SUCCESS, "Failed to get string: %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Failed to get string: %d\n", r);
     ok(!strcmp(file, "filename1"), "Expected 'filename1', got %s\n", file);
 
     size = MAX_PATH;
     memset(buf, 0, MAX_PATH);
     r = libmsi_record_save_stream(rec, 2, buf, &size);
-    ok(r == ERROR_SUCCESS, "Failed to get stream: %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Failed to get stream: %d\n", r);
     ok(!strcmp(buf, "just some words"),
         "Expected 'just some words', got %s\n", buf);
 
     r = libmsi_unref(rec);
-    ok(r == ERROR_SUCCESS , "Failed to close record handle\n");
+    ok(r == LIBMSI_RESULT_SUCCESS , "Failed to close record handle\n");
 
     r = libmsi_unref(hdb);
-    ok(r == ERROR_SUCCESS , "Failed to close database\n");
+    ok(r == LIBMSI_RESULT_SUCCESS , "Failed to close database\n");
 
     DeleteFile("bin_import/filename1.ibd");
     RemoveDirectory("bin_import");
@@ -2522,7 +2522,7 @@ static void test_markers(void)
     /* try a legit create */
     sql = "CREATE TABLE `Table` ( `One` SHORT NOT NULL, `Two` CHAR(255) PRIMARY KEY `One`)";
     r = run_query(hdb, 0, sql);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     libmsi_unref(rec);
 
     /* try table name as marker */
@@ -2530,26 +2530,26 @@ static void test_markers(void)
     libmsi_record_set_string(rec, 1, "Fable");
     sql = "CREATE TABLE `?` ( `One` SHORT NOT NULL, `Two` CHAR(255) PRIMARY KEY `One`)";
     r = run_query(hdb, rec, sql);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     /* verify that we just created a table called '?', not 'Fable' */
     r = try_query(hdb, "SELECT * from `Fable`");
-    ok(r == ERROR_BAD_QUERY_SYNTAX, "Expected ERROR_BAD_QUERY_SYNTAX, got %d\n", r);
+    ok(r == LIBMSI_RESULT_BAD_QUERY_SYNTAX, "Expected LIBMSI_RESULT_BAD_QUERY_SYNTAX, got %d\n", r);
 
     r = try_query(hdb, "SELECT * from `?`");
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     /* try table name as marker without backticks */
     libmsi_record_set_string(rec, 1, "Mable");
     sql = "CREATE TABLE ? ( `One` SHORT NOT NULL, `Two` CHAR(255) PRIMARY KEY `One`)";
     r = run_query(hdb, rec, sql);
-    ok(r == ERROR_BAD_QUERY_SYNTAX, "Expected ERROR_BAD_QUERY_SYNTAX, got %d\n", r);
+    ok(r == LIBMSI_RESULT_BAD_QUERY_SYNTAX, "Expected LIBMSI_RESULT_BAD_QUERY_SYNTAX, got %d\n", r);
 
     /* try one column name as marker */
     libmsi_record_set_string(rec, 1, "One");
     sql = "CREATE TABLE `Mable` ( `?` SHORT NOT NULL, `Two` CHAR(255) PRIMARY KEY `One`)";
     r = run_query(hdb, rec, sql);
-    ok(r == ERROR_BAD_QUERY_SYNTAX, "Expected ERROR_BAD_QUERY_SYNTAX, got %d\n", r);
+    ok(r == LIBMSI_RESULT_BAD_QUERY_SYNTAX, "Expected LIBMSI_RESULT_BAD_QUERY_SYNTAX, got %d\n", r);
     libmsi_unref(rec);
 
     /* try column names as markers */
@@ -2558,7 +2558,7 @@ static void test_markers(void)
     libmsi_record_set_string(rec, 2, "Two");
     sql = "CREATE TABLE `Mable` ( `?` SHORT NOT NULL, `?` CHAR(255) PRIMARY KEY `One`)";
     r = run_query(hdb, rec, sql);
-    ok(r == ERROR_BAD_QUERY_SYNTAX, "Expected ERROR_BAD_QUERY_SYNTAX, got %d\n", r);
+    ok(r == LIBMSI_RESULT_BAD_QUERY_SYNTAX, "Expected LIBMSI_RESULT_BAD_QUERY_SYNTAX, got %d\n", r);
     libmsi_unref(rec);
 
     /* try names with backticks */
@@ -2568,17 +2568,17 @@ static void test_markers(void)
     libmsi_record_set_string(rec, 3, "One");
     sql = "CREATE TABLE `Mable` ( `?` SHORT NOT NULL, `?` CHAR(255) PRIMARY KEY `?`)";
     r = run_query(hdb, rec, sql);
-    ok(r == ERROR_BAD_QUERY_SYNTAX, "Expected ERROR_BAD_QUERY_SYNTAX, got %d\n", r);
+    ok(r == LIBMSI_RESULT_BAD_QUERY_SYNTAX, "Expected LIBMSI_RESULT_BAD_QUERY_SYNTAX, got %d\n", r);
 
     /* try names with backticks, minus definitions */
     sql = "CREATE TABLE `Mable` ( `?`, `?` PRIMARY KEY `?`)";
     r = run_query(hdb, rec, sql);
-    ok(r == ERROR_BAD_QUERY_SYNTAX, "Expected ERROR_BAD_QUERY_SYNTAX, got %d\n", r);
+    ok(r == LIBMSI_RESULT_BAD_QUERY_SYNTAX, "Expected LIBMSI_RESULT_BAD_QUERY_SYNTAX, got %d\n", r);
 
     /* try names without backticks */
     sql = "CREATE TABLE `Mable` ( ? SHORT NOT NULL, ? CHAR(255) PRIMARY KEY ?)";
     r = run_query(hdb, rec, sql);
-    ok(r == ERROR_BAD_QUERY_SYNTAX, "Expected ERROR_BAD_QUERY_SYNTAX, got %d\n", r);
+    ok(r == LIBMSI_RESULT_BAD_QUERY_SYNTAX, "Expected LIBMSI_RESULT_BAD_QUERY_SYNTAX, got %d\n", r);
     libmsi_unref(rec);
 
     /* try one long marker */
@@ -2586,7 +2586,7 @@ static void test_markers(void)
     libmsi_record_set_string(rec, 1, "`One` SHORT NOT NULL, `Two` CHAR(255) PRIMARY KEY `One`");
     sql = "CREATE TABLE `Mable` ( ? )";
     r = run_query(hdb, rec, sql);
-    ok(r == ERROR_BAD_QUERY_SYNTAX, "Expected ERROR_BAD_QUERY_SYNTAX, got %d\n", r);
+    ok(r == LIBMSI_RESULT_BAD_QUERY_SYNTAX, "Expected LIBMSI_RESULT_BAD_QUERY_SYNTAX, got %d\n", r);
     libmsi_unref(rec);
 
     /* try all names as markers */
@@ -2597,16 +2597,16 @@ static void test_markers(void)
     libmsi_record_set_string(rec, 4, "One");
     sql = "CREATE TABLE `?` ( `?` SHORT NOT NULL, `?` CHAR(255) PRIMARY KEY `?`)";
     r = run_query(hdb, rec, sql);
-    ok(r == ERROR_BAD_QUERY_SYNTAX, "Expected ERROR_BAD_QUERY_SYNTAX, got %d\n", r);
+    ok(r == LIBMSI_RESULT_BAD_QUERY_SYNTAX, "Expected LIBMSI_RESULT_BAD_QUERY_SYNTAX, got %d\n", r);
     libmsi_unref(rec);
 
     /* try a legit insert */
     sql = "INSERT INTO `Table` ( `One`, `Two` ) VALUES ( 5, 'hello' )";
     r = run_query(hdb, 0, sql);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     r = try_query(hdb, "SELECT * from `Table`");
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     /* try values as markers */
     rec = libmsi_record_create(2);
@@ -2614,7 +2614,7 @@ static void test_markers(void)
     libmsi_record_set_string(rec, 2, "hi");
     sql = "INSERT INTO `Table` ( `One`, `Two` ) VALUES ( ?, '?' )";
     r = run_query(hdb, rec, sql);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     libmsi_unref(rec);
 
     /* try column names and values as markers */
@@ -2625,7 +2625,7 @@ static void test_markers(void)
     libmsi_record_set_string(rec, 4, "hi");
     sql = "INSERT INTO `Table` ( `?`, `?` ) VALUES ( ?, '?' )";
     r = run_query(hdb, rec, sql);
-    ok(r == ERROR_BAD_QUERY_SYNTAX, "Expected ERROR_BAD_QUERY_SYNTAX, got %d\n", r);
+    ok(r == LIBMSI_RESULT_BAD_QUERY_SYNTAX, "Expected LIBMSI_RESULT_BAD_QUERY_SYNTAX, got %d\n", r);
     libmsi_unref(rec);
 
     /* try column names as markers */
@@ -2634,7 +2634,7 @@ static void test_markers(void)
     libmsi_record_set_string(rec, 2, "Two");
     sql = "INSERT INTO `Table` ( `?`, `?` ) VALUES ( 3, 'yellow' )";
     r = run_query(hdb, rec, sql);
-    ok(r == ERROR_BAD_QUERY_SYNTAX, "Expected ERROR_BAD_QUERY_SYNTAX, got %d\n", r);
+    ok(r == LIBMSI_RESULT_BAD_QUERY_SYNTAX, "Expected LIBMSI_RESULT_BAD_QUERY_SYNTAX, got %d\n", r);
     libmsi_unref(rec);
 
     /* try table name as a marker */
@@ -2642,7 +2642,7 @@ static void test_markers(void)
     libmsi_record_set_string(rec, 1, "Table");
     sql = "INSERT INTO `?` ( `One`, `Two` ) VALUES ( 2, 'green' )";
     r = run_query(hdb, rec, sql);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     libmsi_unref(rec);
 
     /* try table name and values as markers */
@@ -2652,7 +2652,7 @@ static void test_markers(void)
     libmsi_record_set_string(rec, 3, "haha");
     sql = "INSERT INTO `?` ( `One`, `Two` ) VALUES ( ?, '?' )";
     r = run_query(hdb, rec, sql);
-    ok(r == ERROR_FUNCTION_FAILED, "Expected ERROR_FUNCTION_FAILED, got %d\n", r);
+    ok(r == LIBMSI_RESULT_FUNCTION_FAILED, "Expected LIBMSI_RESULT_FUNCTION_FAILED, got %d\n", r);
     libmsi_unref(rec);
 
     /* try all markers */
@@ -2664,7 +2664,7 @@ static void test_markers(void)
     libmsi_record_set_string(rec, 3, "haha");
     sql = "INSERT INTO `?` ( `?`, `?` ) VALUES ( ?, '?' )";
     r = run_query(hdb, rec, sql);
-    ok(r == ERROR_BAD_QUERY_SYNTAX, "Expected ERROR_BAD_QUERY_SYNTAX, got %d\n", r);
+    ok(r == LIBMSI_RESULT_BAD_QUERY_SYNTAX, "Expected LIBMSI_RESULT_BAD_QUERY_SYNTAX, got %d\n", r);
     libmsi_unref(rec);
 
     /* insert an integer as a string */
@@ -2673,7 +2673,7 @@ static void test_markers(void)
     libmsi_record_set_string(rec, 2, "hi");
     sql = "INSERT INTO `Table` ( `One`, `Two` ) VALUES ( ?, '?' )";
     r = run_query(hdb, rec, sql);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     libmsi_unref(rec);
 
     /* leave off the '' for the string */
@@ -2682,7 +2682,7 @@ static void test_markers(void)
     libmsi_record_set_string(rec, 2, "hi");
     sql = "INSERT INTO `Table` ( `One`, `Two` ) VALUES ( ?, ? )";
     r = run_query(hdb, rec, sql);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     libmsi_unref(rec);
 
     libmsi_unref(hdb);
@@ -2707,7 +2707,7 @@ static void test_handle_limit(void)
         static char szQueryBuf[256] = "SELECT * from `_Tables`";
         hqueries[i] = 0xdeadbeeb;
         r = libmsi_database_open_query(hdb, szQueryBuf, &hqueries[i]);
-        if( r != ERROR_SUCCESS || hqueries[i] == 0xdeadbeeb || 
+        if( r != LIBMSI_RESULT_SUCCESS || hqueries[i] == 0xdeadbeeb || 
             hqueries[i] == 0 || (i && (hqueries[i] == hqueries[i-1])))
             break;
     }
@@ -2718,7 +2718,7 @@ static void test_handle_limit(void)
         if (hqueries[i] != 0 && hqueries[i] != 0xdeadbeeb) {
             libmsi_query_close(hqueries[i]);
             r = libmsi_unref(hqueries[i]);
-            if (r != ERROR_SUCCESS)
+            if (r != LIBMSI_RESULT_SUCCESS)
                 break;
         }
     }
@@ -2726,7 +2726,7 @@ static void test_handle_limit(void)
     ok( i == MY_NQUERIES, "problem closing queries\n");
 
     r = libmsi_unref(hdb);
-    ok( r == ERROR_SUCCESS, "failed to close database\n");
+    ok( r == LIBMSI_RESULT_SUCCESS, "failed to close database\n");
 }
 
 /* data for generating a transform */
@@ -2862,39 +2862,39 @@ static unsigned set_summary_info(LibmsiDatabase *hdb)
 
     /* build summary info */
     res = libmsi_database_get_summary_info(hdb, 7, &suminfo);
-    ok( res == ERROR_SUCCESS , "Failed to open summaryinfo\n" );
+    ok( res == LIBMSI_RESULT_SUCCESS , "Failed to open summaryinfo\n" );
 
     res = libmsi_summary_info_set_property(suminfo,2, VT_LPSTR, 0,NULL,
                         "Installation Database");
-    ok( res == ERROR_SUCCESS , "Failed to set summary info\n" );
+    ok( res == LIBMSI_RESULT_SUCCESS , "Failed to set summary info\n" );
 
     res = libmsi_summary_info_set_property(suminfo,3, VT_LPSTR, 0,NULL,
                         "Installation Database");
-    ok( res == ERROR_SUCCESS , "Failed to set summary info\n" );
+    ok( res == LIBMSI_RESULT_SUCCESS , "Failed to set summary info\n" );
 
     res = libmsi_summary_info_set_property(suminfo,4, VT_LPSTR, 0,NULL,
                         "Wine Hackers");
-    ok( res == ERROR_SUCCESS , "Failed to set summary info\n" );
+    ok( res == LIBMSI_RESULT_SUCCESS , "Failed to set summary info\n" );
 
     res = libmsi_summary_info_set_property(suminfo,7, VT_LPSTR, 0,NULL,
                     ";1033,2057");
-    ok( res == ERROR_SUCCESS , "Failed to set summary info\n" );
+    ok( res == LIBMSI_RESULT_SUCCESS , "Failed to set summary info\n" );
 
     res = libmsi_summary_info_set_property(suminfo,9, VT_LPSTR, 0,NULL,
                     "{913B8D18-FBB6-4CAC-A239-C74C11E3FA74}");
-    ok( res == ERROR_SUCCESS , "Failed to set summary info\n" );
+    ok( res == LIBMSI_RESULT_SUCCESS , "Failed to set summary info\n" );
 
     res = libmsi_summary_info_set_property(suminfo, 14, VT_I4, 100, NULL, NULL);
-    ok( res == ERROR_SUCCESS , "Failed to set summary info\n" );
+    ok( res == LIBMSI_RESULT_SUCCESS , "Failed to set summary info\n" );
 
     res = libmsi_summary_info_set_property(suminfo, 15, VT_I4, 0, NULL, NULL);
-    ok( res == ERROR_SUCCESS , "Failed to set summary info\n" );
+    ok( res == LIBMSI_RESULT_SUCCESS , "Failed to set summary info\n" );
 
     res = libmsi_summary_info_persist(suminfo);
-    ok( res == ERROR_SUCCESS , "Failed to make summary info persist\n" );
+    ok( res == LIBMSI_RESULT_SUCCESS , "Failed to make summary info persist\n" );
 
     res = libmsi_unref( suminfo);
-    ok( res == ERROR_SUCCESS , "Failed to close suminfo\n" );
+    ok( res == LIBMSI_RESULT_SUCCESS , "Failed to close suminfo\n" );
 
     return res;
 }
@@ -2908,18 +2908,18 @@ static LibmsiDatabase *create_package_db(const char *filename)
 
     /* create an empty database */
     res = libmsi_database_open(filename, LIBMSI_DB_OPEN_CREATE, &hdb );
-    ok( res == ERROR_SUCCESS , "Failed to create database\n" );
-    if( res != ERROR_SUCCESS )
+    ok( res == LIBMSI_RESULT_SUCCESS , "Failed to create database\n" );
+    if( res != LIBMSI_RESULT_SUCCESS )
         return hdb;
 
     res = libmsi_database_commit( hdb );
-    ok( res == ERROR_SUCCESS , "Failed to commit database\n" );
+    ok( res == LIBMSI_RESULT_SUCCESS , "Failed to commit database\n" );
 
     res = set_summary_info(hdb);
-    ok( res == ERROR_SUCCESS , "Failed to set summary info\n" );
+    ok( res == LIBMSI_RESULT_SUCCESS , "Failed to set summary info\n" );
 
     res = create_directory_table(hdb);
-    ok( res == ERROR_SUCCESS , "Failed to create directory table\n" );
+    ok( res == LIBMSI_RESULT_SUCCESS , "Failed to create directory table\n" );
 
     return hdb;
 }
@@ -2943,40 +2943,40 @@ static void test_try_transform(void)
 
     sql = "CREATE TABLE `MOO` ( `NOO` SHORT NOT NULL, `OOO` CHAR(255) PRIMARY KEY `NOO`)";
     r = run_query(hdb, 0, sql);
-    ok(r == ERROR_SUCCESS, "failed to add table\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "failed to add table\n");
 
     sql = "INSERT INTO `MOO` ( `NOO`, `OOO` ) VALUES ( 1, 'a' )";
     r = run_query(hdb, 0, sql);
-    ok(r == ERROR_SUCCESS, "failed to add row\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "failed to add row\n");
 
     sql = "INSERT INTO `MOO` ( `NOO`, `OOO` ) VALUES ( 2, 'b' )";
     r = run_query(hdb, 0, sql);
-    ok(r == ERROR_SUCCESS, "failed to add row\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "failed to add row\n");
 
     sql = "INSERT INTO `MOO` ( `NOO`, `OOO` ) VALUES ( 3, 'c' )";
     r = run_query(hdb, 0, sql);
-    ok(r == ERROR_SUCCESS, "failed to add row\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "failed to add row\n");
 
     sql = "CREATE TABLE `BINARY` ( `ID` SHORT NOT NULL, `BLOB` OBJECT PRIMARY KEY `ID`)";
     r = run_query(hdb, 0, sql);
-    ok(r == ERROR_SUCCESS, "failed to add table\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "failed to add table\n");
 
     hrec = libmsi_record_create(2);
     r = libmsi_record_set_int(hrec, 1, 2);
-    ok(r == ERROR_SUCCESS, "failed to set integer\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "failed to set integer\n");
 
     write_file("testdata.bin", "lamyon", 6);
     r = libmsi_record_load_stream(hrec, 2, "testdata.bin");
-    ok(r == ERROR_SUCCESS, "failed to set stream\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "failed to set stream\n");
 
     sql = "INSERT INTO `BINARY` ( `ID`, `BLOB` ) VALUES ( ?, ? )";
     r = run_query(hdb, hrec, sql);
-    ok(r == ERROR_SUCCESS, "failed to add row with blob\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "failed to add row with blob\n");
 
     libmsi_unref(hrec);
 
     r = libmsi_database_commit( hdb );
-    ok( r == ERROR_SUCCESS , "Failed to commit database\n" );
+    ok( r == LIBMSI_RESULT_SUCCESS , "Failed to commit database\n" );
 
     libmsi_unref( hdb );
     DeleteFileA("testdata.bin");
@@ -2984,10 +2984,10 @@ static void test_try_transform(void)
     generate_transform_manual();
 
     r = libmsi_database_open(msifile, LIBMSI_DB_OPEN_DIRECT, &hdb );
-    ok( r == ERROR_SUCCESS , "Failed to create database\n" );
+    ok( r == LIBMSI_RESULT_SUCCESS , "Failed to create database\n" );
 
     r = libmsi_database_apply_transform( hdb, mstfile, 0 );
-    ok( r == ERROR_SUCCESS, "return code %d, should be ERROR_SUCCESS\n", r );
+    ok( r == LIBMSI_RESULT_SUCCESS, "return code %d, should be LIBMSI_RESULT_SUCCESS\n", r );
 
     libmsi_database_commit( hdb );
 
@@ -2995,46 +2995,46 @@ static void test_try_transform(void)
     hrec = 0;
     sql = "select `BAR`,`CAR` from `AAR` where `BAR` = 1 AND `CAR` = 'vw'";
     r = do_query(hdb, sql, &hrec);
-    ok(r == ERROR_SUCCESS, "select query failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "select query failed\n");
     libmsi_unref(hrec);
 
     sql = "select `BAR`,`CAR` from `AAR` where `BAR` = 2 AND `CAR` = 'bmw'";
     hrec = 0;
     r = do_query(hdb, sql, &hrec);
-    ok(r == ERROR_SUCCESS, "select query failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "select query failed\n");
     libmsi_unref(hrec);
 
     /* check updated values */
     hrec = 0;
     sql = "select `NOO`,`OOO` from `MOO` where `NOO` = 1 AND `OOO` = 'c'";
     r = do_query(hdb, sql, &hrec);
-    ok(r == ERROR_SUCCESS, "select query failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "select query failed\n");
     libmsi_unref(hrec);
 
     /* check unchanged value */
     hrec = 0;
     sql = "select `NOO`,`OOO` from `MOO` where `NOO` = 2 AND `OOO` = 'b'";
     r = do_query(hdb, sql, &hrec);
-    ok(r == ERROR_SUCCESS, "select query failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "select query failed\n");
     libmsi_unref(hrec);
 
     /* check deleted value */
     hrec = 0;
     sql = "select * from `MOO` where `NOO` = 3";
     r = do_query(hdb, sql, &hrec);
-    ok(r == ERROR_NO_MORE_ITEMS, "select query failed\n");
+    ok(r == LIBMSI_RESULT_NO_MORE_ITEMS, "select query failed\n");
     if (hrec) libmsi_unref(hrec);
 
     /* check added stream */
     hrec = 0;
     sql = "select `BLOB` from `BINARY` where `ID` = 1";
     r = do_query(hdb, sql, &hrec);
-    ok(r == ERROR_SUCCESS, "select query failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "select query failed\n");
 
     /* check the contents of the stream */
     sz = sizeof buffer;
     r = libmsi_record_save_stream( hrec, 1, buffer, &sz );
-    ok(r == ERROR_SUCCESS, "read stream failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "read stream failed\n");
     ok(!memcmp(buffer, "naengmyon", 9), "stream data was wrong\n");
     ok(sz == 9, "stream data was wrong size\n");
     if (hrec) libmsi_unref(hrec);
@@ -3043,20 +3043,20 @@ static void test_try_transform(void)
     hrec = 0;
     sql = "select * from `MOO`";
     r = libmsi_database_open_query(hdb, sql, &hquery);
-    ok(r == ERROR_SUCCESS, "open query failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "open query failed\n");
 
     r = libmsi_query_execute(hquery, 0);
-    ok(r == ERROR_SUCCESS, "query execute failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "query execute failed\n");
 
     r = libmsi_query_fetch(hquery, &hrec);
-    ok(r == ERROR_SUCCESS, "query fetch failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "query fetch failed\n");
 
     r = libmsi_record_get_integer(hrec, 1);
     ok(r == 1, "Expected 1, got %d\n", r);
 
     sz = sizeof buffer;
     r = libmsi_record_get_string(hrec, 2, buffer, &sz);
-    ok(r == ERROR_SUCCESS, "record get string failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "record get string failed\n");
     ok(!strcmp(buffer, "c"), "Expected c, got %s\n", buffer);
 
     r = libmsi_record_get_integer(hrec, 3);
@@ -3068,14 +3068,14 @@ static void test_try_transform(void)
     libmsi_unref(hrec);
 
     r = libmsi_query_fetch(hquery, &hrec);
-    ok(r == ERROR_SUCCESS, "query fetch failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "query fetch failed\n");
 
     r = libmsi_record_get_integer(hrec, 1);
     ok(r == 2, "Expected 2, got %d\n", r);
 
     sz = sizeof buffer;
     r = libmsi_record_get_string(hrec, 2, buffer, &sz);
-    ok(r == ERROR_SUCCESS, "record get string failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "record get string failed\n");
     ok(!strcmp(buffer, "b"), "Expected b, got %s\n", buffer);
 
     r = libmsi_record_get_integer(hrec, 3);
@@ -3087,7 +3087,7 @@ static void test_try_transform(void)
     libmsi_unref(hrec);
 
     r = libmsi_query_fetch(hquery, &hrec);
-    ok(r == ERROR_NO_MORE_ITEMS, "query fetch succeeded\n");
+    ok(r == LIBMSI_RESULT_NO_MORE_ITEMS, "query fetch succeeded\n");
 
     libmsi_unref(hrec);
     libmsi_query_close(hquery);
@@ -3103,11 +3103,11 @@ static void test_try_transform(void)
         skip("Not enough rights to perform tests\n");
         goto error;
     }
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %u\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %u\n", r);
 
     sz = MAX_PATH;
     r = MsiGetProperty(hpkg, "prop", buffer, &sz);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     ok(!strcmp(buffer, "val"), "Expected val, got %s\n", buffer);
 
     libmsi_unref(hpkg);
@@ -3226,139 +3226,139 @@ static void test_join(void)
     ok( hdb, "failed to create db\n");
 
     r = create_component_table( hdb );
-    ok( r == ERROR_SUCCESS, "cannot create Component table: %d\n", r );
+    ok( r == LIBMSI_RESULT_SUCCESS, "cannot create Component table: %d\n", r );
 
     r = add_component_entry( hdb, "'zygomatic', 'malar', 'INSTALLDIR', 0, '', ''" );
-    ok( r == ERROR_SUCCESS, "cannot add component: %d\n", r );
+    ok( r == LIBMSI_RESULT_SUCCESS, "cannot add component: %d\n", r );
 
     r = add_component_entry( hdb, "'maxilla', 'alveolar', 'INSTALLDIR', 0, '', ''" );
-    ok( r == ERROR_SUCCESS, "cannot add component: %d\n", r );
+    ok( r == LIBMSI_RESULT_SUCCESS, "cannot add component: %d\n", r );
 
     r = add_component_entry( hdb, "'nasal', 'septum', 'INSTALLDIR', 0, '', ''" );
-    ok( r == ERROR_SUCCESS, "cannot add component: %d\n", r );
+    ok( r == LIBMSI_RESULT_SUCCESS, "cannot add component: %d\n", r );
 
     r = add_component_entry( hdb, "'mandible', 'ramus', 'INSTALLDIR', 0, '', ''" );
-    ok( r == ERROR_SUCCESS, "cannot add component: %d\n", r );
+    ok( r == LIBMSI_RESULT_SUCCESS, "cannot add component: %d\n", r );
 
     r = create_feature_components_table( hdb );
-    ok( r == ERROR_SUCCESS, "cannot create FeatureComponents table: %d\n", r );
+    ok( r == LIBMSI_RESULT_SUCCESS, "cannot create FeatureComponents table: %d\n", r );
 
     r = add_feature_components_entry( hdb, "'procerus', 'maxilla'" );
-    ok( r == ERROR_SUCCESS, "cannot add feature components: %d\n", r );
+    ok( r == LIBMSI_RESULT_SUCCESS, "cannot add feature components: %d\n", r );
 
     r = add_feature_components_entry( hdb, "'procerus', 'nasal'" );
-    ok( r == ERROR_SUCCESS, "cannot add feature components: %d\n", r );
+    ok( r == LIBMSI_RESULT_SUCCESS, "cannot add feature components: %d\n", r );
 
     r = add_feature_components_entry( hdb, "'nasalis', 'nasal'" );
-    ok( r == ERROR_SUCCESS, "cannot add feature components: %d\n", r );
+    ok( r == LIBMSI_RESULT_SUCCESS, "cannot add feature components: %d\n", r );
 
     r = add_feature_components_entry( hdb, "'nasalis', 'mandible'" );
-    ok( r == ERROR_SUCCESS, "cannot add feature components: %d\n", r );
+    ok( r == LIBMSI_RESULT_SUCCESS, "cannot add feature components: %d\n", r );
 
     r = add_feature_components_entry( hdb, "'nasalis', 'notacomponent'" );
-    ok( r == ERROR_SUCCESS, "cannot add feature components: %d\n", r );
+    ok( r == LIBMSI_RESULT_SUCCESS, "cannot add feature components: %d\n", r );
 
     r = add_feature_components_entry( hdb, "'mentalis', 'zygomatic'" );
-    ok( r == ERROR_SUCCESS, "cannot add feature components: %d\n", r );
+    ok( r == LIBMSI_RESULT_SUCCESS, "cannot add feature components: %d\n", r );
 
     r = create_std_dlls_table( hdb );
-    ok( r == ERROR_SUCCESS, "cannot create StdDlls table: %d\n", r );
+    ok( r == LIBMSI_RESULT_SUCCESS, "cannot create StdDlls table: %d\n", r );
 
     r = add_std_dlls_entry( hdb, "'msvcp.dll', 'msvcp.dll.01234'" );
-    ok( r == ERROR_SUCCESS, "cannot add std dlls: %d\n", r );
+    ok( r == LIBMSI_RESULT_SUCCESS, "cannot add std dlls: %d\n", r );
 
     r = add_std_dlls_entry( hdb, "'msvcr.dll', 'msvcr.dll.56789'" );
-    ok( r == ERROR_SUCCESS, "cannot add std dlls: %d\n", r );
+    ok( r == LIBMSI_RESULT_SUCCESS, "cannot add std dlls: %d\n", r );
 
     r = create_binary_table( hdb );
-    ok( r == ERROR_SUCCESS, "cannot create Binary table: %d\n", r );
+    ok( r == LIBMSI_RESULT_SUCCESS, "cannot create Binary table: %d\n", r );
 
     r = add_binary_entry( hdb, "'msvcp.dll.01234', 'abcdefgh'" );
-    ok( r == ERROR_SUCCESS, "cannot add binary: %d\n", r );
+    ok( r == LIBMSI_RESULT_SUCCESS, "cannot add binary: %d\n", r );
 
     r = add_binary_entry( hdb, "'msvcr.dll.56789', 'ijklmnop'" );
-    ok( r == ERROR_SUCCESS, "cannot add binary: %d\n", r );
+    ok( r == LIBMSI_RESULT_SUCCESS, "cannot add binary: %d\n", r );
 
     r = add_binary_entry( hdb, "'single.dll.31415', 'msvcp.dll'" );
-    ok( r == ERROR_SUCCESS, "cannot add binary: %d\n", r );
+    ok( r == LIBMSI_RESULT_SUCCESS, "cannot add binary: %d\n", r );
 
     sql = "CREATE TABLE `One` (`A` SHORT, `B` SHORT PRIMARY KEY `A`)";
     r = run_query( hdb, 0, sql);
-    ok(r == ERROR_SUCCESS, "cannot create table: %d\n", r );
+    ok(r == LIBMSI_RESULT_SUCCESS, "cannot create table: %d\n", r );
 
     sql = "CREATE TABLE `Two` (`C` SHORT, `D` SHORT PRIMARY KEY `C`)";
     r = run_query( hdb, 0, sql);
-    ok(r == ERROR_SUCCESS, "cannot create table: %d\n", r );
+    ok(r == LIBMSI_RESULT_SUCCESS, "cannot create table: %d\n", r );
 
     sql = "CREATE TABLE `Three` (`E` SHORT, `F` SHORT PRIMARY KEY `E`)";
     r = run_query( hdb, 0, sql);
-    ok(r == ERROR_SUCCESS, "cannot create table: %d\n", r );
+    ok(r == LIBMSI_RESULT_SUCCESS, "cannot create table: %d\n", r );
 
     sql = "INSERT INTO `One` (`A`, `B`) VALUES (1, 2)";
     r = run_query( hdb, 0, sql);
-    ok(r == ERROR_SUCCESS, "cannot insert into table: %d\n", r );
+    ok(r == LIBMSI_RESULT_SUCCESS, "cannot insert into table: %d\n", r );
 
     sql = "INSERT INTO `Two` (`C`, `D`) VALUES (3, 4)";
     r = run_query( hdb, 0, sql);
-    ok(r == ERROR_SUCCESS, "cannot insert into table: %d\n", r );
+    ok(r == LIBMSI_RESULT_SUCCESS, "cannot insert into table: %d\n", r );
 
     sql = "INSERT INTO `Two` (`C`, `D`) VALUES (5, 6)";
     r = run_query( hdb, 0, sql);
-    ok(r == ERROR_SUCCESS, "cannot insert into table: %d\n", r );
+    ok(r == LIBMSI_RESULT_SUCCESS, "cannot insert into table: %d\n", r );
 
     sql = "INSERT INTO `Three` (`E`, `F`) VALUES (7, 8)";
     r = run_query( hdb, 0, sql);
-    ok(r == ERROR_SUCCESS, "cannot insert into table: %d\n", r );
+    ok(r == LIBMSI_RESULT_SUCCESS, "cannot insert into table: %d\n", r );
 
     sql = "INSERT INTO `Three` (`E`, `F`) VALUES (9, 10)";
     r = run_query( hdb, 0, sql);
-    ok(r == ERROR_SUCCESS, "cannot insert into table: %d\n", r );
+    ok(r == LIBMSI_RESULT_SUCCESS, "cannot insert into table: %d\n", r );
 
     sql = "INSERT INTO `Three` (`E`, `F`) VALUES (11, 12)";
     r = run_query( hdb, 0, sql);
-    ok(r == ERROR_SUCCESS, "cannot insert into table: %d\n", r );
+    ok(r == LIBMSI_RESULT_SUCCESS, "cannot insert into table: %d\n", r );
 
     sql = "CREATE TABLE `Four` (`G` SHORT, `H` SHORT PRIMARY KEY `G`)";
     r = run_query( hdb, 0, sql);
-    ok(r == ERROR_SUCCESS, "cannot create table: %d\n", r );
+    ok(r == LIBMSI_RESULT_SUCCESS, "cannot create table: %d\n", r );
 
     sql = "CREATE TABLE `Five` (`I` SHORT, `J` SHORT PRIMARY KEY `I`)";
     r = run_query( hdb, 0, sql);
-    ok(r == ERROR_SUCCESS, "cannot create table: %d\n", r );
+    ok(r == LIBMSI_RESULT_SUCCESS, "cannot create table: %d\n", r );
 
     sql = "INSERT INTO `Five` (`I`, `J`) VALUES (13, 14)";
     r = run_query( hdb, 0, sql);
-    ok(r == ERROR_SUCCESS, "cannot insert into table: %d\n", r );
+    ok(r == LIBMSI_RESULT_SUCCESS, "cannot insert into table: %d\n", r );
 
     sql = "INSERT INTO `Five` (`I`, `J`) VALUES (15, 16)";
     r = run_query( hdb, 0, sql);
-    ok(r == ERROR_SUCCESS, "cannot insert into table: %d\n", r );
+    ok(r == LIBMSI_RESULT_SUCCESS, "cannot insert into table: %d\n", r );
 
     sql = "SELECT `Component`.`ComponentId`, `FeatureComponents`.`Feature_` "
             "FROM `Component`, `FeatureComponents` "
             "WHERE `Component`.`Component` = `FeatureComponents`.`Component_` "
             "ORDER BY `Feature_`";
     r = libmsi_database_open_query(hdb, sql, &hquery);
-    ok( r == ERROR_SUCCESS, "failed to open query: %d\n", r );
+    ok( r == LIBMSI_RESULT_SUCCESS, "failed to open query: %d\n", r );
 
     r = libmsi_query_execute(hquery, 0);
-    ok( r == ERROR_SUCCESS, "failed to execute query: %d\n", r );
+    ok( r == LIBMSI_RESULT_SUCCESS, "failed to execute query: %d\n", r );
 
     i = 0;
-    while ((r = libmsi_query_fetch(hquery, &hrec)) == ERROR_SUCCESS)
+    while ((r = libmsi_query_fetch(hquery, &hrec)) == LIBMSI_RESULT_SUCCESS)
     {
         count = libmsi_record_get_field_count( hrec );
         ok( count == 2, "Expected 2 record fields, got %d\n", count );
 
         size = MAX_PATH;
         r = libmsi_record_get_string( hrec, 1, buf, &size );
-        ok( r == ERROR_SUCCESS, "failed to get record string: %d\n", r );
+        ok( r == LIBMSI_RESULT_SUCCESS, "failed to get record string: %d\n", r );
         ok( !strcmp( buf, join_res_first[i].one ),
             "For (row %d, column 1) expected '%s', got %s\n", i, join_res_first[i].one, buf );
 
         size = MAX_PATH;
         r = libmsi_record_get_string( hrec, 2, buf, &size );
-        ok( r == ERROR_SUCCESS, "failed to get record string: %d\n", r );
+        ok( r == LIBMSI_RESULT_SUCCESS, "failed to get record string: %d\n", r );
         ok( !strcmp( buf, join_res_first[i].two ),
             "For (row %d, column 2) expected '%s', got %s\n", i, join_res_first[i].two, buf );
 
@@ -3367,7 +3367,7 @@ static void test_join(void)
     }
 
     ok( i == 5, "Expected 5 rows, got %d\n", i );
-    ok( r == ERROR_NO_MORE_ITEMS, "expected no more items: %d\n", r );
+    ok( r == LIBMSI_RESULT_NO_MORE_ITEMS, "expected no more items: %d\n", r );
 
     libmsi_query_close(hquery);
     libmsi_unref(hquery);
@@ -3376,13 +3376,13 @@ static void test_join(void)
     sql = "SELECT `Component`.`ComponentId`, `FeatureComponents`.`Feature_` "
             "FROM `Component`, `FeatureComponents` ";
     r = libmsi_database_open_query(hdb, sql, &hquery);
-    ok( r == ERROR_SUCCESS, "failed to open query: %d\n", r );
+    ok( r == LIBMSI_RESULT_SUCCESS, "failed to open query: %d\n", r );
 
     r = libmsi_query_execute(hquery, 0);
-    ok( r == ERROR_SUCCESS, "failed to execute query: %d\n", r );
+    ok( r == LIBMSI_RESULT_SUCCESS, "failed to execute query: %d\n", r );
 
     i = 0;
-    while ((r = libmsi_query_fetch(hquery, &hrec)) == ERROR_SUCCESS)
+    while ((r = libmsi_query_fetch(hquery, &hrec)) == LIBMSI_RESULT_SUCCESS)
     {
         i++;
         libmsi_unref(hrec);
@@ -3396,27 +3396,27 @@ static void test_join(void)
             "WHERE FeatureComponents.Component_=Component.Component "
             "AND (Feature_='nasalis') ORDER BY Feature_";
     r = libmsi_database_open_query(hdb, sql, &hquery);
-    ok( r == ERROR_SUCCESS, "failed to open query: %d\n", r );
+    ok( r == LIBMSI_RESULT_SUCCESS, "failed to open query: %d\n", r );
 
     r = libmsi_query_execute(hquery, 0);
-    ok( r == ERROR_SUCCESS, "failed to execute query: %d\n", r );
+    ok( r == LIBMSI_RESULT_SUCCESS, "failed to execute query: %d\n", r );
 
     i = 0;
     data_correct = true;
-    while ((r = libmsi_query_fetch(hquery, &hrec)) == ERROR_SUCCESS)
+    while ((r = libmsi_query_fetch(hquery, &hrec)) == LIBMSI_RESULT_SUCCESS)
     {
         count = libmsi_record_get_field_count( hrec );
         ok( count == 2, "Expected 2 record fields, got %d\n", count );
 
         size = MAX_PATH;
         r = libmsi_record_get_string( hrec, 1, buf, &size );
-        ok( r == ERROR_SUCCESS, "failed to get record string: %d\n", r );
+        ok( r == LIBMSI_RESULT_SUCCESS, "failed to get record string: %d\n", r );
         if( strcmp( buf, join_res_second[i].one ))
             data_correct = false;
 
         size = MAX_PATH;
         r = libmsi_record_get_string( hrec, 2, buf, &size );
-        ok( r == ERROR_SUCCESS, "failed to get record string: %d\n", r );
+        ok( r == LIBMSI_RESULT_SUCCESS, "failed to get record string: %d\n", r );
         if( strcmp( buf, join_res_second[i].two ))
             data_correct = false;
 
@@ -3427,7 +3427,7 @@ static void test_join(void)
     ok( data_correct, "data returned in the wrong order\n");
 
     ok( i == 2, "Expected 2 rows, got %d\n", i );
-    ok( r == ERROR_NO_MORE_ITEMS, "expected no more items: %d\n", r );
+    ok( r == LIBMSI_RESULT_NO_MORE_ITEMS, "expected no more items: %d\n", r );
 
     libmsi_query_close(hquery);
     libmsi_unref(hquery);
@@ -3437,27 +3437,27 @@ static void test_join(void)
             "WHERE `StdDlls`.`Binary_` = `Binary`.`Name` "
             "ORDER BY `File`";
     r = libmsi_database_open_query(hdb, sql, &hquery);
-    ok( r == ERROR_SUCCESS, "failed to open query: %d\n", r );
+    ok( r == LIBMSI_RESULT_SUCCESS, "failed to open query: %d\n", r );
 
     r = libmsi_query_execute(hquery, 0);
-    ok( r == ERROR_SUCCESS, "failed to execute query: %d\n", r );
+    ok( r == LIBMSI_RESULT_SUCCESS, "failed to execute query: %d\n", r );
 
     i = 0;
     data_correct = true;
-    while ((r = libmsi_query_fetch(hquery, &hrec)) == ERROR_SUCCESS)
+    while ((r = libmsi_query_fetch(hquery, &hrec)) == LIBMSI_RESULT_SUCCESS)
     {
         count = libmsi_record_get_field_count( hrec );
         ok( count == 2, "Expected 2 record fields, got %d\n", count );
 
         size = MAX_PATH;
         r = libmsi_record_get_string( hrec, 1, buf, &size );
-        ok( r == ERROR_SUCCESS, "failed to get record string: %d\n", r );
+        ok( r == LIBMSI_RESULT_SUCCESS, "failed to get record string: %d\n", r );
         if( strcmp( buf, join_res_third[i].one ) )
             data_correct = false;
 
         size = MAX_PATH;
         r = libmsi_record_get_string( hrec, 2, buf, &size );
-        ok( r == ERROR_SUCCESS, "failed to get record string: %d\n", r );
+        ok( r == LIBMSI_RESULT_SUCCESS, "failed to get record string: %d\n", r );
         if( strcmp( buf, join_res_third[i].two ) )
             data_correct = false;
 
@@ -3468,7 +3468,7 @@ static void test_join(void)
 
     ok( i == 2, "Expected 2 rows, got %d\n", i );
 
-    ok( r == ERROR_NO_MORE_ITEMS, "expected no more items: %d\n", r );
+    ok( r == LIBMSI_RESULT_NO_MORE_ITEMS, "expected no more items: %d\n", r );
 
     libmsi_query_close(hquery);
     libmsi_unref(hquery);
@@ -3478,27 +3478,27 @@ static void test_join(void)
             "WHERE `StdDlls`.`File` = `Binary`.`Data` "
             "ORDER BY `Name`";
     r = libmsi_database_open_query(hdb, sql, &hquery);
-    ok( r == ERROR_SUCCESS, "failed to open query: %d\n", r );
+    ok( r == LIBMSI_RESULT_SUCCESS, "failed to open query: %d\n", r );
 
     r = libmsi_query_execute(hquery, 0);
-    ok( r == ERROR_SUCCESS, "failed to execute query: %d\n", r );
+    ok( r == LIBMSI_RESULT_SUCCESS, "failed to execute query: %d\n", r );
 
     i = 0;
     data_correct = true;
-    while ((r = libmsi_query_fetch(hquery, &hrec)) == ERROR_SUCCESS)
+    while ((r = libmsi_query_fetch(hquery, &hrec)) == LIBMSI_RESULT_SUCCESS)
     {
         count = libmsi_record_get_field_count( hrec );
         ok( count == 2, "Expected 2 record fields, got %d\n", count );
 
         size = MAX_PATH;
         r = libmsi_record_get_string( hrec, 1, buf, &size );
-        ok( r == ERROR_SUCCESS, "failed to get record string: %d\n", r );
+        ok( r == LIBMSI_RESULT_SUCCESS, "failed to get record string: %d\n", r );
         if( strcmp( buf, join_res_fourth[i].one ))
             data_correct = false;
 
         size = MAX_PATH;
         r = libmsi_record_get_string( hrec, 2, buf, &size );
-        ok( r == ERROR_SUCCESS, "failed to get record string: %d\n", r );
+        ok( r == LIBMSI_RESULT_SUCCESS, "failed to get record string: %d\n", r );
         if( strcmp( buf, join_res_fourth[i].two ))
             data_correct = false;
 
@@ -3508,7 +3508,7 @@ static void test_join(void)
     ok( data_correct, "data returned in the wrong order\n");
 
     ok( i == 1, "Expected 1 rows, got %d\n", i );
-    ok( r == ERROR_NO_MORE_ITEMS, "expected no more items: %d\n", r );
+    ok( r == LIBMSI_RESULT_NO_MORE_ITEMS, "expected no more items: %d\n", r );
 
     libmsi_query_close(hquery);
     libmsi_unref(hquery);
@@ -3519,27 +3519,27 @@ static void test_join(void)
             "AND `FeatureComponents`.`Component_` = 'maxilla' "
             "ORDER BY `Feature_`";
     r = libmsi_database_open_query(hdb, sql, &hquery);
-    ok( r == ERROR_SUCCESS, "failed to open query: %d\n", r );
+    ok( r == LIBMSI_RESULT_SUCCESS, "failed to open query: %d\n", r );
 
     r = libmsi_query_execute(hquery, 0);
-    ok( r == ERROR_SUCCESS, "failed to execute query: %d\n", r );
+    ok( r == LIBMSI_RESULT_SUCCESS, "failed to execute query: %d\n", r );
 
     i = 0;
     data_correct = true;
-    while ((r = libmsi_query_fetch(hquery, &hrec)) == ERROR_SUCCESS)
+    while ((r = libmsi_query_fetch(hquery, &hrec)) == LIBMSI_RESULT_SUCCESS)
     {
         count = libmsi_record_get_field_count( hrec );
         ok( count == 2, "Expected 2 record fields, got %d\n", count );
 
         size = MAX_PATH;
         r = libmsi_record_get_string( hrec, 1, buf, &size );
-        ok( r == ERROR_SUCCESS, "failed to get record string: %d\n", r );
+        ok( r == LIBMSI_RESULT_SUCCESS, "failed to get record string: %d\n", r );
         if( strcmp( buf, join_res_fifth[i].one ))
             data_correct = false;
 
         size = MAX_PATH;
         r = libmsi_record_get_string( hrec, 2, buf, &size );
-        ok( r == ERROR_SUCCESS, "failed to get record string: %d\n", r );
+        ok( r == LIBMSI_RESULT_SUCCESS, "failed to get record string: %d\n", r );
         if( strcmp( buf, join_res_fifth[i].two ))
             data_correct = false;
 
@@ -3549,7 +3549,7 @@ static void test_join(void)
     ok( data_correct, "data returned in the wrong order\n");
 
     ok( i == 1, "Expected 1 rows, got %d\n", i );
-    ok( r == ERROR_NO_MORE_ITEMS, "expected no more items: %d\n", r );
+    ok( r == LIBMSI_RESULT_NO_MORE_ITEMS, "expected no more items: %d\n", r );
 
     libmsi_query_close(hquery);
     libmsi_unref(hquery);
@@ -3559,27 +3559,27 @@ static void test_join(void)
             "WHERE `Component` = 'zygomatic' "
             "ORDER BY `Feature_`";
     r = libmsi_database_open_query(hdb, sql, &hquery);
-    ok( r == ERROR_SUCCESS, "failed to open query: %d\n", r );
+    ok( r == LIBMSI_RESULT_SUCCESS, "failed to open query: %d\n", r );
 
     r = libmsi_query_execute(hquery, 0);
-    ok( r == ERROR_SUCCESS, "failed to execute query: %d\n", r );
+    ok( r == LIBMSI_RESULT_SUCCESS, "failed to execute query: %d\n", r );
 
     i = 0;
     data_correct = true;
-    while ((r = libmsi_query_fetch(hquery, &hrec)) == ERROR_SUCCESS)
+    while ((r = libmsi_query_fetch(hquery, &hrec)) == LIBMSI_RESULT_SUCCESS)
     {
         count = libmsi_record_get_field_count( hrec );
         ok( count == 2, "Expected 2 record fields, got %d\n", count );
 
         size = MAX_PATH;
         r = libmsi_record_get_string( hrec, 1, buf, &size );
-        ok( r == ERROR_SUCCESS, "failed to get record string: %d\n", r );
+        ok( r == LIBMSI_RESULT_SUCCESS, "failed to get record string: %d\n", r );
         if( strcmp( buf, join_res_sixth[i].one ))
             data_correct = false;
 
         size = MAX_PATH;
         r = libmsi_record_get_string( hrec, 2, buf, &size );
-        ok( r == ERROR_SUCCESS, "failed to get record string: %d\n", r );
+        ok( r == LIBMSI_RESULT_SUCCESS, "failed to get record string: %d\n", r );
         if( strcmp( buf, join_res_sixth[i].two ))
             data_correct = false;
 
@@ -3589,7 +3589,7 @@ static void test_join(void)
     ok( data_correct, "data returned in the wrong order\n");
 
     ok( i == 6, "Expected 6 rows, got %d\n", i );
-    ok( r == ERROR_NO_MORE_ITEMS, "expected no more items: %d\n", r );
+    ok( r == LIBMSI_RESULT_NO_MORE_ITEMS, "expected no more items: %d\n", r );
 
     libmsi_query_close(hquery);
     libmsi_unref(hquery);
@@ -3600,27 +3600,27 @@ static void test_join(void)
             "AND `Feature_` = 'nasalis' "
             "ORDER BY `Feature_`";
     r = libmsi_database_open_query(hdb, sql, &hquery);
-    ok( r == ERROR_SUCCESS, "failed to open query: %d\n", r );
+    ok( r == LIBMSI_RESULT_SUCCESS, "failed to open query: %d\n", r );
 
     r = libmsi_query_execute(hquery, 0);
-    ok( r == ERROR_SUCCESS, "failed to execute query: %d\n", r );
+    ok( r == LIBMSI_RESULT_SUCCESS, "failed to execute query: %d\n", r );
 
     i = 0;
     data_correct = true;
-    while ((r = libmsi_query_fetch(hquery, &hrec)) == ERROR_SUCCESS)
+    while ((r = libmsi_query_fetch(hquery, &hrec)) == LIBMSI_RESULT_SUCCESS)
     {
         count = libmsi_record_get_field_count( hrec );
         ok( count == 2, "Expected 2 record fields, got %d\n", count );
 
         size = MAX_PATH;
         r = libmsi_record_get_string( hrec, 1, buf, &size );
-        ok( r == ERROR_SUCCESS, "failed to get record string: %d\n", r );
+        ok( r == LIBMSI_RESULT_SUCCESS, "failed to get record string: %d\n", r );
         if( strcmp( buf, join_res_seventh[i].one ))
             data_correct = false;
 
         size = MAX_PATH;
         r = libmsi_record_get_string( hrec, 2, buf, &size );
-        ok( r == ERROR_SUCCESS, "failed to get record string: %d\n", r );
+        ok( r == LIBMSI_RESULT_SUCCESS, "failed to get record string: %d\n", r );
         if( strcmp( buf, join_res_seventh[i].two ))
             data_correct = false;
 
@@ -3630,7 +3630,7 @@ static void test_join(void)
 
     ok( data_correct, "data returned in the wrong order\n");
     ok( i == 3, "Expected 3 rows, got %d\n", i );
-    ok( r == ERROR_NO_MORE_ITEMS, "expected no more items: %d\n", r );
+    ok( r == LIBMSI_RESULT_NO_MORE_ITEMS, "expected no more items: %d\n", r );
 
     libmsi_query_close(hquery);
     libmsi_unref(hquery);
@@ -3638,27 +3638,27 @@ static void test_join(void)
     sql = "SELECT `StdDlls`.`File`, `Binary`.`Data` "
             "FROM `StdDlls`, `Binary` ";
     r = libmsi_database_open_query(hdb, sql, &hquery);
-    ok( r == ERROR_SUCCESS, "failed to open query: %d\n", r );
+    ok( r == LIBMSI_RESULT_SUCCESS, "failed to open query: %d\n", r );
 
     r = libmsi_query_execute(hquery, 0);
-    ok( r == ERROR_SUCCESS, "failed to execute query: %d\n", r );
+    ok( r == LIBMSI_RESULT_SUCCESS, "failed to execute query: %d\n", r );
 
     i = 0;
     data_correct = true;
-    while ((r = libmsi_query_fetch(hquery, &hrec)) == ERROR_SUCCESS)
+    while ((r = libmsi_query_fetch(hquery, &hrec)) == LIBMSI_RESULT_SUCCESS)
     {
         count = libmsi_record_get_field_count( hrec );
         ok( count == 2, "Expected 2 record fields, got %d\n", count );
 
         size = MAX_PATH;
         r = libmsi_record_get_string( hrec, 1, buf, &size );
-        ok( r == ERROR_SUCCESS, "failed to get record string: %d\n", r );
+        ok( r == LIBMSI_RESULT_SUCCESS, "failed to get record string: %d\n", r );
         if( strcmp( buf, join_res_eighth[i].one ))
             data_correct = false;
 
         size = MAX_PATH;
         r = libmsi_record_get_string( hrec, 2, buf, &size );
-        ok( r == ERROR_SUCCESS, "failed to get record string: %d\n", r );
+        ok( r == LIBMSI_RESULT_SUCCESS, "failed to get record string: %d\n", r );
         if( strcmp( buf, join_res_eighth[i].four ))
             data_correct = false;
 
@@ -3668,46 +3668,46 @@ static void test_join(void)
 
     ok( data_correct, "data returned in the wrong order\n");
     ok( i == 6, "Expected 6 rows, got %d\n", i );
-    ok( r == ERROR_NO_MORE_ITEMS, "expected no more items: %d\n", r );
+    ok( r == LIBMSI_RESULT_NO_MORE_ITEMS, "expected no more items: %d\n", r );
 
     libmsi_query_close(hquery);
     libmsi_unref(hquery);
 
     sql = "SELECT * FROM `StdDlls`, `Binary` ";
     r = libmsi_database_open_query(hdb, sql, &hquery);
-    ok( r == ERROR_SUCCESS, "failed to open query: %d\n", r );
+    ok( r == LIBMSI_RESULT_SUCCESS, "failed to open query: %d\n", r );
 
     r = libmsi_query_execute(hquery, 0);
-    ok( r == ERROR_SUCCESS, "failed to execute query: %d\n", r );
+    ok( r == LIBMSI_RESULT_SUCCESS, "failed to execute query: %d\n", r );
 
     i = 0;
     data_correct = true;
-    while ((r = libmsi_query_fetch(hquery, &hrec)) == ERROR_SUCCESS)
+    while ((r = libmsi_query_fetch(hquery, &hrec)) == LIBMSI_RESULT_SUCCESS)
     {
         count = libmsi_record_get_field_count( hrec );
         ok( count == 4, "Expected 4 record fields, got %d\n", count );
 
         size = MAX_PATH;
         r = libmsi_record_get_string( hrec, 1, buf, &size );
-        ok( r == ERROR_SUCCESS, "failed to get record string: %d\n", r );
+        ok( r == LIBMSI_RESULT_SUCCESS, "failed to get record string: %d\n", r );
         if( strcmp( buf, join_res_eighth[i].one ))
             data_correct = false;
 
         size = MAX_PATH;
         r = libmsi_record_get_string( hrec, 2, buf, &size );
-        ok( r == ERROR_SUCCESS, "failed to get record string: %d\n", r );
+        ok( r == LIBMSI_RESULT_SUCCESS, "failed to get record string: %d\n", r );
         if( strcmp( buf, join_res_eighth[i].two ))
             data_correct = false;
 
         size = MAX_PATH;
         r = libmsi_record_get_string( hrec, 3, buf, &size );
-        ok( r == ERROR_SUCCESS, "failed to get record string: %d\n", r );
+        ok( r == LIBMSI_RESULT_SUCCESS, "failed to get record string: %d\n", r );
         if( strcmp( buf, join_res_eighth[i].three ))
             data_correct = false;
 
         size = MAX_PATH;
         r = libmsi_record_get_string( hrec, 4, buf, &size );
-        ok( r == ERROR_SUCCESS, "failed to get record string: %d\n", r );
+        ok( r == LIBMSI_RESULT_SUCCESS, "failed to get record string: %d\n", r );
         if( strcmp( buf, join_res_eighth[i].four ))
             data_correct = false;
 
@@ -3717,21 +3717,21 @@ static void test_join(void)
     ok( data_correct, "data returned in the wrong order\n");
 
     ok( i == 6, "Expected 6 rows, got %d\n", i );
-    ok( r == ERROR_NO_MORE_ITEMS, "expected no more items: %d\n", r );
+    ok( r == LIBMSI_RESULT_NO_MORE_ITEMS, "expected no more items: %d\n", r );
 
     libmsi_query_close(hquery);
     libmsi_unref(hquery);
 
     sql = "SELECT * FROM `One`, `Two`, `Three` ";
     r = libmsi_database_open_query(hdb, sql, &hquery);
-    ok( r == ERROR_SUCCESS, "failed to open query: %d\n", r );
+    ok( r == LIBMSI_RESULT_SUCCESS, "failed to open query: %d\n", r );
 
     r = libmsi_query_execute(hquery, 0);
-    ok( r == ERROR_SUCCESS, "failed to execute query: %d\n", r );
+    ok( r == LIBMSI_RESULT_SUCCESS, "failed to execute query: %d\n", r );
 
     i = 0;
     data_correct = true;
-    while ((r = libmsi_query_fetch(hquery, &hrec)) == ERROR_SUCCESS)
+    while ((r = libmsi_query_fetch(hquery, &hrec)) == LIBMSI_RESULT_SUCCESS)
     {
         count = libmsi_record_get_field_count( hrec );
         ok( count == 6, "Expected 6 record fields, got %d\n", count );
@@ -3766,28 +3766,28 @@ static void test_join(void)
     ok( data_correct, "data returned in the wrong order\n");
 
     ok( i == 6, "Expected 6 rows, got %d\n", i );
-    ok( r == ERROR_NO_MORE_ITEMS, "expected no more items: %d\n", r );
+    ok( r == LIBMSI_RESULT_NO_MORE_ITEMS, "expected no more items: %d\n", r );
 
     libmsi_query_close(hquery);
     libmsi_unref(hquery);
 
     sql = "SELECT * FROM `Four`, `Five`";
     r = libmsi_database_open_query(hdb, sql, &hquery);
-    ok( r == ERROR_SUCCESS, "failed to open query: %d\n", r );
+    ok( r == LIBMSI_RESULT_SUCCESS, "failed to open query: %d\n", r );
 
     r = libmsi_query_execute(hquery, 0);
-    ok( r == ERROR_SUCCESS, "failed to execute query: %d\n", r );
+    ok( r == LIBMSI_RESULT_SUCCESS, "failed to execute query: %d\n", r );
 
     r = libmsi_query_fetch(hquery, &hrec);
-    ok(r == ERROR_NO_MORE_ITEMS, "Expected ERROR_NO_MORE_ITEMS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_NO_MORE_ITEMS, "Expected LIBMSI_RESULT_NO_MORE_ITEMS, got %d\n", r);
 
     libmsi_query_close(hquery);
     libmsi_unref(hquery);
 
     sql = "SELECT * FROM `Nonexistent`, `One`";
     r = libmsi_database_open_query(hdb, sql, &hquery);
-    ok( r == ERROR_BAD_QUERY_SYNTAX,
-        "Expected ERROR_BAD_QUERY_SYNTAX, got %d\n", r );
+    ok( r == LIBMSI_RESULT_BAD_QUERY_SYNTAX,
+        "Expected LIBMSI_RESULT_BAD_QUERY_SYNTAX, got %d\n", r );
 
     /* try updating a row in a join table */
     sql = "SELECT `Component`.`ComponentId`, `FeatureComponents`.`Feature_` "
@@ -3795,51 +3795,51 @@ static void test_join(void)
             "WHERE `Component`.`Component` = `FeatureComponents`.`Component_` "
             "ORDER BY `Feature_`";
     r = libmsi_database_open_query(hdb, sql, &hquery);
-    ok( r == ERROR_SUCCESS, "failed to open query: %d\n", r );
+    ok( r == LIBMSI_RESULT_SUCCESS, "failed to open query: %d\n", r );
 
     r = libmsi_query_execute(hquery, 0);
-    ok( r == ERROR_SUCCESS, "failed to execute query: %d\n", r );
+    ok( r == LIBMSI_RESULT_SUCCESS, "failed to execute query: %d\n", r );
 
     r = libmsi_query_fetch(hquery, &hrec);
-    ok( r == ERROR_SUCCESS, "failed to fetch query: %d\n", r );
+    ok( r == LIBMSI_RESULT_SUCCESS, "failed to fetch query: %d\n", r );
 
     r = libmsi_record_set_string( hrec, 1, "epicranius" );
-    ok( r == ERROR_SUCCESS, "failed to set string: %d\n", r );
+    ok( r == LIBMSI_RESULT_SUCCESS, "failed to set string: %d\n", r );
 
     r = libmsi_query_modify(hquery, LIBMSI_MODIFY_UPDATE, hrec);
-    ok( r == ERROR_SUCCESS, "failed to update row: %d\n", r );
+    ok( r == LIBMSI_RESULT_SUCCESS, "failed to update row: %d\n", r );
 
     /* try another valid operation for joins */
     r = libmsi_query_modify(hquery, LIBMSI_MODIFY_REFRESH, hrec);
-    todo_wine ok( r == ERROR_SUCCESS, "failed to refresh row: %d\n", r );
+    todo_wine ok( r == LIBMSI_RESULT_SUCCESS, "failed to refresh row: %d\n", r );
 
     /* try an invalid operation for joins */
     r = libmsi_query_modify(hquery, LIBMSI_MODIFY_DELETE, hrec);
-    ok( r == ERROR_FUNCTION_FAILED, "unexpected result: %d\n", r );
+    ok( r == LIBMSI_RESULT_FUNCTION_FAILED, "unexpected result: %d\n", r );
 
     r = libmsi_record_set_string( hrec, 2, "epicranius" );
-    ok( r == ERROR_SUCCESS, "failed to set string: %d\n", r );
+    ok( r == LIBMSI_RESULT_SUCCESS, "failed to set string: %d\n", r );
 
     /* primary key cannot be updated */
     r = libmsi_query_modify(hquery, LIBMSI_MODIFY_UPDATE, hrec);
-    ok( r == ERROR_FUNCTION_FAILED, "failed to update row: %d\n", r );
+    ok( r == LIBMSI_RESULT_FUNCTION_FAILED, "failed to update row: %d\n", r );
 
     libmsi_unref(hrec);
     libmsi_query_close(hquery);
     libmsi_unref(hquery);
 
     r = libmsi_database_open_query(hdb, sql, &hquery);
-    ok(r == ERROR_SUCCESS, "libmsi_database_open_query failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_database_open_query failed\n");
 
     r = libmsi_query_execute(hquery, 0);
-    ok(r == ERROR_SUCCESS, "libmsi_query_execute failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_query_execute failed\n");
 
     r = libmsi_query_fetch(hquery, &hrec);
-    ok(r == ERROR_SUCCESS, "libmsi_query_fetch failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_query_fetch failed\n");
 
     size = MAX_PATH;
     r = libmsi_record_get_string( hrec, 1, buf, &size );
-    ok( r == ERROR_SUCCESS, "failed to get record string: %d\n", r );
+    ok( r == LIBMSI_RESULT_SUCCESS, "failed to get record string: %d\n", r );
     ok( !strcmp( buf, "epicranius" ), "expected 'epicranius', got %s\n", buf );
 
     libmsi_unref(hrec);
@@ -3884,73 +3884,73 @@ static void test_temporary_table(void)
 
     sql = "CREATE TABLE `P` ( `B` SHORT NOT NULL, `C` CHAR(255) PRIMARY KEY `C`)";
     r = run_query(hdb, 0, sql);
-    ok(r == ERROR_SUCCESS, "failed to add table\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "failed to add table\n");
 
     cond = libmsi_database_is_table_persistent(hdb, "P");
     ok( cond == LIBMSI_CONDITION_TRUE, "wrong return condition\n");
 
     sql = "CREATE TABLE `P2` ( `B` SHORT NOT NULL, `C` CHAR(255) PRIMARY KEY `C`) HOLD";
     r = run_query(hdb, 0, sql);
-    ok(r == ERROR_SUCCESS, "failed to add table\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "failed to add table\n");
 
     cond = libmsi_database_is_table_persistent(hdb, "P2");
     ok( cond == LIBMSI_CONDITION_TRUE, "wrong return condition\n");
 
     sql = "CREATE TABLE `T` ( `B` SHORT NOT NULL TEMPORARY, `C` CHAR(255) TEMPORARY PRIMARY KEY `C`) HOLD";
     r = run_query(hdb, 0, sql);
-    ok(r == ERROR_SUCCESS, "failed to add table\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "failed to add table\n");
 
     cond = libmsi_database_is_table_persistent(hdb, "T");
     ok( cond == LIBMSI_CONDITION_FALSE, "wrong return condition\n");
 
     sql = "CREATE TABLE `T2` ( `B` SHORT NOT NULL TEMPORARY, `C` CHAR(255) TEMPORARY PRIMARY KEY `C`)";
     r = run_query(hdb, 0, sql);
-    ok(r == ERROR_SUCCESS, "failed to add table\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "failed to add table\n");
 
     query = NULL;
     sql = "SELECT * FROM `T2`";
     r = libmsi_database_open_query(hdb, sql, &query);
-    ok(r == ERROR_BAD_QUERY_SYNTAX,
-       "Expected ERROR_BAD_QUERY_SYNTAX, got %d\n", r);
+    ok(r == LIBMSI_RESULT_BAD_QUERY_SYNTAX,
+       "Expected LIBMSI_RESULT_BAD_QUERY_SYNTAX, got %d\n", r);
 
     cond = libmsi_database_is_table_persistent(hdb, "T2");
     ok( cond == LIBMSI_CONDITION_NONE, "wrong return condition\n");
 
     sql = "CREATE TABLE `T3` ( `B` SHORT NOT NULL TEMPORARY, `C` CHAR(255) PRIMARY KEY `C`)";
     r = run_query(hdb, 0, sql);
-    ok(r == ERROR_SUCCESS, "failed to add table\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "failed to add table\n");
 
     cond = libmsi_database_is_table_persistent(hdb, "T3");
     ok( cond == LIBMSI_CONDITION_TRUE, "wrong return condition\n");
 
     sql = "CREATE TABLE `T4` ( `B` SHORT NOT NULL, `C` CHAR(255) TEMPORARY PRIMARY KEY `C`)";
     r = run_query(hdb, 0, sql);
-    ok(r == ERROR_FUNCTION_FAILED, "failed to add table\n");
+    ok(r == LIBMSI_RESULT_FUNCTION_FAILED, "failed to add table\n");
 
     cond = libmsi_database_is_table_persistent(hdb, "T4");
     ok( cond == LIBMSI_CONDITION_NONE, "wrong return condition\n");
 
     sql = "CREATE TABLE `T5` ( `B` SHORT NOT NULL TEMP, `C` CHAR(255) TEMP PRIMARY KEY `C`) HOLD";
     r = run_query(hdb, 0, sql);
-    ok(r == ERROR_BAD_QUERY_SYNTAX, "failed to add table\n");
+    ok(r == LIBMSI_RESULT_BAD_QUERY_SYNTAX, "failed to add table\n");
 
     query = NULL;
     sql = "select * from `T`";
     r = libmsi_database_open_query(hdb, sql, &query);
-    ok(r == ERROR_SUCCESS, "failed to query table\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "failed to query table\n");
 
     rec = NULL;
     r = libmsi_query_get_column_info(query, LIBMSI_COL_INFO_TYPES, &rec);
-    ok(r == ERROR_SUCCESS, "failed to get column info\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "failed to get column info\n");
 
     sz = sizeof buf;
     r = libmsi_record_get_string(rec, 1, buf, &sz);
-    ok(r == ERROR_SUCCESS, "failed to get string\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "failed to get string\n");
     ok( 0 == strcmp("G255", buf), "wrong column type\n");
 
     sz = sizeof buf;
     r = libmsi_record_get_string(rec, 2, buf, &sz);
-    ok(r == ERROR_SUCCESS, "failed to get string\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "failed to get string\n");
     ok( 0 == strcmp("j2", buf), "wrong column type\n");
 
     libmsi_unref( rec );
@@ -3960,17 +3960,17 @@ static void test_temporary_table(void)
     /* query the table data */
     rec = 0;
     r = do_query(hdb, "select * from `_Tables` where `Name` = 'T'", &rec);
-    ok( r == ERROR_SUCCESS, "temporary table exists in _Tables\n");
+    ok( r == LIBMSI_RESULT_SUCCESS, "temporary table exists in _Tables\n");
     libmsi_unref( rec );
 
     /* query the column data */
     rec = 0;
     r = do_query(hdb, "select * from `_Columns` where `Table` = 'T' AND `Name` = 'B'", &rec);
-    ok( r == ERROR_NO_MORE_ITEMS, "temporary table exists in _Columns\n");
+    ok( r == LIBMSI_RESULT_NO_MORE_ITEMS, "temporary table exists in _Columns\n");
     if (rec) libmsi_unref( rec );
 
     r = do_query(hdb, "select * from `_Columns` where `Table` = 'T' AND `Name` = 'C'", &rec);
-    ok( r == ERROR_NO_MORE_ITEMS, "temporary table exists in _Columns\n");
+    ok( r == LIBMSI_RESULT_NO_MORE_ITEMS, "temporary table exists in _Columns\n");
     if (rec) libmsi_unref( rec );
 
     libmsi_unref( hdb );
@@ -3990,166 +3990,166 @@ static void test_alter(void)
 
     sql = "CREATE TABLE `T` ( `B` SHORT NOT NULL TEMPORARY, `C` CHAR(255) TEMPORARY PRIMARY KEY `C`) HOLD";
     r = run_query(hdb, 0, sql);
-    ok(r == ERROR_SUCCESS, "failed to add table\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "failed to add table\n");
 
     cond = libmsi_database_is_table_persistent(hdb, "T");
     ok( cond == LIBMSI_CONDITION_FALSE, "wrong return condition\n");
 
     sql = "ALTER TABLE `T` HOLD";
     r = run_query(hdb, 0, sql);
-    ok(r == ERROR_SUCCESS, "failed to hold table %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "failed to hold table %d\n", r);
 
     sql = "ALTER TABLE `T` FREE";
     r = run_query(hdb, 0, sql);
-    ok(r == ERROR_SUCCESS, "failed to free table\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "failed to free table\n");
 
     sql = "ALTER TABLE `T` FREE";
     r = run_query(hdb, 0, sql);
-    ok(r == ERROR_SUCCESS, "failed to free table\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "failed to free table\n");
 
     sql = "ALTER TABLE `T` FREE";
     r = run_query(hdb, 0, sql);
-    ok(r == ERROR_BAD_QUERY_SYNTAX, "failed to free table\n");
+    ok(r == LIBMSI_RESULT_BAD_QUERY_SYNTAX, "failed to free table\n");
 
     sql = "ALTER TABLE `T` HOLD";
     r = run_query(hdb, 0, sql);
-    ok(r == ERROR_BAD_QUERY_SYNTAX, "failed to hold table %d\n", r);
+    ok(r == LIBMSI_RESULT_BAD_QUERY_SYNTAX, "failed to hold table %d\n", r);
 
     /* table T is removed */
     sql = "SELECT * FROM `T`";
     r = run_query(hdb, 0, sql);
-    ok(r == ERROR_BAD_QUERY_SYNTAX, "Expected ERROR_BAD_QUERY_SYNTAX, got %d\n", r);
+    ok(r == LIBMSI_RESULT_BAD_QUERY_SYNTAX, "Expected LIBMSI_RESULT_BAD_QUERY_SYNTAX, got %d\n", r);
 
     /* create the table again */
     sql = "CREATE TABLE `U` ( `A` INTEGER, `B` INTEGER PRIMARY KEY `B`)";
     r = run_query(hdb, 0, sql);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     /* up the ref count */
     sql = "ALTER TABLE `U` HOLD";
     r = run_query(hdb, 0, sql);
-    ok(r == ERROR_SUCCESS, "failed to free table\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "failed to free table\n");
 
     /* add column, no data type */
     sql = "ALTER TABLE `U` ADD `C`";
     r = run_query(hdb, 0, sql);
-    ok(r == ERROR_BAD_QUERY_SYNTAX, "Expected ERROR_BAD_QUERY_SYNTAX, got %d\n", r);
+    ok(r == LIBMSI_RESULT_BAD_QUERY_SYNTAX, "Expected LIBMSI_RESULT_BAD_QUERY_SYNTAX, got %d\n", r);
 
     sql = "ALTER TABLE `U` ADD `C` INTEGER";
     r = run_query(hdb, 0, sql);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     /* add column C again */
     sql = "ALTER TABLE `U` ADD `C` INTEGER";
     r = run_query(hdb, 0, sql);
-    ok(r == ERROR_BAD_QUERY_SYNTAX, "Expected ERROR_BAD_QUERY_SYNTAX, got %d\n", r);
+    ok(r == LIBMSI_RESULT_BAD_QUERY_SYNTAX, "Expected LIBMSI_RESULT_BAD_QUERY_SYNTAX, got %d\n", r);
 
     sql = "ALTER TABLE `U` ADD `D` INTEGER TEMPORARY";
     r = run_query(hdb, 0, sql);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     sql = "INSERT INTO `U` ( `A`, `B`, `C`, `D` ) VALUES ( 1, 2, 3, 4 )";
     r = run_query(hdb, 0, sql);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     sql = "ALTER TABLE `U` ADD `D` INTEGER TEMPORARY HOLD";
     r = run_query(hdb, 0, sql);
-    ok(r == ERROR_BAD_QUERY_SYNTAX, "Expected ERROR_BAD_QUERY_SYNTAX, got %d\n", r);
+    ok(r == LIBMSI_RESULT_BAD_QUERY_SYNTAX, "Expected LIBMSI_RESULT_BAD_QUERY_SYNTAX, got %d\n", r);
 
     sql = "INSERT INTO `U` ( `A`, `B`, `C`, `D` ) VALUES ( 5, 6, 7, 8 )";
     r = run_query(hdb, 0, sql);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     sql = "SELECT * FROM `U` WHERE `D` = 8";
     r = run_query(hdb, 0, sql);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     sql = "ALTER TABLE `U` ADD `D` INTEGER TEMPORARY FREE";
     r = run_query(hdb, 0, sql);
-    ok(r == ERROR_BAD_QUERY_SYNTAX, "Expected ERROR_BAD_QUERY_SYNTAX, got %d\n", r);
+    ok(r == LIBMSI_RESULT_BAD_QUERY_SYNTAX, "Expected LIBMSI_RESULT_BAD_QUERY_SYNTAX, got %d\n", r);
 
     sql = "ALTER COLUMN `D` FREE";
     r = run_query(hdb, 0, sql);
-    ok(r == ERROR_BAD_QUERY_SYNTAX, "Expected ERROR_BAD_QUERY_SYNTAX, got %d\n", r);
+    ok(r == LIBMSI_RESULT_BAD_QUERY_SYNTAX, "Expected LIBMSI_RESULT_BAD_QUERY_SYNTAX, got %d\n", r);
 
     /* drop the ref count */
     sql = "ALTER TABLE `U` FREE";
     r = run_query(hdb, 0, sql);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     /* table is not empty */
     sql = "SELECT * FROM `U`";
     r = run_query(hdb, 0, sql);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     /* column D is removed */
     sql = "SELECT * FROM `U` WHERE `D` = 8";
     r = run_query(hdb, 0, sql);
-    ok(r == ERROR_BAD_QUERY_SYNTAX, "Expected ERROR_BAD_QUERY_SYNTAX, got %d\n", r);
+    ok(r == LIBMSI_RESULT_BAD_QUERY_SYNTAX, "Expected LIBMSI_RESULT_BAD_QUERY_SYNTAX, got %d\n", r);
 
     sql = "INSERT INTO `U` ( `A`, `B`, `C`, `D` ) VALUES ( 9, 10, 11, 12 )";
     r = run_query(hdb, 0, sql);
-    ok(r == ERROR_BAD_QUERY_SYNTAX, "Expected ERROR_BAD_QUERY_SYNTAX, got %d\n", r);
+    ok(r == LIBMSI_RESULT_BAD_QUERY_SYNTAX, "Expected LIBMSI_RESULT_BAD_QUERY_SYNTAX, got %d\n", r);
 
     /* add the column again */
     sql = "ALTER TABLE `U` ADD `E` INTEGER TEMPORARY HOLD";
     r = run_query(hdb, 0, sql);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     /* up the ref count */
     sql = "ALTER TABLE `U` HOLD";
     r = run_query(hdb, 0, sql);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     sql = "INSERT INTO `U` ( `A`, `B`, `C`, `E` ) VALUES ( 13, 14, 15, 16 )";
     r = run_query(hdb, 0, sql);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     sql = "SELECT * FROM `U` WHERE `E` = 16";
     r = run_query(hdb, 0, sql);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     /* drop the ref count */
     sql = "ALTER TABLE `U` FREE";
     r = run_query(hdb, 0, sql);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     sql = "INSERT INTO `U` ( `A`, `B`, `C`, `E` ) VALUES ( 17, 18, 19, 20 )";
     r = run_query(hdb, 0, sql);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     sql = "SELECT * FROM `U` WHERE `E` = 20";
     r = run_query(hdb, 0, sql);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     /* drop the ref count */
     sql = "ALTER TABLE `U` FREE";
     r = run_query(hdb, 0, sql);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     /* table still exists */
     sql = "SELECT * FROM `U`";
     r = run_query(hdb, 0, sql);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     /* col E is removed */
     sql = "SELECT * FROM `U` WHERE `E` = 20";
     r = run_query(hdb, 0, sql);
-    ok(r == ERROR_BAD_QUERY_SYNTAX, "Expected ERROR_BAD_QUERY_SYNTAX, got %d\n", r);
+    ok(r == LIBMSI_RESULT_BAD_QUERY_SYNTAX, "Expected LIBMSI_RESULT_BAD_QUERY_SYNTAX, got %d\n", r);
 
     sql = "INSERT INTO `U` ( `A`, `B`, `C`, `E` ) VALUES ( 20, 21, 22, 23 )";
     r = run_query(hdb, 0, sql);
-    ok(r == ERROR_BAD_QUERY_SYNTAX, "Expected ERROR_BAD_QUERY_SYNTAX, got %d\n", r);
+    ok(r == LIBMSI_RESULT_BAD_QUERY_SYNTAX, "Expected LIBMSI_RESULT_BAD_QUERY_SYNTAX, got %d\n", r);
 
     /* drop the ref count once more */
     sql = "ALTER TABLE `U` FREE";
     r = run_query(hdb, 0, sql);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     /* table still exists */
     sql = "SELECT * FROM `U`";
     r = run_query(hdb, 0, sql);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     libmsi_unref( hdb );
     DeleteFile(msifile);
@@ -4166,7 +4166,7 @@ static void test_integers(void)
 
     /* just libmsi_database_open should not create a file */
     r = libmsi_database_open(msifile, LIBMSI_DB_OPEN_CREATE, &hdb);
-    ok(r == ERROR_SUCCESS, "libmsi_database_open failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_database_open failed\n");
 
     /* create a table */
     sql = "CREATE TABLE `integers` ( "
@@ -4175,21 +4175,21 @@ static void test_integers(void)
             "`seven` INTEGER NOT NULL, `eight` LONG NOT NULL "
             "PRIMARY KEY `one`)";
     r = libmsi_database_open_query(hdb, sql, &query);
-    ok(r == ERROR_SUCCESS, "libmsi_database_open_query failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_database_open_query failed\n");
     r = libmsi_query_execute(query, 0);
-    ok(r == ERROR_SUCCESS, "libmsi_query_execute failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_query_execute failed\n");
     r = libmsi_query_close(query);
-    ok(r == ERROR_SUCCESS, "libmsi_query_close failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_query_close failed\n");
     r = libmsi_unref(query);
-    ok(r == ERROR_SUCCESS, "libmsi_unref failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_unref failed\n");
 
     sql = "SELECT * FROM `integers`";
     r = libmsi_database_open_query(hdb, sql, &query);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     rec = NULL;
     r = libmsi_query_get_column_info(query, LIBMSI_COL_INFO_NAMES, &rec);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     count = libmsi_record_get_field_count(rec);
     ok(count == 8, "Expected 8, got %d\n", count);
     ok(check_record(rec, 1, "one"), "Expected one\n");
@@ -4204,7 +4204,7 @@ static void test_integers(void)
 
     rec = NULL;
     r = libmsi_query_get_column_info(query, LIBMSI_COL_INFO_TYPES, &rec);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     count = libmsi_record_get_field_count(rec);
     ok(count == 8, "Expected 8, got %d\n", count);
     ok(check_record(rec, 1, "I2"), "Expected I2\n");
@@ -4225,16 +4225,16 @@ static void test_integers(void)
     sql = "INSERT INTO `integers` ( `one`, `two`, `three`, `four`, `five`, `six`, `seven`, `eight` )"
         "VALUES('', '', '', '', '', '', '', '')";
     r = libmsi_database_open_query(hdb, sql, &query);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     r = libmsi_query_execute(query, 0);
-    ok(r == ERROR_FUNCTION_FAILED, "Expected ERROR_FUNCTION_FAILED, got %d\n", r);
+    ok(r == LIBMSI_RESULT_FUNCTION_FAILED, "Expected LIBMSI_RESULT_FUNCTION_FAILED, got %d\n", r);
 
     libmsi_query_close(query);
     libmsi_unref(query);
 
     sql = "SELECT * FROM `integers`";
     r = do_query(hdb, sql, &rec);
-    ok(r == ERROR_NO_MORE_ITEMS, "Expected ERROR_NO_MORE_ITEMS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_NO_MORE_ITEMS, "Expected LIBMSI_RESULT_NO_MORE_ITEMS, got %d\n", r);
 
     r = libmsi_record_get_field_count(rec);
     ok(r == -1, "record count wrong: %d\n", r);
@@ -4246,13 +4246,13 @@ static void test_integers(void)
     sql = "INSERT INTO `integers` ( `one`, `two`, `three`, `four`, `five`, `six`, `seven`, `eight` )"
         "VALUES('', '2', '', '4', '5', '6', '7', '8')";
     r = libmsi_database_open_query(hdb, sql, &query);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     r = libmsi_query_execute(query, 0);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     sql = "SELECT * FROM `integers`";
     r = do_query(hdb, sql, &rec);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     r = libmsi_record_get_field_count(rec);
     ok(r == 8, "record count wrong: %d\n", r);
@@ -4279,10 +4279,10 @@ static void test_integers(void)
     libmsi_unref(query);
 
     r = libmsi_database_commit(hdb);
-    ok(r == ERROR_SUCCESS, "libmsi_database_commit failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_database_commit failed\n");
 
     r = libmsi_unref(hdb);
-    ok(r == ERROR_SUCCESS, "libmsi_unref failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_unref failed\n");
 
     r = DeleteFile(msifile);
     ok(r == true, "file didn't exist after commit\n");
@@ -4300,7 +4300,7 @@ static void test_update(void)
 
     /* just libmsi_database_open should not create a file */
     r = libmsi_database_open(msifile, LIBMSI_DB_OPEN_CREATE, &hdb);
-    ok(r == ERROR_SUCCESS, "libmsi_database_open failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_database_open failed\n");
 
     /* create the Control table */
     sql = "CREATE TABLE `Control` ( "
@@ -4309,13 +4309,13 @@ static void test_update(void)
         "`Attributes` LONG, `Property` CHAR(50), `Text` CHAR(0) LOCALIZABLE, "
         "`Control_Next` CHAR(50), `Help` CHAR(50) LOCALIZABLE PRIMARY KEY `Dialog_`, `Control`)";
     r = libmsi_database_open_query(hdb, sql, &query);
-    ok(r == ERROR_SUCCESS, "libmsi_database_open_query failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_database_open_query failed\n");
     r = libmsi_query_execute(query, 0);
-    ok(r == ERROR_SUCCESS, "libmsi_query_execute failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_query_execute failed\n");
     r = libmsi_query_close(query);
-    ok(r == ERROR_SUCCESS, "libmsi_query_close failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_query_close failed\n");
     r = libmsi_unref(query);
-    ok(r == ERROR_SUCCESS, "libmsi_unref failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_unref failed\n");
 
     /* add a control */
     query = NULL;
@@ -4324,13 +4324,13 @@ static void test_update(void)
         "`Property`, `Text`, `Control_Next`, `Help` )"
         "VALUES('ErrorDialog', 'ErrorText', '1', '5', '5', '5', '5', '', '', '', '')";
     r = libmsi_database_open_query(hdb, sql, &query);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     r = libmsi_query_execute(query, 0);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     r = libmsi_query_close(query);
-    ok(r == ERROR_SUCCESS, "libmsi_query_close failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_query_close failed\n");
     r = libmsi_unref(query);
-    ok(r == ERROR_SUCCESS, "libmsi_unref failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_unref failed\n");
 
     /* add a second control */
     query = NULL;
@@ -4339,13 +4339,13 @@ static void test_update(void)
         "`Property`, `Text`, `Control_Next`, `Help` )"
         "VALUES('ErrorDialog', 'Button', '1', '5', '5', '5', '5', '', '', '', '')";
     r = libmsi_database_open_query(hdb, sql, &query);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     r = libmsi_query_execute(query, 0);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     r = libmsi_query_close(query);
-    ok(r == ERROR_SUCCESS, "libmsi_query_close failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_query_close failed\n");
     r = libmsi_unref(query);
-    ok(r == ERROR_SUCCESS, "libmsi_unref failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_unref failed\n");
 
     /* add a third control */
     query = NULL;
@@ -4354,205 +4354,205 @@ static void test_update(void)
         "`Property`, `Text`, `Control_Next`, `Help` )"
         "VALUES('AnotherDialog', 'ErrorText', '1', '5', '5', '5', '5', '', '', '', '')";
     r = libmsi_database_open_query(hdb, sql, &query);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     r = libmsi_query_execute(query, 0);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     r = libmsi_query_close(query);
-    ok(r == ERROR_SUCCESS, "libmsi_query_close failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_query_close failed\n");
     r = libmsi_unref(query);
-    ok(r == ERROR_SUCCESS, "libmsi_unref failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_unref failed\n");
 
     /* bad table */
     query = NULL;
     sql = "UPDATE `NotATable` SET `Text` = 'this is text' WHERE `Dialog_` = 'ErrorDialog'";
     r = libmsi_database_open_query(hdb, sql, &query);
-    ok(r == ERROR_BAD_QUERY_SYNTAX, "Expected ERROR_BAD_QUERY_SYNTAX, got %d\n", r);
+    ok(r == LIBMSI_RESULT_BAD_QUERY_SYNTAX, "Expected LIBMSI_RESULT_BAD_QUERY_SYNTAX, got %d\n", r);
 
     /* bad set column */
     query = NULL;
     sql = "UPDATE `Control` SET `NotAColumn` = 'this is text' WHERE `Dialog_` = 'ErrorDialog'";
     r = libmsi_database_open_query(hdb, sql, &query);
-    ok(r == ERROR_BAD_QUERY_SYNTAX, "Expected ERROR_BAD_QUERY_SYNTAX, got %d\n", r);
+    ok(r == LIBMSI_RESULT_BAD_QUERY_SYNTAX, "Expected LIBMSI_RESULT_BAD_QUERY_SYNTAX, got %d\n", r);
 
     /* bad where condition */
     query = NULL;
     sql = "UPDATE `Control` SET `Text` = 'this is text' WHERE `NotAColumn` = 'ErrorDialog'";
     r = libmsi_database_open_query(hdb, sql, &query);
-    ok(r == ERROR_BAD_QUERY_SYNTAX, "Expected ERROR_BAD_QUERY_SYNTAX, got %d\n", r);
+    ok(r == LIBMSI_RESULT_BAD_QUERY_SYNTAX, "Expected LIBMSI_RESULT_BAD_QUERY_SYNTAX, got %d\n", r);
 
     /* just the dialog_ specified */
     query = NULL;
     sql = "UPDATE `Control` SET `Text` = 'this is text' WHERE `Dialog_` = 'ErrorDialog'";
     r = libmsi_database_open_query(hdb, sql, &query);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     r = libmsi_query_execute(query, 0);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     r = libmsi_query_close(query);
-    ok(r == ERROR_SUCCESS, "libmsi_query_close failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_query_close failed\n");
     r = libmsi_unref(query);
-    ok(r == ERROR_SUCCESS, "libmsi_unref failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_unref failed\n");
 
     /* check the modified text */
     query = NULL;
     sql = "SELECT `Text` FROM `Control` WHERE `Control` = 'ErrorText'";
     r = libmsi_database_open_query(hdb, sql, &query);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     r = libmsi_query_execute(query, 0);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     r = libmsi_query_fetch(query, &rec);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     size = MAX_PATH;
     r = libmsi_record_get_string(rec, 1, result, &size);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     ok(!strcmp(result, "this is text"), "Expected `this is text`, got %s\n", result);
 
     libmsi_unref(rec);
 
     r = libmsi_query_fetch(query, &rec);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     size = MAX_PATH;
     r = libmsi_record_get_string(rec, 1, result, &size);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     ok(!strlen(result), "Expected an empty string, got %s\n", result);
 
     libmsi_unref(rec);
 
     r = libmsi_query_fetch(query, &rec);
-    ok(r == ERROR_NO_MORE_ITEMS, "Expected ERROR_NO_MORE_ITEMS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_NO_MORE_ITEMS, "Expected LIBMSI_RESULT_NO_MORE_ITEMS, got %d\n", r);
 
     r = libmsi_query_close(query);
-    ok(r == ERROR_SUCCESS, "libmsi_query_close failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_query_close failed\n");
     r = libmsi_unref(query);
-    ok(r == ERROR_SUCCESS, "libmsi_unref failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_unref failed\n");
 
     /* dialog_ and control specified */
     query = NULL;
     sql = "UPDATE `Control` SET `Text` = 'this is text' WHERE `Dialog_` = 'ErrorDialog' AND `Control` = 'ErrorText'";
     r = libmsi_database_open_query(hdb, sql, &query);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     r = libmsi_query_execute(query, 0);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     r = libmsi_query_close(query);
-    ok(r == ERROR_SUCCESS, "libmsi_query_close failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_query_close failed\n");
     r = libmsi_unref(query);
-    ok(r == ERROR_SUCCESS, "libmsi_unref failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_unref failed\n");
 
     /* check the modified text */
     query = NULL;
     sql = "SELECT `Text` FROM `Control` WHERE `Control` = 'ErrorText'";
     r = libmsi_database_open_query(hdb, sql, &query);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     r = libmsi_query_execute(query, 0);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     r = libmsi_query_fetch(query, &rec);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     size = MAX_PATH;
     r = libmsi_record_get_string(rec, 1, result, &size);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     ok(!strcmp(result, "this is text"), "Expected `this is text`, got %s\n", result);
 
     libmsi_unref(rec);
 
     r = libmsi_query_fetch(query, &rec);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     size = MAX_PATH;
     r = libmsi_record_get_string(rec, 1, result, &size);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     ok(!strlen(result), "Expected an empty string, got %s\n", result);
 
     libmsi_unref(rec);
 
     r = libmsi_query_fetch(query, &rec);
-    ok(r == ERROR_NO_MORE_ITEMS, "Expected ERROR_NO_MORE_ITEMS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_NO_MORE_ITEMS, "Expected LIBMSI_RESULT_NO_MORE_ITEMS, got %d\n", r);
 
     r = libmsi_query_close(query);
-    ok(r == ERROR_SUCCESS, "libmsi_query_close failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_query_close failed\n");
     r = libmsi_unref(query);
-    ok(r == ERROR_SUCCESS, "libmsi_unref failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_unref failed\n");
 
     /* no where condition */
     query = NULL;
     sql = "UPDATE `Control` SET `Text` = 'this is text'";
     r = libmsi_database_open_query(hdb, sql, &query);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     r = libmsi_query_execute(query, 0);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     r = libmsi_query_close(query);
-    ok(r == ERROR_SUCCESS, "libmsi_query_close failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_query_close failed\n");
     r = libmsi_unref(query);
-    ok(r == ERROR_SUCCESS, "libmsi_unref failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_unref failed\n");
 
     /* check the modified text */
     query = NULL;
     sql = "SELECT `Text` FROM `Control`";
     r = libmsi_database_open_query(hdb, sql, &query);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     r = libmsi_query_execute(query, 0);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     r = libmsi_query_fetch(query, &rec);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     size = MAX_PATH;
     r = libmsi_record_get_string(rec, 1, result, &size);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     ok(!strcmp(result, "this is text"), "Expected `this is text`, got %s\n", result);
 
     libmsi_unref(rec);
 
     r = libmsi_query_fetch(query, &rec);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     size = MAX_PATH;
     r = libmsi_record_get_string(rec, 1, result, &size);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     ok(!strcmp(result, "this is text"), "Expected `this is text`, got %s\n", result);
 
     libmsi_unref(rec);
 
     r = libmsi_query_fetch(query, &rec);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     size = MAX_PATH;
     r = libmsi_record_get_string(rec, 1, result, &size);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     ok(!strcmp(result, "this is text"), "Expected `this is text`, got %s\n", result);
 
     libmsi_unref(rec);
 
     r = libmsi_query_fetch(query, &rec);
-    ok(r == ERROR_NO_MORE_ITEMS, "Expected ERROR_NO_MORE_ITEMS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_NO_MORE_ITEMS, "Expected LIBMSI_RESULT_NO_MORE_ITEMS, got %d\n", r);
 
     r = libmsi_query_close(query);
-    ok(r == ERROR_SUCCESS, "libmsi_query_close failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_query_close failed\n");
     r = libmsi_unref(query);
-    ok(r == ERROR_SUCCESS, "libmsi_unref failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_unref failed\n");
 
     sql = "CREATE TABLE `Apple` ( `Banana` CHAR(72) NOT NULL, "
         "`Orange` CHAR(72),  `Pear` INT PRIMARY KEY `Banana`)";
     r = run_query(hdb, 0, sql);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     sql = "INSERT INTO `Apple` ( `Banana`, `Orange`, `Pear` )"
         "VALUES('one', 'two', 3)";
     r = run_query(hdb, 0, sql);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     sql = "INSERT INTO `Apple` ( `Banana`, `Orange`, `Pear` )"
         "VALUES('three', 'four', 5)";
     r = run_query(hdb, 0, sql);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     sql = "INSERT INTO `Apple` ( `Banana`, `Orange`, `Pear` )"
         "VALUES('six', 'two', 7)";
     r = run_query(hdb, 0, sql);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     rec = libmsi_record_create(2);
     libmsi_record_set_int(rec, 1, 8);
@@ -4560,19 +4560,19 @@ static void test_update(void)
 
     sql = "UPDATE `Apple` SET `Pear` = ? WHERE `Orange` = ?";
     r = run_query(hdb, rec, sql);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     libmsi_unref(rec);
 
     query = NULL;
     sql = "SELECT `Pear` FROM `Apple` ORDER BY `Orange`";
     r = libmsi_database_open_query(hdb, sql, &query);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     r = libmsi_query_execute(query, 0);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     r = libmsi_query_fetch(query, &rec);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     r = libmsi_record_get_integer(rec, 1);
     ok(r == 8, "Expected 8, got %d\n", r);
@@ -4580,7 +4580,7 @@ static void test_update(void)
     libmsi_unref(rec);
 
     r = libmsi_query_fetch(query, &rec);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     r = libmsi_record_get_integer(rec, 1);
     ok(r == 8, "Expected 8, got %d\n", r);
@@ -4588,7 +4588,7 @@ static void test_update(void)
     libmsi_unref(rec);
 
     r = libmsi_query_fetch(query, &rec);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     r = libmsi_record_get_integer(rec, 1);
     ok(r == 5, "Expected 5, got %d\n", r);
@@ -4596,15 +4596,15 @@ static void test_update(void)
     libmsi_unref(rec);
 
     r = libmsi_query_fetch(query, &rec);
-    ok(r == ERROR_NO_MORE_ITEMS, "Expectd ERROR_NO_MORE_ITEMS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_NO_MORE_ITEMS, "Expectd LIBMSI_RESULT_NO_MORE_ITEMS, got %d\n", r);
 
     libmsi_query_close(query);
     libmsi_unref(query);
 
     r = libmsi_database_commit(hdb);
-    ok(r == ERROR_SUCCESS, "libmsi_database_commit failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_database_commit failed\n");
     r = libmsi_unref(hdb);
-    ok(r == ERROR_SUCCESS, "libmsi_unref failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_unref failed\n");
 
     DeleteFile(msifile);
 }
@@ -4616,35 +4616,35 @@ static void test_special_tables(void)
     unsigned r;
 
     r = libmsi_database_open(msifile, LIBMSI_DB_OPEN_CREATE, &hdb);
-    ok(r == ERROR_SUCCESS, "libmsi_database_open failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_database_open failed\n");
 
     sql = "CREATE TABLE `_Properties` ( "
         "`foo` INT NOT NULL, `bar` INT LOCALIZABLE PRIMARY KEY `foo`)";
     r = run_query(hdb, 0, sql);
-    ok(r == ERROR_SUCCESS, "failed to create table\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "failed to create table\n");
 
     sql = "CREATE TABLE `_Storages` ( "
         "`foo` INT NOT NULL, `bar` INT LOCALIZABLE PRIMARY KEY `foo`)";
     r = run_query(hdb, 0, sql);
-    ok(r == ERROR_BAD_QUERY_SYNTAX, "created _Streams table\n");
+    ok(r == LIBMSI_RESULT_BAD_QUERY_SYNTAX, "created _Streams table\n");
 
     sql = "CREATE TABLE `_Streams` ( "
         "`foo` INT NOT NULL, `bar` INT LOCALIZABLE PRIMARY KEY `foo`)";
     r = run_query(hdb, 0, sql);
-    ok(r == ERROR_BAD_QUERY_SYNTAX, "created _Streams table\n");
+    ok(r == LIBMSI_RESULT_BAD_QUERY_SYNTAX, "created _Streams table\n");
 
     sql = "CREATE TABLE `_Tables` ( "
         "`foo` INT NOT NULL, `bar` INT LOCALIZABLE PRIMARY KEY `foo`)";
     r = run_query(hdb, 0, sql);
-    ok(r == ERROR_BAD_QUERY_SYNTAX, "created _Tables table\n");
+    ok(r == LIBMSI_RESULT_BAD_QUERY_SYNTAX, "created _Tables table\n");
 
     sql = "CREATE TABLE `_Columns` ( "
         "`foo` INT NOT NULL, `bar` INT LOCALIZABLE PRIMARY KEY `foo`)";
     r = run_query(hdb, 0, sql);
-    ok(r == ERROR_BAD_QUERY_SYNTAX, "created _Columns table\n");
+    ok(r == LIBMSI_RESULT_BAD_QUERY_SYNTAX, "created _Columns table\n");
 
     r = libmsi_unref(hdb);
-    ok(r == ERROR_SUCCESS, "libmsi_unref failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_unref failed\n");
 }
 
 static void test_tables_order(void)
@@ -4658,147 +4658,147 @@ static void test_tables_order(void)
     unsigned sz;
 
     r = libmsi_database_open(msifile, LIBMSI_DB_OPEN_CREATE, &hdb);
-    ok(r == ERROR_SUCCESS, "libmsi_database_open failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_database_open failed\n");
 
     sql = "CREATE TABLE `foo` ( "
         "`baz` INT NOT NULL PRIMARY KEY `baz`)";
     r = run_query(hdb, 0, sql);
-    ok(r == ERROR_SUCCESS, "failed to create table\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "failed to create table\n");
 
     sql = "CREATE TABLE `bar` ( "
         "`foo` INT NOT NULL PRIMARY KEY `foo`)";
     r = run_query(hdb, 0, sql);
-    ok(r == ERROR_SUCCESS, "failed to create table\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "failed to create table\n");
 
     sql = "CREATE TABLE `baz` ( "
         "`bar` INT NOT NULL, "
         "`baz` INT NOT NULL, "
         "`foo` INT NOT NULL PRIMARY KEY `bar`)";
     r = run_query(hdb, 0, sql);
-    ok(r == ERROR_SUCCESS, "failed to create table\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "failed to create table\n");
 
     /* The names of the tables in the _Tables table must
        be in the same order as these names are created in
        the strings table. */
     sql = "SELECT * FROM `_Tables`";
     r = libmsi_database_open_query(hdb, sql, &hquery);
-    ok(r == ERROR_SUCCESS, "libmsi_database_open_query failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_database_open_query failed\n");
     r = libmsi_query_execute(hquery, 0);
-    ok(r == ERROR_SUCCESS, "libmsi_query_execute failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_query_execute failed\n");
 
     r = libmsi_query_fetch(hquery, &hrec);
-    ok(r == ERROR_SUCCESS, "libmsi_query_fetch failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_query_fetch failed\n");
     sz = sizeof(buffer);
     r = libmsi_record_get_string(hrec, 1, buffer, &sz);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     ok(!strcmp(buffer, "foo"), "Expected foo, got %s\n", buffer);
     r = libmsi_unref(hrec);
-    ok(r == ERROR_SUCCESS, "failed to close record\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "failed to close record\n");
 
     r = libmsi_query_fetch(hquery, &hrec);
-    ok(r == ERROR_SUCCESS, "libmsi_query_fetch failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_query_fetch failed\n");
     sz = sizeof(buffer);
     r = libmsi_record_get_string(hrec, 1, buffer, &sz);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     ok(!strcmp(buffer, "baz"), "Expected baz, got %s\n", buffer);
     r = libmsi_unref(hrec);
-    ok(r == ERROR_SUCCESS, "failed to close record\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "failed to close record\n");
 
     r = libmsi_query_fetch(hquery, &hrec);
-    ok(r == ERROR_SUCCESS, "libmsi_query_fetch failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_query_fetch failed\n");
     sz = sizeof(buffer);
     r = libmsi_record_get_string(hrec, 1, buffer, &sz);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     ok(!strcmp(buffer, "bar"), "Expected bar, got %s\n", buffer);
     r = libmsi_unref(hrec);
-    ok(r == ERROR_SUCCESS, "failed to close record\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "failed to close record\n");
 
     r = libmsi_query_close(hquery);
-    ok(r == ERROR_SUCCESS, "libmsi_query_close failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_query_close failed\n");
     r = libmsi_unref(hquery);
-    ok(r == ERROR_SUCCESS, "libmsi_unref failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_unref failed\n");
 
     /* The names of the tables in the _Columns table must
        be in the same order as these names are created in
        the strings table. */
     sql = "SELECT * FROM `_Columns`";
     r = libmsi_database_open_query(hdb, sql, &hquery);
-    ok(r == ERROR_SUCCESS, "libmsi_database_open_query failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_database_open_query failed\n");
     r = libmsi_query_execute(hquery, 0);
-    ok(r == ERROR_SUCCESS, "libmsi_query_execute failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_query_execute failed\n");
 
     r = libmsi_query_fetch(hquery, &hrec);
-    ok(r == ERROR_SUCCESS, "libmsi_query_fetch failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_query_fetch failed\n");
     sz = sizeof(buffer);
     r = libmsi_record_get_string(hrec, 1, buffer, &sz);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     ok(!strcmp(buffer, "foo"), "Expected foo, got %s\n", buffer);
     sz = sizeof(buffer);
     r = libmsi_record_get_string(hrec, 3, buffer, &sz);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     ok(!strcmp(buffer, "baz"), "Expected baz, got %s\n", buffer);
     r = libmsi_unref(hrec);
-    ok(r == ERROR_SUCCESS, "failed to close record\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "failed to close record\n");
 
     r = libmsi_query_fetch(hquery, &hrec);
-    ok(r == ERROR_SUCCESS, "libmsi_query_fetch failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_query_fetch failed\n");
     sz = sizeof(buffer);
     r = libmsi_record_get_string(hrec, 1, buffer, &sz);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     ok(!strcmp(buffer, "baz"), "Expected baz, got %s\n", buffer);
     sz = sizeof(buffer);
     r = libmsi_record_get_string(hrec, 3, buffer, &sz);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     ok(!strcmp(buffer, "bar"), "Expected bar, got %s\n", buffer);
     r = libmsi_unref(hrec);
-    ok(r == ERROR_SUCCESS, "failed to close record\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "failed to close record\n");
 
     r = libmsi_query_fetch(hquery, &hrec);
-    ok(r == ERROR_SUCCESS, "libmsi_query_fetch failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_query_fetch failed\n");
     sz = sizeof(buffer);
     r = libmsi_record_get_string(hrec, 1, buffer, &sz);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     ok(!strcmp(buffer, "baz"), "Expected baz, got %s\n", buffer);
     sz = sizeof(buffer);
     r = libmsi_record_get_string(hrec, 3, buffer, &sz);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     ok(!strcmp(buffer, "baz"), "Expected baz, got %s\n", buffer);
     r = libmsi_unref(hrec);
-    ok(r == ERROR_SUCCESS, "failed to close record\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "failed to close record\n");
 
     r = libmsi_query_fetch(hquery, &hrec);
-    ok(r == ERROR_SUCCESS, "libmsi_query_fetch failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_query_fetch failed\n");
     sz = sizeof(buffer);
     r = libmsi_record_get_string(hrec, 1, buffer, &sz);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     ok(!strcmp(buffer, "baz"), "Expected baz, got %s\n", buffer);
     sz = sizeof(buffer);
     r = libmsi_record_get_string(hrec, 3, buffer, &sz);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     ok(!strcmp(buffer, "foo"), "Expected foo, got %s\n", buffer);
     r = libmsi_unref(hrec);
-    ok(r == ERROR_SUCCESS, "failed to close record\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "failed to close record\n");
 
     r = libmsi_query_fetch(hquery, &hrec);
-    ok(r == ERROR_SUCCESS, "libmsi_query_fetch failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_query_fetch failed\n");
     sz = sizeof(buffer);
     r = libmsi_record_get_string(hrec, 1, buffer, &sz);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     ok(!strcmp(buffer, "bar"), "Expected bar, got %s\n", buffer);
     sz = sizeof(buffer);
     r = libmsi_record_get_string(hrec, 3, buffer, &sz);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     ok(!strcmp(buffer, "foo"), "Expected foo, got %s\n", buffer);
     r = libmsi_unref(hrec);
-    ok(r == ERROR_SUCCESS, "failed to close record\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "failed to close record\n");
 
     r = libmsi_query_close(hquery);
-    ok(r == ERROR_SUCCESS, "libmsi_query_close failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_query_close failed\n");
     r = libmsi_unref(hquery);
-    ok(r == ERROR_SUCCESS, "libmsi_unref failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_unref failed\n");
 
     r = libmsi_unref(hdb);
-    ok(r == ERROR_SUCCESS, "libmsi_unref failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_unref failed\n");
 
     DeleteFile(msifile);
 }
@@ -4814,59 +4814,59 @@ static void test_rows_order(void)
     unsigned sz;
 
     r = libmsi_database_open(msifile, LIBMSI_DB_OPEN_CREATE, &hdb);
-    ok(r == ERROR_SUCCESS, "libmsi_database_open failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_database_open failed\n");
 
     sql = "CREATE TABLE `foo` ( "
         "`bar` LONGCHAR NOT NULL PRIMARY KEY `bar`)";
     r = run_query(hdb, 0, sql);
-    ok(r == ERROR_SUCCESS, "failed to create table\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "failed to create table\n");
 
     r = run_query(hdb, 0, "INSERT INTO `foo` "
             "( `bar` ) VALUES ( 'A' )");
-    ok(r == ERROR_SUCCESS, "cannot add value to table\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "cannot add value to table\n");
 
     r = run_query(hdb, 0, "INSERT INTO `foo` "
             "( `bar` ) VALUES ( 'B' )");
-    ok(r == ERROR_SUCCESS, "cannot add value to table\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "cannot add value to table\n");
 
     r = run_query(hdb, 0, "INSERT INTO `foo` "
             "( `bar` ) VALUES ( 'C' )");
-    ok(r == ERROR_SUCCESS, "cannot add value to table\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "cannot add value to table\n");
 
     r = run_query(hdb, 0, "INSERT INTO `foo` "
             "( `bar` ) VALUES ( 'D' )");
-    ok(r == ERROR_SUCCESS, "cannot add value to table\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "cannot add value to table\n");
 
     r = run_query(hdb, 0, "INSERT INTO `foo` "
             "( `bar` ) VALUES ( 'E' )");
-    ok(r == ERROR_SUCCESS, "cannot add value to table\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "cannot add value to table\n");
 
     r = run_query(hdb, 0, "INSERT INTO `foo` "
             "( `bar` ) VALUES ( 'F' )");
-    ok(r == ERROR_SUCCESS, "cannot add value to table\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "cannot add value to table\n");
 
     sql = "CREATE TABLE `bar` ( "
         "`foo` LONGCHAR NOT NULL, "
         "`baz` LONGCHAR NOT NULL "
         "PRIMARY KEY `foo` )";
     r = run_query(hdb, 0, sql);
-    ok(r == ERROR_SUCCESS, "failed to create table\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "failed to create table\n");
 
     r = run_query(hdb, 0, "INSERT INTO `bar` "
             "( `foo`, `baz` ) VALUES ( 'C', 'E' )");
-    ok(r == ERROR_SUCCESS, "cannot add value to table\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "cannot add value to table\n");
 
     r = run_query(hdb, 0, "INSERT INTO `bar` "
             "( `foo`, `baz` ) VALUES ( 'F', 'A' )");
-    ok(r == ERROR_SUCCESS, "cannot add value to table\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "cannot add value to table\n");
 
     r = run_query(hdb, 0, "INSERT INTO `bar` "
             "( `foo`, `baz` ) VALUES ( 'A', 'B' )");
-    ok(r == ERROR_SUCCESS, "cannot add value to table\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "cannot add value to table\n");
 
     r = run_query(hdb, 0, "INSERT INTO `bar` "
             "( `foo`, `baz` ) VALUES ( 'D', 'E' )");
-    ok(r == ERROR_SUCCESS, "cannot add value to table\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "cannot add value to table\n");
 
     /* The rows of the table must be ordered by the column values of
        each row. For strings, the column value is the string id
@@ -4874,69 +4874,69 @@ static void test_rows_order(void)
 
     sql = "SELECT * FROM `bar`";
     r = libmsi_database_open_query(hdb, sql, &hquery);
-    ok(r == ERROR_SUCCESS, "libmsi_database_open_query failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_database_open_query failed\n");
     r = libmsi_query_execute(hquery, 0);
-    ok(r == ERROR_SUCCESS, "libmsi_query_execute failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_query_execute failed\n");
 
     r = libmsi_query_fetch(hquery, &hrec);
-    ok(r == ERROR_SUCCESS, "libmsi_query_fetch failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_query_fetch failed\n");
     sz = sizeof(buffer);
     r = libmsi_record_get_string(hrec, 1, buffer, &sz);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     ok(!strcmp(buffer, "A"), "Expected A, got %s\n", buffer);
     sz = sizeof(buffer);
     r = libmsi_record_get_string(hrec, 2, buffer, &sz);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     ok(!strcmp(buffer, "B"), "Expected B, got %s\n", buffer);
     r = libmsi_unref(hrec);
-    ok(r == ERROR_SUCCESS, "failed to close record\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "failed to close record\n");
 
     r = libmsi_query_fetch(hquery, &hrec);
-    ok(r == ERROR_SUCCESS, "libmsi_query_fetch failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_query_fetch failed\n");
     sz = sizeof(buffer);
     r = libmsi_record_get_string(hrec, 1, buffer, &sz);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     ok(!strcmp(buffer, "C"), "Expected E, got %s\n", buffer);
     sz = sizeof(buffer);
     r = libmsi_record_get_string(hrec, 2, buffer, &sz);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     ok(!strcmp(buffer, "E"), "Expected E, got %s\n", buffer);
     r = libmsi_unref(hrec);
-    ok(r == ERROR_SUCCESS, "failed to close record\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "failed to close record\n");
 
     r = libmsi_query_fetch(hquery, &hrec);
-    ok(r == ERROR_SUCCESS, "libmsi_query_fetch failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_query_fetch failed\n");
     sz = sizeof(buffer);
     r = libmsi_record_get_string(hrec, 1, buffer, &sz);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     ok(!strcmp(buffer, "D"), "Expected D, got %s\n", buffer);
     sz = sizeof(buffer);
     r = libmsi_record_get_string(hrec, 2, buffer, &sz);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     ok(!strcmp(buffer, "E"), "Expected E, got %s\n", buffer);
     r = libmsi_unref(hrec);
-    ok(r == ERROR_SUCCESS, "failed to close record\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "failed to close record\n");
 
     r = libmsi_query_fetch(hquery, &hrec);
-    ok(r == ERROR_SUCCESS, "libmsi_query_fetch failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_query_fetch failed\n");
     sz = sizeof(buffer);
     r = libmsi_record_get_string(hrec, 1, buffer, &sz);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     ok(!strcmp(buffer, "F"), "Expected F, got %s\n", buffer);
     sz = sizeof(buffer);
     r = libmsi_record_get_string(hrec, 2, buffer, &sz);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     ok(!strcmp(buffer, "A"), "Expected A, got %s\n", buffer);
     r = libmsi_unref(hrec);
-    ok(r == ERROR_SUCCESS, "failed to close record\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "failed to close record\n");
 
     r = libmsi_query_close(hquery);
-    ok(r == ERROR_SUCCESS, "libmsi_query_close failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_query_close failed\n");
     r = libmsi_unref(hquery);
-    ok(r == ERROR_SUCCESS, "libmsi_unref failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_unref failed\n");
 
     r = libmsi_unref(hdb);
-    ok(r == ERROR_SUCCESS, "libmsi_unref failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_unref failed\n");
 
     DeleteFile(msifile);
 }
@@ -4966,130 +4966,130 @@ static void test_collation(void)
     unsigned sz;
 
     r = libmsi_database_open(msifile, LIBMSI_DB_OPEN_CREATE, &hdb);
-    ok(r == ERROR_SUCCESS, "libmsi_database_open failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_database_open failed\n");
 
     sql = "CREATE TABLE `bar` ( "
         "`foo` LONGCHAR NOT NULL, "
         "`baz` LONGCHAR NOT NULL "
         "PRIMARY KEY `foo` )";
     r = run_query(hdb, 0, sql);
-    ok(r == ERROR_SUCCESS, "failed to create table\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "failed to create table\n");
 
     r = run_query(hdb, 0, sql);
-    ok(r == ERROR_BAD_QUERY_SYNTAX, "wrong error %u\n", r);
+    ok(r == LIBMSI_RESULT_BAD_QUERY_SYNTAX, "wrong error %u\n", r);
 
     r = run_query(hdb, 0, "INSERT INTO `bar` "
             "( `foo`, `baz` ) VALUES ( '\2', 'A' )");
-    ok(r == ERROR_SUCCESS, "cannot add value to table %u\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "cannot add value to table %u\n", r);
 
     r = run_query(hdb, 0, "INSERT INTO `bar` "
             "( `foo`, `baz` ) VALUES ( '\1', 'B' )");
-    ok(r == ERROR_SUCCESS, "cannot add value to table %u\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "cannot add value to table %u\n", r);
 
     r = run_query(hdb, 0, sql1);
-    ok(r == ERROR_SUCCESS, "cannot add value to table %u\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "cannot add value to table %u\n", r);
 
     r = run_query(hdb, 0, sql2);
-    ok(r == ERROR_SUCCESS, "cannot add value to table %u\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "cannot add value to table %u\n", r);
 
     r = run_query(hdb, 0, sql3);
-    ok(r == ERROR_SUCCESS, "cannot create table %u\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "cannot create table %u\n", r);
 
     r = run_query(hdb, 0, sql4);
-    ok(r == ERROR_SUCCESS, "cannot create table %u\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "cannot create table %u\n", r);
 
     r = run_query(hdb, 0, sql5);
-    ok(r == ERROR_SUCCESS, "cannot create table %u\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "cannot create table %u\n", r);
 
     sql = "SELECT * FROM `bar`";
     r = libmsi_database_open_query(hdb, sql, &hquery);
-    ok(r == ERROR_SUCCESS, "libmsi_database_open_query failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_database_open_query failed\n");
     r = libmsi_query_execute(hquery, 0);
-    ok(r == ERROR_SUCCESS, "libmsi_query_execute failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_query_execute failed\n");
 
     r = libmsi_query_fetch(hquery, &hrec);
-    ok(r == ERROR_SUCCESS, "libmsi_query_fetch failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_query_fetch failed\n");
     sz = sizeof(buffer);
     r = libmsi_record_get_string(hrec, 1, buffer, &sz);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     ok(!strcmp(buffer, "\2"), "Expected \\2, got '%s'\n", buffer);
     sz = sizeof(buffer);
     r = libmsi_record_get_string(hrec, 2, buffer, &sz);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     ok(!strcmp(buffer, "A"), "Expected A, got '%s'\n", buffer);
     libmsi_unref(hrec);
 
     r = libmsi_query_fetch(hquery, &hrec);
-    ok(r == ERROR_SUCCESS, "libmsi_query_fetch failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_query_fetch failed\n");
     sz = sizeof(buffer);
     r = libmsi_record_get_string(hrec, 1, buffer, &sz);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     ok(!strcmp(buffer, "\1"), "Expected \\1, got '%s'\n", buffer);
     sz = sizeof(buffer);
     r = libmsi_record_get_string(hrec, 2, buffer, &sz);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     ok(!strcmp(buffer, "B"), "Expected B, got '%s'\n", buffer);
     libmsi_unref(hrec);
 
     r = libmsi_query_fetch(hquery, &hrec);
-    ok(r == ERROR_SUCCESS, "libmsi_query_fetch failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_query_fetch failed\n");
     sz = sizeof(buffer);
     r = libmsi_record_get_string(hrec, 1, buffer, &sz);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     ok(!memcmp(buffer, letter_a_ring, sizeof(letter_a_ring)),
        "Expected %s, got %s\n", letter_a_ring, buffer);
     sz = sizeof(buffer);
     r = libmsi_record_get_string(hrec, 2, buffer, &sz);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     ok(!strcmp(buffer, "C"), "Expected C, got %s\n", buffer);
     libmsi_unref(hrec);
 
     r = libmsi_query_fetch(hquery, &hrec);
-    ok(r == ERROR_SUCCESS, "libmsi_query_fetch failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_query_fetch failed\n");
     sz = sizeof(buffer);
     r = libmsi_record_get_string(hrec, 1, buffer, &sz);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     ok(!memcmp(buffer, letter_a_with_ring, sizeof(letter_a_with_ring)),
        "Expected %s, got %s\n", letter_a_with_ring, buffer);
     sz = sizeof(buffer);
     r = libmsi_record_get_string(hrec, 2, buffer, &sz);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     ok(!strcmp(buffer, "D"), "Expected D, got %s\n", buffer);
     libmsi_unref(hrec);
 
     r = libmsi_query_close(hquery);
-    ok(r == ERROR_SUCCESS, "libmsi_query_close failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_query_close failed\n");
     r = libmsi_unref(hquery);
-    ok(r == ERROR_SUCCESS, "libmsi_unref failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_unref failed\n");
 
     r = libmsi_database_open_query(hdb, sql6, &hquery);
-    ok(r == ERROR_SUCCESS, "libmsi_database_open_query failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_database_open_query failed\n");
     r = libmsi_query_execute(hquery, 0);
-    ok(r == ERROR_SUCCESS, "libmsi_query_execute failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_query_execute failed\n");
 
     r = libmsi_query_fetch(hquery, &hrec);
-    ok(r == ERROR_SUCCESS, "libmsi_query_fetch failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_query_fetch failed\n");
     sz = sizeof(buffer);
     r = libmsi_record_get_string(hrec, 1, buffer, &sz);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     ok(!memcmp(buffer, letter_a_with_ring, sizeof(letter_a_with_ring)),
        "Expected %s, got %s\n", letter_a_with_ring, buffer);
     sz = sizeof(buffer);
     r = libmsi_record_get_string(hrec, 2, buffer, &sz);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     ok(!strcmp(buffer, "D"), "Expected D, got %s\n", buffer);
     libmsi_unref(hrec);
 
     r = libmsi_query_fetch(hquery, &hrec);
-    ok(r == ERROR_NO_MORE_ITEMS, "libmsi_query_fetch failed\n");
+    ok(r == LIBMSI_RESULT_NO_MORE_ITEMS, "libmsi_query_fetch failed\n");
 
     r = libmsi_query_close(hquery);
-    ok(r == ERROR_SUCCESS, "libmsi_query_close failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_query_close failed\n");
     r = libmsi_unref(hquery);
-    ok(r == ERROR_SUCCESS, "libmsi_unref failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_unref failed\n");
 
     r = libmsi_unref(hdb);
-    ok(r == ERROR_SUCCESS, "libmsi_unref failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_unref failed\n");
 
     DeleteFile(msifile);
 }
@@ -5135,22 +5135,22 @@ static void test_select_markers(void)
     query = NULL;
     sql = "SELECT * FROM `Table` WHERE `One`=? AND `Two`=? ORDER BY `Three`";
     r = libmsi_database_open_query(hdb, sql, &query);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     r = libmsi_query_execute(query, rec);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     r = libmsi_query_fetch(query, &res);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     size = MAX_PATH;
     r = libmsi_record_get_string(res, 1, buf, &size);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     ok(!strcmp(buf, "apple"), "Expected apple, got %s\n", buf);
 
     size = MAX_PATH;
     r = libmsi_record_get_string(res, 2, buf, &size);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     ok(!strcmp(buf, "two"), "Expected two, got %s\n", buf);
 
     r = libmsi_record_get_integer(res, 3);
@@ -5159,16 +5159,16 @@ static void test_select_markers(void)
     libmsi_unref(res);
 
     r = libmsi_query_fetch(query, &res);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     size = MAX_PATH;
     r = libmsi_record_get_string(res, 1, buf, &size);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     ok(!strcmp(buf, "apple"), "Expected apple, got %s\n", buf);
 
     size = MAX_PATH;
     r = libmsi_record_get_string(res, 2, buf, &size);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     ok(!strcmp(buf, "two"), "Expected two, got %s\n", buf);
 
     r = libmsi_record_get_integer(res, 3);
@@ -5177,7 +5177,7 @@ static void test_select_markers(void)
     libmsi_unref(res);
 
     r = libmsi_query_fetch(query, &res);
-    ok(r == ERROR_NO_MORE_ITEMS, "Expected ERROR_NO_MORE_ITEMS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_NO_MORE_ITEMS, "Expected LIBMSI_RESULT_NO_MORE_ITEMS, got %d\n", r);
 
     libmsi_unref(rec);
     libmsi_query_close(query);
@@ -5190,21 +5190,21 @@ static void test_select_markers(void)
     query = NULL;
     sql = "SELECT * FROM `Table` WHERE `Two`<>? AND `Three`>? ORDER BY `Three`";
     r = libmsi_database_open_query(hdb, sql, &query);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     r = libmsi_query_execute(query, rec);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     r = libmsi_query_fetch(query, &res);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     size = MAX_PATH;
     r = libmsi_record_get_string(res, 1, buf, &size);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     ok(!strcmp(buf, "apple"), "Expected apple, got %s\n", buf);
 
     size = MAX_PATH;
     r = libmsi_record_get_string(res, 2, buf, &size);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     ok(!strcmp(buf, "two"), "Expected two, got %s\n", buf);
 
     r = libmsi_record_get_integer(res, 3);
@@ -5213,16 +5213,16 @@ static void test_select_markers(void)
     libmsi_unref(res);
 
     r = libmsi_query_fetch(query, &res);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     size = MAX_PATH;
     r = libmsi_record_get_string(res, 1, buf, &size);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     ok(!strcmp(buf, "banana"), "Expected banana, got %s\n", buf);
 
     size = MAX_PATH;
     r = libmsi_record_get_string(res, 2, buf, &size);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     ok(!strcmp(buf, "three"), "Expected three, got %s\n", buf);
 
     r = libmsi_record_get_integer(res, 3);
@@ -5231,7 +5231,7 @@ static void test_select_markers(void)
     libmsi_unref(res);
 
     r = libmsi_query_fetch(query, &res);
-    ok(r == ERROR_NO_MORE_ITEMS, "Expected ERROR_NO_MORE_ITEMS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_NO_MORE_ITEMS, "Expected LIBMSI_RESULT_NO_MORE_ITEMS, got %d\n", r);
 
     libmsi_unref(rec);
     libmsi_query_close(query);
@@ -5252,53 +5252,53 @@ static void test_querymodify_update(void)
     DeleteFile(msifile);
 
     r = libmsi_database_open(msifile, LIBMSI_DB_OPEN_CREATE, &hdb);
-    ok(r == ERROR_SUCCESS, "libmsi_database_open failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_database_open failed\n");
 
     sql = "CREATE TABLE `table` (`A` INT, `B` INT PRIMARY KEY `A`)";
     r = run_query( hdb, 0, sql );
-    ok(r == ERROR_SUCCESS, "query failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "query failed\n");
 
     sql = "INSERT INTO `table` (`A`, `B`) VALUES (1, 2)";
     r = run_query( hdb, 0, sql );
-    ok(r == ERROR_SUCCESS, "query failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "query failed\n");
 
     sql = "INSERT INTO `table` (`A`, `B`) VALUES (3, 4)";
     r = run_query( hdb, 0, sql );
-    ok(r == ERROR_SUCCESS, "query failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "query failed\n");
 
     sql = "INSERT INTO `table` (`A`, `B`) VALUES (5, 6)";
     r = run_query( hdb, 0, sql );
-    ok(r == ERROR_SUCCESS, "query failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "query failed\n");
 
     sql = "SELECT `B` FROM `table`";
     r = libmsi_database_open_query(hdb, sql, &hquery);
-    ok(r == ERROR_SUCCESS, "libmsi_database_open_query failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_database_open_query failed\n");
     r = libmsi_query_execute(hquery, 0);
-    ok(r == ERROR_SUCCESS, "libmsi_query_execute failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_query_execute failed\n");
     r = libmsi_query_fetch(hquery, &hrec);
-    ok(r == ERROR_SUCCESS, "libmsi_query_fetch failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_query_fetch failed\n");
 
     r = libmsi_record_set_int(hrec, 1, 0);
-    ok(r == ERROR_SUCCESS, "failed to set integer\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "failed to set integer\n");
 
     r = libmsi_query_modify(hquery, LIBMSI_MODIFY_UPDATE, hrec);
-    ok(r == ERROR_SUCCESS, "libmsi_query_modify failed: %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_query_modify failed: %d\n", r);
 
     r = libmsi_unref(hrec);
-    ok(r == ERROR_SUCCESS, "failed to close record\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "failed to close record\n");
 
     r = libmsi_query_close(hquery);
-    ok(r == ERROR_SUCCESS, "libmsi_query_close failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_query_close failed\n");
     r = libmsi_unref(hquery);
-    ok(r == ERROR_SUCCESS, "libmsi_unref failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_unref failed\n");
 
     sql = "SELECT * FROM `table`";
     r = libmsi_database_open_query(hdb, sql, &hquery);
-    ok(r == ERROR_SUCCESS, "libmsi_database_open_query failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_database_open_query failed\n");
     r = libmsi_query_execute(hquery, 0);
-    ok(r == ERROR_SUCCESS, "libmsi_query_execute failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_query_execute failed\n");
     r = libmsi_query_fetch(hquery, &hrec);
-    ok(r == ERROR_SUCCESS, "libmsi_query_fetch failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_query_fetch failed\n");
 
     r = libmsi_record_get_integer(hrec, 1);
     ok(r == 1, "Expected 1, got %d\n", r);
@@ -5306,10 +5306,10 @@ static void test_querymodify_update(void)
     ok(r == 0, "Expected 0, got %d\n", r);
 
     r = libmsi_unref(hrec);
-    ok(r == ERROR_SUCCESS, "failed to close record\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "failed to close record\n");
 
     r = libmsi_query_fetch(hquery, &hrec);
-    ok(r == ERROR_SUCCESS, "libmsi_query_fetch failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_query_fetch failed\n");
 
     r = libmsi_record_get_integer(hrec, 1);
     ok(r == 3, "Expected 3, got %d\n", r);
@@ -5317,10 +5317,10 @@ static void test_querymodify_update(void)
     ok(r == 4, "Expected 4, got %d\n", r);
 
     r = libmsi_unref(hrec);
-    ok(r == ERROR_SUCCESS, "failed to close record\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "failed to close record\n");
 
     r = libmsi_query_fetch(hquery, &hrec);
-    ok(r == ERROR_SUCCESS, "libmsi_query_fetch failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_query_fetch failed\n");
 
     r = libmsi_record_get_integer(hrec, 1);
     ok(r == 5, "Expected 5, got %d\n", r);
@@ -5328,51 +5328,51 @@ static void test_querymodify_update(void)
     ok(r == 6, "Expected 6, got %d\n", r);
 
     r = libmsi_unref(hrec);
-    ok(r == ERROR_SUCCESS, "failed to close record\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "failed to close record\n");
 
     r = libmsi_query_fetch(hquery, &hrec);
-    ok(r == ERROR_NO_MORE_ITEMS, "Expected ERROR_NO_MORE_ITEMS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_NO_MORE_ITEMS, "Expected LIBMSI_RESULT_NO_MORE_ITEMS, got %d\n", r);
 
     r = libmsi_query_close(hquery);
-    ok(r == ERROR_SUCCESS, "libmsi_query_close failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_query_close failed\n");
     r = libmsi_unref(hquery);
-    ok(r == ERROR_SUCCESS, "libmsi_unref failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_unref failed\n");
 
     /* loop through all elements */
     sql = "SELECT `B` FROM `table`";
     r = libmsi_database_open_query(hdb, sql, &hquery);
-    ok(r == ERROR_SUCCESS, "libmsi_database_open_query failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_database_open_query failed\n");
     r = libmsi_query_execute(hquery, 0);
-    ok(r == ERROR_SUCCESS, "libmsi_query_execute failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_query_execute failed\n");
 
     while (true)
     {
         r = libmsi_query_fetch(hquery, &hrec);
-        if (r != ERROR_SUCCESS)
+        if (r != LIBMSI_RESULT_SUCCESS)
             break;
 
         r = libmsi_record_set_int(hrec, 1, 0);
-        ok(r == ERROR_SUCCESS, "failed to set integer\n");
+        ok(r == LIBMSI_RESULT_SUCCESS, "failed to set integer\n");
 
         r = libmsi_query_modify(hquery, LIBMSI_MODIFY_UPDATE, hrec);
-        ok(r == ERROR_SUCCESS, "libmsi_query_modify failed: %d\n", r);
+        ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_query_modify failed: %d\n", r);
 
         r = libmsi_unref(hrec);
-        ok(r == ERROR_SUCCESS, "failed to close record\n");
+        ok(r == LIBMSI_RESULT_SUCCESS, "failed to close record\n");
     }
 
     r = libmsi_query_close(hquery);
-    ok(r == ERROR_SUCCESS, "libmsi_query_close failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_query_close failed\n");
     r = libmsi_unref(hquery);
-    ok(r == ERROR_SUCCESS, "libmsi_unref failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_unref failed\n");
 
     sql = "SELECT * FROM `table`";
     r = libmsi_database_open_query(hdb, sql, &hquery);
-    ok(r == ERROR_SUCCESS, "libmsi_database_open_query failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_database_open_query failed\n");
     r = libmsi_query_execute(hquery, 0);
-    ok(r == ERROR_SUCCESS, "libmsi_query_execute failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_query_execute failed\n");
     r = libmsi_query_fetch(hquery, &hrec);
-    ok(r == ERROR_SUCCESS, "libmsi_query_fetch failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_query_fetch failed\n");
 
     r = libmsi_record_get_integer(hrec, 1);
     ok(r == 1, "Expected 1, got %d\n", r);
@@ -5380,10 +5380,10 @@ static void test_querymodify_update(void)
     ok(r == 0, "Expected 0, got %d\n", r);
 
     r = libmsi_unref(hrec);
-    ok(r == ERROR_SUCCESS, "failed to close record\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "failed to close record\n");
 
     r = libmsi_query_fetch(hquery, &hrec);
-    ok(r == ERROR_SUCCESS, "libmsi_query_fetch failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_query_fetch failed\n");
 
     r = libmsi_record_get_integer(hrec, 1);
     ok(r == 3, "Expected 3, got %d\n", r);
@@ -5391,10 +5391,10 @@ static void test_querymodify_update(void)
     ok(r == 0, "Expected 0, got %d\n", r);
 
     r = libmsi_unref(hrec);
-    ok(r == ERROR_SUCCESS, "failed to close record\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "failed to close record\n");
 
     r = libmsi_query_fetch(hquery, &hrec);
-    ok(r == ERROR_SUCCESS, "libmsi_query_fetch failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_query_fetch failed\n");
 
     r = libmsi_record_get_integer(hrec, 1);
     ok(r == 5, "Expected 5, got %d\n", r);
@@ -5402,23 +5402,23 @@ static void test_querymodify_update(void)
     ok(r == 0, "Expected 0, got %d\n", r);
 
     r = libmsi_unref(hrec);
-    ok(r == ERROR_SUCCESS, "failed to close record\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "failed to close record\n");
 
     r = libmsi_query_fetch(hquery, &hrec);
-    ok(r == ERROR_NO_MORE_ITEMS, "Expected ERROR_NO_MORE_ITEMS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_NO_MORE_ITEMS, "Expected LIBMSI_RESULT_NO_MORE_ITEMS, got %d\n", r);
 
     r = libmsi_query_close(hquery);
-    ok(r == ERROR_SUCCESS, "libmsi_query_close failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_query_close failed\n");
     r = libmsi_unref(hquery);
-    ok(r == ERROR_SUCCESS, "libmsi_unref failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_unref failed\n");
 
     sql = "CREATE TABLE `table2` (`A` INT, `B` INT PRIMARY KEY `A`)";
     r = run_query( hdb, 0, sql );
-    ok(r == ERROR_SUCCESS, "query failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "query failed\n");
 
     sql = "INSERT INTO `table2` (`A`, `B`) VALUES (?, ?)";
     r = libmsi_database_open_query( hdb, sql, &hquery );
-    ok(r == ERROR_SUCCESS, "libmsi_database_open_query failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_database_open_query failed\n");
 
     test_max = 100;
     offset = 1234;
@@ -5430,55 +5430,55 @@ static void test_querymodify_update(void)
         libmsi_record_set_int( hrec, 2, i );
 
         r = libmsi_query_execute( hquery, hrec );
-        ok(r == ERROR_SUCCESS, "Got %d\n", r);
+        ok(r == LIBMSI_RESULT_SUCCESS, "Got %d\n", r);
 
         r = libmsi_unref( hrec );
-        ok(r == ERROR_SUCCESS, "Got %d\n", r);
+        ok(r == LIBMSI_RESULT_SUCCESS, "Got %d\n", r);
     }
 
     r = libmsi_query_close( hquery );
-    ok(r == ERROR_SUCCESS, "Got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Got %d\n", r);
     r = libmsi_unref( hquery );
-    ok(r == ERROR_SUCCESS, "Got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Got %d\n", r);
 
     /* Update. */
     sql = "SELECT * FROM `table2` ORDER BY `B`";
     r = libmsi_database_open_query( hdb, sql, &hquery);
-    ok(r == ERROR_SUCCESS, "libmsi_database_open_query failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_database_open_query failed\n");
     r = libmsi_query_execute( hquery, 0 );
-    ok(r == ERROR_SUCCESS, "libmsi_query_execute failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_query_execute failed\n");
 
     count = 0;
-    while (libmsi_query_fetch( hquery, &hrec ) == ERROR_SUCCESS)
+    while (libmsi_query_fetch( hquery, &hrec ) == LIBMSI_RESULT_SUCCESS)
     {
         unsigned b = libmsi_record_get_integer( hrec, 2 );
 
         r = libmsi_record_set_int( hrec, 2, b + offset);
-        ok(r == ERROR_SUCCESS, "Got %d\n", r);
+        ok(r == LIBMSI_RESULT_SUCCESS, "Got %d\n", r);
 
         r = libmsi_query_modify( hquery, LIBMSI_MODIFY_UPDATE, hrec );
-        ok(r == ERROR_SUCCESS, "Got %d\n", r);
+        ok(r == LIBMSI_RESULT_SUCCESS, "Got %d\n", r);
 
         r = libmsi_unref(hrec);
-        ok(r == ERROR_SUCCESS, "failed to close record\n");
+        ok(r == LIBMSI_RESULT_SUCCESS, "failed to close record\n");
         count++;
     }
     ok(count == test_max, "Got count %d\n", count);
 
     r = libmsi_query_close(hquery);
-    ok(r == ERROR_SUCCESS, "libmsi_query_close failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_query_close failed\n");
     r = libmsi_unref(hquery);
-    ok(r == ERROR_SUCCESS, "libmsi_unref failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_unref failed\n");
 
     /* Recheck. */
     sql = "SELECT * FROM `table2` ORDER BY `B`";
     r = libmsi_database_open_query( hdb, sql, &hquery);
-    ok(r == ERROR_SUCCESS, "libmsi_database_open_query failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_database_open_query failed\n");
     r = libmsi_query_execute( hquery, 0 );
-    ok(r == ERROR_SUCCESS, "libmsi_query_execute failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_query_execute failed\n");
 
     count = 0;
-    while (libmsi_query_fetch( hquery, &hrec ) == ERROR_SUCCESS)
+    while (libmsi_query_fetch( hquery, &hrec ) == LIBMSI_RESULT_SUCCESS)
     {
         unsigned a = libmsi_record_get_integer( hrec, 1 );
         unsigned b = libmsi_record_get_integer( hrec, 2 );
@@ -5486,18 +5486,18 @@ static void test_querymodify_update(void)
             a, b, test_max - a + offset, b);
 
         r = libmsi_unref(hrec);
-        ok(r == ERROR_SUCCESS, "failed to close record\n");
+        ok(r == LIBMSI_RESULT_SUCCESS, "failed to close record\n");
         count++;
     }
     ok(count == test_max, "Got count %d\n", count);
 
     r = libmsi_query_close(hquery);
-    ok(r == ERROR_SUCCESS, "libmsi_query_close failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_query_close failed\n");
     r = libmsi_unref(hquery);
-    ok(r == ERROR_SUCCESS, "libmsi_unref failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_unref failed\n");
 
     r = libmsi_unref( hdb );
-    ok(r == ERROR_SUCCESS, "libmsi_database_open close failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_database_open close failed\n");
 }
 
 static void test_querymodify_assign(void)
@@ -5512,45 +5512,45 @@ static void test_querymodify_assign(void)
     DeleteFile(msifile);
 
     r = libmsi_database_open(msifile, LIBMSI_DB_OPEN_CREATE, &hdb);
-    ok(r == ERROR_SUCCESS, "libmsi_database_open failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_database_open failed\n");
 
     sql = "CREATE TABLE `table` (`A` INT, `B` INT PRIMARY KEY `A`)";
     r = run_query( hdb, 0, sql );
-    ok(r == ERROR_SUCCESS, "query failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "query failed\n");
 
     /* assign to query, new primary key */
     sql = "SELECT * FROM `table`";
     r = libmsi_database_open_query(hdb, sql, &hquery);
-    ok(r == ERROR_SUCCESS, "libmsi_database_open_query failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_database_open_query failed\n");
     r = libmsi_query_execute(hquery, 0);
-    ok(r == ERROR_SUCCESS, "libmsi_query_execute failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_query_execute failed\n");
 
     hrec = libmsi_record_create(2);
     ok(hrec != 0, "libmsi_record_create failed\n");
 
     r = libmsi_record_set_int(hrec, 1, 1);
-    ok(r == ERROR_SUCCESS, "failed to set integer\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "failed to set integer\n");
     r = libmsi_record_set_int(hrec, 2, 2);
-    ok(r == ERROR_SUCCESS, "failed to set integer\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "failed to set integer\n");
 
     r = libmsi_query_modify(hquery, LIBMSI_MODIFY_ASSIGN, hrec);
-    ok(r == ERROR_SUCCESS, "libmsi_query_modify failed: %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_query_modify failed: %d\n", r);
 
     r = libmsi_unref(hrec);
-    ok(r == ERROR_SUCCESS, "failed to close record\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "failed to close record\n");
 
     r = libmsi_query_close(hquery);
-    ok(r == ERROR_SUCCESS, "libmsi_query_close failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_query_close failed\n");
     r = libmsi_unref(hquery);
-    ok(r == ERROR_SUCCESS, "libmsi_unref failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_unref failed\n");
 
     sql = "SELECT * FROM `table`";
     r = libmsi_database_open_query(hdb, sql, &hquery);
-    ok(r == ERROR_SUCCESS, "libmsi_database_open_query failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_database_open_query failed\n");
     r = libmsi_query_execute(hquery, 0);
-    ok(r == ERROR_SUCCESS, "libmsi_query_execute failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_query_execute failed\n");
     r = libmsi_query_fetch(hquery, &hrec);
-    ok(r == ERROR_SUCCESS, "libmsi_query_fetch failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_query_fetch failed\n");
 
     r = libmsi_record_get_integer(hrec, 1);
     ok(r == 1, "Expected 1, got %d\n", r);
@@ -5558,49 +5558,49 @@ static void test_querymodify_assign(void)
     ok(r == 2, "Expected 2, got %d\n", r);
 
     r = libmsi_unref(hrec);
-    ok(r == ERROR_SUCCESS, "failed to close record\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "failed to close record\n");
 
     r = libmsi_query_fetch(hquery, &hrec);
-    ok(r == ERROR_NO_MORE_ITEMS, "Expected ERROR_NO_MORE_ITEMS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_NO_MORE_ITEMS, "Expected LIBMSI_RESULT_NO_MORE_ITEMS, got %d\n", r);
 
     r = libmsi_query_close(hquery);
-    ok(r == ERROR_SUCCESS, "libmsi_query_close failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_query_close failed\n");
     r = libmsi_unref(hquery);
-    ok(r == ERROR_SUCCESS, "libmsi_unref failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_unref failed\n");
 
     /* assign to query, primary key matches */
     sql = "SELECT * FROM `table`";
     r = libmsi_database_open_query(hdb, sql, &hquery);
-    ok(r == ERROR_SUCCESS, "libmsi_database_open_query failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_database_open_query failed\n");
     r = libmsi_query_execute(hquery, 0);
-    ok(r == ERROR_SUCCESS, "libmsi_query_execute failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_query_execute failed\n");
 
     hrec = libmsi_record_create(2);
     ok(hrec != 0, "libmsi_record_create failed\n");
 
     r = libmsi_record_set_int(hrec, 1, 1);
-    ok(r == ERROR_SUCCESS, "failed to set integer\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "failed to set integer\n");
     r = libmsi_record_set_int(hrec, 2, 4);
-    ok(r == ERROR_SUCCESS, "failed to set integer\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "failed to set integer\n");
 
     r = libmsi_query_modify(hquery, LIBMSI_MODIFY_ASSIGN, hrec);
-    ok(r == ERROR_SUCCESS, "libmsi_query_modify failed: %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_query_modify failed: %d\n", r);
 
     r = libmsi_unref(hrec);
-    ok(r == ERROR_SUCCESS, "failed to close record\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "failed to close record\n");
 
     r = libmsi_query_close(hquery);
-    ok(r == ERROR_SUCCESS, "libmsi_query_close failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_query_close failed\n");
     r = libmsi_unref(hquery);
-    ok(r == ERROR_SUCCESS, "libmsi_unref failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_unref failed\n");
 
     sql = "SELECT * FROM `table`";
     r = libmsi_database_open_query(hdb, sql, &hquery);
-    ok(r == ERROR_SUCCESS, "libmsi_database_open_query failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_database_open_query failed\n");
     r = libmsi_query_execute(hquery, 0);
-    ok(r == ERROR_SUCCESS, "libmsi_query_execute failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_query_execute failed\n");
     r = libmsi_query_fetch(hquery, &hrec);
-    ok(r == ERROR_SUCCESS, "libmsi_query_fetch failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_query_fetch failed\n");
 
     r = libmsi_record_get_integer(hrec, 1);
     ok(r == 1, "Expected 1, got %d\n", r);
@@ -5608,19 +5608,19 @@ static void test_querymodify_assign(void)
     ok(r == 4, "Expected 4, got %d\n", r);
 
     r = libmsi_unref(hrec);
-    ok(r == ERROR_SUCCESS, "failed to close record\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "failed to close record\n");
 
     r = libmsi_query_fetch(hquery, &hrec);
-    ok(r == ERROR_NO_MORE_ITEMS, "Expected ERROR_NO_MORE_ITEMS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_NO_MORE_ITEMS, "Expected LIBMSI_RESULT_NO_MORE_ITEMS, got %d\n", r);
 
     r = libmsi_query_close(hquery);
-    ok(r == ERROR_SUCCESS, "libmsi_query_close failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_query_close failed\n");
     r = libmsi_unref(hquery);
-    ok(r == ERROR_SUCCESS, "libmsi_unref failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_unref failed\n");
 
     /* close database */
     r = libmsi_unref( hdb );
-    ok(r == ERROR_SUCCESS, "libmsi_database_open close failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_database_open close failed\n");
 }
 
 static const WCHAR data10[] = { /* MOO */
@@ -5676,79 +5676,79 @@ static void test_stringtable(void)
     DeleteFile(msifile);
 
     r = libmsi_database_open(msifile, LIBMSI_DB_OPEN_CREATE, &hdb);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     sql = "CREATE TABLE `MOO` (`A` INT, `B` CHAR(72) PRIMARY KEY `A`)";
     r = run_query(hdb, 0, sql);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     sql = "CREATE TABLE `AAR` (`C` INT, `D` CHAR(72) PRIMARY KEY `C`)";
     r = run_query(hdb, 0, sql);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     /* insert persistent row */
     sql = "INSERT INTO `MOO` (`A`, `B`) VALUES (1, 'one')";
     r = run_query(hdb, 0, sql);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     /* insert persistent row */
     sql = "INSERT INTO `AAR` (`C`, `D`) VALUES (2, 'two')";
     r = run_query(hdb, 0, sql);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     /* open a query */
     sql = "SELECT * FROM `MOO`";
     r = libmsi_database_open_query(hdb, sql, &hquery);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     r = libmsi_query_execute(hquery, 0);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     hrec = libmsi_record_create(2);
 
     r = libmsi_record_set_int(hrec, 1, 3);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     r = libmsi_record_set_string(hrec, 2, "three");
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     /* insert a nonpersistent row */
     r = libmsi_query_modify(hquery, LIBMSI_MODIFY_INSERT_TEMPORARY, hrec);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     r = libmsi_unref(hrec);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     r = libmsi_query_close(hquery);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     r = libmsi_unref(hquery);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     /* insert persistent row */
     sql = "INSERT INTO `MOO` (`A`, `B`) VALUES (4, 'four')";
     r = run_query(hdb, 0, sql);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     /* insert persistent row */
     sql = "INSERT INTO `AAR` (`C`, `D`) VALUES (5, 'five')";
     r = run_query(hdb, 0, sql);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     r = libmsi_database_commit(hdb);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     r = libmsi_unref(hdb);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     r = libmsi_database_open(msifile, LIBMSI_DB_OPEN_READONLY, &hdb);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     sql = "SELECT * FROM `MOO`";
     r = libmsi_database_open_query(hdb, sql, &hquery);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     r = libmsi_query_execute(hquery, 0);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     r = libmsi_query_fetch(hquery, &hrec);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     r = libmsi_record_get_field_count(hrec);
     ok(r == 2, "Expected 2, got %d\n", r);
@@ -5758,31 +5758,31 @@ static void test_stringtable(void)
 
     sz = sizeof(buffer);
     r = libmsi_record_get_string(hrec, 2, buffer, &sz);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     ok(!strcmp(buffer, "one"), "Expected one, got '%s'\n", buffer);
 
     r = libmsi_unref(hrec);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     r = libmsi_query_fetch(hquery, &hrec);
-    ok(r == ERROR_NO_MORE_ITEMS, "Expected ERROR_NO_MORE_ITEMS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_NO_MORE_ITEMS, "Expected LIBMSI_RESULT_NO_MORE_ITEMS, got %d\n", r);
 
     r = libmsi_query_close(hquery);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     r = libmsi_unref(hquery);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     r = libmsi_unref(hrec);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     sql = "SELECT * FROM `AAR`";
     r = libmsi_database_open_query(hdb, sql, &hquery);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     r = libmsi_query_execute(hquery, 0);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     r = libmsi_query_fetch(hquery, &hrec);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     r = libmsi_record_get_field_count(hrec);
     ok(r == 2, "Expected 2, got %d\n", r);
@@ -5792,14 +5792,14 @@ static void test_stringtable(void)
 
     sz = sizeof(buffer);
     r = libmsi_record_get_string(hrec, 2, buffer, &sz);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     ok(!strcmp(buffer, "two"), "Expected two, got '%s'\n", buffer);
 
     r = libmsi_unref(hrec);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     r = libmsi_query_fetch(hquery, &hrec);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     r = libmsi_record_get_field_count(hrec);
     ok(r == 2, "Expected 2, got %d\n", r);
@@ -5809,23 +5809,23 @@ static void test_stringtable(void)
 
     sz = sizeof(buffer);
     r = libmsi_record_get_string(hrec, 2, buffer, &sz);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     ok(!strcmp(buffer, "five"), "Expected five, got '%s'\n", buffer);
 
     r = libmsi_unref(hrec);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     r = libmsi_query_fetch(hquery, &hrec);
-    ok(r == ERROR_NO_MORE_ITEMS, "Expected ERROR_NO_MORE_ITEMS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_NO_MORE_ITEMS, "Expected LIBMSI_RESULT_NO_MORE_ITEMS, got %d\n", r);
 
     r = libmsi_query_close(hquery);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     r = libmsi_unref(hquery);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     r = libmsi_unref(hrec);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     r = libmsi_unref(hdb);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     MultiByteToWideChar(CP_ACP, 0, msifile, -1, name, 0x20);
     hr = StgOpenStorage(name, NULL, mode, NULL, 0, &stg);
@@ -5906,90 +5906,90 @@ static void test_querymodify_delete(void)
 
     /* just libmsi_database_open should not create a file */
     r = libmsi_database_open(msifile, LIBMSI_DB_OPEN_CREATE, &hdb);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     sql = "CREATE TABLE `phone` ( "
             "`id` INT, `name` CHAR(32), `number` CHAR(32) "
             "PRIMARY KEY `id`)";
     r = run_query(hdb, 0, sql);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     sql = "INSERT INTO `phone` ( `id`, `name`, `number` )"
         "VALUES('1', 'Alan', '5030581')";
     r = run_query(hdb, 0, sql);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     sql = "INSERT INTO `phone` ( `id`, `name`, `number` )"
         "VALUES('2', 'Barry', '928440')";
     r = run_query(hdb, 0, sql);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     sql = "INSERT INTO `phone` ( `id`, `name`, `number` )"
         "VALUES('3', 'Cindy', '2937550')";
     r = run_query(hdb, 0, sql);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     sql = "SELECT * FROM `phone` WHERE `id` <= 2";
     r = libmsi_database_open_query(hdb, sql, &hquery);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     r = libmsi_query_execute(hquery, 0);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     r = libmsi_query_fetch(hquery, &hrec);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     /* delete 1 */
     r = libmsi_query_modify(hquery, LIBMSI_MODIFY_DELETE, hrec);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     r = libmsi_unref(hrec);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     r = libmsi_query_fetch(hquery, &hrec);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     /* delete 2 */
     r = libmsi_query_modify(hquery, LIBMSI_MODIFY_DELETE, hrec);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     r = libmsi_unref(hrec);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     r = libmsi_query_close(hquery);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     r = libmsi_unref(hquery);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     sql = "SELECT * FROM `phone`";
     r = libmsi_database_open_query(hdb, sql, &hquery);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     r = libmsi_query_execute(hquery, 0);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     r = libmsi_query_fetch(hquery, &hrec);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     r = libmsi_record_get_integer(hrec, 1);
     ok(r == 3, "Expected 3, got %d\n", r);
 
     sz = sizeof(buffer);
     r = libmsi_record_get_string(hrec, 2, buffer, &sz);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     ok(!strcmp(buffer, "Cindy"), "Expected Cindy, got %s\n", buffer);
 
     sz = sizeof(buffer);
     r = libmsi_record_get_string(hrec, 3, buffer, &sz);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     ok(!strcmp(buffer, "2937550"), "Expected 2937550, got %s\n", buffer);
 
     r = libmsi_unref(hrec);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     r = libmsi_query_fetch(hquery, &hrec);
-    ok(r == ERROR_NO_MORE_ITEMS, "Expected ERROR_NO_MORE_ITEMS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_NO_MORE_ITEMS, "Expected LIBMSI_RESULT_NO_MORE_ITEMS, got %d\n", r);
 
     r = libmsi_query_close(hquery);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     r = libmsi_unref(hquery);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     r = libmsi_unref(hdb);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 }
 
 static const WCHAR _Tables[] = {0x4840, 0x3f7f, 0x4164, 0x422f, 0x4836, 0};
@@ -6080,10 +6080,10 @@ static void test_defaultdatabase(void)
     DeleteFile(msifile);
 
     r = libmsi_database_open(msifile, LIBMSI_DB_OPEN_CREATE, &hdb);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     r = libmsi_database_commit(hdb);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     libmsi_unref(hdb);
 
@@ -6112,48 +6112,48 @@ static void test_order(void)
 
     sql = "CREATE TABLE `Empty` ( `A` SHORT NOT NULL PRIMARY KEY `A`)";
     r = run_query(hdb, 0, sql);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     sql = "CREATE TABLE `Mesa` ( `A` SHORT NOT NULL, `B` SHORT, `C` SHORT PRIMARY KEY `A`)";
     r = run_query(hdb, 0, sql);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     sql = "INSERT INTO `Mesa` ( `A`, `B`, `C` ) VALUES ( 1, 2, 9 )";
     r = run_query(hdb, 0, sql);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     sql = "INSERT INTO `Mesa` ( `A`, `B`, `C` ) VALUES ( 3, 4, 7 )";
     r = run_query(hdb, 0, sql);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     sql = "INSERT INTO `Mesa` ( `A`, `B`, `C` ) VALUES ( 5, 6, 8 )";
     r = run_query(hdb, 0, sql);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     sql = "CREATE TABLE `Sideboard` ( `D` SHORT NOT NULL, `E` SHORT, `F` SHORT PRIMARY KEY `D`)";
     r = run_query(hdb, 0, sql);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     sql = "INSERT INTO `Sideboard` ( `D`, `E`, `F` ) VALUES ( 10, 11, 18 )";
     r = run_query(hdb, 0, sql);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     sql = "INSERT INTO `Sideboard` ( `D`, `E`, `F` ) VALUES ( 12, 13, 16 )";
     r = run_query(hdb, 0, sql);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     sql = "INSERT INTO `Sideboard` ( `D`, `E`, `F` ) VALUES ( 14, 15, 17 )";
     r = run_query(hdb, 0, sql);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     sql = "SELECT `A`, `B` FROM `Mesa` ORDER BY `C`";
     r = libmsi_database_open_query(hdb, sql, &hquery);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     r = libmsi_query_execute(hquery, 0);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     r = libmsi_query_fetch(hquery, &hrec);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     val = libmsi_record_get_integer(hrec, 1);
     ok(val == 3, "Expected 3, got %d\n", val);
@@ -6164,7 +6164,7 @@ static void test_order(void)
     libmsi_unref(hrec);
 
     r = libmsi_query_fetch(hquery, &hrec);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     val = libmsi_record_get_integer(hrec, 1);
     ok(val == 5, "Expected 5, got %d\n", val);
@@ -6175,7 +6175,7 @@ static void test_order(void)
     libmsi_unref(hrec);
 
     r = libmsi_query_fetch(hquery, &hrec);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     val = libmsi_record_get_integer(hrec, 1);
     ok(val == 1, "Expected 1, got %d\n", val);
@@ -6186,19 +6186,19 @@ static void test_order(void)
     libmsi_unref(hrec);
 
     r = libmsi_query_fetch(hquery, &hrec);
-    ok(r == ERROR_NO_MORE_ITEMS, "Expected ERROR_NO_MORE_ITEMS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_NO_MORE_ITEMS, "Expected LIBMSI_RESULT_NO_MORE_ITEMS, got %d\n", r);
 
     libmsi_query_close(hquery);
     libmsi_unref(hquery);
 
     sql = "SELECT `A`, `D` FROM `Mesa`, `Sideboard` ORDER BY `F`";
     r = libmsi_database_open_query(hdb, sql, &hquery);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     r = libmsi_query_execute(hquery, 0);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     r = libmsi_query_fetch(hquery, &hrec);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     val = libmsi_record_get_integer(hrec, 1);
     ok(val == 1, "Expected 1, got %d\n", val);
@@ -6209,7 +6209,7 @@ static void test_order(void)
     libmsi_unref(hrec);
 
     r = libmsi_query_fetch(hquery, &hrec);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     val = libmsi_record_get_integer(hrec, 1);
     ok(val == 3, "Expected 3, got %d\n", val);
@@ -6220,7 +6220,7 @@ static void test_order(void)
     libmsi_unref(hrec);
 
     r = libmsi_query_fetch(hquery, &hrec);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     val = libmsi_record_get_integer(hrec, 1);
     ok(val == 5, "Expected 5, got %d\n", val);
@@ -6231,7 +6231,7 @@ static void test_order(void)
     libmsi_unref(hrec);
 
     r = libmsi_query_fetch(hquery, &hrec);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     val = libmsi_record_get_integer(hrec, 1);
     ok(val == 1, "Expected 1, got %d\n", val);
@@ -6242,7 +6242,7 @@ static void test_order(void)
     libmsi_unref(hrec);
 
     r = libmsi_query_fetch(hquery, &hrec);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     val = libmsi_record_get_integer(hrec, 1);
     ok(val == 3, "Expected 3, got %d\n", val);
@@ -6253,7 +6253,7 @@ static void test_order(void)
     libmsi_unref(hrec);
 
     r = libmsi_query_fetch(hquery, &hrec);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     val = libmsi_record_get_integer(hrec, 1);
     ok(val == 5, "Expected 5, got %d\n", val);
@@ -6264,7 +6264,7 @@ static void test_order(void)
     libmsi_unref(hrec);
 
     r = libmsi_query_fetch(hquery, &hrec);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     val = libmsi_record_get_integer(hrec, 1);
     ok(val == 1, "Expected 1, got %d\n", val);
@@ -6275,7 +6275,7 @@ static void test_order(void)
     libmsi_unref(hrec);
 
     r = libmsi_query_fetch(hquery, &hrec);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     val = libmsi_record_get_integer(hrec, 1);
     ok(val == 3, "Expected 3, got %d\n", val);
@@ -6286,7 +6286,7 @@ static void test_order(void)
     libmsi_unref(hrec);
 
     r = libmsi_query_fetch(hquery, &hrec);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     val = libmsi_record_get_integer(hrec, 1);
     ok(val == 5, "Expected 5, got %d\n", val);
@@ -6297,51 +6297,51 @@ static void test_order(void)
     libmsi_unref(hrec);
 
     r = libmsi_query_fetch(hquery, &hrec);
-    ok(r == ERROR_NO_MORE_ITEMS, "Expected ERROR_NO_MORE_ITEMS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_NO_MORE_ITEMS, "Expected LIBMSI_RESULT_NO_MORE_ITEMS, got %d\n", r);
 
     libmsi_query_close(hquery);
     libmsi_unref(hquery);
 
     sql = "SELECT * FROM `Empty` ORDER BY `A`";
     r = libmsi_database_open_query(hdb, sql, &hquery);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     r = libmsi_query_execute(hquery, 0);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     r = libmsi_query_fetch(hquery, &hrec);
-    ok(r == ERROR_NO_MORE_ITEMS, "Expected ERROR_NO_MORE_ITEMS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_NO_MORE_ITEMS, "Expected LIBMSI_RESULT_NO_MORE_ITEMS, got %d\n", r);
 
     libmsi_query_close(hquery);
     libmsi_unref(hquery);
 
     sql = "CREATE TABLE `Buffet` ( `One` CHAR(72), `Two` SHORT PRIMARY KEY `One`)";
     r = run_query(hdb, 0, sql);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     sql = "INSERT INTO `Buffet` ( `One`, `Two` ) VALUES ( 'uno',  2)";
     r = run_query(hdb, 0, sql);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     sql = "INSERT INTO `Buffet` ( `One`, `Two` ) VALUES ( 'dos',  3)";
     r = run_query(hdb, 0, sql);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     sql = "INSERT INTO `Buffet` ( `One`, `Two` ) VALUES ( 'tres',  1)";
     r = run_query(hdb, 0, sql);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     sql = "SELECT * FROM `Buffet` WHERE `One` = 'dos' ORDER BY `Two`";
     r = libmsi_database_open_query(hdb, sql, &hquery);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     r = libmsi_query_execute(hquery, 0);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     r = libmsi_query_fetch(hquery, &hrec);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     sz = sizeof(buffer);
     r = libmsi_record_get_string(hrec, 1, buffer, &sz);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     ok(!strcmp(buffer, "dos"), "Expected \"dos\", got \"%s\"\n", buffer);
 
     r = libmsi_record_get_integer(hrec, 2);
@@ -6350,7 +6350,7 @@ static void test_order(void)
     libmsi_unref(hrec);
 
     r = libmsi_query_fetch(hquery, &hrec);
-    ok(r == ERROR_NO_MORE_ITEMS, "Expected ERROR_NO_MORE_ITEMS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_NO_MORE_ITEMS, "Expected LIBMSI_RESULT_NO_MORE_ITEMS, got %d\n", r);
 
     libmsi_query_close(hquery);
     libmsi_unref(hquery);
@@ -6368,23 +6368,23 @@ static void test_querymodify_delete_temporary(void)
     DeleteFile(msifile);
 
     r = libmsi_database_open(msifile, LIBMSI_DB_OPEN_CREATE, &hdb);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     sql = "CREATE TABLE `Table` ( `A` SHORT PRIMARY KEY `A` )";
     r = run_query(hdb, 0, sql);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     sql = "SELECT * FROM `Table`";
     r = libmsi_database_open_query(hdb, sql, &hquery);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     r = libmsi_query_execute(hquery, 0);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     hrec = libmsi_record_create(1);
     libmsi_record_set_int(hrec, 1, 1);
 
     r = libmsi_query_modify(hquery, LIBMSI_MODIFY_INSERT, hrec);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     libmsi_unref(hrec);
 
@@ -6392,7 +6392,7 @@ static void test_querymodify_delete_temporary(void)
     libmsi_record_set_int(hrec, 1, 2);
 
     r = libmsi_query_modify(hquery, LIBMSI_MODIFY_INSERT_TEMPORARY, hrec);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     libmsi_unref(hrec);
 
@@ -6400,7 +6400,7 @@ static void test_querymodify_delete_temporary(void)
     libmsi_record_set_int(hrec, 1, 3);
 
     r = libmsi_query_modify(hquery, LIBMSI_MODIFY_INSERT, hrec);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     libmsi_unref(hrec);
 
@@ -6408,7 +6408,7 @@ static void test_querymodify_delete_temporary(void)
     libmsi_record_set_int(hrec, 1, 4);
 
     r = libmsi_query_modify(hquery, LIBMSI_MODIFY_INSERT_TEMPORARY, hrec);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     libmsi_unref(hrec);
     libmsi_query_close(hquery);
@@ -6416,14 +6416,14 @@ static void test_querymodify_delete_temporary(void)
 
     sql = "SELECT * FROM `Table` WHERE  `A` = 2";
     r = libmsi_database_open_query(hdb, sql, &hquery);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     r = libmsi_query_execute(hquery, 0);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     r = libmsi_query_fetch(hquery, &hrec);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     r = libmsi_query_modify(hquery, LIBMSI_MODIFY_DELETE, hrec);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     libmsi_unref(hrec);
     libmsi_query_close(hquery);
@@ -6431,14 +6431,14 @@ static void test_querymodify_delete_temporary(void)
 
     sql = "SELECT * FROM `Table` WHERE  `A` = 3";
     r = libmsi_database_open_query(hdb, sql, &hquery);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     r = libmsi_query_execute(hquery, 0);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     r = libmsi_query_fetch(hquery, &hrec);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     r = libmsi_query_modify(hquery, LIBMSI_MODIFY_DELETE, hrec);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     libmsi_unref(hrec);
     libmsi_query_close(hquery);
@@ -6446,12 +6446,12 @@ static void test_querymodify_delete_temporary(void)
 
     sql = "SELECT * FROM `Table` ORDER BY `A`";
     r = libmsi_database_open_query(hdb, sql, &hquery);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     r = libmsi_query_execute(hquery, 0);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     r = libmsi_query_fetch(hquery, &hrec);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     r = libmsi_record_get_integer(hrec, 1);
     ok(r == 1, "Expected 1, got %d\n", r);
@@ -6459,7 +6459,7 @@ static void test_querymodify_delete_temporary(void)
     libmsi_unref(hrec);
 
     r = libmsi_query_fetch(hquery, &hrec);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     r = libmsi_record_get_integer(hrec, 1);
     ok(r == 4, "Expected 4, got %d\n", r);
@@ -6467,7 +6467,7 @@ static void test_querymodify_delete_temporary(void)
     libmsi_unref(hrec);
 
     r = libmsi_query_fetch(hquery, &hrec);
-    ok(r == ERROR_NO_MORE_ITEMS, "Expected ERROR_NO_MORE_ITEMS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_NO_MORE_ITEMS, "Expected LIBMSI_RESULT_NO_MORE_ITEMS, got %d\n", r);
 
     libmsi_query_close(hquery);
     libmsi_unref(hquery);
@@ -6488,50 +6488,50 @@ static void test_deleterow(void)
     DeleteFile(msifile);
 
     r = libmsi_database_open(msifile, LIBMSI_DB_OPEN_CREATE, &hdb);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     sql = "CREATE TABLE `Table` ( `A` CHAR(72) NOT NULL PRIMARY KEY `A` )";
     r = run_query(hdb, 0, sql);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     sql = "INSERT INTO `Table` (`A`) VALUES ('one')";
     r = run_query(hdb, 0, sql);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     sql = "INSERT INTO `Table` (`A`) VALUES ('two')";
     r = run_query(hdb, 0, sql);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     sql = "DELETE FROM `Table` WHERE `A` = 'one'";
     r = run_query(hdb, 0, sql);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     r = libmsi_database_commit(hdb);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     libmsi_unref(hdb);
 
     r = libmsi_database_open(msifile, LIBMSI_DB_OPEN_READONLY, &hdb);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     sql = "SELECT * FROM `Table`";
     r = libmsi_database_open_query(hdb, sql, &hquery);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     r = libmsi_query_execute(hquery, 0);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     r = libmsi_query_fetch(hquery, &hrec);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     size = MAX_PATH;
     r = libmsi_record_get_string(hrec, 1, buf, &size);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     ok(!strcmp(buf, "two"), "Expected two, got %s\n", buf);
 
     libmsi_unref(hrec);
 
     r = libmsi_query_fetch(hquery, &hrec);
-    ok(r == ERROR_NO_MORE_ITEMS, "Expected ERROR_NO_MORE_ITEMS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_NO_MORE_ITEMS, "Expected LIBMSI_RESULT_NO_MORE_ITEMS, got %d\n", r);
 
     libmsi_query_close(hquery);
     libmsi_unref(hquery);
@@ -6557,63 +6557,63 @@ static void test_quotes(void)
     DeleteFile(msifile);
 
     r = libmsi_database_open(msifile, LIBMSI_DB_OPEN_CREATE, &hdb);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     sql = "CREATE TABLE `Table` ( `A` CHAR(72) NOT NULL PRIMARY KEY `A` )";
     r = run_query(hdb, 0, sql);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     sql = "INSERT INTO `Table` ( `A` ) VALUES ( 'This is a 'string' ok' )";
     r = run_query(hdb, 0, sql);
-    ok(r == ERROR_BAD_QUERY_SYNTAX,
-       "Expected ERROR_BAD_QUERY_SYNTAX, got %d\n", r);
+    ok(r == LIBMSI_RESULT_BAD_QUERY_SYNTAX,
+       "Expected LIBMSI_RESULT_BAD_QUERY_SYNTAX, got %d\n", r);
 
     sql = "INSERT INTO `Table` ( `A` ) VALUES ( \"This is a 'string' ok\" )";
     r = run_query(hdb, 0, sql);
-    ok(r == ERROR_BAD_QUERY_SYNTAX,
-       "Expected ERROR_BAD_QUERY_SYNTAX, got %d\n", r);
+    ok(r == LIBMSI_RESULT_BAD_QUERY_SYNTAX,
+       "Expected LIBMSI_RESULT_BAD_QUERY_SYNTAX, got %d\n", r);
 
     sql = "INSERT INTO `Table` ( `A` ) VALUES ( \"test\" )";
     r = run_query(hdb, 0, sql);
-    ok(r == ERROR_BAD_QUERY_SYNTAX,
-       "Expected ERROR_BAD_QUERY_SYNTAX, got %d\n", r);
+    ok(r == LIBMSI_RESULT_BAD_QUERY_SYNTAX,
+       "Expected LIBMSI_RESULT_BAD_QUERY_SYNTAX, got %d\n", r);
 
     sql = "INSERT INTO `Table` ( `A` ) VALUES ( 'This is a ''string'' ok' )";
     r = run_query(hdb, 0, sql);
-    ok(r == ERROR_BAD_QUERY_SYNTAX, "Expected ERROR_BAD_QUERY_SYNTAX, got %d\n", r);
+    ok(r == LIBMSI_RESULT_BAD_QUERY_SYNTAX, "Expected LIBMSI_RESULT_BAD_QUERY_SYNTAX, got %d\n", r);
 
     sql = "INSERT INTO `Table` ( `A` ) VALUES ( 'This is a '''string''' ok' )";
     r = run_query(hdb, 0, sql);
-    ok(r == ERROR_BAD_QUERY_SYNTAX, "Expected ERROR_BAD_QUERY_SYNTAX, got %d\n", r);
+    ok(r == LIBMSI_RESULT_BAD_QUERY_SYNTAX, "Expected LIBMSI_RESULT_BAD_QUERY_SYNTAX, got %d\n", r);
 
     sql = "INSERT INTO `Table` ( `A` ) VALUES ( 'This is a \'string\' ok' )";
     r = run_query(hdb, 0, sql);
-    ok(r == ERROR_BAD_QUERY_SYNTAX, "Expected ERROR_BAD_QUERY_SYNTAX, got %d\n", r);
+    ok(r == LIBMSI_RESULT_BAD_QUERY_SYNTAX, "Expected LIBMSI_RESULT_BAD_QUERY_SYNTAX, got %d\n", r);
 
     sql = "INSERT INTO `Table` ( `A` ) VALUES ( 'This is a \"string\" ok' )";
     r = run_query(hdb, 0, sql);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     sql = "SELECT * FROM `Table`";
     r = libmsi_database_open_query(hdb, sql, &hquery);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     r = libmsi_query_execute(hquery, 0);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     r = libmsi_query_fetch(hquery, &hrec);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     size = MAX_PATH;
     r = libmsi_record_get_string(hrec, 1, buf, &size);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     ok(!strcmp(buf, "This is a \"string\" ok"),
        "Expected \"This is a \"string\" ok\", got %s\n", buf);
 
     libmsi_unref(hrec);
 
     r = libmsi_query_fetch(hquery, &hrec);
-    ok(r == ERROR_NO_MORE_ITEMS, "Expected ERROR_NO_MORE_ITEMS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_NO_MORE_ITEMS, "Expected LIBMSI_RESULT_NO_MORE_ITEMS, got %d\n", r);
 
     libmsi_query_close(hquery);
     libmsi_unref(hquery);
@@ -6621,30 +6621,30 @@ static void test_quotes(void)
     write_file("import.idt", import_dat, (sizeof(import_dat) - 1) * sizeof(char));
 
     r = libmsi_database_import(hdb, CURR_DIR, "import.idt");
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     DeleteFileA("import.idt");
 
     sql = "SELECT * FROM `Table`";
     r = libmsi_database_open_query(hdb, sql, &hquery);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     r = libmsi_query_execute(hquery, 0);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     r = libmsi_query_fetch(hquery, &hrec);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     size = MAX_PATH;
     r = libmsi_record_get_string(hrec, 1, buf, &size);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     ok(!strcmp(buf, "This is a new 'string' ok"),
        "Expected \"This is a new 'string' ok\", got %s\n", buf);
 
     libmsi_unref(hrec);
 
     r = libmsi_query_fetch(hquery, &hrec);
-    ok(r == ERROR_NO_MORE_ITEMS, "Expected ERROR_NO_MORE_ITEMS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_NO_MORE_ITEMS, "Expected LIBMSI_RESULT_NO_MORE_ITEMS, got %d\n", r);
 
     libmsi_query_close(hquery);
     libmsi_unref(hquery);
@@ -6665,173 +6665,173 @@ static void test_carriagereturn(void)
     DeleteFile(msifile);
 
     r = libmsi_database_open(msifile, LIBMSI_DB_OPEN_CREATE, &hdb);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     sql = "CREATE TABLE `Table`\r ( `A` CHAR(72) NOT NULL PRIMARY KEY `A` )";
     r = run_query(hdb, 0, sql);
-    ok(r == ERROR_BAD_QUERY_SYNTAX,
-       "Expected ERROR_BAD_QUERY_SYNTAX, got %d\n", r);
+    ok(r == LIBMSI_RESULT_BAD_QUERY_SYNTAX,
+       "Expected LIBMSI_RESULT_BAD_QUERY_SYNTAX, got %d\n", r);
 
     sql = "CREATE TABLE `Table` \r( `A` CHAR(72) NOT NULL PRIMARY KEY `A` )";
     r = run_query(hdb, 0, sql);
-    ok(r == ERROR_BAD_QUERY_SYNTAX,
-       "Expected ERROR_BAD_QUERY_SYNTAX, got %d\n", r);
+    ok(r == LIBMSI_RESULT_BAD_QUERY_SYNTAX,
+       "Expected LIBMSI_RESULT_BAD_QUERY_SYNTAX, got %d\n", r);
 
     sql = "CREATE\r TABLE `Table` ( `A` CHAR(72) NOT NULL PRIMARY KEY `A` )";
     r = run_query(hdb, 0, sql);
-    ok(r == ERROR_BAD_QUERY_SYNTAX,
-       "Expected ERROR_BAD_QUERY_SYNTAX, got %d\n", r);
+    ok(r == LIBMSI_RESULT_BAD_QUERY_SYNTAX,
+       "Expected LIBMSI_RESULT_BAD_QUERY_SYNTAX, got %d\n", r);
 
     sql = "CREATE TABLE\r `Table` ( `A` CHAR(72) NOT NULL PRIMARY KEY `A` )";
     r = run_query(hdb, 0, sql);
-    ok(r == ERROR_BAD_QUERY_SYNTAX,
-       "Expected ERROR_BAD_QUERY_SYNTAX, got %d\n", r);
+    ok(r == LIBMSI_RESULT_BAD_QUERY_SYNTAX,
+       "Expected LIBMSI_RESULT_BAD_QUERY_SYNTAX, got %d\n", r);
 
     sql = "CREATE TABLE `Table` (\r `A` CHAR(72) NOT NULL PRIMARY KEY `A` )";
     r = run_query(hdb, 0, sql);
-    ok(r == ERROR_BAD_QUERY_SYNTAX,
-       "Expected ERROR_BAD_QUERY_SYNTAX, got %d\n", r);
+    ok(r == LIBMSI_RESULT_BAD_QUERY_SYNTAX,
+       "Expected LIBMSI_RESULT_BAD_QUERY_SYNTAX, got %d\n", r);
 
     sql = "CREATE TABLE `Table` ( `A`\r CHAR(72) NOT NULL PRIMARY KEY `A` )";
     r = run_query(hdb, 0, sql);
-    ok(r == ERROR_BAD_QUERY_SYNTAX,
-       "Expected ERROR_BAD_QUERY_SYNTAX, got %d\n", r);
+    ok(r == LIBMSI_RESULT_BAD_QUERY_SYNTAX,
+       "Expected LIBMSI_RESULT_BAD_QUERY_SYNTAX, got %d\n", r);
 
     sql = "CREATE TABLE `Table` ( `A` CHAR(72)\r NOT NULL PRIMARY KEY `A` )";
     r = run_query(hdb, 0, sql);
-    ok(r == ERROR_BAD_QUERY_SYNTAX,
-       "Expected ERROR_BAD_QUERY_SYNTAX, got %d\n", r);
+    ok(r == LIBMSI_RESULT_BAD_QUERY_SYNTAX,
+       "Expected LIBMSI_RESULT_BAD_QUERY_SYNTAX, got %d\n", r);
 
     sql = "CREATE TABLE `Table` ( `A` CHAR(72) NOT\r NULL PRIMARY KEY `A` )";
     r = run_query(hdb, 0, sql);
-    ok(r == ERROR_BAD_QUERY_SYNTAX,
-       "Expected ERROR_BAD_QUERY_SYNTAX, got %d\n", r);
+    ok(r == LIBMSI_RESULT_BAD_QUERY_SYNTAX,
+       "Expected LIBMSI_RESULT_BAD_QUERY_SYNTAX, got %d\n", r);
 
     sql = "CREATE TABLE `Table` ( `A` CHAR(72) NOT \rNULL PRIMARY KEY `A` )";
     r = run_query(hdb, 0, sql);
-    ok(r == ERROR_BAD_QUERY_SYNTAX,
-       "Expected ERROR_BAD_QUERY_SYNTAX, got %d\n", r);
+    ok(r == LIBMSI_RESULT_BAD_QUERY_SYNTAX,
+       "Expected LIBMSI_RESULT_BAD_QUERY_SYNTAX, got %d\n", r);
 
     sql = "CREATE TABLE `Table` ( `A` CHAR(72) NOT NULL\r PRIMARY KEY `A` )";
     r = run_query(hdb, 0, sql);
-    ok(r == ERROR_BAD_QUERY_SYNTAX,
-       "Expected ERROR_BAD_QUERY_SYNTAX, got %d\n", r);
+    ok(r == LIBMSI_RESULT_BAD_QUERY_SYNTAX,
+       "Expected LIBMSI_RESULT_BAD_QUERY_SYNTAX, got %d\n", r);
 
     sql = "CREATE TABLE `Table` ( `A` CHAR(72) NOT NULL \rPRIMARY KEY `A` )";
     r = run_query(hdb, 0, sql);
-    ok(r == ERROR_BAD_QUERY_SYNTAX,
-       "Expected ERROR_BAD_QUERY_SYNTAX, got %d\n", r);
+    ok(r == LIBMSI_RESULT_BAD_QUERY_SYNTAX,
+       "Expected LIBMSI_RESULT_BAD_QUERY_SYNTAX, got %d\n", r);
 
     sql = "CREATE TABLE `Table` ( `A` CHAR(72) NOT NULL PRIMARY\r KEY `A` )";
     r = run_query(hdb, 0, sql);
-    ok(r == ERROR_BAD_QUERY_SYNTAX,
-       "Expected ERROR_BAD_QUERY_SYNTAX, got %d\n", r);
+    ok(r == LIBMSI_RESULT_BAD_QUERY_SYNTAX,
+       "Expected LIBMSI_RESULT_BAD_QUERY_SYNTAX, got %d\n", r);
 
     sql = "CREATE TABLE `Table` ( `A` CHAR(72) NOT NULL PRIMARY \rKEY `A` )";
     r = run_query(hdb, 0, sql);
-    ok(r == ERROR_BAD_QUERY_SYNTAX,
-       "Expected ERROR_BAD_QUERY_SYNTAX, got %d\n", r);
+    ok(r == LIBMSI_RESULT_BAD_QUERY_SYNTAX,
+       "Expected LIBMSI_RESULT_BAD_QUERY_SYNTAX, got %d\n", r);
 
     sql = "CREATE TABLE `Table` ( `A` CHAR(72) NOT NULL PRIMARY KEY\r `A` )";
     r = run_query(hdb, 0, sql);
-    ok(r == ERROR_BAD_QUERY_SYNTAX,
-       "Expected ERROR_BAD_QUERY_SYNTAX, got %d\n", r);
+    ok(r == LIBMSI_RESULT_BAD_QUERY_SYNTAX,
+       "Expected LIBMSI_RESULT_BAD_QUERY_SYNTAX, got %d\n", r);
 
     sql = "CREATE TABLE `Table` ( `A` CHAR(72) NOT NULL PRIMARY KEY `A`\r )";
     r = run_query(hdb, 0, sql);
-    ok(r == ERROR_BAD_QUERY_SYNTAX,
-       "Expected ERROR_BAD_QUERY_SYNTAX, got %d\n", r);
+    ok(r == LIBMSI_RESULT_BAD_QUERY_SYNTAX,
+       "Expected LIBMSI_RESULT_BAD_QUERY_SYNTAX, got %d\n", r);
 
     sql = "CREATE TABLE `Table` ( `A` CHAR(72) NOT NULL PRIMARY KEY `A` )\r";
     r = run_query(hdb, 0, sql);
-    ok(r == ERROR_BAD_QUERY_SYNTAX,
-       "Expected ERROR_BAD_QUERY_SYNTAX, got %d\n", r);
+    ok(r == LIBMSI_RESULT_BAD_QUERY_SYNTAX,
+       "Expected LIBMSI_RESULT_BAD_QUERY_SYNTAX, got %d\n", r);
 
     sql = "CREATE TABLE `\rOne` ( `A` CHAR(72) NOT NULL PRIMARY KEY `A` )";
     r = run_query(hdb, 0, sql);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     sql = "CREATE TABLE `Tw\ro` ( `A` CHAR(72) NOT NULL PRIMARY KEY `A` )";
     r = run_query(hdb, 0, sql);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     sql = "CREATE TABLE `Three\r` ( `A` CHAR(72) NOT NULL PRIMARY KEY `A` )";
     r = run_query(hdb, 0, sql);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     sql = "CREATE TABLE `Four` ( `A\r` CHAR(72) NOT NULL PRIMARY KEY `A` )";
     r = run_query(hdb, 0, sql);
-    ok(r == ERROR_BAD_QUERY_SYNTAX,
-       "Expected ERROR_BAD_QUERY_SYNTAX, got %d\n", r);
+    ok(r == LIBMSI_RESULT_BAD_QUERY_SYNTAX,
+       "Expected LIBMSI_RESULT_BAD_QUERY_SYNTAX, got %d\n", r);
 
     sql = "CREATE TABLE `Four` ( `\rA` CHAR(72) NOT NULL PRIMARY KEY `A` )";
     r = run_query(hdb, 0, sql);
-    ok(r == ERROR_BAD_QUERY_SYNTAX,
-       "Expected ERROR_BAD_QUERY_SYNTAX, got %d\n", r);
+    ok(r == LIBMSI_RESULT_BAD_QUERY_SYNTAX,
+       "Expected LIBMSI_RESULT_BAD_QUERY_SYNTAX, got %d\n", r);
 
     sql = "CREATE TABLE `Four` ( `A` CHAR(72\r) NOT NULL PRIMARY KEY `A` )";
     r = run_query(hdb, 0, sql);
-    ok(r == ERROR_BAD_QUERY_SYNTAX,
-       "Expected ERROR_BAD_QUERY_SYNTAX, got %d\n", r);
+    ok(r == LIBMSI_RESULT_BAD_QUERY_SYNTAX,
+       "Expected LIBMSI_RESULT_BAD_QUERY_SYNTAX, got %d\n", r);
 
     sql = "CREATE TABLE `Four` ( `A` CHAR(\r72) NOT NULL PRIMARY KEY `A` )";
     r = run_query(hdb, 0, sql);
-    ok(r == ERROR_BAD_QUERY_SYNTAX,
-       "Expected ERROR_BAD_QUERY_SYNTAX, got %d\n", r);
+    ok(r == LIBMSI_RESULT_BAD_QUERY_SYNTAX,
+       "Expected LIBMSI_RESULT_BAD_QUERY_SYNTAX, got %d\n", r);
 
     sql = "CREATE TABLE `Four` ( `A` CHAR(72) NOT NULL PRIMARY KEY `\rA` )";
     r = run_query(hdb, 0, sql);
-    ok(r == ERROR_BAD_QUERY_SYNTAX,
-       "Expected ERROR_BAD_QUERY_SYNTAX, got %d\n", r);
+    ok(r == LIBMSI_RESULT_BAD_QUERY_SYNTAX,
+       "Expected LIBMSI_RESULT_BAD_QUERY_SYNTAX, got %d\n", r);
 
     sql = "CREATE TABLE `Four` ( `A` CHAR(72) NOT NULL PRIMARY KEY `A\r` )";
     r = run_query(hdb, 0, sql);
-    ok(r == ERROR_BAD_QUERY_SYNTAX,
-       "Expected ERROR_BAD_QUERY_SYNTAX, got %d\n", r);
+    ok(r == LIBMSI_RESULT_BAD_QUERY_SYNTAX,
+       "Expected LIBMSI_RESULT_BAD_QUERY_SYNTAX, got %d\n", r);
 
     sql = "CREATE TABLE `Four` ( `A` CHAR(72) NOT NULL PRIMARY KEY `A\r` )";
     r = run_query(hdb, 0, sql);
-    ok(r == ERROR_BAD_QUERY_SYNTAX,
-       "Expected ERROR_BAD_QUERY_SYNTAX, got %d\n", r);
+    ok(r == LIBMSI_RESULT_BAD_QUERY_SYNTAX,
+       "Expected LIBMSI_RESULT_BAD_QUERY_SYNTAX, got %d\n", r);
 
     sql = "SELECT * FROM `_Tables`";
     r = libmsi_database_open_query(hdb, sql, &hquery);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     r = libmsi_query_execute(hquery, 0);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     r = libmsi_query_fetch(hquery, &hrec);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     size = MAX_PATH;
     r = libmsi_record_get_string(hrec, 1, buf, &size);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     ok(!strcmp(buf, "\rOne"), "Expected \"\\rOne\", got \"%s\"\n", buf);
 
     libmsi_unref(hrec);
 
     r = libmsi_query_fetch(hquery, &hrec);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     size = MAX_PATH;
     r = libmsi_record_get_string(hrec, 1, buf, &size);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     ok(!strcmp(buf, "Tw\ro"), "Expected \"Tw\\ro\", got \"%s\"\n", buf);
 
     libmsi_unref(hrec);
 
     r = libmsi_query_fetch(hquery, &hrec);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     size = MAX_PATH;
     r = libmsi_record_get_string(hrec, 1, buf, &size);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     ok(!strcmp(buf, "Three\r"), "Expected \"Three\r\", got \"%s\"\n", buf);
 
     libmsi_unref(hrec);
 
     r = libmsi_query_fetch(hquery, &hrec);
-    ok(r == ERROR_NO_MORE_ITEMS, "Expected ERROR_NO_MORE_ITEMS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_NO_MORE_ITEMS, "Expected LIBMSI_RESULT_NO_MORE_ITEMS, got %d\n", r);
 
     libmsi_query_close(hquery);
     libmsi_unref(hquery);
@@ -6853,78 +6853,78 @@ static void test_noquotes(void)
     DeleteFile(msifile);
 
     r = libmsi_database_open(msifile, LIBMSI_DB_OPEN_CREATE, &hdb);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     sql = "CREATE TABLE Table ( `A` CHAR(72) NOT NULL PRIMARY KEY `A` )";
     r = run_query(hdb, 0, sql);
-    ok(r == ERROR_BAD_QUERY_SYNTAX, "Expected ERROR_BAD_QUERY_SYNTAX, got %d\n", r);
+    ok(r == LIBMSI_RESULT_BAD_QUERY_SYNTAX, "Expected LIBMSI_RESULT_BAD_QUERY_SYNTAX, got %d\n", r);
 
     sql = "CREATE TABLE `Table` ( A CHAR(72) NOT NULL PRIMARY KEY `A` )";
     r = run_query(hdb, 0, sql);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     sql = "CREATE TABLE `Table2` ( `A` CHAR(72) NOT NULL PRIMARY KEY A )";
     r = run_query(hdb, 0, sql);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     sql = "CREATE TABLE `Table3` ( A CHAR(72) NOT NULL PRIMARY KEY A )";
     r = run_query(hdb, 0, sql);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     sql = "SELECT * FROM `_Tables`";
     r = libmsi_database_open_query(hdb, sql, &hquery);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     r = libmsi_query_execute(hquery, 0);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     r = libmsi_query_fetch(hquery, &hrec);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     size = MAX_PATH;
     r = libmsi_record_get_string(hrec, 1, buf, &size);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     ok(!strcmp(buf, "Table"), "Expected \"Table\", got \"%s\"\n", buf);
 
     libmsi_unref(hrec);
 
     r = libmsi_query_fetch(hquery, &hrec);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     size = MAX_PATH;
     r = libmsi_record_get_string(hrec, 1, buf, &size);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     ok(!strcmp(buf, "Table2"), "Expected \"Table2\", got \"%s\"\n", buf);
 
     libmsi_unref(hrec);
 
     r = libmsi_query_fetch(hquery, &hrec);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     size = MAX_PATH;
     r = libmsi_record_get_string(hrec, 1, buf, &size);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     ok(!strcmp(buf, "Table3"), "Expected \"Table3\", got \"%s\"\n", buf);
 
     libmsi_unref(hrec);
 
     r = libmsi_query_fetch(hquery, &hrec);
-    ok(r == ERROR_NO_MORE_ITEMS, "Expected ERROR_NO_MORE_ITEMS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_NO_MORE_ITEMS, "Expected LIBMSI_RESULT_NO_MORE_ITEMS, got %d\n", r);
 
     libmsi_query_close(hquery);
     libmsi_unref(hquery);
 
     sql = "SELECT * FROM `_Columns`";
     r = libmsi_database_open_query(hdb, sql, &hquery);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     r = libmsi_query_execute(hquery, 0);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     r = libmsi_query_fetch(hquery, &hrec);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     size = MAX_PATH;
     r = libmsi_record_get_string(hrec, 1, buf, &size);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     ok(!strcmp(buf, "Table"), "Expected \"Table\", got \"%s\"\n", buf);
 
     r = libmsi_record_get_integer(hrec, 2);
@@ -6932,17 +6932,17 @@ static void test_noquotes(void)
 
     size = MAX_PATH;
     r = libmsi_record_get_string(hrec, 3, buf, &size);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     ok(!strcmp(buf, "A"), "Expected \"A\", got \"%s\"\n", buf);
 
     libmsi_unref(hrec);
 
     r = libmsi_query_fetch(hquery, &hrec);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     size = MAX_PATH;
     r = libmsi_record_get_string(hrec, 1, buf, &size);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     ok(!strcmp(buf, "Table2"), "Expected \"Table2\", got \"%s\"\n", buf);
 
     r = libmsi_record_get_integer(hrec, 2);
@@ -6950,17 +6950,17 @@ static void test_noquotes(void)
 
     size = MAX_PATH;
     r = libmsi_record_get_string(hrec, 3, buf, &size);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     ok(!strcmp(buf, "A"), "Expected \"A\", got \"%s\"\n", buf);
 
     libmsi_unref(hrec);
 
     r = libmsi_query_fetch(hquery, &hrec);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     size = MAX_PATH;
     r = libmsi_record_get_string(hrec, 1, buf, &size);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     ok(!strcmp(buf, "Table3"), "Expected \"Table3\", got \"%s\"\n", buf);
 
     r = libmsi_record_get_integer(hrec, 2);
@@ -6968,72 +6968,72 @@ static void test_noquotes(void)
 
     size = MAX_PATH;
     r = libmsi_record_get_string(hrec, 3, buf, &size);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     ok(!strcmp(buf, "A"), "Expected \"A\", got \"%s\"\n", buf);
 
     libmsi_unref(hrec);
 
     r = libmsi_query_fetch(hquery, &hrec);
-    ok(r == ERROR_NO_MORE_ITEMS, "Expected ERROR_NO_MORE_ITEMS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_NO_MORE_ITEMS, "Expected LIBMSI_RESULT_NO_MORE_ITEMS, got %d\n", r);
 
     libmsi_query_close(hquery);
     libmsi_unref(hquery);
 
     sql = "INSERT INTO Table ( `A` ) VALUES ( 'hi' )";
     r = run_query(hdb, 0, sql);
-    ok(r == ERROR_BAD_QUERY_SYNTAX, "Expected ERROR_BAD_QUERY_SYNTAX, got %d\n", r);
+    ok(r == LIBMSI_RESULT_BAD_QUERY_SYNTAX, "Expected LIBMSI_RESULT_BAD_QUERY_SYNTAX, got %d\n", r);
 
     sql = "INSERT INTO `Table` ( A ) VALUES ( 'hi' )";
     r = run_query(hdb, 0, sql);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     sql = "INSERT INTO `Table` ( `A` ) VALUES ( hi )";
     r = run_query(hdb, 0, sql);
-    ok(r == ERROR_BAD_QUERY_SYNTAX, "Expected ERROR_BAD_QUERY_SYNTAX, got %d\n", r);
+    ok(r == LIBMSI_RESULT_BAD_QUERY_SYNTAX, "Expected LIBMSI_RESULT_BAD_QUERY_SYNTAX, got %d\n", r);
 
     sql = "SELECT * FROM Table WHERE `A` = 'hi'";
     r = run_query(hdb, 0, sql);
-    ok(r == ERROR_BAD_QUERY_SYNTAX, "Expected ERROR_BAD_QUERY_SYNTAX, got %d\n", r);
+    ok(r == LIBMSI_RESULT_BAD_QUERY_SYNTAX, "Expected LIBMSI_RESULT_BAD_QUERY_SYNTAX, got %d\n", r);
 
     sql = "SELECT * FROM `Table` WHERE `A` = hi";
     r = run_query(hdb, 0, sql);
-    ok(r == ERROR_BAD_QUERY_SYNTAX, "Expected ERROR_BAD_QUERY_SYNTAX, got %d\n", r);
+    ok(r == LIBMSI_RESULT_BAD_QUERY_SYNTAX, "Expected LIBMSI_RESULT_BAD_QUERY_SYNTAX, got %d\n", r);
 
     sql = "SELECT * FROM Table";
     r = run_query(hdb, 0, sql);
-    ok(r == ERROR_BAD_QUERY_SYNTAX, "Expected ERROR_BAD_QUERY_SYNTAX, got %d\n", r);
+    ok(r == LIBMSI_RESULT_BAD_QUERY_SYNTAX, "Expected LIBMSI_RESULT_BAD_QUERY_SYNTAX, got %d\n", r);
 
     hquery = NULL;
     sql = "SELECT * FROM Table2";
     r = libmsi_database_open_query(hdb, sql, &hquery);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     r = libmsi_query_execute(hquery, 0);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     r = libmsi_query_fetch(hquery, &hrec);
-    ok(r == ERROR_NO_MORE_ITEMS, "Expected ERROR_NO_MORE_ITEMS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_NO_MORE_ITEMS, "Expected LIBMSI_RESULT_NO_MORE_ITEMS, got %d\n", r);
 
     libmsi_query_close(hquery);
     libmsi_unref(hquery);
 
     sql = "SELECT * FROM `Table` WHERE A = 'hi'";
     r = libmsi_database_open_query(hdb, sql, &hquery);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     r = libmsi_query_execute(hquery, 0);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     r = libmsi_query_fetch(hquery, &hrec);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     size = MAX_PATH;
     r = libmsi_record_get_string(hrec, 1, buf, &size);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     ok(!strcmp(buf, "hi"), "Expected \"hi\", got \"%s\"\n", buf);
 
     libmsi_unref(hrec);
 
     r = libmsi_query_fetch(hquery, &hrec);
-    ok(r == ERROR_NO_MORE_ITEMS, "Expected ERROR_NO_MORE_ITEMS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_NO_MORE_ITEMS, "Expected LIBMSI_RESULT_NO_MORE_ITEMS, got %d\n", r);
 
     libmsi_query_close(hquery);
     libmsi_unref(hquery);
@@ -7064,41 +7064,41 @@ static void test_forcecodepage(void)
     GetCurrentDirectoryA(MAX_PATH, CURR_DIR);
 
     r = libmsi_database_open(msifile, LIBMSI_DB_OPEN_CREATE, &hdb);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     sql = "SELECT * FROM `_ForceCodepage`";
     r = run_query(hdb, 0, sql);
-    ok(r == ERROR_BAD_QUERY_SYNTAX, "Expected ERROR_BAD_QUERY_SYNTAX, got %d\n", r);
+    ok(r == LIBMSI_RESULT_BAD_QUERY_SYNTAX, "Expected LIBMSI_RESULT_BAD_QUERY_SYNTAX, got %d\n", r);
 
     sql = "CREATE TABLE `Table` ( `A` CHAR(72) NOT NULL PRIMARY KEY `A` )";
     r = run_query(hdb, 0, sql);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     sql = "SELECT * FROM `_ForceCodepage`";
     r = run_query(hdb, 0, sql);
-    ok(r == ERROR_BAD_QUERY_SYNTAX, "Expected ERROR_BAD_QUERY_SYNTAX, got %d\n", r);
+    ok(r == LIBMSI_RESULT_BAD_QUERY_SYNTAX, "Expected LIBMSI_RESULT_BAD_QUERY_SYNTAX, got %d\n", r);
 
     r = libmsi_database_commit(hdb);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     sql = "SELECT * FROM `_ForceCodepage`";
     r = run_query(hdb, 0, sql);
-    ok(r == ERROR_BAD_QUERY_SYNTAX, "Expected ERROR_BAD_QUERY_SYNTAX, got %d\n", r);
+    ok(r == LIBMSI_RESULT_BAD_QUERY_SYNTAX, "Expected LIBMSI_RESULT_BAD_QUERY_SYNTAX, got %d\n", r);
 
     libmsi_unref(hdb);
 
     r = libmsi_database_open(msifile, LIBMSI_DB_OPEN_DIRECT, &hdb);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     sql = "SELECT * FROM `_ForceCodepage`";
     r = run_query(hdb, 0, sql);
-    ok(r == ERROR_BAD_QUERY_SYNTAX, "Expected ERROR_BAD_QUERY_SYNTAX, got %d\n", r);
+    ok(r == LIBMSI_RESULT_BAD_QUERY_SYNTAX, "Expected LIBMSI_RESULT_BAD_QUERY_SYNTAX, got %d\n", r);
 
     fd = open("forcecodepage.idt", O_WRONLY | O_BINARY | O_CREAT, 0644);
     ok(fd != -1, "cannot open file\n");
 
     r = libmsi_database_export(hdb, "_ForceCodepage", fd);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     close(fd);
 
     read_file_data("forcecodepage.idt", buffer);
@@ -7108,13 +7108,13 @@ static void test_forcecodepage(void)
     create_file_data("forcecodepage.idt", "\r\n\r\n850\t_ForceCodepage\r\n", 0);
 
     r = libmsi_database_import(hdb, CURR_DIR, "forcecodepage.idt");
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     fd = open("forcecodepage.idt", O_WRONLY | O_BINARY | O_CREAT, 0644);
     ok(fd != -1, "cannot open file\n");
 
     r = libmsi_database_export(hdb, "_ForceCodepage", fd);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     close(fd);
 
     read_file_data("forcecodepage.idt", buffer);
@@ -7124,7 +7124,7 @@ static void test_forcecodepage(void)
     create_file_data("forcecodepage.idt", "\r\n\r\n9999\t_ForceCodepage\r\n", 0);
 
     r = libmsi_database_import(hdb, CURR_DIR, "forcecodepage.idt");
-    ok(r == ERROR_FUNCTION_FAILED, "Expected ERROR_FUNCTION_FAILED, got %d\n", r);
+    ok(r == LIBMSI_RESULT_FUNCTION_FAILED, "Expected LIBMSI_RESULT_FUNCTION_FAILED, got %d\n", r);
 
     libmsi_unref(hdb);
     DeleteFileA(msifile);
@@ -7144,35 +7144,35 @@ static void test_querymodify_refresh(void)
     DeleteFile(msifile);
 
     r = libmsi_database_open(msifile, LIBMSI_DB_OPEN_CREATE, &hdb);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     sql = "CREATE TABLE `Table` ( `A` CHAR(72) NOT NULL, `B` INT PRIMARY KEY `A` )";
     r = run_query(hdb, 0, sql);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     sql = "INSERT INTO `Table` ( `A`, `B` ) VALUES ( 'hi', 1 )";
     r = run_query(hdb, 0, sql);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     sql = "SELECT * FROM `Table`";
     r = libmsi_database_open_query(hdb, sql, &hquery);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     r = libmsi_query_execute(hquery, 0);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     r = libmsi_query_fetch(hquery, &hrec);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     sql = "UPDATE `Table` SET `B` = 2 WHERE `A` = 'hi'";
     r = run_query(hdb, 0, sql);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     r = libmsi_query_modify(hquery, LIBMSI_MODIFY_REFRESH, hrec);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     size = MAX_PATH;
     r = libmsi_record_get_string(hrec, 1, buffer, &size);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     ok(!strcmp(buffer, "hi"), "Expected \"hi\", got \"%s\"\n", buffer);
     ok(size == 2, "Expected 2, got %d\n", size);
 
@@ -7185,31 +7185,31 @@ static void test_querymodify_refresh(void)
 
     sql = "INSERT INTO `Table` ( `A`, `B` ) VALUES ( 'hello', 3 )";
     r = run_query(hdb, 0, sql);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     sql = "SELECT * FROM `Table` WHERE `B` = 3";
     r = libmsi_database_open_query(hdb, sql, &hquery);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     r = libmsi_query_execute(hquery, 0);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     r = libmsi_query_fetch(hquery, &hrec);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     sql = "UPDATE `Table` SET `B` = 2 WHERE `A` = 'hello'";
     r = run_query(hdb, 0, sql);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     sql = "INSERT INTO `Table` ( `A`, `B` ) VALUES ( 'hithere', 3 )";
     r = run_query(hdb, 0, sql);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     r = libmsi_query_modify(hquery, LIBMSI_MODIFY_REFRESH, hrec);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     size = MAX_PATH;
     r = libmsi_record_get_string(hrec, 1, buffer, &size);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     ok(!strcmp(buffer, "hello"), "Expected \"hello\", got \"%s\"\n", buffer);
     ok(size == 5, "Expected 5, got %d\n", size);
 
@@ -7234,35 +7234,35 @@ static void test_where_querymodify(void)
     DeleteFile(msifile);
 
     r = libmsi_database_open(msifile, LIBMSI_DB_OPEN_CREATE, &hdb);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     sql = "CREATE TABLE `Table` ( `A` INT, `B` INT PRIMARY KEY `A` )";
     r = run_query(hdb, 0, sql);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     sql = "INSERT INTO `Table` ( `A`, `B` ) VALUES ( 1, 2 )";
     r = run_query(hdb, 0, sql);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     sql = "INSERT INTO `Table` ( `A`, `B` ) VALUES ( 3, 4 )";
     r = run_query(hdb, 0, sql);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     sql = "INSERT INTO `Table` ( `A`, `B` ) VALUES ( 5, 6 )";
     r = run_query(hdb, 0, sql);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     /* `B` = 3 doesn't match, but the query shouldn't be executed */
     sql = "SELECT * FROM `Table` WHERE `B` = 3";
     r = libmsi_database_open_query(hdb, sql, &hquery);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     hrec = libmsi_record_create(2);
     libmsi_record_set_int(hrec, 1, 7);
     libmsi_record_set_int(hrec, 2, 8);
 
     r = libmsi_query_modify(hquery, LIBMSI_MODIFY_INSERT_TEMPORARY, hrec);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     libmsi_unref(hrec);
     libmsi_query_close(hquery);
@@ -7270,12 +7270,12 @@ static void test_where_querymodify(void)
 
     sql = "SELECT * FROM `Table` WHERE `A` = 7";
     r = libmsi_database_open_query(hdb, sql, &hquery);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     r = libmsi_query_execute(hquery, 0);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     r = libmsi_query_fetch(hquery, &hrec);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     r = libmsi_record_get_integer(hrec, 1);
     ok(r == 7, "Expected 7, got %d\n", r);
@@ -7286,7 +7286,7 @@ static void test_where_querymodify(void)
     libmsi_record_set_int(hrec, 2, 9);
 
     r = libmsi_query_modify(hquery, LIBMSI_MODIFY_UPDATE, hrec);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     libmsi_unref(hrec);
     libmsi_query_close(hquery);
@@ -7294,12 +7294,12 @@ static void test_where_querymodify(void)
 
     sql = "SELECT * FROM `Table` WHERE `A` = 7";
     r = libmsi_database_open_query(hdb, sql, &hquery);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     r = libmsi_query_execute(hquery, 0);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     r = libmsi_query_fetch(hquery, &hrec);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     r = libmsi_record_get_integer(hrec, 1);
     ok(r == 7, "Expected 7, got %d\n", r);
@@ -7309,10 +7309,10 @@ static void test_where_querymodify(void)
 
     sql = "UPDATE `Table` SET `B` = 10 WHERE `A` = 7";
     r = run_query(hdb, 0, sql);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     r = libmsi_query_modify(hquery, LIBMSI_MODIFY_REFRESH, hrec);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     r = libmsi_record_get_integer(hrec, 1);
     ok(r == 7, "Expected 7, got %d\n", r);
@@ -7376,12 +7376,12 @@ static void test_storages_table(void)
     ok(hdb, "failed to create db\n");
 
     r = libmsi_database_commit(hdb);
-    ok(r == ERROR_SUCCESS , "Failed to commit database\n");
+    ok(r == LIBMSI_RESULT_SUCCESS , "Failed to commit database\n");
 
     libmsi_unref(hdb);
 
     r = libmsi_database_open(msifile, LIBMSI_DB_OPEN_TRANSACT, &hdb);
-    ok(r == ERROR_SUCCESS , "Failed to open database\n");
+    ok(r == LIBMSI_RESULT_SUCCESS , "Failed to open database\n");
 
     /* check the column types */
     hrec = get_column_info(hdb, "SELECT * FROM `_Storages`", LIBMSI_COL_INFO_TYPES);
@@ -7405,16 +7405,16 @@ static void test_storages_table(void)
     libmsi_record_set_string(hrec, 1, "stgname");
 
     r = libmsi_record_load_stream(hrec, 2, "storage.bin");
-    ok(r == ERROR_SUCCESS, "Failed to add stream data to the hrecord: %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Failed to add stream data to the hrecord: %d\n", r);
 
     DeleteFileA("storage.bin");
 
     sql = "INSERT INTO `_Storages` (`Name`, `Data`) VALUES (?, ?)";
     r = libmsi_database_open_query(hdb, sql, &hquery);
-    ok(r == ERROR_SUCCESS, "Failed to open database hquery: %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Failed to open database hquery: %d\n", r);
 
     r = libmsi_query_execute(hquery, hrec);
-    ok(r == ERROR_SUCCESS, "Failed to execute hquery: %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Failed to execute hquery: %d\n", r);
 
     libmsi_unref(hrec);
     libmsi_query_close(hquery);
@@ -7422,30 +7422,30 @@ static void test_storages_table(void)
 
     sql = "SELECT `Name`, `Data` FROM `_Storages`";
     r = libmsi_database_open_query(hdb, sql, &hquery);
-    ok(r == ERROR_SUCCESS, "Failed to open database hquery: %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Failed to open database hquery: %d\n", r);
 
     r = libmsi_query_execute(hquery, 0);
-    ok(r == ERROR_SUCCESS, "Failed to execute hquery: %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Failed to execute hquery: %d\n", r);
 
     r = libmsi_query_fetch(hquery, &hrec);
-    ok(r == ERROR_SUCCESS, "Failed to fetch hrecord: %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Failed to fetch hrecord: %d\n", r);
 
     size = MAX_PATH;
     r = libmsi_record_get_string(hrec, 1, file, &size);
-    ok(r == ERROR_SUCCESS, "Failed to get string: %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Failed to get string: %d\n", r);
     ok(!strcmp(file, "stgname"), "Expected \"stgname\", got \"%s\"\n", file);
 
     size = MAX_PATH;
     strcpy(buf, "apple");
     r = libmsi_record_save_stream(hrec, 2, buf, &size);
-    ok(r == ERROR_INVALID_DATA, "Expected ERROR_INVALID_DATA, got %d\n", r);
+    ok(r == LIBMSI_RESULT_INVALID_DATA, "Expected ERROR_INVALID_DATA, got %d\n", r);
     ok(!strcmp(buf, "apple"), "Expected buf to be unchanged, got %s\n", buf);
     ok(size == 0, "Expected 0, got %d\n", size);
 
     libmsi_unref(hrec);
 
     r = libmsi_query_fetch(hquery, &hrec);
-    ok(r == ERROR_NO_MORE_ITEMS, "Expected ERROR_NO_MORE_ITEMS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_NO_MORE_ITEMS, "Expected LIBMSI_RESULT_NO_MORE_ITEMS, got %d\n", r);
 
     libmsi_query_close(hquery);
     libmsi_unref(hquery);
@@ -7493,28 +7493,28 @@ static void test_droptable(void)
     unsigned r;
 
     r = libmsi_database_open(msifile, LIBMSI_DB_OPEN_CREATE, &hdb);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     sql = "CREATE TABLE `One` ( `A` INT PRIMARY KEY `A` )";
     r = run_query(hdb, 0, sql);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     sql = "SELECT * FROM `One`";
     r = do_query(hdb, sql, &hrec);
-    ok(r == ERROR_NO_MORE_ITEMS, "Expected ERROR_NO_MORE_ITEMS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_NO_MORE_ITEMS, "Expected LIBMSI_RESULT_NO_MORE_ITEMS, got %d\n", r);
 
     sql = "SELECT * FROM `_Tables` WHERE `Name` = 'One'";
     r = libmsi_database_open_query(hdb, sql, &hquery);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     r = libmsi_query_execute(hquery, 0);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     r = libmsi_query_fetch(hquery, &hrec);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     size = MAX_PATH;
     r = libmsi_record_get_string(hrec, 1, buf, &size);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     ok(!strcmp(buf, "One"), "Expected \"One\", got \"%s\"\n", buf);
 
     libmsi_unref(hrec);
@@ -7523,16 +7523,16 @@ static void test_droptable(void)
 
     sql = "SELECT * FROM `_Columns` WHERE `Table` = 'One'";
     r = libmsi_database_open_query(hdb, sql, &hquery);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     r = libmsi_query_execute(hquery, 0);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     r = libmsi_query_fetch(hquery, &hrec);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     size = MAX_PATH;
     r = libmsi_record_get_string(hrec, 1, buf, &size);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     ok(!strcmp(buf, "One"), "Expected \"One\", got \"%s\"\n", buf);
 
     r = libmsi_record_get_integer(hrec, 2);
@@ -7540,93 +7540,93 @@ static void test_droptable(void)
 
     size = MAX_PATH;
     r = libmsi_record_get_string(hrec, 3, buf, &size);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     ok(!strcmp(buf, "A"), "Expected \"A\", got \"%s\"\n", buf);
 
     libmsi_unref(hrec);
 
     r = libmsi_query_fetch(hquery, &hrec);
-    ok(r == ERROR_NO_MORE_ITEMS,
-       "Expected ERROR_NO_MORE_ITEMS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_NO_MORE_ITEMS,
+       "Expected LIBMSI_RESULT_NO_MORE_ITEMS, got %d\n", r);
 
     libmsi_query_close(hquery);
     libmsi_unref(hquery);
 
     sql = "DROP `One`";
     r = run_query(hdb, 0, sql);
-    ok(r == ERROR_BAD_QUERY_SYNTAX,
-       "Expected ERROR_BAD_QUERY_SYNTAX, got %d\n", r);
+    ok(r == LIBMSI_RESULT_BAD_QUERY_SYNTAX,
+       "Expected LIBMSI_RESULT_BAD_QUERY_SYNTAX, got %d\n", r);
 
     sql = "DROP TABLE";
     r = run_query(hdb, 0, sql);
-    ok(r == ERROR_BAD_QUERY_SYNTAX,
-       "Expected ERROR_BAD_QUERY_SYNTAX, got %d\n", r);
+    ok(r == LIBMSI_RESULT_BAD_QUERY_SYNTAX,
+       "Expected LIBMSI_RESULT_BAD_QUERY_SYNTAX, got %d\n", r);
 
     sql = "DROP TABLE `One`";
     hquery = 0;
     r = libmsi_database_open_query(hdb, sql, &hquery);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     r = libmsi_query_execute(hquery, 0);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     r = libmsi_query_fetch(hquery, &hrec);
-    ok(r == ERROR_FUNCTION_FAILED,
-       "Expected ERROR_FUNCTION_FAILED, got %d\n", r);
+    ok(r == LIBMSI_RESULT_FUNCTION_FAILED,
+       "Expected LIBMSI_RESULT_FUNCTION_FAILED, got %d\n", r);
 
     libmsi_query_close(hquery);
     libmsi_unref(hquery);
 
     sql = "SELECT * FROM `IDontExist`";
     r = do_query(hdb, sql, &hrec);
-    ok(r == ERROR_BAD_QUERY_SYNTAX,
-       "Expected ERROR_BAD_QUERY_SYNTAX, got %d\n", r);
+    ok(r == LIBMSI_RESULT_BAD_QUERY_SYNTAX,
+       "Expected LIBMSI_RESULT_BAD_QUERY_SYNTAX, got %d\n", r);
 
     sql = "SELECT * FROM `One`";
     r = do_query(hdb, sql, &hrec);
-    ok(r == ERROR_BAD_QUERY_SYNTAX,
-       "Expected ERROR_BAD_QUERY_SYNTAX, got %d\n", r);
+    ok(r == LIBMSI_RESULT_BAD_QUERY_SYNTAX,
+       "Expected LIBMSI_RESULT_BAD_QUERY_SYNTAX, got %d\n", r);
 
     sql = "CREATE TABLE `One` ( `A` INT PRIMARY KEY `A` )";
     r = run_query(hdb, 0, sql);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     sql = "DROP TABLE One";
     r = run_query(hdb, 0, sql);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     sql = "SELECT * FROM `One`";
     r = do_query(hdb, sql, &hrec);
-    ok(r == ERROR_BAD_QUERY_SYNTAX,
-       "Expected ERROR_BAD_QUERY_SYNTAX, got %d\n", r);
+    ok(r == LIBMSI_RESULT_BAD_QUERY_SYNTAX,
+       "Expected LIBMSI_RESULT_BAD_QUERY_SYNTAX, got %d\n", r);
 
     sql = "SELECT * FROM `_Tables` WHERE `Name` = 'One'";
     r = do_query(hdb, sql, &hrec);
-    ok(r == ERROR_NO_MORE_ITEMS, "Expected ERROR_NO_MORE_ITEMS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_NO_MORE_ITEMS, "Expected LIBMSI_RESULT_NO_MORE_ITEMS, got %d\n", r);
 
     sql = "SELECT * FROM `_Columns` WHERE `Table` = 'One'";
     r = do_query(hdb, sql, &hrec);
-    ok(r == ERROR_NO_MORE_ITEMS, "Expected ERROR_NO_MORE_ITEMS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_NO_MORE_ITEMS, "Expected LIBMSI_RESULT_NO_MORE_ITEMS, got %d\n", r);
 
     sql = "CREATE TABLE `One` ( `B` INT, `C` INT PRIMARY KEY `B` )";
     r = run_query(hdb, 0, sql);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     sql = "SELECT * FROM `One`";
     r = do_query(hdb, sql, &hrec);
-    ok(r == ERROR_NO_MORE_ITEMS, "Expected ERROR_NO_MORE_ITEMS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_NO_MORE_ITEMS, "Expected LIBMSI_RESULT_NO_MORE_ITEMS, got %d\n", r);
 
     sql = "SELECT * FROM `_Tables` WHERE `Name` = 'One'";
     r = libmsi_database_open_query(hdb, sql, &hquery);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     r = libmsi_query_execute(hquery, 0);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     r = libmsi_query_fetch(hquery, &hrec);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     size = MAX_PATH;
     r = libmsi_record_get_string(hrec, 1, buf, &size);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     ok(!strcmp(buf, "One"), "Expected \"One\", got \"%s\"\n", buf);
 
     libmsi_unref(hrec);
@@ -7635,16 +7635,16 @@ static void test_droptable(void)
 
     sql = "SELECT * FROM `_Columns` WHERE `Table` = 'One'";
     r = libmsi_database_open_query(hdb, sql, &hquery);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     r = libmsi_query_execute(hquery, 0);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     r = libmsi_query_fetch(hquery, &hrec);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     size = MAX_PATH;
     r = libmsi_record_get_string(hrec, 1, buf, &size);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     ok(!strcmp(buf, "One"), "Expected \"One\", got \"%s\"\n", buf);
 
     r = libmsi_record_get_integer(hrec, 2);
@@ -7652,17 +7652,17 @@ static void test_droptable(void)
 
     size = MAX_PATH;
     r = libmsi_record_get_string(hrec, 3, buf, &size);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     ok(!strcmp(buf, "B"), "Expected \"B\", got \"%s\"\n", buf);
 
     libmsi_unref(hrec);
 
     r = libmsi_query_fetch(hquery, &hrec);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     size = MAX_PATH;
     r = libmsi_record_get_string(hrec, 1, buf, &size);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     ok(!strcmp(buf, "One"), "Expected \"One\", got \"%s\"\n", buf);
 
     r = libmsi_record_get_integer(hrec, 2);
@@ -7670,34 +7670,34 @@ static void test_droptable(void)
 
     size = MAX_PATH;
     r = libmsi_record_get_string(hrec, 3, buf, &size);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     ok(!strcmp(buf, "C"), "Expected \"C\", got \"%s\"\n", buf);
 
     libmsi_unref(hrec);
 
     r = libmsi_query_fetch(hquery, &hrec);
-    ok(r == ERROR_NO_MORE_ITEMS,
-       "Expected ERROR_NO_MORE_ITEMS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_NO_MORE_ITEMS,
+       "Expected LIBMSI_RESULT_NO_MORE_ITEMS, got %d\n", r);
 
     libmsi_query_close(hquery);
     libmsi_unref(hquery);
 
     sql = "DROP TABLE One";
     r = run_query(hdb, 0, sql);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     sql = "SELECT * FROM `One`";
     r = do_query(hdb, sql, &hrec);
-    ok(r == ERROR_BAD_QUERY_SYNTAX,
-       "Expected ERROR_BAD_QUERY_SYNTAX, got %d\n", r);
+    ok(r == LIBMSI_RESULT_BAD_QUERY_SYNTAX,
+       "Expected LIBMSI_RESULT_BAD_QUERY_SYNTAX, got %d\n", r);
 
     sql = "SELECT * FROM `_Tables` WHERE `Name` = 'One'";
     r = do_query(hdb, sql, &hrec);
-    ok(r == ERROR_NO_MORE_ITEMS, "Expected ERROR_NO_MORE_ITEMS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_NO_MORE_ITEMS, "Expected LIBMSI_RESULT_NO_MORE_ITEMS, got %d\n", r);
 
     sql = "SELECT * FROM `_Columns` WHERE `Table` = 'One'";
     r = do_query(hdb, sql, &hrec);
-    ok(r == ERROR_NO_MORE_ITEMS, "Expected ERROR_NO_MORE_ITEMS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_NO_MORE_ITEMS, "Expected LIBMSI_RESULT_NO_MORE_ITEMS, got %d\n", r);
 
     libmsi_unref(hdb);
     DeleteFileA(msifile);
@@ -7715,59 +7715,59 @@ static void test_dbmerge(void)
     unsigned r;
 
     r = libmsi_database_open(msifile, LIBMSI_DB_OPEN_CREATE, &hdb);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     r = libmsi_database_open("refdb.msi", LIBMSI_DB_OPEN_CREATE, &href);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     /* hDatabase is invalid */
     r = libmsi_database_merge(0, href, "MergeErrors");
-    ok(r == ERROR_INVALID_HANDLE,
-       "Expected ERROR_INVALID_HANDLE, got %d\n", r);
+    ok(r == LIBMSI_RESULT_INVALID_HANDLE,
+       "Expected LIBMSI_RESULT_INVALID_HANDLE, got %d\n", r);
 
     /* hDatabaseMerge is invalid */
     r = libmsi_database_merge(hdb, 0, "MergeErrors");
-    ok(r == ERROR_INVALID_HANDLE,
-       "Expected ERROR_INVALID_HANDLE, got %d\n", r);
+    ok(r == LIBMSI_RESULT_INVALID_HANDLE,
+       "Expected LIBMSI_RESULT_INVALID_HANDLE, got %d\n", r);
 
     /* szTableName is NULL */
     r = libmsi_database_merge(hdb, href, NULL);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     /* szTableName is empty */
     r = libmsi_database_merge(hdb, href, "");
-    ok(r == ERROR_INVALID_TABLE, "Expected ERROR_INVALID_TABLE, got %d\n", r);
+    ok(r == LIBMSI_RESULT_INVALID_TABLE, "Expected LIBMSI_RESULT_INVALID_TABLE, got %d\n", r);
 
     /* both DBs empty, szTableName is valid */
     r = libmsi_database_merge(hdb, href, "MergeErrors");
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     sql = "CREATE TABLE `One` ( `A` INT PRIMARY KEY `A` )";
     r = run_query(hdb, 0, sql);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     sql = "CREATE TABLE `One` ( `A` CHAR(72) PRIMARY KEY `A` )";
     r = run_query(href, 0, sql);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     /* column types don't match */
     r = libmsi_database_merge(hdb, href, "MergeErrors");
-    ok(r == ERROR_DATATYPE_MISMATCH,
-       "Expected ERROR_DATATYPE_MISMATCH, got %d\n", r);
+    ok(r == LIBMSI_RESULT_DATATYPE_MISMATCH,
+       "Expected LIBMSI_RESULT_DATATYPE_MISMATCH, got %d\n", r);
 
     /* nothing in MergeErrors */
     sql = "SELECT * FROM `MergeErrors`";
     r = do_query(hdb, sql, &hrec);
-    ok(r == ERROR_BAD_QUERY_SYNTAX,
-       "Expected ERROR_BAD_QUERY_SYNTAX, got %d\n", r);
+    ok(r == LIBMSI_RESULT_BAD_QUERY_SYNTAX,
+       "Expected LIBMSI_RESULT_BAD_QUERY_SYNTAX, got %d\n", r);
 
     sql = "DROP TABLE `One`";
     r = run_query(hdb, 0, sql);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     sql = "DROP TABLE `One`";
     r = run_query(href, 0, sql);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     sql = "CREATE TABLE `One` ( "
         "`A` CHAR(72), "
@@ -7780,7 +7780,7 @@ static void test_dbmerge(void)
         "`H` LONGCHAR NOT NULL "
         "PRIMARY KEY `A` )";
     r = run_query(hdb, 0, sql);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     sql = "CREATE TABLE `One` ( "
         "`A` CHAR(64), "
@@ -7793,127 +7793,127 @@ static void test_dbmerge(void)
         "`H` CHAR(64) NOT NULL "
         "PRIMARY KEY `A` )";
     r = run_query(href, 0, sql);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     /* column sting types don't match exactly */
     r = libmsi_database_merge(hdb, href, "MergeErrors");
-    ok(r == ERROR_SUCCESS,
-       "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS,
+       "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     /* nothing in MergeErrors */
     sql = "SELECT * FROM `MergeErrors`";
     r = do_query(hdb, sql, &hrec);
-    ok(r == ERROR_BAD_QUERY_SYNTAX,
-       "Expected ERROR_BAD_QUERY_SYNTAX, got %d\n", r);
+    ok(r == LIBMSI_RESULT_BAD_QUERY_SYNTAX,
+       "Expected LIBMSI_RESULT_BAD_QUERY_SYNTAX, got %d\n", r);
 
     sql = "DROP TABLE `One`";
     r = run_query(hdb, 0, sql);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     sql = "DROP TABLE `One`";
     r = run_query(href, 0, sql);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     sql = "CREATE TABLE `One` ( `A` INT, `B` INT PRIMARY KEY `A` )";
     r = run_query(hdb, 0, sql);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     sql = "CREATE TABLE `One` ( `A` INT, `C` INT PRIMARY KEY `A` )";
     r = run_query(href, 0, sql);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     /* column names don't match */
     r = libmsi_database_merge(hdb, href, "MergeErrors");
-    ok(r == ERROR_DATATYPE_MISMATCH,
-       "Expected ERROR_DATATYPE_MISMATCH, got %d\n", r);
+    ok(r == LIBMSI_RESULT_DATATYPE_MISMATCH,
+       "Expected LIBMSI_RESULT_DATATYPE_MISMATCH, got %d\n", r);
 
     /* nothing in MergeErrors */
     sql = "SELECT * FROM `MergeErrors`";
     r = do_query(hdb, sql, &hrec);
-    ok(r == ERROR_BAD_QUERY_SYNTAX,
-       "Expected ERROR_BAD_QUERY_SYNTAX, got %d\n", r);
+    ok(r == LIBMSI_RESULT_BAD_QUERY_SYNTAX,
+       "Expected LIBMSI_RESULT_BAD_QUERY_SYNTAX, got %d\n", r);
 
     sql = "DROP TABLE `One`";
     r = run_query(hdb, 0, sql);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     sql = "DROP TABLE `One`";
     r = run_query(href, 0, sql);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     sql = "CREATE TABLE `One` ( `A` INT, `B` INT PRIMARY KEY `A` )";
     r = run_query(hdb, 0, sql);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     sql = "CREATE TABLE `One` ( `A` INT, `B` INT PRIMARY KEY `B` )";
     r = run_query(href, 0, sql);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     /* primary keys don't match */
     r = libmsi_database_merge(hdb, href, "MergeErrors");
-    ok(r == ERROR_DATATYPE_MISMATCH,
-       "Expected ERROR_DATATYPE_MISMATCH, got %d\n", r);
+    ok(r == LIBMSI_RESULT_DATATYPE_MISMATCH,
+       "Expected LIBMSI_RESULT_DATATYPE_MISMATCH, got %d\n", r);
 
     /* nothing in MergeErrors */
     sql = "SELECT * FROM `MergeErrors`";
     r = do_query(hdb, sql, &hrec);
-    ok(r == ERROR_BAD_QUERY_SYNTAX,
-       "Expected ERROR_BAD_QUERY_SYNTAX, got %d\n", r);
+    ok(r == LIBMSI_RESULT_BAD_QUERY_SYNTAX,
+       "Expected LIBMSI_RESULT_BAD_QUERY_SYNTAX, got %d\n", r);
 
     sql = "DROP TABLE `One`";
     r = run_query(hdb, 0, sql);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     sql = "DROP TABLE `One`";
     r = run_query(href, 0, sql);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     sql = "CREATE TABLE `One` ( `A` INT, `B` INT PRIMARY KEY `A` )";
     r = run_query(hdb, 0, sql);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     sql = "CREATE TABLE `One` ( `A` INT, `B` INT PRIMARY KEY `A`, `B` )";
     r = run_query(href, 0, sql);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     /* number of primary keys doesn't match */
     r = libmsi_database_merge(hdb, href, "MergeErrors");
-    ok(r == ERROR_DATATYPE_MISMATCH,
-       "Expected ERROR_DATATYPE_MISMATCH, got %d\n", r);
+    ok(r == LIBMSI_RESULT_DATATYPE_MISMATCH,
+       "Expected LIBMSI_RESULT_DATATYPE_MISMATCH, got %d\n", r);
 
     /* nothing in MergeErrors */
     sql = "SELECT * FROM `MergeErrors`";
     r = do_query(hdb, sql, &hrec);
-    ok(r == ERROR_BAD_QUERY_SYNTAX,
-       "Expected ERROR_BAD_QUERY_SYNTAX, got %d\n", r);
+    ok(r == LIBMSI_RESULT_BAD_QUERY_SYNTAX,
+       "Expected LIBMSI_RESULT_BAD_QUERY_SYNTAX, got %d\n", r);
 
     sql = "DROP TABLE `One`";
     r = run_query(hdb, 0, sql);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     sql = "DROP TABLE `One`";
     r = run_query(href, 0, sql);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     sql = "CREATE TABLE `One` ( `A` INT, `B` INT, `C` INT PRIMARY KEY `A` )";
     r = run_query(hdb, 0, sql);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     sql = "CREATE TABLE `One` ( `A` INT, `B` INT PRIMARY KEY `A` )";
     r = run_query(href, 0, sql);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     sql = "INSERT INTO `One` ( `A`, `B` ) VALUES ( 1, 2 )";
     r = run_query(href, 0, sql);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     /* number of columns doesn't match */
     r = libmsi_database_merge(hdb, href, "MergeErrors");
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     sql = "SELECT * FROM `One`";
     r = do_query(hdb, sql, &hrec);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     r = libmsi_record_get_integer(hrec, 1);
     ok(r == 1, "Expected 1, got %d\n", r);
@@ -7929,36 +7929,36 @@ static void test_dbmerge(void)
     /* nothing in MergeErrors */
     sql = "SELECT * FROM `MergeErrors`";
     r = do_query(hdb, sql, &hrec);
-    ok(r == ERROR_BAD_QUERY_SYNTAX,
-       "Expected ERROR_BAD_QUERY_SYNTAX, got %d\n", r);
+    ok(r == LIBMSI_RESULT_BAD_QUERY_SYNTAX,
+       "Expected LIBMSI_RESULT_BAD_QUERY_SYNTAX, got %d\n", r);
 
     sql = "DROP TABLE `One`";
     r = run_query(hdb, 0, sql);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     sql = "DROP TABLE `One`";
     r = run_query(href, 0, sql);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     sql = "CREATE TABLE `One` ( `A` INT, `B` INT PRIMARY KEY `A` )";
     r = run_query(hdb, 0, sql);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     sql = "CREATE TABLE `One` ( `A` INT, `B` INT, `C` INT PRIMARY KEY `A` )";
     r = run_query(href, 0, sql);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     sql = "INSERT INTO `One` ( `A`, `B`, `C` ) VALUES ( 1, 2, 3 )";
     r = run_query(href, 0, sql);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     /* number of columns doesn't match */
     r = libmsi_database_merge(hdb, href, "MergeErrors");
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     sql = "SELECT * FROM `One`";
     r = do_query(hdb, sql, &hrec);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     r = libmsi_record_get_integer(hrec, 1);
     ok(r == 1, "Expected 1, got %d\n", r);
@@ -7974,54 +7974,54 @@ static void test_dbmerge(void)
     /* nothing in MergeErrors */
     sql = "SELECT * FROM `MergeErrors`";
     r = do_query(hdb, sql, &hrec);
-    ok(r == ERROR_BAD_QUERY_SYNTAX,
-       "Expected ERROR_BAD_QUERY_SYNTAX, got %d\n", r);
+    ok(r == LIBMSI_RESULT_BAD_QUERY_SYNTAX,
+       "Expected LIBMSI_RESULT_BAD_QUERY_SYNTAX, got %d\n", r);
 
     sql = "DROP TABLE `One`";
     r = run_query(hdb, 0, sql);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     sql = "DROP TABLE `One`";
     r = run_query(href, 0, sql);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     sql = "CREATE TABLE `One` ( `A` INT, `B` INT PRIMARY KEY `A` )";
     r = run_query(hdb, 0, sql);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     sql = "INSERT INTO `One` ( `A`, `B` ) VALUES ( 1, 1 )";
     r = run_query(hdb, 0, sql);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     sql = "INSERT INTO `One` ( `A`, `B` ) VALUES ( 2, 2 )";
     r = run_query(hdb, 0, sql);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     sql = "CREATE TABLE `One` ( `A` INT, `B` INT PRIMARY KEY `A` )";
     r = run_query(href, 0, sql);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     sql = "INSERT INTO `One` ( `A`, `B` ) VALUES ( 1, 2 )";
     r = run_query(href, 0, sql);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     sql = "INSERT INTO `One` ( `A`, `B` ) VALUES ( 2, 3 )";
     r = run_query(href, 0, sql);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     /* primary keys match, rows do not */
     r = libmsi_database_merge(hdb, href, "MergeErrors");
-    ok(r == ERROR_FUNCTION_FAILED,
-       "Expected ERROR_FUNCTION_FAILED, got %d\n", r);
+    ok(r == LIBMSI_RESULT_FUNCTION_FAILED,
+       "Expected LIBMSI_RESULT_FUNCTION_FAILED, got %d\n", r);
 
     /* nothing in MergeErrors */
     sql = "SELECT * FROM `MergeErrors`";
     r = do_query(hdb, sql, &hrec);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     size = MAX_PATH;
     r = libmsi_record_get_string(hrec, 1, buf, &size);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     ok(!strcmp(buf, "One"), "Expected \"One\", got \"%s\"\n", buf);
 
     r = libmsi_record_get_integer(hrec, 2);
@@ -8030,20 +8030,20 @@ static void test_dbmerge(void)
     libmsi_unref(hrec);
 
     r = libmsi_database_open_query(hdb, "SELECT * FROM `MergeErrors`", &hquery);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     hrec = NULL;
     r = libmsi_query_get_column_info(hquery, LIBMSI_COL_INFO_NAMES, &hrec);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     size = MAX_PATH;
     r = libmsi_record_get_string(hrec, 1, buf, &size);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     ok(!strcmp(buf, "Table"), "Expected \"Table\", got \"%s\"\n", buf);
 
     size = MAX_PATH;
     r = libmsi_record_get_string(hrec, 2, buf, &size);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     ok(!strcmp(buf, "NumRowMergeConflicts"),
        "Expected \"NumRowMergeConflicts\", got \"%s\"\n", buf);
 
@@ -8051,16 +8051,16 @@ static void test_dbmerge(void)
 
     hrec = NULL;
     r = libmsi_query_get_column_info(hquery, LIBMSI_COL_INFO_TYPES, &hrec);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     size = MAX_PATH;
     r = libmsi_record_get_string(hrec, 1, buf, &size);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     ok(!strcmp(buf, "s255"), "Expected \"s255\", got \"%s\"\n", buf);
 
     size = MAX_PATH;
     r = libmsi_record_get_string(hrec, 2, buf, &size);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     ok(!strcmp(buf, "i2"), "Expected \"i2\", got \"%s\"\n", buf);
 
     libmsi_unref(hrec);
@@ -8069,38 +8069,38 @@ static void test_dbmerge(void)
 
     sql = "DROP TABLE `MergeErrors`";
     r = run_query(hdb, 0, sql);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     sql = "DROP TABLE `One`";
     r = run_query(hdb, 0, sql);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     sql = "DROP TABLE `One`";
     r = run_query(href, 0, sql);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     sql = "CREATE TABLE `One` ( `A` INT, `B` CHAR(72) PRIMARY KEY `A` )";
     r = run_query(href, 0, sql);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     sql = "INSERT INTO `One` ( `A`, `B` ) VALUES ( 1, 'hi' )";
     r = run_query(href, 0, sql);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     /* table from merged database is not in target database */
     r = libmsi_database_merge(hdb, href, "MergeErrors");
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     sql = "SELECT * FROM `One`";
     r = do_query(hdb, sql, &hrec);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     r = libmsi_record_get_integer(hrec, 1);
     ok(r == 1, "Expected 1, got %d\n", r);
 
     size = MAX_PATH;
     r = libmsi_record_get_string(hrec, 2, buf, &size);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     ok(!strcmp(buf, "hi"), "Expected \"hi\", got \"%s\"\n", buf);
 
     libmsi_unref(hrec);
@@ -8108,42 +8108,42 @@ static void test_dbmerge(void)
     /* nothing in MergeErrors */
     sql = "SELECT * FROM `MergeErrors`";
     r = do_query(hdb, sql, &hrec);
-    ok(r == ERROR_BAD_QUERY_SYNTAX,
-       "Expected ERROR_BAD_QUERY_SYNTAX, got %d\n", r);
+    ok(r == LIBMSI_RESULT_BAD_QUERY_SYNTAX,
+       "Expected LIBMSI_RESULT_BAD_QUERY_SYNTAX, got %d\n", r);
 
     sql = "DROP TABLE `One`";
     r = run_query(hdb, 0, sql);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     sql = "DROP TABLE `One`";
     r = run_query(href, 0, sql);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     sql = "CREATE TABLE `One` ( "
             "`A` CHAR(72), `B` INT PRIMARY KEY `A` )";
     r = run_query(hdb, 0, sql);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     sql = "CREATE TABLE `One` ( "
             "`A` CHAR(72), `B` INT PRIMARY KEY `A` )";
     r = run_query(href, 0, sql);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     sql = "INSERT INTO `One` ( `A`, `B` ) VALUES ( 'hi', 1 )";
     r = run_query(href, 0, sql);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     /* primary key is string */
     r = libmsi_database_merge(hdb, href, "MergeErrors");
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     sql = "SELECT * FROM `One`";
     r = do_query(hdb, sql, &hrec);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     size = MAX_PATH;
     r = libmsi_record_get_string(hrec, 1, buf, &size);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     ok(!strcmp(buf, "hi"), "Expected \"hi\", got \"%s\"\n", buf);
 
     r = libmsi_record_get_integer(hrec, 2);
@@ -8154,51 +8154,51 @@ static void test_dbmerge(void)
     /* nothing in MergeErrors */
     sql = "SELECT * FROM `MergeErrors`";
     r = do_query(hdb, sql, &hrec);
-    ok(r == ERROR_BAD_QUERY_SYNTAX,
-       "Expected ERROR_BAD_QUERY_SYNTAX, got %d\n", r);
+    ok(r == LIBMSI_RESULT_BAD_QUERY_SYNTAX,
+       "Expected LIBMSI_RESULT_BAD_QUERY_SYNTAX, got %d\n", r);
 
     create_file_data("codepage.idt", "\r\n\r\n850\t_ForceCodepage\r\n", 0);
 
     GetCurrentDirectoryA(MAX_PATH, buf);
     r = libmsi_database_import(hdb, buf, "codepage.idt");
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     sql = "DROP TABLE `One`";
     r = run_query(hdb, 0, sql);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     sql = "DROP TABLE `One`";
     r = run_query(href, 0, sql);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     sql = "CREATE TABLE `One` ( "
             "`A` INT, `B` CHAR(72) LOCALIZABLE PRIMARY KEY `A` )";
     r = run_query(hdb, 0, sql);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     sql = "CREATE TABLE `One` ( "
             "`A` INT, `B` CHAR(72) LOCALIZABLE PRIMARY KEY `A` )";
     r = run_query(href, 0, sql);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     sql = "INSERT INTO `One` ( `A`, `B` ) VALUES ( 1, 'hi' )";
     r = run_query(href, 0, sql);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     /* code page does not match */
     r = libmsi_database_merge(hdb, href, "MergeErrors");
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     sql = "SELECT * FROM `One`";
     r = do_query(hdb, sql, &hrec);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     r = libmsi_record_get_integer(hrec, 1);
     ok(r == 1, "Expected 1, got %d\n", r);
 
     size = MAX_PATH;
     r = libmsi_record_get_string(hrec, 2, buf, &size);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     ok(!strcmp(buf, "hi"), "Expected \"hi\", got \"%s\"\n", buf);
 
     libmsi_unref(hrec);
@@ -8206,24 +8206,24 @@ static void test_dbmerge(void)
     /* nothing in MergeErrors */
     sql = "SELECT * FROM `MergeErrors`";
     r = do_query(hdb, sql, &hrec);
-    ok(r == ERROR_BAD_QUERY_SYNTAX,
-       "Expected ERROR_BAD_QUERY_SYNTAX, got %d\n", r);
+    ok(r == LIBMSI_RESULT_BAD_QUERY_SYNTAX,
+       "Expected LIBMSI_RESULT_BAD_QUERY_SYNTAX, got %d\n", r);
 
     sql = "DROP TABLE `One`";
     r = run_query(hdb, 0, sql);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     sql = "DROP TABLE `One`";
     r = run_query(href, 0, sql);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     sql = "CREATE TABLE `One` ( `A` INT, `B` OBJECT PRIMARY KEY `A` )";
     r = run_query(hdb, 0, sql);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     sql = "CREATE TABLE `One` ( `A` INT, `B` OBJECT PRIMARY KEY `A` )";
     r = run_query(href, 0, sql);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     create_file("binary.dat");
     hrec = libmsi_record_create(1);
@@ -8231,17 +8231,17 @@ static void test_dbmerge(void)
 
     sql = "INSERT INTO `One` ( `A`, `B` ) VALUES ( 1, ? )";
     r = run_query(href, hrec, sql);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     libmsi_unref(hrec);
 
     /* binary data to merge */
     r = libmsi_database_merge(hdb, href, "MergeErrors");
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     sql = "SELECT * FROM `One`";
     r = do_query(hdb, sql, &hrec);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     r = libmsi_record_get_integer(hrec, 1);
     ok(r == 1, "Expected 1, got %d\n", r);
@@ -8249,7 +8249,7 @@ static void test_dbmerge(void)
     size = MAX_PATH;
     ZeroMemory(buf, MAX_PATH);
     r = libmsi_record_save_stream(hrec, 2, buf, &size);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     ok(!strcmp(buf, "binary.dat\n"),
        "Expected \"binary.dat\\n\", got \"%s\"\n", buf);
 
@@ -8258,69 +8258,69 @@ static void test_dbmerge(void)
     /* nothing in MergeErrors */
     sql = "SELECT * FROM `MergeErrors`";
     r = do_query(hdb, sql, &hrec);
-    ok(r == ERROR_BAD_QUERY_SYNTAX,
-       "Expected ERROR_BAD_QUERY_SYNTAX, got %d\n", r);
+    ok(r == LIBMSI_RESULT_BAD_QUERY_SYNTAX,
+       "Expected LIBMSI_RESULT_BAD_QUERY_SYNTAX, got %d\n", r);
 
     sql = "DROP TABLE `One`";
     r = run_query(hdb, 0, sql);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     sql = "DROP TABLE `One`";
     r = run_query(href, 0, sql);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     sql = "CREATE TABLE `One` ( `A` INT, `B` CHAR(72) PRIMARY KEY `A` )";
     r = run_query(hdb, 0, sql);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     r = run_query(href, 0, sql);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     sql = "INSERT INTO `One` ( `A`, `B` ) VALUES ( 1, 'foo' )";
     r = run_query(href, 0, sql);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     sql = "INSERT INTO `One` ( `A`, `B` ) VALUES ( 2, 'bar' )";
     r = run_query(href, 0, sql);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     r = libmsi_database_merge(hdb, href, "MergeErrors");
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     sql = "SELECT * FROM `One`";
     r = libmsi_database_open_query(hdb, sql, &hquery);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     r = libmsi_query_execute(hquery, 0);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     r = libmsi_query_fetch(hquery, &hrec);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     r = libmsi_record_get_integer(hrec, 1);
     ok(r == 1, "Expected 1, got %d\n", r);
 
     size = MAX_PATH;
     r = libmsi_record_get_string(hrec, 2, buf, &size);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     ok(!strcmp(buf, "foo"), "Expected \"foo\", got \"%s\"\n", buf);
 
     libmsi_unref(hrec);
 
     r = libmsi_query_fetch(hquery, &hrec);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     r = libmsi_record_get_integer(hrec, 1);
     ok(r == 2, "Expected 2, got %d\n", r);
 
     size = MAX_PATH;
     r = libmsi_record_get_string(hrec, 2, buf, &size);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     ok(!strcmp(buf, "bar"), "Expected \"bar\", got \"%s\"\n", buf);
 
     libmsi_unref(hrec);
 
     r = libmsi_query_fetch(hquery, &hrec);
-    ok(r == ERROR_NO_MORE_ITEMS,
-       "Expected ERROR_NO_MORE_ITEMS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_NO_MORE_ITEMS,
+       "Expected LIBMSI_RESULT_NO_MORE_ITEMS, got %d\n", r);
 
     libmsi_query_close(hquery);
     libmsi_unref(hquery);
@@ -8354,27 +8354,27 @@ static void test_select_with_tablenames(void)
     /* Build a pair of tables with the same column names, but unique data */
     sql = "CREATE TABLE `T1` ( `A` SHORT, `B` SHORT PRIMARY KEY `A`)";
     r = run_query(hdb, 0, sql);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     sql = "INSERT INTO `T1` ( `A`, `B` ) VALUES ( 1, 2 )";
     r = run_query(hdb, 0, sql);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     sql = "INSERT INTO `T1` ( `A`, `B` ) VALUES ( 4, 5 )";
     r = run_query(hdb, 0, sql);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     sql = "CREATE TABLE `T2` ( `A` SHORT, `B` SHORT PRIMARY KEY `A`)";
     r = run_query(hdb, 0, sql);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     sql = "INSERT INTO `T2` ( `A`, `B` ) VALUES ( 11, 12 )";
     r = run_query(hdb, 0, sql);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     sql = "INSERT INTO `T2` ( `A`, `B` ) VALUES ( 14, 15 )";
     r = run_query(hdb, 0, sql);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
 
     /* Test that selection based on prefixing the column with the table
@@ -8383,14 +8383,14 @@ static void test_select_with_tablenames(void)
     query = NULL;
     sql = "SELECT T1.A, T2.B FROM T1,T2";
     r = libmsi_database_open_query(hdb, sql, &query);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     r = libmsi_query_execute(query, 0);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     for (i = 0; i < 4; i++)
     {
         r = libmsi_query_fetch(query, &rec);
-        ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+        ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
         r = libmsi_record_get_integer(rec, 1);
         ok(r == vals[i][0], "Expected %d, got %d\n", vals[i][0], r);
@@ -8402,7 +8402,7 @@ static void test_select_with_tablenames(void)
     }
 
     r = libmsi_query_fetch(query, &rec);
-    ok(r == ERROR_NO_MORE_ITEMS, "Expected ERROR_NO_MORE_ITEMS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_NO_MORE_ITEMS, "Expected LIBMSI_RESULT_NO_MORE_ITEMS, got %d\n", r);
 
     libmsi_query_close(query);
     libmsi_unref(query);
@@ -8434,72 +8434,72 @@ static void test_insertorder(void)
 
     sql = "CREATE TABLE `T` ( `A` SHORT, `B` SHORT, `C` SHORT PRIMARY KEY `A`)";
     r = run_query(hdb, 0, sql);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     sql = "INSERT INTO `T` ( `A`, `B`, `C` ) VALUES ( 1, 2, 3 )";
     r = run_query(hdb, 0, sql);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     sql = "INSERT INTO `T` ( `B`, `C`, `A` ) VALUES ( 4, 5, 6 )";
     r = run_query(hdb, 0, sql);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     sql = "INSERT INTO `T` ( `C`, `A`, `B` ) VALUES ( 7, 8, 9 )";
     r = run_query(hdb, 0, sql);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     sql = "INSERT INTO `T` ( `A`, `B` ) VALUES ( 10, 11 )";
     r = run_query(hdb, 0, sql);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     sql = "INSERT INTO `T` ( `B`, `C` ) VALUES ( 12, 13 )";
     r = run_query(hdb, 0, sql);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     /* fails because the primary key already
      * has an MSI_NULL_INTEGER value set above
      */
     sql = "INSERT INTO `T` ( `C` ) VALUES ( 14 )";
     r = run_query(hdb, 0, sql);
-    ok(r == ERROR_FUNCTION_FAILED,
-       "Expected ERROR_FUNCTION_FAILED, got %d\n", r);
+    ok(r == LIBMSI_RESULT_FUNCTION_FAILED,
+       "Expected LIBMSI_RESULT_FUNCTION_FAILED, got %d\n", r);
 
     /* replicate the error where primary key is set twice */
     sql = "INSERT INTO `T` ( `A`, `C` ) VALUES ( 1, 14 )";
     r = run_query(hdb, 0, sql);
-    ok(r == ERROR_FUNCTION_FAILED,
-       "Expected ERROR_FUNCTION_FAILED, got %d\n", r);
+    ok(r == LIBMSI_RESULT_FUNCTION_FAILED,
+       "Expected LIBMSI_RESULT_FUNCTION_FAILED, got %d\n", r);
 
     sql = "INSERT INTO `T` ( `A`, `C` ) VALUES ( 14, 15 )";
     r = run_query(hdb, 0, sql);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     sql = "INSERT INTO `T` VALUES ( 16 )";
     r = run_query(hdb, 0, sql);
-    ok(r == ERROR_BAD_QUERY_SYNTAX,
-       "Expected ERROR_BAD_QUERY_SYNTAX, got %d\n", r);
+    ok(r == LIBMSI_RESULT_BAD_QUERY_SYNTAX,
+       "Expected LIBMSI_RESULT_BAD_QUERY_SYNTAX, got %d\n", r);
 
     sql = "INSERT INTO `T` VALUES ( 17, 18 )";
     r = run_query(hdb, 0, sql);
-    ok(r == ERROR_BAD_QUERY_SYNTAX,
-       "Expected ERROR_BAD_QUERY_SYNTAX, got %d\n", r);
+    ok(r == LIBMSI_RESULT_BAD_QUERY_SYNTAX,
+       "Expected LIBMSI_RESULT_BAD_QUERY_SYNTAX, got %d\n", r);
 
     sql = "INSERT INTO `T` VALUES ( 19, 20, 21 )";
     r = run_query(hdb, 0, sql);
-    ok(r == ERROR_BAD_QUERY_SYNTAX,
-       "Expected ERROR_BAD_QUERY_SYNTAX, got %d\n", r);
+    ok(r == LIBMSI_RESULT_BAD_QUERY_SYNTAX,
+       "Expected LIBMSI_RESULT_BAD_QUERY_SYNTAX, got %d\n", r);
 
     query = NULL;
     sql = "SELECT * FROM `T`";
     r = libmsi_database_open_query(hdb, sql, &query);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     r = libmsi_query_execute(query, 0);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     for (i = 0; i < 6; i++)
     {
         r = libmsi_query_fetch(query, &rec);
-        ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+        ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
         r = libmsi_record_get_integer(rec, 1);
         ok(r == ordervals[i][0], "Expected %d, got %d\n", ordervals[i][0], r);
@@ -8514,30 +8514,30 @@ static void test_insertorder(void)
     }
 
     r = libmsi_query_fetch(query, &rec);
-    ok(r == ERROR_NO_MORE_ITEMS, "Expected ERROR_NO_MORE_ITEMS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_NO_MORE_ITEMS, "Expected LIBMSI_RESULT_NO_MORE_ITEMS, got %d\n", r);
 
     libmsi_query_close(query);
     libmsi_unref(query);
 
     sql = "DELETE FROM `T` WHERE `A` IS NULL";
     r = run_query(hdb, 0, sql);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     sql = "INSERT INTO `T` ( `B`, `C` ) VALUES ( 12, 13 ) TEMPORARY";
     r = run_query(hdb, 0, sql);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     query = NULL;
     sql = "SELECT * FROM `T`";
     r = libmsi_database_open_query(hdb, sql, &query);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     r = libmsi_query_execute(query, 0);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     for (i = 0; i < 6; i++)
     {
         r = libmsi_query_fetch(query, &rec);
-        ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+        ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
         r = libmsi_record_get_integer(rec, 1);
         ok(r == ordervals[i][0], "Expected %d, got %d\n", ordervals[i][0], r);
@@ -8552,7 +8552,7 @@ static void test_insertorder(void)
     }
 
     r = libmsi_query_fetch(query, &rec);
-    ok(r == ERROR_NO_MORE_ITEMS, "Expected ERROR_NO_MORE_ITEMS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_NO_MORE_ITEMS, "Expected LIBMSI_RESULT_NO_MORE_ITEMS, got %d\n", r);
 
     libmsi_query_close(query);
     libmsi_unref(query);
@@ -8597,81 +8597,81 @@ static void test_columnorder(void)
             "`A` CHAR(255), `E` INT, `D` CHAR(255) NOT NULL "
             "PRIMARY KEY `D`, `E`)";
     r = run_query(hdb, 0, sql);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     query = NULL;
     sql = "SELECT * FROM `T`";
     r = libmsi_database_open_query(hdb, sql, &query);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     rec = NULL;
     r = libmsi_query_get_column_info(query, LIBMSI_COL_INFO_TYPES, &rec);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     sz = MAX_PATH;
     strcpy(buf, "kiwi");
     r = libmsi_record_get_string(rec, 1, buf, &sz);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     ok(!strcmp("s255", buf), "Expected \"s255\", got \"%s\"\n", buf);
 
     sz = MAX_PATH;
     strcpy(buf, "kiwi");
     r = libmsi_record_get_string(rec, 2, buf, &sz);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     ok(!strcmp("I2", buf), "Expected \"I2\", got \"%s\"\n", buf);
 
     sz = MAX_PATH;
     strcpy(buf, "kiwi");
     r = libmsi_record_get_string(rec, 3, buf, &sz);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     ok(!strcmp("S255", buf), "Expected \"S255\", got \"%s\"\n", buf);
 
     sz = MAX_PATH;
     strcpy(buf, "kiwi");
     r = libmsi_record_get_string(rec, 4, buf, &sz);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     ok(!strcmp("i2", buf), "Expected \"i2\", got \"%s\"\n", buf);
 
     sz = MAX_PATH;
     strcpy(buf, "kiwi");
     r = libmsi_record_get_string(rec, 5, buf, &sz);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     ok(!strcmp("i2", buf), "Expected \"i2\", got \"%s\"\n", buf);
 
     libmsi_unref(rec);
 
     rec = NULL;
     r = libmsi_query_get_column_info(query, LIBMSI_COL_INFO_NAMES, &rec);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     sz = MAX_PATH;
     strcpy(buf, "kiwi");
     r = libmsi_record_get_string(rec, 1, buf, &sz);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     ok(!strcmp("D", buf), "Expected \"D\", got \"%s\"\n", buf);
 
     sz = MAX_PATH;
     strcpy(buf, "kiwi");
     r = libmsi_record_get_string(rec, 2, buf, &sz);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     ok(!strcmp("E", buf), "Expected \"E\", got \"%s\"\n", buf);
 
     sz = MAX_PATH;
     strcpy(buf, "kiwi");
     r = libmsi_record_get_string(rec, 3, buf, &sz);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     ok(!strcmp("A", buf), "Expected \"A\", got \"%s\"\n", buf);
 
     sz = MAX_PATH;
     strcpy(buf, "kiwi");
     r = libmsi_record_get_string(rec, 4, buf, &sz);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     ok(!strcmp("C", buf), "Expected \"C\", got \"%s\"\n", buf);
 
     sz = MAX_PATH;
     strcpy(buf, "kiwi");
     r = libmsi_record_get_string(rec, 5, buf, &sz);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     ok(!strcmp("B", buf), "Expected \"B\", got \"%s\"\n", buf);
 
     libmsi_unref(rec);
@@ -8681,16 +8681,16 @@ static void test_columnorder(void)
     sql = "INSERT INTO `T` ( `B`, `C`, `A`, `E`, `D` ) "
             "VALUES ( 1, 2, 'a', 3, 'bc' )";
     r = run_query(hdb, 0, sql);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     sql = "SELECT * FROM `T`";
     r = do_query(hdb, sql, &rec);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     sz = MAX_PATH;
     strcpy(buf, "kiwi");
     r = libmsi_record_get_string(rec, 1, buf, &sz);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     ok(!strcmp("bc", buf), "Expected \"bc\", got \"%s\"\n", buf);
 
     r = libmsi_record_get_integer(rec, 2);
@@ -8699,7 +8699,7 @@ static void test_columnorder(void)
     sz = MAX_PATH;
     strcpy(buf, "kiwi");
     r = libmsi_record_get_string(rec, 3, buf, &sz);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     ok(!strcmp("a", buf), "Expected \"a\", got \"%s\"\n", buf);
 
     r = libmsi_record_get_integer(rec, 4);
@@ -8713,17 +8713,17 @@ static void test_columnorder(void)
     query = NULL;
     sql = "SELECT * FROM `_Columns` WHERE `Table` = 'T'";
     r = libmsi_database_open_query(hdb, sql, &query);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     r = libmsi_query_execute(query, 0);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     r = libmsi_query_fetch(query, &rec);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     sz = MAX_PATH;
     strcpy(buf, "kiwi");
     r = libmsi_record_get_string(rec, 1, buf, &sz);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     ok(!strcmp("T", buf), "Expected \"T\", got \"%s\"\n", buf);
 
     r = libmsi_record_get_integer(rec, 2);
@@ -8732,18 +8732,18 @@ static void test_columnorder(void)
     sz = MAX_PATH;
     strcpy(buf, "kiwi");
     r = libmsi_record_get_string(rec, 3, buf, &sz);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     ok(!strcmp("D", buf), "Expected \"D\", got \"%s\"\n", buf);
 
     libmsi_unref(rec);
 
     r = libmsi_query_fetch(query, &rec);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     sz = MAX_PATH;
     strcpy(buf, "kiwi");
     r = libmsi_record_get_string(rec, 1, buf, &sz);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     ok(!strcmp("T", buf), "Expected \"T\", got \"%s\"\n", buf);
 
     r = libmsi_record_get_integer(rec, 2);
@@ -8752,18 +8752,18 @@ static void test_columnorder(void)
     sz = MAX_PATH;
     strcpy(buf, "kiwi");
     r = libmsi_record_get_string(rec, 3, buf, &sz);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     ok(!strcmp("E", buf), "Expected \"E\", got \"%s\"\n", buf);
 
     libmsi_unref(rec);
 
     r = libmsi_query_fetch(query, &rec);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     sz = MAX_PATH;
     strcpy(buf, "kiwi");
     r = libmsi_record_get_string(rec, 1, buf, &sz);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     ok(!strcmp("T", buf), "Expected \"T\", got \"%s\"\n", buf);
 
     r = libmsi_record_get_integer(rec, 2);
@@ -8772,18 +8772,18 @@ static void test_columnorder(void)
     sz = MAX_PATH;
     strcpy(buf, "kiwi");
     r = libmsi_record_get_string(rec, 3, buf, &sz);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     ok(!strcmp("A", buf), "Expected \"A\", got \"%s\"\n", buf);
 
     libmsi_unref(rec);
 
     r = libmsi_query_fetch(query, &rec);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     sz = MAX_PATH;
     strcpy(buf, "kiwi");
     r = libmsi_record_get_string(rec, 1, buf, &sz);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     ok(!strcmp("T", buf), "Expected \"T\", got \"%s\"\n", buf);
 
     r = libmsi_record_get_integer(rec, 2);
@@ -8792,18 +8792,18 @@ static void test_columnorder(void)
     sz = MAX_PATH;
     strcpy(buf, "kiwi");
     r = libmsi_record_get_string(rec, 3, buf, &sz);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     ok(!strcmp("C", buf), "Expected \"C\", got \"%s\"\n", buf);
 
     libmsi_unref(rec);
 
     r = libmsi_query_fetch(query, &rec);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     sz = MAX_PATH;
     strcpy(buf, "kiwi");
     r = libmsi_record_get_string(rec, 1, buf, &sz);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     ok(!strcmp("T", buf), "Expected \"T\", got \"%s\"\n", buf);
 
     r = libmsi_record_get_integer(rec, 2);
@@ -8812,13 +8812,13 @@ static void test_columnorder(void)
     sz = MAX_PATH;
     strcpy(buf, "kiwi");
     r = libmsi_record_get_string(rec, 3, buf, &sz);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     ok(!strcmp("B", buf), "Expected \"B\", got \"%s\"\n", buf);
 
     libmsi_unref(rec);
 
     r = libmsi_query_fetch(query, &rec);
-    ok(r == ERROR_NO_MORE_ITEMS, "Expected ERROR_NO_MORE_ITEMS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_NO_MORE_ITEMS, "Expected LIBMSI_RESULT_NO_MORE_ITEMS, got %d\n", r);
 
     libmsi_query_close(query);
     libmsi_unref(query);
@@ -8827,81 +8827,81 @@ static void test_columnorder(void)
             "`A` CHAR(255), `E` INT, `D` CHAR(255) NOT NULL "
             "PRIMARY KEY `C`, `A`, `D`)";
     r = run_query(hdb, 0, sql);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     query = NULL;
     sql = "SELECT * FROM `Z`";
     r = libmsi_database_open_query(hdb, sql, &query);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     rec = NULL;
     r = libmsi_query_get_column_info(query, LIBMSI_COL_INFO_TYPES, &rec);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     sz = MAX_PATH;
     strcpy(buf, "kiwi");
     r = libmsi_record_get_string(rec, 1, buf, &sz);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     ok(!strcmp("i2", buf), "Expected \"i2\", got \"%s\"\n", buf);
 
     sz = MAX_PATH;
     strcpy(buf, "kiwi");
     r = libmsi_record_get_string(rec, 2, buf, &sz);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     ok(!strcmp("S255", buf), "Expected \"S255\", got \"%s\"\n", buf);
 
     sz = MAX_PATH;
     strcpy(buf, "kiwi");
     r = libmsi_record_get_string(rec, 3, buf, &sz);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     ok(!strcmp("s255", buf), "Expected \"s255\", got \"%s\"\n", buf);
 
     sz = MAX_PATH;
     strcpy(buf, "kiwi");
     r = libmsi_record_get_string(rec, 4, buf, &sz);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     ok(!strcmp("I2", buf), "Expected \"I2\", got \"%s\"\n", buf);
 
     sz = MAX_PATH;
     strcpy(buf, "kiwi");
     r = libmsi_record_get_string(rec, 5, buf, &sz);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     ok(!strcmp("i2", buf), "Expected \"i2\", got \"%s\"\n", buf);
 
     libmsi_unref(rec);
 
     rec = NULL;
     r = libmsi_query_get_column_info(query, LIBMSI_COL_INFO_NAMES, &rec);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     sz = MAX_PATH;
     strcpy(buf, "kiwi");
     r = libmsi_record_get_string(rec, 1, buf, &sz);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     ok(!strcmp("C", buf), "Expected \"C\", got \"%s\"\n", buf);
 
     sz = MAX_PATH;
     strcpy(buf, "kiwi");
     r = libmsi_record_get_string(rec, 2, buf, &sz);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     ok(!strcmp("A", buf), "Expected \"A\", got \"%s\"\n", buf);
 
     sz = MAX_PATH;
     strcpy(buf, "kiwi");
     r = libmsi_record_get_string(rec, 3, buf, &sz);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     ok(!strcmp("D", buf), "Expected \"D\", got \"%s\"\n", buf);
 
     sz = MAX_PATH;
     strcpy(buf, "kiwi");
     r = libmsi_record_get_string(rec, 4, buf, &sz);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     ok(!strcmp("E", buf), "Expected \"E\", got \"%s\"\n", buf);
 
     sz = MAX_PATH;
     strcpy(buf, "kiwi");
     r = libmsi_record_get_string(rec, 5, buf, &sz);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     ok(!strcmp("B", buf), "Expected \"B\", got \"%s\"\n", buf);
 
     libmsi_unref(rec);
@@ -8911,11 +8911,11 @@ static void test_columnorder(void)
     sql = "INSERT INTO `Z` ( `B`, `C`, `A`, `E`, `D` ) "
             "VALUES ( 1, 2, 'a', 3, 'bc' )";
     r = run_query(hdb, 0, sql);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     sql = "SELECT * FROM `Z`";
     r = do_query(hdb, sql, &rec);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     r = libmsi_record_get_integer(rec, 1);
     ok(r == 2, "Expected 2, got %d\n", r);
@@ -8923,13 +8923,13 @@ static void test_columnorder(void)
     sz = MAX_PATH;
     strcpy(buf, "kiwi");
     r = libmsi_record_get_string(rec, 2, buf, &sz);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     ok(!strcmp("a", buf), "Expected \"a\", got \"%s\"\n", buf);
 
     sz = MAX_PATH;
     strcpy(buf, "kiwi");
     r = libmsi_record_get_string(rec, 3, buf, &sz);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     ok(!strcmp("bc", buf), "Expected \"bc\", got \"%s\"\n", buf);
 
     r = libmsi_record_get_integer(rec, 4);
@@ -8943,17 +8943,17 @@ static void test_columnorder(void)
     query = NULL;
     sql = "SELECT * FROM `_Columns` WHERE `Table` = 'T'";
     r = libmsi_database_open_query(hdb, sql, &query);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     r = libmsi_query_execute(query, 0);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     r = libmsi_query_fetch(query, &rec);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     sz = MAX_PATH;
     strcpy(buf, "kiwi");
     r = libmsi_record_get_string(rec, 1, buf, &sz);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     ok(!strcmp("T", buf), "Expected \"T\", got \"%s\"\n", buf);
 
     r = libmsi_record_get_integer(rec, 2);
@@ -8962,18 +8962,18 @@ static void test_columnorder(void)
     sz = MAX_PATH;
     strcpy(buf, "kiwi");
     r = libmsi_record_get_string(rec, 3, buf, &sz);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     ok(!strcmp("D", buf), "Expected \"D\", got \"%s\"\n", buf);
 
     libmsi_unref(rec);
 
     r = libmsi_query_fetch(query, &rec);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     sz = MAX_PATH;
     strcpy(buf, "kiwi");
     r = libmsi_record_get_string(rec, 1, buf, &sz);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     ok(!strcmp("T", buf), "Expected \"T\", got \"%s\"\n", buf);
 
     r = libmsi_record_get_integer(rec, 2);
@@ -8982,18 +8982,18 @@ static void test_columnorder(void)
     sz = MAX_PATH;
     strcpy(buf, "kiwi");
     r = libmsi_record_get_string(rec, 3, buf, &sz);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     ok(!strcmp("E", buf), "Expected \"E\", got \"%s\"\n", buf);
 
     libmsi_unref(rec);
 
     r = libmsi_query_fetch(query, &rec);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     sz = MAX_PATH;
     strcpy(buf, "kiwi");
     r = libmsi_record_get_string(rec, 1, buf, &sz);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     ok(!strcmp("T", buf), "Expected \"T\", got \"%s\"\n", buf);
 
     r = libmsi_record_get_integer(rec, 2);
@@ -9002,18 +9002,18 @@ static void test_columnorder(void)
     sz = MAX_PATH;
     strcpy(buf, "kiwi");
     r = libmsi_record_get_string(rec, 3, buf, &sz);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     ok(!strcmp("A", buf), "Expected \"A\", got \"%s\"\n", buf);
 
     libmsi_unref(rec);
 
     r = libmsi_query_fetch(query, &rec);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     sz = MAX_PATH;
     strcpy(buf, "kiwi");
     r = libmsi_record_get_string(rec, 1, buf, &sz);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     ok(!strcmp("T", buf), "Expected \"T\", got \"%s\"\n", buf);
 
     r = libmsi_record_get_integer(rec, 2);
@@ -9022,18 +9022,18 @@ static void test_columnorder(void)
     sz = MAX_PATH;
     strcpy(buf, "kiwi");
     r = libmsi_record_get_string(rec, 3, buf, &sz);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     ok(!strcmp("C", buf), "Expected \"C\", got \"%s\"\n", buf);
 
     libmsi_unref(rec);
 
     r = libmsi_query_fetch(query, &rec);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     sz = MAX_PATH;
     strcpy(buf, "kiwi");
     r = libmsi_record_get_string(rec, 1, buf, &sz);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     ok(!strcmp("T", buf), "Expected \"T\", got \"%s\"\n", buf);
 
     r = libmsi_record_get_integer(rec, 2);
@@ -9042,13 +9042,13 @@ static void test_columnorder(void)
     sz = MAX_PATH;
     strcpy(buf, "kiwi");
     r = libmsi_record_get_string(rec, 3, buf, &sz);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     ok(!strcmp("B", buf), "Expected \"B\", got \"%s\"\n", buf);
 
     libmsi_unref(rec);
 
     r = libmsi_query_fetch(query, &rec);
-    ok(r == ERROR_NO_MORE_ITEMS, "Expected ERROR_NO_MORE_ITEMS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_NO_MORE_ITEMS, "Expected LIBMSI_RESULT_NO_MORE_ITEMS, got %d\n", r);
 
     libmsi_query_close(query);
     libmsi_unref(query);
@@ -9072,101 +9072,101 @@ static void test_createtable(void)
 
     sql = "CREATE TABLE `blah` (`foo` CHAR(72) NOT NULL PRIMARY KEY `foo`)";
     res = libmsi_database_open_query( hdb, sql, &htab );
-    ok(res == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", res);
-    if(res == ERROR_SUCCESS )
+    ok(res == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", res);
+    if(res == LIBMSI_RESULT_SUCCESS )
     {
         res = libmsi_query_execute( htab, hrec );
-        ok(res == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", res);
+        ok(res == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", res);
 
         hrec = NULL;
         res = libmsi_query_get_column_info( htab, LIBMSI_COL_INFO_NAMES, &hrec );
-        todo_wine ok(res == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", res);
+        todo_wine ok(res == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", res);
 
         size = sizeof(buffer);
         res = libmsi_record_get_string(hrec, 1, buffer, &size );
-        todo_wine ok(res == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", res);
+        todo_wine ok(res == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", res);
         libmsi_unref( hrec );
 
         res = libmsi_query_close( htab );
-        ok(res == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", res);
+        ok(res == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", res);
 
         res = libmsi_unref( htab );
-        ok(res == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", res);
+        ok(res == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", res);
     }
 
     sql = "CREATE TABLE `a` (`b` INT PRIMARY KEY `b`)";
     res = libmsi_database_open_query( hdb, sql, &htab );
-    ok(res == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", res);
-    if(res == ERROR_SUCCESS )
+    ok(res == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", res);
+    if(res == LIBMSI_RESULT_SUCCESS )
     {
         res = libmsi_query_execute( htab, 0 );
-        ok(res == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", res);
+        ok(res == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", res);
 
         res = libmsi_query_close( htab );
-        ok(res == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", res);
+        ok(res == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", res);
 
         res = libmsi_unref( htab );
-        ok(res == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", res);
+        ok(res == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", res);
 
         sql = "SELECT * FROM `a`";
         res = libmsi_database_open_query( hdb, sql, &htab );
-        ok(res == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", res);
+        ok(res == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", res);
 
         hrec = NULL;
         res = libmsi_query_get_column_info( htab, LIBMSI_COL_INFO_NAMES, &hrec );
-        ok(res == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", res);
+        ok(res == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", res);
 
         buffer[0] = 0;
         size = sizeof(buffer);
         res = libmsi_record_get_string(hrec, 1, buffer, &size );
-        ok(res == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", res);
+        ok(res == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", res);
         ok(!strcmp(buffer,"b"), "b != %s\n", buffer);
         libmsi_unref( hrec );
 
         res = libmsi_query_close( htab );
-        ok(res == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", res);
+        ok(res == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", res);
 
         res = libmsi_unref( htab );
-        ok(res == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", res);
+        ok(res == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", res);
 
         res = libmsi_database_commit(hdb);
-        ok(res == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", res);
+        ok(res == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", res);
 
         res = libmsi_unref(hdb);
-        ok(res == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", res);
+        ok(res == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", res);
 
         res = libmsi_database_open(msifile, LIBMSI_DB_OPEN_TRANSACT, &hdb );
-        ok(res == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", res);
+        ok(res == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", res);
 
         sql = "SELECT * FROM `a`";
         res = libmsi_database_open_query( hdb, sql, &htab );
-        ok(res == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", res);
+        ok(res == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", res);
 
         hrec = NULL;
         res = libmsi_query_get_column_info( htab, LIBMSI_COL_INFO_NAMES, &hrec );
-        ok(res == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", res);
+        ok(res == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", res);
 
         buffer[0] = 0;
         size = sizeof(buffer);
         res = libmsi_record_get_string(hrec, 1, buffer, &size );
-        ok(res == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", res);
+        ok(res == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", res);
         ok(!strcmp(buffer,"b"), "b != %s\n", buffer);
 
         res = libmsi_unref( hrec );
-        ok(res == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", res);
+        ok(res == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", res);
 
         res = libmsi_query_close( htab );
-        ok(res == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", res);
+        ok(res == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", res);
 
         res = libmsi_unref( htab );
-        ok(res == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", res);
+        ok(res == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", res);
     }
 
     res = libmsi_database_commit(hdb);
-    ok(res == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", res);
+    ok(res == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", res);
 
     res = libmsi_unref(hdb);
-    ok(res == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", res);
+    ok(res == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", res);
 
     DeleteFileA(msifile);
 }
@@ -9184,21 +9184,21 @@ static void test_embedded_nulls(void)
     char buffer[32];
 
     r = libmsi_database_open( msifile, LIBMSI_DB_OPEN_CREATE, &hdb );
-    ok( r == ERROR_SUCCESS, "failed to open database %u\n", r );
+    ok( r == LIBMSI_RESULT_SUCCESS, "failed to open database %u\n", r );
 
     GetCurrentDirectoryA( MAX_PATH, CURR_DIR );
     write_file( "temp_file", control_table, sizeof(control_table) );
     r = libmsi_database_import( hdb, CURR_DIR, "temp_file" );
-    ok( r == ERROR_SUCCESS, "failed to import table %u\n", r );
+    ok( r == LIBMSI_RESULT_SUCCESS, "failed to import table %u\n", r );
     DeleteFileA( "temp_file" );
 
     r = do_query( hdb, "SELECT `Text` FROM `Control` WHERE `Dialog` = 'LicenseAgreementDlg'", &hrec );
-    ok( r == ERROR_SUCCESS, "query failed %u\n", r );
+    ok( r == LIBMSI_RESULT_SUCCESS, "query failed %u\n", r );
 
     buffer[0] = 0;
     sz = sizeof(buffer);
     r = libmsi_record_get_string( hrec, 1, buffer, &sz );
-    ok( r == ERROR_SUCCESS, "failed to get string %u\n", r );
+    ok( r == LIBMSI_RESULT_SUCCESS, "failed to get string %u\n", r );
     ok( !memcmp( "text\r\ntext\ntext", buffer, sizeof("text\r\ntext\ntext") - 1 ), "wrong buffer contents \"%s\"\n", buffer );
 
     libmsi_unref( hrec );
@@ -9218,98 +9218,98 @@ static void test_select_column_names(void)
     DeleteFile(msifile);
 
     r = libmsi_database_open( msifile, LIBMSI_DB_OPEN_CREATE, &hdb );
-    ok( r == ERROR_SUCCESS , "failed to open database: %u\n", r );
+    ok( r == LIBMSI_RESULT_SUCCESS , "failed to open database: %u\n", r );
 
     r = try_query( hdb, "CREATE TABLE `t` (`a` CHAR NOT NULL, `b` CHAR PRIMARY KEY `a`)");
-    ok( r == ERROR_SUCCESS , "query failed: %u\n", r );
+    ok( r == LIBMSI_RESULT_SUCCESS , "query failed: %u\n", r );
 
     r = try_query( hdb, "SELECT `t`.`b` FROM `t` WHERE `t`.`b` = `x`" );
-    ok( r == ERROR_BAD_QUERY_SYNTAX, "query failed: %u\n", r );
+    ok( r == LIBMSI_RESULT_BAD_QUERY_SYNTAX, "query failed: %u\n", r );
 
     r = try_query( hdb, "SELECT '', `t`.`b` FROM `t` WHERE `t`.`b` = 'x'" );
-    ok( r == ERROR_SUCCESS , "query failed: %u\n", r );
+    ok( r == LIBMSI_RESULT_SUCCESS , "query failed: %u\n", r );
 
     r = try_query( hdb, "SELECT *, `t`.`b` FROM `t` WHERE `t`.`b` = 'x'" );
-    todo_wine ok( r == ERROR_SUCCESS, "query failed: %u\n", r );
+    todo_wine ok( r == LIBMSI_RESULT_SUCCESS, "query failed: %u\n", r );
 
     r = try_query( hdb, "SELECT 'b', `t`.`b` FROM `t` WHERE `t`.`b` = 'x'" );
-    ok( r == ERROR_SUCCESS , "query failed: %u\n", r );
+    ok( r == LIBMSI_RESULT_SUCCESS , "query failed: %u\n", r );
 
     r = try_query( hdb, "SELECT `t`.`b`, '' FROM `t` WHERE `t`.`b` = 'x'" );
-    ok( r == ERROR_SUCCESS , "query failed: %u\n", r );
+    ok( r == LIBMSI_RESULT_SUCCESS , "query failed: %u\n", r );
 
     r = try_query( hdb, "SELECT `t`.`b`, '' FROM `t` WHERE `t`.`b` = 'x' ORDER BY `b`" );
-    ok( r == ERROR_SUCCESS , "query failed: %u\n", r );
+    ok( r == LIBMSI_RESULT_SUCCESS , "query failed: %u\n", r );
 
     r = try_query( hdb, "SELECT `t`.`b`, '' FROM `t` WHERE `t`.`b` = 'x' ORDER BY 'b'" );
-    ok( r == ERROR_BAD_QUERY_SYNTAX, "query failed: %u\n", r );
+    ok( r == LIBMSI_RESULT_BAD_QUERY_SYNTAX, "query failed: %u\n", r );
 
     r = try_query( hdb, "SELECT 't'.'b' FROM `t` WHERE `t`.`b` = 'x'" );
-    ok( r == ERROR_BAD_QUERY_SYNTAX, "query failed: %u\n", r );
+    ok( r == LIBMSI_RESULT_BAD_QUERY_SYNTAX, "query failed: %u\n", r );
 
     r = try_query( hdb, "SELECT 'b' FROM `t` WHERE `t`.`b` = 'x'" );
-    ok( r == ERROR_SUCCESS , "query failed: %u\n", r );
+    ok( r == LIBMSI_RESULT_SUCCESS , "query failed: %u\n", r );
 
     r = try_query( hdb, "INSERT INTO `t` ( `a`, `b` ) VALUES( '1', '2' )" );
-    ok( r == ERROR_SUCCESS , "query failed: %u\n", r );
+    ok( r == LIBMSI_RESULT_SUCCESS , "query failed: %u\n", r );
 
     r = try_query( hdb, "INSERT INTO `t` ( `a`, `b` ) VALUES( '3', '4' )" );
-    ok( r == ERROR_SUCCESS , "query failed: %u\n", r );
+    ok( r == LIBMSI_RESULT_SUCCESS , "query failed: %u\n", r );
 
     query = NULL;
     r = libmsi_database_open_query( hdb, "SELECT '' FROM `t`", &query );
-    ok( r == ERROR_SUCCESS, "failed to open database query: %u\n", r );
+    ok( r == LIBMSI_RESULT_SUCCESS, "failed to open database query: %u\n", r );
 
     r = libmsi_query_execute( query, 0 );
-    ok( r == ERROR_SUCCESS, "failed to execute query: %u\n", r );
+    ok( r == LIBMSI_RESULT_SUCCESS, "failed to execute query: %u\n", r );
 
     r = libmsi_query_fetch( query, &rec );
-    ok( r == ERROR_SUCCESS, "unexpected result: %u\n", r );
+    ok( r == LIBMSI_RESULT_SUCCESS, "unexpected result: %u\n", r );
     r = libmsi_record_get_field_count( rec );
     ok( r == 1, "got %u\n",  r );
 
     rec2 = NULL;
     r = libmsi_query_get_column_info( query, LIBMSI_COL_INFO_NAMES, &rec2 );
-    ok( r == ERROR_SUCCESS, "unexpected result: %u\n", r );
+    ok( r == LIBMSI_RESULT_SUCCESS, "unexpected result: %u\n", r );
     r = libmsi_record_get_field_count( rec2 );
     ok( r == 1, "got %u\n",  r );
     size = sizeof(buffer);
     memset( buffer, 0x55, sizeof(buffer) );
     r = libmsi_record_get_string( rec2, 1, buffer, &size );
-    ok( r == ERROR_SUCCESS, "unexpected result: %u\n", r );
+    ok( r == LIBMSI_RESULT_SUCCESS, "unexpected result: %u\n", r );
     ok( !buffer[0], "got \"%s\"\n", buffer );
     libmsi_unref( rec2 );
 
     rec2 = NULL;
     r = libmsi_query_get_column_info( query, LIBMSI_COL_INFO_TYPES, &rec2 );
-    ok( r == ERROR_SUCCESS, "unexpected result: %u\n", r );
+    ok( r == LIBMSI_RESULT_SUCCESS, "unexpected result: %u\n", r );
     r = libmsi_record_get_field_count( rec2 );
     ok( r == 1, "got %u\n",  r );
     size = sizeof(buffer);
     memset( buffer, 0x55, sizeof(buffer) );
     r = libmsi_record_get_string( rec2, 1, buffer, &size );
-    ok( r == ERROR_SUCCESS, "unexpected result: %u\n", r );
+    ok( r == LIBMSI_RESULT_SUCCESS, "unexpected result: %u\n", r );
     ok( !strcmp( buffer, "f0" ), "got \"%s\"\n", buffer );
     libmsi_unref( rec2 );
 
     size = sizeof(buffer);
     memset( buffer, 0x55, sizeof(buffer) );
     r = libmsi_record_get_string( rec, 1, buffer, &size );
-    ok( r == ERROR_SUCCESS, "unexpected result: %u\n", r );
+    ok( r == LIBMSI_RESULT_SUCCESS, "unexpected result: %u\n", r );
     ok( !buffer[0], "got \"%s\"\n", buffer );
     libmsi_unref( rec );
 
     r = libmsi_query_fetch( query, &rec );
-    ok( r == ERROR_SUCCESS, "unexpected result: %u\n", r );
+    ok( r == LIBMSI_RESULT_SUCCESS, "unexpected result: %u\n", r );
     size = sizeof(buffer);
     memset( buffer, 0x55, sizeof(buffer) );
     r = libmsi_record_get_string( rec, 1, buffer, &size );
-    ok( r == ERROR_SUCCESS, "unexpected result: %u\n", r );
+    ok( r == LIBMSI_RESULT_SUCCESS, "unexpected result: %u\n", r );
     ok( !buffer[0], "got \"%s\"\n", buffer );
     libmsi_unref( rec );
 
     r = libmsi_query_fetch( query, &rec );
-    ok( r == ERROR_NO_MORE_ITEMS, "unexpected result: %u\n", r );
+    ok( r == LIBMSI_RESULT_NO_MORE_ITEMS, "unexpected result: %u\n", r );
     libmsi_unref( rec );
 
     libmsi_query_close( query );
@@ -9317,33 +9317,33 @@ static void test_select_column_names(void)
 
     query = NULL;
     r = libmsi_database_open_query( hdb, "SELECT `a`, '' FROM `t`", &query );
-    ok( r == ERROR_SUCCESS, "failed to open database query: %u\n", r );
+    ok( r == LIBMSI_RESULT_SUCCESS, "failed to open database query: %u\n", r );
 
     r = libmsi_query_execute( query, 0 );
-    ok( r == ERROR_SUCCESS, "failed to execute query: %u\n", r );
+    ok( r == LIBMSI_RESULT_SUCCESS, "failed to execute query: %u\n", r );
 
     r = libmsi_query_fetch( query, &rec );
-    ok( r == ERROR_SUCCESS, "unexpected result: %u\n", r );
+    ok( r == LIBMSI_RESULT_SUCCESS, "unexpected result: %u\n", r );
     r = libmsi_record_get_field_count( rec );
     ok( r == 2, "got %u\n",  r );
     size = sizeof(buffer);
     memset( buffer, 0x55, sizeof(buffer) );
     r = libmsi_record_get_string( rec, 1, buffer, &size );
-    ok( r == ERROR_SUCCESS, "unexpected result: %u\n", r );
+    ok( r == LIBMSI_RESULT_SUCCESS, "unexpected result: %u\n", r );
     ok( !strcmp( buffer, "1" ), "got \"%s\"\n", buffer );
     libmsi_unref( rec );
 
     r = libmsi_query_fetch( query, &rec );
-    ok( r == ERROR_SUCCESS, "unexpected result: %u\n", r );
+    ok( r == LIBMSI_RESULT_SUCCESS, "unexpected result: %u\n", r );
     size = sizeof(buffer);
     memset( buffer, 0x55, sizeof(buffer) );
     r = libmsi_record_get_string( rec, 2, buffer, &size );
-    ok( r == ERROR_SUCCESS, "unexpected result: %u\n", r );
+    ok( r == LIBMSI_RESULT_SUCCESS, "unexpected result: %u\n", r );
     ok( !buffer[0], "got \"%s\"\n", buffer );
     libmsi_unref( rec );
 
     r = libmsi_query_fetch( query, &rec );
-    ok( r == ERROR_NO_MORE_ITEMS, "unexpected result: %u\n", r );
+    ok( r == LIBMSI_RESULT_NO_MORE_ITEMS, "unexpected result: %u\n", r );
     libmsi_unref( rec );
 
     libmsi_query_close( query );
@@ -9351,43 +9351,43 @@ static void test_select_column_names(void)
 
     query = NULL;
     r = libmsi_database_open_query( hdb, "SELECT '', `a` FROM `t`", &query );
-    ok( r == ERROR_SUCCESS, "failed to open database query: %u\n", r );
+    ok( r == LIBMSI_RESULT_SUCCESS, "failed to open database query: %u\n", r );
 
     r = libmsi_query_execute( query, 0 );
-    ok( r == ERROR_SUCCESS, "failed to execute query: %u\n", r );
+    ok( r == LIBMSI_RESULT_SUCCESS, "failed to execute query: %u\n", r );
 
     r = libmsi_query_fetch( query, &rec );
-    ok( r == ERROR_SUCCESS, "unexpected result: %u\n", r );
+    ok( r == LIBMSI_RESULT_SUCCESS, "unexpected result: %u\n", r );
     r = libmsi_record_get_field_count( rec );
     ok( r == 2, "got %u\n",  r );
     size = sizeof(buffer);
     memset( buffer, 0x55, sizeof(buffer) );
     r = libmsi_record_get_string( rec, 1, buffer, &size );
-    ok( r == ERROR_SUCCESS, "unexpected result: %u\n", r );
+    ok( r == LIBMSI_RESULT_SUCCESS, "unexpected result: %u\n", r );
     ok( !buffer[0], "got \"%s\"\n", buffer );
     size = sizeof(buffer);
     memset( buffer, 0x55, sizeof(buffer) );
     r = libmsi_record_get_string( rec, 2, buffer, &size );
-    ok( r == ERROR_SUCCESS, "unexpected result: %u\n", r );
+    ok( r == LIBMSI_RESULT_SUCCESS, "unexpected result: %u\n", r );
     ok( !strcmp( buffer, "1" ), "got \"%s\"\n", buffer );
     libmsi_unref( rec );
 
     r = libmsi_query_fetch( query, &rec );
-    ok( r == ERROR_SUCCESS, "unexpected result: %u\n", r );
+    ok( r == LIBMSI_RESULT_SUCCESS, "unexpected result: %u\n", r );
     size = sizeof(buffer);
     memset( buffer, 0x55, sizeof(buffer) );
     r = libmsi_record_get_string( rec, 1, buffer, &size );
-    ok( r == ERROR_SUCCESS, "unexpected result: %u\n", r );
+    ok( r == LIBMSI_RESULT_SUCCESS, "unexpected result: %u\n", r );
     ok( !buffer[0], "got \"%s\"\n", buffer );
     size = sizeof(buffer);
     memset( buffer, 0x55, sizeof(buffer) );
     r = libmsi_record_get_string( rec, 2, buffer, &size );
-    ok( r == ERROR_SUCCESS, "unexpected result: %u\n", r );
+    ok( r == LIBMSI_RESULT_SUCCESS, "unexpected result: %u\n", r );
     ok( !strcmp( buffer, "3" ), "got \"%s\"\n", buffer );
     libmsi_unref( rec );
 
     r = libmsi_query_fetch( query, &rec );
-    ok( r == ERROR_NO_MORE_ITEMS, "unexpected result: %u\n", r );
+    ok( r == LIBMSI_RESULT_NO_MORE_ITEMS, "unexpected result: %u\n", r );
     libmsi_unref( rec );
 
     libmsi_query_close( query );
@@ -9395,75 +9395,75 @@ static void test_select_column_names(void)
 
     query = NULL;
     r = libmsi_database_open_query( hdb, "SELECT `a`, '', `b` FROM `t`", &query );
-    ok( r == ERROR_SUCCESS, "failed to open database query: %u\n", r );
+    ok( r == LIBMSI_RESULT_SUCCESS, "failed to open database query: %u\n", r );
 
     r = libmsi_query_execute( query, 0 );
-    ok( r == ERROR_SUCCESS, "failed to execute query: %u\n", r );
+    ok( r == LIBMSI_RESULT_SUCCESS, "failed to execute query: %u\n", r );
 
     r = libmsi_query_fetch( query, &rec );
-    ok( r == ERROR_SUCCESS, "unexpected result: %u\n", r );
+    ok( r == LIBMSI_RESULT_SUCCESS, "unexpected result: %u\n", r );
     r = libmsi_record_get_field_count( rec );
     ok( r == 3, "got %u\n",  r );
     size = sizeof(buffer);
     memset( buffer, 0x55, sizeof(buffer) );
     r = libmsi_record_get_string( rec, 1, buffer, &size );
-    ok( r == ERROR_SUCCESS, "unexpected result: %u\n", r );
+    ok( r == LIBMSI_RESULT_SUCCESS, "unexpected result: %u\n", r );
     ok( !strcmp( buffer, "1" ), "got \"%s\"\n", buffer );
     size = sizeof(buffer);
     memset( buffer, 0x55, sizeof(buffer) );
     r = libmsi_record_get_string( rec, 2, buffer, &size );
-    ok( r == ERROR_SUCCESS, "unexpected result: %u\n", r );
+    ok( r == LIBMSI_RESULT_SUCCESS, "unexpected result: %u\n", r );
     ok( !buffer[0], "got \"%s\"\n", buffer );
     size = sizeof(buffer);
     memset( buffer, 0x55, sizeof(buffer) );
     r = libmsi_record_get_string( rec, 3, buffer, &size );
-    ok( r == ERROR_SUCCESS, "unexpected result: %u\n", r );
+    ok( r == LIBMSI_RESULT_SUCCESS, "unexpected result: %u\n", r );
     ok( !strcmp( buffer, "2" ), "got \"%s\"\n", buffer );
     libmsi_unref( rec );
 
     r = libmsi_query_fetch( query, &rec );
-    ok( r == ERROR_SUCCESS, "unexpected result: %u\n", r );
+    ok( r == LIBMSI_RESULT_SUCCESS, "unexpected result: %u\n", r );
     size = sizeof(buffer);
     memset( buffer, 0x55, sizeof(buffer) );
     r = libmsi_record_get_string( rec, 1, buffer, &size );
-    ok( r == ERROR_SUCCESS, "unexpected result: %u\n", r );
+    ok( r == LIBMSI_RESULT_SUCCESS, "unexpected result: %u\n", r );
     ok( !strcmp( buffer, "3" ), "got \"%s\"\n", buffer );
     size = sizeof(buffer);
     memset( buffer, 0x55, sizeof(buffer) );
     r = libmsi_record_get_string( rec, 2, buffer, &size );
-    ok( r == ERROR_SUCCESS, "unexpected result: %u\n", r );
+    ok( r == LIBMSI_RESULT_SUCCESS, "unexpected result: %u\n", r );
     ok( !buffer[0], "got \"%s\"\n", buffer );
     size = sizeof(buffer);
     memset( buffer, 0x55, sizeof(buffer) );
     r = libmsi_record_get_string( rec, 3, buffer, &size );
-    ok( r == ERROR_SUCCESS, "unexpected result: %u\n", r );
+    ok( r == LIBMSI_RESULT_SUCCESS, "unexpected result: %u\n", r );
     ok( !strcmp( buffer, "4" ), "got \"%s\"\n", buffer );
     libmsi_unref( rec );
 
     r = libmsi_query_fetch( query, &rec );
-    ok( r == ERROR_NO_MORE_ITEMS, "unexpected result: %u\n", r );
+    ok( r == LIBMSI_RESULT_NO_MORE_ITEMS, "unexpected result: %u\n", r );
     libmsi_unref( rec );
 
     libmsi_query_close( query );
     libmsi_unref( query );
 
     r = try_query( hdb, "SELECT '' FROM `t` WHERE `t`.`b` = 'x'" );
-    ok( r == ERROR_SUCCESS , "query failed: %u\n", r );
+    ok( r == LIBMSI_RESULT_SUCCESS , "query failed: %u\n", r );
 
     r = try_query( hdb, "SELECT `` FROM `t` WHERE `t`.`b` = 'x'" );
-    todo_wine ok( r == ERROR_BAD_QUERY_SYNTAX, "query failed: %u\n", r );
+    todo_wine ok( r == LIBMSI_RESULT_BAD_QUERY_SYNTAX, "query failed: %u\n", r );
 
     r = try_query( hdb, "SELECT `b` FROM 't' WHERE `t`.`b` = 'x'" );
-    ok( r == ERROR_BAD_QUERY_SYNTAX, "query failed: %u\n", r );
+    ok( r == LIBMSI_RESULT_BAD_QUERY_SYNTAX, "query failed: %u\n", r );
 
     r = try_query( hdb, "SELECT `b` FROM `t` WHERE 'b' = 'x'" );
-    ok( r == ERROR_BAD_QUERY_SYNTAX, "query failed: %u\n", r );
+    ok( r == LIBMSI_RESULT_BAD_QUERY_SYNTAX, "query failed: %u\n", r );
 
     r = try_query( hdb, "SELECT `t`.`b`, `` FROM `t` WHERE `t`.`b` = 'x'" );
-    todo_wine ok( r == ERROR_BAD_QUERY_SYNTAX, "query failed: %u\n", r );
+    todo_wine ok( r == LIBMSI_RESULT_BAD_QUERY_SYNTAX, "query failed: %u\n", r );
 
     r = libmsi_unref( hdb );
-    ok(r == ERROR_SUCCESS , "failed to close database: %u\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS , "failed to close database: %u\n", r);
 }
 
 void main()

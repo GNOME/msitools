@@ -35,6 +35,29 @@ typedef enum LibmsiCondition
     LIBMSI_CONDITION_ERROR = 3,
 } LibmsiCondition;
 
+typedef enum LibmsiResult
+{
+    LIBMSI_RESULT_SUCCESS = 0,
+    LIBMSI_RESULT_INVALID_HANDLE = 6,
+    LIBMSI_RESULT_NOT_ENOUGH_MEMORY = 8,
+    LIBMSI_RESULT_INVALID_DATA = 13,
+    LIBMSI_RESULT_OUTOFMEMORY = 14,
+    LIBMSI_RESULT_INVALID_PARAMETER = 87,
+    LIBMSI_RESULT_OPEN_FAILED = 110,
+    LIBMSI_RESULT_CALL_NOT_IMPLEMENTED = 120,
+    LIBMSI_RESULT_MORE_DATA = 234,
+    LIBMSI_RESULT_NO_MORE_ITEMS = 259,
+    LIBMSI_RESULT_NOT_FOUND = 1168,
+    LIBMSI_RESULT_CONTINUE = 1246,
+    LIBMSI_RESULT_UNKNOWN_PROPERTY = 1608,
+    LIBMSI_RESULT_BAD_QUERY_SYNTAX = 1615,
+    LIBMSI_RESULT_INVALID_FIELD = 1616,
+    LIBMSI_RESULT_FUNCTION_FAILED = 1627,
+    LIBMSI_RESULT_INVALID_TABLE = 1628,
+    LIBMSI_RESULT_DATATYPE_MISMATCH = 1629,
+    LIBMSI_RESULT_INVALID_DATATYPE = 1804
+} LibmsiResult;
+
 #define MSI_NULL_INTEGER 0x80000000
 
 typedef enum LibmsiColInfo
@@ -145,58 +168,58 @@ extern "C" {
 
 
 /* view manipulation */
-unsigned libmsi_query_fetch(LibmsiQuery *,LibmsiRecord **);
-unsigned libmsi_query_execute(LibmsiQuery *,LibmsiRecord *);
-unsigned libmsi_query_close(LibmsiQuery *);
-unsigned libmsi_database_open_query(LibmsiDatabase *,const char *,LibmsiQuery **);
+LibmsiResult libmsi_query_fetch(LibmsiQuery *,LibmsiRecord **);
+LibmsiResult libmsi_query_execute(LibmsiQuery *,LibmsiRecord *);
+LibmsiResult libmsi_query_close(LibmsiQuery *);
+LibmsiResult libmsi_database_open_query(LibmsiDatabase *,const char *,LibmsiQuery **);
 LibmsiDBError libmsi_query_get_error(LibmsiQuery *,char *,unsigned *);
 
 LibmsiDBState libmsi_database_get_state(LibmsiDatabase *);
 
 /* record manipulation */
 LibmsiRecord * libmsi_record_create(unsigned);
-unsigned libmsi_record_clear_data(LibmsiRecord *);
-unsigned libmsi_record_set_int(LibmsiRecord *,unsigned,int);
-unsigned libmsi_record_set_string(LibmsiRecord *,unsigned,const char *);
-unsigned libmsi_record_get_string(const LibmsiRecord *,unsigned,char *,unsigned *);
+LibmsiResult libmsi_record_clear_data(LibmsiRecord *);
+LibmsiResult libmsi_record_set_int(LibmsiRecord *,unsigned,int);
+LibmsiResult libmsi_record_set_string(LibmsiRecord *,unsigned,const char *);
+LibmsiResult libmsi_record_get_string(const LibmsiRecord *,unsigned,char *,unsigned *);
 unsigned libmsi_record_get_field_count(const LibmsiRecord *);
 int libmsi_record_get_integer(const LibmsiRecord *,unsigned);
 unsigned libmsi_record_get_field_size(const LibmsiRecord *,unsigned);
 bool libmsi_record_is_null(const LibmsiRecord *,unsigned);
 
-unsigned libmsi_record_load_stream(LibmsiRecord *,unsigned,const char *);
-unsigned libmsi_record_save_stream(LibmsiRecord *,unsigned,char*,unsigned *);
+LibmsiResult libmsi_record_load_stream(LibmsiRecord *,unsigned,const char *);
+LibmsiResult libmsi_record_save_stream(LibmsiRecord *,unsigned,char*,unsigned *);
 
-unsigned libmsi_database_get_primary_keys(LibmsiDatabase *,const char *,LibmsiRecord **);
+LibmsiResult libmsi_database_get_primary_keys(LibmsiDatabase *,const char *,LibmsiRecord **);
 
 /* database transforms */
-unsigned libmsi_database_apply_transform(LibmsiDatabase *,const char *,int);
+LibmsiResult libmsi_database_apply_transform(LibmsiDatabase *,const char *,int);
 
-unsigned libmsi_query_get_column_info(LibmsiQuery *, LibmsiColInfo, LibmsiRecord **);
+LibmsiResult libmsi_query_get_column_info(LibmsiQuery *, LibmsiColInfo, LibmsiRecord **);
 
-unsigned libmsi_summary_info_get_property(LibmsiSummaryInfo *,unsigned,unsigned *,int *,uint64_t*,char *,unsigned *);
+LibmsiResult libmsi_summary_info_get_property(LibmsiSummaryInfo *,unsigned,unsigned *,int *,uint64_t*,char *,unsigned *);
 
-unsigned libmsi_summary_info_set_property(LibmsiSummaryInfo *, unsigned, unsigned, int, uint64_t*, const char *);
+LibmsiResult libmsi_summary_info_set_property(LibmsiSummaryInfo *, unsigned, unsigned, int, uint64_t*, const char *);
 
-unsigned libmsi_database_export(LibmsiDatabase *, const char *, int fd);
+LibmsiResult libmsi_database_export(LibmsiDatabase *, const char *, int fd);
 
-unsigned libmsi_database_import(LibmsiDatabase *, const char *, const char *);
+LibmsiResult libmsi_database_import(LibmsiDatabase *, const char *, const char *);
 
-unsigned libmsi_database_open(const char *, const char *, LibmsiDatabase **);
+LibmsiResult libmsi_database_open(const char *, const char *, LibmsiDatabase **);
 
 LibmsiCondition libmsi_database_is_table_persistent(LibmsiDatabase *, const char *);
 
-unsigned libmsi_summary_info_persist(LibmsiSummaryInfo *);
-unsigned libmsi_summary_info_get_property_count(LibmsiSummaryInfo *,unsigned *);
+LibmsiResult libmsi_summary_info_persist(LibmsiSummaryInfo *);
+LibmsiResult libmsi_summary_info_get_property_count(LibmsiSummaryInfo *,unsigned *);
 
-unsigned libmsi_query_modify(LibmsiQuery *, LibmsiModify, LibmsiRecord *);
+LibmsiResult libmsi_query_modify(LibmsiQuery *, LibmsiModify, LibmsiRecord *);
 
-unsigned libmsi_database_merge(LibmsiDatabase *, LibmsiDatabase *, const char *);
+LibmsiResult libmsi_database_merge(LibmsiDatabase *, LibmsiDatabase *, const char *);
 
 /* Non Unicode */
-unsigned libmsi_database_get_summary_info(LibmsiDatabase *, unsigned, LibmsiSummaryInfo **);
-unsigned libmsi_database_commit(LibmsiDatabase *);
-unsigned libmsi_unref(void *);
+LibmsiResult libmsi_database_get_summary_info(LibmsiDatabase *, unsigned, LibmsiSummaryInfo **);
+LibmsiResult libmsi_database_commit(LibmsiDatabase *);
+LibmsiResult libmsi_unref(void *);
 
 #ifdef __cplusplus
 }

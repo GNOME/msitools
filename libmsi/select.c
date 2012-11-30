@@ -53,16 +53,16 @@ static unsigned select_view_fetch_int( LibmsiView *view, unsigned row, unsigned 
     TRACE("%p %d %d %p\n", sv, row, col, val );
 
     if( !sv->table )
-         return ERROR_FUNCTION_FAILED;
+         return LIBMSI_RESULT_FUNCTION_FAILED;
 
     if( !col || col > sv->num_cols )
-         return ERROR_FUNCTION_FAILED;
+         return LIBMSI_RESULT_FUNCTION_FAILED;
 
     col = sv->cols[ col - 1 ];
     if( !col )
     {
         *val = 0;
-        return ERROR_SUCCESS;
+        return LIBMSI_RESULT_SUCCESS;
     }
     return sv->table->ops->fetch_int( sv->table, row, col, val );
 }
@@ -74,16 +74,16 @@ static unsigned select_view_fetch_stream( LibmsiView *view, unsigned row, unsign
     TRACE("%p %d %d %p\n", sv, row, col, stm );
 
     if( !sv->table )
-         return ERROR_FUNCTION_FAILED;
+         return LIBMSI_RESULT_FUNCTION_FAILED;
 
     if( !col || col > sv->num_cols )
-         return ERROR_FUNCTION_FAILED;
+         return LIBMSI_RESULT_FUNCTION_FAILED;
 
     col = sv->cols[ col - 1 ];
     if( !col )
     {
         *stm = NULL;
-        return ERROR_SUCCESS;
+        return LIBMSI_RESULT_SUCCESS;
     }
     return sv->table->ops->fetch_stream( sv->table, row, col, stm );
 }
@@ -95,7 +95,7 @@ static unsigned select_view_get_row( LibmsiView *view, unsigned row, LibmsiRecor
     TRACE("%p %d %p\n", sv, row, rec );
 
     if( !sv->table )
-         return ERROR_FUNCTION_FAILED;
+         return LIBMSI_RESULT_FUNCTION_FAILED;
 
     return msi_view_get_row(sv->db, view, row, rec);
 }
@@ -103,17 +103,17 @@ static unsigned select_view_get_row( LibmsiView *view, unsigned row, LibmsiRecor
 static unsigned select_view_set_row( LibmsiView *view, unsigned row, LibmsiRecord *rec, unsigned mask )
 {
     LibmsiSelectView *sv = (LibmsiSelectView*)view;
-    unsigned i, expanded_mask = 0, r = ERROR_SUCCESS, col_count = 0;
+    unsigned i, expanded_mask = 0, r = LIBMSI_RESULT_SUCCESS, col_count = 0;
     LibmsiRecord *expanded;
 
     TRACE("%p %d %p %08x\n", sv, row, rec, mask );
 
     if ( !sv->table )
-         return ERROR_FUNCTION_FAILED;
+         return LIBMSI_RESULT_FUNCTION_FAILED;
 
     /* test if any of the mask bits are invalid */
     if ( mask >= (1<<sv->num_cols) )
-        return ERROR_INVALID_PARAMETER;
+        return LIBMSI_RESULT_INVALID_PARAMETER;
 
     /* find the number of columns in the table below */
     r = sv->table->ops->get_dimensions( sv->table, NULL, &col_count );
@@ -123,19 +123,19 @@ static unsigned select_view_set_row( LibmsiView *view, unsigned row, LibmsiRecor
     /* expand the record to the right size for the underlying table */
     expanded = libmsi_record_create( col_count );
     if ( !expanded )
-        return ERROR_FUNCTION_FAILED;
+        return LIBMSI_RESULT_FUNCTION_FAILED;
 
     /* move the right fields across */
     for ( i=0; i<sv->num_cols; i++ )
     {
         r = _libmsi_record_copy_field( rec, i+1, expanded, sv->cols[ i ] );
-        if (r != ERROR_SUCCESS)
+        if (r != LIBMSI_RESULT_SUCCESS)
             break;
         expanded_mask |= (1<<(sv->cols[i]-1));
     }
 
     /* set the row in the underlying table */
-    if (r == ERROR_SUCCESS)
+    if (r == LIBMSI_RESULT_SUCCESS)
         r = sv->table->ops->set_row( sv->table, row, expanded, expanded_mask );
 
     msiobj_release( &expanded->hdr );
@@ -151,11 +151,11 @@ static unsigned select_view_insert_row( LibmsiView *view, LibmsiRecord *record, 
     TRACE("%p %p\n", sv, record );
 
     if ( !sv->table )
-        return ERROR_FUNCTION_FAILED;
+        return LIBMSI_RESULT_FUNCTION_FAILED;
 
     /* rearrange the record to suit the table */
     r = sv->table->ops->get_dimensions( sv->table, NULL, &table_cols );
-    if (r != ERROR_SUCCESS)
+    if (r != LIBMSI_RESULT_SUCCESS)
         return r;
 
     outrec = libmsi_record_create( table_cols + 1 );
@@ -163,7 +163,7 @@ static unsigned select_view_insert_row( LibmsiView *view, LibmsiRecord *record, 
     for (i=0; i<sv->num_cols; i++)
     {
         r = _libmsi_record_copy_field( record, i+1, outrec, sv->cols[i] );
-        if (r != ERROR_SUCCESS)
+        if (r != LIBMSI_RESULT_SUCCESS)
             goto fail;
     }
 
@@ -182,7 +182,7 @@ static unsigned select_view_execute( LibmsiView *view, LibmsiRecord *record )
     TRACE("%p %p\n", sv, record);
 
     if( !sv->table )
-         return ERROR_FUNCTION_FAILED;
+         return LIBMSI_RESULT_FUNCTION_FAILED;
 
     return sv->table->ops->execute( sv->table, record );
 }
@@ -194,7 +194,7 @@ static unsigned select_view_close( LibmsiView *view )
     TRACE("%p\n", sv );
 
     if( !sv->table )
-         return ERROR_FUNCTION_FAILED;
+         return LIBMSI_RESULT_FUNCTION_FAILED;
 
     return sv->table->ops->close( sv->table );
 }
@@ -206,7 +206,7 @@ static unsigned select_view_get_dimensions( LibmsiView *view, unsigned *rows, un
     TRACE("%p %p %p\n", sv, rows, cols );
 
     if( !sv->table )
-         return ERROR_FUNCTION_FAILED;
+         return LIBMSI_RESULT_FUNCTION_FAILED;
 
     if( cols )
         *cols = sv->num_cols;
@@ -222,10 +222,10 @@ static unsigned select_view_get_column_info( LibmsiView *view, unsigned n, const
     TRACE("%p %d %p %p %p %p\n", sv, n, name, type, temporary, table_name );
 
     if( !sv->table )
-         return ERROR_FUNCTION_FAILED;
+         return LIBMSI_RESULT_FUNCTION_FAILED;
 
     if( !n || n > sv->num_cols )
-         return ERROR_FUNCTION_FAILED;
+         return LIBMSI_RESULT_FUNCTION_FAILED;
 
     n = sv->cols[ n - 1 ];
     if( !n )
@@ -234,7 +234,7 @@ static unsigned select_view_get_column_info( LibmsiView *view, unsigned n, const
         if (type) *type = MSITYPE_UNKNOWN | MSITYPE_VALID;
         if (temporary) *temporary = false;
         if (table_name) *table_name = szEmpty;
-        return ERROR_SUCCESS;
+        return LIBMSI_RESULT_SUCCESS;
     }
     return sv->table->ops->get_column_info( sv->table, n, name,
                                             type, temporary, table_name );
@@ -248,11 +248,11 @@ static unsigned msi_select_update(LibmsiView *view, LibmsiRecord *rec, unsigned 
     LibmsiRecord *mod;
 
     r = select_view_get_dimensions(view, NULL, &num_columns);
-    if (r != ERROR_SUCCESS)
+    if (r != LIBMSI_RESULT_SUCCESS)
         return r;
 
     r = sv->table->ops->get_row(sv->table, row - 1, &mod);
-    if (r != ERROR_SUCCESS)
+    if (r != LIBMSI_RESULT_SUCCESS)
         return r;
 
     for (i = 0; i < num_columns; i++)
@@ -260,7 +260,7 @@ static unsigned msi_select_update(LibmsiView *view, LibmsiRecord *rec, unsigned 
         col = sv->cols[i];
 
         r = select_view_get_column_info(view, i + 1, NULL, &type, NULL, NULL);
-        if (r != ERROR_SUCCESS)
+        if (r != LIBMSI_RESULT_SUCCESS)
         {
             ERR("Failed to get column information: %d\n", r);
             goto done;
@@ -269,7 +269,7 @@ static unsigned msi_select_update(LibmsiView *view, LibmsiRecord *rec, unsigned 
         if (MSITYPE_IS_BINARY(type))
         {
             ERR("Cannot modify binary data!\n");
-            r = ERROR_FUNCTION_FAILED;
+            r = LIBMSI_RESULT_FUNCTION_FAILED;
             goto done;
         }
         else if (type & MSITYPE_STRING)
@@ -283,7 +283,7 @@ static unsigned msi_select_update(LibmsiView *view, LibmsiRecord *rec, unsigned 
             r = libmsi_record_set_int(mod, col, val);
         }
 
-        if (r != ERROR_SUCCESS)
+        if (r != LIBMSI_RESULT_SUCCESS)
         {
             ERR("Failed to modify record: %d\n", r);
             goto done;
@@ -305,7 +305,7 @@ static unsigned select_view_modify( LibmsiView *view, LibmsiModify eModifyMode,
     TRACE("%p %d %p %d\n", sv, eModifyMode, rec, row );
 
     if( !sv->table )
-         return ERROR_FUNCTION_FAILED;
+         return LIBMSI_RESULT_FUNCTION_FAILED;
 
     if (eModifyMode == LIBMSI_MODIFY_UPDATE)
         return msi_select_update(view, rec, row);
@@ -325,7 +325,7 @@ static unsigned select_view_delete( LibmsiView *view )
 
     msi_free( sv );
 
-    return ERROR_SUCCESS;
+    return LIBMSI_RESULT_SUCCESS;
 }
 
 static unsigned select_view_find_matching_rows( LibmsiView *view, unsigned col,
@@ -336,10 +336,10 @@ static unsigned select_view_find_matching_rows( LibmsiView *view, unsigned col,
     TRACE("%p, %d, %u, %p\n", view, col, val, *handle);
 
     if( !sv->table )
-         return ERROR_FUNCTION_FAILED;
+         return LIBMSI_RESULT_FUNCTION_FAILED;
 
     if( (col==0) || (col>sv->num_cols) )
-         return ERROR_FUNCTION_FAILED;
+         return LIBMSI_RESULT_FUNCTION_FAILED;
 
     col = sv->cols[ col - 1 ];
 
@@ -380,24 +380,24 @@ static unsigned select_view_add_column( LibmsiSelectView *sv, const WCHAR *name,
           debugstr_w( name ));
 
     if( sv->view.ops != &select_ops )
-        return ERROR_FUNCTION_FAILED;
+        return LIBMSI_RESULT_FUNCTION_FAILED;
 
     table = sv->table;
     if( !table )
-        return ERROR_FUNCTION_FAILED;
+        return LIBMSI_RESULT_FUNCTION_FAILED;
     if( !table->ops->get_dimensions )
-        return ERROR_FUNCTION_FAILED;
+        return LIBMSI_RESULT_FUNCTION_FAILED;
     if( !table->ops->get_column_info )
-        return ERROR_FUNCTION_FAILED;
+        return LIBMSI_RESULT_FUNCTION_FAILED;
 
     if( sv->num_cols >= sv->max_cols )
-        return ERROR_FUNCTION_FAILED;
+        return LIBMSI_RESULT_FUNCTION_FAILED;
 
     if ( !name[0] ) n = 0;
     else
     {
         r = _libmsi_view_find_column( table, name, table_name, &n );
-        if( r != ERROR_SUCCESS )
+        if( r != LIBMSI_RESULT_SUCCESS )
             return r;
     }
 
@@ -407,7 +407,7 @@ static unsigned select_view_add_column( LibmsiSelectView *sv, const WCHAR *name,
 
     sv->num_cols++;
 
-    return ERROR_SUCCESS;
+    return LIBMSI_RESULT_SUCCESS;
 }
 
 static int select_count_columns( const column_info *col )
@@ -422,7 +422,7 @@ unsigned select_view_create( LibmsiDatabase *db, LibmsiView **view, LibmsiView *
                         const column_info *columns )
 {
     LibmsiSelectView *sv = NULL;
-    unsigned count = 0, r = ERROR_SUCCESS;
+    unsigned count = 0, r = LIBMSI_RESULT_SUCCESS;
 
     TRACE("%p\n", sv );
 
@@ -430,7 +430,7 @@ unsigned select_view_create( LibmsiDatabase *db, LibmsiView **view, LibmsiView *
 
     sv = alloc_msiobject( sizeof *sv + count*sizeof (unsigned), NULL );
     if( !sv )
-        return ERROR_FUNCTION_FAILED;
+        return LIBMSI_RESULT_FUNCTION_FAILED;
     
     /* fill the structure */
     sv->view.ops = &select_ops;
@@ -447,7 +447,7 @@ unsigned select_view_create( LibmsiDatabase *db, LibmsiView **view, LibmsiView *
         columns = columns->next;
     }
 
-    if( r == ERROR_SUCCESS )
+    if( r == LIBMSI_RESULT_SUCCESS )
         *view = &sv->view;
     else
         msi_free( sv );

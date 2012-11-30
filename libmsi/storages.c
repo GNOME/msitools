@@ -90,14 +90,14 @@ static unsigned storages_view_fetch_int(LibmsiView *view, unsigned row, unsigned
     TRACE("(%p, %d, %d, %p)\n", view, row, col, val);
 
     if (col != 1)
-        return ERROR_INVALID_PARAMETER;
+        return LIBMSI_RESULT_INVALID_PARAMETER;
 
     if (row >= sv->num_rows)
-        return ERROR_NO_MORE_ITEMS;
+        return LIBMSI_RESULT_NO_MORE_ITEMS;
 
     *val = sv->storages[row]->str_index;
 
-    return ERROR_SUCCESS;
+    return LIBMSI_RESULT_SUCCESS;
 }
 
 static unsigned storages_view_fetch_stream(LibmsiView *view, unsigned row, unsigned col, IStream **stm)
@@ -107,9 +107,9 @@ static unsigned storages_view_fetch_stream(LibmsiView *view, unsigned row, unsig
     TRACE("(%p, %d, %d, %p)\n", view, row, col, stm);
 
     if (row >= sv->num_rows)
-        return ERROR_FUNCTION_FAILED;
+        return LIBMSI_RESULT_FUNCTION_FAILED;
 
-    return ERROR_INVALID_DATA;
+    return LIBMSI_RESULT_INVALID_DATA;
 }
 
 static unsigned storages_view_get_row( LibmsiView *view, unsigned row, LibmsiRecord **rec )
@@ -118,7 +118,7 @@ static unsigned storages_view_get_row( LibmsiView *view, unsigned row, LibmsiRec
 
     FIXME("%p %d %p\n", sv, row, rec);
 
-    return ERROR_CALL_NOT_IMPLEMENTED;
+    return LIBMSI_RESULT_CALL_NOT_IMPLEMENTED;
 }
 
 static HRESULT stream_to_storage(IStream *stm, IStorage **stg)
@@ -177,19 +177,19 @@ static unsigned storages_view_set_row(LibmsiView *view, unsigned row, LibmsiReco
     IStream *stm;
     WCHAR *name = NULL;
     HRESULT hr;
-    unsigned r = ERROR_FUNCTION_FAILED;
+    unsigned r = LIBMSI_RESULT_FUNCTION_FAILED;
 
     TRACE("(%p, %p)\n", view, rec);
 
     if (row > sv->num_rows)
-        return ERROR_FUNCTION_FAILED;
+        return LIBMSI_RESULT_FUNCTION_FAILED;
 
     r = _libmsi_record_get_IStream(rec, 2, &stm);
-    if (r != ERROR_SUCCESS)
+    if (r != LIBMSI_RESULT_SUCCESS)
         return r;
 
     r = stream_to_storage(stm, &stg);
-    if (r != ERROR_SUCCESS)
+    if (r != LIBMSI_RESULT_SUCCESS)
     {
         IStream_Release(stm);
         return r;
@@ -198,7 +198,7 @@ static unsigned storages_view_set_row(LibmsiView *view, unsigned row, LibmsiReco
     name = strdupW(_libmsi_record_get_string_raw(rec, 1));
     if (!name)
     {
-        r = ERROR_OUTOFMEMORY;
+        r = LIBMSI_RESULT_OUTOFMEMORY;
         goto done;
     }
 
@@ -207,20 +207,20 @@ static unsigned storages_view_set_row(LibmsiView *view, unsigned row, LibmsiReco
                                 0, 0, &substg);
     if (FAILED(hr))
     {
-        r = ERROR_FUNCTION_FAILED;
+        r = LIBMSI_RESULT_FUNCTION_FAILED;
         goto done;
     }
 
     hr = IStorage_CopyTo(stg, 0, NULL, NULL, substg);
     if (FAILED(hr))
     {
-        r = ERROR_FUNCTION_FAILED;
+        r = LIBMSI_RESULT_FUNCTION_FAILED;
         goto done;
     }
 
     sv->storages[row] = create_storage(sv, name, stg);
     if (!sv->storages[row])
-        r = ERROR_FUNCTION_FAILED;
+        r = LIBMSI_RESULT_FUNCTION_FAILED;
 
 done:
     msi_free(name);
@@ -237,7 +237,7 @@ static unsigned storages_view_insert_row(LibmsiView *view, LibmsiRecord *rec, un
     LibmsiStorageView *sv = (LibmsiStorageView *)view;
 
     if (!storages_set_table_size(sv, ++sv->num_rows))
-        return ERROR_FUNCTION_FAILED;
+        return LIBMSI_RESULT_FUNCTION_FAILED;
 
     if (row == -1)
         row = sv->num_rows - 1;
@@ -250,19 +250,19 @@ static unsigned storages_view_insert_row(LibmsiView *view, LibmsiRecord *rec, un
 static unsigned storages_view_delete_row(LibmsiView *view, unsigned row)
 {
     FIXME("(%p %d): stub!\n", view, row);
-    return ERROR_SUCCESS;
+    return LIBMSI_RESULT_SUCCESS;
 }
 
 static unsigned storages_view_execute(LibmsiView *view, LibmsiRecord *record)
 {
     TRACE("(%p, %p)\n", view, record);
-    return ERROR_SUCCESS;
+    return LIBMSI_RESULT_SUCCESS;
 }
 
 static unsigned storages_view_close(LibmsiView *view)
 {
     TRACE("(%p)\n", view);
-    return ERROR_SUCCESS;
+    return LIBMSI_RESULT_SUCCESS;
 }
 
 static unsigned storages_view_get_dimensions(LibmsiView *view, unsigned *rows, unsigned *cols)
@@ -274,7 +274,7 @@ static unsigned storages_view_get_dimensions(LibmsiView *view, unsigned *rows, u
     if (cols) *cols = NUM_STORAGES_COLS;
     if (rows) *rows = sv->num_rows;
 
-    return ERROR_SUCCESS;
+    return LIBMSI_RESULT_SUCCESS;
 }
 
 static unsigned storages_view_get_column_info( LibmsiView *view, unsigned n, const WCHAR **name,
@@ -284,7 +284,7 @@ static unsigned storages_view_get_column_info( LibmsiView *view, unsigned n, con
           table_name);
 
     if (n == 0 || n > NUM_STORAGES_COLS)
-        return ERROR_INVALID_PARAMETER;
+        return LIBMSI_RESULT_INVALID_PARAMETER;
 
     switch (n)
     {
@@ -300,7 +300,7 @@ static unsigned storages_view_get_column_info( LibmsiView *view, unsigned n, con
     }
     if (table_name) *table_name = szStorages;
     if (temporary) *temporary = false;
-    return ERROR_SUCCESS;
+    return LIBMSI_RESULT_SUCCESS;
 }
 
 static unsigned storages_find_row(LibmsiStorageView *sv, LibmsiRecord *rec, unsigned *row)
@@ -310,7 +310,7 @@ static unsigned storages_find_row(LibmsiStorageView *sv, LibmsiRecord *rec, unsi
 
     str = _libmsi_record_get_string_raw(rec, 1);
     r = _libmsi_id_from_stringW(sv->db->strings, str, &id);
-    if (r != ERROR_SUCCESS)
+    if (r != LIBMSI_RESULT_SUCCESS)
         return r;
 
     for (i = 0; i < sv->num_rows; i++)
@@ -320,11 +320,11 @@ static unsigned storages_find_row(LibmsiStorageView *sv, LibmsiRecord *rec, unsi
         if (data == id)
         {
             *row = i;
-            return ERROR_SUCCESS;
+            return LIBMSI_RESULT_SUCCESS;
         }
     }
 
-    return ERROR_FUNCTION_FAILED;
+    return LIBMSI_RESULT_FUNCTION_FAILED;
 }
 
 static unsigned storages_modify_update(LibmsiView *view, LibmsiRecord *rec)
@@ -333,8 +333,8 @@ static unsigned storages_modify_update(LibmsiView *view, LibmsiRecord *rec)
     unsigned r, row;
 
     r = storages_find_row(sv, rec, &row);
-    if (r != ERROR_SUCCESS)
-        return ERROR_FUNCTION_FAILED;
+    if (r != LIBMSI_RESULT_SUCCESS)
+        return LIBMSI_RESULT_FUNCTION_FAILED;
 
     return storages_view_set_row(view, row, rec, 0);
 }
@@ -345,7 +345,7 @@ static unsigned storages_modify_assign(LibmsiView *view, LibmsiRecord *rec)
     unsigned r, row;
 
     r = storages_find_row(sv, rec, &row);
-    if (r == ERROR_SUCCESS)
+    if (r == LIBMSI_RESULT_SUCCESS)
         return storages_modify_update(view, rec);
 
     return storages_view_insert_row(view, rec, -1, false);
@@ -381,11 +381,11 @@ static unsigned storages_view_modify(LibmsiView *view, LibmsiModify eModifyMode,
     case LIBMSI_MODIFY_VALIDATE_FIELD:
     case LIBMSI_MODIFY_VALIDATE_DELETE:
         FIXME("%p %d %p - mode not implemented\n", view, eModifyMode, rec );
-        r = ERROR_CALL_NOT_IMPLEMENTED;
+        r = LIBMSI_RESULT_CALL_NOT_IMPLEMENTED;
         break;
 
     default:
-        r = ERROR_INVALID_DATA;
+        r = LIBMSI_RESULT_INVALID_DATA;
     }
 
     return r;
@@ -409,7 +409,7 @@ static unsigned storages_view_delete(LibmsiView *view)
     sv->storages = NULL;
     msi_free(sv);
 
-    return ERROR_SUCCESS;
+    return LIBMSI_RESULT_SUCCESS;
 }
 
 static unsigned storages_view_find_matching_rows(LibmsiView *view, unsigned col,
@@ -421,7 +421,7 @@ static unsigned storages_view_find_matching_rows(LibmsiView *view, unsigned col,
     TRACE("(%d, %d): %d\n", *row, col, val);
 
     if (col == 0 || col > NUM_STORAGES_COLS)
-        return ERROR_INVALID_PARAMETER;
+        return LIBMSI_RESULT_INVALID_PARAMETER;
 
     while (index < sv->num_rows)
     {
@@ -436,9 +436,9 @@ static unsigned storages_view_find_matching_rows(LibmsiView *view, unsigned col,
 
     *handle = UlongToPtr(++index);
     if (index >= sv->num_rows)
-        return ERROR_NO_MORE_ITEMS;
+        return LIBMSI_RESULT_NO_MORE_ITEMS;
 
-    return ERROR_SUCCESS;
+    return LIBMSI_RESULT_SUCCESS;
 }
 
 static const LibmsiViewOps storages_ops =
@@ -531,7 +531,7 @@ unsigned storages_view_create(LibmsiDatabase *db, LibmsiView **view)
 
     sv = alloc_msiobject( sizeof(LibmsiStorageView), NULL );
     if (!sv)
-        return ERROR_FUNCTION_FAILED;
+        return LIBMSI_RESULT_FUNCTION_FAILED;
 
     sv->view.ops = &storages_ops;
     sv->db = db;
@@ -540,11 +540,11 @@ unsigned storages_view_create(LibmsiDatabase *db, LibmsiView **view)
     if (rows < 0)
     {
         msi_free( sv );
-        return ERROR_FUNCTION_FAILED;
+        return LIBMSI_RESULT_FUNCTION_FAILED;
     }
     sv->num_rows = rows;
 
     *view = (LibmsiView *)sv;
 
-    return ERROR_SUCCESS;
+    return LIBMSI_RESULT_SUCCESS;
 }

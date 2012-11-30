@@ -101,24 +101,24 @@ static unsigned init_reorder(LibmsiWhereView *wv)
 {
     LibmsiRowEntry **new = msi_alloc_zero(sizeof(LibmsiRowEntry *) * INITIAL_REORDER_SIZE);
     if (!new)
-        return ERROR_OUTOFMEMORY;
+        return LIBMSI_RESULT_OUTOFMEMORY;
 
     free_reorder(wv);
 
     wv->reorder = new;
     wv->reorder_size = INITIAL_REORDER_SIZE;
 
-    return ERROR_SUCCESS;
+    return LIBMSI_RESULT_SUCCESS;
 }
 
 static inline unsigned find_row(LibmsiWhereView *wv, unsigned row, unsigned *(values[]))
 {
     if (row >= wv->row_count)
-        return ERROR_NO_MORE_ITEMS;
+        return LIBMSI_RESULT_NO_MORE_ITEMS;
 
     *values = wv->reorder[row]->values;
 
-    return ERROR_SUCCESS;
+    return LIBMSI_RESULT_SUCCESS;
 }
 
 static unsigned add_row(LibmsiWhereView *wv, unsigned vals[])
@@ -133,7 +133,7 @@ static unsigned add_row(LibmsiWhereView *wv, unsigned vals[])
         new_reorder = msi_realloc_zero(wv->reorder, sizeof(LibmsiRowEntry *) * wv->reorder_size,
                                        sizeof(LibmsiRowEntry *) * newsize);
         if (!new_reorder)
-            return ERROR_OUTOFMEMORY;
+            return LIBMSI_RESULT_OUTOFMEMORY;
 
         wv->reorder = new_reorder;
         wv->reorder_size = newsize;
@@ -142,14 +142,14 @@ static unsigned add_row(LibmsiWhereView *wv, unsigned vals[])
     new = msi_alloc(FIELD_OFFSET( LibmsiRowEntry, values[wv->table_count] ));
 
     if (!new)
-        return ERROR_OUTOFMEMORY;
+        return LIBMSI_RESULT_OUTOFMEMORY;
 
     wv->reorder[wv->row_count++] = new;
 
     memcpy(new->values, vals, wv->table_count * sizeof(unsigned));
     new->wv = wv;
 
-    return ERROR_SUCCESS;
+    return LIBMSI_RESULT_SUCCESS;
 }
 
 static JOINTABLE *find_table(LibmsiWhereView *wv, unsigned col, unsigned *table_col)
@@ -184,7 +184,7 @@ static unsigned parse_column(LibmsiWhereView *wv, union ext_column *column,
         {
             r = table->view->ops->get_column_info(table->view, 1, NULL, NULL,
                                                   NULL, &table_name);
-            if (r != ERROR_SUCCESS)
+            if (r != LIBMSI_RESULT_SUCCESS)
                 return r;
             if (strcmpW(table_name, column->unparsed.table) != 0)
                 continue;
@@ -196,20 +196,20 @@ static unsigned parse_column(LibmsiWhereView *wv, union ext_column *column,
 
             r = table->view->ops->get_column_info(table->view, i, &col_name, column_type,
                                                   NULL, NULL);
-            if(r != ERROR_SUCCESS )
+            if(r != LIBMSI_RESULT_SUCCESS )
                 return r;
 
             if(strcmpW(col_name, column->unparsed.column))
                 continue;
             column->parsed.column = i;
             column->parsed.table = table;
-            return ERROR_SUCCESS;
+            return LIBMSI_RESULT_SUCCESS;
         }
     }
     while ((table = table->next));
 
     WARN("Couldn't find column %s.%s\n", debugstr_w( column->unparsed.table ), debugstr_w( column->unparsed.column ) );
-    return ERROR_BAD_QUERY_SYNTAX;
+    return LIBMSI_RESULT_BAD_QUERY_SYNTAX;
 }
 
 static unsigned where_view_fetch_int( LibmsiView *view, unsigned row, unsigned col, unsigned *val )
@@ -222,15 +222,15 @@ static unsigned where_view_fetch_int( LibmsiView *view, unsigned row, unsigned c
     TRACE("%p %d %d %p\n", wv, row, col, val );
 
     if( !wv->tables )
-        return ERROR_FUNCTION_FAILED;
+        return LIBMSI_RESULT_FUNCTION_FAILED;
 
     r = find_row(wv, row, &rows);
-    if (r != ERROR_SUCCESS)
+    if (r != LIBMSI_RESULT_SUCCESS)
         return r;
 
     table = find_table(wv, col, &col);
     if (!table)
-        return ERROR_FUNCTION_FAILED;
+        return LIBMSI_RESULT_FUNCTION_FAILED;
 
     return table->view->ops->fetch_int(table->view, rows[table->table_index], col, val);
 }
@@ -245,15 +245,15 @@ static unsigned where_view_fetch_stream( LibmsiView *view, unsigned row, unsigne
     TRACE("%p %d %d %p\n", wv, row, col, stm );
 
     if( !wv->tables )
-        return ERROR_FUNCTION_FAILED;
+        return LIBMSI_RESULT_FUNCTION_FAILED;
 
     r = find_row(wv, row, &rows);
-    if (r != ERROR_SUCCESS)
+    if (r != LIBMSI_RESULT_SUCCESS)
         return r;
 
     table = find_table(wv, col, &col);
     if (!table)
-        return ERROR_FUNCTION_FAILED;
+        return LIBMSI_RESULT_FUNCTION_FAILED;
 
     return table->view->ops->fetch_stream( table->view, rows[table->table_index], col, stm );
 }
@@ -265,7 +265,7 @@ static unsigned where_view_get_row( LibmsiView *view, unsigned row, LibmsiRecord
     TRACE("%p %d %p\n", wv, row, rec );
 
     if (!wv->tables)
-        return ERROR_FUNCTION_FAILED;
+        return LIBMSI_RESULT_FUNCTION_FAILED;
 
     return msi_view_get_row( wv->db, view, row, rec );
 }
@@ -281,14 +281,14 @@ static unsigned where_view_set_row( LibmsiView *view, unsigned row, LibmsiRecord
     TRACE("%p %d %p %08x\n", wv, row, rec, mask );
 
     if( !wv->tables )
-         return ERROR_FUNCTION_FAILED;
+         return LIBMSI_RESULT_FUNCTION_FAILED;
 
     r = find_row(wv, row, &rows);
-    if (r != ERROR_SUCCESS)
+    if (r != LIBMSI_RESULT_SUCCESS)
         return r;
 
     if (mask >= 1 << wv->col_count)
-        return ERROR_INVALID_PARAMETER;
+        return LIBMSI_RESULT_INVALID_PARAMETER;
 
     do
     {
@@ -299,10 +299,10 @@ static unsigned where_view_set_row( LibmsiView *view, unsigned row, LibmsiRecord
                 continue;
             r = table->view->ops->get_column_info(table->view, i + 1, NULL,
                                             &type, NULL, NULL );
-            if (r != ERROR_SUCCESS)
+            if (r != LIBMSI_RESULT_SUCCESS)
                 return r;
             if (type & MSITYPE_KEY)
-                return ERROR_FUNCTION_FAILED;
+                return LIBMSI_RESULT_FUNCTION_FAILED;
         }
         mask_copy >>= table->col_count;
     }
@@ -325,18 +325,18 @@ static unsigned where_view_set_row( LibmsiView *view, unsigned row, LibmsiRecord
 
         reduced = libmsi_record_create(col_count);
         if (!reduced)
-            return ERROR_FUNCTION_FAILED;
+            return LIBMSI_RESULT_FUNCTION_FAILED;
 
         for (i = 1; i <= col_count; i++)
         {
             r = _libmsi_record_copy_field(rec, i + offset, reduced, i);
-            if (r != ERROR_SUCCESS)
+            if (r != LIBMSI_RESULT_SUCCESS)
                 break;
         }
 
         offset += col_count;
 
-        if (r == ERROR_SUCCESS)
+        if (r == LIBMSI_RESULT_SUCCESS)
             r = table->view->ops->set_row(table->view, rows[table->table_index], reduced, reduced_mask);
 
         msiobj_release(&reduced->hdr);
@@ -354,14 +354,14 @@ static unsigned where_view_delete_row(LibmsiView *view, unsigned row)
     TRACE("(%p %d)\n", view, row);
 
     if (!wv->tables)
-        return ERROR_FUNCTION_FAILED;
+        return LIBMSI_RESULT_FUNCTION_FAILED;
 
     r = find_row(wv, row, &rows);
-    if ( r != ERROR_SUCCESS )
+    if ( r != LIBMSI_RESULT_SUCCESS )
         return r;
 
     if (wv->table_count > 1)
-        return ERROR_CALL_NOT_IMPLEMENTED;
+        return LIBMSI_RESULT_CALL_NOT_IMPLEMENTED;
 
     return wv->tables->view->ops->delete_row(wv->tables->view, rows[0]);
 }
@@ -373,39 +373,39 @@ static int expr_eval_binary( LibmsiWhereView *wv, const unsigned rows[],
     int lval, rval;
 
     rl = where_view_evaluate(wv, rows, expr->left, &lval, record);
-    if (rl != ERROR_SUCCESS && rl != ERROR_CONTINUE)
+    if (rl != LIBMSI_RESULT_SUCCESS && rl != LIBMSI_RESULT_CONTINUE)
         return rl;
     rr = where_view_evaluate(wv, rows, expr->right, &rval, record);
-    if (rr != ERROR_SUCCESS && rr != ERROR_CONTINUE)
+    if (rr != LIBMSI_RESULT_SUCCESS && rr != LIBMSI_RESULT_CONTINUE)
         return rr;
 
-    if (rl == ERROR_CONTINUE || rr == ERROR_CONTINUE)
+    if (rl == LIBMSI_RESULT_CONTINUE || rr == LIBMSI_RESULT_CONTINUE)
     {
         if (rl == rr)
         {
             *val = true;
-            return ERROR_CONTINUE;
+            return LIBMSI_RESULT_CONTINUE;
         }
 
         if (expr->op == OP_AND)
         {
-            if ((rl == ERROR_CONTINUE && !rval) || (rr == ERROR_CONTINUE && !lval))
+            if ((rl == LIBMSI_RESULT_CONTINUE && !rval) || (rr == LIBMSI_RESULT_CONTINUE && !lval))
             {
                 *val = false;
-                return ERROR_SUCCESS;
+                return LIBMSI_RESULT_SUCCESS;
             }
         }
         else if (expr->op == OP_OR)
         {
-            if ((rl == ERROR_CONTINUE && rval) || (rr == ERROR_CONTINUE && lval))
+            if ((rl == LIBMSI_RESULT_CONTINUE && rval) || (rr == LIBMSI_RESULT_CONTINUE && lval))
             {
                 *val = true;
-                return ERROR_SUCCESS;
+                return LIBMSI_RESULT_SUCCESS;
             }
         }
 
         *val = true;
-        return ERROR_CONTINUE;
+        return LIBMSI_RESULT_CONTINUE;
     }
 
     switch( expr->op )
@@ -436,10 +436,10 @@ static int expr_eval_binary( LibmsiWhereView *wv, const unsigned rows[],
         break;
     default:
         ERR("Unknown operator %d\n", expr->op );
-        return ERROR_FUNCTION_FAILED;
+        return LIBMSI_RESULT_FUNCTION_FAILED;
     }
 
-    return ERROR_SUCCESS;
+    return LIBMSI_RESULT_SUCCESS;
 }
 
 static inline unsigned expr_fetch_value(const union ext_column *expr, const unsigned rows[], unsigned *val)
@@ -449,7 +449,7 @@ static inline unsigned expr_fetch_value(const union ext_column *expr, const unsi
     if( rows[table->table_index] == INVALID_ROW_INDEX )
     {
         *val = 1;
-        return ERROR_CONTINUE;
+        return LIBMSI_RESULT_CONTINUE;
     }
     return table->view->ops->fetch_int(table->view, rows[table->table_index],
                                         expr->parsed.column, val);
@@ -463,7 +463,7 @@ static unsigned expr_eval_unary( LibmsiWhereView *wv, const unsigned rows[],
     unsigned lval;
 
     r = expr_fetch_value(&expr->left->u.column, rows, &lval);
-    if(r != ERROR_SUCCESS)
+    if(r != LIBMSI_RESULT_SUCCESS)
         return r;
 
     switch( expr->op )
@@ -476,9 +476,9 @@ static unsigned expr_eval_unary( LibmsiWhereView *wv, const unsigned rows[],
         break;
     default:
         ERR("Unknown operator %d\n", expr->op );
-        return ERROR_FUNCTION_FAILED;
+        return LIBMSI_RESULT_FUNCTION_FAILED;
     }
-    return ERROR_SUCCESS;
+    return LIBMSI_RESULT_SUCCESS;
 }
 
 static unsigned expr_eval_string( LibmsiWhereView *wv, const unsigned rows[],
@@ -486,13 +486,13 @@ static unsigned expr_eval_string( LibmsiWhereView *wv, const unsigned rows[],
                                      const LibmsiRecord *record,
                                      const WCHAR **str )
 {
-    unsigned val = 0, r = ERROR_SUCCESS;
+    unsigned val = 0, r = LIBMSI_RESULT_SUCCESS;
 
     switch( expr->type )
     {
     case EXPR_COL_NUMBER_STRING:
         r = expr_fetch_value(&expr->u.column, rows, &val);
-        if (r == ERROR_SUCCESS)
+        if (r == LIBMSI_RESULT_SUCCESS)
             *str =  msi_string_lookup_id(wv->db->strings, val);
         else
             *str = NULL;
@@ -508,7 +508,7 @@ static unsigned expr_eval_string( LibmsiWhereView *wv, const unsigned rows[],
 
     default:
         ERR("Invalid expression type\n");
-        r = ERROR_FUNCTION_FAILED;
+        r = LIBMSI_RESULT_FUNCTION_FAILED;
         *str = NULL;
         break;
     }
@@ -524,10 +524,10 @@ static unsigned expr_eval_strcmp( LibmsiWhereView *wv, const unsigned rows[], co
 
     *val = true;
     r = expr_eval_string(wv, rows, expr->left, record, &l_str);
-    if (r == ERROR_CONTINUE)
+    if (r == LIBMSI_RESULT_CONTINUE)
         return r;
     r = expr_eval_string(wv, rows, expr->right, record, &r_str);
-    if (r == ERROR_CONTINUE)
+    if (r == LIBMSI_RESULT_CONTINUE)
         return r;
 
     if( l_str == r_str ||
@@ -543,7 +543,7 @@ static unsigned expr_eval_strcmp( LibmsiWhereView *wv, const unsigned rows[], co
     *val = ( expr->op == OP_EQ && ( sr == 0 ) ) ||
            ( expr->op == OP_NE && ( sr != 0 ) );
 
-    return ERROR_SUCCESS;
+    return LIBMSI_RESULT_SUCCESS;
 }
 
 static unsigned where_view_evaluate( LibmsiWhereView *wv, const unsigned rows[],
@@ -554,28 +554,28 @@ static unsigned where_view_evaluate( LibmsiWhereView *wv, const unsigned rows[],
     if( !cond )
     {
         *val = true;
-        return ERROR_SUCCESS;
+        return LIBMSI_RESULT_SUCCESS;
     }
 
     switch( cond->type )
     {
     case EXPR_COL_NUMBER:
         r = expr_fetch_value(&cond->u.column, rows, &tval);
-        if( r != ERROR_SUCCESS )
+        if( r != LIBMSI_RESULT_SUCCESS )
             return r;
         *val = tval - 0x8000;
-        return ERROR_SUCCESS;
+        return LIBMSI_RESULT_SUCCESS;
 
     case EXPR_COL_NUMBER32:
         r = expr_fetch_value(&cond->u.column, rows, &tval);
-        if( r != ERROR_SUCCESS )
+        if( r != LIBMSI_RESULT_SUCCESS )
             return r;
         *val = tval - 0x80000000;
         return r;
 
     case EXPR_UVAL:
         *val = cond->u.uval;
-        return ERROR_SUCCESS;
+        return LIBMSI_RESULT_SUCCESS;
 
     case EXPR_COMPLEX:
         return expr_eval_binary(wv, rows, &cond->u.expr, val, record);
@@ -588,20 +588,20 @@ static unsigned where_view_evaluate( LibmsiWhereView *wv, const unsigned rows[],
 
     case EXPR_WILDCARD:
         *val = libmsi_record_get_integer( record, ++wv->rec_index );
-        return ERROR_SUCCESS;
+        return LIBMSI_RESULT_SUCCESS;
 
     default:
         ERR("Invalid expression type\n");
         break;
     }
 
-    return ERROR_SUCCESS;
+    return LIBMSI_RESULT_SUCCESS;
 }
 
 static unsigned check_condition( LibmsiWhereView *wv, LibmsiRecord *record, JOINTABLE **tables,
                              unsigned table_rows[] )
 {
-    unsigned r = ERROR_FUNCTION_FAILED;
+    unsigned r = LIBMSI_RESULT_FUNCTION_FAILED;
     int val;
 
     for (table_rows[(*tables)->table_index] = 0;
@@ -611,19 +611,19 @@ static unsigned check_condition( LibmsiWhereView *wv, LibmsiRecord *record, JOIN
         val = 0;
         wv->rec_index = 0;
         r = where_view_evaluate( wv, table_rows, wv->cond, &val, record );
-        if (r != ERROR_SUCCESS && r != ERROR_CONTINUE)
+        if (r != LIBMSI_RESULT_SUCCESS && r != LIBMSI_RESULT_CONTINUE)
             break;
         if (val)
         {
             if (*(tables + 1))
             {
                 r = check_condition(wv, record, tables + 1, table_rows);
-                if (r != ERROR_SUCCESS)
+                if (r != LIBMSI_RESULT_SUCCESS)
                     break;
             }
             else
             {
-                if (r != ERROR_SUCCESS)
+                if (r != LIBMSI_RESULT_SUCCESS)
                     break;
                 add_row (wv, table_rows);
             }
@@ -652,7 +652,7 @@ static int compare_entry( const void *left, const void *right )
             r = column->parsed.table->view->ops->fetch_int(column->parsed.table->view,
                           le->values[column->parsed.table->table_index],
                           column->parsed.column, &l_val);
-            if (r != ERROR_SUCCESS)
+            if (r != LIBMSI_RESULT_SUCCESS)
             {
                 order->error = r;
                 return 0;
@@ -661,7 +661,7 @@ static int compare_entry( const void *left, const void *right )
             r = column->parsed.table->view->ops->fetch_int(column->parsed.table->view,
                           re->values[column->parsed.table->table_index],
                           column->parsed.column, &r_val);
-            if (r != ERROR_SUCCESS)
+            if (r != LIBMSI_RESULT_SUCCESS)
             {
                 order->error = r;
                 return 0;
@@ -774,10 +774,10 @@ static unsigned where_view_execute( LibmsiView *view, LibmsiRecord *record )
     TRACE("%p %p\n", wv, record);
 
     if( !table )
-         return ERROR_FUNCTION_FAILED;
+         return LIBMSI_RESULT_FUNCTION_FAILED;
 
     r = init_reorder(wv);
-    if (r != ERROR_SUCCESS)
+    if (r != LIBMSI_RESULT_SUCCESS)
         return r;
 
     do
@@ -785,7 +785,7 @@ static unsigned where_view_execute( LibmsiView *view, LibmsiRecord *record )
         table->view->ops->execute(table->view, NULL);
 
         r = table->view->ops->get_dimensions(table->view, &table->row_count, NULL);
-        if (r != ERROR_SUCCESS)
+        if (r != LIBMSI_RESULT_SUCCESS)
         {
             ERR("failed to get table dimensions\n");
             return r;
@@ -793,7 +793,7 @@ static unsigned where_view_execute( LibmsiView *view, LibmsiRecord *record )
 
         /* each table must have at least one row */
         if (table->row_count == 0)
-            return ERROR_SUCCESS;
+            return LIBMSI_RESULT_SUCCESS;
     }
     while ((table = table->next));
 
@@ -806,7 +806,7 @@ static unsigned where_view_execute( LibmsiView *view, LibmsiRecord *record )
     r =  check_condition(wv, record, ordered_tables, rows);
 
     if (wv->order_info)
-        wv->order_info->error = ERROR_SUCCESS;
+        wv->order_info->error = LIBMSI_RESULT_SUCCESS;
 
     qsort(wv->reorder, wv->row_count, sizeof(LibmsiRowEntry *), compare_entry);
 
@@ -826,13 +826,13 @@ static unsigned where_view_close( LibmsiView *view )
     TRACE("%p\n", wv );
 
     if (!table)
-        return ERROR_FUNCTION_FAILED;
+        return LIBMSI_RESULT_FUNCTION_FAILED;
 
     do
         table->view->ops->close(table->view);
     while ((table = table->next));
 
-    return ERROR_SUCCESS;
+    return LIBMSI_RESULT_SUCCESS;
 }
 
 static unsigned where_view_get_dimensions( LibmsiView *view, unsigned *rows, unsigned *cols )
@@ -842,19 +842,19 @@ static unsigned where_view_get_dimensions( LibmsiView *view, unsigned *rows, uns
     TRACE("%p %p %p\n", wv, rows, cols );
 
     if(!wv->tables)
-         return ERROR_FUNCTION_FAILED;
+         return LIBMSI_RESULT_FUNCTION_FAILED;
 
     if (rows)
     {
         if (!wv->reorder)
-            return ERROR_FUNCTION_FAILED;
+            return LIBMSI_RESULT_FUNCTION_FAILED;
         *rows = wv->row_count;
     }
 
     if (cols)
         *cols = wv->col_count;
 
-    return ERROR_SUCCESS;
+    return LIBMSI_RESULT_SUCCESS;
 }
 
 static unsigned where_view_get_column_info( LibmsiView *view, unsigned n, const WCHAR **name,
@@ -866,11 +866,11 @@ static unsigned where_view_get_column_info( LibmsiView *view, unsigned n, const 
     TRACE("%p %d %p %p %p %p\n", wv, n, name, type, temporary, table_name );
 
     if(!wv->tables)
-         return ERROR_FUNCTION_FAILED;
+         return LIBMSI_RESULT_FUNCTION_FAILED;
 
     table = find_table(wv, n, &n);
     if (!table)
-        return ERROR_FUNCTION_FAILED;
+        return LIBMSI_RESULT_FUNCTION_FAILED;
 
     return table->view->ops->get_column_info(table->view, n, name,
                                             type, temporary, table_name);
@@ -883,7 +883,7 @@ static unsigned join_find_row( LibmsiWhereView *wv, LibmsiRecord *rec, unsigned 
 
     str = _libmsi_record_get_string_raw( rec, 1 );
     r = _libmsi_id_from_stringW( wv->db->strings, str, &id );
-    if (r != ERROR_SUCCESS)
+    if (r != LIBMSI_RESULT_SUCCESS)
         return r;
 
     for (i = 0; i < wv->row_count; i++)
@@ -893,11 +893,11 @@ static unsigned join_find_row( LibmsiWhereView *wv, LibmsiRecord *rec, unsigned 
         if (data == id)
         {
             *row = i;
-            return ERROR_SUCCESS;
+            return LIBMSI_RESULT_SUCCESS;
         }
     }
 
-    return ERROR_FUNCTION_FAILED;
+    return LIBMSI_RESULT_FUNCTION_FAILED;
 }
 
 static unsigned join_modify_update( LibmsiView *view, LibmsiRecord *rec )
@@ -908,11 +908,11 @@ static unsigned join_modify_update( LibmsiView *view, LibmsiRecord *rec )
 
 
     r = join_find_row( wv, rec, &row );
-    if (r != ERROR_SUCCESS)
+    if (r != LIBMSI_RESULT_SUCCESS)
         return r;
 
     r = msi_view_get_row( wv->db, view, row, &current );
-    if (r != ERROR_SUCCESS)
+    if (r != LIBMSI_RESULT_SUCCESS)
         return r;
 
     assert(libmsi_record_get_field_count(rec) == libmsi_record_get_field_count(current));
@@ -937,13 +937,13 @@ static unsigned where_view_modify( LibmsiView *view, LibmsiModify eModifyMode,
     TRACE("%p %d %p\n", wv, eModifyMode, rec);
 
     if (!table)
-        return ERROR_FUNCTION_FAILED;
+        return LIBMSI_RESULT_FUNCTION_FAILED;
 
     if (!table->next)
     {
         unsigned *rows;
 
-        if (find_row(wv, row - 1, &rows) == ERROR_SUCCESS)
+        if (find_row(wv, row - 1, &rows) == LIBMSI_RESULT_SUCCESS)
             row = rows[0] + 1;
         else
             row = -1;
@@ -967,16 +967,16 @@ static unsigned where_view_modify( LibmsiView *view, LibmsiModify eModifyMode,
     case LIBMSI_MODIFY_VALIDATE_DELETE:
     case LIBMSI_MODIFY_VALIDATE_FIELD:
     case LIBMSI_MODIFY_VALIDATE_NEW:
-        r = ERROR_FUNCTION_FAILED;
+        r = LIBMSI_RESULT_FUNCTION_FAILED;
         break;
 
     case LIBMSI_MODIFY_REFRESH:
-        r = ERROR_CALL_NOT_IMPLEMENTED;
+        r = LIBMSI_RESULT_CALL_NOT_IMPLEMENTED;
         break;
 
     default:
         WARN("%p %d %p %u - unknown mode\n", view, eModifyMode, rec, row );
-        r = ERROR_INVALID_PARAMETER;
+        r = LIBMSI_RESULT_INVALID_PARAMETER;
         break;
     }
 
@@ -1011,7 +1011,7 @@ static unsigned where_view_delete( LibmsiView *view )
     msiobj_release( &wv->db->hdr );
     msi_free( wv );
 
-    return ERROR_SUCCESS;
+    return LIBMSI_RESULT_SUCCESS;
 }
 
 static unsigned where_view_find_matching_rows( LibmsiView *view, unsigned col,
@@ -1023,25 +1023,25 @@ static unsigned where_view_find_matching_rows( LibmsiView *view, unsigned col,
     TRACE("%p, %d, %u, %p\n", view, col, val, *handle);
 
     if (!wv->tables)
-         return ERROR_FUNCTION_FAILED;
+         return LIBMSI_RESULT_FUNCTION_FAILED;
 
     if (col == 0 || col > wv->col_count)
-        return ERROR_INVALID_PARAMETER;
+        return LIBMSI_RESULT_INVALID_PARAMETER;
 
     for (i = PtrToUlong(*handle); i < wv->row_count; i++)
     {
-        if (view->ops->fetch_int( view, i, col, &row_value ) != ERROR_SUCCESS)
+        if (view->ops->fetch_int( view, i, col, &row_value ) != LIBMSI_RESULT_SUCCESS)
             continue;
 
         if (row_value == val)
         {
             *row = i;
             *handle = UlongToPtr(i + 1);
-            return ERROR_SUCCESS;
+            return LIBMSI_RESULT_SUCCESS;
         }
     }
 
-    return ERROR_NO_MORE_ITEMS;
+    return LIBMSI_RESULT_NO_MORE_ITEMS;
 }
 
 static unsigned where_view_sort(LibmsiView *view, column_info *columns)
@@ -1056,7 +1056,7 @@ static unsigned where_view_sort(LibmsiView *view, column_info *columns)
     TRACE("%p %p\n", view, columns);
 
     if (!table)
-        return ERROR_FUNCTION_FAILED;
+        return LIBMSI_RESULT_FUNCTION_FAILED;
 
     while (column)
     {
@@ -1065,11 +1065,11 @@ static unsigned where_view_sort(LibmsiView *view, column_info *columns)
     }
 
     if (count == 0)
-        return ERROR_SUCCESS;
+        return LIBMSI_RESULT_SUCCESS;
 
     orderinfo = msi_alloc(sizeof(LibmsiOrderInfo) + (count - 1) * sizeof(union ext_column));
     if (!orderinfo)
-        return ERROR_OUTOFMEMORY;
+        return LIBMSI_RESULT_OUTOFMEMORY;
 
     orderinfo->col_count = count;
 
@@ -1081,13 +1081,13 @@ static unsigned where_view_sort(LibmsiView *view, column_info *columns)
         orderinfo->columns[i].unparsed.table = column->table;
 
         r = parse_column(wv, &orderinfo->columns[i], NULL);
-        if (r != ERROR_SUCCESS)
+        if (r != LIBMSI_RESULT_SUCCESS)
             goto error;
     }
 
     wv->order_info = orderinfo;
 
-    return ERROR_SUCCESS;
+    return LIBMSI_RESULT_SUCCESS;
 error:
     msi_free(orderinfo);
     return r;
@@ -1130,7 +1130,7 @@ static unsigned where_view_verify_condition( LibmsiWhereView *wv, struct expr *c
         *valid = false;
 
         r = parse_column(wv, &cond->u.column, &type);
-        if (r != ERROR_SUCCESS)
+        if (r != LIBMSI_RESULT_SUCCESS)
             break;
 
         if (type&MSITYPE_STRING)
@@ -1145,12 +1145,12 @@ static unsigned where_view_verify_condition( LibmsiWhereView *wv, struct expr *c
     }
     case EXPR_COMPLEX:
         r = where_view_verify_condition( wv, cond->u.expr.left, valid );
-        if( r != ERROR_SUCCESS )
+        if( r != LIBMSI_RESULT_SUCCESS )
             return r;
         if( !*valid )
-            return ERROR_SUCCESS;
+            return LIBMSI_RESULT_SUCCESS;
         r = where_view_verify_condition( wv, cond->u.expr.right, valid );
-        if( r != ERROR_SUCCESS )
+        if( r != LIBMSI_RESULT_SUCCESS )
             return r;
 
         /* check the type of the comparison */
@@ -1166,7 +1166,7 @@ static unsigned where_view_verify_condition( LibmsiWhereView *wv, struct expr *c
                 break;
             default:
                 *valid = false;
-                return ERROR_INVALID_PARAMETER;
+                return LIBMSI_RESULT_INVALID_PARAMETER;
             }
 
             /* FIXME: check we're comparing a string to a column */
@@ -1179,10 +1179,10 @@ static unsigned where_view_verify_condition( LibmsiWhereView *wv, struct expr *c
         if ( cond->u.expr.left->type != EXPR_COLUMN )
         {
             *valid = false;
-            return ERROR_INVALID_PARAMETER;
+            return LIBMSI_RESULT_INVALID_PARAMETER;
         }
         r = where_view_verify_condition( wv, cond->u.expr.left, valid );
-        if( r != ERROR_SUCCESS )
+        if( r != LIBMSI_RESULT_SUCCESS )
             return r;
         break;
     case EXPR_IVAL:
@@ -1202,7 +1202,7 @@ static unsigned where_view_verify_condition( LibmsiWhereView *wv, struct expr *c
         break;
     }
 
-    return ERROR_SUCCESS;
+    return LIBMSI_RESULT_SUCCESS;
 }
 
 unsigned where_view_create( LibmsiDatabase *db, LibmsiView **view, WCHAR *tables,
@@ -1216,7 +1216,7 @@ unsigned where_view_create( LibmsiDatabase *db, LibmsiView **view, WCHAR *tables
 
     wv = alloc_msiobject( sizeof *wv, NULL );
     if( !wv )
-        return ERROR_FUNCTION_FAILED;
+        return LIBMSI_RESULT_FUNCTION_FAILED;
     
     /* fill the structure */
     wv->view.ops = &where_ops;
@@ -1234,22 +1234,22 @@ unsigned where_view_create( LibmsiDatabase *db, LibmsiView **view, WCHAR *tables
         table = msi_alloc(sizeof(JOINTABLE));
         if (!table)
         {
-            r = ERROR_OUTOFMEMORY;
+            r = LIBMSI_RESULT_OUTOFMEMORY;
             goto end;
         }
 
         r = table_view_create(db, tables, &table->view);
-        if (r != ERROR_SUCCESS)
+        if (r != LIBMSI_RESULT_SUCCESS)
         {
             WARN("can't create table: %s\n", debugstr_w(tables));
             msi_free(table);
-            r = ERROR_BAD_QUERY_SYNTAX;
+            r = LIBMSI_RESULT_BAD_QUERY_SYNTAX;
             goto end;
         }
 
         r = table->view->ops->get_dimensions(table->view, NULL,
                                              &table->col_count);
-        if (r != ERROR_SUCCESS)
+        if (r != LIBMSI_RESULT_SUCCESS)
         {
             ERR("can't get table dimensions\n");
             goto end;
@@ -1270,17 +1270,17 @@ unsigned where_view_create( LibmsiDatabase *db, LibmsiView **view, WCHAR *tables
     if( cond )
     {
         r = where_view_verify_condition( wv, cond, &valid );
-        if( r != ERROR_SUCCESS )
+        if( r != LIBMSI_RESULT_SUCCESS )
             goto end;
         if( !valid ) {
-            r = ERROR_FUNCTION_FAILED;
+            r = LIBMSI_RESULT_FUNCTION_FAILED;
             goto end;
         }
     }
 
     *view = (LibmsiView*) wv;
 
-    return ERROR_SUCCESS;
+    return LIBMSI_RESULT_SUCCESS;
 end:
     where_view_delete(&wv->view);
 

@@ -49,10 +49,10 @@ static unsigned drop_view_execute(LibmsiView *view, LibmsiRecord *record)
     TRACE("%p %p\n", dv, record);
 
     if( !dv->table )
-         return ERROR_FUNCTION_FAILED;
+         return LIBMSI_RESULT_FUNCTION_FAILED;
 
     r = dv->table->ops->execute(dv->table, record);
-    if (r != ERROR_SUCCESS)
+    if (r != LIBMSI_RESULT_SUCCESS)
         return r;
 
     return dv->table->ops->drop(dv->table);
@@ -64,7 +64,7 @@ static unsigned drop_view_close(LibmsiView *view)
 
     TRACE("%p\n", dv);
 
-    return ERROR_SUCCESS;
+    return LIBMSI_RESULT_SUCCESS;
 }
 
 static unsigned drop_view_get_dimensions(LibmsiView *view, unsigned *rows, unsigned *cols)
@@ -73,7 +73,7 @@ static unsigned drop_view_get_dimensions(LibmsiView *view, unsigned *rows, unsig
 
     TRACE("%p %p %p\n", dv, rows, cols);
 
-    return ERROR_FUNCTION_FAILED;
+    return LIBMSI_RESULT_FUNCTION_FAILED;
 }
 
 static unsigned drop_view_delete( LibmsiView *view )
@@ -87,7 +87,7 @@ static unsigned drop_view_delete( LibmsiView *view )
 
     msi_free( dv );
 
-    return ERROR_SUCCESS;
+    return LIBMSI_RESULT_SUCCESS;
 }
 
 static const LibmsiViewOps drop_ops =
@@ -122,10 +122,10 @@ unsigned drop_view_create(LibmsiDatabase *db, LibmsiView **view, const WCHAR *na
 
     dv = alloc_msiobject(sizeof *dv, NULL);
     if(!dv)
-        return ERROR_FUNCTION_FAILED;
+        return LIBMSI_RESULT_FUNCTION_FAILED;
 
     r = table_view_create(db, name, &dv->table);
-    if (r != ERROR_SUCCESS)
+    if (r != LIBMSI_RESULT_SUCCESS)
     {
         msi_free( dv );
         return r;
@@ -136,5 +136,5 @@ unsigned drop_view_create(LibmsiDatabase *db, LibmsiView **view, const WCHAR *na
 
     *view = (LibmsiView *)dv;
 
-    return ERROR_SUCCESS;
+    return LIBMSI_RESULT_SUCCESS;
 }

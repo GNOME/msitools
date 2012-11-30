@@ -80,12 +80,12 @@ int msiobj_release( LibmsiObject *obj )
 /***********************************************************
  *   libmsi_unref   [MSI.@]
  */
-unsigned libmsi_unref(void *obj)
+LibmsiResult libmsi_unref(void *obj)
 {
     TRACE("%x\n",obj);
 
     if( obj )
         msiobj_release( obj );
 
-    return ERROR_SUCCESS;
+    return LIBMSI_RESULT_SUCCESS;
 }

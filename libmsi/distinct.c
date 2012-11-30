@@ -95,10 +95,10 @@ static unsigned distinct_view_fetch_int( LibmsiView *view, unsigned row, unsigne
     TRACE("%p %d %d %p\n", dv, row, col, val );
 
     if( !dv->table )
-        return ERROR_FUNCTION_FAILED;
+        return LIBMSI_RESULT_FUNCTION_FAILED;
 
     if( row >= dv->row_count )
-        return ERROR_INVALID_PARAMETER;
+        return LIBMSI_RESULT_INVALID_PARAMETER;
 
     row = dv->translation[ row ];
 
@@ -114,19 +114,19 @@ static unsigned distinct_view_execute( LibmsiView *view, LibmsiRecord *record )
     TRACE("%p %p\n", dv, record);
 
     if( !dv->table )
-         return ERROR_FUNCTION_FAILED;
+         return LIBMSI_RESULT_FUNCTION_FAILED;
 
     r = dv->table->ops->execute( dv->table, record );
-    if( r != ERROR_SUCCESS )
+    if( r != LIBMSI_RESULT_SUCCESS )
         return r;
 
     r = dv->table->ops->get_dimensions( dv->table, &r_count, &c_count );
-    if( r != ERROR_SUCCESS )
+    if( r != LIBMSI_RESULT_SUCCESS )
         return r;
 
     dv->translation = msi_alloc( r_count*sizeof(unsigned) );
     if( !dv->translation )
-        return ERROR_FUNCTION_FAILED;
+        return LIBMSI_RESULT_FUNCTION_FAILED;
 
     /* build it */
     for( i=0; i<r_count; i++ )
@@ -137,7 +137,7 @@ static unsigned distinct_view_execute( LibmsiView *view, LibmsiRecord *record )
         {
             unsigned val = 0;
             r = dv->table->ops->fetch_int( dv->table, i, j, &val );
-            if( r != ERROR_SUCCESS )
+            if( r != LIBMSI_RESULT_SUCCESS )
             {
                 ERR("Failed to fetch int at %d %d\n", i, j );
                 distinct_free( rowset );
@@ -148,7 +148,7 @@ static unsigned distinct_view_execute( LibmsiView *view, LibmsiRecord *record )
             {
                 ERR("Failed to insert at %d %d\n", i, j );
                 distinct_free( rowset );
-                return ERROR_FUNCTION_FAILED;
+                return LIBMSI_RESULT_FUNCTION_FAILED;
             }
             if( j != c_count )
                 x = &(*x)->nextcol;
@@ -164,7 +164,7 @@ static unsigned distinct_view_execute( LibmsiView *view, LibmsiRecord *record )
 
     distinct_free( rowset );
 
-    return ERROR_SUCCESS;
+    return LIBMSI_RESULT_SUCCESS;
 }
 
 static unsigned distinct_view_close( LibmsiView *view )
@@ -174,7 +174,7 @@ static unsigned distinct_view_close( LibmsiView *view )
     TRACE("%p\n", dv );
 
     if( !dv->table )
-         return ERROR_FUNCTION_FAILED;
+         return LIBMSI_RESULT_FUNCTION_FAILED;
 
     msi_free( dv->translation );
     dv->translation = NULL;
@@ -190,12 +190,12 @@ static unsigned distinct_view_get_dimensions( LibmsiView *view, unsigned *rows, 
     TRACE("%p %p %p\n", dv, rows, cols );
 
     if( !dv->table )
-        return ERROR_FUNCTION_FAILED;
+        return LIBMSI_RESULT_FUNCTION_FAILED;
 
     if( rows )
     {
         if( !dv->translation )
-            return ERROR_FUNCTION_FAILED;
+            return LIBMSI_RESULT_FUNCTION_FAILED;
         *rows = dv->row_count;
     }
 
@@ -210,7 +210,7 @@ static unsigned distinct_view_get_column_info( LibmsiView *view, unsigned n, con
     TRACE("%p %d %p %p %p %p\n", dv, n, name, type, temporary, table_name );
 
     if( !dv->table )
-         return ERROR_FUNCTION_FAILED;
+         return LIBMSI_RESULT_FUNCTION_FAILED;
 
     return dv->table->ops->get_column_info( dv->table, n, name,
                                             type, temporary, table_name );
@@ -224,7 +224,7 @@ static unsigned distinct_view_modify( LibmsiView *view, LibmsiModify eModifyMode
     TRACE("%p %d %p\n", dv, eModifyMode, rec );
 
     if( !dv->table )
-         return ERROR_FUNCTION_FAILED;
+         return LIBMSI_RESULT_FUNCTION_FAILED;
 
     return dv->table->ops->modify( dv->table, eModifyMode, rec, row );
 }
@@ -242,7 +242,7 @@ static unsigned distinct_view_delete( LibmsiView *view )
     msiobj_release( &dv->db->hdr );
     msi_free( dv );
 
-    return ERROR_SUCCESS;
+    return LIBMSI_RESULT_SUCCESS;
 }
 
 static unsigned distinct_view_find_matching_rows( LibmsiView *view, unsigned col,
@@ -254,12 +254,12 @@ static unsigned distinct_view_find_matching_rows( LibmsiView *view, unsigned col
     TRACE("%p, %d, %u, %p\n", view, col, val, *handle);
 
     if( !dv->table )
-         return ERROR_FUNCTION_FAILED;
+         return LIBMSI_RESULT_FUNCTION_FAILED;
 
     r = dv->table->ops->find_matching_rows( dv->table, col, val, row, handle );
 
     if( *row > dv->row_count )
-        return ERROR_NO_MORE_ITEMS;
+        return LIBMSI_RESULT_NO_MORE_ITEMS;
 
     *row = dv->translation[ *row ];
 
@@ -297,7 +297,7 @@ unsigned distinct_view_create( LibmsiDatabase *db, LibmsiView **view, LibmsiView
     TRACE("%p\n", dv );
 
     r = table->ops->get_dimensions( table, NULL, &count );
-    if( r != ERROR_SUCCESS )
+    if( r != LIBMSI_RESULT_SUCCESS )
     {
         ERR("can't get table dimensions\n");
         return r;
@@ -305,7 +305,7 @@ unsigned distinct_view_create( LibmsiDatabase *db, LibmsiView **view, LibmsiView
 
     dv = alloc_msiobject( sizeof *dv, NULL );
     if( !dv )
-        return ERROR_FUNCTION_FAILED;
+        return LIBMSI_RESULT_FUNCTION_FAILED;
     
     /* fill the structure */
     dv->view.ops = &distinct_ops;
@@ -316,5 +316,5 @@ unsigned distinct_view_create( LibmsiDatabase *db, LibmsiView **view, LibmsiView
     dv->row_count = 0;
     *view = (LibmsiView*) dv;
 
-    return ERROR_SUCCESS;
+    return LIBMSI_RESULT_SUCCESS;
 }

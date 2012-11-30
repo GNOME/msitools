@@ -284,7 +284,7 @@ unsigned read_stream_data( IStorage *stg, const WCHAR *stname, bool table,
                        uint8_t **pdata, unsigned *psz )
 {
     HRESULT r;
-    unsigned ret = ERROR_FUNCTION_FAILED;
+    unsigned ret = LIBMSI_RESULT_FUNCTION_FAILED;
     VOID *data;
     unsigned sz, count;
     IStream *stm = NULL;
@@ -322,7 +322,7 @@ unsigned read_stream_data( IStorage *stg, const WCHAR *stname, bool table,
     if( !data )
     {
         WARN("couldn't allocate memory r=%08x!\n", r);
-        ret = ERROR_NOT_ENOUGH_MEMORY;
+        ret = LIBMSI_RESULT_NOT_ENOUGH_MEMORY;
         goto end;
     }
         
@@ -336,7 +336,7 @@ unsigned read_stream_data( IStorage *stg, const WCHAR *stname, bool table,
 
     *pdata = data;
     *psz = sz;
-    ret = ERROR_SUCCESS;
+    ret = LIBMSI_RESULT_SUCCESS;
 
 end:
     IStream_Release( stm );
@@ -348,7 +348,7 @@ unsigned write_stream_data( IStorage *stg, const WCHAR *stname,
                         const void *data, unsigned sz, bool bTable )
 {
     HRESULT r;
-    unsigned ret = ERROR_FUNCTION_FAILED;
+    unsigned ret = LIBMSI_RESULT_FUNCTION_FAILED;
     unsigned count;
     IStream *stm = NULL;
     ULARGE_INTEGER size;
@@ -396,7 +396,7 @@ unsigned write_stream_data( IStorage *stg, const WCHAR *stname,
         }
     }
 
-    ret = ERROR_SUCCESS;
+    ret = LIBMSI_RESULT_SUCCESS;
 
 end:
     IStream_Release( stm );
@@ -453,7 +453,7 @@ static unsigned read_table_from_storage( LibmsiDatabase *db, LibmsiTable *t, ISt
     /* if we can't read the table, just assume that it's empty */
     read_stream_data( stg, t->name, true, &rawdata, &rawsize );
     if( !rawdata )
-        return ERROR_SUCCESS;
+        return LIBMSI_RESULT_SUCCESS;
 
     TRACE("Read %d bytes\n", rawsize );
 
@@ -514,10 +514,10 @@ static unsigned read_table_from_storage( LibmsiDatabase *db, LibmsiTable *t, ISt
     }
 
     msi_free( rawdata );
-    return ERROR_SUCCESS;
+    return LIBMSI_RESULT_SUCCESS;
 err:
     msi_free( rawdata );
-    return ERROR_FUNCTION_FAILED;
+    return LIBMSI_RESULT_FUNCTION_FAILED;
 }
 
 void free_cached_tables( LibmsiDatabase *db )
@@ -576,7 +576,7 @@ static unsigned get_defaulttablecolumns( LibmsiDatabase *db, const WCHAR *name, 
         p = _Columns_cols;
         n = 4;
     }
-    else return ERROR_FUNCTION_FAILED;
+    else return LIBMSI_RESULT_FUNCTION_FAILED;
 
     for (i = 0; i < n; i++)
     {
@@ -585,7 +585,7 @@ static unsigned get_defaulttablecolumns( LibmsiDatabase *db, const WCHAR *name, 
     }
     table_calc_column_offsets( db, colinfo, n );
     *sz = n;
-    return ERROR_SUCCESS;
+    return LIBMSI_RESULT_SUCCESS;
 }
 
 static unsigned get_tablecolumns( LibmsiDatabase *db, const WCHAR *szTableName, LibmsiColumnInfo *colinfo, unsigned *sz );
@@ -598,26 +598,26 @@ static unsigned table_get_column_info( LibmsiDatabase *db, const WCHAR *name, Li
     /* get the number of columns in this table */
     column_count = 0;
     r = get_tablecolumns( db, name, NULL, &column_count );
-    if (r != ERROR_SUCCESS)
+    if (r != LIBMSI_RESULT_SUCCESS)
         return r;
 
     *pcount = column_count;
 
     /* if there's no columns, there's no table */
     if (!column_count)
-        return ERROR_INVALID_PARAMETER;
+        return LIBMSI_RESULT_INVALID_PARAMETER;
 
     TRACE("table %s found\n", debugstr_w(name));
 
     columns = msi_alloc( column_count * sizeof(LibmsiColumnInfo) );
     if (!columns)
-        return ERROR_FUNCTION_FAILED;
+        return LIBMSI_RESULT_FUNCTION_FAILED;
 
     r = get_tablecolumns( db, name, columns, &column_count );
-    if (r != ERROR_SUCCESS)
+    if (r != LIBMSI_RESULT_SUCCESS)
     {
         msi_free( columns );
-        return ERROR_FUNCTION_FAILED;
+        return LIBMSI_RESULT_FUNCTION_FAILED;
     }
     *pcols = columns;
     return r;
@@ -633,13 +633,13 @@ static unsigned get_table( LibmsiDatabase *db, const WCHAR *name, LibmsiTable **
     if (table)
     {
         *table_ret = table;
-        return ERROR_SUCCESS;
+        return LIBMSI_RESULT_SUCCESS;
     }
 
     /* nonexistent tables should be interpreted as empty tables */
     table = msi_alloc( sizeof(LibmsiTable) + strlenW( name ) * sizeof(WCHAR) );
     if (!table)
-        return ERROR_FUNCTION_FAILED;
+        return LIBMSI_RESULT_FUNCTION_FAILED;
 
     table->row_count = 0;
     table->data = NULL;
@@ -653,20 +653,20 @@ static unsigned get_table( LibmsiDatabase *db, const WCHAR *name, LibmsiTable **
         table->persistent = LIBMSI_CONDITION_NONE;
 
     r = table_get_column_info( db, name, &table->colinfo, &table->col_count );
-    if (r != ERROR_SUCCESS)
+    if (r != LIBMSI_RESULT_SUCCESS)
     {
         free_table( table );
         return r;
     }
     r = read_table_from_storage( db, table, db->storage );
-    if (r != ERROR_SUCCESS)
+    if (r != LIBMSI_RESULT_SUCCESS)
     {
         free_table( table );
         return r;
     }
     list_add_head( &db->tables, &table->entry );
     *table_ret = table;
-    return ERROR_SUCCESS;
+    return LIBMSI_RESULT_SUCCESS;
 }
 
 static unsigned read_table_int( uint8_t *const *data, unsigned row, unsigned col, unsigned bytes )
@@ -688,19 +688,19 @@ static unsigned get_tablecolumns( LibmsiDatabase *db, const WCHAR *szTableName, 
 
     /* first check if there is a default table with that name */
     r = get_defaulttablecolumns( db, szTableName, colinfo, sz );
-    if (r == ERROR_SUCCESS && *sz)
+    if (r == LIBMSI_RESULT_SUCCESS && *sz)
         return r;
 
     r = get_table( db, szColumns, &table );
-    if (r != ERROR_SUCCESS)
+    if (r != LIBMSI_RESULT_SUCCESS)
     {
         ERR("couldn't load _Columns table\n");
-        return ERROR_FUNCTION_FAILED;
+        return LIBMSI_RESULT_FUNCTION_FAILED;
     }
 
     /* convert table and column names to IDs from the string table */
     r = _libmsi_id_from_stringW( db->strings, szTableName, &table_id );
-    if (r != ERROR_SUCCESS)
+    if (r != LIBMSI_RESULT_SUCCESS)
     {
         WARN("Couldn't find id for %s\n", debugstr_w(szTableName));
         return r;
@@ -749,11 +749,11 @@ static unsigned get_tablecolumns( LibmsiDatabase *db, const WCHAR *szTableName, 
     {
         ERR("missing column in table %s\n", debugstr_w(szTableName));
         msi_free_colinfo( colinfo, maxcount );
-        return ERROR_FUNCTION_FAILED;
+        return LIBMSI_RESULT_FUNCTION_FAILED;
     }
     table_calc_column_offsets( db, colinfo, n );
     *sz = n;
-    return ERROR_SUCCESS;
+    return LIBMSI_RESULT_SUCCESS;
 }
 
 unsigned msi_create_table( LibmsiDatabase *db, const WCHAR *name, column_info *col_info,
@@ -771,12 +771,12 @@ unsigned msi_create_table( LibmsiDatabase *db, const WCHAR *name, column_info *c
     if( table_view_exists(db, name ) )
     {
         WARN("table %s exists\n", debugstr_w(name));
-        return ERROR_BAD_QUERY_SYNTAX;
+        return LIBMSI_RESULT_BAD_QUERY_SYNTAX;
     }
 
     table = msi_alloc( sizeof (LibmsiTable) + strlenW(name)*sizeof (WCHAR) );
     if( !table )
-        return ERROR_FUNCTION_FAILED;
+        return LIBMSI_RESULT_FUNCTION_FAILED;
 
     table->ref_count = 1;
     table->row_count = 0;
@@ -794,7 +794,7 @@ unsigned msi_create_table( LibmsiDatabase *db, const WCHAR *name, column_info *c
     if (!table->colinfo)
     {
         free_table( table );
-        return ERROR_FUNCTION_FAILED;
+        return LIBMSI_RESULT_FUNCTION_FAILED;
     }
 
     for( i = 0, col = col_info; col; i++, col = col->next )
@@ -891,7 +891,7 @@ unsigned msi_create_table( LibmsiDatabase *db, const WCHAR *name, column_info *c
             nField++;
         }
         if( !col )
-            r = ERROR_SUCCESS;
+            r = LIBMSI_RESULT_SUCCESS;
     }
 
 err:
@@ -901,7 +901,7 @@ err:
     if( tv )
         tv->ops->delete( tv );
 
-    if (r == ERROR_SUCCESS)
+    if (r == LIBMSI_RESULT_SUCCESS)
         list_add_head( &db->tables, &table->entry );
     else
         free_table( table );
@@ -913,11 +913,11 @@ static unsigned save_table( LibmsiDatabase *db, const LibmsiTable *t, unsigned b
 {
     uint8_t *rawdata = NULL;
     unsigned rawsize, i, j, row_size, row_count;
-    unsigned r = ERROR_FUNCTION_FAILED;
+    unsigned r = LIBMSI_RESULT_FUNCTION_FAILED;
 
     /* Nothing to do for non-persistent tables */
     if( t->persistent == LIBMSI_CONDITION_FALSE )
-        return ERROR_SUCCESS;
+        return LIBMSI_RESULT_SUCCESS;
 
     TRACE("Saving %s\n", debugstr_w( t->name ) );
 
@@ -935,7 +935,7 @@ static unsigned save_table( LibmsiDatabase *db, const LibmsiTable *t, unsigned b
     rawdata = msi_alloc_zero( rawsize );
     if( !rawdata )
     {
-        r = ERROR_NOT_ENOUGH_MEMORY;
+        r = LIBMSI_RESULT_NOT_ENOUGH_MEMORY;
         goto err;
     }
 
@@ -1021,14 +1021,14 @@ bool table_view_exists( LibmsiDatabase *db, const WCHAR *name )
         return true;
 
     r = _libmsi_id_from_stringW( db->strings, name, &table_id );
-    if( r != ERROR_SUCCESS )
+    if( r != LIBMSI_RESULT_SUCCESS )
     {
         TRACE("Couldn't find id for %s\n", debugstr_w(name));
         return false;
     }
 
     r = get_table( db, szTables, &table );
-    if( r != ERROR_SUCCESS )
+    if( r != LIBMSI_RESULT_SUCCESS )
     {
         ERR("table %s not available\n", debugstr_w(szTables));
         return false;
@@ -1062,27 +1062,27 @@ static unsigned table_view_fetch_int( LibmsiView *view, unsigned row, unsigned c
     unsigned offset, n;
 
     if( !tv->table )
-        return ERROR_INVALID_PARAMETER;
+        return LIBMSI_RESULT_INVALID_PARAMETER;
 
     if( (col==0) || (col>tv->num_cols) )
-        return ERROR_INVALID_PARAMETER;
+        return LIBMSI_RESULT_INVALID_PARAMETER;
 
     /* how many rows are there ? */
     if( row >= tv->table->row_count )
-        return ERROR_NO_MORE_ITEMS;
+        return LIBMSI_RESULT_NO_MORE_ITEMS;
 
     if( tv->columns[col-1].offset >= tv->row_size )
     {
         ERR("Stuffed up %d >= %d\n", tv->columns[col-1].offset, tv->row_size );
         ERR("%p %p\n", tv, tv->columns );
-        return ERROR_FUNCTION_FAILED;
+        return LIBMSI_RESULT_FUNCTION_FAILED;
     }
 
     n = bytes_per_column( tv->db, &tv->columns[col - 1], LONG_STR_BYTES );
     if (n != 2 && n != 3 && n != 4)
     {
         ERR("oops! what is %d bytes per column?\n", n );
-        return ERROR_FUNCTION_FAILED;
+        return LIBMSI_RESULT_FUNCTION_FAILED;
     }
 
     offset = tv->columns[col-1].offset;
@@ -1090,7 +1090,7 @@ static unsigned table_view_fetch_int( LibmsiView *view, unsigned row, unsigned c
 
     /* TRACE("Data [%d][%d] = %d\n", row, col, *val ); */
 
-    return ERROR_SUCCESS;
+    return LIBMSI_RESULT_SUCCESS;
 }
 
 static unsigned msi_stream_name( const LibmsiTableView *tv, unsigned row, WCHAR **pstname )
@@ -1108,7 +1108,7 @@ static unsigned msi_stream_name( const LibmsiTableView *tv, unsigned row, WCHAR 
     stname = msi_alloc( len*sizeof(WCHAR) );
     if ( !stname )
     {
-       r = ERROR_OUTOFMEMORY;
+       r = LIBMSI_RESULT_OUTOFMEMORY;
        goto err;
     }
 
@@ -1122,7 +1122,7 @@ static unsigned msi_stream_name( const LibmsiTableView *tv, unsigned row, WCHAR 
             WCHAR number[0x20];
 
             r = table_view_fetch_int( view, row, i+1, &ival );
-            if ( r != ERROR_SUCCESS )
+            if ( r != LIBMSI_RESULT_SUCCESS )
                 goto err;
 
             if ( tv->columns[i].type & MSITYPE_STRING )
@@ -1130,7 +1130,7 @@ static unsigned msi_stream_name( const LibmsiTableView *tv, unsigned row, WCHAR 
                 sval = msi_string_lookup_id( tv->db->strings, ival );
                 if ( !sval )
                 {
-                    r = ERROR_INVALID_PARAMETER;
+                    r = LIBMSI_RESULT_INVALID_PARAMETER;
                     goto err;
                 }
             }
@@ -1149,7 +1149,7 @@ static unsigned msi_stream_name( const LibmsiTableView *tv, unsigned row, WCHAR 
                     break;
                 default:
                     ERR( "oops - unknown column width %d\n", n );
-                    r = ERROR_FUNCTION_FAILED;
+                    r = LIBMSI_RESULT_FUNCTION_FAILED;
                     goto err;
                 }
                 sval = number;
@@ -1159,7 +1159,7 @@ static unsigned msi_stream_name( const LibmsiTableView *tv, unsigned row, WCHAR 
             p = msi_realloc ( stname, len*sizeof(WCHAR) );
             if ( !p )
             {
-                r = ERROR_OUTOFMEMORY;
+                r = LIBMSI_RESULT_OUTOFMEMORY;
                 goto err;
             }
             stname = p;
@@ -1172,7 +1172,7 @@ static unsigned msi_stream_name( const LibmsiTableView *tv, unsigned row, WCHAR 
     }
 
     *pstname = stname;
-    return ERROR_SUCCESS;
+    return LIBMSI_RESULT_SUCCESS;
 
 err:
     msi_free( stname );
@@ -1193,10 +1193,10 @@ static unsigned table_view_fetch_stream( LibmsiView *view, unsigned row, unsigne
     WCHAR *full_name = NULL;
 
     if( !view->ops->fetch_int )
-        return ERROR_INVALID_PARAMETER;
+        return LIBMSI_RESULT_INVALID_PARAMETER;
 
     r = msi_stream_name( tv, row, &full_name );
-    if ( r != ERROR_SUCCESS )
+    if ( r != LIBMSI_RESULT_SUCCESS )
     {
         ERR("fetching stream, error = %d\n", r);
         return r;
@@ -1217,19 +1217,19 @@ static unsigned table_view_set_int( LibmsiTableView *tv, unsigned row, unsigned 
     unsigned offset, n, i;
 
     if( !tv->table )
-        return ERROR_INVALID_PARAMETER;
+        return LIBMSI_RESULT_INVALID_PARAMETER;
 
     if( (col==0) || (col>tv->num_cols) )
-        return ERROR_INVALID_PARAMETER;
+        return LIBMSI_RESULT_INVALID_PARAMETER;
 
     if( row >= tv->table->row_count )
-        return ERROR_INVALID_PARAMETER;
+        return LIBMSI_RESULT_INVALID_PARAMETER;
 
     if( tv->columns[col-1].offset >= tv->row_size )
     {
         ERR("Stuffed up %d >= %d\n", tv->columns[col-1].offset, tv->row_size );
         ERR("%p %p\n", tv, tv->columns );
-        return ERROR_FUNCTION_FAILED;
+        return LIBMSI_RESULT_FUNCTION_FAILED;
     }
 
     msi_free( tv->columns[col-1].hash_table );
@@ -1239,14 +1239,14 @@ static unsigned table_view_set_int( LibmsiTableView *tv, unsigned row, unsigned 
     if ( n != 2 && n != 3 && n != 4 )
     {
         ERR("oops! what is %d bytes per column?\n", n );
-        return ERROR_FUNCTION_FAILED;
+        return LIBMSI_RESULT_FUNCTION_FAILED;
     }
 
     offset = tv->columns[col-1].offset;
     for ( i = 0; i < n; i++ )
         tv->table->data[row][offset + i] = (val >> i * 8) & 0xff;
 
-    return ERROR_SUCCESS;
+    return LIBMSI_RESULT_SUCCESS;
 }
 
 static unsigned table_view_get_row( LibmsiView *view, unsigned row, LibmsiRecord **rec )
@@ -1254,7 +1254,7 @@ static unsigned table_view_get_row( LibmsiView *view, unsigned row, LibmsiRecord
     LibmsiTableView *tv = (LibmsiTableView *)view;
 
     if (!tv->table)
-        return ERROR_INVALID_PARAMETER;
+        return LIBMSI_RESULT_INVALID_PARAMETER;
 
     return msi_view_get_row(tv->db, view, row, rec);
 }
@@ -1274,18 +1274,18 @@ static unsigned _libmsi_add_stream( LibmsiDatabase *db, const WCHAR *name, IStre
 
     rec = libmsi_record_create( 2 );
     if ( !rec )
-        return ERROR_OUTOFMEMORY;
+        return LIBMSI_RESULT_OUTOFMEMORY;
 
     r = _libmsi_record_set_stringW( rec, 1, name );
-    if ( r != ERROR_SUCCESS )
+    if ( r != LIBMSI_RESULT_SUCCESS )
        goto err;
 
     r = _libmsi_record_set_IStream( rec, 2, data );
-    if ( r != ERROR_SUCCESS )
+    if ( r != LIBMSI_RESULT_SUCCESS )
        goto err;
 
     r = _libmsi_database_open_query( db, insert, &query );
-    if ( r != ERROR_SUCCESS )
+    if ( r != LIBMSI_RESULT_SUCCESS )
        goto err;
 
     r = _libmsi_query_execute( query, rec );
@@ -1304,7 +1304,7 @@ static unsigned get_table_value_from_record( LibmsiTableView *tv, LibmsiRecord *
     if ( (iField <= 0) ||
          (iField > tv->num_cols) ||
           libmsi_record_is_null( rec, iField ) )
-        return ERROR_FUNCTION_FAILED;
+        return LIBMSI_RESULT_FUNCTION_FAILED;
 
     columninfo = tv->columns[ iField - 1 ];
 
@@ -1318,8 +1318,8 @@ static unsigned get_table_value_from_record( LibmsiTableView *tv, LibmsiRecord *
         if (sval)
         {
             r = _libmsi_id_from_stringW(tv->db->strings, sval, pvalue);
-            if (r != ERROR_SUCCESS)
-                return ERROR_NOT_FOUND;
+            if (r != LIBMSI_RESULT_SUCCESS)
+                return LIBMSI_RESULT_NOT_FOUND;
         }
         else *pvalue = 0;
     }
@@ -1329,7 +1329,7 @@ static unsigned get_table_value_from_record( LibmsiTableView *tv, LibmsiRecord *
         if ( *pvalue & 0xffff0000 )
         {
             ERR("field %u value %d out of range\n", iField, *pvalue - 0x8000);
-            return ERROR_FUNCTION_FAILED;
+            return LIBMSI_RESULT_FUNCTION_FAILED;
         }
     }
     else
@@ -1338,20 +1338,20 @@ static unsigned get_table_value_from_record( LibmsiTableView *tv, LibmsiRecord *
         *pvalue = ival ^ 0x80000000;
     }
 
-    return ERROR_SUCCESS;
+    return LIBMSI_RESULT_SUCCESS;
 }
 
 static unsigned table_view_set_row( LibmsiView *view, unsigned row, LibmsiRecord *rec, unsigned mask )
 {
     LibmsiTableView *tv = (LibmsiTableView*)view;
-    unsigned i, val, r = ERROR_SUCCESS;
+    unsigned i, val, r = LIBMSI_RESULT_SUCCESS;
 
     if ( !tv->table )
-        return ERROR_INVALID_PARAMETER;
+        return LIBMSI_RESULT_INVALID_PARAMETER;
 
     /* test if any of the mask bits are invalid */
     if ( mask >= (1<<tv->num_cols) )
-        return ERROR_INVALID_PARAMETER;
+        return LIBMSI_RESULT_INVALID_PARAMETER;
 
     for ( i = 0; i < tv->num_cols; i++ )
     {
@@ -1374,15 +1374,15 @@ static unsigned table_view_set_row( LibmsiView *view, unsigned row, LibmsiRecord
                 IStream *stm;
                 WCHAR *stname;
 
-                if ( r != ERROR_SUCCESS )
-                    return ERROR_FUNCTION_FAILED;
+                if ( r != LIBMSI_RESULT_SUCCESS )
+                    return LIBMSI_RESULT_FUNCTION_FAILED;
 
                 r = _libmsi_record_get_IStream( rec, i + 1, &stm );
-                if ( r != ERROR_SUCCESS )
+                if ( r != LIBMSI_RESULT_SUCCESS )
                     return r;
 
                 r = msi_stream_name( tv, row, &stname );
-                if ( r != ERROR_SUCCESS )
+                if ( r != LIBMSI_RESULT_SUCCESS )
                 {
                     IStream_Release( stm );
                     return r;
@@ -1392,14 +1392,14 @@ static unsigned table_view_set_row( LibmsiView *view, unsigned row, LibmsiRecord
                 IStream_Release( stm );
                 msi_free ( stname );
 
-                if ( r != ERROR_SUCCESS )
+                if ( r != LIBMSI_RESULT_SUCCESS )
                     return r;
             }
             else if ( tv->columns[i].type & MSITYPE_STRING )
             {
                 unsigned x;
 
-                if ( r != ERROR_SUCCESS )
+                if ( r != LIBMSI_RESULT_SUCCESS )
                 {
                     const WCHAR *sval = _libmsi_record_get_string_raw( rec, i + 1 );
                     val = _libmsi_add_string( tv->db->strings, sval, -1, 1,
@@ -1414,13 +1414,13 @@ static unsigned table_view_set_row( LibmsiView *view, unsigned row, LibmsiRecord
             }
             else
             {
-                if ( r != ERROR_SUCCESS )
-                    return ERROR_FUNCTION_FAILED;
+                if ( r != LIBMSI_RESULT_SUCCESS )
+                    return LIBMSI_RESULT_FUNCTION_FAILED;
             }
         }
 
         r = table_view_set_int( tv, row, i+1, val );
-        if ( r != ERROR_SUCCESS )
+        if ( r != LIBMSI_RESULT_SUCCESS )
             break;
     }
     return r;
@@ -1439,11 +1439,11 @@ static unsigned table_create_new_row( LibmsiView *view, unsigned *num, bool temp
     TRACE("%p %s\n", view, temporary ? "true" : "false");
 
     if( !tv->table )
-        return ERROR_INVALID_PARAMETER;
+        return LIBMSI_RESULT_INVALID_PARAMETER;
 
     row = msi_alloc_zero( tv->row_size );
     if( !row )
-        return ERROR_NOT_ENOUGH_MEMORY;
+        return LIBMSI_RESULT_NOT_ENOUGH_MEMORY;
 
     row_count = &tv->table->row_count;
     data_ptr = &tv->table->data;
@@ -1459,7 +1459,7 @@ static unsigned table_create_new_row( LibmsiView *view, unsigned *num, bool temp
     if( !p )
     {
         msi_free( row );
-        return ERROR_NOT_ENOUGH_MEMORY;
+        return LIBMSI_RESULT_NOT_ENOUGH_MEMORY;
     }
 
     sz = (*row_count + 1) * sizeof (bool);
@@ -1471,7 +1471,7 @@ static unsigned table_create_new_row( LibmsiView *view, unsigned *num, bool temp
     {
         msi_free( row );
         msi_free( p );
-        return ERROR_NOT_ENOUGH_MEMORY;
+        return LIBMSI_RESULT_NOT_ENOUGH_MEMORY;
     }
 
     *data_ptr = p;
@@ -1482,7 +1482,7 @@ static unsigned table_create_new_row( LibmsiView *view, unsigned *num, bool temp
 
     (*row_count)++;
 
-    return ERROR_SUCCESS;
+    return LIBMSI_RESULT_SUCCESS;
 }
 
 static unsigned table_view_execute( LibmsiView *view, LibmsiRecord *record )
@@ -1493,14 +1493,14 @@ static unsigned table_view_execute( LibmsiView *view, LibmsiRecord *record )
 
     TRACE("There are %d columns\n", tv->num_cols );
 
-    return ERROR_SUCCESS;
+    return LIBMSI_RESULT_SUCCESS;
 }
 
 static unsigned table_view_close( LibmsiView *view )
 {
     TRACE("%p\n", view );
     
-    return ERROR_SUCCESS;
+    return LIBMSI_RESULT_SUCCESS;
 }
 
 static unsigned table_view_get_dimensions( LibmsiView *view, unsigned *rows, unsigned *cols)
@@ -1514,11 +1514,11 @@ static unsigned table_view_get_dimensions( LibmsiView *view, unsigned *rows, uns
     if( rows )
     {
         if( !tv->table )
-            return ERROR_INVALID_PARAMETER;
+            return LIBMSI_RESULT_INVALID_PARAMETER;
         *rows = tv->table->row_count;
     }
 
-    return ERROR_SUCCESS;
+    return LIBMSI_RESULT_SUCCESS;
 }
 
 static unsigned table_view_get_column_info( LibmsiView *view,
@@ -1530,20 +1530,20 @@ static unsigned table_view_get_column_info( LibmsiView *view,
     TRACE("%p %d %p %p\n", tv, n, name, type );
 
     if( ( n == 0 ) || ( n > tv->num_cols ) )
-        return ERROR_INVALID_PARAMETER;
+        return LIBMSI_RESULT_INVALID_PARAMETER;
 
     if( name )
     {
         *name = tv->columns[n-1].colname;
         if( !*name )
-            return ERROR_FUNCTION_FAILED;
+            return LIBMSI_RESULT_FUNCTION_FAILED;
     }
 
     if( table_name )
     {
         *table_name = tv->columns[n-1].tablename;
         if( !*table_name )
-            return ERROR_FUNCTION_FAILED;
+            return LIBMSI_RESULT_FUNCTION_FAILED;
     }
 
     if( type )
@@ -1552,7 +1552,7 @@ static unsigned table_view_get_column_info( LibmsiView *view,
     if( temporary )
         *temporary = tv->columns[n-1].temporary;
 
-    return ERROR_SUCCESS;
+    return LIBMSI_RESULT_SUCCESS;
 }
 
 static unsigned msi_table_find_row( LibmsiTableView *tv, LibmsiRecord *rec, unsigned *row, unsigned *column );
@@ -1577,7 +1577,7 @@ static unsigned table_validate_new( LibmsiTableView *tv, LibmsiRecord *rec, unsi
             if (str == NULL || str[0] == 0)
             {
                 if (column) *column = i;
-                return ERROR_INVALID_DATA;
+                return LIBMSI_RESULT_INVALID_DATA;
             }
         }
         else
@@ -1588,17 +1588,17 @@ static unsigned table_validate_new( LibmsiTableView *tv, LibmsiRecord *rec, unsi
             if (n == MSI_NULL_INTEGER)
             {
                 if (column) *column = i;
-                return ERROR_INVALID_DATA;
+                return LIBMSI_RESULT_INVALID_DATA;
             }
         }
     }
 
     /* check there's no duplicate keys */
     r = msi_table_find_row( tv, rec, &row, column );
-    if (r == ERROR_SUCCESS)
-        return ERROR_FUNCTION_FAILED;
+    if (r == LIBMSI_RESULT_SUCCESS)
+        return LIBMSI_RESULT_FUNCTION_FAILED;
 
-    return ERROR_SUCCESS;
+    return LIBMSI_RESULT_SUCCESS;
 }
 
 static int compare_record( LibmsiTableView *tv, unsigned row, LibmsiRecord *rec )
@@ -1610,11 +1610,11 @@ static int compare_record( LibmsiTableView *tv, unsigned row, LibmsiRecord *rec 
         if (!(tv->columns[i].type & MSITYPE_KEY)) continue;
 
         r = get_table_value_from_record( tv, rec, i + 1, &ivalue );
-        if (r != ERROR_SUCCESS)
+        if (r != LIBMSI_RESULT_SUCCESS)
             return 1;
 
         r = table_view_fetch_int( &tv->view, row, i + 1, &x );
-        if (r != ERROR_SUCCESS)
+        if (r != LIBMSI_RESULT_SUCCESS)
         {
             WARN("table_view_fetch_int should not fail here %u\n", r);
             return -1;
@@ -1668,15 +1668,15 @@ static unsigned table_view_insert_row( LibmsiView *view, LibmsiRecord *rec, unsi
 
     /* check that the key is unique - can we find a matching row? */
     r = table_validate_new( tv, rec, NULL );
-    if( r != ERROR_SUCCESS )
-        return ERROR_FUNCTION_FAILED;
+    if( r != LIBMSI_RESULT_SUCCESS )
+        return LIBMSI_RESULT_FUNCTION_FAILED;
 
     if (row == -1)
         row = find_insert_index( tv, rec );
 
     r = table_create_new_row( view, &row, temporary );
     TRACE("insert_row returned %08x\n", r);
-    if( r != ERROR_SUCCESS )
+    if( r != LIBMSI_RESULT_SUCCESS )
         return r;
 
     /* shift the rows to make room for the new row */
@@ -1700,14 +1700,14 @@ static unsigned table_view_delete_row( LibmsiView *view, unsigned row )
     TRACE("%p %d\n", tv, row);
 
     if ( !tv->table )
-        return ERROR_INVALID_PARAMETER;
+        return LIBMSI_RESULT_INVALID_PARAMETER;
 
     r = table_view_get_dimensions( view, &num_rows, &num_cols );
-    if ( r != ERROR_SUCCESS )
+    if ( r != LIBMSI_RESULT_SUCCESS )
         return r;
 
     if ( row >= num_rows )
-        return ERROR_FUNCTION_FAILED;
+        return LIBMSI_RESULT_FUNCTION_FAILED;
 
     num_rows = tv->table->row_count;
     tv->table->row_count--;
@@ -1727,7 +1727,7 @@ static unsigned table_view_delete_row( LibmsiView *view, unsigned row )
 
     msi_free(tv->table->data[num_rows - 1]);
 
-    return ERROR_SUCCESS;
+    return LIBMSI_RESULT_SUCCESS;
 }
 
 static unsigned msi_table_update(LibmsiView *view, LibmsiRecord *rec, unsigned row)
@@ -1740,18 +1740,18 @@ static unsigned msi_table_update(LibmsiView *view, LibmsiRecord *rec, unsigned r
      */
 
     if (!tv->table)
-        return ERROR_INVALID_PARAMETER;
+        return LIBMSI_RESULT_INVALID_PARAMETER;
 
     r = msi_table_find_row(tv, rec, &new_row, NULL);
-    if (r != ERROR_SUCCESS)
+    if (r != LIBMSI_RESULT_SUCCESS)
     {
         ERR("can't find row to modify\n");
-        return ERROR_FUNCTION_FAILED;
+        return LIBMSI_RESULT_FUNCTION_FAILED;
     }
 
     /* the row cannot be changed */
     if (row != new_row + 1)
-        return ERROR_FUNCTION_FAILED;
+        return LIBMSI_RESULT_FUNCTION_FAILED;
 
     return table_view_set_row(view, new_row, rec, (1 << tv->num_cols) - 1);
 }
@@ -1762,10 +1762,10 @@ static unsigned msi_table_assign(LibmsiView *view, LibmsiRecord *rec)
     unsigned r, row;
 
     if (!tv->table)
-        return ERROR_INVALID_PARAMETER;
+        return LIBMSI_RESULT_INVALID_PARAMETER;
 
     r = msi_table_find_row(tv, rec, &row, NULL);
-    if (r == ERROR_SUCCESS)
+    if (r == LIBMSI_RESULT_SUCCESS)
         return table_view_set_row(view, row, rec, (1 << tv->num_cols) - 1);
     else
         return table_view_insert_row( view, rec, -1, false );
@@ -1777,7 +1777,7 @@ static unsigned modify_delete_row( LibmsiView *view, LibmsiRecord *rec )
     unsigned row, r;
 
     r = msi_table_find_row(tv, rec, &row, NULL);
-    if (r != ERROR_SUCCESS)
+    if (r != LIBMSI_RESULT_SUCCESS)
         return r;
 
     return table_view_delete_row(view, row);
@@ -1789,7 +1789,7 @@ static unsigned msi_refresh_record( LibmsiView *view, LibmsiRecord *rec, unsigne
     unsigned r, i, count;
 
     r = table_view_get_row(view, row - 1, &curr);
-    if (r != ERROR_SUCCESS)
+    if (r != LIBMSI_RESULT_SUCCESS)
         return r;
 
     /* Close the original record */
@@ -1800,7 +1800,7 @@ static unsigned msi_refresh_record( LibmsiView *view, LibmsiRecord *rec, unsigne
         _libmsi_record_copy_field(curr, i + 1, rec, i + 1);
 
     msiobj_release(&curr->hdr);
-    return ERROR_SUCCESS;
+    return LIBMSI_RESULT_SUCCESS;
 }
 
 static unsigned table_view_modify( LibmsiView *view, LibmsiModify eModifyMode,
@@ -1818,24 +1818,24 @@ static unsigned table_view_modify( LibmsiView *view, LibmsiModify eModifyMode,
         break;
     case LIBMSI_MODIFY_VALIDATE_NEW:
         r = table_validate_new( tv, rec, &column );
-        if (r != ERROR_SUCCESS)
+        if (r != LIBMSI_RESULT_SUCCESS)
         {
             tv->view.error = LIBMSI_DB_ERROR_DUPLICATEKEY;
             tv->view.error_column = tv->columns[column].colname;
-            r = ERROR_INVALID_DATA;
+            r = LIBMSI_RESULT_INVALID_DATA;
         }
         break;
 
     case LIBMSI_MODIFY_INSERT:
         r = table_validate_new( tv, rec, NULL );
-        if (r != ERROR_SUCCESS)
+        if (r != LIBMSI_RESULT_SUCCESS)
             break;
         r = table_view_insert_row( view, rec, -1, false );
         break;
 
     case LIBMSI_MODIFY_INSERT_TEMPORARY:
         r = table_validate_new( tv, rec, NULL );
-        if (r != ERROR_SUCCESS)
+        if (r != LIBMSI_RESULT_SUCCESS)
             break;
         r = table_view_insert_row( view, rec, -1, true );
         break;
@@ -1855,10 +1855,10 @@ static unsigned table_view_modify( LibmsiView *view, LibmsiModify eModifyMode,
     case LIBMSI_MODIFY_MERGE:
         /* check row that matches this record */
         r = msi_table_find_row( tv, rec, &frow, &column );
-        if (r != ERROR_SUCCESS)
+        if (r != LIBMSI_RESULT_SUCCESS)
         {
             r = table_validate_new( tv, rec, NULL );
-            if (r == ERROR_SUCCESS)
+            if (r == LIBMSI_RESULT_SUCCESS)
                 r = table_view_insert_row( view, rec, -1, false );
         }
         break;
@@ -1868,11 +1868,11 @@ static unsigned table_view_modify( LibmsiView *view, LibmsiModify eModifyMode,
     case LIBMSI_MODIFY_VALIDATE_FIELD:
     case LIBMSI_MODIFY_VALIDATE_DELETE:
         FIXME("%p %d %p - mode not implemented\n", view, eModifyMode, rec );
-        r = ERROR_CALL_NOT_IMPLEMENTED;
+        r = LIBMSI_RESULT_CALL_NOT_IMPLEMENTED;
         break;
 
     default:
-        r = ERROR_INVALID_DATA;
+        r = LIBMSI_RESULT_INVALID_DATA;
     }
 
     return r;
@@ -1889,7 +1889,7 @@ static unsigned table_view_delete( LibmsiView *view )
 
     msi_free( tv );
 
-    return ERROR_SUCCESS;
+    return LIBMSI_RESULT_SUCCESS;
 }
 
 static unsigned table_view_find_matching_rows( LibmsiView *view, unsigned col,
@@ -1901,10 +1901,10 @@ static unsigned table_view_find_matching_rows( LibmsiView *view, unsigned col,
     TRACE("%p, %d, %u, %p\n", view, col, val, *handle);
 
     if( !tv->table )
-        return ERROR_INVALID_PARAMETER;
+        return LIBMSI_RESULT_INVALID_PARAMETER;
 
     if( (col==0) || (col > tv->num_cols) )
-        return ERROR_INVALID_PARAMETER;
+        return LIBMSI_RESULT_INVALID_PARAMETER;
 
     if( !tv->columns[col-1].hash_table )
     {
@@ -1917,7 +1917,7 @@ static unsigned table_view_find_matching_rows( LibmsiView *view, unsigned col,
         {
             ERR("Stuffed up %d >= %d\n", tv->columns[col-1].offset, tv->row_size );
             ERR("%p %p\n", tv, tv->columns );
-            return ERROR_FUNCTION_FAILED;
+            return LIBMSI_RESULT_FUNCTION_FAILED;
         }
 
         /* allocate contiguous memory for the table and its entries so we
@@ -1925,7 +1925,7 @@ static unsigned table_view_find_matching_rows( LibmsiView *view, unsigned col,
         hash_table = msi_alloc(LibmsiTable_HASH_TABLE_SIZE * sizeof(LibmsiColumnHashEntry*) +
             num_rows * sizeof(LibmsiColumnHashEntry));
         if (!hash_table)
-            return ERROR_OUTOFMEMORY;
+            return LIBMSI_RESULT_OUTOFMEMORY;
 
         memset(hash_table, 0, LibmsiTable_HASH_TABLE_SIZE * sizeof(LibmsiColumnHashEntry*));
         tv->columns[col-1].hash_table = hash_table;
@@ -1936,7 +1936,7 @@ static unsigned table_view_find_matching_rows( LibmsiView *view, unsigned col,
         {
             unsigned row_value;
 
-            if (view->ops->fetch_int( view, i, col, &row_value ) != ERROR_SUCCESS)
+            if (view->ops->fetch_int( view, i, col, &row_value ) != LIBMSI_RESULT_SUCCESS)
                 continue;
 
             new_entry->next = NULL;
@@ -1964,11 +1964,11 @@ static unsigned table_view_find_matching_rows( LibmsiView *view, unsigned col,
 
     *handle = entry;
     if (!entry)
-        return ERROR_NO_MORE_ITEMS;
+        return LIBMSI_RESULT_NO_MORE_ITEMS;
 
     *row = entry->row;
 
-    return ERROR_SUCCESS;
+    return LIBMSI_RESULT_SUCCESS;
 }
 
 static unsigned table_view_add_ref(LibmsiView *view)
@@ -1996,21 +1996,21 @@ static unsigned table_view_remove_column(LibmsiView *view, const WCHAR *table, u
 
     rec = libmsi_record_create(2);
     if (!rec)
-        return ERROR_OUTOFMEMORY;
+        return LIBMSI_RESULT_OUTOFMEMORY;
 
     _libmsi_record_set_stringW(rec, 1, table);
     libmsi_record_set_int(rec, 2, number);
 
     r = table_view_create(tv->db, szColumns, &columns);
-    if (r != ERROR_SUCCESS)
+    if (r != LIBMSI_RESULT_SUCCESS)
         return r;
 
     r = msi_table_find_row((LibmsiTableView *)columns, rec, &row, NULL);
-    if (r != ERROR_SUCCESS)
+    if (r != LIBMSI_RESULT_SUCCESS)
         goto done;
 
     r = table_view_delete_row(columns, row);
-    if (r != ERROR_SUCCESS)
+    if (r != LIBMSI_RESULT_SUCCESS)
         goto done;
 
     msi_update_table_columns(tv->db, table);
@@ -2038,7 +2038,7 @@ static unsigned table_view_release(LibmsiView *view)
             {
                 r = table_view_remove_column(view, tv->table->colinfo[i].tablename,
                                         tv->table->colinfo[i].number);
-                if (r != ERROR_SUCCESS)
+                if (r != LIBMSI_RESULT_SUCCESS)
                     break;
             }
         }
@@ -2068,7 +2068,7 @@ static unsigned table_view_add_column(LibmsiView *view, const WCHAR *table, unsi
 
     rec = libmsi_record_create(4);
     if (!rec)
-        return ERROR_OUTOFMEMORY;
+        return LIBMSI_RESULT_OUTOFMEMORY;
 
     _libmsi_record_set_stringW(rec, 1, table);
     libmsi_record_set_int(rec, 2, number);
@@ -2076,7 +2076,7 @@ static unsigned table_view_add_column(LibmsiView *view, const WCHAR *table, unsi
     libmsi_record_set_int(rec, 4, type);
 
     r = table_view_insert_row(&tv->view, rec, -1, false);
-    if (r != ERROR_SUCCESS)
+    if (r != LIBMSI_RESULT_SUCCESS)
         goto done;
 
     msi_update_table_columns(tv->db, table);
@@ -2113,26 +2113,26 @@ static unsigned table_view_drop(LibmsiView *view)
     {
         r = table_view_remove_column(view, tv->table->colinfo[i].tablename,
                                 tv->table->colinfo[i].number);
-        if (r != ERROR_SUCCESS)
+        if (r != LIBMSI_RESULT_SUCCESS)
             return r;
     }
 
     rec = libmsi_record_create(1);
     if (!rec)
-        return ERROR_OUTOFMEMORY;
+        return LIBMSI_RESULT_OUTOFMEMORY;
 
     _libmsi_record_set_stringW(rec, 1, tv->name);
 
     r = table_view_create(tv->db, szTables, &tables);
-    if (r != ERROR_SUCCESS)
+    if (r != LIBMSI_RESULT_SUCCESS)
         return r;
 
     r = msi_table_find_row((LibmsiTableView *)tables, rec, &row, NULL);
-    if (r != ERROR_SUCCESS)
+    if (r != LIBMSI_RESULT_SUCCESS)
         goto done;
 
     r = table_view_delete_row(tables, row);
-    if (r != ERROR_SUCCESS)
+    if (r != LIBMSI_RESULT_SUCCESS)
         goto done;
 
     list_remove(&tv->table->entry);
@@ -2183,10 +2183,10 @@ unsigned table_view_create( LibmsiDatabase *db, const WCHAR *name, LibmsiView **
     sz = sizeof *tv + strlenW(name)*sizeof name[0] ;
     tv = alloc_msiobject( sz, NULL );
     if( !tv )
-        return ERROR_FUNCTION_FAILED;
+        return LIBMSI_RESULT_FUNCTION_FAILED;
 
     r = get_table( db, name, &tv->table );
-    if( r != ERROR_SUCCESS )
+    if( r != LIBMSI_RESULT_SUCCESS )
     {
         msi_free( tv );
         WARN("table not found\n");
@@ -2207,7 +2207,7 @@ unsigned table_view_create( LibmsiDatabase *db, const WCHAR *name, LibmsiView **
     *view = (LibmsiView*) tv;
     strcpyW( tv->name, name );
 
-    return ERROR_SUCCESS;
+    return LIBMSI_RESULT_SUCCESS;
 }
 
 unsigned _libmsi_database_commit_tables( LibmsiDatabase *db )
@@ -2219,7 +2219,7 @@ unsigned _libmsi_database_commit_tables( LibmsiDatabase *db )
     TRACE("%p\n",db);
 
     r = msi_save_string_table( db->strings, db->storage, &bytes_per_strref );
-    if( r != ERROR_SUCCESS )
+    if( r != LIBMSI_RESULT_SUCCESS )
     {
         WARN("failed to save string table r=%08x\n",r);
         return r;
@@ -2228,7 +2228,7 @@ unsigned _libmsi_database_commit_tables( LibmsiDatabase *db )
     LIST_FOR_EACH_ENTRY( table, &db->tables, LibmsiTable, entry )
     {
         r = save_table( db, table, bytes_per_strref );
-        if( r != ERROR_SUCCESS )
+        if( r != LIBMSI_RESULT_SUCCESS )
         {
             WARN("failed to save table %s (r=%08x)\n",
                   debugstr_w(table->name), r);
@@ -2240,7 +2240,7 @@ unsigned _libmsi_database_commit_tables( LibmsiDatabase *db )
     if (FAILED( hr ))
     {
         WARN("failed to commit changes 0x%08x\n", hr);
-        r = ERROR_FUNCTION_FAILED;
+        r = LIBMSI_RESULT_FUNCTION_FAILED;
     }
     return r;
 }
@@ -2256,7 +2256,7 @@ LibmsiCondition _libmsi_database_is_table_persistent( LibmsiDatabase *db, const 
         return LIBMSI_CONDITION_ERROR;
 
     r = get_table( db, table, &t );
-    if (r != ERROR_SUCCESS)
+    if (r != LIBMSI_RESULT_SUCCESS)
         return LIBMSI_CONDITION_NONE;
 
     return t->persistent;
@@ -2286,7 +2286,7 @@ static unsigned msi_record_encoded_stream_name( const LibmsiTableView *tv, Libms
     stname = msi_alloc( len*sizeof(WCHAR) );
     if ( !stname )
     {
-       r = ERROR_OUTOFMEMORY;
+       r = LIBMSI_RESULT_OUTOFMEMORY;
        goto err;
     }
 
@@ -2299,7 +2299,7 @@ static unsigned msi_record_encoded_stream_name( const LibmsiTableView *tv, Libms
             sval = msi_dup_record_field( rec, i + 1 );
             if ( !sval )
             {
-                r = ERROR_OUTOFMEMORY;
+                r = LIBMSI_RESULT_OUTOFMEMORY;
                 goto err;
             }
 
@@ -2307,7 +2307,7 @@ static unsigned msi_record_encoded_stream_name( const LibmsiTableView *tv, Libms
             p = msi_realloc ( stname, len*sizeof(WCHAR) );
             if ( !p )
             {
-                r = ERROR_OUTOFMEMORY;
+                r = LIBMSI_RESULT_OUTOFMEMORY;
                 goto err;
             }
             stname = p;
@@ -2324,7 +2324,7 @@ static unsigned msi_record_encoded_stream_name( const LibmsiTableView *tv, Libms
     *pstname = encode_streamname( false, stname );
     msi_free( stname );
 
-    return ERROR_SUCCESS;
+    return LIBMSI_RESULT_SUCCESS;
 
 err:
     msi_free ( stname );
@@ -2366,12 +2366,12 @@ static LibmsiRecord *msi_get_transform_record( const LibmsiTableView *tv, const 
             ofs += bytes_per_column( tv->db, &columns[i], bytes_per_strref );
 
             r = msi_record_encoded_stream_name( tv, rec, &encname );
-            if ( r != ERROR_SUCCESS )
+            if ( r != LIBMSI_RESULT_SUCCESS )
                 return NULL;
 
             r = IStorage_OpenStream( stg, encname, NULL,
                      STGM_READ | STGM_SHARE_EXCLUSIVE, 0, &stm );
-            if ( r != ERROR_SUCCESS )
+            if ( r != LIBMSI_RESULT_SUCCESS )
             {
                 msi_free( encname );
                 return NULL;
@@ -2472,7 +2472,7 @@ static unsigned* msi_record_to_row( const LibmsiTableView *tv, LibmsiRecord *rec
 
                 /* if there's no matching string in the string table,
                    these keys can't match any record, so fail now. */
-                if (r != ERROR_SUCCESS)
+                if (r != LIBMSI_RESULT_SUCCESS)
                 {
                     msi_free( data );
                     return NULL;
@@ -2497,7 +2497,7 @@ static unsigned* msi_record_to_row( const LibmsiTableView *tv, LibmsiRecord *rec
 
 static unsigned msi_row_matches( LibmsiTableView *tv, unsigned row, const unsigned *data, unsigned *column )
 {
-    unsigned i, r, x, ret = ERROR_FUNCTION_FAILED;
+    unsigned i, r, x, ret = LIBMSI_RESULT_FUNCTION_FAILED;
 
     for( i=0; i<tv->num_cols; i++ )
     {
@@ -2506,7 +2506,7 @@ static unsigned msi_row_matches( LibmsiTableView *tv, unsigned row, const unsign
 
         /* turn the transform column value into a row value */
         r = table_view_fetch_int( &tv->view, row, i+1, &x );
-        if ( r != ERROR_SUCCESS )
+        if ( r != LIBMSI_RESULT_SUCCESS )
         {
             ERR("table_view_fetch_int shouldn't fail here\n");
             break;
@@ -2515,18 +2515,18 @@ static unsigned msi_row_matches( LibmsiTableView *tv, unsigned row, const unsign
         /* if this key matches, move to the next column */
         if ( x != data[i] )
         {
-            ret = ERROR_FUNCTION_FAILED;
+            ret = LIBMSI_RESULT_FUNCTION_FAILED;
             break;
         }
         if (column) *column = i;
-        ret = ERROR_SUCCESS;
+        ret = LIBMSI_RESULT_SUCCESS;
     }
     return ret;
 }
 
 static unsigned msi_table_find_row( LibmsiTableView *tv, LibmsiRecord *rec, unsigned *row, unsigned *column )
 {
-    unsigned i, r = ERROR_FUNCTION_FAILED, *data;
+    unsigned i, r = LIBMSI_RESULT_FUNCTION_FAILED, *data;
 
     data = msi_record_to_row( tv, rec );
     if( !data )
@@ -2534,7 +2534,7 @@ static unsigned msi_table_find_row( LibmsiTableView *tv, LibmsiRecord *rec, unsi
     for( i = 0; i < tv->table->row_count; i++ )
     {
         r = msi_row_matches( tv, i, data, column );
-        if( r == ERROR_SUCCESS )
+        if( r == LIBMSI_RESULT_SUCCESS )
         {
             *row = i;
             break;
@@ -2562,7 +2562,7 @@ static unsigned msi_table_load_transform( LibmsiDatabase *db, IStorage *stg,
     const WCHAR *name;
 
     if (!transform)
-        return ERROR_SUCCESS;
+        return LIBMSI_RESULT_SUCCESS;
 
     name = transform->name;
 
@@ -2574,16 +2574,16 @@ static unsigned msi_table_load_transform( LibmsiDatabase *db, IStorage *stg,
     if ( !rawdata )
     {
         TRACE("table %s empty\n", debugstr_w(name) );
-        return ERROR_INVALID_TABLE;
+        return LIBMSI_RESULT_INVALID_TABLE;
     }
 
     /* create a table view */
     r = table_view_create( db, name, (LibmsiView**) &tv );
-    if( r != ERROR_SUCCESS )
+    if( r != LIBMSI_RESULT_SUCCESS )
         goto err;
 
     r = tv->view.ops->execute( &tv->view, NULL );
-    if( r != ERROR_SUCCESS )
+    if( r != LIBMSI_RESULT_SUCCESS )
         goto err;
 
     TRACE("name = %s columns = %u row_size = %u raw size = %u\n",
@@ -2677,27 +2677,27 @@ static unsigned msi_table_load_transform( LibmsiDatabase *db, IStorage *stg,
             if (TRACE_ON(msidb)) dump_record( rec );
 
             r = msi_table_find_row( tv, rec, &row, NULL );
-            if (r == ERROR_SUCCESS)
+            if (r == LIBMSI_RESULT_SUCCESS)
             {
                 if (!mask)
                 {
                     TRACE("deleting row [%d]:\n", row);
                     r = table_view_delete_row( &tv->view, row );
-                    if (r != ERROR_SUCCESS)
+                    if (r != LIBMSI_RESULT_SUCCESS)
                         WARN("failed to delete row %u\n", r);
                 }
                 else if (mask & 1)
                 {
                     TRACE("modifying full row [%d]:\n", row);
                     r = table_view_set_row( &tv->view, row, rec, (1 << tv->num_cols) - 1 );
-                    if (r != ERROR_SUCCESS)
+                    if (r != LIBMSI_RESULT_SUCCESS)
                         WARN("failed to modify row %u\n", r);
                 }
                 else
                 {
                     TRACE("modifying masked row [%d]:\n", row);
                     r = table_view_set_row( &tv->view, row, rec, mask );
-                    if (r != ERROR_SUCCESS)
+                    if (r != LIBMSI_RESULT_SUCCESS)
                         WARN("failed to modify row %u\n", r);
                 }
             }
@@ -2705,7 +2705,7 @@ static unsigned msi_table_load_transform( LibmsiDatabase *db, IStorage *stg,
             {
                 TRACE("inserting row\n");
                 r = table_view_insert_row( &tv->view, rec, -1, false );
-                if (r != ERROR_SUCCESS)
+                if (r != LIBMSI_RESULT_SUCCESS)
                     WARN("failed to insert row %u\n", r);
             }
 
@@ -2724,7 +2724,7 @@ err:
     if( tv )
         tv->view.ops->delete( &tv->view );
 
-    return ERROR_SUCCESS;
+    return LIBMSI_RESULT_SUCCESS;
 }
 
 /*
@@ -2741,7 +2741,7 @@ unsigned msi_table_apply_transform( LibmsiDatabase *db, IStorage *stg )
     HRESULT r;
     STATSTG stat;
     string_table *strings;
-    unsigned ret = ERROR_FUNCTION_FAILED;
+    unsigned ret = LIBMSI_RESULT_FUNCTION_FAILED;
     unsigned bytes_per_strref;
 
     TRACE("%p %p\n", db, stg );
@@ -2792,11 +2792,11 @@ unsigned msi_table_apply_transform( LibmsiDatabase *db, IStorage *stg )
 
         /* load the table */
         r = table_view_create( db, transform->name, (LibmsiView**) &tv );
-        if( r != ERROR_SUCCESS )
+        if( r != LIBMSI_RESULT_SUCCESS )
             continue;
 
         r = tv->view.ops->execute( &tv->view, NULL );
-        if( r != ERROR_SUCCESS )
+        if( r != LIBMSI_RESULT_SUCCESS )
         {
             tv->view.ops->delete( &tv->view );
             continue;
@@ -2810,14 +2810,14 @@ unsigned msi_table_apply_transform( LibmsiDatabase *db, IStorage *stg )
      * the table metadata is correct, and empty tables exist.
      */
     ret = msi_table_load_transform( db, stg, strings, tables, bytes_per_strref );
-    if (ret != ERROR_SUCCESS && ret != ERROR_INVALID_TABLE)
+    if (ret != LIBMSI_RESULT_SUCCESS && ret != LIBMSI_RESULT_INVALID_TABLE)
         goto end;
 
     ret = msi_table_load_transform( db, stg, strings, columns, bytes_per_strref );
-    if (ret != ERROR_SUCCESS && ret != ERROR_INVALID_TABLE)
+    if (ret != LIBMSI_RESULT_SUCCESS && ret != LIBMSI_RESULT_INVALID_TABLE)
         goto end;
 
-    ret = ERROR_SUCCESS;
+    ret = LIBMSI_RESULT_SUCCESS;
 
     while ( !list_empty( &transforms ) )
     {
@@ -2825,7 +2825,7 @@ unsigned msi_table_apply_transform( LibmsiDatabase *db, IStorage *stg )
 
         if ( strcmpW( transform->name, szColumns ) &&
              strcmpW( transform->name, szTables ) &&
-             ret == ERROR_SUCCESS )
+             ret == LIBMSI_RESULT_SUCCESS )
         {
             ret = msi_table_load_transform( db, stg, strings, transform, bytes_per_strref );
         }
@@ -2835,7 +2835,7 @@ unsigned msi_table_apply_transform( LibmsiDatabase *db, IStorage *stg )
         msi_free( transform );
     }
 
-    if ( ret == ERROR_SUCCESS )
+    if ( ret == LIBMSI_RESULT_SUCCESS )
         append_storage_to_db( db, stg );
 
 end:

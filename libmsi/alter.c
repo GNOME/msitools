@@ -47,7 +47,7 @@ static unsigned alter_view_fetch_int( LibmsiView *view, unsigned row, unsigned c
 
     TRACE("%p %d %d %p\n", av, row, col, val );
 
-    return ERROR_FUNCTION_FAILED;
+    return LIBMSI_RESULT_FUNCTION_FAILED;
 }
 
 static unsigned alter_view_fetch_stream( LibmsiView *view, unsigned row, unsigned col, IStream **stm)
@@ -56,7 +56,7 @@ static unsigned alter_view_fetch_stream( LibmsiView *view, unsigned row, unsigne
 
     TRACE("%p %d %d %p\n", av, row, col, stm );
 
-    return ERROR_FUNCTION_FAILED;
+    return LIBMSI_RESULT_FUNCTION_FAILED;
 }
 
 static unsigned alter_view_get_row( LibmsiView *view, unsigned row, LibmsiRecord **rec )
@@ -71,7 +71,7 @@ static unsigned alter_view_get_row( LibmsiView *view, unsigned row, LibmsiRecord
 static unsigned count_iter(LibmsiRecord *row, void *param)
 {
     (*(unsigned *)param)++;
-    return ERROR_SUCCESS;
+    return LIBMSI_RESULT_SUCCESS;
 }
 
 static bool check_column_exists(LibmsiDatabase *db, const WCHAR *table, const WCHAR *column)
@@ -88,20 +88,20 @@ static bool check_column_exists(LibmsiDatabase *db, const WCHAR *table, const WC
     };
 
     r = _libmsi_query_open(db, &view, query, table, column);
-    if (r != ERROR_SUCCESS)
+    if (r != LIBMSI_RESULT_SUCCESS)
         return false;
 
     r = _libmsi_query_execute(view, NULL);
-    if (r != ERROR_SUCCESS)
+    if (r != LIBMSI_RESULT_SUCCESS)
         goto done;
 
     r = _libmsi_query_fetch(view, &rec);
-    if (r == ERROR_SUCCESS)
+    if (r == LIBMSI_RESULT_SUCCESS)
         msiobj_release(&rec->hdr);
 
 done:
     msiobj_release(&view->hdr);
-    return (r == ERROR_SUCCESS);
+    return (r == LIBMSI_RESULT_SUCCESS);
 }
 
 static unsigned alter_add_column(LibmsiAlterView *av)
@@ -119,21 +119,21 @@ static unsigned alter_add_column(LibmsiAlterView *av)
     };
 
     r = table_view_create(av->db, szColumns, &columns);
-    if (r != ERROR_SUCCESS)
+    if (r != LIBMSI_RESULT_SUCCESS)
         return r;
 
     if (check_column_exists(av->db, av->colinfo->table, av->colinfo->column))
     {
         columns->ops->delete(columns);
-        return ERROR_BAD_QUERY_SYNTAX;
+        return LIBMSI_RESULT_BAD_QUERY_SYNTAX;
     }
 
     r = _libmsi_query_open(av->db, &view, query, av->colinfo->table, av->colinfo->column);
-    if (r == ERROR_SUCCESS)
+    if (r == LIBMSI_RESULT_SUCCESS)
     {
         r = _libmsi_query_iterate_records(view, NULL, count_iter, &colnum);
         msiobj_release(&view->hdr);
-        if (r != ERROR_SUCCESS)
+        if (r != LIBMSI_RESULT_SUCCESS)
         {
             columns->ops->delete(columns);
             return r;
@@ -166,7 +166,7 @@ static unsigned alter_view_execute( LibmsiView *view, LibmsiRecord *record )
     if (av->colinfo)
         return alter_add_column(av);
 
-    return ERROR_SUCCESS;
+    return LIBMSI_RESULT_SUCCESS;
 }
 
 static unsigned alter_view_close( LibmsiView *view )
@@ -175,7 +175,7 @@ static unsigned alter_view_close( LibmsiView *view )
 
     TRACE("%p\n", av );
 
-    return ERROR_SUCCESS;
+    return LIBMSI_RESULT_SUCCESS;
 }
 
 static unsigned alter_view_get_dimensions( LibmsiView *view, unsigned *rows, unsigned *cols )
@@ -184,7 +184,7 @@ static unsigned alter_view_get_dimensions( LibmsiView *view, unsigned *rows, uns
 
     TRACE("%p %p %p\n", av, rows, cols );
 
-    return ERROR_FUNCTION_FAILED;
+    return LIBMSI_RESULT_FUNCTION_FAILED;
 }
 
 static unsigned alter_view_get_column_info( LibmsiView *view, unsigned n, const WCHAR **name,
@@ -194,7 +194,7 @@ static unsigned alter_view_get_column_info( LibmsiView *view, unsigned n, const 
 
     TRACE("%p %d %p %p %p %p\n", av, n, name, type, temporary, table_name );
 
-    return ERROR_FUNCTION_FAILED;
+    return LIBMSI_RESULT_FUNCTION_FAILED;
 }
 
 static unsigned alter_view_modify( LibmsiView *view, LibmsiModify eModifyMode,
@@ -204,7 +204,7 @@ static unsigned alter_view_modify( LibmsiView *view, LibmsiModify eModifyMode,
 
     TRACE("%p %d %p\n", av, eModifyMode, rec );
 
-    return ERROR_FUNCTION_FAILED;
+    return LIBMSI_RESULT_FUNCTION_FAILED;
 }
 
 static unsigned alter_view_delete( LibmsiView *view )
@@ -216,7 +216,7 @@ static unsigned alter_view_delete( LibmsiView *view )
         av->table->ops->delete( av->table );
     msi_free( av );
 
-    return ERROR_SUCCESS;
+    return LIBMSI_RESULT_SUCCESS;
 }
 
 static unsigned alter_view_find_matching_rows( LibmsiView *view, unsigned col,
@@ -224,7 +224,7 @@ static unsigned alter_view_find_matching_rows( LibmsiView *view, unsigned col,
 {
     TRACE("%p, %d, %u, %p\n", view, col, val, *handle);
 
-    return ERROR_FUNCTION_FAILED;
+    return LIBMSI_RESULT_FUNCTION_FAILED;
 }
 
 static const LibmsiViewOps alter_ops =
@@ -259,10 +259,10 @@ unsigned alter_view_create( LibmsiDatabase *db, LibmsiView **view, const WCHAR *
 
     av = alloc_msiobject( sizeof *av , NULL);
     if( !av )
-        return ERROR_FUNCTION_FAILED;
+        return LIBMSI_RESULT_FUNCTION_FAILED;
 
     r = table_view_create( db, name, &av->table );
-    if (r != ERROR_SUCCESS)
+    if (r != LIBMSI_RESULT_SUCCESS)
     {
         msi_free( av );
         return r;
@@ -279,5 +279,5 @@ unsigned alter_view_create( LibmsiDatabase *db, LibmsiView **view, const WCHAR *
 
     *view = &av->view;
 
-    return ERROR_SUCCESS;
+    return LIBMSI_RESULT_SUCCESS;
 }
