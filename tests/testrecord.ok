@@ -33,16 +33,10 @@ ok: r == ERROR_SUCCESS
 ok: buf[0] == 0
 ok: sz == 0
 ok: r == ERROR_SUCCESS
-ok: bufW[0] == 0
-ok: sz == 0
-ok: r == ERROR_SUCCESS
 ok: r == true
 ok: r == 0
 ok: r == ERROR_SUCCESS
 ok: buf[0] == 0
-ok: sz == 0
-ok: r == ERROR_SUCCESS
-ok: bufW[0] == 0
 ok: sz == 0
 ok: r == ERROR_SUCCESS
 ok: r == MSI_NULL_INTEGER
@@ -57,12 +51,6 @@ ok: buf[sizeof str - 3]==0
 ok: r == ERROR_SUCCESS
 ok: sz == sizeof str-1
 ok: 0==strcmp(buf,str)
-ok: r == ERROR_MORE_DATA
-ok: sz == 5
-ok: 0==memcmp(bufW,strW,8)
-ok: r == ERROR_MORE_DATA
-ok: sz == 5
-ok: 'x'==bufW[0]
 ok: r == ERROR_MORE_DATA
 ok: sz == 5
 ok: 0==memcmp(buf,str,4)

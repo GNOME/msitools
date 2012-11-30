@@ -52,9 +52,7 @@ static void test_msirecord(void)
     int i;
     LibmsiObject *h;
     char buf[10];
-    WCHAR bufW[10];
     const char str[] = "hello";
-    const WCHAR strW[] = { 'h','e','l','l','o',0};
     char filename[MAX_PATH];
 
     /* check behaviour with an invalid record */
@@ -134,12 +132,6 @@ static void test_msirecord(void)
     ok(r == ERROR_SUCCESS, "Failed to get string at 0\n");
     ok(buf[0] == 0, "MsiRecordGetStringA returned the wrong string\n");
     ok(sz == 0, "MsiRecordGetStringA returned the wrong length\n");
-    bufW[0] = 0;
-    sz = sizeof bufW / sizeof bufW[0];
-    r = MsiRecordGetStringW(h, 0, bufW, &sz);
-    ok(r == ERROR_SUCCESS, "Failed to get string at 0\n");
-    ok(bufW[0] == 0, "MsiRecordGetStringW returned the wrong string\n");
-    ok(sz == 0, "MsiRecordGetStringW returned the wrong length\n");
     r = MsiRecordSetString(h, 0, "");
     ok(r == ERROR_SUCCESS, "Failed to set empty string at 0\n");
     r = MsiRecordIsNull(h, 0);
@@ -152,12 +144,6 @@ static void test_msirecord(void)
     ok(r == ERROR_SUCCESS, "Failed to get string at 0\n");
     ok(buf[0] == 0, "MsiRecordGetStringA returned the wrong string\n");
     ok(sz == 0, "MsiRecordGetStringA returned the wrong length\n");
-    bufW[0] = 0;
-    sz = sizeof bufW / sizeof bufW[0];
-    r = MsiRecordGetStringW(h, 0, bufW, &sz);
-    ok(r == ERROR_SUCCESS, "Failed to get string at 0\n");
-    ok(bufW[0] == 0, "MsiRecordGetStringW returned the wrong string\n");
-    ok(sz == 0, "MsiRecordGetStringW returned the wrong length\n");
 
     /* same record, but add a string to it */
     r = MsiRecordSetString(h,0,str);
@@ -187,20 +173,6 @@ static void test_msirecord(void)
     ok(sz == sizeof str-1, "MsiRecordGetString returned the wrong length\n");
     ok(0==strcmp(buf,str), "MsiRecordGetString returned the wrong string\n");
 
-
-    memset(bufW, 0, sizeof bufW);
-    sz = 5;
-    r = MsiRecordGetStringW(h,0,bufW,&sz);
-    ok(r == ERROR_MORE_DATA, "wrong error\n");
-    ok(sz == 5, "MsiRecordGetString returned the wrong length\n");
-    ok(0==memcmp(bufW,strW,8), "MsiRecordGetString returned the wrong string\n");
-
-    sz = 0;
-    bufW[0] = 'x';
-    r = MsiRecordGetStringW(h,0,bufW,&sz);
-    ok(r == ERROR_MORE_DATA, "wrong error\n");
-    ok(sz == 5, "MsiRecordGetString returned the wrong length\n");
-    ok('x'==bufW[0], "MsiRecordGetString returned the wrong string\n");
 
     memset(buf, 0, sizeof buf);
     sz = 5;

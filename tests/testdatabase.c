@@ -186,22 +186,6 @@ static unsigned run_query( LibmsiObject *hdb, LibmsiObject *hrec, const char *qu
     return r;
 }
 
-static unsigned run_queryW( LibmsiObject *hdb, LibmsiObject *hrec, const WCHAR *query )
-{
-    LibmsiObject *hview = 0;
-    unsigned r;
-
-    r = MsiDatabaseOpenViewW(hdb, query, &hview);
-    if( r != ERROR_SUCCESS )
-        return r;
-
-    r = MsiViewExecute(hview, hrec);
-    if( r == ERROR_SUCCESS )
-        r = MsiViewClose(hview);
-    MsiCloseHandle(hview);
-    return r;
-}
-
 static unsigned create_component_table( LibmsiObject *hdb )
 {
     return run_query( hdb, 0,
@@ -4958,41 +4942,26 @@ static void test_rows_order(void)
 
 static void test_collation(void)
 {
-    static const WCHAR query1[] =
-        {'I','N','S','E','R','T',' ','I','N','T','O',' ','`','b','a','r','`',' ',
-         '(','`','f','o','o','`',',','`','b','a','z','`',')',' ','V','A','L','U','E','S',' ',
-         '(','\'','a',0x30a,'\'',',','\'','C','\'',')',0};
-    static const WCHAR query2[] =
-        {'I','N','S','E','R','T',' ','I','N','T','O',' ','`','b','a','r','`',' ',
-         '(','`','f','o','o','`',',','`','b','a','z','`',')',' ','V','A','L','U','E','S',' ',
-         '(','\'',0xe5,'\'',',','\'','D','\'',')',0};
-    static const WCHAR query3[] =
-        {'C','R','E','A','T','E',' ','T','A','B','L','E',' ','`','b','a','z','`',' ',
-         '(',' ','`','a',0x30a,'`',' ','L','O','N','G','C','H','A','R',' ','N','O','T',' ','N','U','L','L',',',
-           ' ','`',0xe5,'`',' ','L','O','N','G','C','H','A','R',' ','N','O','T',' ','N','U','L','L',' ',
-           'P','R','I','M','A','R','Y',' ','K','E','Y',' ','`','a',0x30a,'`',')',0};
-    static const WCHAR query4[] =
-        {'C','R','E','A','T','E',' ','T','A','B','L','E',' ','`','a',0x30a,'`',' ',
-         '(',' ','`','f','o','o','`',' ','L','O','N','G','C','H','A','R',' ','N','O','T',' ',
-         'N','U','L','L',' ','P','R','I','M','A','R','Y',' ','K','E','Y',' ','`','f','o','o','`',')',0};
-    static const WCHAR query5[] =
-        {'C','R','E','A','T','E',' ','T','A','B','L','E',' ','`',0xe5,'`',' ',
-         '(',' ','`','f','o','o','`',' ','L','O','N','G','C','H','A','R',' ','N','O','T',' ',
-         'N','U','L','L',' ','P','R','I','M','A','R','Y',' ','K','E','Y',' ','`','f','o','o','`',')',0};
-    static const WCHAR query6[] =
-        {'S','E','L','E','C','T',' ','*',' ','F','R','O','M',' ','`','b','a','r','`',' ','W','H','E','R','E',
-         ' ','`','f','o','o','`',' ','=','\'',0xe5,'\'',0};
-    static const WCHAR letter_C[] = {'C',0};
-    static const WCHAR letter_D[] = {'D',0};
-    static const WCHAR letter_a_ring[] = {'a',0x30a,0};
-    static const WCHAR letter_a_with_ring[] = {0xe5,0};
+    static const char query1[] =
+	    "INSERT INTO `bar` (`foo`, `baz`) VALUES ('a\xcc\x8a', 'C')";
+    static const char query2[] =
+	    "INSERT INTO `bar` (`foo`, `baz`) VALUES ('\xc3\xa5', 'D')";
+    static const char query3[] =
+	    "CREATE TABLE `baz` (`a\xcc\x8a` LONGCHAR NOT NULL, `\xc3\xa5` LONGCHAR NOT NULL PRIMARY KEY `a\xcc\x8a`)";
+    static const char query4[] =
+	    "CREATE TABLE `a\xcc\x8a` (`foo` LONGCHAR NOT NULL, `\xc3\xa5` LONGCHAR NOT NULL PRIMARY KEY `foo`)";
+    static const char query5[] =
+	    "CREATE TABLE `\xc3\xa5` (`foo` LONGCHAR NOT NULL, `\xc3\xa5` LONGCHAR NOT NULL PRIMARY KEY `foo`)";
+    static const char query6[] =
+	    "SELECT * FROM `bar` WHERE `foo` = '\xc3\xa5'";
+    static const char letter_a_ring[] = "a\xcc\x8a";
+    static const char letter_a_with_ring[] = "\xc3\xa5";
     const char *query;
     LibmsiObject *hdb = 0;
     LibmsiObject *hview = 0;
     LibmsiObject *hrec = 0;
     unsigned r;
     char buffer[100];
-    WCHAR bufferW[100];
     unsigned sz;
 
     r = MsiOpenDatabase(msifile, LIBMSI_DB_OPEN_CREATE, &hdb);
@@ -5016,19 +4985,19 @@ static void test_collation(void)
             "( `foo`, `baz` ) VALUES ( '\1', 'B' )");
     ok(r == ERROR_SUCCESS, "cannot add value to table %u\n", r);
 
-    r = run_queryW(hdb, 0, query1);
+    r = run_query(hdb, 0, query1);
     ok(r == ERROR_SUCCESS, "cannot add value to table %u\n", r);
 
-    r = run_queryW(hdb, 0, query2);
+    r = run_query(hdb, 0, query2);
     ok(r == ERROR_SUCCESS, "cannot add value to table %u\n", r);
 
-    r = run_queryW(hdb, 0, query3);
+    r = run_query(hdb, 0, query3);
     ok(r == ERROR_SUCCESS, "cannot create table %u\n", r);
 
-    r = run_queryW(hdb, 0, query4);
+    r = run_query(hdb, 0, query4);
     ok(r == ERROR_SUCCESS, "cannot create table %u\n", r);
 
-    r = run_queryW(hdb, 0, query5);
+    r = run_query(hdb, 0, query5);
     ok(r == ERROR_SUCCESS, "cannot create table %u\n", r);
 
     query = "SELECT * FROM `bar`";
@@ -5063,28 +5032,28 @@ static void test_collation(void)
 
     r = MsiViewFetch(hview, &hrec);
     ok(r == ERROR_SUCCESS, "MsiViewFetch failed\n");
-    sz = sizeof(bufferW) / sizeof(bufferW[0]);
-    r = MsiRecordGetStringW(hrec, 1, bufferW, &sz);
+    sz = sizeof(buffer);
+    r = MsiRecordGetString(hrec, 1, buffer, &sz);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-    ok(!memcmp(bufferW, letter_a_ring, sizeof(letter_a_ring)),
-       "Expected %s, got %s\n", wine_dbgstr_w(letter_a_ring), wine_dbgstr_w(bufferW));
-    sz = sizeof(bufferW) / sizeof(bufferW[0]);
-    r = MsiRecordGetStringW(hrec, 2, bufferW, &sz);
+    ok(!memcmp(buffer, letter_a_ring, sizeof(letter_a_ring)),
+       "Expected %s, got %s\n", letter_a_ring, buffer);
+    sz = sizeof(buffer);
+    r = MsiRecordGetString(hrec, 2, buffer, &sz);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-    ok(!lstrcmpW(bufferW, letter_C), "Expected C, got %s\n", wine_dbgstr_w(bufferW));
+    ok(!strcmp(buffer, "C"), "Expected C, got %s\n", buffer);
     MsiCloseHandle(hrec);
 
     r = MsiViewFetch(hview, &hrec);
     ok(r == ERROR_SUCCESS, "MsiViewFetch failed\n");
-    sz = sizeof(bufferW) / sizeof(bufferW[0]);
-    r = MsiRecordGetStringW(hrec, 1, bufferW, &sz);
+    sz = sizeof(buffer);
+    r = MsiRecordGetString(hrec, 1, buffer, &sz);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-    ok(!memcmp(bufferW, letter_a_with_ring, sizeof(letter_a_with_ring)),
-       "Expected %s, got %s\n", wine_dbgstr_w(letter_a_with_ring), wine_dbgstr_w(bufferW));
-    sz = sizeof(bufferW) / sizeof(bufferW[0]);
-    r = MsiRecordGetStringW(hrec, 2, bufferW, &sz);
+    ok(!memcmp(buffer, letter_a_with_ring, sizeof(letter_a_with_ring)),
+       "Expected %s, got %s\n", letter_a_with_ring, buffer);
+    sz = sizeof(buffer);
+    r = MsiRecordGetString(hrec, 2, buffer, &sz);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-    ok(!lstrcmpW(bufferW, letter_D), "Expected D, got %s\n", wine_dbgstr_w(bufferW));
+    ok(!strcmp(buffer, "D"), "Expected D, got %s\n", buffer);
     MsiCloseHandle(hrec);
 
     r = MsiViewClose(hview);
@@ -5092,22 +5061,22 @@ static void test_collation(void)
     r = MsiCloseHandle(hview);
     ok(r == ERROR_SUCCESS, "MsiCloseHandle failed\n");
 
-    r = MsiDatabaseOpenViewW(hdb, query6, &hview);
+    r = MsiDatabaseOpenView(hdb, query6, &hview);
     ok(r == ERROR_SUCCESS, "MsiDatabaseOpenView failed\n");
     r = MsiViewExecute(hview, 0);
     ok(r == ERROR_SUCCESS, "MsiViewExecute failed\n");
 
     r = MsiViewFetch(hview, &hrec);
     ok(r == ERROR_SUCCESS, "MsiViewFetch failed\n");
-    sz = sizeof(bufferW) / sizeof(bufferW[0]);
-    r = MsiRecordGetStringW(hrec, 1, bufferW, &sz);
+    sz = sizeof(buffer);
+    r = MsiRecordGetString(hrec, 1, buffer, &sz);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-    ok(!memcmp(bufferW, letter_a_with_ring, sizeof(letter_a_with_ring)),
-       "Expected %s, got %s\n", wine_dbgstr_w(letter_a_with_ring), wine_dbgstr_w(bufferW));
-    sz = sizeof(bufferW) / sizeof(bufferW[0]);
-    r = MsiRecordGetStringW(hrec, 2, bufferW, &sz);
+    ok(!memcmp(buffer, letter_a_with_ring, sizeof(letter_a_with_ring)),
+       "Expected %s, got %s\n", letter_a_with_ring, buffer);
+    sz = sizeof(buffer);
+    r = MsiRecordGetString(hrec, 2, buffer, &sz);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-    ok(!lstrcmpW(bufferW, letter_D), "Expected D, got %s\n", wine_dbgstr_w(bufferW));
+    ok(!strcmp(buffer, "D"), "Expected D, got %s\n", buffer);
     MsiCloseHandle(hrec);
 
     r = MsiViewFetch(hview, &hrec);
