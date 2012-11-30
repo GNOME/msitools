@@ -52,7 +52,8 @@
  *  Any binary data in a table is a reference to a stream.
  */
 
-#define IS_INTMSIDBOPEN(x)      (((uintptr_t)(x) >> 16) == 0)
+#define IS_INTMSIDBOPEN(x)      \
+      ((x) >= LIBMSI_DB_OPEN_READONLY && (x) <= LIBMSI_DB_OPEN_CREATE)
 
 typedef struct LibmsiTransform {
     struct list entry;
@@ -313,8 +314,7 @@ LibmsiResult libmsi_database_open(const char *szDBPath, const char *szPersist, L
     if( !pdb )
         return LIBMSI_RESULT_INVALID_PARAMETER;
 
-    if (szPersist - LIBMSI_DB_OPEN_PATCHFILE >= LIBMSI_DB_OPEN_READONLY &&
-        szPersist - LIBMSI_DB_OPEN_PATCHFILE <= LIBMSI_DB_OPEN_CREATEDIRECT)
+    if (IS_INTMSIDBOPEN(szPersist - LIBMSI_DB_OPEN_PATCHFILE))
     {
         TRACE("Database is a patch\n");
         szPersist -= LIBMSI_DB_OPEN_PATCHFILE;
@@ -347,24 +347,10 @@ LibmsiResult libmsi_database_open(const char *szDBPath, const char *szPersist, L
             r = db_initialize( stg, patch ? &CLSID_MsiPatch : &CLSID_MsiDatabase );
         created = true;
     }
-    else if( szPersist == LIBMSI_DB_OPEN_CREATEDIRECT )
-    {
-        r = StgCreateDocfile( szwDBPath,
-              STGM_CREATE|STGM_DIRECT|STGM_READWRITE|STGM_SHARE_EXCLUSIVE, 0, &stg );
-
-        if( SUCCEEDED(r) )
-            r = db_initialize( stg, patch ? &CLSID_MsiPatch : &CLSID_MsiDatabase );
-        created = true;
-    }
     else if( szPersist == LIBMSI_DB_OPEN_TRANSACT )
     {
         r = StgOpenStorage( szwDBPath, NULL,
               STGM_TRANSACTED|STGM_READWRITE|STGM_SHARE_DENY_WRITE, NULL, 0, &stg);
-    }
-    else if( szPersist == LIBMSI_DB_OPEN_DIRECT )
-    {
-        r = StgOpenStorage( szwDBPath, NULL,
-              STGM_DIRECT|STGM_READWRITE|STGM_SHARE_EXCLUSIVE, NULL, 0, &stg);
     }
     else
     {

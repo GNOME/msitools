@@ -93,9 +93,7 @@ typedef enum LibmsiModify
 
 #define LIBMSI_DB_OPEN_READONLY (const char *)0
 #define LIBMSI_DB_OPEN_TRANSACT (const char *)1
-#define LIBMSI_DB_OPEN_DIRECT   (const char *)2
-#define LIBMSI_DB_OPEN_CREATE   (const char *)3
-#define LIBMSI_DB_OPEN_CREATEDIRECT (const char *)4
+#define LIBMSI_DB_OPEN_CREATE   (const char *)2
 
 #define LIBMSI_DB_OPEN_PATCHFILE 32 / sizeof(*LIBMSI_DB_OPEN_READONLY)
 

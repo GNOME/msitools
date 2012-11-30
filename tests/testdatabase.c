@@ -47,12 +47,6 @@ static void test_msidatabase(void)
     res = libmsi_database_open( msifile, msifile2, &hdb );
     ok( res == LIBMSI_RESULT_OPEN_FAILED, "expected failure\n");
 
-    res = libmsi_database_open( msifile, (LPSTR) 0xff, &hdb );
-    ok( res == LIBMSI_RESULT_INVALID_PARAMETER, "expected failure\n");
-
-    res = libmsi_unref( hdb );
-    ok( res == LIBMSI_RESULT_SUCCESS , "Failed to close database\n" );
-
     /* create an empty database */
     res = libmsi_database_open(msifile, LIBMSI_DB_OPEN_CREATE, &hdb );
     ok( res == LIBMSI_RESULT_SUCCESS , "Failed to create database\n" );
@@ -99,12 +93,6 @@ static void test_msidatabase(void)
 
     res = libmsi_database_commit( hdb );
     ok( res == LIBMSI_RESULT_SUCCESS , "Failed to commit database\n" );
-
-    res = libmsi_unref( hdb );
-    ok( res == LIBMSI_RESULT_SUCCESS , "Failed to close database\n" );
-
-    res = libmsi_database_open( msifile, LIBMSI_DB_OPEN_DIRECT, &hdb );
-    ok( res == LIBMSI_RESULT_SUCCESS , "Failed to open database\n" );
 
     res = libmsi_unref( hdb );
     ok( res == LIBMSI_RESULT_SUCCESS , "Failed to close database\n" );
@@ -2983,7 +2971,7 @@ static void test_try_transform(void)
 
     generate_transform_manual();
 
-    r = libmsi_database_open(msifile, LIBMSI_DB_OPEN_DIRECT, &hdb );
+    r = libmsi_database_open(msifile, LIBMSI_DB_OPEN_TRANSACT, &hdb );
     ok( r == LIBMSI_RESULT_SUCCESS , "Failed to create database\n" );
 
     r = libmsi_database_apply_transform( hdb, mstfile, 0 );
@@ -7087,7 +7075,7 @@ static void test_forcecodepage(void)
 
     libmsi_unref(hdb);
 
-    r = libmsi_database_open(msifile, LIBMSI_DB_OPEN_DIRECT, &hdb);
+    r = libmsi_database_open(msifile, LIBMSI_DB_OPEN_TRANSACT, &hdb);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     sql = "SELECT * FROM `_ForceCodepage`";
