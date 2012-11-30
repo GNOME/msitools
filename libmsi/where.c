@@ -1214,7 +1214,7 @@ unsigned WHERE_CreateView( LibmsiDatabase *db, LibmsiView **view, WCHAR *tables,
 
     TRACE("(%s)\n", debugstr_w(tables) );
 
-    wv = msi_alloc_zero( sizeof *wv );
+    wv = alloc_msiobject( sizeof *wv, NULL );
     if( !wv )
         return ERROR_FUNCTION_FAILED;
     

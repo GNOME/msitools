@@ -529,7 +529,7 @@ unsigned STORAGES_CreateView(LibmsiDatabase *db, LibmsiView **view)
 
     TRACE("(%p, %p)\n", db, view);
 
-    sv = msi_alloc_zero( sizeof(LibmsiStorageView) );
+    sv = alloc_msiobject( sizeof(LibmsiStorageView), NULL );
     if (!sv)
         return ERROR_FUNCTION_FAILED;
 

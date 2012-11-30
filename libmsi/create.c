@@ -171,7 +171,7 @@ unsigned CREATE_CreateView( LibmsiDatabase *db, LibmsiView **view, const WCHAR *
     if( r != ERROR_SUCCESS )
         return r;
 
-    cv = msi_alloc_zero( sizeof *cv );
+    cv = alloc_msiobject( sizeof *cv, NULL );
     if( !cv )
         return ERROR_FUNCTION_FAILED;
 

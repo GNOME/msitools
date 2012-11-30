@@ -2181,7 +2181,7 @@ unsigned TABLE_CreateView( LibmsiDatabase *db, const WCHAR *name, LibmsiView **v
         return STORAGES_CreateView( db, view );
 
     sz = sizeof *tv + strlenW(name)*sizeof name[0] ;
-    tv = msi_alloc_zero( sz );
+    tv = alloc_msiobject( sz, NULL );
     if( !tv )
         return ERROR_FUNCTION_FAILED;
 

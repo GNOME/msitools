@@ -428,7 +428,7 @@ unsigned SELECT_CreateView( LibmsiDatabase *db, LibmsiView **view, LibmsiView *t
 
     count = select_count_columns( columns );
 
-    sv = msi_alloc_zero( sizeof *sv + count*sizeof (unsigned) );
+    sv = alloc_msiobject( sizeof *sv + count*sizeof (unsigned), NULL );
     if( !sv )
         return ERROR_FUNCTION_FAILED;
     

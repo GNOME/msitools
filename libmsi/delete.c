@@ -200,7 +200,7 @@ unsigned DELETE_CreateView( LibmsiDatabase *db, LibmsiView **view, LibmsiView *t
 
     TRACE("%p\n", dv );
 
-    dv = msi_alloc_zero( sizeof *dv );
+    dv = alloc_msiobject( sizeof *dv, NULL );
     if( !dv )
         return ERROR_FUNCTION_FAILED;
     

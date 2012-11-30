@@ -303,7 +303,7 @@ unsigned DISTINCT_CreateView( LibmsiDatabase *db, LibmsiView **view, LibmsiView 
         return r;
     }
 
-    dv = msi_alloc_zero( sizeof *dv );
+    dv = alloc_msiobject( sizeof *dv, NULL );
     if( !dv )
         return ERROR_FUNCTION_FAILED;
     

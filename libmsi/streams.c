@@ -532,7 +532,7 @@ unsigned STREAMS_CreateView(LibmsiDatabase *db, LibmsiView **view)
 
     TRACE("(%p, %p)\n", db, view);
 
-    sv = msi_alloc_zero( sizeof(LibmsiStreamSVIEW) );
+    sv = alloc_msiobject( sizeof(LibmsiStreamSVIEW), NULL );
     if (!sv)
         return ERROR_FUNCTION_FAILED;
 

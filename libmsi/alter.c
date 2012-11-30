@@ -257,7 +257,7 @@ unsigned ALTER_CreateView( LibmsiDatabase *db, LibmsiView **view, const WCHAR *n
 
     TRACE("%p %p %s %d\n", view, colinfo, debugstr_w(name), hold );
 
-    av = msi_alloc_zero( sizeof *av );
+    av = alloc_msiobject( sizeof *av , NULL);
     if( !av )
         return ERROR_FUNCTION_FAILED;
 
