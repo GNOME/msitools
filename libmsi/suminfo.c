@@ -506,15 +506,16 @@ unsigned MsiSummaryInfoGetPropertyCount(LibmsiObject *hSummaryInfo, unsigned *pC
     return ERROR_SUCCESS;
 }
 
-static unsigned get_prop( LibmsiObject *handle, unsigned uiProperty, unsigned *puiDataType,
-          int *piValue, uint64_t *pftValue, awstring *str, unsigned *pcchValueBuf)
+unsigned MsiSummaryInfoGetProperty(
+      LibmsiObject *handle, unsigned uiProperty, unsigned *puiDataType, int *piValue,
+      uint64_t *pftValue, char *szValueBuf, unsigned *pcchValueBuf)
 {
     LibmsiSummaryInfo *si;
     PROPVARIANT *prop;
     unsigned ret = ERROR_SUCCESS;
 
     TRACE("%d %d %p %p %p %p %p\n", handle, uiProperty, puiDataType,
-          piValue, pftValue, str, pcchValueBuf);
+          piValue, pftValue, szValueBuf, pcchValueBuf);
 
     if ( uiProperty >= MSI_MAX_PROPS )
     {
@@ -546,17 +547,9 @@ static unsigned get_prop( LibmsiObject *handle, unsigned uiProperty, unsigned *p
         {
             unsigned len = 0;
 
-            if( str->unicode )
-            {
-                len = MultiByteToWideChar( CP_ACP, 0, prop->pszVal, -1, NULL, 0 ) - 1;
-                MultiByteToWideChar( CP_ACP, 0, prop->pszVal, -1, str->str.w, *pcchValueBuf );
-            }
-            else
-            {
-                len = strlen( prop->pszVal );
-                if( str->str.a )
-                    strcpynA(str->str.a, prop->pszVal, *pcchValueBuf );
-            }
+            len = strlen( prop->pszVal );
+            if( szValueBuf )
+                strcpynA(szValueBuf, prop->pszVal, *pcchValueBuf );
             if (len >= *pcchValueBuf)
                 ret = ERROR_MORE_DATA;
             *pcchValueBuf = len;
@@ -616,58 +609,47 @@ WCHAR *msi_get_suminfo_product( IStorage *stg )
     return prod;
 }
 
-unsigned MsiSummaryInfoGetProperty(
-      LibmsiObject *handle, unsigned uiProperty, unsigned *puiDataType, int *piValue,
-      uint64_t *pftValue, char *szValueBuf, unsigned *pcchValueBuf)
+unsigned MsiSummaryInfoSetProperty( LibmsiObject *handle, unsigned uiProperty,
+               unsigned uiDataType, int iValue, uint64_t* pftValue, const char *szValue )
 {
-    awstring str;
-
-    TRACE("%d %d %p %p %p %p %p\n", handle, uiProperty, puiDataType,
-          piValue, pftValue, szValueBuf, pcchValueBuf );
-
-    str.unicode = false;
-    str.str.a = szValueBuf;
-
-    return get_prop( handle, uiProperty, puiDataType, piValue,
-                     pftValue, &str, pcchValueBuf );
-}
-
-unsigned MsiSummaryInfoGetPropertyW(
-      LibmsiObject *handle, unsigned uiProperty, unsigned *puiDataType, int *piValue,
-      uint64_t *pftValue, WCHAR *szValueBuf, unsigned *pcchValueBuf)
-{
-    awstring str;
-
-    TRACE("%d %d %p %p %p %p %p\n", handle, uiProperty, puiDataType,
-          piValue, pftValue, szValueBuf, pcchValueBuf );
-
-    str.unicode = true;
-    str.str.w = szValueBuf;
-
-    return get_prop( handle, uiProperty, puiDataType, piValue,
-                     pftValue, &str, pcchValueBuf );
-}
-
-static unsigned set_prop( LibmsiSummaryInfo *si, unsigned uiProperty, unsigned type,
-               int iValue, uint64_t* pftValue, awcstring *str )
-{
+    LibmsiSummaryInfo *si;
     PROPVARIANT *prop;
     unsigned len;
+    unsigned ret;
+    int type;
 
     TRACE("%p %u %u %i %p %p\n", si, uiProperty, type, iValue,
-          pftValue, str );
+          pftValue, szValue );
+
+    type = get_type( uiProperty );
+    if( type == VT_EMPTY || type != uiDataType )
+        return ERROR_DATATYPE_MISMATCH;
+
+    if( uiDataType == VT_LPSTR && !szValue )
+        return ERROR_INVALID_PARAMETER;
+
+    if( uiDataType == VT_FILETIME && !pftValue )
+        return ERROR_INVALID_PARAMETER;
+
+    si = msihandle2msiinfo( handle, LIBMSI_OBJECT_TYPE_SUMMARYINFO );
+    if( !si )
+        return ERROR_INVALID_HANDLE;
 
     prop = &si->property[uiProperty];
 
     if( prop->vt == VT_EMPTY )
     {
+        ret = ERROR_FUNCTION_FAILED;
         if( !si->update_count )
-            return ERROR_FUNCTION_FAILED;
+            goto end;
 
         si->update_count--;
     }
     else if( prop->vt != type )
-        return ERROR_SUCCESS;
+    {
+        ret = ERROR_SUCCESS;
+        goto end;
+    }
 
     free_prop( prop );
     prop->vt = type;
@@ -684,86 +666,14 @@ static unsigned set_prop( LibmsiSummaryInfo *si, unsigned uiProperty, unsigned t
         prop->filetime.dwHighDateTime = (unsigned) (*pftValue >> 32);
         break;
     case VT_LPSTR:
-        if( str->unicode )
-        {
-            len = WideCharToMultiByte( CP_ACP, 0, str->str.w, -1,
-                                       NULL, 0, NULL, NULL );
-            prop->pszVal = msi_alloc( len );
-            WideCharToMultiByte( CP_ACP, 0, str->str.w, -1,
-                                 prop->pszVal, len, NULL, NULL );
-        }
-        else
-        {
-            len = strlen( str->str.a ) + 1;
-            prop->pszVal = msi_alloc( len );
-            strcpy( prop->pszVal, str->str.a );
-        }
+        len = strlen( szValue ) + 1;
+        prop->pszVal = msi_alloc( len );
+        strcpy( prop->pszVal, szValue );
         break;
     }
 
-    return ERROR_SUCCESS;
-}
-
-unsigned MsiSummaryInfoSetPropertyW( LibmsiObject *handle, unsigned uiProperty,
-               unsigned uiDataType, int iValue, uint64_t* pftValue, const WCHAR *szValue )
-{
-    awcstring str;
-    LibmsiSummaryInfo *si;
-    unsigned type, ret;
-
-    TRACE("%d %u %u %i %p %s\n", handle, uiProperty, uiDataType,
-          iValue, pftValue, debugstr_w(szValue) );
-
-    type = get_type( uiProperty );
-    if( type == VT_EMPTY || type != uiDataType )
-        return ERROR_DATATYPE_MISMATCH;
-
-    if( uiDataType == VT_LPSTR && !szValue )
-        return ERROR_INVALID_PARAMETER;
-
-    if( uiDataType == VT_FILETIME && !pftValue )
-        return ERROR_INVALID_PARAMETER;
-
-    si = msihandle2msiinfo( handle, LIBMSI_OBJECT_TYPE_SUMMARYINFO );
-    if( !si )
-        return ERROR_INVALID_HANDLE;
-
-    str.unicode = true;
-    str.str.w = szValue;
-    ret = set_prop( si, uiProperty, type, iValue, pftValue, &str );
-
-    msiobj_release( &si->hdr );
-    return ret;
-}
-
-unsigned MsiSummaryInfoSetProperty( LibmsiObject *handle, unsigned uiProperty,
-               unsigned uiDataType, int iValue, uint64_t* pftValue, const char *szValue )
-{
-    awcstring str;
-    LibmsiSummaryInfo *si;
-    unsigned type, ret;
-
-    TRACE("%d %u %u %i %p %s\n", handle, uiProperty, uiDataType,
-          iValue, pftValue, debugstr_a(szValue) );
-
-    type = get_type( uiProperty );
-    if( type == VT_EMPTY || type != uiDataType )
-        return ERROR_DATATYPE_MISMATCH;
-
-    if( uiDataType == VT_LPSTR && !szValue )
-        return ERROR_INVALID_PARAMETER;
-
-    if( uiDataType == VT_FILETIME && !pftValue )
-        return ERROR_INVALID_PARAMETER;
-
-    si = msihandle2msiinfo( handle, LIBMSI_OBJECT_TYPE_SUMMARYINFO );
-    if( !si )
-        return ERROR_INVALID_HANDLE;
-
-    str.unicode = false;
-    str.str.a = szValue;
-    ret = set_prop( si, uiProperty, uiDataType, iValue, pftValue, &str );
-
+    ret = ERROR_SUCCESS;
+end:
     msiobj_release( &si->hdr );
     return ret;
 }
@@ -830,7 +740,7 @@ static void parse_filetime( const WCHAR *str, uint64_t *ft )
 }
 
 static unsigned parse_prop( const WCHAR *prop, const WCHAR *value, unsigned *pid, int *int_value,
-                        uint64_t *ft_value, awcstring *str_value )
+                        uint64_t *ft_value, char **str_value )
 {
     *pid = atoiW( prop );
     switch (*pid)
@@ -858,8 +768,7 @@ static unsigned parse_prop( const WCHAR *prop, const WCHAR *value, unsigned *pid
     case MSI_PID_REVNUMBER:
     case MSI_PID_APPNAME:
     case MSI_PID_TITLE:
-        str_value->str.w = value;
-        str_value->unicode = true;
+        *str_value = strdupWtoA(value);
         break;
 
     default:
@@ -890,15 +799,17 @@ unsigned msi_add_suminfo( LibmsiDatabase *db, WCHAR ***records, int num_records,
             unsigned pid;
             int int_value = 0;
             uint64_t ft_value;
-            awcstring str_value;
+            char *str_value = NULL;
 
             r = parse_prop( records[i][j], records[i][j + 1], &pid, &int_value, &ft_value, &str_value );
             if (r != ERROR_SUCCESS)
                 goto end;
 
-            r = set_prop( si, pid, get_type(pid), int_value, &ft_value, &str_value );
+            r = MsiSummaryInfoSetProperty( &si->hdr, pid, get_type(pid), int_value, &ft_value, str_value );
             if (r != ERROR_SUCCESS)
                 goto end;
+
+            msi_free(str_value);
         }
     }
 
@@ -925,25 +836,4 @@ unsigned MsiSummaryInfoPersist( LibmsiObject *handle )
 
     msiobj_release( &si->hdr );
     return ret;
-}
-
-unsigned MsiCreateTransformSummaryInfo( LibmsiObject *db, LibmsiObject *db_ref, const char *transform, int error, int validation )
-{
-    unsigned r;
-    WCHAR *transformW = NULL;
-
-    TRACE("%u, %u, %s, %d, %d\n", db, db_ref, debugstr_a(transform), error, validation);
-
-    if (transform && !(transformW = strdupAtoW( transform )))
-        return ERROR_OUTOFMEMORY;
-
-    r = MsiCreateTransformSummaryInfoW( db, db_ref, transformW, error, validation );
-    msi_free( transformW );
-    return r;
-}
-
-unsigned MsiCreateTransformSummaryInfoW( LibmsiObject *db, LibmsiObject *db_ref, const WCHAR *transform, int error, int validation )
-{
-    FIXME("%u, %u, %s, %d, %d\n", db, db_ref, debugstr_w(transform), error, validation);
-    return ERROR_FUNCTION_FAILED;
 }

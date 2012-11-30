@@ -496,25 +496,6 @@ unsigned MSI_RecordGetStringW(LibmsiRecord *rec, unsigned iField,
     return ret;
 }
 
-unsigned MsiRecordGetStringW(LibmsiObject *handle, unsigned iField,
-               WCHAR *szValue, unsigned *pcchValue)
-{
-    LibmsiRecord *rec;
-    unsigned ret;
-
-    TRACE("%d %d %p %p\n", handle, iField, szValue, pcchValue);
-
-    rec = msihandle2msiinfo( handle, LIBMSI_OBJECT_TYPE_RECORD );
-    if( !rec )
-        return ERROR_INVALID_HANDLE;
-
-    msiobj_lock( &rec->hdr );
-    ret = MSI_RecordGetStringW( rec, iField, szValue, pcchValue );
-    msiobj_unlock( &rec->hdr );
-    msiobj_release( &rec->hdr );
-    return ret;
-}
-
 static unsigned msi_get_stream_size( IStream *stm )
 {
     STATSTG stat;
@@ -630,24 +611,6 @@ unsigned MSI_RecordSetStringW( LibmsiRecord *rec, unsigned iField, const WCHAR *
     }
 
     return 0;
-}
-
-unsigned MsiRecordSetStringW( LibmsiObject *handle, unsigned iField, const WCHAR *szValue )
-{
-    LibmsiRecord *rec;
-    unsigned ret;
-
-    TRACE("%d %d %s\n", handle, iField, debugstr_w(szValue));
-
-    rec = msihandle2msiinfo( handle, LIBMSI_OBJECT_TYPE_RECORD );
-    if( !rec )
-        return ERROR_INVALID_HANDLE;
-
-    msiobj_lock( &rec->hdr );
-    ret = MSI_RecordSetStringW( rec, iField, szValue );
-    msiobj_unlock( &rec->hdr );
-    msiobj_release( &rec->hdr );
-    return ret;
 }
 
 /* read the data in a file into an IStream */

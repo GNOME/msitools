@@ -161,7 +161,6 @@ unsigned MsiRecordGetFieldCount(LibmsiObject *);
 int MsiRecordGetInteger(LibmsiObject *,unsigned);
 unsigned MsiRecordDataSize(LibmsiObject *,unsigned);
 bool MsiRecordIsNull(LibmsiObject *,unsigned);
-unsigned MsiFormatRecord(LibmsiObject *,LibmsiObject *,char *,unsigned *);
 
 unsigned MsiRecordSetStream(LibmsiObject *,unsigned,const char *);
 unsigned MsiRecordReadStream(LibmsiObject *,unsigned,char*,unsigned *);
@@ -172,8 +171,6 @@ unsigned MsiDatabaseGetPrimaryKeys(LibmsiObject *,const char *,LibmsiObject **);
 unsigned MsiDatabaseApplyTransform(LibmsiObject *,const char *,int);
 
 unsigned MsiViewGetColumnInfo(LibmsiObject *, LibmsiColInfo, LibmsiObject **);
-
-unsigned MsiCreateTransformSummaryInfo(LibmsiObject *, LibmsiObject *, const char *, int, int);
 
 unsigned MsiSummaryInfoGetProperty(LibmsiObject *,unsigned,unsigned *,int *,uint64_t*,char *,unsigned *);
 

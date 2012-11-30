@@ -1159,26 +1159,10 @@ done:
  *
  * row4 : data <tab> data <tab> data <tab> ... data <cr> <lf>
  */
-unsigned MsiDatabaseExportW( LibmsiObject *handle, const WCHAR *szTable,
-               int fd )
-{
-    LibmsiDatabase *db;
-    unsigned r;
-
-    TRACE("%x %s %s %s\n", handle, debugstr_w(szTable),
-          debugstr_w(szFolder), debugstr_w(szFilename));
-
-    db = msihandle2msiinfo( handle, LIBMSI_OBJECT_TYPE_DATABASE );
-    if( !db )
-        return ERROR_INVALID_HANDLE;
-    r = MSI_DatabaseExport( db, szTable, fd );
-    msiobj_release( &db->hdr );
-    return r;
-}
-
 unsigned MsiDatabaseExport( LibmsiObject *handle, const char *szTable,
                int fd )
 {
+    LibmsiDatabase *db;
     WCHAR *path = NULL;
     WCHAR *file = NULL;
     WCHAR *table = NULL;
@@ -1194,29 +1178,17 @@ unsigned MsiDatabaseExport( LibmsiObject *handle, const char *szTable,
             goto end;
     }
 
-    r = MsiDatabaseExportW( handle, table, fd );
+    db = msihandle2msiinfo( handle, LIBMSI_OBJECT_TYPE_DATABASE );
+    if( !db )
+        return ERROR_INVALID_HANDLE;
+    r = MSI_DatabaseExport( db, table, fd );
+    msiobj_release( &db->hdr );
 
 end:
     msi_free( table );
     msi_free( path );
     msi_free( file );
 
-    return r;
-}
-
-unsigned MsiDatabaseMerge(LibmsiObject *hDatabase, LibmsiObject *hDatabaseMerge,
-                              const char *szTableName)
-{
-    unsigned r;
-    WCHAR *table;
-
-    TRACE("(%d, %d, %s)\n", hDatabase, hDatabaseMerge,
-          debugstr_a(szTableName));
-
-    table = strdupAtoW(szTableName);
-    r = MsiDatabaseMergeW(hDatabase, hDatabaseMerge, table);
-
-    msi_free(table);
     return r;
 }
 
@@ -1873,12 +1845,13 @@ static unsigned update_merge_errors(LibmsiDatabase *db, const WCHAR *error,
     return r;
 }
 
-unsigned MsiDatabaseMergeW(LibmsiObject *hDatabase, LibmsiObject *hDatabaseMerge,
-                              const WCHAR *szTableName)
+unsigned MsiDatabaseMerge(LibmsiObject *hDatabase, LibmsiObject *hDatabaseMerge,
+                              const char *szTableName)
 {
     struct list tabledata = LIST_INIT(tabledata);
     struct list *item, *cursor;
     LibmsiDatabase *db, *merge;
+    WCHAR *szwTableName;
     MERGETABLE *table;
     bool conflicts;
     unsigned r;
@@ -1889,6 +1862,7 @@ unsigned MsiDatabaseMergeW(LibmsiObject *hDatabase, LibmsiObject *hDatabaseMerge
     if (szTableName && !*szTableName)
         return ERROR_INVALID_TABLE;
 
+    szwTableName = strdupAtoW(szTableName);
     db = msihandle2msiinfo(hDatabase, LIBMSI_OBJECT_TYPE_DATABASE);
     merge = msihandle2msiinfo(hDatabaseMerge, LIBMSI_OBJECT_TYPE_DATABASE);
     if (!db || !merge)
@@ -1908,7 +1882,7 @@ unsigned MsiDatabaseMergeW(LibmsiObject *hDatabase, LibmsiObject *hDatabaseMerge
         {
             conflicts = true;
 
-            r = update_merge_errors(db, szTableName, table->name,
+            r = update_merge_errors(db, szwTableName, table->name,
                                     table->numconflicts);
             if (r != ERROR_SUCCESS)
                 break;

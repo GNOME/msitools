@@ -409,20 +409,6 @@ extern unsigned msi_set_property( LibmsiDatabase *, const WCHAR *, const WCHAR *
 extern unsigned msi_get_property( LibmsiDatabase *, const WCHAR *, WCHAR *, unsigned *);
 extern int msi_get_property_int( LibmsiDatabase *package, const WCHAR *prop, int def );
 
-/* Unicode APIs */
-unsigned MsiDatabaseOpenViewW(LibmsiObject *,const WCHAR *,LibmsiObject **);
-LibmsiDBError MsiViewGetErrorW(LibmsiObject *,WCHAR *,unsigned *);
-unsigned MsiRecordSetStringW(LibmsiObject *,unsigned,const WCHAR *);
-unsigned MsiRecordGetStringW(LibmsiObject *,unsigned,WCHAR *,unsigned *);
-unsigned MsiFormatRecordW(LibmsiObject *,LibmsiObject *,WCHAR *,unsigned *);
-unsigned MsiDatabaseGetPrimaryKeysW(LibmsiObject *,const WCHAR *,LibmsiObject **);
-unsigned MsiCreateTransformSummaryInfoW(LibmsiObject *, LibmsiObject *, const WCHAR *, int, int);
-unsigned MsiSummaryInfoGetPropertyW(LibmsiObject *,unsigned,unsigned *,int *,uint64_t*,WCHAR *,unsigned *);
-unsigned MsiSummaryInfoSetPropertyW(LibmsiObject *, unsigned, unsigned, int, uint64_t*, const WCHAR *);
-unsigned MsiDatabaseExportW(LibmsiObject *, const WCHAR *, int fd);
-LibmsiCondition MsiDatabaseIsTablePersistentW(LibmsiObject *, const WCHAR *);
-unsigned MsiDatabaseMergeW(LibmsiObject *, LibmsiObject *, const WCHAR *);
-
 /* common strings */
 static const WCHAR szSourceDir[] = {'S','o','u','r','c','e','D','i','r',0};
 static const WCHAR szSOURCEDIR[] = {'S','O','U','R','C','E','D','I','R',0};
