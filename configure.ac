@@ -15,6 +15,9 @@ AC_USE_SYSTEM_EXTENSIONS
 AC_PROG_CC
 AC_PROG_YACC
 
+AM_PATH_GLIB_2_0([2.12.0])
+PKG_CHECK_MODULES([GSF], [libgsf-1])
+
 LT_INIT([win32-dll disable-fast-install])
 
 AC_CONFIG_FILES([Makefile libmsi/Makefile tests/Makefile])

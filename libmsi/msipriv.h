@@ -23,6 +23,8 @@
 #define __WINE_MSI_PRIVATE__
 
 #include <stdarg.h>
+#include <glib.h>
+#include <gsf/gsf.h>
 
 #include "unicode.h"
 #include "windef.h"

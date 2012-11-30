@@ -1,7 +1,8 @@
 lib_LTLIBRARIES = libmsi.la
 
 AM_CPPFLAGS = -I$(top_srcdir)/include -I$(srcdir) -I. -DUNICODE \
-	      -I$(srcdir)/winstubs -include $(srcdir)/winstubs/winstubs.h
+	      -I$(srcdir)/winstubs -include $(srcdir)/winstubs/winstubs.h \
+	      $(GLIB_CFLAGS) $(GSF_CFLAGS)
 
 AM_CFLAGS = -Wunused -Wimplicit
 AM_YFLAGS = -d
@@ -23,6 +24,7 @@ libmsi_la_LDFLAGS = -no-undefined -rpath $(libdir) \
 		    -export-symbols-regex='^libmsi_'
 
 libmsi_la_LIBADD = \
-	$(libmsi_la_DEPENDENCIES) \
+	$(GLIB_LIBS) \
+	$(GSF_LIBS) \
 	-lshlwapi \
 	-lole32
