@@ -214,6 +214,40 @@ static int cmd_streams(struct Command *cmd, int argc, char **argv)
     libmsi_unref(db);
 }
 
+static int cmd_tables(struct Command *cmd, int argc, char **argv)
+{
+    LibmsiDatabase *db = NULL;
+    LibmsiQuery *query = NULL;
+    LibmsiResult r;
+
+    if (argc != 2) {
+        cmd_usage(stderr, cmd);
+    }
+
+    r = libmsi_database_open(argv[1], LIBMSI_DB_OPEN_READONLY, &db);
+    if (r) {
+        print_libmsi_error(r);
+    }
+
+    r = libmsi_database_open_query(db, "SELECT `Name` FROM `_Tables`", &query);
+    if (r) {
+        print_libmsi_error(r);
+    }
+
+    r = libmsi_query_execute(query, NULL);
+    if (r) {
+        print_libmsi_error(r);
+    }
+
+    r = print_strings_from_query(query);
+    if (r) {
+        print_libmsi_error(r);
+    }
+
+    libmsi_unref(query);
+    libmsi_unref(db);
+}
+
 static int cmd_version(struct Command *cmd, int argc, char **argv)
 {
     printf("%s (%s) version %s\n", program_name, PACKAGE, VERSION);
@@ -244,6 +278,12 @@ static struct Command cmds[] = {
         .opts = "FILE",
         .desc = "List streams in a .msi file",
         .func = cmd_streams,
+    },
+    {
+        .cmd = "tables",
+        .opts = "FILE",
+        .desc = "List tables in a .msi file",
+        .func = cmd_tables,
     },
     {
         .cmd = "-h",
