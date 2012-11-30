@@ -84,7 +84,7 @@ unsigned VIEW_find_column( LibmsiView *table, const WCHAR *name, const WCHAR *ta
     return ERROR_INVALID_PARAMETER;
 }
 
-unsigned MsiDatabaseOpenViewA(LibmsiObject *hdb,
+unsigned MsiDatabaseOpenView(LibmsiObject *hdb,
               const char *szQuery, LibmsiObject **phView)
 {
     unsigned r;
@@ -640,7 +640,7 @@ LibmsiDBError MsiViewGetErrorW( LibmsiObject *handle, WCHAR *buffer, unsigned *b
     return r;
 }
 
-LibmsiDBError MsiViewGetErrorA( LibmsiObject *handle, char *buffer, unsigned *buflen )
+LibmsiDBError MsiViewGetError( LibmsiObject *handle, char *buffer, unsigned *buflen )
 {
     LibmsiQuery *query;
     const WCHAR *column;
@@ -862,7 +862,7 @@ unsigned MsiDatabaseGetPrimaryKeysW( LibmsiObject *hdb,
     return r;
 }
 
-unsigned MsiDatabaseGetPrimaryKeysA(LibmsiObject *hdb, 
+unsigned MsiDatabaseGetPrimaryKeys(LibmsiObject *hdb, 
                     const char *table, LibmsiObject **phRec)
 {
     WCHAR *szwTable = NULL;
@@ -882,7 +882,7 @@ unsigned MsiDatabaseGetPrimaryKeysA(LibmsiObject *hdb,
     return r;
 }
 
-LibmsiCondition MsiDatabaseIsTablePersistentA(
+LibmsiCondition MsiDatabaseIsTablePersistent(
               LibmsiObject *hDatabase, const char *szTableName)
 {
     WCHAR *szwTableName = NULL;

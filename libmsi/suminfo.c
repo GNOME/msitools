@@ -616,7 +616,7 @@ WCHAR *msi_get_suminfo_product( IStorage *stg )
     return prod;
 }
 
-unsigned MsiSummaryInfoGetPropertyA(
+unsigned MsiSummaryInfoGetProperty(
       LibmsiObject *handle, unsigned uiProperty, unsigned *puiDataType, int *piValue,
       uint64_t *pftValue, char *szValueBuf, unsigned *pcchValueBuf)
 {
@@ -736,7 +736,7 @@ unsigned MsiSummaryInfoSetPropertyW( LibmsiObject *handle, unsigned uiProperty,
     return ret;
 }
 
-unsigned MsiSummaryInfoSetPropertyA( LibmsiObject *handle, unsigned uiProperty,
+unsigned MsiSummaryInfoSetProperty( LibmsiObject *handle, unsigned uiProperty,
                unsigned uiDataType, int iValue, uint64_t* pftValue, const char *szValue )
 {
     awcstring str;
@@ -927,7 +927,7 @@ unsigned MsiSummaryInfoPersist( LibmsiObject *handle )
     return ret;
 }
 
-unsigned MsiCreateTransformSummaryInfoA( LibmsiObject *db, LibmsiObject *db_ref, const char *transform, int error, int validation )
+unsigned MsiCreateTransformSummaryInfo( LibmsiObject *db, LibmsiObject *db_ref, const char *transform, int error, int validation )
 {
     unsigned r;
     WCHAR *transformW = NULL;

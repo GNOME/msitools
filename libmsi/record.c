@@ -420,7 +420,7 @@ unsigned MSI_RecordGetStringA(LibmsiRecord *rec, unsigned iField,
     return ret;
 }
 
-unsigned MsiRecordGetStringA(LibmsiObject *handle, unsigned iField,
+unsigned MsiRecordGetString(LibmsiObject *handle, unsigned iField,
                char *szValue, unsigned *pcchValue)
 {
     LibmsiRecord *rec;
@@ -589,7 +589,7 @@ static unsigned MSI_RecordSetStringA( LibmsiRecord *rec, unsigned iField, const 
     return 0;
 }
 
-unsigned MsiRecordSetStringA( LibmsiObject *handle, unsigned iField, const char *szValue )
+unsigned MsiRecordSetString( LibmsiObject *handle, unsigned iField, const char *szValue )
 {
     LibmsiRecord *rec;
     unsigned ret;

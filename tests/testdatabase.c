@@ -1536,7 +1536,7 @@ static void test_streamtable(void)
     r = MsiGetSummaryInformation( hdb, 1, &hsi );
     ok( r == ERROR_SUCCESS, "Failed to get summary information handle: %u\n", r );
 
-    r = MsiSummaryInfoSetPropertyA( hsi, MSI_PID_SECURITY, VT_I4, 2, NULL, NULL );
+    r = MsiSummaryInfoSetProperty( hsi, MSI_PID_SECURITY, VT_I4, 2, NULL, NULL );
     ok( r == ERROR_SUCCESS, "Failed to set property: %u\n", r );
 
     r = MsiSummaryInfoPersist( hsi );
@@ -2128,7 +2128,7 @@ static void test_suminfo_import(void)
 
     view = NULL;
     query = "SELECT * FROM `_SummaryInformation`";
-    r = MsiDatabaseOpenViewA(hdb, query, &view);
+    r = MsiDatabaseOpenView(hdb, query, &view);
     ok(r == ERROR_BAD_QUERY_SYNTAX, "Expected ERROR_BAD_QUERY_SYNTAX, got %u\n", r);
     MsiCloseHandle(view);
 
@@ -2141,13 +2141,13 @@ static void test_suminfo_import(void)
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %u\n", r);
     ok(count == 14, "Expected 14, got %u\n", count);
 
-    r = MsiSummaryInfoGetPropertyA(hsi, MSI_PID_CODEPAGE, &type, &int_value, NULL, NULL, NULL);
+    r = MsiSummaryInfoGetProperty(hsi, MSI_PID_CODEPAGE, &type, &int_value, NULL, NULL, NULL);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %u\n", r);
     ok(type ==  VT_I2, "Expected VT_I2, got %u\n", type);
     ok(int_value == 1252, "Expected 1252, got %d\n", int_value);
 
     size = sizeof(str_value);
-    r = MsiSummaryInfoGetPropertyA(hsi, MSI_PID_TITLE, &type, NULL, NULL, str_value, &size);
+    r = MsiSummaryInfoGetProperty(hsi, MSI_PID_TITLE, &type, NULL, NULL, str_value, &size);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %u\n", r);
     ok(type == VT_LPSTR, "Expected VT_LPSTR, got %u\n", type);
     ok(size == 18, "Expected 18, got %u\n", size);
@@ -2155,72 +2155,72 @@ static void test_suminfo_import(void)
        "Expected \"Installer Database\", got %s\n", str_value);
 
     size = sizeof(str_value);
-    r = MsiSummaryInfoGetPropertyA(hsi, MSI_PID_SUBJECT, &type, NULL, NULL, str_value, &size);
+    r = MsiSummaryInfoGetProperty(hsi, MSI_PID_SUBJECT, &type, NULL, NULL, str_value, &size);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %u\n", r);
     ok(type == VT_LPSTR, "Expected VT_LPSTR, got %u\n", type);
     ok(!strcmp(str_value, "Installer description"),
        "Expected \"Installer description\", got %s\n", str_value);
 
     size = sizeof(str_value);
-    r = MsiSummaryInfoGetPropertyA(hsi, MSI_PID_AUTHOR, &type, NULL, NULL, str_value, &size);
+    r = MsiSummaryInfoGetProperty(hsi, MSI_PID_AUTHOR, &type, NULL, NULL, str_value, &size);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %u\n", r);
     ok(type == VT_LPSTR, "Expected VT_LPSTR, got %u\n", type);
     ok(!strcmp(str_value, "WineHQ"),
        "Expected \"WineHQ\", got %s\n", str_value);
 
     size = sizeof(str_value);
-    r = MsiSummaryInfoGetPropertyA(hsi, MSI_PID_KEYWORDS, &type, NULL, NULL, str_value, &size);
+    r = MsiSummaryInfoGetProperty(hsi, MSI_PID_KEYWORDS, &type, NULL, NULL, str_value, &size);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %u\n", r);
     ok(type == VT_LPSTR, "Expected VT_LPSTR, got %u\n", type);
     ok(!strcmp(str_value, "Installer"),
        "Expected \"Installer\", got %s\n", str_value);
 
     size = sizeof(str_value);
-    r = MsiSummaryInfoGetPropertyA(hsi, MSI_PID_COMMENTS, &type, NULL, NULL, str_value, &size);
+    r = MsiSummaryInfoGetProperty(hsi, MSI_PID_COMMENTS, &type, NULL, NULL, str_value, &size);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %u\n", r);
     ok(type == VT_LPSTR, "Expected VT_LPSTR, got %u\n", type);
     ok(!strcmp(str_value, "Installer comments"),
        "Expected \"Installer comments\", got %s\n", str_value);
 
     size = sizeof(str_value);
-    r = MsiSummaryInfoGetPropertyA(hsi, MSI_PID_TEMPLATE, &type, NULL, NULL, str_value, &size);
+    r = MsiSummaryInfoGetProperty(hsi, MSI_PID_TEMPLATE, &type, NULL, NULL, str_value, &size);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %u\n", r);
     ok(type == VT_LPSTR, "Expected VT_LPSTR, got %u\n", type);
     ok(!strcmp(str_value, "Intel;1033,2057"),
        "Expected \"Intel;1033,2057\", got %s\n", str_value);
 
     size = sizeof(str_value);
-    r = MsiSummaryInfoGetPropertyA(hsi, MSI_PID_REVNUMBER, &type, NULL, NULL, str_value, &size);
+    r = MsiSummaryInfoGetProperty(hsi, MSI_PID_REVNUMBER, &type, NULL, NULL, str_value, &size);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %u\n", r);
     ok(type == VT_LPSTR, "Expected VT_LPSTR, got %u\n", type);
     ok(!strcmp(str_value, "{12345678-1234-1234-1234-123456789012}"),
        "Expected \"{12345678-1234-1234-1234-123456789012}\", got %s\n", str_value);
 
-    r = MsiSummaryInfoGetPropertyA(hsi, MSI_PID_CREATE_DTM, &type, NULL, &ft_value, NULL, NULL);
+    r = MsiSummaryInfoGetProperty(hsi, MSI_PID_CREATE_DTM, &type, NULL, &ft_value, NULL, NULL);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %u\n", r);
     ok(type == VT_FILETIME, "Expected VT_FILETIME, got %u\n", type);
 
-    r = MsiSummaryInfoGetPropertyA(hsi, MSI_PID_LASTSAVE_DTM, &type, NULL, &ft_value, NULL, NULL);
+    r = MsiSummaryInfoGetProperty(hsi, MSI_PID_LASTSAVE_DTM, &type, NULL, &ft_value, NULL, NULL);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %u\n", r);
     ok(type == VT_FILETIME, "Expected VT_FILETIME, got %u\n", type);
 
-    r = MsiSummaryInfoGetPropertyA(hsi, MSI_PID_PAGECOUNT, &type, &int_value, NULL, NULL, NULL);
+    r = MsiSummaryInfoGetProperty(hsi, MSI_PID_PAGECOUNT, &type, &int_value, NULL, NULL, NULL);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %u\n", r);
     ok(type ==  VT_I4, "Expected VT_I4, got %u\n", type);
     ok(int_value == 200, "Expected 200, got %d\n", int_value);
 
-    r = MsiSummaryInfoGetPropertyA(hsi, MSI_PID_WORDCOUNT, &type, &int_value, NULL, NULL, NULL);
+    r = MsiSummaryInfoGetProperty(hsi, MSI_PID_WORDCOUNT, &type, &int_value, NULL, NULL, NULL);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %u\n", r);
     ok(type ==  VT_I4, "Expected VT_I4, got %u\n", type);
     ok(int_value == 2, "Expected 2, got %d\n", int_value);
 
-    r = MsiSummaryInfoGetPropertyA(hsi, MSI_PID_SECURITY, &type, &int_value, NULL, NULL, NULL);
+    r = MsiSummaryInfoGetProperty(hsi, MSI_PID_SECURITY, &type, &int_value, NULL, NULL, NULL);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %u\n", r);
     ok(type ==  VT_I4, "Expected VT_I4, got %u\n", type);
     ok(int_value == 2, "Expected 2, got %d\n", int_value);
 
     size = sizeof(str_value);
-    r = MsiSummaryInfoGetPropertyA(hsi, MSI_PID_APPNAME, &type, NULL, NULL, str_value, &size);
+    r = MsiSummaryInfoGetProperty(hsi, MSI_PID_APPNAME, &type, NULL, NULL, str_value, &size);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %u\n", r);
     ok(type == VT_LPSTR, "Expected VT_LPSTR, got %u\n", type);
     ok(!strcmp(str_value, "Vim"), "Expected \"Vim\", got %s\n", str_value);
@@ -6523,7 +6523,7 @@ static void test_deleterow(void)
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     size = MAX_PATH;
-    r = MsiRecordGetStringA(hrec, 1, buf, &size);
+    r = MsiRecordGetString(hrec, 1, buf, &size);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
     ok(!strcmp(buf, "two"), "Expected two, got %s\n", buf);
 
@@ -6803,7 +6803,7 @@ static void test_carriagereturn(void)
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     size = MAX_PATH;
-    r = MsiRecordGetStringA(hrec, 1, buf, &size);
+    r = MsiRecordGetString(hrec, 1, buf, &size);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
     ok(!strcmp(buf, "\rOne"), "Expected \"\\rOne\", got \"%s\"\n", buf);
 
@@ -6813,7 +6813,7 @@ static void test_carriagereturn(void)
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     size = MAX_PATH;
-    r = MsiRecordGetStringA(hrec, 1, buf, &size);
+    r = MsiRecordGetString(hrec, 1, buf, &size);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
     ok(!strcmp(buf, "Tw\ro"), "Expected \"Tw\\ro\", got \"%s\"\n", buf);
 
@@ -6823,7 +6823,7 @@ static void test_carriagereturn(void)
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     size = MAX_PATH;
-    r = MsiRecordGetStringA(hrec, 1, buf, &size);
+    r = MsiRecordGetString(hrec, 1, buf, &size);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
     ok(!strcmp(buf, "Three\r"), "Expected \"Three\r\", got \"%s\"\n", buf);
 
@@ -6880,7 +6880,7 @@ static void test_noquotes(void)
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     size = MAX_PATH;
-    r = MsiRecordGetStringA(hrec, 1, buf, &size);
+    r = MsiRecordGetString(hrec, 1, buf, &size);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
     ok(!strcmp(buf, "Table"), "Expected \"Table\", got \"%s\"\n", buf);
 
@@ -6890,7 +6890,7 @@ static void test_noquotes(void)
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     size = MAX_PATH;
-    r = MsiRecordGetStringA(hrec, 1, buf, &size);
+    r = MsiRecordGetString(hrec, 1, buf, &size);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
     ok(!strcmp(buf, "Table2"), "Expected \"Table2\", got \"%s\"\n", buf);
 
@@ -6900,7 +6900,7 @@ static void test_noquotes(void)
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     size = MAX_PATH;
-    r = MsiRecordGetStringA(hrec, 1, buf, &size);
+    r = MsiRecordGetString(hrec, 1, buf, &size);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
     ok(!strcmp(buf, "Table3"), "Expected \"Table3\", got \"%s\"\n", buf);
 
@@ -6922,7 +6922,7 @@ static void test_noquotes(void)
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     size = MAX_PATH;
-    r = MsiRecordGetStringA(hrec, 1, buf, &size);
+    r = MsiRecordGetString(hrec, 1, buf, &size);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
     ok(!strcmp(buf, "Table"), "Expected \"Table\", got \"%s\"\n", buf);
 
@@ -6930,7 +6930,7 @@ static void test_noquotes(void)
     ok(r == 1, "Expected 1, got %d\n", r);
 
     size = MAX_PATH;
-    r = MsiRecordGetStringA(hrec, 3, buf, &size);
+    r = MsiRecordGetString(hrec, 3, buf, &size);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
     ok(!strcmp(buf, "A"), "Expected \"A\", got \"%s\"\n", buf);
 
@@ -6940,7 +6940,7 @@ static void test_noquotes(void)
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     size = MAX_PATH;
-    r = MsiRecordGetStringA(hrec, 1, buf, &size);
+    r = MsiRecordGetString(hrec, 1, buf, &size);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
     ok(!strcmp(buf, "Table2"), "Expected \"Table2\", got \"%s\"\n", buf);
 
@@ -6948,7 +6948,7 @@ static void test_noquotes(void)
     ok(r == 1, "Expected 1, got %d\n", r);
 
     size = MAX_PATH;
-    r = MsiRecordGetStringA(hrec, 3, buf, &size);
+    r = MsiRecordGetString(hrec, 3, buf, &size);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
     ok(!strcmp(buf, "A"), "Expected \"A\", got \"%s\"\n", buf);
 
@@ -6958,7 +6958,7 @@ static void test_noquotes(void)
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     size = MAX_PATH;
-    r = MsiRecordGetStringA(hrec, 1, buf, &size);
+    r = MsiRecordGetString(hrec, 1, buf, &size);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
     ok(!strcmp(buf, "Table3"), "Expected \"Table3\", got \"%s\"\n", buf);
 
@@ -6966,7 +6966,7 @@ static void test_noquotes(void)
     ok(r == 1, "Expected 1, got %d\n", r);
 
     size = MAX_PATH;
-    r = MsiRecordGetStringA(hrec, 3, buf, &size);
+    r = MsiRecordGetString(hrec, 3, buf, &size);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
     ok(!strcmp(buf, "A"), "Expected \"A\", got \"%s\"\n", buf);
 
@@ -7025,7 +7025,7 @@ static void test_noquotes(void)
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     size = MAX_PATH;
-    r = MsiRecordGetStringA(hrec, 1, buf, &size);
+    r = MsiRecordGetString(hrec, 1, buf, &size);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
     ok(!strcmp(buf, "hi"), "Expected \"hi\", got \"%s\"\n", buf);
 
@@ -7170,7 +7170,7 @@ static void test_viewmodify_refresh(void)
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     size = MAX_PATH;
-    r = MsiRecordGetStringA(hrec, 1, buffer, &size);
+    r = MsiRecordGetString(hrec, 1, buffer, &size);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
     ok(!strcmp(buffer, "hi"), "Expected \"hi\", got \"%s\"\n", buffer);
     ok(size == 2, "Expected 2, got %d\n", size);
@@ -7207,7 +7207,7 @@ static void test_viewmodify_refresh(void)
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     size = MAX_PATH;
-    r = MsiRecordGetStringA(hrec, 1, buffer, &size);
+    r = MsiRecordGetString(hrec, 1, buffer, &size);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
     ok(!strcmp(buffer, "hello"), "Expected \"hello\", got \"%s\"\n", buffer);
     ok(size == 5, "Expected 5, got %d\n", size);
@@ -7503,7 +7503,7 @@ static void test_droptable(void)
     ok(r == ERROR_NO_MORE_ITEMS, "Expected ERROR_NO_MORE_ITEMS, got %d\n", r);
 
     query = "SELECT * FROM `_Tables` WHERE `Name` = 'One'";
-    r = MsiDatabaseOpenViewA(hdb, query, &hview);
+    r = MsiDatabaseOpenView(hdb, query, &hview);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
     r = MsiViewExecute(hview, 0);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
@@ -7512,7 +7512,7 @@ static void test_droptable(void)
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     size = MAX_PATH;
-    r = MsiRecordGetStringA(hrec, 1, buf, &size);
+    r = MsiRecordGetString(hrec, 1, buf, &size);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
     ok(!strcmp(buf, "One"), "Expected \"One\", got \"%s\"\n", buf);
 
@@ -7521,7 +7521,7 @@ static void test_droptable(void)
     MsiCloseHandle(hview);
 
     query = "SELECT * FROM `_Columns` WHERE `Table` = 'One'";
-    r = MsiDatabaseOpenViewA(hdb, query, &hview);
+    r = MsiDatabaseOpenView(hdb, query, &hview);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
     r = MsiViewExecute(hview, 0);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
@@ -7530,7 +7530,7 @@ static void test_droptable(void)
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     size = MAX_PATH;
-    r = MsiRecordGetStringA(hrec, 1, buf, &size);
+    r = MsiRecordGetString(hrec, 1, buf, &size);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
     ok(!strcmp(buf, "One"), "Expected \"One\", got \"%s\"\n", buf);
 
@@ -7538,7 +7538,7 @@ static void test_droptable(void)
     ok(r == 1, "Expected 1, got %d\n", r);
 
     size = MAX_PATH;
-    r = MsiRecordGetStringA(hrec, 3, buf, &size);
+    r = MsiRecordGetString(hrec, 3, buf, &size);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
     ok(!strcmp(buf, "A"), "Expected \"A\", got \"%s\"\n", buf);
 
@@ -7563,7 +7563,7 @@ static void test_droptable(void)
 
     query = "DROP TABLE `One`";
     hview = 0;
-    r = MsiDatabaseOpenViewA(hdb, query, &hview);
+    r = MsiDatabaseOpenView(hdb, query, &hview);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
     r = MsiViewExecute(hview, 0);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
@@ -7615,7 +7615,7 @@ static void test_droptable(void)
     ok(r == ERROR_NO_MORE_ITEMS, "Expected ERROR_NO_MORE_ITEMS, got %d\n", r);
 
     query = "SELECT * FROM `_Tables` WHERE `Name` = 'One'";
-    r = MsiDatabaseOpenViewA(hdb, query, &hview);
+    r = MsiDatabaseOpenView(hdb, query, &hview);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
     r = MsiViewExecute(hview, 0);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
@@ -7624,7 +7624,7 @@ static void test_droptable(void)
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     size = MAX_PATH;
-    r = MsiRecordGetStringA(hrec, 1, buf, &size);
+    r = MsiRecordGetString(hrec, 1, buf, &size);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
     ok(!strcmp(buf, "One"), "Expected \"One\", got \"%s\"\n", buf);
 
@@ -7633,7 +7633,7 @@ static void test_droptable(void)
     MsiCloseHandle(hview);
 
     query = "SELECT * FROM `_Columns` WHERE `Table` = 'One'";
-    r = MsiDatabaseOpenViewA(hdb, query, &hview);
+    r = MsiDatabaseOpenView(hdb, query, &hview);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
     r = MsiViewExecute(hview, 0);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
@@ -7642,7 +7642,7 @@ static void test_droptable(void)
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     size = MAX_PATH;
-    r = MsiRecordGetStringA(hrec, 1, buf, &size);
+    r = MsiRecordGetString(hrec, 1, buf, &size);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
     ok(!strcmp(buf, "One"), "Expected \"One\", got \"%s\"\n", buf);
 
@@ -7650,7 +7650,7 @@ static void test_droptable(void)
     ok(r == 1, "Expected 1, got %d\n", r);
 
     size = MAX_PATH;
-    r = MsiRecordGetStringA(hrec, 3, buf, &size);
+    r = MsiRecordGetString(hrec, 3, buf, &size);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
     ok(!strcmp(buf, "B"), "Expected \"B\", got \"%s\"\n", buf);
 
@@ -7660,7 +7660,7 @@ static void test_droptable(void)
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     size = MAX_PATH;
-    r = MsiRecordGetStringA(hrec, 1, buf, &size);
+    r = MsiRecordGetString(hrec, 1, buf, &size);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
     ok(!strcmp(buf, "One"), "Expected \"One\", got \"%s\"\n", buf);
 
@@ -7668,7 +7668,7 @@ static void test_droptable(void)
     ok(r == 2, "Expected 2, got %d\n", r);
 
     size = MAX_PATH;
-    r = MsiRecordGetStringA(hrec, 3, buf, &size);
+    r = MsiRecordGetString(hrec, 3, buf, &size);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
     ok(!strcmp(buf, "C"), "Expected \"C\", got \"%s\"\n", buf);
 
@@ -7720,25 +7720,25 @@ static void test_dbmerge(void)
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     /* hDatabase is invalid */
-    r = MsiDatabaseMergeA(0, href, "MergeErrors");
+    r = MsiDatabaseMerge(0, href, "MergeErrors");
     ok(r == ERROR_INVALID_HANDLE,
        "Expected ERROR_INVALID_HANDLE, got %d\n", r);
 
     /* hDatabaseMerge is invalid */
-    r = MsiDatabaseMergeA(hdb, 0, "MergeErrors");
+    r = MsiDatabaseMerge(hdb, 0, "MergeErrors");
     ok(r == ERROR_INVALID_HANDLE,
        "Expected ERROR_INVALID_HANDLE, got %d\n", r);
 
     /* szTableName is NULL */
-    r = MsiDatabaseMergeA(hdb, href, NULL);
+    r = MsiDatabaseMerge(hdb, href, NULL);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     /* szTableName is empty */
-    r = MsiDatabaseMergeA(hdb, href, "");
+    r = MsiDatabaseMerge(hdb, href, "");
     ok(r == ERROR_INVALID_TABLE, "Expected ERROR_INVALID_TABLE, got %d\n", r);
 
     /* both DBs empty, szTableName is valid */
-    r = MsiDatabaseMergeA(hdb, href, "MergeErrors");
+    r = MsiDatabaseMerge(hdb, href, "MergeErrors");
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     query = "CREATE TABLE `One` ( `A` INT PRIMARY KEY `A` )";
@@ -7750,7 +7750,7 @@ static void test_dbmerge(void)
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     /* column types don't match */
-    r = MsiDatabaseMergeA(hdb, href, "MergeErrors");
+    r = MsiDatabaseMerge(hdb, href, "MergeErrors");
     ok(r == ERROR_DATATYPE_MISMATCH,
        "Expected ERROR_DATATYPE_MISMATCH, got %d\n", r);
 
@@ -7795,7 +7795,7 @@ static void test_dbmerge(void)
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     /* column sting types don't match exactly */
-    r = MsiDatabaseMergeA(hdb, href, "MergeErrors");
+    r = MsiDatabaseMerge(hdb, href, "MergeErrors");
     ok(r == ERROR_SUCCESS,
        "Expected ERROR_SUCCESS, got %d\n", r);
 
@@ -7822,7 +7822,7 @@ static void test_dbmerge(void)
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     /* column names don't match */
-    r = MsiDatabaseMergeA(hdb, href, "MergeErrors");
+    r = MsiDatabaseMerge(hdb, href, "MergeErrors");
     ok(r == ERROR_DATATYPE_MISMATCH,
        "Expected ERROR_DATATYPE_MISMATCH, got %d\n", r);
 
@@ -7849,7 +7849,7 @@ static void test_dbmerge(void)
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     /* primary keys don't match */
-    r = MsiDatabaseMergeA(hdb, href, "MergeErrors");
+    r = MsiDatabaseMerge(hdb, href, "MergeErrors");
     ok(r == ERROR_DATATYPE_MISMATCH,
        "Expected ERROR_DATATYPE_MISMATCH, got %d\n", r);
 
@@ -7876,7 +7876,7 @@ static void test_dbmerge(void)
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     /* number of primary keys doesn't match */
-    r = MsiDatabaseMergeA(hdb, href, "MergeErrors");
+    r = MsiDatabaseMerge(hdb, href, "MergeErrors");
     ok(r == ERROR_DATATYPE_MISMATCH,
        "Expected ERROR_DATATYPE_MISMATCH, got %d\n", r);
 
@@ -7907,7 +7907,7 @@ static void test_dbmerge(void)
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     /* number of columns doesn't match */
-    r = MsiDatabaseMergeA(hdb, href, "MergeErrors");
+    r = MsiDatabaseMerge(hdb, href, "MergeErrors");
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     query = "SELECT * FROM `One`";
@@ -7952,7 +7952,7 @@ static void test_dbmerge(void)
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     /* number of columns doesn't match */
-    r = MsiDatabaseMergeA(hdb, href, "MergeErrors");
+    r = MsiDatabaseMerge(hdb, href, "MergeErrors");
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     query = "SELECT * FROM `One`";
@@ -8009,7 +8009,7 @@ static void test_dbmerge(void)
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     /* primary keys match, rows do not */
-    r = MsiDatabaseMergeA(hdb, href, "MergeErrors");
+    r = MsiDatabaseMerge(hdb, href, "MergeErrors");
     ok(r == ERROR_FUNCTION_FAILED,
        "Expected ERROR_FUNCTION_FAILED, got %d\n", r);
 
@@ -8019,7 +8019,7 @@ static void test_dbmerge(void)
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     size = MAX_PATH;
-    r = MsiRecordGetStringA(hrec, 1, buf, &size);
+    r = MsiRecordGetString(hrec, 1, buf, &size);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
     ok(!strcmp(buf, "One"), "Expected \"One\", got \"%s\"\n", buf);
 
@@ -8028,7 +8028,7 @@ static void test_dbmerge(void)
 
     MsiCloseHandle(hrec);
 
-    r = MsiDatabaseOpenViewA(hdb, "SELECT * FROM `MergeErrors`", &hview);
+    r = MsiDatabaseOpenView(hdb, "SELECT * FROM `MergeErrors`", &hview);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     hrec = NULL;
@@ -8087,7 +8087,7 @@ static void test_dbmerge(void)
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     /* table from merged database is not in target database */
-    r = MsiDatabaseMergeA(hdb, href, "MergeErrors");
+    r = MsiDatabaseMerge(hdb, href, "MergeErrors");
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     query = "SELECT * FROM `One`";
@@ -8098,7 +8098,7 @@ static void test_dbmerge(void)
     ok(r == 1, "Expected 1, got %d\n", r);
 
     size = MAX_PATH;
-    r = MsiRecordGetStringA(hrec, 2, buf, &size);
+    r = MsiRecordGetString(hrec, 2, buf, &size);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
     ok(!strcmp(buf, "hi"), "Expected \"hi\", got \"%s\"\n", buf);
 
@@ -8133,7 +8133,7 @@ static void test_dbmerge(void)
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     /* primary key is string */
-    r = MsiDatabaseMergeA(hdb, href, "MergeErrors");
+    r = MsiDatabaseMerge(hdb, href, "MergeErrors");
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     query = "SELECT * FROM `One`";
@@ -8141,7 +8141,7 @@ static void test_dbmerge(void)
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     size = MAX_PATH;
-    r = MsiRecordGetStringA(hrec, 1, buf, &size);
+    r = MsiRecordGetString(hrec, 1, buf, &size);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
     ok(!strcmp(buf, "hi"), "Expected \"hi\", got \"%s\"\n", buf);
 
@@ -8185,7 +8185,7 @@ static void test_dbmerge(void)
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     /* code page does not match */
-    r = MsiDatabaseMergeA(hdb, href, "MergeErrors");
+    r = MsiDatabaseMerge(hdb, href, "MergeErrors");
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     query = "SELECT * FROM `One`";
@@ -8196,7 +8196,7 @@ static void test_dbmerge(void)
     ok(r == 1, "Expected 1, got %d\n", r);
 
     size = MAX_PATH;
-    r = MsiRecordGetStringA(hrec, 2, buf, &size);
+    r = MsiRecordGetString(hrec, 2, buf, &size);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
     ok(!strcmp(buf, "hi"), "Expected \"hi\", got \"%s\"\n", buf);
 
@@ -8235,7 +8235,7 @@ static void test_dbmerge(void)
     MsiCloseHandle(hrec);
 
     /* binary data to merge */
-    r = MsiDatabaseMergeA(hdb, href, "MergeErrors");
+    r = MsiDatabaseMerge(hdb, href, "MergeErrors");
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     query = "SELECT * FROM `One`";
@@ -8282,11 +8282,11 @@ static void test_dbmerge(void)
     r = run_query(href, 0, query);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
-    r = MsiDatabaseMergeA(hdb, href, "MergeErrors");
+    r = MsiDatabaseMerge(hdb, href, "MergeErrors");
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     query = "SELECT * FROM `One`";
-    r = MsiDatabaseOpenViewA(hdb, query, &hview);
+    r = MsiDatabaseOpenView(hdb, query, &hview);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
     r = MsiViewExecute(hview, 0);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
@@ -8298,7 +8298,7 @@ static void test_dbmerge(void)
     ok(r == 1, "Expected 1, got %d\n", r);
 
     size = MAX_PATH;
-    r = MsiRecordGetStringA(hrec, 2, buf, &size);
+    r = MsiRecordGetString(hrec, 2, buf, &size);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
     ok(!strcmp(buf, "foo"), "Expected \"foo\", got \"%s\"\n", buf);
 
@@ -8311,7 +8311,7 @@ static void test_dbmerge(void)
     ok(r == 2, "Expected 2, got %d\n", r);
 
     size = MAX_PATH;
-    r = MsiRecordGetStringA(hrec, 2, buf, &size);
+    r = MsiRecordGetString(hrec, 2, buf, &size);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
     ok(!strcmp(buf, "bar"), "Expected \"bar\", got \"%s\"\n", buf);
 
@@ -9196,7 +9196,7 @@ static void test_embedded_nulls(void)
 
     buffer[0] = 0;
     sz = sizeof(buffer);
-    r = MsiRecordGetStringA( hrec, 1, buffer, &sz );
+    r = MsiRecordGetString( hrec, 1, buffer, &sz );
     ok( r == ERROR_SUCCESS, "failed to get string %u\n", r );
     ok( !memcmp( "text\r\ntext\ntext", buffer, sizeof("text\r\ntext\ntext") - 1 ), "wrong buffer contents \"%s\"\n", buffer );
 
@@ -9274,7 +9274,7 @@ static void test_select_column_names(void)
     ok( r == 1, "got %u\n",  r );
     size = sizeof(buffer);
     memset( buffer, 0x55, sizeof(buffer) );
-    r = MsiRecordGetStringA( rec2, 1, buffer, &size );
+    r = MsiRecordGetString( rec2, 1, buffer, &size );
     ok( r == ERROR_SUCCESS, "unexpected result: %u\n", r );
     ok( !buffer[0], "got \"%s\"\n", buffer );
     MsiCloseHandle( rec2 );
@@ -9286,14 +9286,14 @@ static void test_select_column_names(void)
     ok( r == 1, "got %u\n",  r );
     size = sizeof(buffer);
     memset( buffer, 0x55, sizeof(buffer) );
-    r = MsiRecordGetStringA( rec2, 1, buffer, &size );
+    r = MsiRecordGetString( rec2, 1, buffer, &size );
     ok( r == ERROR_SUCCESS, "unexpected result: %u\n", r );
     ok( !strcmp( buffer, "f0" ), "got \"%s\"\n", buffer );
     MsiCloseHandle( rec2 );
 
     size = sizeof(buffer);
     memset( buffer, 0x55, sizeof(buffer) );
-    r = MsiRecordGetStringA( rec, 1, buffer, &size );
+    r = MsiRecordGetString( rec, 1, buffer, &size );
     ok( r == ERROR_SUCCESS, "unexpected result: %u\n", r );
     ok( !buffer[0], "got \"%s\"\n", buffer );
     MsiCloseHandle( rec );
@@ -9302,7 +9302,7 @@ static void test_select_column_names(void)
     ok( r == ERROR_SUCCESS, "unexpected result: %u\n", r );
     size = sizeof(buffer);
     memset( buffer, 0x55, sizeof(buffer) );
-    r = MsiRecordGetStringA( rec, 1, buffer, &size );
+    r = MsiRecordGetString( rec, 1, buffer, &size );
     ok( r == ERROR_SUCCESS, "unexpected result: %u\n", r );
     ok( !buffer[0], "got \"%s\"\n", buffer );
     MsiCloseHandle( rec );
@@ -9327,7 +9327,7 @@ static void test_select_column_names(void)
     ok( r == 2, "got %u\n",  r );
     size = sizeof(buffer);
     memset( buffer, 0x55, sizeof(buffer) );
-    r = MsiRecordGetStringA( rec, 1, buffer, &size );
+    r = MsiRecordGetString( rec, 1, buffer, &size );
     ok( r == ERROR_SUCCESS, "unexpected result: %u\n", r );
     ok( !strcmp( buffer, "1" ), "got \"%s\"\n", buffer );
     MsiCloseHandle( rec );
@@ -9336,7 +9336,7 @@ static void test_select_column_names(void)
     ok( r == ERROR_SUCCESS, "unexpected result: %u\n", r );
     size = sizeof(buffer);
     memset( buffer, 0x55, sizeof(buffer) );
-    r = MsiRecordGetStringA( rec, 2, buffer, &size );
+    r = MsiRecordGetString( rec, 2, buffer, &size );
     ok( r == ERROR_SUCCESS, "unexpected result: %u\n", r );
     ok( !buffer[0], "got \"%s\"\n", buffer );
     MsiCloseHandle( rec );
@@ -9361,12 +9361,12 @@ static void test_select_column_names(void)
     ok( r == 2, "got %u\n",  r );
     size = sizeof(buffer);
     memset( buffer, 0x55, sizeof(buffer) );
-    r = MsiRecordGetStringA( rec, 1, buffer, &size );
+    r = MsiRecordGetString( rec, 1, buffer, &size );
     ok( r == ERROR_SUCCESS, "unexpected result: %u\n", r );
     ok( !buffer[0], "got \"%s\"\n", buffer );
     size = sizeof(buffer);
     memset( buffer, 0x55, sizeof(buffer) );
-    r = MsiRecordGetStringA( rec, 2, buffer, &size );
+    r = MsiRecordGetString( rec, 2, buffer, &size );
     ok( r == ERROR_SUCCESS, "unexpected result: %u\n", r );
     ok( !strcmp( buffer, "1" ), "got \"%s\"\n", buffer );
     MsiCloseHandle( rec );
@@ -9375,12 +9375,12 @@ static void test_select_column_names(void)
     ok( r == ERROR_SUCCESS, "unexpected result: %u\n", r );
     size = sizeof(buffer);
     memset( buffer, 0x55, sizeof(buffer) );
-    r = MsiRecordGetStringA( rec, 1, buffer, &size );
+    r = MsiRecordGetString( rec, 1, buffer, &size );
     ok( r == ERROR_SUCCESS, "unexpected result: %u\n", r );
     ok( !buffer[0], "got \"%s\"\n", buffer );
     size = sizeof(buffer);
     memset( buffer, 0x55, sizeof(buffer) );
-    r = MsiRecordGetStringA( rec, 2, buffer, &size );
+    r = MsiRecordGetString( rec, 2, buffer, &size );
     ok( r == ERROR_SUCCESS, "unexpected result: %u\n", r );
     ok( !strcmp( buffer, "3" ), "got \"%s\"\n", buffer );
     MsiCloseHandle( rec );
@@ -9405,17 +9405,17 @@ static void test_select_column_names(void)
     ok( r == 3, "got %u\n",  r );
     size = sizeof(buffer);
     memset( buffer, 0x55, sizeof(buffer) );
-    r = MsiRecordGetStringA( rec, 1, buffer, &size );
+    r = MsiRecordGetString( rec, 1, buffer, &size );
     ok( r == ERROR_SUCCESS, "unexpected result: %u\n", r );
     ok( !strcmp( buffer, "1" ), "got \"%s\"\n", buffer );
     size = sizeof(buffer);
     memset( buffer, 0x55, sizeof(buffer) );
-    r = MsiRecordGetStringA( rec, 2, buffer, &size );
+    r = MsiRecordGetString( rec, 2, buffer, &size );
     ok( r == ERROR_SUCCESS, "unexpected result: %u\n", r );
     ok( !buffer[0], "got \"%s\"\n", buffer );
     size = sizeof(buffer);
     memset( buffer, 0x55, sizeof(buffer) );
-    r = MsiRecordGetStringA( rec, 3, buffer, &size );
+    r = MsiRecordGetString( rec, 3, buffer, &size );
     ok( r == ERROR_SUCCESS, "unexpected result: %u\n", r );
     ok( !strcmp( buffer, "2" ), "got \"%s\"\n", buffer );
     MsiCloseHandle( rec );
@@ -9424,17 +9424,17 @@ static void test_select_column_names(void)
     ok( r == ERROR_SUCCESS, "unexpected result: %u\n", r );
     size = sizeof(buffer);
     memset( buffer, 0x55, sizeof(buffer) );
-    r = MsiRecordGetStringA( rec, 1, buffer, &size );
+    r = MsiRecordGetString( rec, 1, buffer, &size );
     ok( r == ERROR_SUCCESS, "unexpected result: %u\n", r );
     ok( !strcmp( buffer, "3" ), "got \"%s\"\n", buffer );
     size = sizeof(buffer);
     memset( buffer, 0x55, sizeof(buffer) );
-    r = MsiRecordGetStringA( rec, 2, buffer, &size );
+    r = MsiRecordGetString( rec, 2, buffer, &size );
     ok( r == ERROR_SUCCESS, "unexpected result: %u\n", r );
     ok( !buffer[0], "got \"%s\"\n", buffer );
     size = sizeof(buffer);
     memset( buffer, 0x55, sizeof(buffer) );
-    r = MsiRecordGetStringA( rec, 3, buffer, &size );
+    r = MsiRecordGetString( rec, 3, buffer, &size );
     ok( r == ERROR_SUCCESS, "unexpected result: %u\n", r );
     ok( !strcmp( buffer, "4" ), "got \"%s\"\n", buffer );
     MsiCloseHandle( rec );

@@ -115,14 +115,6 @@ typedef enum LibmsiDBState
 extern "C" {
 #endif
 
-#ifndef WINELIB_NAME_AW
-#ifdef UNICODE
-#define WINELIB_NAME_AW(x) x##W
-#else
-#define WINELIB_NAME_AW(x) x##A
-#endif
-#endif
-
 #define MSI_PID_DICTIONARY (0)
 #define MSI_PID_CODEPAGE (0x1)
 #define MSI_PID_FIRST_USABLE 2
@@ -154,12 +146,8 @@ extern "C" {
 unsigned MsiViewFetch(LibmsiObject *,LibmsiObject **);
 unsigned MsiViewExecute(LibmsiObject *,LibmsiObject *);
 unsigned MsiViewClose(LibmsiObject *);
-unsigned MsiDatabaseOpenViewA(LibmsiObject *,const char *,LibmsiObject **);
-unsigned MsiDatabaseOpenViewW(LibmsiObject *,const WCHAR *,LibmsiObject **);
-#define     MsiDatabaseOpenView WINELIB_NAME_AW(MsiDatabaseOpenView)
-LibmsiDBError MsiViewGetErrorA(LibmsiObject *,char *,unsigned *);
-LibmsiDBError MsiViewGetErrorW(LibmsiObject *,WCHAR *,unsigned *);
-#define     MsiViewGetError WINELIB_NAME_AW(MsiViewGetError)
+unsigned MsiDatabaseOpenView(LibmsiObject *,const char *,LibmsiObject **);
+LibmsiDBError MsiViewGetError(LibmsiObject *,char *,unsigned *);
 
 LibmsiDBState MsiGetDatabaseState(LibmsiObject *);
 
@@ -167,64 +155,44 @@ LibmsiDBState MsiGetDatabaseState(LibmsiObject *);
 LibmsiObject * MsiCreateRecord(unsigned);
 unsigned MsiRecordClearData(LibmsiObject *);
 unsigned MsiRecordSetInteger(LibmsiObject *,unsigned,int);
-unsigned MsiRecordSetStringA(LibmsiObject *,unsigned,const char *);
-unsigned MsiRecordSetStringW(LibmsiObject *,unsigned,const WCHAR *);
-#define     MsiRecordSetString WINELIB_NAME_AW(MsiRecordSetString)
-unsigned MsiRecordGetStringA(LibmsiObject *,unsigned,char *,unsigned *);
-unsigned MsiRecordGetStringW(LibmsiObject *,unsigned,WCHAR *,unsigned *);
-#define     MsiRecordGetString WINELIB_NAME_AW(MsiRecordGetString)
+unsigned MsiRecordSetString(LibmsiObject *,unsigned,const char *);
+unsigned MsiRecordGetString(LibmsiObject *,unsigned,char *,unsigned *);
 unsigned MsiRecordGetFieldCount(LibmsiObject *);
 int MsiRecordGetInteger(LibmsiObject *,unsigned);
 unsigned MsiRecordDataSize(LibmsiObject *,unsigned);
 bool MsiRecordIsNull(LibmsiObject *,unsigned);
-unsigned MsiFormatRecordA(LibmsiObject *,LibmsiObject *,char *,unsigned *);
-unsigned MsiFormatRecordW(LibmsiObject *,LibmsiObject *,WCHAR *,unsigned *);
-#define     MsiFormatRecord WINELIB_NAME_AW(MsiFormatRecord)
+unsigned MsiFormatRecord(LibmsiObject *,LibmsiObject *,char *,unsigned *);
 
 unsigned MsiRecordSetStream(LibmsiObject *,unsigned,const char *);
 unsigned MsiRecordReadStream(LibmsiObject *,unsigned,char*,unsigned *);
 
-unsigned MsiDatabaseGetPrimaryKeysA(LibmsiObject *,const char *,LibmsiObject **);
-unsigned MsiDatabaseGetPrimaryKeysW(LibmsiObject *,const WCHAR *,LibmsiObject **);
-#define     MsiDatabaseGetPrimaryKeys WINELIB_NAME_AW(MsiDatabaseGetPrimaryKeys)
+unsigned MsiDatabaseGetPrimaryKeys(LibmsiObject *,const char *,LibmsiObject **);
 
 /* database transforms */
 unsigned MsiDatabaseApplyTransform(LibmsiObject *,const char *,int);
 
 unsigned MsiViewGetColumnInfo(LibmsiObject *, LibmsiColInfo, LibmsiObject **);
 
-unsigned MsiCreateTransformSummaryInfoA(LibmsiObject *, LibmsiObject *, const char *, int, int);
-unsigned MsiCreateTransformSummaryInfoW(LibmsiObject *, LibmsiObject *, const WCHAR *, int, int);
-#define     MsiCreateTransformSummaryInfo WINELIB_NAME_AW(MsiCreateTransformSummaryInfo)
+unsigned MsiCreateTransformSummaryInfo(LibmsiObject *, LibmsiObject *, const char *, int, int);
 
-unsigned MsiSummaryInfoGetPropertyA(LibmsiObject *,unsigned,unsigned *,int *,uint64_t*,char *,unsigned *);
-unsigned MsiSummaryInfoGetPropertyW(LibmsiObject *,unsigned,unsigned *,int *,uint64_t*,WCHAR *,unsigned *);
-#define     MsiSummaryInfoGetProperty WINELIB_NAME_AW(MsiSummaryInfoGetProperty)
+unsigned MsiSummaryInfoGetProperty(LibmsiObject *,unsigned,unsigned *,int *,uint64_t*,char *,unsigned *);
 
-unsigned MsiSummaryInfoSetPropertyA(LibmsiObject *, unsigned, unsigned, int, uint64_t*, const char *);
-unsigned MsiSummaryInfoSetPropertyW(LibmsiObject *, unsigned, unsigned, int, uint64_t*, const WCHAR *);
-#define     MsiSummaryInfoSetProperty WINELIB_NAME_AW(MsiSummaryInfoSetProperty)
+unsigned MsiSummaryInfoSetProperty(LibmsiObject *, unsigned, unsigned, int, uint64_t*, const char *);
 
-unsigned MsiDatabaseExportA(LibmsiObject *, const char *, int fd);
-unsigned MsiDatabaseExportW(LibmsiObject *, const WCHAR *, int fd);
-#define     MsiDatabaseExport WINELIB_NAME_AW(MsiDatabaseExport)
+unsigned MsiDatabaseExport(LibmsiObject *, const char *, int fd);
 
 unsigned MsiDatabaseImport(LibmsiObject *, const char *, const char *);
 
 unsigned MsiOpenDatabase(const char *, const char *, LibmsiObject **);
 
-LibmsiCondition MsiDatabaseIsTablePersistentA(LibmsiObject *, const char *);
-LibmsiCondition MsiDatabaseIsTablePersistentW(LibmsiObject *, const WCHAR *);
-#define     MsiDatabaseIsTablePersistent WINELIB_NAME_AW(MsiDatabaseIsTablePersistent)
+LibmsiCondition MsiDatabaseIsTablePersistent(LibmsiObject *, const char *);
 
 unsigned MsiSummaryInfoPersist(LibmsiObject *);
 unsigned MsiSummaryInfoGetPropertyCount(LibmsiObject *,unsigned *);
 
 unsigned MsiViewModify(LibmsiObject *, LibmsiModify, LibmsiObject *);
 
-unsigned MsiDatabaseMergeA(LibmsiObject *, LibmsiObject *, const char *);
-unsigned MsiDatabaseMergeW(LibmsiObject *, LibmsiObject *, const WCHAR *);
-#define     MsiDatabaseMerge WINELIB_NAME_AW(MsiDatabaseMerge)
+unsigned MsiDatabaseMerge(LibmsiObject *, LibmsiObject *, const char *);
 
 /* Non Unicode */
 unsigned MsiGetSummaryInformation(LibmsiObject *, unsigned, LibmsiObject **);

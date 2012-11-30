@@ -128,10 +128,10 @@ static void test_msirecord(void)
     ok(r == 0, "size of string record is strlen\n");
     buf[0] = 0;
     sz = sizeof buf;
-    r = MsiRecordGetStringA(h, 0, buf, &sz);
+    r = MsiRecordGetString(h, 0, buf, &sz);
     ok(r == ERROR_SUCCESS, "Failed to get string at 0\n");
-    ok(buf[0] == 0, "MsiRecordGetStringA returned the wrong string\n");
-    ok(sz == 0, "MsiRecordGetStringA returned the wrong length\n");
+    ok(buf[0] == 0, "MsiRecordGetString returned the wrong string\n");
+    ok(sz == 0, "MsiRecordGetString returned the wrong length\n");
     r = MsiRecordSetString(h, 0, "");
     ok(r == ERROR_SUCCESS, "Failed to set empty string at 0\n");
     r = MsiRecordIsNull(h, 0);
@@ -140,10 +140,10 @@ static void test_msirecord(void)
     ok(r == 0, "size of string record is strlen\n");
     buf[0] = 0;
     sz = sizeof buf;
-    r = MsiRecordGetStringA(h, 0, buf, &sz);
+    r = MsiRecordGetString(h, 0, buf, &sz);
     ok(r == ERROR_SUCCESS, "Failed to get string at 0\n");
-    ok(buf[0] == 0, "MsiRecordGetStringA returned the wrong string\n");
-    ok(sz == 0, "MsiRecordGetStringA returned the wrong length\n");
+    ok(buf[0] == 0, "MsiRecordGetString returned the wrong string\n");
+    ok(sz == 0, "MsiRecordGetString returned the wrong length\n");
 
     /* same record, but add a string to it */
     r = MsiRecordSetString(h,0,str);
@@ -176,14 +176,14 @@ static void test_msirecord(void)
 
     memset(buf, 0, sizeof buf);
     sz = 5;
-    r = MsiRecordGetStringA(h,0,buf,&sz);
+    r = MsiRecordGetString(h,0,buf,&sz);
     ok(r == ERROR_MORE_DATA, "wrong error\n");
     ok(sz == 5, "MsiRecordGetString returned the wrong length\n");
     ok(0==memcmp(buf,str,4), "MsiRecordGetString returned the wrong string\n");
 
     sz = 0;
     buf[0] = 'x';
-    r = MsiRecordGetStringA(h,0,buf,&sz);
+    r = MsiRecordGetString(h,0,buf,&sz);
     ok(r == ERROR_MORE_DATA, "wrong error\n");
     ok(sz == 5, "MsiRecordGetString returned the wrong length\n");
     ok('x'==buf[0], "MsiRecordGetString returned the wrong string\n");
@@ -545,7 +545,7 @@ static void test_fieldzero(void)
     ok(r == ERROR_SUCCESS, "MsiCloseHandle failed\n");
 
     rec = NULL;
-    r = MsiDatabaseGetPrimaryKeysA(hdb, "drone", &rec);
+    r = MsiDatabaseGetPrimaryKeys(hdb, "drone", &rec);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     r = MsiRecordGetInteger(rec, 0);
@@ -563,7 +563,7 @@ static void test_fieldzero(void)
 
     MsiCloseHandle(rec);
 
-    r = MsiDatabaseGetPrimaryKeysA(hdb, "nosuchtable", &rec);
+    r = MsiDatabaseGetPrimaryKeys(hdb, "nosuchtable", &rec);
     ok(r == ERROR_INVALID_TABLE, "Expected ERROR_INVALID_TABLE, got %d\n", r);
 
     query = "SELECT * FROM `drone` WHERE `id` = 1";

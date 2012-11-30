@@ -1176,7 +1176,7 @@ unsigned MsiDatabaseExportW( LibmsiObject *handle, const WCHAR *szTable,
     return r;
 }
 
-unsigned MsiDatabaseExportA( LibmsiObject *handle, const char *szTable,
+unsigned MsiDatabaseExport( LibmsiObject *handle, const char *szTable,
                int fd )
 {
     WCHAR *path = NULL;
@@ -1204,7 +1204,7 @@ end:
     return r;
 }
 
-unsigned MsiDatabaseMergeA(LibmsiObject *hDatabase, LibmsiObject *hDatabaseMerge,
+unsigned MsiDatabaseMerge(LibmsiObject *hDatabase, LibmsiObject *hDatabaseMerge,
                               const char *szTableName)
 {
     unsigned r;
