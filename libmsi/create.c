@@ -47,7 +47,7 @@ typedef struct LibmsiCreateView
     column_info     *col_info;
 } LibmsiCreateView;
 
-static unsigned CREATE_fetch_int( LibmsiView *view, unsigned row, unsigned col, unsigned *val )
+static unsigned create_view_fetch_int( LibmsiView *view, unsigned row, unsigned col, unsigned *val )
 {
     LibmsiCreateView *cv = (LibmsiCreateView*)view;
 
@@ -56,7 +56,7 @@ static unsigned CREATE_fetch_int( LibmsiView *view, unsigned row, unsigned col, 
     return ERROR_FUNCTION_FAILED;
 }
 
-static unsigned CREATE_execute( LibmsiView *view, LibmsiRecord *record )
+static unsigned create_view_execute( LibmsiView *view, LibmsiRecord *record )
 {
     LibmsiCreateView *cv = (LibmsiCreateView*)view;
     bool persist = (cv->bIsTemp) ? LIBMSI_CONDITION_FALSE : LIBMSI_CONDITION_TRUE;
@@ -70,7 +70,7 @@ static unsigned CREATE_execute( LibmsiView *view, LibmsiRecord *record )
     return msi_create_table( cv->db, cv->name, cv->col_info, persist );
 }
 
-static unsigned CREATE_close( LibmsiView *view )
+static unsigned create_view_close( LibmsiView *view )
 {
     LibmsiCreateView *cv = (LibmsiCreateView*)view;
 
@@ -79,7 +79,7 @@ static unsigned CREATE_close( LibmsiView *view )
     return ERROR_SUCCESS;
 }
 
-static unsigned CREATE_get_dimensions( LibmsiView *view, unsigned *rows, unsigned *cols )
+static unsigned create_view_get_dimensions( LibmsiView *view, unsigned *rows, unsigned *cols )
 {
     LibmsiCreateView *cv = (LibmsiCreateView*)view;
 
@@ -88,7 +88,7 @@ static unsigned CREATE_get_dimensions( LibmsiView *view, unsigned *rows, unsigne
     return ERROR_FUNCTION_FAILED;
 }
 
-static unsigned CREATE_get_column_info( LibmsiView *view, unsigned n, const WCHAR **name,
+static unsigned create_view_get_column_info( LibmsiView *view, unsigned n, const WCHAR **name,
                                     unsigned *type, bool *temporary, const WCHAR **table_name )
 {
     LibmsiCreateView *cv = (LibmsiCreateView*)view;
@@ -98,7 +98,7 @@ static unsigned CREATE_get_column_info( LibmsiView *view, unsigned n, const WCHA
     return ERROR_FUNCTION_FAILED;
 }
 
-static unsigned CREATE_modify( LibmsiView *view, LibmsiModify eModifyMode,
+static unsigned create_view_modify( LibmsiView *view, LibmsiModify eModifyMode,
                            LibmsiRecord *rec, unsigned row)
 {
     LibmsiCreateView *cv = (LibmsiCreateView*)view;
@@ -108,7 +108,7 @@ static unsigned CREATE_modify( LibmsiView *view, LibmsiModify eModifyMode,
     return ERROR_FUNCTION_FAILED;
 }
 
-static unsigned CREATE_delete( LibmsiView *view )
+static unsigned create_view_delete( LibmsiView *view )
 {
     LibmsiCreateView *cv = (LibmsiCreateView*)view;
 
@@ -120,20 +120,20 @@ static unsigned CREATE_delete( LibmsiView *view )
     return ERROR_SUCCESS;
 }
 
-static const LibmsiViewOPS create_ops =
+static const LibmsiViewOps create_ops =
 {
-    CREATE_fetch_int,
+    create_view_fetch_int,
     NULL,
     NULL,
     NULL,
     NULL,
     NULL,
-    CREATE_execute,
-    CREATE_close,
-    CREATE_get_dimensions,
-    CREATE_get_column_info,
-    CREATE_modify,
-    CREATE_delete,
+    create_view_execute,
+    create_view_close,
+    create_view_get_dimensions,
+    create_view_get_column_info,
+    create_view_modify,
+    create_view_delete,
     NULL,
     NULL,
     NULL,
@@ -156,7 +156,7 @@ static unsigned check_columns( const column_info *col_info )
     return ERROR_SUCCESS;
 }
 
-unsigned CREATE_CreateView( LibmsiDatabase *db, LibmsiView **view, const WCHAR *table,
+unsigned create_view_create( LibmsiDatabase *db, LibmsiView **view, const WCHAR *table,
                         column_info *col_info, bool hold )
 {
     LibmsiCreateView *cv = NULL;

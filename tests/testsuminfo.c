@@ -43,50 +43,50 @@ static void test_suminfo(void)
 
     DeleteFile(msifile);
 
-    /* just MsiOpenDatabase should not create a file */
-    r = MsiOpenDatabase(msifile, LIBMSI_DB_OPEN_CREATE, &hdb);
-    ok(r == ERROR_SUCCESS, "MsiOpenDatabase failed\n");
+    /* just libmsi_database_open should not create a file */
+    r = libmsi_database_open(msifile, LIBMSI_DB_OPEN_CREATE, &hdb);
+    ok(r == ERROR_SUCCESS, "libmsi_database_open failed\n");
 
-    r = MsiGetSummaryInformation(hdb, 0, NULL);
-    ok(r == ERROR_INVALID_PARAMETER, "MsiGetSummaryInformation wrong error\n");
+    r = libmsi_database_get_summary_info(hdb, 0, NULL);
+    ok(r == ERROR_INVALID_PARAMETER, "libmsi_database_get_summary_info wrong error\n");
 
-    r = MsiGetSummaryInformation(hdb, 0, &hsuminfo);
-    ok(r == ERROR_SUCCESS, "MsiGetSummaryInformation failed %u\n", r);
+    r = libmsi_database_get_summary_info(hdb, 0, &hsuminfo);
+    ok(r == ERROR_SUCCESS, "libmsi_database_get_summary_info failed %u\n", r);
 
-    r = MsiCloseHandle(hsuminfo);
-    ok(r == ERROR_SUCCESS, "MsiCloseHandle failed\n");
+    r = libmsi_unref(hsuminfo);
+    ok(r == ERROR_SUCCESS, "libmsi_unref failed\n");
 
-    r = MsiGetSummaryInformation(hdb, 0, &hsuminfo);
-    ok(r == ERROR_SUCCESS, "MsiGetSummaryInformation failed %u\n", r);
+    r = libmsi_database_get_summary_info(hdb, 0, &hsuminfo);
+    ok(r == ERROR_SUCCESS, "libmsi_database_get_summary_info failed %u\n", r);
 
-    r = MsiSummaryInfoGetPropertyCount(0, NULL);
+    r = libmsi_summary_info_get_property_count(0, NULL);
     ok(r == ERROR_INVALID_HANDLE, "getpropcount failed\n");
 
-    r = MsiSummaryInfoGetPropertyCount(hsuminfo, NULL);
+    r = libmsi_summary_info_get_property_count(hsuminfo, NULL);
     ok(r == ERROR_SUCCESS, "getpropcount failed\n");
 
     count = -1;
-    r = MsiSummaryInfoGetPropertyCount(hsuminfo, &count);
+    r = libmsi_summary_info_get_property_count(hsuminfo, &count);
     ok(r == ERROR_SUCCESS, "getpropcount failed\n");
     ok(count == 0, "count should be zero\n");
 
-    r = MsiSummaryInfoGetProperty(hsuminfo, 0, NULL, NULL, NULL, 0, NULL);
+    r = libmsi_summary_info_get_property(hsuminfo, 0, NULL, NULL, NULL, 0, NULL);
     ok(r == ERROR_SUCCESS, "getpropcount failed\n");
 
-    r = MsiSummaryInfoGetProperty(hsuminfo, -1, NULL, NULL, NULL, 0, NULL);
-    ok(r == ERROR_UNKNOWN_PROPERTY, "MsiSummaryInfoGetProperty wrong error\n");
+    r = libmsi_summary_info_get_property(hsuminfo, -1, NULL, NULL, NULL, 0, NULL);
+    ok(r == ERROR_UNKNOWN_PROPERTY, "libmsi_summary_info_get_property wrong error\n");
 
-    r = MsiSummaryInfoGetProperty(hsuminfo, MSI_PID_SECURITY+1, NULL, NULL, NULL, 0, NULL);
-    ok(r == ERROR_UNKNOWN_PROPERTY, "MsiSummaryInfoGetProperty wrong error\n");
+    r = libmsi_summary_info_get_property(hsuminfo, MSI_PID_SECURITY+1, NULL, NULL, NULL, 0, NULL);
+    ok(r == ERROR_UNKNOWN_PROPERTY, "libmsi_summary_info_get_property wrong error\n");
 
     type = -1;
-    r = MsiSummaryInfoGetProperty(hsuminfo, 0, &type, NULL, NULL, 0, NULL);
+    r = libmsi_summary_info_get_property(hsuminfo, 0, &type, NULL, NULL, 0, NULL);
     ok(r == ERROR_SUCCESS, "getpropcount failed\n");
     ok(type == 0, "wrong type\n");
 
     type = -1;
     val = 1234;
-    r = MsiSummaryInfoGetProperty(hsuminfo, 0, &type, &val, NULL, 0, NULL);
+    r = libmsi_summary_info_get_property(hsuminfo, 0, &type, &val, NULL, 0, NULL);
     ok(r == ERROR_SUCCESS, "getpropcount failed\n");
     ok(type == 0, "wrong type\n");
     ok(val == 1234, "wrong val\n");
@@ -94,162 +94,162 @@ static void test_suminfo(void)
     buf[0]='x';
     buf[1]=0;
     sz = 0x10;
-    r = MsiSummaryInfoGetProperty(hsuminfo, MSI_PID_REVNUMBER, &type, &val, NULL, buf, &sz);
+    r = libmsi_summary_info_get_property(hsuminfo, MSI_PID_REVNUMBER, &type, &val, NULL, buf, &sz);
     ok(r == ERROR_SUCCESS, "getpropcount failed\n");
     ok(buf[0]=='x', "cleared buffer\n");
     ok(sz == 0x10, "count wasn't zero\n");
     ok(type == VT_EMPTY, "should be empty\n");
 
-    r = MsiSummaryInfoSetProperty(hsuminfo, MSI_PID_TITLE, VT_LPSTR, 0, NULL, "Mike");
-    ok(r == ERROR_FUNCTION_FAILED, "MsiSummaryInfoSetProperty wrong error\n");
+    r = libmsi_summary_info_set_property(hsuminfo, MSI_PID_TITLE, VT_LPSTR, 0, NULL, "Mike");
+    ok(r == ERROR_FUNCTION_FAILED, "libmsi_summary_info_set_property wrong error\n");
 
-    r = MsiSummaryInfoSetProperty(hsuminfo, MSI_PID_TITLE, VT_LPSTR, 1, NULL, "JungAh");
-    ok(r == ERROR_FUNCTION_FAILED, "MsiSummaryInfoSetProperty wrong error\n");
+    r = libmsi_summary_info_set_property(hsuminfo, MSI_PID_TITLE, VT_LPSTR, 1, NULL, "JungAh");
+    ok(r == ERROR_FUNCTION_FAILED, "libmsi_summary_info_set_property wrong error\n");
 
-    r = MsiSummaryInfoSetProperty(hsuminfo, MSI_PID_TITLE, VT_LPSTR, 1, &ft, "Mike");
-    ok(r == ERROR_FUNCTION_FAILED, "MsiSummaryInfoSetProperty wrong error\n");
+    r = libmsi_summary_info_set_property(hsuminfo, MSI_PID_TITLE, VT_LPSTR, 1, &ft, "Mike");
+    ok(r == ERROR_FUNCTION_FAILED, "libmsi_summary_info_set_property wrong error\n");
 
-    r = MsiSummaryInfoSetProperty(hsuminfo, MSI_PID_CODEPAGE, VT_I2, 1, &ft, "JungAh");
-    ok(r == ERROR_FUNCTION_FAILED, "MsiSummaryInfoSetProperty wrong error\n");
+    r = libmsi_summary_info_set_property(hsuminfo, MSI_PID_CODEPAGE, VT_I2, 1, &ft, "JungAh");
+    ok(r == ERROR_FUNCTION_FAILED, "libmsi_summary_info_set_property wrong error\n");
 
-    r = MsiCloseHandle(hsuminfo);
-    ok(r == ERROR_SUCCESS, "MsiCloseHandle failed\n");
+    r = libmsi_unref(hsuminfo);
+    ok(r == ERROR_SUCCESS, "libmsi_unref failed\n");
 
     /* try again with the update count set */
-    r = MsiGetSummaryInformation(hdb, 1, &hsuminfo);
-    ok(r == ERROR_SUCCESS, "MsiGetSummaryInformation failed\n");
+    r = libmsi_database_get_summary_info(hdb, 1, &hsuminfo);
+    ok(r == ERROR_SUCCESS, "libmsi_database_get_summary_info failed\n");
 
-    r = MsiSummaryInfoSetProperty(hsuminfo, 0, VT_LPSTR, 1, NULL, NULL);
-    ok(r == ERROR_DATATYPE_MISMATCH, "MsiSummaryInfoSetProperty wrong error\n");
+    r = libmsi_summary_info_set_property(hsuminfo, 0, VT_LPSTR, 1, NULL, NULL);
+    ok(r == ERROR_DATATYPE_MISMATCH, "libmsi_summary_info_set_property wrong error\n");
 
-    r = MsiSummaryInfoSetProperty(hsuminfo, MSI_PID_CODEPAGE, VT_LPSTR, 1, NULL, NULL);
-    ok(r == ERROR_DATATYPE_MISMATCH, "MsiSummaryInfoSetProperty wrong error\n");
+    r = libmsi_summary_info_set_property(hsuminfo, MSI_PID_CODEPAGE, VT_LPSTR, 1, NULL, NULL);
+    ok(r == ERROR_DATATYPE_MISMATCH, "libmsi_summary_info_set_property wrong error\n");
 
-    r = MsiSummaryInfoSetProperty(hsuminfo, MSI_PID_TITLE, VT_I4, 0, NULL, "Mike");
-    ok(r == ERROR_DATATYPE_MISMATCH, "MsiSummaryInfoSetProperty wrong error\n");
+    r = libmsi_summary_info_set_property(hsuminfo, MSI_PID_TITLE, VT_I4, 0, NULL, "Mike");
+    ok(r == ERROR_DATATYPE_MISMATCH, "libmsi_summary_info_set_property wrong error\n");
 
-    r = MsiSummaryInfoSetProperty(hsuminfo, MSI_PID_AUTHOR, VT_I4, 0, NULL, "JungAh");
-    ok(r == ERROR_DATATYPE_MISMATCH, "MsiSummaryInfoSetProperty wrong error\n");
+    r = libmsi_summary_info_set_property(hsuminfo, MSI_PID_AUTHOR, VT_I4, 0, NULL, "JungAh");
+    ok(r == ERROR_DATATYPE_MISMATCH, "libmsi_summary_info_set_property wrong error\n");
 
-    r = MsiSummaryInfoSetProperty(hsuminfo, MSI_PID_KEYWORDS, VT_I2, 0, NULL, "Mike");
-    ok(r == ERROR_DATATYPE_MISMATCH, "MsiSummaryInfoSetProperty wrong error\n");
+    r = libmsi_summary_info_set_property(hsuminfo, MSI_PID_KEYWORDS, VT_I2, 0, NULL, "Mike");
+    ok(r == ERROR_DATATYPE_MISMATCH, "libmsi_summary_info_set_property wrong error\n");
 
-    r = MsiSummaryInfoSetProperty(hsuminfo, MSI_PID_COMMENTS, VT_FILETIME, 0, NULL, "JungAh");
-    ok(r == ERROR_DATATYPE_MISMATCH, "MsiSummaryInfoSetProperty wrong error\n");
+    r = libmsi_summary_info_set_property(hsuminfo, MSI_PID_COMMENTS, VT_FILETIME, 0, NULL, "JungAh");
+    ok(r == ERROR_DATATYPE_MISMATCH, "libmsi_summary_info_set_property wrong error\n");
 
-    r = MsiSummaryInfoSetProperty(hsuminfo, MSI_PID_TEMPLATE, VT_I2, 0, NULL, "Mike");
-    ok(r == ERROR_DATATYPE_MISMATCH, "MsiSummaryInfoSetProperty wrong error\n");
+    r = libmsi_summary_info_set_property(hsuminfo, MSI_PID_TEMPLATE, VT_I2, 0, NULL, "Mike");
+    ok(r == ERROR_DATATYPE_MISMATCH, "libmsi_summary_info_set_property wrong error\n");
 
-    r = MsiSummaryInfoSetProperty(hsuminfo, MSI_PID_LASTAUTHOR, VT_LPSTR, 0, NULL, NULL);
-    ok(r == ERROR_INVALID_PARAMETER, "MsiSummaryInfoSetProperty wrong error\n");
+    r = libmsi_summary_info_set_property(hsuminfo, MSI_PID_LASTAUTHOR, VT_LPSTR, 0, NULL, NULL);
+    ok(r == ERROR_INVALID_PARAMETER, "libmsi_summary_info_set_property wrong error\n");
 
-    r = MsiSummaryInfoSetProperty(hsuminfo, MSI_PID_LASTSAVE_DTM, VT_FILETIME, 0, NULL, NULL);
-    ok(r == ERROR_INVALID_PARAMETER, "MsiSummaryInfoSetProperty wrong error\n");
+    r = libmsi_summary_info_set_property(hsuminfo, MSI_PID_LASTSAVE_DTM, VT_FILETIME, 0, NULL, NULL);
+    ok(r == ERROR_INVALID_PARAMETER, "libmsi_summary_info_set_property wrong error\n");
 
-    r = MsiSummaryInfoSetProperty(hsuminfo, MSI_PID_LASTAUTHOR, VT_LPWSTR, 0, NULL, "h\0i\0\0");
-    ok(r == ERROR_DATATYPE_MISMATCH, "MsiSummaryInfoSetProperty wrong error\n");
+    r = libmsi_summary_info_set_property(hsuminfo, MSI_PID_LASTAUTHOR, VT_LPWSTR, 0, NULL, "h\0i\0\0");
+    ok(r == ERROR_DATATYPE_MISMATCH, "libmsi_summary_info_set_property wrong error\n");
 
-    r = MsiSummaryInfoSetProperty(hsuminfo, MSI_PID_REVNUMBER, VT_I4, 0, NULL, "Jungah");
-    ok(r == ERROR_DATATYPE_MISMATCH, "MsiSummaryInfoSetProperty wrong error\n");
+    r = libmsi_summary_info_set_property(hsuminfo, MSI_PID_REVNUMBER, VT_I4, 0, NULL, "Jungah");
+    ok(r == ERROR_DATATYPE_MISMATCH, "libmsi_summary_info_set_property wrong error\n");
 
-    r = MsiSummaryInfoSetProperty(hsuminfo, MSI_PID_PAGECOUNT, VT_LPSTR, 1, NULL, NULL);
-    ok(r == ERROR_DATATYPE_MISMATCH, "MsiSummaryInfoSetProperty wrong error\n");
+    r = libmsi_summary_info_set_property(hsuminfo, MSI_PID_PAGECOUNT, VT_LPSTR, 1, NULL, NULL);
+    ok(r == ERROR_DATATYPE_MISMATCH, "libmsi_summary_info_set_property wrong error\n");
 
-    r = MsiSummaryInfoSetProperty(hsuminfo, MSI_PID_TITLE, VT_LPSTR, 0, NULL, "Mike");
-    ok(r == ERROR_SUCCESS, "MsiSummaryInfoSetProperty failed\n");
+    r = libmsi_summary_info_set_property(hsuminfo, MSI_PID_TITLE, VT_LPSTR, 0, NULL, "Mike");
+    ok(r == ERROR_SUCCESS, "libmsi_summary_info_set_property failed\n");
 
     sz = 2;
     strcpy(buf,"x");
-    r = MsiSummaryInfoGetProperty(hsuminfo, MSI_PID_TITLE, &type, NULL, NULL, buf, &sz );
-    ok(r == ERROR_MORE_DATA, "MsiSummaryInfoSetProperty failed\n");
+    r = libmsi_summary_info_get_property(hsuminfo, MSI_PID_TITLE, &type, NULL, NULL, buf, &sz );
+    ok(r == ERROR_MORE_DATA, "libmsi_summary_info_set_property failed\n");
     ok(sz == 4, "count was wrong\n");
     ok(type == VT_LPSTR, "type was wrong\n");
     ok(!strcmp(buf,"M"), "buffer was wrong\n");
 
     sz = 4;
     strcpy(buf,"x");
-    r = MsiSummaryInfoGetProperty(hsuminfo, MSI_PID_TITLE, &type, NULL, NULL, buf, &sz );
-    ok(r == ERROR_MORE_DATA, "MsiSummaryInfoSetProperty failed\n");
+    r = libmsi_summary_info_get_property(hsuminfo, MSI_PID_TITLE, &type, NULL, NULL, buf, &sz );
+    ok(r == ERROR_MORE_DATA, "libmsi_summary_info_set_property failed\n");
     ok(sz == 4, "count was wrong\n");
     ok(type == VT_LPSTR, "type was wrong\n");
     ok(!strcmp(buf,"Mik"), "buffer was wrong\n");
 
-    r = MsiSummaryInfoSetProperty(hsuminfo, MSI_PID_TITLE, VT_LPSTR, 0, NULL, "JungAh");
-    ok(r == ERROR_SUCCESS, "MsiSummaryInfoSetProperty failed\n");
+    r = libmsi_summary_info_set_property(hsuminfo, MSI_PID_TITLE, VT_LPSTR, 0, NULL, "JungAh");
+    ok(r == ERROR_SUCCESS, "libmsi_summary_info_set_property failed\n");
 
-    r = MsiSummaryInfoSetProperty(hsuminfo, MSI_PID_CODEPAGE, VT_I2, 1, &ft, "Mike");
-    ok(r == ERROR_FUNCTION_FAILED, "MsiSummaryInfoSetProperty wrong error\n");
+    r = libmsi_summary_info_set_property(hsuminfo, MSI_PID_CODEPAGE, VT_I2, 1, &ft, "Mike");
+    ok(r == ERROR_FUNCTION_FAILED, "libmsi_summary_info_set_property wrong error\n");
 
-    r = MsiCloseHandle(hsuminfo);
-    ok(r == ERROR_SUCCESS, "MsiCloseHandle failed\n");
+    r = libmsi_unref(hsuminfo);
+    ok(r == ERROR_SUCCESS, "libmsi_unref failed\n");
 
     /* try again with a higher update count */
-    r = MsiGetSummaryInformation(hdb, 10, &hsuminfo);
-    ok(r == ERROR_SUCCESS, "MsiGetSummaryInformation failed\n");
+    r = libmsi_database_get_summary_info(hdb, 10, &hsuminfo);
+    ok(r == ERROR_SUCCESS, "libmsi_database_get_summary_info failed\n");
 
-    r = MsiSummaryInfoSetProperty(hsuminfo, MSI_PID_TITLE, VT_LPSTR, 0, NULL, "JungAh");
-    ok(r == ERROR_SUCCESS, "MsiSummaryInfoSetProperty failed\n");
+    r = libmsi_summary_info_set_property(hsuminfo, MSI_PID_TITLE, VT_LPSTR, 0, NULL, "JungAh");
+    ok(r == ERROR_SUCCESS, "libmsi_summary_info_set_property failed\n");
 
-    r = MsiSummaryInfoSetProperty(hsuminfo, MSI_PID_CODEPAGE, VT_LPSTR, 1, NULL, NULL);
-    ok(r == ERROR_DATATYPE_MISMATCH, "MsiSummaryInfoSetProperty wrong error\n");
+    r = libmsi_summary_info_set_property(hsuminfo, MSI_PID_CODEPAGE, VT_LPSTR, 1, NULL, NULL);
+    ok(r == ERROR_DATATYPE_MISMATCH, "libmsi_summary_info_set_property wrong error\n");
 
-    r = MsiSummaryInfoSetProperty(hsuminfo, MSI_PID_CODEPAGE, VT_I2, 1, NULL, NULL);
-    ok(r == ERROR_SUCCESS, "MsiSummaryInfoSetProperty wrong error\n");
+    r = libmsi_summary_info_set_property(hsuminfo, MSI_PID_CODEPAGE, VT_I2, 1, NULL, NULL);
+    ok(r == ERROR_SUCCESS, "libmsi_summary_info_set_property wrong error\n");
 
-    r = MsiSummaryInfoSetProperty(hsuminfo, MSI_PID_CODEPAGE, VT_I2, 1, &ft, "Mike");
-    ok(r == ERROR_SUCCESS, "MsiSummaryInfoSetProperty wrong error\n");
+    r = libmsi_summary_info_set_property(hsuminfo, MSI_PID_CODEPAGE, VT_I2, 1, &ft, "Mike");
+    ok(r == ERROR_SUCCESS, "libmsi_summary_info_set_property wrong error\n");
 
-    r = MsiSummaryInfoSetProperty(hsuminfo, MSI_PID_AUTHOR, VT_LPSTR, 1, &ft, "Mike");
-    ok(r == ERROR_SUCCESS, "MsiSummaryInfoSetProperty wrong error\n");
+    r = libmsi_summary_info_set_property(hsuminfo, MSI_PID_AUTHOR, VT_LPSTR, 1, &ft, "Mike");
+    ok(r == ERROR_SUCCESS, "libmsi_summary_info_set_property wrong error\n");
 
-    r = MsiSummaryInfoPersist(hsuminfo);
-    ok(r == ERROR_SUCCESS, "MsiSummaryInfoPersist failed\n");
+    r = libmsi_summary_info_persist(hsuminfo);
+    ok(r == ERROR_SUCCESS, "libmsi_summary_info_persist failed\n");
 
-    MsiDatabaseCommit(hdb);
+    libmsi_database_commit(hdb);
 
-    r = MsiCloseHandle(hsuminfo);
-    ok(r == ERROR_SUCCESS, "MsiCloseHandle failed\n");
+    r = libmsi_unref(hsuminfo);
+    ok(r == ERROR_SUCCESS, "libmsi_unref failed\n");
 
-    r = MsiCloseHandle(hdb);
-    ok(r == ERROR_SUCCESS, "MsiCloseHandle failed\n");
+    r = libmsi_unref(hdb);
+    ok(r == ERROR_SUCCESS, "libmsi_unref failed\n");
 
     /* reread, non-zero update count */
-    r = MsiOpenDatabase(msifile, LIBMSI_DB_OPEN_TRANSACT, &hdb);
-    ok(r == ERROR_SUCCESS, "MsiOpenDatabase failed\n");
+    r = libmsi_database_open(msifile, LIBMSI_DB_OPEN_TRANSACT, &hdb);
+    ok(r == ERROR_SUCCESS, "libmsi_database_open failed\n");
 
-    r = MsiGetSummaryInformation(hdb, 1, &hsuminfo);
-    ok(r == ERROR_SUCCESS, "MsiGetSummaryInformation failed\n");
+    r = libmsi_database_get_summary_info(hdb, 1, &hsuminfo);
+    ok(r == ERROR_SUCCESS, "libmsi_database_get_summary_info failed\n");
 
-    r = MsiSummaryInfoSetProperty(hsuminfo, MSI_PID_AUTHOR, VT_LPSTR, 1, &ft, "Mike");
-    ok(r == ERROR_SUCCESS, "MsiSummaryInfoSetProperty wrong error\n");
+    r = libmsi_summary_info_set_property(hsuminfo, MSI_PID_AUTHOR, VT_LPSTR, 1, &ft, "Mike");
+    ok(r == ERROR_SUCCESS, "libmsi_summary_info_set_property wrong error\n");
 
-    r = MsiSummaryInfoPersist(hsuminfo);
-    ok(r == ERROR_SUCCESS, "MsiSummaryInfoPersist failed %u\n", r);
+    r = libmsi_summary_info_persist(hsuminfo);
+    ok(r == ERROR_SUCCESS, "libmsi_summary_info_persist failed %u\n", r);
 
-    r = MsiCloseHandle(hsuminfo);
-    ok(r == ERROR_SUCCESS, "MsiCloseHandle failed %u\n", r);
+    r = libmsi_unref(hsuminfo);
+    ok(r == ERROR_SUCCESS, "libmsi_unref failed %u\n", r);
 
     /* now with zero update count */
-    r = MsiCloseHandle(hdb);
-    ok(r == ERROR_SUCCESS, "MsiCloseHandle failed %u\n", r);
+    r = libmsi_unref(hdb);
+    ok(r == ERROR_SUCCESS, "libmsi_unref failed %u\n", r);
 
-    r = MsiOpenDatabase(msifile, LIBMSI_DB_OPEN_READONLY, &hdb);
-    ok(r == ERROR_SUCCESS, "MsiOpenDatabase failed\n");
+    r = libmsi_database_open(msifile, LIBMSI_DB_OPEN_READONLY, &hdb);
+    ok(r == ERROR_SUCCESS, "libmsi_database_open failed\n");
 
-    r = MsiGetSummaryInformation(hdb, 0, &hsuminfo);
-    ok(r == ERROR_SUCCESS, "MsiGetSummaryInformation failed %u\n", r);
+    r = libmsi_database_get_summary_info(hdb, 0, &hsuminfo);
+    ok(r == ERROR_SUCCESS, "libmsi_database_get_summary_info failed %u\n", r);
 
-    r = MsiSummaryInfoSetProperty(hsuminfo, MSI_PID_AUTHOR, VT_LPSTR, 1, &ft, "Mike");
-    todo_wine ok(r == ERROR_FUNCTION_FAILED, "MsiSummaryInfoSetProperty wrong error, %u\n", r);
+    r = libmsi_summary_info_set_property(hsuminfo, MSI_PID_AUTHOR, VT_LPSTR, 1, &ft, "Mike");
+    todo_wine ok(r == ERROR_FUNCTION_FAILED, "libmsi_summary_info_set_property wrong error, %u\n", r);
 
-    r = MsiSummaryInfoPersist(hsuminfo);
-    ok(r == ERROR_FUNCTION_FAILED, "MsiSummaryInfoPersist wrong error %u\n", r);
+    r = libmsi_summary_info_persist(hsuminfo);
+    ok(r == ERROR_FUNCTION_FAILED, "libmsi_summary_info_persist wrong error %u\n", r);
 
-    r = MsiCloseHandle(hsuminfo);
-    ok(r == ERROR_SUCCESS, "MsiCloseHandle failed\n");
+    r = libmsi_unref(hsuminfo);
+    ok(r == ERROR_SUCCESS, "libmsi_unref failed\n");
 
-    r = MsiCloseHandle(hdb);
-    ok(r == ERROR_SUCCESS, "MsiCloseHandle failed %u\n", r);
+    r = libmsi_unref(hdb);
+    ok(r == ERROR_SUCCESS, "libmsi_unref failed %u\n", r);
 
     r = DeleteFile(msifile);
     ok(r, "DeleteFile failed\n");
@@ -383,12 +383,12 @@ static void test_summary_binary(void)
 
     ok( INVALID_FILE_ATTRIBUTES != GetFileAttributes(msifile), "file doesn't exist!\n");
 
-    /* just MsiOpenDatabase should not create a file */
-    r = MsiOpenDatabase(msifile, LIBMSI_DB_OPEN_READONLY, &hdb);
-    ok(r == ERROR_SUCCESS, "MsiOpenDatabase failed\n");
+    /* just libmsi_database_open should not create a file */
+    r = libmsi_database_open(msifile, LIBMSI_DB_OPEN_READONLY, &hdb);
+    ok(r == ERROR_SUCCESS, "libmsi_database_open failed\n");
 
-    r = MsiGetSummaryInformation(hdb, 0, &hsuminfo);
-    ok(r == ERROR_SUCCESS, "MsiGetSummaryInformation failed\n");
+    r = libmsi_database_get_summary_info(hdb, 0, &hsuminfo);
+    ok(r == ERROR_SUCCESS, "libmsi_database_get_summary_info failed\n");
 
     /*
      * Check what reading MSI_PID_LASTPRINTED does...
@@ -399,8 +399,8 @@ static void test_summary_binary(void)
     sz = sizeof sval;
     sval[0] = 0;
     type = 0;
-    r = MsiSummaryInfoGetProperty(hsuminfo, MSI_PID_LASTPRINTED, &type, NULL, NULL, sval, &sz);
-    ok(r == ERROR_SUCCESS, "MsiSummaryInfoGetProperty failed\n");
+    r = libmsi_summary_info_get_property(hsuminfo, MSI_PID_LASTPRINTED, &type, NULL, NULL, sval, &sz);
+    ok(r == ERROR_SUCCESS, "libmsi_summary_info_get_property failed\n");
     ok(!strcmp(sval, "") || !strcmp(sval, "7"),
         "Expected empty string or \"7\", got \"%s\"\n", sval);
     todo_wine {
@@ -409,24 +409,24 @@ static void test_summary_binary(void)
     }
 
     ival = -1;
-    r = MsiSummaryInfoGetProperty(hsuminfo, MSI_PID_WORDCOUNT, &type, &ival, NULL, NULL, NULL);
-    ok(r == ERROR_SUCCESS, "MsiSummaryInfoGetProperty failed\n");
+    r = libmsi_summary_info_get_property(hsuminfo, MSI_PID_WORDCOUNT, &type, &ival, NULL, NULL, NULL);
+    ok(r == ERROR_SUCCESS, "libmsi_summary_info_get_property failed\n");
     todo_wine ok( ival == 0, "value incorrect\n");
 
     /* looks like msi adds some of its own values in here */
     count = 0;
-    r = MsiSummaryInfoGetPropertyCount( hsuminfo, &count );
+    r = libmsi_summary_info_get_property_count( hsuminfo, &count );
     ok(r == ERROR_SUCCESS, "getpropcount failed\n");
     todo_wine ok(count == 10, "prop count incorrect\n");
 
-    r = MsiSummaryInfoSetProperty( hsuminfo, MSI_PID_TITLE, VT_LPSTR, 0, NULL, "Mike" );
-    ok(r == ERROR_FUNCTION_FAILED, "MsiSummaryInfoSetProperty failed %u\n", r);
+    r = libmsi_summary_info_set_property( hsuminfo, MSI_PID_TITLE, VT_LPSTR, 0, NULL, "Mike" );
+    ok(r == ERROR_FUNCTION_FAILED, "libmsi_summary_info_set_property failed %u\n", r);
 
-    r = MsiSummaryInfoPersist( hsuminfo );
-    ok(r == ERROR_FUNCTION_FAILED, "MsiSummaryInfoPersist failed %u\n", r);
+    r = libmsi_summary_info_persist( hsuminfo );
+    ok(r == ERROR_FUNCTION_FAILED, "libmsi_summary_info_persist failed %u\n", r);
 
-    MsiCloseHandle( hsuminfo );
-    MsiCloseHandle( hdb );
+    libmsi_unref( hsuminfo );
+    libmsi_unref( hdb );
 
     DeleteFile( msifile );
 }

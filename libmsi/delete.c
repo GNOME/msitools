@@ -53,7 +53,7 @@ typedef struct LibmsiDeleteView
     LibmsiView       *table;
 } LibmsiDeleteView;
 
-static unsigned DELETE_fetch_int( LibmsiView *view, unsigned row, unsigned col, unsigned *val )
+static unsigned delete_view_fetch_int( LibmsiView *view, unsigned row, unsigned col, unsigned *val )
 {
     LibmsiDeleteView *dv = (LibmsiDeleteView*)view;
 
@@ -62,7 +62,7 @@ static unsigned DELETE_fetch_int( LibmsiView *view, unsigned row, unsigned col, 
     return ERROR_FUNCTION_FAILED;
 }
 
-static unsigned DELETE_fetch_stream( LibmsiView *view, unsigned row, unsigned col, IStream **stm)
+static unsigned delete_view_fetch_stream( LibmsiView *view, unsigned row, unsigned col, IStream **stm)
 {
     LibmsiDeleteView *dv = (LibmsiDeleteView*)view;
 
@@ -71,7 +71,7 @@ static unsigned DELETE_fetch_stream( LibmsiView *view, unsigned row, unsigned co
     return ERROR_FUNCTION_FAILED;
 }
 
-static unsigned DELETE_execute( LibmsiView *view, LibmsiRecord *record )
+static unsigned delete_view_execute( LibmsiView *view, LibmsiRecord *record )
 {
     LibmsiDeleteView *dv = (LibmsiDeleteView*)view;
     unsigned r, i, rows = 0, cols = 0;
@@ -98,7 +98,7 @@ static unsigned DELETE_execute( LibmsiView *view, LibmsiRecord *record )
     return ERROR_SUCCESS;
 }
 
-static unsigned DELETE_close( LibmsiView *view )
+static unsigned delete_view_close( LibmsiView *view )
 {
     LibmsiDeleteView *dv = (LibmsiDeleteView*)view;
 
@@ -110,7 +110,7 @@ static unsigned DELETE_close( LibmsiView *view )
     return dv->table->ops->close( dv->table );
 }
 
-static unsigned DELETE_get_dimensions( LibmsiView *view, unsigned *rows, unsigned *cols )
+static unsigned delete_view_get_dimensions( LibmsiView *view, unsigned *rows, unsigned *cols )
 {
     LibmsiDeleteView *dv = (LibmsiDeleteView*)view;
 
@@ -124,7 +124,7 @@ static unsigned DELETE_get_dimensions( LibmsiView *view, unsigned *rows, unsigne
     return dv->table->ops->get_dimensions( dv->table, NULL, cols );
 }
 
-static unsigned DELETE_get_column_info( LibmsiView *view, unsigned n, const WCHAR **name,
+static unsigned delete_view_get_column_info( LibmsiView *view, unsigned n, const WCHAR **name,
                                     unsigned *type, bool *temporary, const WCHAR **table_name )
 {
     LibmsiDeleteView *dv = (LibmsiDeleteView*)view;
@@ -138,7 +138,7 @@ static unsigned DELETE_get_column_info( LibmsiView *view, unsigned n, const WCHA
                                             type, temporary, table_name);
 }
 
-static unsigned DELETE_modify( LibmsiView *view, LibmsiModify eModifyMode,
+static unsigned delete_view_modify( LibmsiView *view, LibmsiModify eModifyMode,
                            LibmsiRecord *rec, unsigned row )
 {
     LibmsiDeleteView *dv = (LibmsiDeleteView*)view;
@@ -148,7 +148,7 @@ static unsigned DELETE_modify( LibmsiView *view, LibmsiModify eModifyMode,
     return ERROR_FUNCTION_FAILED;
 }
 
-static unsigned DELETE_delete( LibmsiView *view )
+static unsigned delete_view_delete( LibmsiView *view )
 {
     LibmsiDeleteView *dv = (LibmsiDeleteView*)view;
 
@@ -162,7 +162,7 @@ static unsigned DELETE_delete( LibmsiView *view )
     return ERROR_SUCCESS;
 }
 
-static unsigned DELETE_find_matching_rows( LibmsiView *view, unsigned col,
+static unsigned delete_view_find_matching_rows( LibmsiView *view, unsigned col,
     unsigned val, unsigned *row, MSIITERHANDLE *handle )
 {
     TRACE("%p, %d, %u, %p\n", view, col, val, *handle);
@@ -171,21 +171,21 @@ static unsigned DELETE_find_matching_rows( LibmsiView *view, unsigned col,
 }
 
 
-static const LibmsiViewOPS delete_ops =
+static const LibmsiViewOps delete_ops =
 {
-    DELETE_fetch_int,
-    DELETE_fetch_stream,
+    delete_view_fetch_int,
+    delete_view_fetch_stream,
     NULL,
     NULL,
     NULL,
     NULL,
-    DELETE_execute,
-    DELETE_close,
-    DELETE_get_dimensions,
-    DELETE_get_column_info,
-    DELETE_modify,
-    DELETE_delete,
-    DELETE_find_matching_rows,
+    delete_view_execute,
+    delete_view_close,
+    delete_view_get_dimensions,
+    delete_view_get_column_info,
+    delete_view_modify,
+    delete_view_delete,
+    delete_view_find_matching_rows,
     NULL,
     NULL,
     NULL,
@@ -194,7 +194,7 @@ static const LibmsiViewOPS delete_ops =
     NULL,
 };
 
-unsigned DELETE_CreateView( LibmsiDatabase *db, LibmsiView **view, LibmsiView *table )
+unsigned delete_view_create( LibmsiDatabase *db, LibmsiView **view, LibmsiView *table )
 {
     LibmsiDeleteView *dv = NULL;
 

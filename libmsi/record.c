@@ -44,7 +44,7 @@
 #define LIBMSI_FIELD_TYPE_STREAM 4
 #define LIBMSI_FIELD_TYPE_INTPTR 5
 
-static void MSI_FreeField( LibmsiField *field )
+static void _libmsi_free_field( LibmsiField *field )
 {
     switch( field->type )
     {
@@ -63,16 +63,16 @@ static void MSI_FreeField( LibmsiField *field )
     }
 }
 
-void MSI_CloseRecord( LibmsiObject *arg )
+void _libmsi_record_destroy( LibmsiObject *arg )
 {
     LibmsiRecord *rec = (LibmsiRecord *) arg;
     unsigned i;
 
     for( i=0; i<=rec->count; i++ )
-        MSI_FreeField( &rec->fields[i] );
+        _libmsi_free_field( &rec->fields[i] );
 }
 
-LibmsiRecord *MsiCreateRecord( unsigned cParams )
+LibmsiRecord *libmsi_record_create( unsigned cParams )
 {
     LibmsiRecord *rec;
     unsigned len;
@@ -83,13 +83,13 @@ LibmsiRecord *MsiCreateRecord( unsigned cParams )
         return NULL;
 
     len = sizeof (LibmsiRecord) + sizeof (LibmsiField)*cParams;
-    rec = alloc_msiobject( len, MSI_CloseRecord );
+    rec = alloc_msiobject( len, _libmsi_record_destroy );
     if( rec )
         rec->count = cParams;
     return rec;
 }
 
-unsigned MsiRecordGetFieldCount( const LibmsiRecord *rec )
+unsigned libmsi_record_get_field_count( const LibmsiRecord *rec )
 {
     if( !rec )
         return -1;
@@ -97,7 +97,7 @@ unsigned MsiRecordGetFieldCount( const LibmsiRecord *rec )
     return rec->count;
 }
 
-static bool string2intW( const WCHAR *str, int *out )
+static bool expr_int_from_string( const WCHAR *str, int *out )
 {
     int x = 0;
     const WCHAR *p = str;
@@ -120,7 +120,7 @@ static bool string2intW( const WCHAR *str, int *out )
     return true;
 }
 
-unsigned MSI_RecordCopyField( LibmsiRecord *in_rec, unsigned in_n,
+unsigned _libmsi_record_copy_field( LibmsiRecord *in_rec, unsigned in_n,
                           LibmsiRecord *out_rec, unsigned out_n )
 {
     unsigned r = ERROR_SUCCESS;
@@ -166,7 +166,7 @@ unsigned MSI_RecordCopyField( LibmsiRecord *in_rec, unsigned in_n,
     return r;
 }
 
-intptr_t MSI_RecordGetIntPtr( const LibmsiRecord *rec, unsigned iField )
+intptr_t _libmsi_record_get_int_ptr( const LibmsiRecord *rec, unsigned iField )
 {
     int ret;
 
@@ -182,7 +182,7 @@ intptr_t MSI_RecordGetIntPtr( const LibmsiRecord *rec, unsigned iField )
     case LIBMSI_FIELD_TYPE_INTPTR:
         return rec->fields[iField].u.pVal;
     case LIBMSI_FIELD_TYPE_WSTR:
-        if( string2intW( rec->fields[iField].u.szwVal, &ret ) )
+        if( expr_int_from_string( rec->fields[iField].u.szwVal, &ret ) )
             return ret;
         return INTPTR_MIN;
     default:
@@ -192,7 +192,7 @@ intptr_t MSI_RecordGetIntPtr( const LibmsiRecord *rec, unsigned iField )
     return INTPTR_MIN;
 }
 
-int MsiRecordGetInteger( const LibmsiRecord *rec, unsigned iField)
+int libmsi_record_get_integer( const LibmsiRecord *rec, unsigned iField)
 {
     int ret = 0;
 
@@ -211,7 +211,7 @@ int MsiRecordGetInteger( const LibmsiRecord *rec, unsigned iField)
     case LIBMSI_FIELD_TYPE_INTPTR:
         return rec->fields[iField].u.pVal;
     case LIBMSI_FIELD_TYPE_WSTR:
-        if( string2intW( rec->fields[iField].u.szwVal, &ret ) )
+        if( expr_int_from_string( rec->fields[iField].u.szwVal, &ret ) )
             return ret;
         return MSI_NULL_INTEGER;
     default:
@@ -221,7 +221,7 @@ int MsiRecordGetInteger( const LibmsiRecord *rec, unsigned iField)
     return MSI_NULL_INTEGER;
 }
 
-unsigned MsiRecordClearData( LibmsiRecord *rec )
+unsigned libmsi_record_clear_data( LibmsiRecord *rec )
 {
     unsigned i;
 
@@ -233,7 +233,7 @@ unsigned MsiRecordClearData( LibmsiRecord *rec )
     msiobj_addref( &rec->hdr );
     for( i=0; i<=rec->count; i++)
     {
-        MSI_FreeField( &rec->fields[i] );
+        _libmsi_free_field( &rec->fields[i] );
         rec->fields[i].type = LIBMSI_FIELD_TYPE_NULL;
         rec->fields[i].u.iVal = 0;
     }
@@ -242,21 +242,21 @@ unsigned MsiRecordClearData( LibmsiRecord *rec )
     return ERROR_SUCCESS;
 }
 
-unsigned MSI_RecordSetIntPtr( LibmsiRecord *rec, unsigned iField, intptr_t pVal )
+unsigned _libmsi_record_set_int_ptr( LibmsiRecord *rec, unsigned iField, intptr_t pVal )
 {
     TRACE("%p %u %ld\n", rec, iField, pVal);
 
     if( iField > rec->count )
         return ERROR_INVALID_PARAMETER;
 
-    MSI_FreeField( &rec->fields[iField] );
+    _libmsi_free_field( &rec->fields[iField] );
     rec->fields[iField].type = LIBMSI_FIELD_TYPE_INTPTR;
     rec->fields[iField].u.pVal = pVal;
 
     return ERROR_SUCCESS;
 }
 
-unsigned MsiRecordSetInteger( LibmsiRecord *rec, unsigned iField, int iVal )
+unsigned libmsi_record_set_int( LibmsiRecord *rec, unsigned iField, int iVal )
 {
     TRACE("%p %u %d\n", rec, iField, iVal);
 
@@ -266,14 +266,14 @@ unsigned MsiRecordSetInteger( LibmsiRecord *rec, unsigned iField, int iVal )
     if( iField > rec->count )
         return ERROR_INVALID_PARAMETER;
 
-    MSI_FreeField( &rec->fields[iField] );
+    _libmsi_free_field( &rec->fields[iField] );
     rec->fields[iField].type = LIBMSI_FIELD_TYPE_INT;
     rec->fields[iField].u.iVal = iVal;
 
     return ERROR_SUCCESS;
 }
 
-bool MsiRecordIsNull( const LibmsiRecord *rec, unsigned iField )
+bool libmsi_record_is_null( const LibmsiRecord *rec, unsigned iField )
 {
     bool r = true;
 
@@ -288,7 +288,7 @@ bool MsiRecordIsNull( const LibmsiRecord *rec, unsigned iField )
     return r;
 }
 
-unsigned MsiRecordGetString(const LibmsiRecord *rec, unsigned iField,
+unsigned libmsi_record_get_string(const LibmsiRecord *rec, unsigned iField,
                char *szValue, unsigned *pcchValue)
 {
     unsigned len=0, ret;
@@ -344,7 +344,7 @@ unsigned MsiRecordGetString(const LibmsiRecord *rec, unsigned iField,
     return ret;
 }
 
-const WCHAR *MSI_RecordGetStringRaw( const LibmsiRecord *rec, unsigned iField )
+const WCHAR *_libmsi_record_get_string_raw( const LibmsiRecord *rec, unsigned iField )
 {
     if( iField > rec->count )
         return NULL;
@@ -355,7 +355,7 @@ const WCHAR *MSI_RecordGetStringRaw( const LibmsiRecord *rec, unsigned iField )
     return rec->fields[iField].u.szwVal;
 }
 
-unsigned MSI_RecordGetStringW(const LibmsiRecord *rec, unsigned iField,
+unsigned _libmsi_record_get_stringW(const LibmsiRecord *rec, unsigned iField,
                WCHAR *szValue, unsigned *pcchValue)
 {
     unsigned len=0, ret;
@@ -413,7 +413,7 @@ static unsigned msi_get_stream_size( IStream *stm )
     return stat.cbSize.QuadPart;
 }
 
-unsigned MsiRecordDataSize(const LibmsiRecord *rec, unsigned iField)
+unsigned libmsi_record_get_field_size(const LibmsiRecord *rec, unsigned iField)
 {
     TRACE("%p %d\n", rec, iField);
 
@@ -437,7 +437,7 @@ unsigned MsiRecordDataSize(const LibmsiRecord *rec, unsigned iField)
     return 0;
 }
 
-unsigned MsiRecordSetString( LibmsiRecord *rec, unsigned iField, const char *szValue )
+unsigned libmsi_record_set_string( LibmsiRecord *rec, unsigned iField, const char *szValue )
 {
     WCHAR *str;
 
@@ -447,10 +447,10 @@ unsigned MsiRecordSetString( LibmsiRecord *rec, unsigned iField, const char *szV
         return ERROR_INVALID_HANDLE;
 
     str = strdupAtoW( szValue );
-    return MSI_RecordSetStringW( rec, iField, str );
+    return _libmsi_record_set_stringW( rec, iField, str );
 }
 
-unsigned MSI_RecordSetStringW( LibmsiRecord *rec, unsigned iField, const WCHAR *szValue )
+unsigned _libmsi_record_set_stringW( LibmsiRecord *rec, unsigned iField, const WCHAR *szValue )
 {
     WCHAR *str;
 
@@ -459,7 +459,7 @@ unsigned MSI_RecordSetStringW( LibmsiRecord *rec, unsigned iField, const WCHAR *
     if( iField > rec->count )
         return ERROR_INVALID_FIELD;
 
-    MSI_FreeField( &rec->fields[iField] );
+    _libmsi_free_field( &rec->fields[iField] );
 
     if( szValue && szValue[0] )
     {
@@ -477,7 +477,7 @@ unsigned MSI_RecordSetStringW( LibmsiRecord *rec, unsigned iField, const WCHAR *
 }
 
 /* read the data in a file into an IStream */
-static unsigned RECORD_StreamFromFile(const char *szFile, IStream **pstm)
+static unsigned _libmsi_addstream_from_file(const char *szFile, IStream **pstm)
 {
     unsigned sz, szHighWord = 0, read;
     HANDLE handle;
@@ -526,19 +526,19 @@ static unsigned RECORD_StreamFromFile(const char *szFile, IStream **pstm)
     return ERROR_SUCCESS;
 }
 
-unsigned MSI_RecordSetStream(LibmsiRecord *rec, unsigned iField, IStream *stream)
+unsigned _libmsi_record_load_stream(LibmsiRecord *rec, unsigned iField, IStream *stream)
 {
     if ( (iField == 0) || (iField > rec->count) )
         return ERROR_INVALID_PARAMETER;
 
-    MSI_FreeField( &rec->fields[iField] );
+    _libmsi_free_field( &rec->fields[iField] );
     rec->fields[iField].type = LIBMSI_FIELD_TYPE_STREAM;
     rec->fields[iField].u.stream = stream;
 
     return ERROR_SUCCESS;
 }
 
-unsigned MSI_RecordSetStreamFromFile(LibmsiRecord *rec, unsigned iField, const char *szFilename)
+unsigned _libmsi_record_load_stream_from_file(LibmsiRecord *rec, unsigned iField, const char *szFilename)
 {
     IStream *stm = NULL;
     HRESULT r;
@@ -567,18 +567,18 @@ unsigned MSI_RecordSetStreamFromFile(LibmsiRecord *rec, unsigned iField, const c
     else
     {
         /* read the file into a stream and save the stream in the record */
-        r = RECORD_StreamFromFile(szFilename, &stm);
+        r = _libmsi_addstream_from_file(szFilename, &stm);
         if( r != ERROR_SUCCESS )
             return r;
 
         /* if all's good, store it in the record */
-        MSI_RecordSetStream(rec, iField, stm);
+        _libmsi_record_load_stream(rec, iField, stm);
     }
 
     return ERROR_SUCCESS;
 }
 
-unsigned MsiRecordSetStream(LibmsiRecord *rec, unsigned iField, const char *szFilename)
+unsigned libmsi_record_load_stream(LibmsiRecord *rec, unsigned iField, const char *szFilename)
 {
     unsigned ret;
 
@@ -588,12 +588,12 @@ unsigned MsiRecordSetStream(LibmsiRecord *rec, unsigned iField, const char *szFi
         return ERROR_INVALID_HANDLE;
 
     msiobj_addref( &rec->hdr );
-    ret = MSI_RecordSetStreamFromFile( rec, iField, szFilename );
+    ret = _libmsi_record_load_stream_from_file( rec, iField, szFilename );
     msiobj_release( &rec->hdr );
     return ret;
 }
 
-unsigned MSI_RecordReadStream(const LibmsiRecord *rec, unsigned iField, char *buf, unsigned *sz)
+unsigned _libmsi_record_save_stream(const LibmsiRecord *rec, unsigned iField, char *buf, unsigned *sz)
 {
     unsigned count;
     HRESULT r;
@@ -651,7 +651,7 @@ unsigned MSI_RecordReadStream(const LibmsiRecord *rec, unsigned iField, char *bu
     return ERROR_SUCCESS;
 }
 
-unsigned MsiRecordReadStream(LibmsiRecord *rec, unsigned iField, char *buf, unsigned *sz)
+unsigned libmsi_record_save_stream(LibmsiRecord *rec, unsigned iField, char *buf, unsigned *sz)
 {
     unsigned ret;
 
@@ -661,19 +661,19 @@ unsigned MsiRecordReadStream(LibmsiRecord *rec, unsigned iField, char *buf, unsi
         return ERROR_INVALID_HANDLE;
 
     msiobj_addref( &rec->hdr );
-    ret = MSI_RecordReadStream( rec, iField, buf, sz );
+    ret = _libmsi_record_save_stream( rec, iField, buf, sz );
     msiobj_release( &rec->hdr );
     return ret;
 }
 
-unsigned MSI_RecordSetIStream( LibmsiRecord *rec, unsigned iField, IStream *stm )
+unsigned _libmsi_record_set_IStream( LibmsiRecord *rec, unsigned iField, IStream *stm )
 {
     TRACE("%p %d %p\n", rec, iField, stm);
 
     if( iField > rec->count )
         return ERROR_INVALID_FIELD;
 
-    MSI_FreeField( &rec->fields[iField] );
+    _libmsi_free_field( &rec->fields[iField] );
 
     rec->fields[iField].type = LIBMSI_FIELD_TYPE_STREAM;
     rec->fields[iField].u.stream = stm;
@@ -682,7 +682,7 @@ unsigned MSI_RecordSetIStream( LibmsiRecord *rec, unsigned iField, IStream *stm 
     return ERROR_SUCCESS;
 }
 
-unsigned MSI_RecordGetIStream( const LibmsiRecord *rec, unsigned iField, IStream **pstm)
+unsigned _libmsi_record_get_IStream( const LibmsiRecord *rec, unsigned iField, IStream **pstm)
 {
     TRACE("%p %d %p\n", rec, iField, pstm);
 
@@ -730,14 +730,14 @@ end:
     return ERROR_SUCCESS;
 }
 
-unsigned MSI_RecordStreamToFile( const LibmsiRecord *rec, unsigned iField, const WCHAR *name )
+unsigned _libmsi_record_save_stream_to_file( const LibmsiRecord *rec, unsigned iField, const WCHAR *name )
 {
     IStream *stm = NULL;
     unsigned r;
 
     TRACE("%p %u %s\n", rec, iField, debugstr_w(name));
 
-    r = MSI_RecordGetIStream( rec, iField, &stm );
+    r = _libmsi_record_get_IStream( rec, iField, &stm );
     if( r == ERROR_SUCCESS )
     {
         r = msi_dump_stream_to_file( stm, name );
@@ -747,13 +747,13 @@ unsigned MSI_RecordStreamToFile( const LibmsiRecord *rec, unsigned iField, const
     return r;
 }
 
-LibmsiRecord *MSI_CloneRecord(LibmsiRecord *rec)
+LibmsiRecord *_libmsi_record_clone(LibmsiRecord *rec)
 {
     LibmsiRecord *clone;
     unsigned r, i, count;
 
-    count = MsiRecordGetFieldCount(rec);
-    clone = MsiCreateRecord(count);
+    count = libmsi_record_get_field_count(rec);
+    clone = libmsi_record_create(count);
     if (!clone)
         return NULL;
 
@@ -771,7 +771,7 @@ LibmsiRecord *MSI_CloneRecord(LibmsiRecord *rec)
         }
         else
         {
-            r = MSI_RecordCopyField(rec, i, clone, i);
+            r = _libmsi_record_copy_field(rec, i, clone, i);
             if (r != ERROR_SUCCESS)
             {
                 msiobj_release(&clone->hdr);
@@ -783,7 +783,7 @@ LibmsiRecord *MSI_CloneRecord(LibmsiRecord *rec)
     return clone;
 }
 
-bool MSI_RecordsAreFieldsEqual(const LibmsiRecord *a, const LibmsiRecord *b, unsigned field)
+bool _libmsi_record_compare_fields(const LibmsiRecord *a, const LibmsiRecord *b, unsigned field)
 {
     if (a->fields[field].type != b->fields[field].type)
         return false;
@@ -811,7 +811,7 @@ bool MSI_RecordsAreFieldsEqual(const LibmsiRecord *a, const LibmsiRecord *b, uns
 }
 
 
-bool MSI_RecordsAreEqual(const LibmsiRecord *a, const LibmsiRecord *b)
+bool _libmsi_record_compare(const LibmsiRecord *a, const LibmsiRecord *b)
 {
     unsigned i;
 
@@ -820,7 +820,7 @@ bool MSI_RecordsAreEqual(const LibmsiRecord *a, const LibmsiRecord *b)
 
     for (i = 0; i <= a->count; i++)
     {
-        if (!MSI_RecordsAreFieldsEqual( a, b, i ))
+        if (!_libmsi_record_compare_fields( a, b, i ))
             return false;
     }
 
@@ -833,9 +833,9 @@ WCHAR *msi_dup_record_field( LibmsiRecord *rec, int field )
     WCHAR *str;
     unsigned r;
 
-    if (MsiRecordIsNull( rec, field )) return NULL;
+    if (libmsi_record_is_null( rec, field )) return NULL;
 
-    r = MSI_RecordGetStringW( rec, field, NULL, &sz );
+    r = _libmsi_record_get_stringW( rec, field, NULL, &sz );
     if (r != ERROR_SUCCESS)
         return NULL;
 
@@ -843,7 +843,7 @@ WCHAR *msi_dup_record_field( LibmsiRecord *rec, int field )
     str = msi_alloc( sz * sizeof(WCHAR) );
     if (!str) return NULL;
     str[0] = 0;
-    r = MSI_RecordGetStringW( rec, field, str, &sz );
+    r = _libmsi_record_get_stringW( rec, field, str, &sz );
     if (r != ERROR_SUCCESS)
     {
         ERR("failed to get string!\n");

@@ -41,7 +41,7 @@ typedef struct LibmsiDropView
     int hold;
 } LibmsiDropView;
 
-static unsigned DROP_execute(LibmsiView *view, LibmsiRecord *record)
+static unsigned drop_view_execute(LibmsiView *view, LibmsiRecord *record)
 {
     LibmsiDropView *dv = (LibmsiDropView*)view;
     unsigned r;
@@ -58,7 +58,7 @@ static unsigned DROP_execute(LibmsiView *view, LibmsiRecord *record)
     return dv->table->ops->drop(dv->table);
 }
 
-static unsigned DROP_close(LibmsiView *view)
+static unsigned drop_view_close(LibmsiView *view)
 {
     LibmsiDropView *dv = (LibmsiDropView*)view;
 
@@ -67,7 +67,7 @@ static unsigned DROP_close(LibmsiView *view)
     return ERROR_SUCCESS;
 }
 
-static unsigned DROP_get_dimensions(LibmsiView *view, unsigned *rows, unsigned *cols)
+static unsigned drop_view_get_dimensions(LibmsiView *view, unsigned *rows, unsigned *cols)
 {
     LibmsiDropView *dv = (LibmsiDropView*)view;
 
@@ -76,7 +76,7 @@ static unsigned DROP_get_dimensions(LibmsiView *view, unsigned *rows, unsigned *
     return ERROR_FUNCTION_FAILED;
 }
 
-static unsigned DROP_delete( LibmsiView *view )
+static unsigned drop_view_delete( LibmsiView *view )
 {
     LibmsiDropView *dv = (LibmsiDropView*)view;
 
@@ -90,7 +90,7 @@ static unsigned DROP_delete( LibmsiView *view )
     return ERROR_SUCCESS;
 }
 
-static const LibmsiViewOPS drop_ops =
+static const LibmsiViewOps drop_ops =
 {
     NULL,
     NULL,
@@ -98,12 +98,12 @@ static const LibmsiViewOPS drop_ops =
     NULL,
     NULL,
     NULL,
-    DROP_execute,
-    DROP_close,
-    DROP_get_dimensions,
+    drop_view_execute,
+    drop_view_close,
+    drop_view_get_dimensions,
     NULL,
     NULL,
-    DROP_delete,
+    drop_view_delete,
     NULL,
     NULL,
     NULL,
@@ -113,7 +113,7 @@ static const LibmsiViewOPS drop_ops =
     NULL,
 };
 
-unsigned DROP_CreateView(LibmsiDatabase *db, LibmsiView **view, const WCHAR *name)
+unsigned drop_view_create(LibmsiDatabase *db, LibmsiView **view, const WCHAR *name)
 {
     LibmsiDropView *dv;
     unsigned r;
@@ -124,7 +124,7 @@ unsigned DROP_CreateView(LibmsiDatabase *db, LibmsiView **view, const WCHAR *nam
     if(!dv)
         return ERROR_FUNCTION_FAILED;
 
-    r = TABLE_CreateView(db, name, &dv->table);
+    r = table_view_create(db, name, &dv->table);
     if (r != ERROR_SUCCESS)
     {
         msi_free( dv );

@@ -74,7 +74,7 @@ typedef struct LibmsiWhereView
     LibmsiOrderInfo  *order_info;
 } LibmsiWhereView;
 
-static unsigned WHERE_evaluate( LibmsiWhereView *wv, const unsigned rows[],
+static unsigned where_view_evaluate( LibmsiWhereView *wv, const unsigned rows[],
                             struct expr *cond, int *val, LibmsiRecord *record );
 
 #define INITIAL_REORDER_SIZE 16
@@ -212,7 +212,7 @@ static unsigned parse_column(LibmsiWhereView *wv, union ext_column *column,
     return ERROR_BAD_QUERY_SYNTAX;
 }
 
-static unsigned WHERE_fetch_int( LibmsiView *view, unsigned row, unsigned col, unsigned *val )
+static unsigned where_view_fetch_int( LibmsiView *view, unsigned row, unsigned col, unsigned *val )
 {
     LibmsiWhereView *wv = (LibmsiWhereView*)view;
     JOINTABLE *table;
@@ -235,7 +235,7 @@ static unsigned WHERE_fetch_int( LibmsiView *view, unsigned row, unsigned col, u
     return table->view->ops->fetch_int(table->view, rows[table->table_index], col, val);
 }
 
-static unsigned WHERE_fetch_stream( LibmsiView *view, unsigned row, unsigned col, IStream **stm )
+static unsigned where_view_fetch_stream( LibmsiView *view, unsigned row, unsigned col, IStream **stm )
 {
     LibmsiWhereView *wv = (LibmsiWhereView*)view;
     JOINTABLE *table;
@@ -258,7 +258,7 @@ static unsigned WHERE_fetch_stream( LibmsiView *view, unsigned row, unsigned col
     return table->view->ops->fetch_stream( table->view, rows[table->table_index], col, stm );
 }
 
-static unsigned WHERE_get_row( LibmsiView *view, unsigned row, LibmsiRecord **rec )
+static unsigned where_view_get_row( LibmsiView *view, unsigned row, LibmsiRecord **rec )
 {
     LibmsiWhereView *wv = (LibmsiWhereView *)view;
 
@@ -270,7 +270,7 @@ static unsigned WHERE_get_row( LibmsiView *view, unsigned row, LibmsiRecord **re
     return msi_view_get_row( wv->db, view, row, rec );
 }
 
-static unsigned WHERE_set_row( LibmsiView *view, unsigned row, LibmsiRecord *rec, unsigned mask )
+static unsigned where_view_set_row( LibmsiView *view, unsigned row, LibmsiRecord *rec, unsigned mask )
 {
     LibmsiWhereView *wv = (LibmsiWhereView*)view;
     unsigned i, r, offset = 0;
@@ -323,13 +323,13 @@ static unsigned WHERE_set_row( LibmsiView *view, unsigned row, LibmsiRecord *rec
             continue;
         }
 
-        reduced = MsiCreateRecord(col_count);
+        reduced = libmsi_record_create(col_count);
         if (!reduced)
             return ERROR_FUNCTION_FAILED;
 
         for (i = 1; i <= col_count; i++)
         {
-            r = MSI_RecordCopyField(rec, i + offset, reduced, i);
+            r = _libmsi_record_copy_field(rec, i + offset, reduced, i);
             if (r != ERROR_SUCCESS)
                 break;
         }
@@ -345,7 +345,7 @@ static unsigned WHERE_set_row( LibmsiView *view, unsigned row, LibmsiRecord *rec
     return r;
 }
 
-static unsigned WHERE_delete_row(LibmsiView *view, unsigned row)
+static unsigned where_view_delete_row(LibmsiView *view, unsigned row)
 {
     LibmsiWhereView *wv = (LibmsiWhereView *)view;
     unsigned r;
@@ -366,16 +366,16 @@ static unsigned WHERE_delete_row(LibmsiView *view, unsigned row)
     return wv->tables->view->ops->delete_row(wv->tables->view, rows[0]);
 }
 
-static int INT_evaluate_binary( LibmsiWhereView *wv, const unsigned rows[],
+static int expr_eval_binary( LibmsiWhereView *wv, const unsigned rows[],
                                 const struct complex_expr *expr, int *val, LibmsiRecord *record )
 {
     unsigned rl, rr;
     int lval, rval;
 
-    rl = WHERE_evaluate(wv, rows, expr->left, &lval, record);
+    rl = where_view_evaluate(wv, rows, expr->left, &lval, record);
     if (rl != ERROR_SUCCESS && rl != ERROR_CONTINUE)
         return rl;
-    rr = WHERE_evaluate(wv, rows, expr->right, &rval, record);
+    rr = where_view_evaluate(wv, rows, expr->right, &rval, record);
     if (rr != ERROR_SUCCESS && rr != ERROR_CONTINUE)
         return rr;
 
@@ -456,7 +456,7 @@ static inline unsigned expr_fetch_value(const union ext_column *expr, const unsi
 }
 
 
-static unsigned INT_evaluate_unary( LibmsiWhereView *wv, const unsigned rows[],
+static unsigned expr_eval_unary( LibmsiWhereView *wv, const unsigned rows[],
                                 const struct complex_expr *expr, int *val, LibmsiRecord *record )
 {
     unsigned r;
@@ -481,7 +481,7 @@ static unsigned INT_evaluate_unary( LibmsiWhereView *wv, const unsigned rows[],
     return ERROR_SUCCESS;
 }
 
-static unsigned STRING_evaluate( LibmsiWhereView *wv, const unsigned rows[],
+static unsigned expr_eval_string( LibmsiWhereView *wv, const unsigned rows[],
                                      const struct expr *expr,
                                      const LibmsiRecord *record,
                                      const WCHAR **str )
@@ -503,7 +503,7 @@ static unsigned STRING_evaluate( LibmsiWhereView *wv, const unsigned rows[],
         break;
 
     case EXPR_WILDCARD:
-        *str = MSI_RecordGetStringRaw(record, ++wv->rec_index);
+        *str = _libmsi_record_get_string_raw(record, ++wv->rec_index);
         break;
 
     default:
@@ -515,7 +515,7 @@ static unsigned STRING_evaluate( LibmsiWhereView *wv, const unsigned rows[],
     return r;
 }
 
-static unsigned STRCMP_Evaluate( LibmsiWhereView *wv, const unsigned rows[], const struct complex_expr *expr,
+static unsigned expr_eval_strcmp( LibmsiWhereView *wv, const unsigned rows[], const struct complex_expr *expr,
                              int *val, const LibmsiRecord *record )
 {
     int sr;
@@ -523,10 +523,10 @@ static unsigned STRCMP_Evaluate( LibmsiWhereView *wv, const unsigned rows[], con
     unsigned r;
 
     *val = true;
-    r = STRING_evaluate(wv, rows, expr->left, record, &l_str);
+    r = expr_eval_string(wv, rows, expr->left, record, &l_str);
     if (r == ERROR_CONTINUE)
         return r;
-    r = STRING_evaluate(wv, rows, expr->right, record, &r_str);
+    r = expr_eval_string(wv, rows, expr->right, record, &r_str);
     if (r == ERROR_CONTINUE)
         return r;
 
@@ -546,7 +546,7 @@ static unsigned STRCMP_Evaluate( LibmsiWhereView *wv, const unsigned rows[], con
     return ERROR_SUCCESS;
 }
 
-static unsigned WHERE_evaluate( LibmsiWhereView *wv, const unsigned rows[],
+static unsigned where_view_evaluate( LibmsiWhereView *wv, const unsigned rows[],
                             struct expr *cond, int *val, LibmsiRecord *record )
 {
     unsigned r, tval;
@@ -578,16 +578,16 @@ static unsigned WHERE_evaluate( LibmsiWhereView *wv, const unsigned rows[],
         return ERROR_SUCCESS;
 
     case EXPR_COMPLEX:
-        return INT_evaluate_binary(wv, rows, &cond->u.expr, val, record);
+        return expr_eval_binary(wv, rows, &cond->u.expr, val, record);
 
     case EXPR_UNARY:
-        return INT_evaluate_unary( wv, rows, &cond->u.expr, val, record );
+        return expr_eval_unary( wv, rows, &cond->u.expr, val, record );
 
     case EXPR_STRCMP:
-        return STRCMP_Evaluate( wv, rows, &cond->u.expr, val, record );
+        return expr_eval_strcmp( wv, rows, &cond->u.expr, val, record );
 
     case EXPR_WILDCARD:
-        *val = MsiRecordGetInteger( record, ++wv->rec_index );
+        *val = libmsi_record_get_integer( record, ++wv->rec_index );
         return ERROR_SUCCESS;
 
     default:
@@ -610,7 +610,7 @@ static unsigned check_condition( LibmsiWhereView *wv, LibmsiRecord *record, JOIN
     {
         val = 0;
         wv->rec_index = 0;
-        r = WHERE_evaluate( wv, table_rows, wv->cond, &val, record );
+        r = where_view_evaluate( wv, table_rows, wv->cond, &val, record );
         if (r != ERROR_SUCCESS && r != ERROR_CONTINUE)
             break;
         if (val)
@@ -762,7 +762,7 @@ static JOINTABLE **ordertables( LibmsiWhereView *wv )
     return tables;
 }
 
-static unsigned WHERE_execute( LibmsiView *view, LibmsiRecord *record )
+static unsigned where_view_execute( LibmsiView *view, LibmsiRecord *record )
 {
     LibmsiWhereView *wv = (LibmsiWhereView*)view;
     unsigned r;
@@ -818,7 +818,7 @@ static unsigned WHERE_execute( LibmsiView *view, LibmsiRecord *record )
     return r;
 }
 
-static unsigned WHERE_close( LibmsiView *view )
+static unsigned where_view_close( LibmsiView *view )
 {
     LibmsiWhereView *wv = (LibmsiWhereView*)view;
     JOINTABLE *table = wv->tables;
@@ -835,7 +835,7 @@ static unsigned WHERE_close( LibmsiView *view )
     return ERROR_SUCCESS;
 }
 
-static unsigned WHERE_get_dimensions( LibmsiView *view, unsigned *rows, unsigned *cols )
+static unsigned where_view_get_dimensions( LibmsiView *view, unsigned *rows, unsigned *cols )
 {
     LibmsiWhereView *wv = (LibmsiWhereView*)view;
 
@@ -857,7 +857,7 @@ static unsigned WHERE_get_dimensions( LibmsiView *view, unsigned *rows, unsigned
     return ERROR_SUCCESS;
 }
 
-static unsigned WHERE_get_column_info( LibmsiView *view, unsigned n, const WCHAR **name,
+static unsigned where_view_get_column_info( LibmsiView *view, unsigned n, const WCHAR **name,
                                    unsigned *type, bool *temporary, const WCHAR **table_name )
 {
     LibmsiWhereView *wv = (LibmsiWhereView*)view;
@@ -881,14 +881,14 @@ static unsigned join_find_row( LibmsiWhereView *wv, LibmsiRecord *rec, unsigned 
     const WCHAR *str;
     unsigned r, i, id, data;
 
-    str = MSI_RecordGetStringRaw( rec, 1 );
-    r = msi_string2idW( wv->db->strings, str, &id );
+    str = _libmsi_record_get_string_raw( rec, 1 );
+    r = _libmsi_id_from_stringW( wv->db->strings, str, &id );
     if (r != ERROR_SUCCESS)
         return r;
 
     for (i = 0; i < wv->row_count; i++)
     {
-        WHERE_fetch_int( &wv->view, i, 1, &data );
+        where_view_fetch_int( &wv->view, i, 1, &data );
 
         if (data == id)
         {
@@ -915,19 +915,19 @@ static unsigned join_modify_update( LibmsiView *view, LibmsiRecord *rec )
     if (r != ERROR_SUCCESS)
         return r;
 
-    assert(MsiRecordGetFieldCount(rec) == MsiRecordGetFieldCount(current));
+    assert(libmsi_record_get_field_count(rec) == libmsi_record_get_field_count(current));
 
-    for (i = MsiRecordGetFieldCount(rec); i > 0; i--)
+    for (i = libmsi_record_get_field_count(rec); i > 0; i--)
     {
-        if (!MSI_RecordsAreFieldsEqual(rec, current, i))
+        if (!_libmsi_record_compare_fields(rec, current, i))
             mask |= 1 << (i - 1);
     }
      msiobj_release(&current->hdr);
 
-    return WHERE_set_row( view, row, rec, mask );
+    return where_view_set_row( view, row, rec, mask );
 }
 
-static unsigned WHERE_modify( LibmsiView *view, LibmsiModify eModifyMode,
+static unsigned where_view_modify( LibmsiView *view, LibmsiModify eModifyMode,
                           LibmsiRecord *rec, unsigned row )
 {
     LibmsiWhereView *wv = (LibmsiWhereView*)view;
@@ -983,7 +983,7 @@ static unsigned WHERE_modify( LibmsiView *view, LibmsiModify eModifyMode,
     return r;
 }
 
-static unsigned WHERE_delete( LibmsiView *view )
+static unsigned where_view_delete( LibmsiView *view )
 {
     LibmsiWhereView *wv = (LibmsiWhereView*)view;
     JOINTABLE *table = wv->tables;
@@ -1014,7 +1014,7 @@ static unsigned WHERE_delete( LibmsiView *view )
     return ERROR_SUCCESS;
 }
 
-static unsigned WHERE_find_matching_rows( LibmsiView *view, unsigned col,
+static unsigned where_view_find_matching_rows( LibmsiView *view, unsigned col,
     unsigned val, unsigned *row, MSIITERHANDLE *handle )
 {
     LibmsiWhereView *wv = (LibmsiWhereView*)view;
@@ -1044,7 +1044,7 @@ static unsigned WHERE_find_matching_rows( LibmsiView *view, unsigned col,
     return ERROR_NO_MORE_ITEMS;
 }
 
-static unsigned WHERE_sort(LibmsiView *view, column_info *columns)
+static unsigned where_view_sort(LibmsiView *view, column_info *columns)
 {
     LibmsiWhereView *wv = (LibmsiWhereView *)view;
     JOINTABLE *table = wv->tables;
@@ -1093,30 +1093,30 @@ error:
     return r;
 }
 
-static const LibmsiViewOPS where_ops =
+static const LibmsiViewOps where_ops =
 {
-    WHERE_fetch_int,
-    WHERE_fetch_stream,
-    WHERE_get_row,
-    WHERE_set_row,
+    where_view_fetch_int,
+    where_view_fetch_stream,
+    where_view_get_row,
+    where_view_set_row,
     NULL,
-    WHERE_delete_row,
-    WHERE_execute,
-    WHERE_close,
-    WHERE_get_dimensions,
-    WHERE_get_column_info,
-    WHERE_modify,
-    WHERE_delete,
-    WHERE_find_matching_rows,
-    NULL,
-    NULL,
+    where_view_delete_row,
+    where_view_execute,
+    where_view_close,
+    where_view_get_dimensions,
+    where_view_get_column_info,
+    where_view_modify,
+    where_view_delete,
+    where_view_find_matching_rows,
     NULL,
     NULL,
-    WHERE_sort,
+    NULL,
+    NULL,
+    where_view_sort,
     NULL,
 };
 
-static unsigned WHERE_VerifyCondition( LibmsiWhereView *wv, struct expr *cond,
+static unsigned where_view_verify_condition( LibmsiWhereView *wv, struct expr *cond,
                                    unsigned *valid )
 {
     unsigned r;
@@ -1144,12 +1144,12 @@ static unsigned WHERE_VerifyCondition( LibmsiWhereView *wv, struct expr *cond,
         break;
     }
     case EXPR_COMPLEX:
-        r = WHERE_VerifyCondition( wv, cond->u.expr.left, valid );
+        r = where_view_verify_condition( wv, cond->u.expr.left, valid );
         if( r != ERROR_SUCCESS )
             return r;
         if( !*valid )
             return ERROR_SUCCESS;
-        r = WHERE_VerifyCondition( wv, cond->u.expr.right, valid );
+        r = where_view_verify_condition( wv, cond->u.expr.right, valid );
         if( r != ERROR_SUCCESS )
             return r;
 
@@ -1181,7 +1181,7 @@ static unsigned WHERE_VerifyCondition( LibmsiWhereView *wv, struct expr *cond,
             *valid = false;
             return ERROR_INVALID_PARAMETER;
         }
-        r = WHERE_VerifyCondition( wv, cond->u.expr.left, valid );
+        r = where_view_verify_condition( wv, cond->u.expr.left, valid );
         if( r != ERROR_SUCCESS )
             return r;
         break;
@@ -1205,7 +1205,7 @@ static unsigned WHERE_VerifyCondition( LibmsiWhereView *wv, struct expr *cond,
     return ERROR_SUCCESS;
 }
 
-unsigned WHERE_CreateView( LibmsiDatabase *db, LibmsiView **view, WCHAR *tables,
+unsigned where_view_create( LibmsiDatabase *db, LibmsiView **view, WCHAR *tables,
                        struct expr *cond )
 {
     LibmsiWhereView *wv = NULL;
@@ -1238,7 +1238,7 @@ unsigned WHERE_CreateView( LibmsiDatabase *db, LibmsiView **view, WCHAR *tables,
             goto end;
         }
 
-        r = TABLE_CreateView(db, tables, &table->view);
+        r = table_view_create(db, tables, &table->view);
         if (r != ERROR_SUCCESS)
         {
             WARN("can't create table: %s\n", debugstr_w(tables));
@@ -1269,7 +1269,7 @@ unsigned WHERE_CreateView( LibmsiDatabase *db, LibmsiView **view, WCHAR *tables,
 
     if( cond )
     {
-        r = WHERE_VerifyCondition( wv, cond, &valid );
+        r = where_view_verify_condition( wv, cond, &valid );
         if( r != ERROR_SUCCESS )
             goto end;
         if( !valid ) {
@@ -1282,7 +1282,7 @@ unsigned WHERE_CreateView( LibmsiDatabase *db, LibmsiView **view, WCHAR *tables,
 
     return ERROR_SUCCESS;
 end:
-    WHERE_delete(&wv->view);
+    where_view_delete(&wv->view);
 
     return r;
 }

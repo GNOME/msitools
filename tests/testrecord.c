@@ -56,239 +56,239 @@ static void test_msirecord(void)
     char filename[MAX_PATH];
 
     /* check behaviour with an invalid record */
-    r = MsiRecordGetFieldCount(0);
+    r = libmsi_record_get_field_count(0);
     ok(r==-1, "field count for invalid record not -1\n");
     SetLastError(0);
-    r = MsiRecordIsNull(0, 0);
+    r = libmsi_record_is_null(0, 0);
     ok(r==0, "invalid handle not considered to be non-null...\n");
-    ok(GetLastError()==0, "MsiRecordIsNull set LastError\n");
-    r = MsiRecordGetInteger(0,0);
+    ok(GetLastError()==0, "libmsi_record_is_null set LastError\n");
+    r = libmsi_record_get_integer(0,0);
     ok(r == MSI_NULL_INTEGER, "got integer from invalid record\n");
-    r = MsiRecordSetInteger(0,0,0);
-    ok(r == ERROR_INVALID_HANDLE, "MsiRecordSetInteger returned wrong error\n");
-    r = MsiRecordSetInteger(0,-1,0);
-    ok(r == ERROR_INVALID_HANDLE, "MsiRecordSetInteger returned wrong error\n");
+    r = libmsi_record_set_int(0,0,0);
+    ok(r == ERROR_INVALID_HANDLE, "libmsi_record_set_int returned wrong error\n");
+    r = libmsi_record_set_int(0,-1,0);
+    ok(r == ERROR_INVALID_HANDLE, "libmsi_record_set_int returned wrong error\n");
     SetLastError(0);
-    h = MsiCreateRecord(-1);
+    h = libmsi_record_create(-1);
     ok(h==0, "created record with -1 elements\n");
-    h = MsiCreateRecord(0x10000);
+    h = libmsi_record_create(0x10000);
     ok(h==0, "created record with 0x10000 elements\n");
     /* doesn't set LastError */
-    ok(GetLastError()==0, "MsiCreateRecord set last error\n");
-    r = MsiRecordClearData(0);
-    ok(r == ERROR_INVALID_HANDLE, "MsiRecordClearData returned wrong error\n");
-    r = MsiRecordDataSize(0,0);
-    ok(r == 0, "MsiRecordDataSize returned wrong error\n");
+    ok(GetLastError()==0, "libmsi_record_create set last error\n");
+    r = libmsi_record_clear_data(0);
+    ok(r == ERROR_INVALID_HANDLE, "libmsi_record_clear_data returned wrong error\n");
+    r = libmsi_record_get_field_size(0,0);
+    ok(r == 0, "libmsi_record_get_field_size returned wrong error\n");
 
 
     /* check behaviour of a record with 0 elements */
-    h = MsiCreateRecord(0);
+    h = libmsi_record_create(0);
     ok(h!=0, "couldn't create record with zero elements\n");
-    r = MsiRecordGetFieldCount(h);
+    r = libmsi_record_get_field_count(h);
     ok(r==0, "field count should be zero\n");
-    r = MsiRecordIsNull(h,0);
+    r = libmsi_record_is_null(h,0);
     ok(r, "new record wasn't null\n");
-    r = MsiRecordIsNull(h,1);
+    r = libmsi_record_is_null(h,1);
     ok(r, "out of range record wasn't null\n");
-    r = MsiRecordIsNull(h,-1);
+    r = libmsi_record_is_null(h,-1);
     ok(r, "out of range record wasn't null\n");
-    r = MsiRecordDataSize(h,0);
+    r = libmsi_record_get_field_size(h,0);
     ok(r==0, "size of null record is 0\n");
     sz = sizeof buf;
     strcpy(buf,"x");
-    r = MsiRecordGetString(h, 0, buf, &sz);
+    r = libmsi_record_get_string(h, 0, buf, &sz);
     ok(r==ERROR_SUCCESS, "failed to get null string\n");
     ok(sz==0, "null string too long\n");
     ok(buf[0]==0, "null string not set\n");
 
     /* same record, but add an integer to it */
-    r = MsiRecordSetInteger(h, 0, 0);
+    r = libmsi_record_set_int(h, 0, 0);
     ok(r == ERROR_SUCCESS, "Failed to set integer at 0 to 0\n");
-    r = MsiRecordIsNull(h,0);
+    r = libmsi_record_is_null(h,0);
     ok(r==0, "new record is null after setting an integer\n");
-    r = MsiRecordDataSize(h,0);
+    r = libmsi_record_get_field_size(h,0);
     ok(r==sizeof(unsigned), "size of integer record is 4\n");
-    r = MsiRecordSetInteger(h, 0, 1);
+    r = libmsi_record_set_int(h, 0, 1);
     ok(r == ERROR_SUCCESS, "Failed to set integer at 0 to 1\n");
-    r = MsiRecordSetInteger(h, 1, 1);
+    r = libmsi_record_set_int(h, 1, 1);
     ok(r == ERROR_INVALID_PARAMETER, "set integer at 1\n");
-    r = MsiRecordSetInteger(h, -1, 0);
+    r = libmsi_record_set_int(h, -1, 0);
     ok(r == ERROR_INVALID_PARAMETER, "set integer at -1\n");
-    r = MsiRecordIsNull(h,0);
+    r = libmsi_record_is_null(h,0);
     ok(r==0, "new record is null after setting an integer\n");
-    r = MsiRecordGetInteger(h, 0);
+    r = libmsi_record_get_integer(h, 0);
     ok(r == 1, "failed to get integer\n");
 
     /* same record, but add a null or empty string to it */
-    r = MsiRecordSetString(h, 0, NULL);
+    r = libmsi_record_set_string(h, 0, NULL);
     ok(r == ERROR_SUCCESS, "Failed to set null string at 0\n");
-    r = MsiRecordIsNull(h, 0);
+    r = libmsi_record_is_null(h, 0);
     ok(r == true, "null string not null field\n");
-    r = MsiRecordDataSize(h, 0);
+    r = libmsi_record_get_field_size(h, 0);
     ok(r == 0, "size of string record is strlen\n");
     buf[0] = 0;
     sz = sizeof buf;
-    r = MsiRecordGetString(h, 0, buf, &sz);
+    r = libmsi_record_get_string(h, 0, buf, &sz);
     ok(r == ERROR_SUCCESS, "Failed to get string at 0\n");
-    ok(buf[0] == 0, "MsiRecordGetString returned the wrong string\n");
-    ok(sz == 0, "MsiRecordGetString returned the wrong length\n");
-    r = MsiRecordSetString(h, 0, "");
+    ok(buf[0] == 0, "libmsi_record_get_string returned the wrong string\n");
+    ok(sz == 0, "libmsi_record_get_string returned the wrong length\n");
+    r = libmsi_record_set_string(h, 0, "");
     ok(r == ERROR_SUCCESS, "Failed to set empty string at 0\n");
-    r = MsiRecordIsNull(h, 0);
+    r = libmsi_record_is_null(h, 0);
     ok(r == true, "null string not null field\n");
-    r = MsiRecordDataSize(h, 0);
+    r = libmsi_record_get_field_size(h, 0);
     ok(r == 0, "size of string record is strlen\n");
     buf[0] = 0;
     sz = sizeof buf;
-    r = MsiRecordGetString(h, 0, buf, &sz);
+    r = libmsi_record_get_string(h, 0, buf, &sz);
     ok(r == ERROR_SUCCESS, "Failed to get string at 0\n");
-    ok(buf[0] == 0, "MsiRecordGetString returned the wrong string\n");
-    ok(sz == 0, "MsiRecordGetString returned the wrong length\n");
+    ok(buf[0] == 0, "libmsi_record_get_string returned the wrong string\n");
+    ok(sz == 0, "libmsi_record_get_string returned the wrong length\n");
 
     /* same record, but add a string to it */
-    r = MsiRecordSetString(h,0,str);
+    r = libmsi_record_set_string(h,0,str);
     ok(r == ERROR_SUCCESS, "Failed to set string at 0\n");
-    r = MsiRecordGetInteger(h, 0);
+    r = libmsi_record_get_integer(h, 0);
     ok(r == MSI_NULL_INTEGER, "should get invalid integer\n");
-    r = MsiRecordDataSize(h,0);
+    r = libmsi_record_get_field_size(h,0);
     ok(r==sizeof str-1, "size of string record is strlen\n");
     buf[0]=0;
     sz = sizeof buf;
-    r = MsiRecordGetString(h,0,buf,&sz);
+    r = libmsi_record_get_string(h,0,buf,&sz);
     ok(r == ERROR_SUCCESS, "Failed to get string at 0\n");
-    ok(0==strcmp(buf,str), "MsiRecordGetString returned the wrong string\n");
-    ok(sz == sizeof str-1, "MsiRecordGetString returned the wrong length\n");
+    ok(0==strcmp(buf,str), "libmsi_record_get_string returned the wrong string\n");
+    ok(sz == sizeof str-1, "libmsi_record_get_string returned the wrong length\n");
     buf[0]=0;
     sz = sizeof str - 2;
-    r = MsiRecordGetString(h,0,buf,&sz);
+    r = libmsi_record_get_string(h,0,buf,&sz);
     ok(r == ERROR_MORE_DATA, "small buffer should yield ERROR_MORE_DATA\n");
-    ok(sz == sizeof str-1, "MsiRecordGetString returned the wrong length\n");
-    ok(0==strncmp(buf,str,sizeof str-3), "MsiRecordGetString returned the wrong string\n");
+    ok(sz == sizeof str-1, "libmsi_record_get_string returned the wrong length\n");
+    ok(0==strncmp(buf,str,sizeof str-3), "libmsi_record_get_string returned the wrong string\n");
     ok(buf[sizeof str - 3]==0, "string wasn't nul terminated\n");
 
     buf[0]=0;
     sz = sizeof str;
-    r = MsiRecordGetString(h,0,buf,&sz);
+    r = libmsi_record_get_string(h,0,buf,&sz);
     ok(r == ERROR_SUCCESS, "wrong error\n");
-    ok(sz == sizeof str-1, "MsiRecordGetString returned the wrong length\n");
-    ok(0==strcmp(buf,str), "MsiRecordGetString returned the wrong string\n");
+    ok(sz == sizeof str-1, "libmsi_record_get_string returned the wrong length\n");
+    ok(0==strcmp(buf,str), "libmsi_record_get_string returned the wrong string\n");
 
 
     memset(buf, 0, sizeof buf);
     sz = 5;
-    r = MsiRecordGetString(h,0,buf,&sz);
+    r = libmsi_record_get_string(h,0,buf,&sz);
     ok(r == ERROR_MORE_DATA, "wrong error\n");
-    ok(sz == 5, "MsiRecordGetString returned the wrong length\n");
-    ok(0==memcmp(buf,str,4), "MsiRecordGetString returned the wrong string\n");
+    ok(sz == 5, "libmsi_record_get_string returned the wrong length\n");
+    ok(0==memcmp(buf,str,4), "libmsi_record_get_string returned the wrong string\n");
 
     sz = 0;
     buf[0] = 'x';
-    r = MsiRecordGetString(h,0,buf,&sz);
+    r = libmsi_record_get_string(h,0,buf,&sz);
     ok(r == ERROR_MORE_DATA, "wrong error\n");
-    ok(sz == 5, "MsiRecordGetString returned the wrong length\n");
-    ok('x'==buf[0], "MsiRecordGetString returned the wrong string\n");
+    ok(sz == 5, "libmsi_record_get_string returned the wrong length\n");
+    ok('x'==buf[0], "libmsi_record_get_string returned the wrong string\n");
 
     /* same record, check we can wipe all the data */
-    r = MsiRecordClearData(h);
+    r = libmsi_record_clear_data(h);
     ok(r == ERROR_SUCCESS, "Failed to clear record\n");
-    r = MsiRecordClearData(h);
+    r = libmsi_record_clear_data(h);
     ok(r == ERROR_SUCCESS, "Failed to clear record again\n");
-    r = MsiRecordIsNull(h,0);
+    r = libmsi_record_is_null(h,0);
     ok(r, "cleared record wasn't null\n");
 
     /* same record, try converting strings to integers */
-    i = MsiRecordSetString(h,0,"42");
+    i = libmsi_record_set_string(h,0,"42");
     ok(i == ERROR_SUCCESS, "Failed to set string at 0\n");
-    i = MsiRecordGetInteger(h, 0);
+    i = libmsi_record_get_integer(h, 0);
     ok(i == 42, "should get invalid integer\n");
-    i = MsiRecordSetString(h,0,"-42");
+    i = libmsi_record_set_string(h,0,"-42");
     ok(i == ERROR_SUCCESS, "Failed to set string at 0\n");
-    i = MsiRecordGetInteger(h, 0);
+    i = libmsi_record_get_integer(h, 0);
     ok(i == -42, "should get invalid integer\n");
-    i = MsiRecordSetString(h,0," 42");
+    i = libmsi_record_set_string(h,0," 42");
     ok(i == ERROR_SUCCESS, "Failed to set string at 0\n");
-    i = MsiRecordGetInteger(h, 0);
+    i = libmsi_record_get_integer(h, 0);
     ok(i == MSI_NULL_INTEGER, "should get invalid integer\n");
-    i = MsiRecordSetString(h,0,"42 ");
+    i = libmsi_record_set_string(h,0,"42 ");
     ok(i == ERROR_SUCCESS, "Failed to set string at 0\n");
-    i = MsiRecordGetInteger(h, 0);
+    i = libmsi_record_get_integer(h, 0);
     ok(i == MSI_NULL_INTEGER, "should get invalid integer\n");
-    i = MsiRecordSetString(h,0,"42.0");
+    i = libmsi_record_set_string(h,0,"42.0");
     ok(i == ERROR_SUCCESS, "Failed to set string at 0\n");
-    i = MsiRecordGetInteger(h, 0);
+    i = libmsi_record_get_integer(h, 0);
     ok(i == MSI_NULL_INTEGER, "should get invalid integer\n");
-    i = MsiRecordSetString(h,0,"0x42");
+    i = libmsi_record_set_string(h,0,"0x42");
     ok(i == ERROR_SUCCESS, "Failed to set string at 0\n");
-    i = MsiRecordGetInteger(h, 0);
+    i = libmsi_record_get_integer(h, 0);
     ok(i == MSI_NULL_INTEGER, "should get invalid integer\n");
-    i = MsiRecordSetString(h,0,"1000000000000000");
+    i = libmsi_record_set_string(h,0,"1000000000000000");
     ok(i == ERROR_SUCCESS, "Failed to set string at 0\n");
-    i = MsiRecordGetInteger(h, 0);
+    i = libmsi_record_get_integer(h, 0);
     ok(i == -1530494976, "should get truncated integer\n");
-    i = MsiRecordSetString(h,0,"2147483647");
+    i = libmsi_record_set_string(h,0,"2147483647");
     ok(i == ERROR_SUCCESS, "Failed to set string at 0\n");
-    i = MsiRecordGetInteger(h, 0);
+    i = libmsi_record_get_integer(h, 0);
     ok(i == 2147483647, "should get maxint\n");
-    i = MsiRecordSetString(h,0,"-2147483647");
+    i = libmsi_record_set_string(h,0,"-2147483647");
     ok(i == ERROR_SUCCESS, "Failed to set string at 0\n");
-    i = MsiRecordGetInteger(h, 0);
+    i = libmsi_record_get_integer(h, 0);
     ok(i == -2147483647, "should get -maxint-1\n");
-    i = MsiRecordSetString(h,0,"4294967297");
+    i = libmsi_record_set_string(h,0,"4294967297");
     ok(i == ERROR_SUCCESS, "Failed to set string at 0\n");
-    i = MsiRecordGetInteger(h, 0);
+    i = libmsi_record_get_integer(h, 0);
     ok(i == 1, "should get one\n");
-    i = MsiRecordSetString(h,0,"foo");
+    i = libmsi_record_set_string(h,0,"foo");
     ok(i == ERROR_SUCCESS, "Failed to set string at 0\n");
-    i = MsiRecordGetInteger(h, 0);
+    i = libmsi_record_get_integer(h, 0);
     ok(i == MSI_NULL_INTEGER, "should get zero\n");
-    i = MsiRecordSetString(h,0,"");
+    i = libmsi_record_set_string(h,0,"");
     ok(i == ERROR_SUCCESS, "Failed to set string at 0\n");
-    i = MsiRecordGetInteger(h, 0);
+    i = libmsi_record_get_integer(h, 0);
     ok(i == MSI_NULL_INTEGER, "should get zero\n");
-    i = MsiRecordSetString(h,0,"+1");
+    i = libmsi_record_set_string(h,0,"+1");
     ok(i == ERROR_SUCCESS, "Failed to set string at 0\n");
-    i = MsiRecordGetInteger(h, 0);
+    i = libmsi_record_get_integer(h, 0);
     ok(i == MSI_NULL_INTEGER, "should get zero\n");
 
     /* same record, try converting integers to strings */
-    r = MsiRecordSetInteger(h, 0, 32);
+    r = libmsi_record_set_int(h, 0, 32);
     ok(r == ERROR_SUCCESS, "Failed to set integer at 0 to 32\n");
     sz = 1;
-    r = MsiRecordGetString(h, 0, NULL, &sz);
+    r = libmsi_record_get_string(h, 0, NULL, &sz);
     ok(r == ERROR_SUCCESS, "failed to get string from integer\n");
     ok(sz == 2, "length wrong\n");
     buf[0]=0;
     sz = sizeof buf;
-    r = MsiRecordGetString(h, 0, buf, &sz);
+    r = libmsi_record_get_string(h, 0, buf, &sz);
     ok(r == ERROR_SUCCESS, "failed to get string from integer\n");
     ok(0==strcmp(buf,"32"), "failed to get string from integer\n");
-    r = MsiRecordSetInteger(h, 0, -32);
+    r = libmsi_record_set_int(h, 0, -32);
     ok(r == ERROR_SUCCESS, "Failed to set integer at 0 to 32\n");
     buf[0]=0;
     sz = 1;
-    r = MsiRecordGetString(h, 0, NULL, &sz);
+    r = libmsi_record_get_string(h, 0, NULL, &sz);
     ok(r == ERROR_SUCCESS, "failed to get string from integer\n");
     ok(sz == 3, "length wrong\n");
     sz = sizeof buf;
-    r = MsiRecordGetString(h, 0, buf, &sz);
+    r = libmsi_record_get_string(h, 0, buf, &sz);
     ok(r == ERROR_SUCCESS, "failed to get string from integer\n");
     ok(0==strcmp(buf,"-32"), "failed to get string from integer\n");
     buf[0]=0;
 
     /* same record, now try streams */
-    r = MsiRecordSetStream(h, 0, NULL);
+    r = libmsi_record_load_stream(h, 0, NULL);
     ok(r == ERROR_INVALID_PARAMETER, "set NULL stream\n");
     sz = sizeof buf;
-    r = MsiRecordReadStream(h, 0, buf, &sz);
+    r = libmsi_record_save_stream(h, 0, buf, &sz);
     ok(r == ERROR_INVALID_DATATYPE, "read non-stream type\n");
     ok(sz == sizeof buf, "set sz\n");
-    r = MsiRecordDataSize( h, -1);
-    ok(r == 0,"MsiRecordDataSize returned wrong size\n");
-    r = MsiRecordDataSize( h, 0);
-    ok(r == 4,"MsiRecordDataSize returned wrong size\n");
+    r = libmsi_record_get_field_size( h, -1);
+    ok(r == 0,"libmsi_record_get_field_size returned wrong size\n");
+    r = libmsi_record_get_field_size( h, 0);
+    ok(r == 4,"libmsi_record_get_field_size returned wrong size\n");
 
     /* same record, now close it */
-    r = MsiCloseHandle(h);
+    r = libmsi_unref(h);
     ok(r == ERROR_SUCCESS, "Failed to close handle\n");
 
     /* now try streams in a new record - need to create a file to play with */
@@ -297,58 +297,58 @@ static void test_msirecord(void)
         return;
 
     /* streams can't be inserted in field 0 for some reason */
-    h = MsiCreateRecord(2);
+    h = libmsi_record_create(2);
     ok(h, "couldn't create a two field record\n");
-    r = MsiRecordSetStream(h, 0, filename);
+    r = libmsi_record_load_stream(h, 0, filename);
     ok(r == ERROR_INVALID_PARAMETER, "added stream to field 0\n");
-    r = MsiRecordSetStream(h, 1, filename);
+    r = libmsi_record_load_stream(h, 1, filename);
     ok(r == ERROR_SUCCESS, "failed to add stream to record\n");
-    r = MsiRecordReadStream(h, 1, buf, NULL);
+    r = libmsi_record_save_stream(h, 1, buf, NULL);
     ok(r == ERROR_INVALID_PARAMETER, "should return error\n");
     DeleteFile(filename); /* Windows 98 doesn't like this at all, so don't check return. */
-    r = MsiRecordReadStream(h, 1, NULL, NULL);
+    r = libmsi_record_save_stream(h, 1, NULL, NULL);
     ok(r == ERROR_INVALID_PARAMETER, "should return error\n");
     sz = sizeof buf;
-    r = MsiRecordReadStream(h, 1, NULL, &sz);
+    r = libmsi_record_save_stream(h, 1, NULL, &sz);
     ok(r == ERROR_SUCCESS, "failed to read stream\n");
     ok(sz==26,"couldn't get size of stream\n");
     sz = 0;
-    r = MsiRecordReadStream(h, 1, buf, &sz);
+    r = libmsi_record_save_stream(h, 1, buf, &sz);
     ok(r == ERROR_SUCCESS, "failed to read stream\n");
     ok(sz==0,"short read\n");
     sz = sizeof buf;
-    r = MsiRecordReadStream(h, 1, buf, &sz);
+    r = libmsi_record_save_stream(h, 1, buf, &sz);
     ok(r == ERROR_SUCCESS, "failed to read stream\n");
     ok(sz==sizeof buf,"short read\n");
     ok(!strncmp(buf,"abcdefghij",10), "read the wrong thing\n");
     sz = sizeof buf;
-    r = MsiRecordReadStream(h, 1, buf, &sz);
+    r = libmsi_record_save_stream(h, 1, buf, &sz);
     ok(r == ERROR_SUCCESS, "failed to read stream\n");
     ok(sz==sizeof buf,"short read\n");
     ok(!strncmp(buf,"klmnopqrst",10), "read the wrong thing\n");
     memset(buf,0,sizeof buf);
     sz = sizeof buf;
-    r = MsiRecordReadStream(h, 1, buf, &sz);
+    r = libmsi_record_save_stream(h, 1, buf, &sz);
     ok(r == ERROR_SUCCESS, "failed to read stream\n");
     ok(sz==6,"short read\n");
     ok(!strcmp(buf,"uvwxyz"), "read the wrong thing\n");
     memset(buf,0,sizeof buf);
     sz = sizeof buf;
-    r = MsiRecordReadStream(h, 1, buf, &sz);
+    r = libmsi_record_save_stream(h, 1, buf, &sz);
     ok(r == ERROR_SUCCESS, "failed to read stream\n");
     ok(sz==0,"size non-zero at end of stream\n");
     ok(buf[0]==0, "read something at end of the stream\n");
-    r = MsiRecordSetStream(h, 1, NULL);
+    r = libmsi_record_load_stream(h, 1, NULL);
     ok(r == ERROR_SUCCESS, "failed to reset stream\n");
     sz = 0;
-    r = MsiRecordReadStream(h, 1, NULL, &sz);
+    r = libmsi_record_save_stream(h, 1, NULL, &sz);
     ok(r == ERROR_SUCCESS, "bytes left wrong after reset\n");
     ok(sz==26,"couldn't get size of stream\n");
-    r = MsiRecordDataSize(h,1);
-    ok(r == 26,"MsiRecordDataSize returned wrong size\n");
+    r = libmsi_record_get_field_size(h,1);
+    ok(r == 26,"libmsi_record_get_field_size returned wrong size\n");
 
     /* now close the stream record */
-    r = MsiCloseHandle(h);
+    r = libmsi_unref(h);
     ok(r == ERROR_SUCCESS, "Failed to close handle\n");
     DeleteFile(filename); /* Delete it for sure, when everything else is closed. */
 }
@@ -360,59 +360,59 @@ static void test_MsiRecordGetString(void)
     unsigned sz;
     unsigned r;
 
-    rec = MsiCreateRecord(2);
+    rec = libmsi_record_create(2);
     ok(rec != 0, "Expected a valid handle\n");
 
     sz = MAX_PATH;
-    r = MsiRecordGetString(rec, 1, NULL, &sz);
+    r = libmsi_record_get_string(rec, 1, NULL, &sz);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n",r);
     ok(sz == 0, "Expected 0, got %d\n",sz);
 
     sz = MAX_PATH;
     strcpy(buf, "apple");
-    r = MsiRecordGetString(rec, 1, buf, &sz);
+    r = libmsi_record_get_string(rec, 1, buf, &sz);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
     ok(!strcmp(buf, ""), "Expected \"\", got \"%s\"\n", buf);
     ok(sz == 0, "Expected 0, got %d\n", sz);
 
     sz = MAX_PATH;
     strcpy(buf, "apple");
-    r = MsiRecordGetString(rec, 10, buf, &sz);
+    r = libmsi_record_get_string(rec, 10, buf, &sz);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
     ok(!strcmp(buf, ""), "Expected \"\", got \"%s\"\n", buf);
     ok(sz == 0, "Expected 0, got %d\n", sz);
 
-    MsiCloseHandle(rec);
+    libmsi_unref(rec);
 
-    rec = MsiCreateRecord(1);
+    rec = libmsi_record_create(1);
     ok(rec != 0, "Expected a valid handle\n");
 
-    r = MsiRecordSetInteger(rec, 1, 5);
+    r = libmsi_record_set_int(rec, 1, 5);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     sz = MAX_PATH;
-    r = MsiRecordGetString(rec, 1, NULL, &sz);
+    r = libmsi_record_get_string(rec, 1, NULL, &sz);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n",r);
     ok(sz == 1, "Expected 1, got %d\n",sz);
 
     sz = MAX_PATH;
     strcpy(buf, "apple");
-    r = MsiRecordGetString(rec, 1, buf, &sz);
+    r = libmsi_record_get_string(rec, 1, buf, &sz);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
     ok(!strcmp(buf, "5"), "Expected \"5\", got \"%s\"\n", buf);
     ok(sz == 1, "Expectd 1, got %d\n", sz);
 
-    r = MsiRecordSetInteger(rec, 1, -5);
+    r = libmsi_record_set_int(rec, 1, -5);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     sz = MAX_PATH;
     strcpy(buf, "apple");
-    r = MsiRecordGetString(rec, 1, buf, &sz);
+    r = libmsi_record_get_string(rec, 1, buf, &sz);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
     ok(!strcmp(buf, "-5"), "Expected \"-5\", got \"%s\"\n", buf);
     ok(sz == 2, "Expectd 2, got %d\n", sz);
 
-    MsiCloseHandle(rec);
+    libmsi_unref(rec);
 }
 
 static void test_MsiRecordGetInteger(void)
@@ -421,28 +421,28 @@ static void test_MsiRecordGetInteger(void)
     int val;
     unsigned r;
 
-    rec = MsiCreateRecord(1);
+    rec = libmsi_record_create(1);
     ok(rec != 0, "Expected a valid handle\n");
 
-    r = MsiRecordSetString(rec, 1, "5");
+    r = libmsi_record_set_string(rec, 1, "5");
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
-    val = MsiRecordGetInteger(rec, 1);
+    val = libmsi_record_get_integer(rec, 1);
     ok(val == 5, "Expected 5, got %d\n", val);
 
-    r = MsiRecordSetString(rec, 1, "-5");
+    r = libmsi_record_set_string(rec, 1, "-5");
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
-    val = MsiRecordGetInteger(rec, 1);
+    val = libmsi_record_get_integer(rec, 1);
     ok(val == -5, "Expected -5, got %d\n", val);
 
-    r = MsiRecordSetString(rec, 1, "5apple");
+    r = libmsi_record_set_string(rec, 1, "5apple");
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
-    val = MsiRecordGetInteger(rec, 1);
+    val = libmsi_record_get_integer(rec, 1);
     ok(val == MSI_NULL_INTEGER, "Expected MSI_NULL_INTEGER, got %d\n", val);
 
-    MsiCloseHandle(rec);
+    libmsi_unref(rec);
 }
 
 static void test_fieldzero(void)
@@ -455,135 +455,135 @@ static void test_fieldzero(void)
     unsigned sz;
     unsigned r;
 
-    rec = MsiCreateRecord(1);
+    rec = libmsi_record_create(1);
     ok(rec != 0, "Expected a valid handle\n");
 
-    r = MsiRecordGetInteger(rec, 0);
+    r = libmsi_record_get_integer(rec, 0);
     ok(r == MSI_NULL_INTEGER, "Expected MSI_NULL_INTEGER, got %d\n", r);
 
     sz = MAX_PATH;
     strcpy(buf, "apple");
-    r = MsiRecordGetString(rec, 0, buf, &sz);
+    r = libmsi_record_get_string(rec, 0, buf, &sz);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
     ok(!strcmp(buf, ""), "Expected \"\", got \"%s\"\n", buf);
     ok(sz == 0, "Expectd 0, got %d\n", sz);
 
-    r = MsiRecordIsNull(rec, 0);
+    r = libmsi_record_is_null(rec, 0);
     ok(r == true, "Expected true, got %d\n", r);
 
-    r = MsiRecordGetInteger(rec, 1);
+    r = libmsi_record_get_integer(rec, 1);
     ok(r == MSI_NULL_INTEGER, "Expected MSI_NULL_INTEGER, got %d\n", r);
 
-    r = MsiRecordSetInteger(rec, 1, 42);
+    r = libmsi_record_set_int(rec, 1, 42);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
-    r = MsiRecordGetInteger(rec, 0);
+    r = libmsi_record_get_integer(rec, 0);
     ok(r == MSI_NULL_INTEGER, "Expected MSI_NULL_INTEGER, got %d\n", r);
 
     sz = MAX_PATH;
     strcpy(buf, "apple");
-    r = MsiRecordGetString(rec, 0, buf, &sz);
+    r = libmsi_record_get_string(rec, 0, buf, &sz);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
     ok(!strcmp(buf, ""), "Expected \"\", got \"%s\"\n", buf);
     ok(sz == 0, "Expectd 0, got %d\n", sz);
 
-    r = MsiRecordIsNull(rec, 0);
+    r = libmsi_record_is_null(rec, 0);
     ok(r == true, "Expected true, got %d\n", r);
 
-    r = MsiRecordGetInteger(rec, 1);
+    r = libmsi_record_get_integer(rec, 1);
     ok(r == 42, "Expected 42, got %d\n", r);
 
-    r = MsiRecordSetString(rec, 1, "bologna");
+    r = libmsi_record_set_string(rec, 1, "bologna");
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
-    r = MsiRecordGetInteger(rec, 0);
+    r = libmsi_record_get_integer(rec, 0);
     ok(r == MSI_NULL_INTEGER, "Expected MSI_NULL_INTEGER, got %d\n", r);
 
     sz = MAX_PATH;
     strcpy(buf, "apple");
-    r = MsiRecordGetString(rec, 0, buf, &sz);
+    r = libmsi_record_get_string(rec, 0, buf, &sz);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
     ok(!strcmp(buf, ""), "Expected \"\", got \"%s\"\n", buf);
     ok(sz == 0, "Expectd 0, got %d\n", sz);
 
-    r = MsiRecordIsNull(rec, 0);
+    r = libmsi_record_is_null(rec, 0);
     ok(r == true, "Expected true, got %d\n", r);
 
     sz = MAX_PATH;
     strcpy(buf, "apple");
-    r = MsiRecordGetString(rec, 1, buf, &sz);
+    r = libmsi_record_get_string(rec, 1, buf, &sz);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
     ok(!strcmp(buf, "bologna"), "Expected \"bologna\", got \"%s\"\n", buf);
     ok(sz == 7, "Expectd 7, got %d\n", sz);
 
-    MsiCloseHandle(rec);
+    libmsi_unref(rec);
 
-    r = MsiOpenDatabase(msifile, LIBMSI_DB_OPEN_CREATE, &hdb);
-    ok(r == ERROR_SUCCESS, "MsiOpenDatabase failed\n");
+    r = libmsi_database_open(msifile, LIBMSI_DB_OPEN_CREATE, &hdb);
+    ok(r == ERROR_SUCCESS, "libmsi_database_open failed\n");
 
     query = "CREATE TABLE `drone` ( "
            "`id` INT, `name` CHAR(32), `number` CHAR(32) "
            "PRIMARY KEY `id`)";
-    r = MsiDatabaseOpenQuery(hdb, query, &hview);
+    r = libmsi_database_open_query(hdb, query, &hview);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-    r = MsiQueryExecute(hview, 0);
+    r = libmsi_query_execute(hview, 0);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-    r = MsiQueryClose(hview);
-    ok(r == ERROR_SUCCESS, "MsiQueryClose failed\n");
-    r = MsiCloseHandle(hview);
-    ok(r == ERROR_SUCCESS, "MsiCloseHandle failed\n");
+    r = libmsi_query_close(hview);
+    ok(r == ERROR_SUCCESS, "libmsi_query_close failed\n");
+    r = libmsi_unref(hview);
+    ok(r == ERROR_SUCCESS, "libmsi_unref failed\n");
 
     query = "INSERT INTO `drone` ( `id`, `name`, `number` )"
            "VALUES('1', 'Abe', '8675309')";
-    r = MsiDatabaseOpenQuery(hdb, query, &hview);
-    ok(r == ERROR_SUCCESS, "MsiDatabaseOpenQuery failed\n");
-    r = MsiQueryExecute(hview, 0);
-    ok(r == ERROR_SUCCESS, "MsiQueryExecute failed\n");
-    r = MsiQueryClose(hview);
-    ok(r == ERROR_SUCCESS, "MsiQueryClose failed\n");
-    r = MsiCloseHandle(hview);
-    ok(r == ERROR_SUCCESS, "MsiCloseHandle failed\n");
+    r = libmsi_database_open_query(hdb, query, &hview);
+    ok(r == ERROR_SUCCESS, "libmsi_database_open_query failed\n");
+    r = libmsi_query_execute(hview, 0);
+    ok(r == ERROR_SUCCESS, "libmsi_query_execute failed\n");
+    r = libmsi_query_close(hview);
+    ok(r == ERROR_SUCCESS, "libmsi_query_close failed\n");
+    r = libmsi_unref(hview);
+    ok(r == ERROR_SUCCESS, "libmsi_unref failed\n");
 
     rec = NULL;
-    r = MsiDatabaseGetPrimaryKeys(hdb, "drone", &rec);
+    r = libmsi_database_get_primary_keys(hdb, "drone", &rec);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
-    r = MsiRecordGetInteger(rec, 0);
+    r = libmsi_record_get_integer(rec, 0);
     ok(r == MSI_NULL_INTEGER, "Expected MSI_NULL_INTEGER, got %d\n", r);
 
     sz = MAX_PATH;
     strcpy(buf, "apple");
-    r = MsiRecordGetString(rec, 0, buf, &sz);
+    r = libmsi_record_get_string(rec, 0, buf, &sz);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
     ok(!strcmp(buf, "drone"), "Expected \"drone\", got \"%s\"\n", buf);
     ok(sz == 5, "Expectd 5, got %d\n", sz);
 
-    r = MsiRecordIsNull(rec, 0);
+    r = libmsi_record_is_null(rec, 0);
     ok(r == false, "Expected false, got %d\n", r);
 
-    MsiCloseHandle(rec);
+    libmsi_unref(rec);
 
-    r = MsiDatabaseGetPrimaryKeys(hdb, "nosuchtable", &rec);
+    r = libmsi_database_get_primary_keys(hdb, "nosuchtable", &rec);
     ok(r == ERROR_INVALID_TABLE, "Expected ERROR_INVALID_TABLE, got %d\n", r);
 
     query = "SELECT * FROM `drone` WHERE `id` = 1";
-    r = MsiDatabaseOpenQuery(hdb, query, &hview);
+    r = libmsi_database_open_query(hdb, query, &hview);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-    r = MsiQueryExecute(hview, 0);
+    r = libmsi_query_execute(hview, 0);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-    r = MsiQueryFetch(hview, &rec);
+    r = libmsi_query_fetch(hview, &rec);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
-    r = MsiRecordGetInteger(rec, 0);
+    r = libmsi_record_get_integer(rec, 0);
     ok(r != MSI_NULL_INTEGER && r != 0, "Expected non-NULL value, got %d\n", r);
 
-    r = MsiRecordIsNull(rec, 0);
+    r = libmsi_record_is_null(rec, 0);
     ok(r == false, "Expected false, got %d\n", r);
 
-    r = MsiCloseHandle(hview);
-    ok(r == ERROR_SUCCESS, "MsiCloseHandle failed\n");
-    MsiCloseHandle(rec);
-    MsiCloseHandle(hdb);
+    r = libmsi_unref(hview);
+    ok(r == ERROR_SUCCESS, "libmsi_unref failed\n");
+    libmsi_unref(rec);
+    libmsi_unref(hdb);
     DeleteFileA(msifile);
 }
 

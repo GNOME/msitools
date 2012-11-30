@@ -44,7 +44,7 @@ typedef struct LibmsiUpdateView
     column_info     *vals;
 } LibmsiUpdateView;
 
-static unsigned UPDATE_fetch_int( LibmsiView *view, unsigned row, unsigned col, unsigned *val )
+static unsigned update_view_fetch_int( LibmsiView *view, unsigned row, unsigned col, unsigned *val )
 {
     LibmsiUpdateView *uv = (LibmsiUpdateView*)view;
 
@@ -53,7 +53,7 @@ static unsigned UPDATE_fetch_int( LibmsiView *view, unsigned row, unsigned col, 
     return ERROR_FUNCTION_FAILED;
 }
 
-static unsigned UPDATE_execute( LibmsiView *view, LibmsiRecord *record )
+static unsigned update_view_execute( LibmsiView *view, LibmsiRecord *record )
 {
     LibmsiUpdateView *uv = (LibmsiUpdateView*)view;
     unsigned i, r, col_count = 0, row_count = 0;
@@ -68,7 +68,7 @@ static unsigned UPDATE_execute( LibmsiView *view, LibmsiRecord *record )
     /* extract the where markers from the record */
     if (record)
     {
-        r = MsiRecordGetFieldCount(record);
+        r = libmsi_record_get_field_count(record);
 
         for (i = 0; col; col = col->next)
             i++;
@@ -78,11 +78,11 @@ static unsigned UPDATE_execute( LibmsiView *view, LibmsiRecord *record )
 
         if (where_count > 0)
         {
-            where = MsiCreateRecord(where_count);
+            where = libmsi_record_create(where_count);
 
             if (where)
                 for (i = 1; i <= where_count; i++)
-                    MSI_RecordCopyField(record, cols_count + i, where, i);
+                    _libmsi_record_copy_field(record, cols_count + i, where, i);
         }
     }
 
@@ -124,7 +124,7 @@ done:
 }
 
 
-static unsigned UPDATE_close( LibmsiView *view )
+static unsigned update_view_close( LibmsiView *view )
 {
     LibmsiUpdateView *uv = (LibmsiUpdateView*)view;
     LibmsiView *wv;
@@ -138,7 +138,7 @@ static unsigned UPDATE_close( LibmsiView *view )
     return wv->ops->close( wv );
 }
 
-static unsigned UPDATE_get_dimensions( LibmsiView *view, unsigned *rows, unsigned *cols )
+static unsigned update_view_get_dimensions( LibmsiView *view, unsigned *rows, unsigned *cols )
 {
     LibmsiUpdateView *uv = (LibmsiUpdateView*)view;
     LibmsiView *wv;
@@ -152,7 +152,7 @@ static unsigned UPDATE_get_dimensions( LibmsiView *view, unsigned *rows, unsigne
     return wv->ops->get_dimensions( wv, rows, cols );
 }
 
-static unsigned UPDATE_get_column_info( LibmsiView *view, unsigned n, const WCHAR **name,
+static unsigned update_view_get_column_info( LibmsiView *view, unsigned n, const WCHAR **name,
                                     unsigned *type, bool *temporary, const WCHAR **table_name )
 {
     LibmsiUpdateView *uv = (LibmsiUpdateView*)view;
@@ -167,7 +167,7 @@ static unsigned UPDATE_get_column_info( LibmsiView *view, unsigned n, const WCHA
     return wv->ops->get_column_info( wv, n, name, type, temporary, table_name );
 }
 
-static unsigned UPDATE_modify( LibmsiView *view, LibmsiModify eModifyMode,
+static unsigned update_view_modify( LibmsiView *view, LibmsiModify eModifyMode,
                            LibmsiRecord *rec, unsigned row )
 {
     LibmsiUpdateView *uv = (LibmsiUpdateView*)view;
@@ -177,7 +177,7 @@ static unsigned UPDATE_modify( LibmsiView *view, LibmsiModify eModifyMode,
     return ERROR_FUNCTION_FAILED;
 }
 
-static unsigned UPDATE_delete( LibmsiView *view )
+static unsigned update_view_delete( LibmsiView *view )
 {
     LibmsiUpdateView *uv = (LibmsiUpdateView*)view;
     LibmsiView *wv;
@@ -193,7 +193,7 @@ static unsigned UPDATE_delete( LibmsiView *view )
     return ERROR_SUCCESS;
 }
 
-static unsigned UPDATE_find_matching_rows( LibmsiView *view, unsigned col, unsigned val, unsigned *row, MSIITERHANDLE *handle )
+static unsigned update_view_find_matching_rows( LibmsiView *view, unsigned col, unsigned val, unsigned *row, MSIITERHANDLE *handle )
 {
     TRACE("%p %d %d %p\n", view, col, val, *handle );
 
@@ -201,21 +201,21 @@ static unsigned UPDATE_find_matching_rows( LibmsiView *view, unsigned col, unsig
 }
 
 
-static const LibmsiViewOPS update_ops =
+static const LibmsiViewOps update_ops =
 {
-    UPDATE_fetch_int,
+    update_view_fetch_int,
     NULL,
     NULL,
     NULL,
     NULL,
     NULL,
-    UPDATE_execute,
-    UPDATE_close,
-    UPDATE_get_dimensions,
-    UPDATE_get_column_info,
-    UPDATE_modify,
-    UPDATE_delete,
-    UPDATE_find_matching_rows,
+    update_view_execute,
+    update_view_close,
+    update_view_get_dimensions,
+    update_view_get_column_info,
+    update_view_modify,
+    update_view_delete,
+    update_view_find_matching_rows,
     NULL,
     NULL,
     NULL,
@@ -223,7 +223,7 @@ static const LibmsiViewOPS update_ops =
     NULL,
 };
 
-unsigned UPDATE_CreateView( LibmsiDatabase *db, LibmsiView **view, WCHAR *table,
+unsigned update_view_create( LibmsiDatabase *db, LibmsiView **view, WCHAR *table,
                         column_info *columns, struct expr *expr )
 {
     LibmsiUpdateView *uv = NULL;
@@ -233,15 +233,15 @@ unsigned UPDATE_CreateView( LibmsiDatabase *db, LibmsiView **view, WCHAR *table,
     TRACE("%p\n", uv );
 
     if (expr)
-        r = WHERE_CreateView( db, &wv, table, expr );
+        r = where_view_create( db, &wv, table, expr );
     else
-        r = TABLE_CreateView( db, table, &wv );
+        r = table_view_create( db, table, &wv );
 
     if( r != ERROR_SUCCESS )
         return r;
 
     /* then select the columns we want */
-    r = SELECT_CreateView( db, &sv, wv, columns );
+    r = select_view_create( db, &sv, wv, columns );
     if( r != ERROR_SUCCESS )
     {
         wv->ops->delete( wv );

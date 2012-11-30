@@ -44,98 +44,98 @@ static void test_msidatabase(void)
 
     DeleteFile(msifile);
 
-    res = MsiOpenDatabase( msifile, msifile2, &hdb );
+    res = libmsi_database_open( msifile, msifile2, &hdb );
     ok( res == ERROR_OPEN_FAILED, "expected failure\n");
 
-    res = MsiOpenDatabase( msifile, (LPSTR) 0xff, &hdb );
+    res = libmsi_database_open( msifile, (LPSTR) 0xff, &hdb );
     ok( res == ERROR_INVALID_PARAMETER, "expected failure\n");
 
-    res = MsiCloseHandle( hdb );
+    res = libmsi_unref( hdb );
     ok( res == ERROR_SUCCESS , "Failed to close database\n" );
 
     /* create an empty database */
-    res = MsiOpenDatabase(msifile, LIBMSI_DB_OPEN_CREATE, &hdb );
+    res = libmsi_database_open(msifile, LIBMSI_DB_OPEN_CREATE, &hdb );
     ok( res == ERROR_SUCCESS , "Failed to create database\n" );
 
-    res = MsiDatabaseCommit( hdb );
+    res = libmsi_database_commit( hdb );
     ok( res == ERROR_SUCCESS , "Failed to commit database\n" );
 
     ok( INVALID_FILE_ATTRIBUTES != GetFileAttributes( msifile ), "database should exist\n");
 
-    res = MsiCloseHandle( hdb );
+    res = libmsi_unref( hdb );
     ok( res == ERROR_SUCCESS , "Failed to close database\n" );
-    res = MsiOpenDatabase( msifile, msifile2, &hdb2 );
+    res = libmsi_database_open( msifile, msifile2, &hdb2 );
     ok( res == ERROR_SUCCESS , "Failed to open database\n" );
 
     ok( INVALID_FILE_ATTRIBUTES != GetFileAttributes( msifile2 ), "database should exist\n");
 
-    res = MsiDatabaseCommit( hdb2 );
+    res = libmsi_database_commit( hdb2 );
     ok( res == ERROR_SUCCESS , "Failed to commit database\n" );
 
-    res = MsiCloseHandle( hdb2 );
+    res = libmsi_unref( hdb2 );
     ok( res == ERROR_SUCCESS , "Failed to close database\n" );
 
-    res = MsiOpenDatabase( msifile, msifile2, &hdb2 );
+    res = libmsi_database_open( msifile, msifile2, &hdb2 );
     ok( res == ERROR_SUCCESS , "Failed to open database\n" );
 
-    res = MsiCloseHandle( hdb2 );
+    res = libmsi_unref( hdb2 );
     ok( res == ERROR_SUCCESS , "Failed to close database\n" );
 
     ok( INVALID_FILE_ATTRIBUTES == GetFileAttributes( msifile2 ), "uncommitted database should not exist\n");
 
-    res = MsiOpenDatabase( msifile, msifile2, &hdb2 );
+    res = libmsi_database_open( msifile, msifile2, &hdb2 );
     ok( res == ERROR_SUCCESS , "Failed to close database\n" );
 
-    res = MsiDatabaseCommit( hdb2 );
+    res = libmsi_database_commit( hdb2 );
     ok( res == ERROR_SUCCESS , "Failed to commit database\n" );
 
-    res = MsiCloseHandle( hdb2 );
+    res = libmsi_unref( hdb2 );
     ok( res == ERROR_SUCCESS , "Failed to close database\n" );
 
     ok( INVALID_FILE_ATTRIBUTES != GetFileAttributes( msifile2 ), "committed database should exist\n");
 
-    res = MsiOpenDatabase( msifile, LIBMSI_DB_OPEN_READONLY, &hdb );
+    res = libmsi_database_open( msifile, LIBMSI_DB_OPEN_READONLY, &hdb );
     ok( res == ERROR_SUCCESS , "Failed to open database\n" );
 
-    res = MsiDatabaseCommit( hdb );
+    res = libmsi_database_commit( hdb );
     ok( res == ERROR_SUCCESS , "Failed to commit database\n" );
 
-    res = MsiCloseHandle( hdb );
+    res = libmsi_unref( hdb );
     ok( res == ERROR_SUCCESS , "Failed to close database\n" );
 
-    res = MsiOpenDatabase( msifile, LIBMSI_DB_OPEN_DIRECT, &hdb );
+    res = libmsi_database_open( msifile, LIBMSI_DB_OPEN_DIRECT, &hdb );
     ok( res == ERROR_SUCCESS , "Failed to open database\n" );
 
-    res = MsiCloseHandle( hdb );
+    res = libmsi_unref( hdb );
     ok( res == ERROR_SUCCESS , "Failed to close database\n" );
 
-    res = MsiOpenDatabase( msifile, LIBMSI_DB_OPEN_TRANSACT, &hdb );
+    res = libmsi_database_open( msifile, LIBMSI_DB_OPEN_TRANSACT, &hdb );
     ok( res == ERROR_SUCCESS , "Failed to open database\n" );
 
-    res = MsiCloseHandle( hdb );
+    res = libmsi_unref( hdb );
     ok( res == ERROR_SUCCESS , "Failed to close database\n" );
     ok( INVALID_FILE_ATTRIBUTES != GetFileAttributes( msifile ), "database should exist\n");
 
     /* LIBMSI_DB_OPEN_CREATE deletes the database if MsiCommitDatabase isn't called */
-    res = MsiOpenDatabase( msifile, LIBMSI_DB_OPEN_CREATE, &hdb );
+    res = libmsi_database_open( msifile, LIBMSI_DB_OPEN_CREATE, &hdb );
     ok( res == ERROR_SUCCESS , "Failed to open database\n" );
 
     ok( INVALID_FILE_ATTRIBUTES != GetFileAttributes( msifile ), "database should exist\n");
 
-    res = MsiCloseHandle( hdb );
+    res = libmsi_unref( hdb );
     ok( res == ERROR_SUCCESS , "Failed to close database\n" );
 
     ok( INVALID_FILE_ATTRIBUTES == GetFileAttributes( msifile ), "database should exist\n");
 
-    res = MsiOpenDatabase( msifile, LIBMSI_DB_OPEN_CREATE, &hdb );
+    res = libmsi_database_open( msifile, LIBMSI_DB_OPEN_CREATE, &hdb );
     ok( res == ERROR_SUCCESS , "Failed to open database\n" );
 
-    res = MsiDatabaseCommit( hdb );
+    res = libmsi_database_commit( hdb );
     ok( res == ERROR_SUCCESS , "Failed to commit database\n" );
 
     ok( INVALID_FILE_ATTRIBUTES != GetFileAttributes( msifile ), "database should exist\n");
 
-    res = MsiCloseHandle( hdb );
+    res = libmsi_unref( hdb );
     ok( res == ERROR_SUCCESS , "Failed to close database\n" );
 
     res = DeleteFile( msifile2 );
@@ -154,17 +154,17 @@ static unsigned do_query(LibmsiDatabase *hdb, const char *sql, LibmsiRecord **ph
         *phrec = 0;
 
     /* open a select query */
-    r = MsiDatabaseOpenQuery(hdb, sql, &hquery);
+    r = libmsi_database_open_query(hdb, sql, &hquery);
     if (r != ERROR_SUCCESS)
         return r;
-    r = MsiQueryExecute(hquery, 0);
+    r = libmsi_query_execute(hquery, 0);
     if (r != ERROR_SUCCESS)
         return r;
-    ret = MsiQueryFetch(hquery, phrec);
-    r = MsiQueryClose(hquery);
+    ret = libmsi_query_fetch(hquery, phrec);
+    r = libmsi_query_close(hquery);
     if (r != ERROR_SUCCESS)
         return r;
-    r = MsiCloseHandle(hquery);
+    r = libmsi_unref(hquery);
     if (r != ERROR_SUCCESS)
         return r;
     return ret;
@@ -175,14 +175,14 @@ static unsigned run_query( LibmsiDatabase *hdb, LibmsiRecord *hrec, const char *
     LibmsiQuery *hquery = 0;
     unsigned r;
 
-    r = MsiDatabaseOpenQuery(hdb, sql, &hquery);
+    r = libmsi_database_open_query(hdb, sql, &hquery);
     if( r != ERROR_SUCCESS )
         return r;
 
-    r = MsiQueryExecute(hquery, hrec);
+    r = libmsi_query_execute(hquery, hrec);
     if( r == ERROR_SUCCESS )
-        r = MsiQueryClose(hquery);
-    MsiCloseHandle(hquery);
+        r = libmsi_query_close(hquery);
+    libmsi_unref(hquery);
     return r;
 }
 
@@ -293,149 +293,149 @@ static void test_msiinsert(void)
 
     DeleteFile(msifile);
 
-    /* just MsiOpenDatabase should not create a file */
-    r = MsiOpenDatabase(msifile, LIBMSI_DB_OPEN_CREATE, &hdb);
-    ok(r == ERROR_SUCCESS, "MsiOpenDatabase failed\n");
+    /* just libmsi_database_open should not create a file */
+    r = libmsi_database_open(msifile, LIBMSI_DB_OPEN_CREATE, &hdb);
+    ok(r == ERROR_SUCCESS, "libmsi_database_open failed\n");
 
     /* create a table */
     sql = "CREATE TABLE `phone` ( "
             "`id` INT, `name` CHAR(32), `number` CHAR(32) "
             "PRIMARY KEY `id`)";
-    r = MsiDatabaseOpenQuery(hdb, sql, &hquery);
-    ok(r == ERROR_SUCCESS, "MsiDatabaseOpenQuery failed\n");
-    r = MsiQueryExecute(hquery, 0);
-    ok(r == ERROR_SUCCESS, "MsiQueryExecute failed\n");
-    r = MsiQueryClose(hquery);
-    ok(r == ERROR_SUCCESS, "MsiQueryClose failed\n");
-    r = MsiCloseHandle(hquery);
-    ok(r == ERROR_SUCCESS, "MsiCloseHandle failed\n");
+    r = libmsi_database_open_query(hdb, sql, &hquery);
+    ok(r == ERROR_SUCCESS, "libmsi_database_open_query failed\n");
+    r = libmsi_query_execute(hquery, 0);
+    ok(r == ERROR_SUCCESS, "libmsi_query_execute failed\n");
+    r = libmsi_query_close(hquery);
+    ok(r == ERROR_SUCCESS, "libmsi_query_close failed\n");
+    r = libmsi_unref(hquery);
+    ok(r == ERROR_SUCCESS, "libmsi_unref failed\n");
 
     sql = "SELECT * FROM phone WHERE number = '8675309'";
-    r = MsiDatabaseOpenQuery(hdb, sql, &hquery2);
-    ok(r == ERROR_SUCCESS, "MsiDatabaseOpenQuery failed\n");
-    r = MsiQueryExecute(hquery2, 0);
-    ok(r == ERROR_SUCCESS, "MsiQueryExecute failed\n");
-    r = MsiQueryFetch(hquery2, &hrec);
-    ok(r == ERROR_NO_MORE_ITEMS, "MsiQueryFetch produced items\n");
+    r = libmsi_database_open_query(hdb, sql, &hquery2);
+    ok(r == ERROR_SUCCESS, "libmsi_database_open_query failed\n");
+    r = libmsi_query_execute(hquery2, 0);
+    ok(r == ERROR_SUCCESS, "libmsi_query_execute failed\n");
+    r = libmsi_query_fetch(hquery2, &hrec);
+    ok(r == ERROR_NO_MORE_ITEMS, "libmsi_query_fetch produced items\n");
 
     /* insert a value into it */
     sql = "INSERT INTO `phone` ( `id`, `name`, `number` )"
         "VALUES('1', 'Abe', '8675309')";
-    r = MsiDatabaseOpenQuery(hdb, sql, &hquery);
-    ok(r == ERROR_SUCCESS, "MsiDatabaseOpenQuery failed\n");
-    r = MsiQueryExecute(hquery, 0);
-    ok(r == ERROR_SUCCESS, "MsiQueryExecute failed\n");
-    r = MsiQueryClose(hquery);
-    ok(r == ERROR_SUCCESS, "MsiQueryClose failed\n");
-    r = MsiCloseHandle(hquery);
-    ok(r == ERROR_SUCCESS, "MsiCloseHandle failed\n");
+    r = libmsi_database_open_query(hdb, sql, &hquery);
+    ok(r == ERROR_SUCCESS, "libmsi_database_open_query failed\n");
+    r = libmsi_query_execute(hquery, 0);
+    ok(r == ERROR_SUCCESS, "libmsi_query_execute failed\n");
+    r = libmsi_query_close(hquery);
+    ok(r == ERROR_SUCCESS, "libmsi_query_close failed\n");
+    r = libmsi_unref(hquery);
+    ok(r == ERROR_SUCCESS, "libmsi_unref failed\n");
 
-    r = MsiQueryFetch(hquery2, &hrec);
-    ok(r == ERROR_NO_MORE_ITEMS, "MsiQueryFetch produced items\n");
-    r = MsiQueryExecute(hquery2, 0);
-    ok(r == ERROR_SUCCESS, "MsiQueryExecute failed\n");
-    r = MsiQueryFetch(hquery2, &hrec);
-    ok(r == ERROR_SUCCESS, "MsiQueryFetch failed: %u\n", r);
+    r = libmsi_query_fetch(hquery2, &hrec);
+    ok(r == ERROR_NO_MORE_ITEMS, "libmsi_query_fetch produced items\n");
+    r = libmsi_query_execute(hquery2, 0);
+    ok(r == ERROR_SUCCESS, "libmsi_query_execute failed\n");
+    r = libmsi_query_fetch(hquery2, &hrec);
+    ok(r == ERROR_SUCCESS, "libmsi_query_fetch failed: %u\n", r);
 
-    r = MsiCloseHandle(hrec);
-    ok(r == ERROR_SUCCESS, "MsiCloseHandle failed\n");
-    r = MsiQueryClose(hquery2);
-    ok(r == ERROR_SUCCESS, "MsiQueryClose failed\n");
-    r = MsiCloseHandle(hquery2);
-    ok(r == ERROR_SUCCESS, "MsiCloseHandle failed\n");
+    r = libmsi_unref(hrec);
+    ok(r == ERROR_SUCCESS, "libmsi_unref failed\n");
+    r = libmsi_query_close(hquery2);
+    ok(r == ERROR_SUCCESS, "libmsi_query_close failed\n");
+    r = libmsi_unref(hquery2);
+    ok(r == ERROR_SUCCESS, "libmsi_unref failed\n");
 
     sql = "SELECT * FROM `phone` WHERE `id` = 1";
     r = do_query(hdb, sql, &hrec);
-    ok(r == ERROR_SUCCESS, "MsiQueryFetch failed\n");
+    ok(r == ERROR_SUCCESS, "libmsi_query_fetch failed\n");
 
     /* check the record contains what we put in it */
-    r = MsiRecordGetFieldCount(hrec);
+    r = libmsi_record_get_field_count(hrec);
     ok(r == 3, "record count wrong\n");
 
-    r = MsiRecordIsNull(hrec, 0);
+    r = libmsi_record_is_null(hrec, 0);
     ok(r == false, "field 0 not null\n");
 
-    r = MsiRecordGetInteger(hrec, 1);
+    r = libmsi_record_get_integer(hrec, 1);
     ok(r == 1, "field 1 contents wrong\n");
     sz = sizeof buf;
-    r = MsiRecordGetString(hrec, 2, buf, &sz);
+    r = libmsi_record_get_string(hrec, 2, buf, &sz);
     ok(r == ERROR_SUCCESS, "field 2 content fetch failed\n");
     ok(!strcmp(buf,"Abe"), "field 2 content incorrect\n");
     sz = sizeof buf;
-    r = MsiRecordGetString(hrec, 3, buf, &sz);
+    r = libmsi_record_get_string(hrec, 3, buf, &sz);
     ok(r == ERROR_SUCCESS, "field 3 content fetch failed\n");
     ok(!strcmp(buf,"8675309"), "field 3 content incorrect\n");
 
-    r = MsiCloseHandle(hrec);
-    ok(r == ERROR_SUCCESS, "MsiCloseHandle failed\n");
+    r = libmsi_unref(hrec);
+    ok(r == ERROR_SUCCESS, "libmsi_unref failed\n");
 
     /* open a select query */
     hrec = 100;
     sql = "SELECT * FROM `phone` WHERE `id` >= 10";
     r = do_query(hdb, sql, &hrec);
-    ok(r == ERROR_NO_MORE_ITEMS, "MsiQueryFetch failed\n");
+    ok(r == ERROR_NO_MORE_ITEMS, "libmsi_query_fetch failed\n");
     ok(hrec == 0, "hrec should be null\n");
 
-    r = MsiCloseHandle(hrec);
-    ok(r == ERROR_SUCCESS, "MsiCloseHandle failed\n");
+    r = libmsi_unref(hrec);
+    ok(r == ERROR_SUCCESS, "libmsi_unref failed\n");
 
     sql = "SELECT * FROM `phone` WHERE `id` < 0";
     r = do_query(hdb, sql, &hrec);
-    ok(r == ERROR_NO_MORE_ITEMS, "MsiQueryFetch failed\n");
+    ok(r == ERROR_NO_MORE_ITEMS, "libmsi_query_fetch failed\n");
 
     sql = "SELECT * FROM `phone` WHERE `id` <= 0";
     r = do_query(hdb, sql, &hrec);
-    ok(r == ERROR_NO_MORE_ITEMS, "MsiQueryFetch failed\n");
+    ok(r == ERROR_NO_MORE_ITEMS, "libmsi_query_fetch failed\n");
 
     sql = "SELECT * FROM `phone` WHERE `id` <> 1";
     r = do_query(hdb, sql, &hrec);
-    ok(r == ERROR_NO_MORE_ITEMS, "MsiQueryFetch failed\n");
+    ok(r == ERROR_NO_MORE_ITEMS, "libmsi_query_fetch failed\n");
 
     sql = "SELECT * FROM `phone` WHERE `id` > 10";
     r = do_query(hdb, sql, &hrec);
-    ok(r == ERROR_NO_MORE_ITEMS, "MsiQueryFetch failed\n");
+    ok(r == ERROR_NO_MORE_ITEMS, "libmsi_query_fetch failed\n");
 
     /* now try a few bad INSERT xqueries */
     sql = "INSERT INTO `phone` ( `id`, `name`, `number` )"
         "VALUES(?, ?)";
-    r = MsiDatabaseOpenQuery(hdb, sql, &hquery);
-    ok(r == ERROR_BAD_QUERY_SYNTAX, "MsiDatabaseOpenQuery failed\n");
+    r = libmsi_database_open_query(hdb, sql, &hquery);
+    ok(r == ERROR_BAD_QUERY_SYNTAX, "libmsi_database_open_query failed\n");
 
     /* construct a record to insert */
-    hrec = MsiCreateRecord(4);
-    r = MsiRecordSetInteger(hrec, 1, 2);
-    ok(r == ERROR_SUCCESS, "MsiRecordSetInteger failed\n");
-    r = MsiRecordSetString(hrec, 2, "Adam");
-    ok(r == ERROR_SUCCESS, "MsiRecordSetString failed\n");
-    r = MsiRecordSetString(hrec, 3, "96905305");
-    ok(r == ERROR_SUCCESS, "MsiRecordSetString failed\n");
+    hrec = libmsi_record_create(4);
+    r = libmsi_record_set_int(hrec, 1, 2);
+    ok(r == ERROR_SUCCESS, "libmsi_record_set_int failed\n");
+    r = libmsi_record_set_string(hrec, 2, "Adam");
+    ok(r == ERROR_SUCCESS, "libmsi_record_set_string failed\n");
+    r = libmsi_record_set_string(hrec, 3, "96905305");
+    ok(r == ERROR_SUCCESS, "libmsi_record_set_string failed\n");
 
     /* insert another value, using a record and wildcards */
     sql = "INSERT INTO `phone` ( `id`, `name`, `number` )"
         "VALUES(?, ?, ?)";
-    r = MsiDatabaseOpenQuery(hdb, sql, &hquery);
-    ok(r == ERROR_SUCCESS, "MsiDatabaseOpenQuery failed\n");
+    r = libmsi_database_open_query(hdb, sql, &hquery);
+    ok(r == ERROR_SUCCESS, "libmsi_database_open_query failed\n");
 
     if (r == ERROR_SUCCESS)
     {
-        r = MsiQueryExecute(hquery, hrec);
-        ok(r == ERROR_SUCCESS, "MsiQueryExecute failed\n");
-        r = MsiQueryClose(hquery);
-        ok(r == ERROR_SUCCESS, "MsiQueryClose failed\n");
-        r = MsiCloseHandle(hquery);
-        ok(r == ERROR_SUCCESS, "MsiCloseHandle failed\n");
+        r = libmsi_query_execute(hquery, hrec);
+        ok(r == ERROR_SUCCESS, "libmsi_query_execute failed\n");
+        r = libmsi_query_close(hquery);
+        ok(r == ERROR_SUCCESS, "libmsi_query_close failed\n");
+        r = libmsi_unref(hquery);
+        ok(r == ERROR_SUCCESS, "libmsi_unref failed\n");
     }
-    r = MsiCloseHandle(hrec);
-    ok(r == ERROR_SUCCESS, "MsiCloseHandle failed\n");
+    r = libmsi_unref(hrec);
+    ok(r == ERROR_SUCCESS, "libmsi_unref failed\n");
 
-    r = MsiQueryFetch(0, NULL);
-    ok(r == ERROR_INVALID_PARAMETER, "MsiQueryFetch failed\n");
+    r = libmsi_query_fetch(0, NULL);
+    ok(r == ERROR_INVALID_PARAMETER, "libmsi_query_fetch failed\n");
 
-    r = MsiDatabaseCommit(hdb);
-    ok(r == ERROR_SUCCESS, "MsiDatabaseCommit failed\n");
+    r = libmsi_database_commit(hdb);
+    ok(r == ERROR_SUCCESS, "libmsi_database_commit failed\n");
 
-    r = MsiCloseHandle(hdb);
-    ok(r == ERROR_SUCCESS, "MsiCloseHandle failed\n");
+    r = libmsi_unref(hdb);
+    ok(r == ERROR_SUCCESS, "libmsi_unref failed\n");
 
     r = DeleteFile(msifile);
     ok(r == true, "file didn't exist after commit\n");
@@ -446,20 +446,20 @@ static unsigned try_query_param( LibmsiDatabase *hdb, const char *szQuery, Libms
     LibmsiQuery *htab = 0;
     unsigned res;
 
-    res = MsiDatabaseOpenQuery( hdb, szQuery, &htab );
+    res = libmsi_database_open_query( hdb, szQuery, &htab );
     if(res == ERROR_SUCCESS )
     {
         unsigned r;
 
-        r = MsiQueryExecute( htab, hrec );
+        r = libmsi_query_execute( htab, hrec );
         if(r != ERROR_SUCCESS )
             res = r;
 
-        r = MsiQueryClose( htab );
+        r = libmsi_query_close( htab );
         if(r != ERROR_SUCCESS )
             res = r;
 
-        r = MsiCloseHandle( htab );
+        r = libmsi_unref( htab );
         if(r != ERROR_SUCCESS )
             res = r;
     }
@@ -476,12 +476,12 @@ static unsigned try_insert_query( LibmsiDatabase *hdb, const char *szQuery )
     LibmsiRecord *hrec = 0;
     unsigned r;
 
-    hrec = MsiCreateRecord( 1 );
-    MsiRecordSetString( hrec, 1, "Hello");
+    hrec = libmsi_record_create( 1 );
+    libmsi_record_set_string( hrec, 1, "Hello");
 
     r = try_query_param( hdb, szQuery, hrec );
 
-    MsiCloseHandle( hrec );
+    libmsi_unref( hrec );
     return r;
 }
 
@@ -492,29 +492,29 @@ static void test_msibadqueries(void)
 
     DeleteFile(msifile);
 
-    /* just MsiOpenDatabase should not create a file */
-    r = MsiOpenDatabase(msifile, LIBMSI_DB_OPEN_CREATE, &hdb);
-    ok(r == ERROR_SUCCESS, "MsiOpenDatabase failed\n");
+    /* just libmsi_database_open should not create a file */
+    r = libmsi_database_open(msifile, LIBMSI_DB_OPEN_CREATE, &hdb);
+    ok(r == ERROR_SUCCESS, "libmsi_database_open failed\n");
 
-    r = MsiDatabaseCommit( hdb );
+    r = libmsi_database_commit( hdb );
     ok(r == ERROR_SUCCESS , "Failed to commit database\n");
 
-    r = MsiCloseHandle( hdb );
+    r = libmsi_unref( hdb );
     ok(r == ERROR_SUCCESS , "Failed to close database\n");
 
     /* open it readonly */
-    r = MsiOpenDatabase(msifile, LIBMSI_DB_OPEN_READONLY, &hdb );
+    r = libmsi_database_open(msifile, LIBMSI_DB_OPEN_READONLY, &hdb );
     ok(r == ERROR_SUCCESS , "Failed to open database r/o\n");
 
     /* add a table to it */
     r = try_query( hdb, "select * from _Tables");
     ok(r == ERROR_SUCCESS , "query 1 failed\n");
 
-    r = MsiCloseHandle( hdb );
+    r = libmsi_unref( hdb );
     ok(r == ERROR_SUCCESS , "Failed to close database r/o\n");
 
     /* open it read/write */
-    r = MsiOpenDatabase(msifile, LIBMSI_DB_OPEN_TRANSACT, &hdb );
+    r = libmsi_database_open(msifile, LIBMSI_DB_OPEN_TRANSACT, &hdb );
     ok(r == ERROR_SUCCESS , "Failed to open database r/w\n");
 
     /* a bunch of test queries that fail with the native MSI */
@@ -580,7 +580,7 @@ static void test_msibadqueries(void)
           "CHAR(72), `d` CHAR(255) NOT NULL LOCALIZABLE PRIMARY KEY `b`)");
     ok(r == ERROR_SUCCESS , "query 4 failed\n");
 
-    r = MsiDatabaseCommit( hdb );
+    r = libmsi_database_commit( hdb );
     ok(r == ERROR_SUCCESS , "Failed to commit database after write\n");
 
     r = try_query( hdb, "CREATE TABLE `blah` (`foo` CHAR(72) NOT NULL "
@@ -590,7 +590,7 @@ static void test_msibadqueries(void)
     r = try_insert_query( hdb, "insert into a  ( `b` ) VALUES ( ? )");
     ok(r == ERROR_SUCCESS , "failed to insert record in db\n");
 
-    r = MsiDatabaseCommit( hdb );
+    r = libmsi_database_commit( hdb );
     ok(r == ERROR_SUCCESS , "Failed to commit database after write\n");
 
     r = try_query( hdb, "CREATE TABLE `boo` (`foo` CHAR(72) NOT NULL "
@@ -697,7 +697,7 @@ static void test_msibadqueries(void)
     r = try_query( hdb, "SELECT * FROM a-" );
     ok( r == ERROR_SUCCESS , "query failed: %u\n", r );
 
-    r = MsiCloseHandle( hdb );
+    r = libmsi_unref( hdb );
     ok(r == ERROR_SUCCESS , "Failed to close database transact\n");
 
     r = DeleteFile( msifile );
@@ -717,9 +717,9 @@ static void test_querymodify(void)
 
     DeleteFile(msifile);
 
-    /* just MsiOpenDatabase should not create a file */
-    r = MsiOpenDatabase(msifile, LIBMSI_DB_OPEN_CREATE, &hdb);
-    ok(r == ERROR_SUCCESS, "MsiOpenDatabase failed\n");
+    /* just libmsi_database_open should not create a file */
+    r = libmsi_database_open(msifile, LIBMSI_DB_OPEN_CREATE, &hdb);
+    ok(r == ERROR_SUCCESS, "libmsi_database_open failed\n");
 
     sql = "CREATE TABLE `phone` ( "
             "`id` INT, `name` CHAR(32), `number` CHAR(32) "
@@ -743,317 +743,317 @@ static void test_querymodify(void)
     /* check what the error function reports without doing anything */
     sz = 0;
     /* passing NULL as the 3rd param make function to crash on older platforms */
-    err = MsiQueryGetError( 0, NULL, &sz );
-    ok(err == LIBMSI_DB_ERROR_INVALIDARG, "MsiQueryGetError return\n");
+    err = libmsi_query_get_error( 0, NULL, &sz );
+    ok(err == LIBMSI_DB_ERROR_INVALIDARG, "libmsi_query_get_error return\n");
 
     /* open a query */
     sql = "SELECT * FROM `phone`";
-    r = MsiDatabaseOpenQuery(hdb, sql, &hquery);
-    ok(r == ERROR_SUCCESS, "MsiDatabaseOpenQuery failed\n");
+    r = libmsi_database_open_query(hdb, sql, &hquery);
+    ok(r == ERROR_SUCCESS, "libmsi_database_open_query failed\n");
 
     /* see what happens with a good hquery and bad args */
-    err = MsiQueryGetError( hquery, NULL, NULL );
+    err = libmsi_query_get_error( hquery, NULL, NULL );
     ok(err == LIBMSI_DB_ERROR_INVALIDARG || err == LIBMSI_DB_ERROR_NOERROR,
-       "MsiQueryGetError returns %u (expected -3)\n", err);
-    err = MsiQueryGetError( hquery, buffer, NULL );
-    ok(err == LIBMSI_DB_ERROR_INVALIDARG, "MsiQueryGetError return\n");
+       "libmsi_query_get_error returns %u (expected -3)\n", err);
+    err = libmsi_query_get_error( hquery, buffer, NULL );
+    ok(err == LIBMSI_DB_ERROR_INVALIDARG, "libmsi_query_get_error return\n");
 
     /* see what happens with a zero length buffer */
     sz = 0;
     buffer[0] = 'x';
-    err = MsiQueryGetError( hquery, buffer, &sz );
-    ok(err == LIBMSI_DB_ERROR_MOREDATA, "MsiQueryGetError return\n");
+    err = libmsi_query_get_error( hquery, buffer, &sz );
+    ok(err == LIBMSI_DB_ERROR_MOREDATA, "libmsi_query_get_error return\n");
     ok(buffer[0] == 'x', "buffer cleared\n");
     ok(sz == 0, "size not zero\n");
 
     /* ok this one is strange */
     sz = 0;
-    err = MsiQueryGetError( hquery, NULL, &sz );
-    ok(err == LIBMSI_DB_ERROR_NOERROR, "MsiQueryGetError return\n");
+    err = libmsi_query_get_error( hquery, NULL, &sz );
+    ok(err == LIBMSI_DB_ERROR_NOERROR, "libmsi_query_get_error return\n");
     ok(sz == 0, "size not zero\n");
 
     /* see if it really has an error */
     sz = sizeof buffer;
     buffer[0] = 'x';
-    err = MsiQueryGetError( hquery, buffer, &sz );
-    ok(err == LIBMSI_DB_ERROR_NOERROR, "MsiQueryGetError return\n");
+    err = libmsi_query_get_error( hquery, buffer, &sz );
+    ok(err == LIBMSI_DB_ERROR_NOERROR, "libmsi_query_get_error return\n");
     ok(buffer[0] == 0, "buffer not cleared\n");
     ok(sz == 0, "size not zero\n");
 
-    r = MsiQueryExecute(hquery, 0);
-    ok(r == ERROR_SUCCESS, "MsiQueryExecute failed\n");
+    r = libmsi_query_execute(hquery, 0);
+    ok(r == ERROR_SUCCESS, "libmsi_query_execute failed\n");
 
     /* try some invalid records */
-    r = MsiQueryModify(hquery, LIBMSI_MODIFY_INSERT, 0 );
-    ok(r == ERROR_INVALID_HANDLE, "MsiQueryModify failed\n");
-    r = MsiQueryModify(hquery, -1, 0 );
-    ok(r == ERROR_INVALID_HANDLE, "MsiQueryModify failed\n");
+    r = libmsi_query_modify(hquery, LIBMSI_MODIFY_INSERT, 0 );
+    ok(r == ERROR_INVALID_HANDLE, "libmsi_query_modify failed\n");
+    r = libmsi_query_modify(hquery, -1, 0 );
+    ok(r == ERROR_INVALID_HANDLE, "libmsi_query_modify failed\n");
 
     /* try an small record */
-    hrec = MsiCreateRecord(1);
-    r = MsiQueryModify(hquery, -1, hrec );
-    ok(r == ERROR_INVALID_DATA, "MsiQueryModify failed\n");
+    hrec = libmsi_record_create(1);
+    r = libmsi_query_modify(hquery, -1, hrec );
+    ok(r == ERROR_INVALID_DATA, "libmsi_query_modify failed\n");
 
     sz = sizeof buffer;
     buffer[0] = 'x';
-    err = MsiQueryGetError( hquery, buffer, &sz );
-    ok(err == LIBMSI_DB_ERROR_NOERROR, "MsiQueryGetError return\n");
+    err = libmsi_query_get_error( hquery, buffer, &sz );
+    ok(err == LIBMSI_DB_ERROR_NOERROR, "libmsi_query_get_error return\n");
     ok(buffer[0] == 0, "buffer not cleared\n");
     ok(sz == 0, "size not zero\n");
 
-    r = MsiCloseHandle(hrec);
+    r = libmsi_unref(hrec);
     ok(r == ERROR_SUCCESS, "failed to close record\n");
 
     /* insert a valid record */
-    hrec = MsiCreateRecord(3);
+    hrec = libmsi_record_create(3);
 
-    r = MsiRecordSetInteger(hrec, 1, 1);
+    r = libmsi_record_set_int(hrec, 1, 1);
     ok(r == ERROR_SUCCESS, "failed to set integer\n");
-    r = MsiRecordSetString(hrec, 2, "bob");
+    r = libmsi_record_set_string(hrec, 2, "bob");
     ok(r == ERROR_SUCCESS, "failed to set string\n");
-    r = MsiRecordSetString(hrec, 3, "7654321");
+    r = libmsi_record_set_string(hrec, 3, "7654321");
     ok(r == ERROR_SUCCESS, "failed to set string\n");
 
-    r = MsiQueryExecute(hquery, 0);
-    ok(r == ERROR_SUCCESS, "MsiQueryExecute failed\n");
-    r = MsiQueryModify(hquery, LIBMSI_MODIFY_INSERT_TEMPORARY, hrec );
-    ok(r == ERROR_SUCCESS, "MsiQueryModify failed\n");
+    r = libmsi_query_execute(hquery, 0);
+    ok(r == ERROR_SUCCESS, "libmsi_query_execute failed\n");
+    r = libmsi_query_modify(hquery, LIBMSI_MODIFY_INSERT_TEMPORARY, hrec );
+    ok(r == ERROR_SUCCESS, "libmsi_query_modify failed\n");
 
     /* validate it */
-    r = MsiQueryExecute(hquery, 0);
-    ok(r == ERROR_SUCCESS, "MsiQueryExecute failed\n");
+    r = libmsi_query_execute(hquery, 0);
+    ok(r == ERROR_SUCCESS, "libmsi_query_execute failed\n");
 
-    r = MsiQueryModify(hquery, LIBMSI_MODIFY_VALIDATE_NEW, hrec );
-    ok(r == ERROR_INVALID_DATA, "MsiQueryModify failed %u\n", r);
+    r = libmsi_query_modify(hquery, LIBMSI_MODIFY_VALIDATE_NEW, hrec );
+    ok(r == ERROR_INVALID_DATA, "libmsi_query_modify failed %u\n", r);
 
     sz = sizeof buffer;
     buffer[0] = 'x';
-    err = MsiQueryGetError( hquery, buffer, &sz );
-    ok(err == LIBMSI_DB_ERROR_DUPLICATEKEY, "MsiQueryGetError returned %u\n", err);
+    err = libmsi_query_get_error( hquery, buffer, &sz );
+    ok(err == LIBMSI_DB_ERROR_DUPLICATEKEY, "libmsi_query_get_error returned %u\n", err);
     ok(!strcmp(buffer, "id"), "expected \"id\" c, got \"%s\"\n", buffer);
     ok(sz == 2, "size not 2\n");
 
     /* insert the same thing again */
-    r = MsiQueryExecute(hquery, 0);
-    ok(r == ERROR_SUCCESS, "MsiQueryExecute failed\n");
+    r = libmsi_query_execute(hquery, 0);
+    ok(r == ERROR_SUCCESS, "libmsi_query_execute failed\n");
 
     /* should fail ... */
-    r = MsiQueryModify(hquery, LIBMSI_MODIFY_INSERT_TEMPORARY, hrec );
-    ok(r == ERROR_FUNCTION_FAILED, "MsiQueryModify failed\n");
+    r = libmsi_query_modify(hquery, LIBMSI_MODIFY_INSERT_TEMPORARY, hrec );
+    ok(r == ERROR_FUNCTION_FAILED, "libmsi_query_modify failed\n");
 
     /* try to merge the same record */
-    r = MsiQueryExecute(hquery, 0);
-    ok(r == ERROR_SUCCESS, "MsiQueryExecute failed\n");
-    r = MsiQueryModify(hquery, LIBMSI_MODIFY_MERGE, hrec );
-    ok(r == ERROR_SUCCESS, "MsiQueryModify failed\n");
+    r = libmsi_query_execute(hquery, 0);
+    ok(r == ERROR_SUCCESS, "libmsi_query_execute failed\n");
+    r = libmsi_query_modify(hquery, LIBMSI_MODIFY_MERGE, hrec );
+    ok(r == ERROR_SUCCESS, "libmsi_query_modify failed\n");
 
-    r = MsiCloseHandle(hrec);
+    r = libmsi_unref(hrec);
     ok(r == ERROR_SUCCESS, "failed to close record\n");
 
     /* try merging a new record */
-    hrec = MsiCreateRecord(3);
+    hrec = libmsi_record_create(3);
 
-    r = MsiRecordSetInteger(hrec, 1, 10);
+    r = libmsi_record_set_int(hrec, 1, 10);
     ok(r == ERROR_SUCCESS, "failed to set integer\n");
-    r = MsiRecordSetString(hrec, 2, "pepe");
+    r = libmsi_record_set_string(hrec, 2, "pepe");
     ok(r == ERROR_SUCCESS, "failed to set string\n");
-    r = MsiRecordSetString(hrec, 3, "7654321");
+    r = libmsi_record_set_string(hrec, 3, "7654321");
     ok(r == ERROR_SUCCESS, "failed to set string\n");
 
-    r = MsiQueryModify(hquery, LIBMSI_MODIFY_MERGE, hrec );
-    ok(r == ERROR_SUCCESS, "MsiQueryModify failed\n");
-    r = MsiQueryExecute(hquery, 0);
-    ok(r == ERROR_SUCCESS, "MsiQueryExecute failed\n");
+    r = libmsi_query_modify(hquery, LIBMSI_MODIFY_MERGE, hrec );
+    ok(r == ERROR_SUCCESS, "libmsi_query_modify failed\n");
+    r = libmsi_query_execute(hquery, 0);
+    ok(r == ERROR_SUCCESS, "libmsi_query_execute failed\n");
 
-    r = MsiCloseHandle(hrec);
+    r = libmsi_unref(hrec);
     ok(r == ERROR_SUCCESS, "failed to close record\n");
 
-    r = MsiQueryClose(hquery);
-    ok(r == ERROR_SUCCESS, "MsiQueryClose failed\n");
-    r = MsiCloseHandle(hquery);
-    ok(r == ERROR_SUCCESS, "MsiCloseHandle failed\n");
+    r = libmsi_query_close(hquery);
+    ok(r == ERROR_SUCCESS, "libmsi_query_close failed\n");
+    r = libmsi_unref(hquery);
+    ok(r == ERROR_SUCCESS, "libmsi_unref failed\n");
 
     sql = "SELECT * FROM `phone`";
-    r = MsiDatabaseOpenQuery(hdb, sql, &hquery);
-    ok(r == ERROR_SUCCESS, "MsiDatabaseOpenQuery failed\n");
+    r = libmsi_database_open_query(hdb, sql, &hquery);
+    ok(r == ERROR_SUCCESS, "libmsi_database_open_query failed\n");
 
-    r = MsiQueryExecute(hquery, 0);
-    ok(r == ERROR_SUCCESS, "MsiQueryExecute failed\n");
+    r = libmsi_query_execute(hquery, 0);
+    ok(r == ERROR_SUCCESS, "libmsi_query_execute failed\n");
 
-    r = MsiQueryFetch(hquery, &hrec);
-    ok(r == ERROR_SUCCESS, "MsiQueryFetch failed\n");
+    r = libmsi_query_fetch(hquery, &hrec);
+    ok(r == ERROR_SUCCESS, "libmsi_query_fetch failed\n");
 
-    r = MsiRecordGetInteger(hrec, 1);
+    r = libmsi_record_get_integer(hrec, 1);
     ok(r == 1, "Expected 1, got %d\n", r);
 
     sz = sizeof(buffer);
-    r = MsiRecordGetString(hrec, 2, buffer, &sz);
-    ok(r == ERROR_SUCCESS, "MsiRecordGetString failed\n");
+    r = libmsi_record_get_string(hrec, 2, buffer, &sz);
+    ok(r == ERROR_SUCCESS, "libmsi_record_get_string failed\n");
     ok(!strcmp(buffer, "bob"), "Expected bob, got %s\n", buffer);
 
     sz = sizeof(buffer);
-    r = MsiRecordGetString(hrec, 3, buffer, &sz);
-    ok(r == ERROR_SUCCESS, "MsiRecordGetString failed\n");
+    r = libmsi_record_get_string(hrec, 3, buffer, &sz);
+    ok(r == ERROR_SUCCESS, "libmsi_record_get_string failed\n");
     ok(!strcmp(buffer, "7654321"), "Expected 7654321, got %s\n", buffer);
 
     /* update the query, non-primary key */
-    r = MsiRecordSetString(hrec, 3, "3141592");
-    ok(r == ERROR_SUCCESS, "MsiRecordSetString failed\n");
+    r = libmsi_record_set_string(hrec, 3, "3141592");
+    ok(r == ERROR_SUCCESS, "libmsi_record_set_string failed\n");
 
-    r = MsiQueryModify(hquery, LIBMSI_MODIFY_UPDATE, hrec);
-    ok(r == ERROR_SUCCESS, "MsiQueryModify failed\n");
+    r = libmsi_query_modify(hquery, LIBMSI_MODIFY_UPDATE, hrec);
+    ok(r == ERROR_SUCCESS, "libmsi_query_modify failed\n");
 
     /* do it again */
-    r = MsiQueryModify(hquery, LIBMSI_MODIFY_UPDATE, hrec);
-    ok(r == ERROR_SUCCESS, "MsiQueryModify failed: %d\n", r);
+    r = libmsi_query_modify(hquery, LIBMSI_MODIFY_UPDATE, hrec);
+    ok(r == ERROR_SUCCESS, "libmsi_query_modify failed: %d\n", r);
 
     /* update the query, primary key */
-    r = MsiRecordSetInteger(hrec, 1, 5);
-    ok(r == ERROR_SUCCESS, "MsiRecordSetInteger failed\n");
+    r = libmsi_record_set_int(hrec, 1, 5);
+    ok(r == ERROR_SUCCESS, "libmsi_record_set_int failed\n");
 
-    r = MsiQueryModify(hquery, LIBMSI_MODIFY_UPDATE, hrec);
-    ok(r == ERROR_FUNCTION_FAILED, "MsiQueryModify failed\n");
+    r = libmsi_query_modify(hquery, LIBMSI_MODIFY_UPDATE, hrec);
+    ok(r == ERROR_FUNCTION_FAILED, "libmsi_query_modify failed\n");
 
-    r = MsiCloseHandle(hrec);
+    r = libmsi_unref(hrec);
     ok(r == ERROR_SUCCESS, "failed to close record\n");
 
-    r = MsiQueryClose(hquery);
-    ok(r == ERROR_SUCCESS, "MsiQueryClose failed\n");
-    r = MsiCloseHandle(hquery);
-    ok(r == ERROR_SUCCESS, "MsiCloseHandle failed\n");
+    r = libmsi_query_close(hquery);
+    ok(r == ERROR_SUCCESS, "libmsi_query_close failed\n");
+    r = libmsi_unref(hquery);
+    ok(r == ERROR_SUCCESS, "libmsi_unref failed\n");
 
     sql = "SELECT * FROM `phone`";
-    r = MsiDatabaseOpenQuery(hdb, sql, &hquery);
-    ok(r == ERROR_SUCCESS, "MsiDatabaseOpenQuery failed\n");
+    r = libmsi_database_open_query(hdb, sql, &hquery);
+    ok(r == ERROR_SUCCESS, "libmsi_database_open_query failed\n");
 
-    r = MsiQueryExecute(hquery, 0);
-    ok(r == ERROR_SUCCESS, "MsiQueryExecute failed\n");
+    r = libmsi_query_execute(hquery, 0);
+    ok(r == ERROR_SUCCESS, "libmsi_query_execute failed\n");
 
-    r = MsiQueryFetch(hquery, &hrec);
-    ok(r == ERROR_SUCCESS, "MsiQueryFetch failed\n");
+    r = libmsi_query_fetch(hquery, &hrec);
+    ok(r == ERROR_SUCCESS, "libmsi_query_fetch failed\n");
 
-    r = MsiRecordGetInteger(hrec, 1);
+    r = libmsi_record_get_integer(hrec, 1);
     ok(r == 1, "Expected 1, got %d\n", r);
 
     sz = sizeof(buffer);
-    r = MsiRecordGetString(hrec, 2, buffer, &sz);
-    ok(r == ERROR_SUCCESS, "MsiRecordGetString failed\n");
+    r = libmsi_record_get_string(hrec, 2, buffer, &sz);
+    ok(r == ERROR_SUCCESS, "libmsi_record_get_string failed\n");
     ok(!strcmp(buffer, "bob"), "Expected bob, got %s\n", buffer);
 
     sz = sizeof(buffer);
-    r = MsiRecordGetString(hrec, 3, buffer, &sz);
-    ok(r == ERROR_SUCCESS, "MsiRecordGetString failed\n");
+    r = libmsi_record_get_string(hrec, 3, buffer, &sz);
+    ok(r == ERROR_SUCCESS, "libmsi_record_get_string failed\n");
     ok(!strcmp(buffer, "3141592"), "Expected 3141592, got %s\n", buffer);
 
-    r = MsiCloseHandle(hrec);
+    r = libmsi_unref(hrec);
     ok(r == ERROR_SUCCESS, "failed to close record\n");
 
     /* use a record that doesn't come from a query fetch */
-    hrec = MsiCreateRecord(3);
-    ok(hrec != 0, "MsiCreateRecord failed\n");
+    hrec = libmsi_record_create(3);
+    ok(hrec != 0, "libmsi_record_create failed\n");
 
-    r = MsiRecordSetInteger(hrec, 1, 3);
+    r = libmsi_record_set_int(hrec, 1, 3);
     ok(r == ERROR_SUCCESS, "failed to set integer\n");
-    r = MsiRecordSetString(hrec, 2, "jane");
+    r = libmsi_record_set_string(hrec, 2, "jane");
     ok(r == ERROR_SUCCESS, "failed to set string\n");
-    r = MsiRecordSetString(hrec, 3, "112358");
+    r = libmsi_record_set_string(hrec, 3, "112358");
     ok(r == ERROR_SUCCESS, "failed to set string\n");
 
-    r = MsiQueryModify(hquery, LIBMSI_MODIFY_UPDATE, hrec);
+    r = libmsi_query_modify(hquery, LIBMSI_MODIFY_UPDATE, hrec);
     ok(r == ERROR_FUNCTION_FAILED, "Expected ERROR_FUNCTION_FAILED, got %d\n", r);
 
-    r = MsiCloseHandle(hrec);
+    r = libmsi_unref(hrec);
     ok(r == ERROR_SUCCESS, "failed to close record\n");
 
     /* use a record that doesn't come from a query fetch, primary key matches */
-    hrec = MsiCreateRecord(3);
-    ok(hrec != 0, "MsiCreateRecord failed\n");
+    hrec = libmsi_record_create(3);
+    ok(hrec != 0, "libmsi_record_create failed\n");
 
-    r = MsiRecordSetInteger(hrec, 1, 1);
+    r = libmsi_record_set_int(hrec, 1, 1);
     ok(r == ERROR_SUCCESS, "failed to set integer\n");
-    r = MsiRecordSetString(hrec, 2, "jane");
+    r = libmsi_record_set_string(hrec, 2, "jane");
     ok(r == ERROR_SUCCESS, "failed to set string\n");
-    r = MsiRecordSetString(hrec, 3, "112358");
+    r = libmsi_record_set_string(hrec, 3, "112358");
     ok(r == ERROR_SUCCESS, "failed to set string\n");
 
-    r = MsiQueryModify(hquery, LIBMSI_MODIFY_UPDATE, hrec);
-    ok(r == ERROR_FUNCTION_FAILED, "MsiQueryModify failed\n");
+    r = libmsi_query_modify(hquery, LIBMSI_MODIFY_UPDATE, hrec);
+    ok(r == ERROR_FUNCTION_FAILED, "libmsi_query_modify failed\n");
 
-    r = MsiCloseHandle(hrec);
+    r = libmsi_unref(hrec);
     ok(r == ERROR_SUCCESS, "failed to close record\n");
 
-    hrec = MsiCreateRecord(3);
+    hrec = libmsi_record_create(3);
 
-    r = MsiRecordSetInteger(hrec, 1, 2);
+    r = libmsi_record_set_int(hrec, 1, 2);
     ok(r == ERROR_SUCCESS, "failed to set integer\n");
-    r = MsiRecordSetString(hrec, 2, "nick");
+    r = libmsi_record_set_string(hrec, 2, "nick");
     ok(r == ERROR_SUCCESS, "failed to set string\n");
-    r = MsiRecordSetString(hrec, 3, "141421");
+    r = libmsi_record_set_string(hrec, 3, "141421");
     ok(r == ERROR_SUCCESS, "failed to set string\n");
 
-    r = MsiQueryExecute(hquery, 0);
-    ok(r == ERROR_SUCCESS, "MsiQueryExecute failed\n");
-    r = MsiQueryModify(hquery, LIBMSI_MODIFY_INSERT_TEMPORARY, hrec );
-    ok(r == ERROR_SUCCESS, "MsiQueryModify failed\n");
+    r = libmsi_query_execute(hquery, 0);
+    ok(r == ERROR_SUCCESS, "libmsi_query_execute failed\n");
+    r = libmsi_query_modify(hquery, LIBMSI_MODIFY_INSERT_TEMPORARY, hrec );
+    ok(r == ERROR_SUCCESS, "libmsi_query_modify failed\n");
 
-    r = MsiCloseHandle(hrec);
-    ok(r == ERROR_SUCCESS, "MsiCloseHandle failed\n");
-    r = MsiQueryClose(hquery);
-    ok(r == ERROR_SUCCESS, "MsiQueryClose failed\n");
-    r = MsiCloseHandle(hquery);
-    ok(r == ERROR_SUCCESS, "MsiCloseHandle failed\n");
+    r = libmsi_unref(hrec);
+    ok(r == ERROR_SUCCESS, "libmsi_unref failed\n");
+    r = libmsi_query_close(hquery);
+    ok(r == ERROR_SUCCESS, "libmsi_query_close failed\n");
+    r = libmsi_unref(hquery);
+    ok(r == ERROR_SUCCESS, "libmsi_unref failed\n");
 
     sql = "SELECT * FROM `phone` WHERE `id` = 1";
-    r = MsiDatabaseOpenQuery(hdb, sql, &hquery);
-    ok(r == ERROR_SUCCESS, "MsiDatabaseOpenQuery failed\n");
-    r = MsiQueryExecute(hquery, 0);
-    ok(r == ERROR_SUCCESS, "MsiQueryExecute failed\n");
-    r = MsiQueryFetch(hquery, &hrec);
-    ok(r == ERROR_SUCCESS, "MsiQueryFetch failed\n");
+    r = libmsi_database_open_query(hdb, sql, &hquery);
+    ok(r == ERROR_SUCCESS, "libmsi_database_open_query failed\n");
+    r = libmsi_query_execute(hquery, 0);
+    ok(r == ERROR_SUCCESS, "libmsi_query_execute failed\n");
+    r = libmsi_query_fetch(hquery, &hrec);
+    ok(r == ERROR_SUCCESS, "libmsi_query_fetch failed\n");
 
     /* change the id to match the second row */
-    r = MsiRecordSetInteger(hrec, 1, 2);
+    r = libmsi_record_set_int(hrec, 1, 2);
     ok(r == ERROR_SUCCESS, "failed to set integer\n");
-    r = MsiRecordSetString(hrec, 2, "jerry");
+    r = libmsi_record_set_string(hrec, 2, "jerry");
     ok(r == ERROR_SUCCESS, "failed to set string\n");
 
-    r = MsiQueryModify(hquery, LIBMSI_MODIFY_UPDATE, hrec);
-    ok(r == ERROR_FUNCTION_FAILED, "MsiQueryModify failed\n");
+    r = libmsi_query_modify(hquery, LIBMSI_MODIFY_UPDATE, hrec);
+    ok(r == ERROR_FUNCTION_FAILED, "libmsi_query_modify failed\n");
 
-    r = MsiCloseHandle(hrec);
+    r = libmsi_unref(hrec);
     ok(r == ERROR_SUCCESS, "failed to close record\n");
-    r = MsiQueryClose(hquery);
-    ok(r == ERROR_SUCCESS, "MsiQueryClose failed\n");
-    r = MsiCloseHandle(hquery);
-    ok(r == ERROR_SUCCESS, "MsiCloseHandle failed\n");
+    r = libmsi_query_close(hquery);
+    ok(r == ERROR_SUCCESS, "libmsi_query_close failed\n");
+    r = libmsi_unref(hquery);
+    ok(r == ERROR_SUCCESS, "libmsi_unref failed\n");
 
     /* broader search */
     sql = "SELECT * FROM `phone` ORDER BY `id`";
-    r = MsiDatabaseOpenQuery(hdb, sql, &hquery);
-    ok(r == ERROR_SUCCESS, "MsiDatabaseOpenQuery failed\n");
-    r = MsiQueryExecute(hquery, 0);
-    ok(r == ERROR_SUCCESS, "MsiQueryExecute failed\n");
-    r = MsiQueryFetch(hquery, &hrec);
-    ok(r == ERROR_SUCCESS, "MsiQueryFetch failed\n");
+    r = libmsi_database_open_query(hdb, sql, &hquery);
+    ok(r == ERROR_SUCCESS, "libmsi_database_open_query failed\n");
+    r = libmsi_query_execute(hquery, 0);
+    ok(r == ERROR_SUCCESS, "libmsi_query_execute failed\n");
+    r = libmsi_query_fetch(hquery, &hrec);
+    ok(r == ERROR_SUCCESS, "libmsi_query_fetch failed\n");
 
     /* change the id to match the second row */
-    r = MsiRecordSetInteger(hrec, 1, 2);
+    r = libmsi_record_set_int(hrec, 1, 2);
     ok(r == ERROR_SUCCESS, "failed to set integer\n");
-    r = MsiRecordSetString(hrec, 2, "jerry");
+    r = libmsi_record_set_string(hrec, 2, "jerry");
     ok(r == ERROR_SUCCESS, "failed to set string\n");
 
-    r = MsiQueryModify(hquery, LIBMSI_MODIFY_UPDATE, hrec);
-    ok(r == ERROR_FUNCTION_FAILED, "MsiQueryModify failed\n");
+    r = libmsi_query_modify(hquery, LIBMSI_MODIFY_UPDATE, hrec);
+    ok(r == ERROR_FUNCTION_FAILED, "libmsi_query_modify failed\n");
 
-    r = MsiCloseHandle(hrec);
+    r = libmsi_unref(hrec);
     ok(r == ERROR_SUCCESS, "failed to close record\n");
-    r = MsiQueryClose(hquery);
-    ok(r == ERROR_SUCCESS, "MsiQueryClose failed\n");
-    r = MsiCloseHandle(hquery);
-    ok(r == ERROR_SUCCESS, "MsiCloseHandle failed\n");
+    r = libmsi_query_close(hquery);
+    ok(r == ERROR_SUCCESS, "libmsi_query_close failed\n");
+    r = libmsi_unref(hquery);
+    ok(r == ERROR_SUCCESS, "libmsi_unref failed\n");
 
-    r = MsiCloseHandle( hdb );
-    ok(r == ERROR_SUCCESS, "MsiOpenDatabase close failed\n");
+    r = libmsi_unref( hdb );
+    ok(r == ERROR_SUCCESS, "libmsi_database_open close failed\n");
 }
 
 static LibmsiDatabase *create_db(void)
@@ -1064,12 +1064,12 @@ static LibmsiDatabase *create_db(void)
     DeleteFile(msifile);
 
     /* create an empty database */
-    res = MsiOpenDatabase(msifile, LIBMSI_DB_OPEN_CREATE, &hdb );
+    res = libmsi_database_open(msifile, LIBMSI_DB_OPEN_CREATE, &hdb );
     ok( res == ERROR_SUCCESS , "Failed to create database\n" );
     if( res != ERROR_SUCCESS )
         return hdb;
 
-    res = MsiDatabaseCommit( hdb );
+    res = libmsi_database_commit( hdb );
     ok( res == ERROR_SUCCESS , "Failed to commit database\n" );
 
     return hdb;
@@ -1089,51 +1089,51 @@ static void test_getcolinfo(void)
     ok( hdb, "failed to create db\n");
 
     /* tables should be present */
-    r = MsiDatabaseOpenQuery(hdb, "select * from _Tables", &hquery);
+    r = libmsi_database_open_query(hdb, "select * from _Tables", &hquery);
     ok( r == ERROR_SUCCESS, "failed to open query\n");
 
-    r = MsiQueryExecute(hquery, 0);
+    r = libmsi_query_execute(hquery, 0);
     ok( r == ERROR_SUCCESS, "failed to execute query\n");
 
     /* check that NAMES works */
     rec = 0;
-    r = MsiQueryGetColumnInfo( hquery, LIBMSI_COL_INFO_NAMES, &rec );
+    r = libmsi_query_get_column_info( hquery, LIBMSI_COL_INFO_NAMES, &rec );
     ok( r == ERROR_SUCCESS, "failed to get names\n");
     sz = sizeof buffer;
-    r = MsiRecordGetString(rec, 1, buffer, &sz );
+    r = libmsi_record_get_string(rec, 1, buffer, &sz );
     ok( r == ERROR_SUCCESS, "failed to get string\n");
     ok( !strcmp(buffer,"Name"), "_Tables has wrong column name\n");
-    r = MsiCloseHandle( rec );
+    r = libmsi_unref( rec );
     ok( r == ERROR_SUCCESS, "failed to close record handle\n");
 
     /* check that TYPES works */
     rec = 0;
-    r = MsiQueryGetColumnInfo( hquery, LIBMSI_COL_INFO_TYPES, &rec );
+    r = libmsi_query_get_column_info( hquery, LIBMSI_COL_INFO_TYPES, &rec );
     ok( r == ERROR_SUCCESS, "failed to get names\n");
     sz = sizeof buffer;
-    r = MsiRecordGetString(rec, 1, buffer, &sz );
+    r = libmsi_record_get_string(rec, 1, buffer, &sz );
     ok( r == ERROR_SUCCESS, "failed to get string\n");
     ok( !strcmp(buffer,"s64"), "_Tables has wrong column type\n");
-    r = MsiCloseHandle( rec );
+    r = libmsi_unref( rec );
     ok( r == ERROR_SUCCESS, "failed to close record handle\n");
 
     /* check that invalid values fail */
     rec = 0;
-    r = MsiQueryGetColumnInfo( hquery, 100, &rec );
+    r = libmsi_query_get_column_info( hquery, 100, &rec );
     ok( r == ERROR_INVALID_PARAMETER, "wrong error code\n");
     ok( rec == 0, "returned a record\n");
 
-    r = MsiQueryGetColumnInfo( hquery, LIBMSI_COL_INFO_TYPES, NULL );
+    r = libmsi_query_get_column_info( hquery, LIBMSI_COL_INFO_TYPES, NULL );
     ok( r == ERROR_INVALID_PARAMETER, "wrong error code\n");
 
-    r = MsiQueryGetColumnInfo( 0, LIBMSI_COL_INFO_TYPES, &rec );
+    r = libmsi_query_get_column_info( 0, LIBMSI_COL_INFO_TYPES, &rec );
     ok( r == ERROR_INVALID_HANDLE, "wrong error code\n");
 
-    r = MsiQueryClose(hquery);
+    r = libmsi_query_close(hquery);
     ok( r == ERROR_SUCCESS, "failed to close query\n");
-    r = MsiCloseHandle(hquery);
+    r = libmsi_unref(hquery);
     ok( r == ERROR_SUCCESS, "failed to close query handle\n");
-    r = MsiCloseHandle(hdb);
+    r = libmsi_unref(hdb);
     ok( r == ERROR_SUCCESS, "failed to close database\n");
 }
 
@@ -1143,17 +1143,17 @@ static LibmsiRecord *get_column_info(LibmsiDatabase *hdb, const char *sql, Libms
     LibmsiRecord *rec = 0;
     unsigned r;
 
-    r = MsiDatabaseOpenQuery(hdb, sql, &hquery);
+    r = libmsi_database_open_query(hdb, sql, &hquery);
     if( r != ERROR_SUCCESS )
         return rec;
 
-    r = MsiQueryExecute(hquery, 0);
+    r = libmsi_query_execute(hquery, 0);
     if( r == ERROR_SUCCESS )
     {
-        MsiQueryGetColumnInfo( hquery, type, &rec );
+        libmsi_query_get_column_info( hquery, type, &rec );
     }
-    MsiQueryClose(hquery);
-    MsiCloseHandle(hquery);
+    libmsi_query_close(hquery);
+    libmsi_unref(hquery);
     return rec;
 }
 
@@ -1166,26 +1166,26 @@ static unsigned get_columns_table_type(LibmsiDatabase *hdb, const char *table, u
 
     sprintf(sql, "select * from `_Columns` where  `Table` = '%s'", table );
 
-    r = MsiDatabaseOpenQuery(hdb, sql, &hquery);
+    r = libmsi_database_open_query(hdb, sql, &hquery);
     if( r != ERROR_SUCCESS )
         return r;
 
-    r = MsiQueryExecute(hquery, 0);
+    r = libmsi_query_execute(hquery, 0);
     if( r == ERROR_SUCCESS )
     {
         while (1)
         {
-            r = MsiQueryFetch( hquery, &rec );
+            r = libmsi_query_fetch( hquery, &rec );
             if( r != ERROR_SUCCESS)
                 break;
-            r = MsiRecordGetInteger( rec, 2 );
+            r = libmsi_record_get_integer( rec, 2 );
             if (r == field)
-                type = MsiRecordGetInteger( rec, 4 );
-            MsiCloseHandle( rec );
+                type = libmsi_record_get_integer( rec, 4 );
+            libmsi_unref( rec );
         }
     }
-    MsiQueryClose(hquery);
-    MsiCloseHandle(hquery);
+    libmsi_query_close(hquery);
+    libmsi_unref(hquery);
     return type;
 }
 
@@ -1196,7 +1196,7 @@ static bool check_record( LibmsiRecord *rec, unsigned field, const char *val )
     unsigned sz;
 
     sz = sizeof buffer;
-    r = MsiRecordGetString( rec, field, buffer, &sz );
+    r = libmsi_record_get_string( rec, field, buffer, &sz );
     return (r == ERROR_SUCCESS ) && !strcmp(val, buffer);
 }
 
@@ -1233,7 +1233,7 @@ static void test_querygetcolumninfo(void)
     ok( check_record( rec, 6, "I4"), "wrong record type\n");
     ok( check_record( rec, 7, "S0"), "wrong record type\n");
 
-    MsiCloseHandle( rec );
+    libmsi_unref( rec );
 
     /* check the type in _Columns */
     ok( 0x3dff == get_columns_table_type(hdb, "Properties", 1 ), "_columns table wrong\n");
@@ -1256,7 +1256,7 @@ static void test_querygetcolumninfo(void)
     ok( check_record( rec, 6, "Longvalue"), "wrong record type\n");
     ok( check_record( rec, 7, "Longcharvalue"), "wrong record type\n");
 
-    MsiCloseHandle( rec );
+    libmsi_unref( rec );
 
     r = run_query( hdb, 0,
             "CREATE TABLE `Binary` "
@@ -1270,7 +1270,7 @@ static void test_querygetcolumninfo(void)
     ok( check_record( rec, 1, "S255"), "wrong record type\n");
     ok( check_record( rec, 2, "V0"), "wrong record type\n");
 
-    MsiCloseHandle( rec );
+    libmsi_unref( rec );
 
     /* check the type in _Columns */
     ok( 0x3dff == get_columns_table_type(hdb, "Binary", 1 ), "_columns table wrong\n");
@@ -1282,7 +1282,7 @@ static void test_querygetcolumninfo(void)
 
     ok( check_record( rec, 1, "Name"), "wrong record type\n");
     ok( check_record( rec, 2, "Data"), "wrong record type\n");
-    MsiCloseHandle( rec );
+    libmsi_unref( rec );
 
     r = run_query( hdb, 0,
             "CREATE TABLE `UIText` "
@@ -1296,15 +1296,15 @@ static void test_querygetcolumninfo(void)
     ok( rec, "failed to get column info record\n" );
     ok( check_record( rec, 1, "Key"), "wrong record type\n");
     ok( check_record( rec, 2, "Text"), "wrong record type\n");
-    MsiCloseHandle( rec );
+    libmsi_unref( rec );
 
     rec = get_column_info( hdb, "select * from `UIText`", LIBMSI_COL_INFO_TYPES );
     ok( rec, "failed to get column info record\n" );
     ok( check_record( rec, 1, "s72"), "wrong record type\n");
     ok( check_record( rec, 2, "L255"), "wrong record type\n");
-    MsiCloseHandle( rec );
+    libmsi_unref( rec );
 
-    MsiCloseHandle( hdb );
+    libmsi_unref( hdb );
 }
 
 static void test_msiexport(void)
@@ -1326,44 +1326,44 @@ static void test_msiexport(void)
 
     DeleteFile(msifile);
 
-    /* just MsiOpenDatabase should not create a file */
-    r = MsiOpenDatabase(msifile, LIBMSI_DB_OPEN_CREATE, &hdb);
-    ok(r == ERROR_SUCCESS, "MsiOpenDatabase failed\n");
+    /* just libmsi_database_open should not create a file */
+    r = libmsi_database_open(msifile, LIBMSI_DB_OPEN_CREATE, &hdb);
+    ok(r == ERROR_SUCCESS, "libmsi_database_open failed\n");
 
     /* create a table */
     sql = "CREATE TABLE `phone` ( "
             "`id` INT, `name` CHAR(32), `number` CHAR(32) "
             "PRIMARY KEY `id`)";
-    r = MsiDatabaseOpenQuery(hdb, sql, &hquery);
-    ok(r == ERROR_SUCCESS, "MsiDatabaseOpenQuery failed\n");
-    r = MsiQueryExecute(hquery, 0);
-    ok(r == ERROR_SUCCESS, "MsiQueryExecute failed\n");
-    r = MsiQueryClose(hquery);
-    ok(r == ERROR_SUCCESS, "MsiQueryClose failed\n");
-    r = MsiCloseHandle(hquery);
-    ok(r == ERROR_SUCCESS, "MsiCloseHandle failed\n");
+    r = libmsi_database_open_query(hdb, sql, &hquery);
+    ok(r == ERROR_SUCCESS, "libmsi_database_open_query failed\n");
+    r = libmsi_query_execute(hquery, 0);
+    ok(r == ERROR_SUCCESS, "libmsi_query_execute failed\n");
+    r = libmsi_query_close(hquery);
+    ok(r == ERROR_SUCCESS, "libmsi_query_close failed\n");
+    r = libmsi_unref(hquery);
+    ok(r == ERROR_SUCCESS, "libmsi_unref failed\n");
 
     /* insert a value into it */
     sql = "INSERT INTO `phone` ( `id`, `name`, `number` )"
         "VALUES('1', 'Abe', '8675309')";
-    r = MsiDatabaseOpenQuery(hdb, sql, &hquery);
-    ok(r == ERROR_SUCCESS, "MsiDatabaseOpenQuery failed\n");
-    r = MsiQueryExecute(hquery, 0);
-    ok(r == ERROR_SUCCESS, "MsiQueryExecute failed\n");
-    r = MsiQueryClose(hquery);
-    ok(r == ERROR_SUCCESS, "MsiQueryClose failed\n");
-    r = MsiCloseHandle(hquery);
-    ok(r == ERROR_SUCCESS, "MsiCloseHandle failed\n");
+    r = libmsi_database_open_query(hdb, sql, &hquery);
+    ok(r == ERROR_SUCCESS, "libmsi_database_open_query failed\n");
+    r = libmsi_query_execute(hquery, 0);
+    ok(r == ERROR_SUCCESS, "libmsi_query_execute failed\n");
+    r = libmsi_query_close(hquery);
+    ok(r == ERROR_SUCCESS, "libmsi_query_close failed\n");
+    r = libmsi_unref(hquery);
+    ok(r == ERROR_SUCCESS, "libmsi_unref failed\n");
 
     fd = open(file, O_WRONLY | O_BINARY | O_CREAT, 0644);
     ok(fd != -1, "open failed\n");
 
-    r = MsiDatabaseExport(hdb, "phone", fd);
-    ok(r == ERROR_SUCCESS, "MsiDatabaseExport failed\n");
+    r = libmsi_database_export(hdb, "phone", fd);
+    ok(r == ERROR_SUCCESS, "libmsi_database_export failed\n");
 
     close(fd);
 
-    MsiCloseHandle(hdb);
+    libmsi_unref(hdb);
 
     /* check the data that was written */
     length = 0;
@@ -1396,9 +1396,9 @@ static void test_longstrings(void)
     const unsigned STRING_LENGTH = 0x10005;
 
     DeleteFile(msifile);
-    /* just MsiOpenDatabase should not create a file */
-    r = MsiOpenDatabase(msifile, LIBMSI_DB_OPEN_CREATE, &hdb);
-    ok(r == ERROR_SUCCESS, "MsiOpenDatabase failed\n");
+    /* just libmsi_database_open should not create a file */
+    r = libmsi_database_open(msifile, LIBMSI_DB_OPEN_CREATE, &hdb);
+    ok(r == ERROR_SUCCESS, "libmsi_database_open failed\n");
 
     /* create a table */
     r = try_query( hdb, 
@@ -1412,35 +1412,35 @@ static void test_longstrings(void)
     memset(str+len, 'Z', STRING_LENGTH);
     strcpy(str+len+STRING_LENGTH, insert_query+len+1);
     r = try_query( hdb, str );
-    ok(r == ERROR_SUCCESS, "MsiDatabaseOpenQuery failed\n");
+    ok(r == ERROR_SUCCESS, "libmsi_database_open_query failed\n");
 
     HeapFree(GetProcessHeap(), 0, str);
 
-    r = MsiDatabaseCommit(hdb);
-    ok(r == ERROR_SUCCESS, "MsiDatabaseCommit failed\n");
-    MsiCloseHandle(hdb);
+    r = libmsi_database_commit(hdb);
+    ok(r == ERROR_SUCCESS, "libmsi_database_commit failed\n");
+    libmsi_unref(hdb);
 
-    r = MsiOpenDatabase(msifile, LIBMSI_DB_OPEN_READONLY, &hdb);
-    ok(r == ERROR_SUCCESS, "MsiOpenDatabase failed\n");
+    r = libmsi_database_open(msifile, LIBMSI_DB_OPEN_READONLY, &hdb);
+    ok(r == ERROR_SUCCESS, "libmsi_database_open failed\n");
 
-    r = MsiDatabaseOpenQuery(hdb, "select * from `strings` where `id` = 1", &hquery);
-    ok(r == ERROR_SUCCESS, "MsiDatabaseOpenQuery failed\n");
+    r = libmsi_database_open_query(hdb, "select * from `strings` where `id` = 1", &hquery);
+    ok(r == ERROR_SUCCESS, "libmsi_database_open_query failed\n");
 
-    r = MsiQueryExecute(hquery, 0);
-    ok(r == ERROR_SUCCESS, "MsiQueryExecute failed\n");
+    r = libmsi_query_execute(hquery, 0);
+    ok(r == ERROR_SUCCESS, "libmsi_query_execute failed\n");
 
-    r = MsiQueryFetch(hquery, &hrec);
-    ok(r == ERROR_SUCCESS, "MsiQueryFetch failed\n");
+    r = libmsi_query_fetch(hquery, &hrec);
+    ok(r == ERROR_SUCCESS, "libmsi_query_fetch failed\n");
 
-    MsiQueryClose(hquery);
-    MsiCloseHandle(hquery);
+    libmsi_query_close(hquery);
+    libmsi_unref(hquery);
 
-    r = MsiRecordGetString(hrec, 2, NULL, &len);
-    ok(r == ERROR_SUCCESS, "MsiQueryFetch failed\n");
+    r = libmsi_record_get_string(hrec, 2, NULL, &len);
+    ok(r == ERROR_SUCCESS, "libmsi_query_fetch failed\n");
     ok(len == STRING_LENGTH, "string length wrong\n");
 
-    MsiCloseHandle(hrec);
-    MsiCloseHandle(hdb);
+    libmsi_unref(hrec);
+    libmsi_unref(hdb);
     DeleteFile(msifile);
 }
 
@@ -1491,12 +1491,12 @@ static void test_streamtable(void)
             "( `Value`, `Property` ) VALUES ( 'Prop', 'value' )" );
     ok( r == ERROR_SUCCESS, "Failed to add to table\n" );
 
-    r = MsiDatabaseCommit( hdb );
+    r = libmsi_database_commit( hdb );
     ok( r == ERROR_SUCCESS , "Failed to commit database\n" );
 
-    MsiCloseHandle( hdb );
+    libmsi_unref( hdb );
 
-    r = MsiOpenDatabase(msifile, LIBMSI_DB_OPEN_TRANSACT, &hdb );
+    r = libmsi_database_open(msifile, LIBMSI_DB_OPEN_TRANSACT, &hdb );
     ok( r == ERROR_SUCCESS , "Failed to open database\n" );
 
     /* check the column types */
@@ -1506,7 +1506,7 @@ static void test_streamtable(void)
     ok( check_record( rec, 1, "s62"), "wrong record type\n");
     ok( check_record( rec, 2, "V0"), "wrong record type\n");
 
-    MsiCloseHandle( rec );
+    libmsi_unref( rec );
 
     /* now try the names */
     rec = get_column_info( hdb, "select * from `_Streams`", LIBMSI_COL_INFO_NAMES );
@@ -1515,195 +1515,195 @@ static void test_streamtable(void)
     ok( check_record( rec, 1, "Name"), "wrong record type\n");
     ok( check_record( rec, 2, "Data"), "wrong record type\n");
 
-    MsiCloseHandle( rec );
+    libmsi_unref( rec );
 
     query = NULL;
-    r = MsiDatabaseOpenQuery( hdb,
+    r = libmsi_database_open_query( hdb,
             "SELECT * FROM `_Streams` WHERE `Name` = '\5SummaryInformation'", &query );
     ok( r == ERROR_SUCCESS, "Failed to open database query: %u\n", r );
 
-    r = MsiQueryExecute( query, 0 );
+    r = libmsi_query_execute( query, 0 );
     ok( r == ERROR_SUCCESS, "Failed to execute query: %u\n", r );
 
-    r = MsiQueryFetch( query, &rec );
+    r = libmsi_query_fetch( query, &rec );
     ok( r == ERROR_NO_MORE_ITEMS, "Unexpected result: %u\n", r );
 
-    MsiCloseHandle( rec );
-    MsiQueryClose( query );
-    MsiCloseHandle( query );
+    libmsi_unref( rec );
+    libmsi_query_close( query );
+    libmsi_unref( query );
 
     /* create a summary information stream */
-    r = MsiGetSummaryInformation( hdb, 1, &hsi );
+    r = libmsi_database_get_summary_info( hdb, 1, &hsi );
     ok( r == ERROR_SUCCESS, "Failed to get summary information handle: %u\n", r );
 
-    r = MsiSummaryInfoSetProperty( hsi, MSI_PID_SECURITY, VT_I4, 2, NULL, NULL );
+    r = libmsi_summary_info_set_property( hsi, MSI_PID_SECURITY, VT_I4, 2, NULL, NULL );
     ok( r == ERROR_SUCCESS, "Failed to set property: %u\n", r );
 
-    r = MsiSummaryInfoPersist( hsi );
+    r = libmsi_summary_info_persist( hsi );
     ok( r == ERROR_SUCCESS, "Failed to save summary information: %u\n", r );
 
-    MsiCloseHandle( hsi );
+    libmsi_unref( hsi );
 
     query = NULL;
-    r = MsiDatabaseOpenQuery( hdb,
+    r = libmsi_database_open_query( hdb,
             "SELECT * FROM `_Streams` WHERE `Name` = '\5SummaryInformation'", &query );
     ok( r == ERROR_SUCCESS, "Failed to open database query: %u\n", r );
 
-    r = MsiQueryExecute( query, 0 );
+    r = libmsi_query_execute( query, 0 );
     ok( r == ERROR_SUCCESS, "Failed to execute query: %u\n", r );
 
-    r = MsiQueryFetch( query, &rec );
+    r = libmsi_query_fetch( query, &rec );
     ok( r == ERROR_SUCCESS, "Unexpected result: %u\n", r );
 
-    MsiCloseHandle( rec );
-    MsiQueryClose( query );
-    MsiCloseHandle( query );
+    libmsi_unref( rec );
+    libmsi_query_close( query );
+    libmsi_unref( query );
 
     /* insert a file into the _Streams table */
     create_file( "test.txt" );
 
-    rec = MsiCreateRecord( 2 );
-    MsiRecordSetString( rec, 1, "data" );
+    rec = libmsi_record_create( 2 );
+    libmsi_record_set_string( rec, 1, "data" );
 
-    r = MsiRecordSetStream( rec, 2, "test.txt" );
+    r = libmsi_record_load_stream( rec, 2, "test.txt" );
     ok( r == ERROR_SUCCESS, "Failed to add stream data to the record: %d\n", r);
 
     DeleteFile("test.txt");
 
     query = NULL;
-    r = MsiDatabaseOpenQuery( hdb,
+    r = libmsi_database_open_query( hdb,
             "INSERT INTO `_Streams` ( `Name`, `Data` ) VALUES ( ?, ? )", &query );
     ok( r == ERROR_SUCCESS, "Failed to open database query: %d\n", r);
 
-    r = MsiQueryExecute( query, rec );
+    r = libmsi_query_execute( query, rec );
     ok( r == ERROR_SUCCESS, "Failed to execute query: %d\n", r);
 
-    MsiCloseHandle( rec );
-    MsiQueryClose( query );
-    MsiCloseHandle( query );
+    libmsi_unref( rec );
+    libmsi_query_close( query );
+    libmsi_unref( query );
 
     /* insert another one */
     create_file( "test1.txt" );
 
-    rec = MsiCreateRecord( 2 );
-    MsiRecordSetString( rec, 1, "data1" );
+    rec = libmsi_record_create( 2 );
+    libmsi_record_set_string( rec, 1, "data1" );
 
-    r = MsiRecordSetStream( rec, 2, "test1.txt" );
+    r = libmsi_record_load_stream( rec, 2, "test1.txt" );
     ok( r == ERROR_SUCCESS, "Failed to add stream data to the record: %d\n", r);
 
     DeleteFile("test1.txt");
 
     query = NULL;
-    r = MsiDatabaseOpenQuery( hdb,
+    r = libmsi_database_open_query( hdb,
             "INSERT INTO `_Streams` ( `Name`, `Data` ) VALUES ( ?, ? )", &query );
     ok( r == ERROR_SUCCESS, "Failed to open database query: %d\n", r);
 
-    r = MsiQueryExecute( query, rec );
+    r = libmsi_query_execute( query, rec );
     ok( r == ERROR_SUCCESS, "Failed to execute query: %d\n", r);
 
-    MsiCloseHandle( rec );
-    MsiQueryClose( query );
-    MsiCloseHandle( query );
+    libmsi_unref( rec );
+    libmsi_query_close( query );
+    libmsi_unref( query );
 
     query = NULL;
-    r = MsiDatabaseOpenQuery( hdb,
+    r = libmsi_database_open_query( hdb,
             "SELECT `Name`, `Data` FROM `_Streams` WHERE `Name` = 'data'", &query );
     ok( r == ERROR_SUCCESS, "Failed to open database query: %d\n", r);
 
-    r = MsiQueryExecute( query, 0 );
+    r = libmsi_query_execute( query, 0 );
     ok( r == ERROR_SUCCESS, "Failed to execute query: %d\n", r);
 
-    r = MsiQueryFetch( query, &rec );
+    r = libmsi_query_fetch( query, &rec );
     ok( r == ERROR_SUCCESS, "Failed to fetch record: %d\n", r);
 
     size = MAX_PATH;
-    r = MsiRecordGetString( rec, 1, file, &size );
+    r = libmsi_record_get_string( rec, 1, file, &size );
     ok( r == ERROR_SUCCESS, "Failed to get string: %d\n", r);
     ok( !strcmp(file, "data"), "Expected 'data', got %s\n", file);
 
     size = MAX_PATH;
     memset(buf, 0, MAX_PATH);
-    r = MsiRecordReadStream( rec, 2, buf, &size );
+    r = libmsi_record_save_stream( rec, 2, buf, &size );
     ok( r == ERROR_SUCCESS, "Failed to get stream: %d\n", r);
     ok( !strcmp(buf, "test.txt\n"), "Expected 'test.txt\\n', got %s\n", buf);
 
-    MsiCloseHandle( rec );
-    MsiQueryClose( query );
-    MsiCloseHandle( query );
+    libmsi_unref( rec );
+    libmsi_query_close( query );
+    libmsi_unref( query );
 
     query = NULL;
-    r = MsiDatabaseOpenQuery( hdb,
+    r = libmsi_database_open_query( hdb,
             "SELECT `Name`, `Data` FROM `_Streams` WHERE `Name` = 'data1'", &query );
     ok( r == ERROR_SUCCESS, "Failed to open database query: %d\n", r);
 
-    r = MsiQueryExecute( query, 0 );
+    r = libmsi_query_execute( query, 0 );
     ok( r == ERROR_SUCCESS, "Failed to execute query: %d\n", r);
 
-    r = MsiQueryFetch( query, &rec );
+    r = libmsi_query_fetch( query, &rec );
     ok( r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     size = MAX_PATH;
-    r = MsiRecordGetString( rec, 1, file, &size );
+    r = libmsi_record_get_string( rec, 1, file, &size );
     ok( r == ERROR_SUCCESS, "Failed to get string: %d\n", r);
     ok( !strcmp(file, "data1"), "Expected 'data1', got %s\n", file);
 
     size = MAX_PATH;
     memset(buf, 0, MAX_PATH);
-    r = MsiRecordReadStream( rec, 2, buf, &size );
+    r = libmsi_record_save_stream( rec, 2, buf, &size );
     ok( r == ERROR_SUCCESS, "Failed to get stream: %d\n", r);
     ok( !strcmp(buf, "test1.txt\n"), "Expected 'test1.txt\\n', got %s\n", buf);
 
-    MsiCloseHandle( rec );
-    MsiQueryClose( query );
-    MsiCloseHandle( query );
+    libmsi_unref( rec );
+    libmsi_query_close( query );
+    libmsi_unref( query );
 
     /* perform an update */
     create_file( "test2.txt" );
-    rec = MsiCreateRecord( 1 );
+    rec = libmsi_record_create( 1 );
 
-    r = MsiRecordSetStream( rec, 1, "test2.txt" );
+    r = libmsi_record_load_stream( rec, 1, "test2.txt" );
     ok( r == ERROR_SUCCESS, "Failed to add stream data to the record: %d\n", r);
 
     DeleteFile("test2.txt");
 
     query = NULL;
-    r = MsiDatabaseOpenQuery( hdb,
+    r = libmsi_database_open_query( hdb,
             "UPDATE `_Streams` SET `Data` = ? WHERE `Name` = 'data1'", &query );
     ok( r == ERROR_SUCCESS, "Failed to open database query: %d\n", r);
 
-    r = MsiQueryExecute( query, rec );
+    r = libmsi_query_execute( query, rec );
     ok( r == ERROR_SUCCESS, "Failed to execute query: %d\n", r);
 
-    MsiCloseHandle( rec );
-    MsiQueryClose( query );
-    MsiCloseHandle( query );
+    libmsi_unref( rec );
+    libmsi_query_close( query );
+    libmsi_unref( query );
 
     query = NULL;
-    r = MsiDatabaseOpenQuery( hdb,
+    r = libmsi_database_open_query( hdb,
             "SELECT `Name`, `Data` FROM `_Streams` WHERE `Name` = 'data1'", &query );
     ok( r == ERROR_SUCCESS, "Failed to open database query: %d\n", r);
 
-    r = MsiQueryExecute( query, 0 );
+    r = libmsi_query_execute( query, 0 );
     ok( r == ERROR_SUCCESS, "Failed to execute query: %d\n", r);
 
-    r = MsiQueryFetch( query, &rec );
+    r = libmsi_query_fetch( query, &rec );
     ok( r == ERROR_SUCCESS, "Failed to fetch record: %d\n", r);
 
     size = MAX_PATH;
-    r = MsiRecordGetString( rec, 1, file, &size );
+    r = libmsi_record_get_string( rec, 1, file, &size );
     ok( r == ERROR_SUCCESS, "Failed to get string: %d\n", r);
     ok( !strcmp(file, "data1"), "Expected 'data1', got %s\n", file);
 
     size = MAX_PATH;
     memset(buf, 0, MAX_PATH);
-    r = MsiRecordReadStream( rec, 2, buf, &size );
+    r = libmsi_record_save_stream( rec, 2, buf, &size );
     ok( r == ERROR_SUCCESS, "Failed to get stream: %d\n", r);
     todo_wine ok( !strcmp(buf, "test2.txt\n"), "Expected 'test2.txt\\n', got %s\n", buf);
 
-    MsiCloseHandle( rec );
-    MsiQueryClose( query );
-    MsiCloseHandle( query );
-    MsiCloseHandle( hdb );
+    libmsi_unref( rec );
+    libmsi_query_close( query );
+    libmsi_unref( query );
+    libmsi_unref( hdb );
     DeleteFile(msifile);
 }
 
@@ -1718,7 +1718,7 @@ static void test_binary(void)
     unsigned r;
 
     /* insert a file into the Binary table */
-    r = MsiOpenDatabase(msifile, LIBMSI_DB_OPEN_CREATE, &hdb );
+    r = libmsi_database_open(msifile, LIBMSI_DB_OPEN_CREATE, &hdb );
     ok( r == ERROR_SUCCESS , "Failed to open database\n" );
 
     sql = "CREATE TABLE `Binary` ( `Name` CHAR(72) NOT NULL, `ID` INT NOT NULL, `Data` OBJECT  PRIMARY KEY `Name`, `ID`)";
@@ -1726,8 +1726,8 @@ static void test_binary(void)
     ok( r == ERROR_SUCCESS, "Cannot create Binary table: %d\n", r );
 
     create_file( "test.txt" );
-    rec = MsiCreateRecord( 1 );
-    r = MsiRecordSetStream( rec, 1, "test.txt" );
+    rec = libmsi_record_create( 1 );
+    r = libmsi_record_load_stream( rec, 1, "test.txt" );
     ok( r == ERROR_SUCCESS, "Failed to add stream data to the record: %d\n", r);
     DeleteFile( "test.txt" );
 
@@ -1735,17 +1735,17 @@ static void test_binary(void)
     r = run_query( hdb, rec, sql );
     ok( r == ERROR_SUCCESS, "Insert into Binary table failed: %d\n", r );
 
-    r = MsiCloseHandle( rec );
+    r = libmsi_unref( rec );
     ok( r == ERROR_SUCCESS , "Failed to close record handle\n" );
 
-    r = MsiDatabaseCommit( hdb );
+    r = libmsi_database_commit( hdb );
     ok( r == ERROR_SUCCESS , "Failed to commit database\n" );
 
-    r = MsiCloseHandle( hdb );
+    r = libmsi_unref( hdb );
     ok( r == ERROR_SUCCESS , "Failed to close database\n" );
 
     /* read file from the Stream table */
-    r = MsiOpenDatabase( msifile, LIBMSI_DB_OPEN_READONLY, &hdb );
+    r = libmsi_database_open( msifile, LIBMSI_DB_OPEN_READONLY, &hdb );
     ok( r == ERROR_SUCCESS , "Failed to open database\n" );
 
     sql = "SELECT * FROM `_Streams`";
@@ -1753,17 +1753,17 @@ static void test_binary(void)
     ok( r == ERROR_SUCCESS, "SELECT query failed: %d\n", r );
 
     size = MAX_PATH;
-    r = MsiRecordGetString( rec, 1, file, &size );
+    r = libmsi_record_get_string( rec, 1, file, &size );
     ok( r == ERROR_SUCCESS, "Failed to get string: %d\n", r );
     ok( !strcmp(file, "Binary.filename1.1"), "Expected 'Binary.filename1.1', got %s\n", file );
 
     size = MAX_PATH;
     memset( buf, 0, MAX_PATH );
-    r = MsiRecordReadStream( rec, 2, buf, &size );
+    r = libmsi_record_save_stream( rec, 2, buf, &size );
     ok( r == ERROR_SUCCESS, "Failed to get stream: %d\n", r );
     ok( !strcmp(buf, "test.txt\n"), "Expected 'test.txt\\n', got %s\n", buf );
 
-    r = MsiCloseHandle( rec );
+    r = libmsi_unref( rec );
     ok( r == ERROR_SUCCESS , "Failed to close record handle\n" );
 
     /* read file from the Binary table */
@@ -1772,20 +1772,20 @@ static void test_binary(void)
     ok( r == ERROR_SUCCESS, "SELECT query failed: %d\n", r );
 
     size = MAX_PATH;
-    r = MsiRecordGetString( rec, 1, file, &size );
+    r = libmsi_record_get_string( rec, 1, file, &size );
     ok( r == ERROR_SUCCESS, "Failed to get string: %d\n", r );
     ok( !strcmp(file, "filename1"), "Expected 'filename1', got %s\n", file );
 
     size = MAX_PATH;
     memset( buf, 0, MAX_PATH );
-    r = MsiRecordReadStream( rec, 3, buf, &size );
+    r = libmsi_record_save_stream( rec, 3, buf, &size );
     ok( r == ERROR_SUCCESS, "Failed to get stream: %d\n", r );
     ok( !strcmp(buf, "test.txt\n"), "Expected 'test.txt\\n', got %s\n", buf );
 
-    r = MsiCloseHandle( rec );
+    r = libmsi_unref( rec );
     ok( r == ERROR_SUCCESS , "Failed to close record handle\n" );
 
-    r = MsiCloseHandle( hdb );
+    r = libmsi_unref( hdb );
     ok( r == ERROR_SUCCESS , "Failed to close database\n" );
 
     DeleteFile( msifile );
@@ -1863,28 +1863,28 @@ static void test_where_not_in_selected(void)
     query = NULL;
     sql = "Select IESTable.Condition from CATable, IESTable where "
             "CATable.Action = IESTable.Action and CATable.Type = 32";
-    r = MsiDatabaseOpenQuery(hdb, sql, &query);
+    r = libmsi_database_open_query(hdb, sql, &query);
     ok( r == ERROR_SUCCESS, "failed to open query: %d\n", r );
 
-    r = MsiQueryExecute(query, 0);
+    r = libmsi_query_execute(query, 0);
     ok( r == ERROR_SUCCESS, "failed to execute query: %d\n", r );
 
-    r = MsiQueryFetch(query, &rec);
+    r = libmsi_query_fetch(query, &rec);
     ok( r == ERROR_SUCCESS, "failed to fetch query: %d\n", r );
 
     ok( check_record( rec, 1, "cond2"), "wrong condition\n");
 
-    MsiCloseHandle( rec );
-    r = MsiQueryFetch(query, &rec);
+    libmsi_unref( rec );
+    r = libmsi_query_fetch(query, &rec);
     ok( r == ERROR_SUCCESS, "failed to fetch query: %d\n", r );
 
     ok( check_record( rec, 1, "cond3"), "wrong condition\n");
 
-    MsiCloseHandle( rec );
-    MsiQueryClose(query);
-    MsiCloseHandle(query);
+    libmsi_unref( rec );
+    libmsi_query_close(query);
+    libmsi_unref(query);
 
-    MsiCloseHandle( hdb );
+    libmsi_unref( hdb );
     DeleteFile(msifile);
 
 }
@@ -1932,111 +1932,111 @@ static void test_where(void)
 
     sql = "SELECT * FROM `Media`";
     r = do_query(hdb, sql, &rec);
-    ok(r == ERROR_SUCCESS, "MsiQueryFetch failed: %d\n", r);
+    ok(r == ERROR_SUCCESS, "libmsi_query_fetch failed: %d\n", r);
     ok( check_record( rec, 4, "zero.cab"), "wrong cabinet\n");
-    MsiCloseHandle( rec );
+    libmsi_unref( rec );
 
     sql = "SELECT * FROM `Media` WHERE `LastSequence` >= 1";
     r = do_query(hdb, sql, &rec);
-    ok(r == ERROR_SUCCESS, "MsiQueryFetch failed: %d\n", r);
+    ok(r == ERROR_SUCCESS, "libmsi_query_fetch failed: %d\n", r);
     ok( check_record( rec, 4, "one.cab"), "wrong cabinet\n");
 
-    r = MsiRecordGetInteger(rec, 1);
+    r = libmsi_record_get_integer(rec, 1);
     ok( 2 == r, "field wrong\n");
-    r = MsiRecordGetInteger(rec, 2);
+    r = libmsi_record_get_integer(rec, 2);
     ok( 1 == r, "field wrong\n");
-    MsiCloseHandle( rec );
+    libmsi_unref( rec );
 
     sql = "SELECT `DiskId` FROM `Media` WHERE `LastSequence` >= 1 AND DiskId >= 0";
     query = NULL;
-    r = MsiDatabaseOpenQuery(hdb, sql, &query);
+    r = libmsi_database_open_query(hdb, sql, &query);
     ok( r == ERROR_SUCCESS, "failed to open query: %d\n", r );
 
-    r = MsiQueryExecute(query, 0);
+    r = libmsi_query_execute(query, 0);
     ok( r == ERROR_SUCCESS, "failed to execute query: %d\n", r );
 
-    r = MsiQueryFetch(query, &rec);
+    r = libmsi_query_fetch(query, &rec);
     ok( r == ERROR_SUCCESS, "failed to fetch query: %d\n", r );
 
-    count = MsiRecordGetFieldCount( rec );
+    count = libmsi_record_get_field_count( rec );
     ok( count == 1, "Expected 1 record fields, got %d\n", count );
 
     size = MAX_PATH;
-    r = MsiRecordGetString( rec, 1, buf, &size );
+    r = libmsi_record_get_string( rec, 1, buf, &size );
     ok( r == ERROR_SUCCESS, "failed to get record string: %d\n", r );
     ok( !strcmp( buf, "2" ),
         "For (row %d, column 1) expected '%d', got %s\n", 0, 2, buf );
-    MsiCloseHandle( rec );
+    libmsi_unref( rec );
 
-    r = MsiQueryFetch(query, &rec);
+    r = libmsi_query_fetch(query, &rec);
     ok( r == ERROR_SUCCESS, "failed to fetch query: %d\n", r );
 
     size = MAX_PATH;
-    r = MsiRecordGetString( rec, 1, buf, &size );
+    r = libmsi_record_get_string( rec, 1, buf, &size );
     ok( r == ERROR_SUCCESS, "failed to get record string: %d\n", r );
     ok( !strcmp( buf, "3" ),
         "For (row %d, column 1) expected '%d', got %s\n", 1, 3, buf );
-    MsiCloseHandle( rec );
+    libmsi_unref( rec );
 
-    r = MsiQueryFetch(query, &rec);
+    r = libmsi_query_fetch(query, &rec);
     ok( r == ERROR_NO_MORE_ITEMS, "expected no more items: %d\n", r );
 
-    MsiQueryClose(query);
-    MsiCloseHandle(query);
+    libmsi_query_close(query);
+    libmsi_unref(query);
 
-    MsiCloseHandle( rec );
+    libmsi_unref( rec );
 
     rec = 0;
     sql = "SELECT * FROM `Media` WHERE `DiskPrompt` IS NULL";
     r = do_query(hdb, sql, &rec);
     ok( r == ERROR_SUCCESS, "query failed: %d\n", r );
-    MsiCloseHandle( rec );
+    libmsi_unref( rec );
 
     rec = 0;
     sql = "SELECT * FROM `Media` WHERE `DiskPrompt` < 'Cabinet'";
     r = do_query(hdb, sql, &rec);
     ok( r == ERROR_BAD_QUERY_SYNTAX, "query failed: %d\n", r );
-    MsiCloseHandle( rec );
+    libmsi_unref( rec );
 
     rec = 0;
     sql = "SELECT * FROM `Media` WHERE `DiskPrompt` > 'Cabinet'";
     r = do_query(hdb, sql, &rec);
     ok( r == ERROR_BAD_QUERY_SYNTAX, "query failed: %d\n", r );
-    MsiCloseHandle( rec );
+    libmsi_unref( rec );
 
     rec = 0;
     sql = "SELECT * FROM `Media` WHERE `DiskPrompt` <> 'Cabinet'";
     r = do_query(hdb, sql, &rec);
     ok( r == ERROR_SUCCESS, "query failed: %d\n", r );
-    MsiCloseHandle( rec );
+    libmsi_unref( rec );
 
     rec = 0;
     sql = "SELECT * FROM `Media` WHERE `DiskPrompt` = 'Cabinet'";
     r = do_query(hdb, sql, &rec);
     ok( r == ERROR_NO_MORE_ITEMS, "query failed: %d\n", r );
-    MsiCloseHandle( rec );
+    libmsi_unref( rec );
 
-    rec = MsiCreateRecord(1);
-    MsiRecordSetString(rec, 1, "");
+    rec = libmsi_record_create(1);
+    libmsi_record_set_string(rec, 1, "");
 
     sql = "SELECT * FROM `Media` WHERE `DiskPrompt` = ?";
     query = NULL;
-    r = MsiDatabaseOpenQuery(hdb, sql, &query);
+    r = libmsi_database_open_query(hdb, sql, &query);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
-    r = MsiQueryExecute(query, rec);
+    r = libmsi_query_execute(query, rec);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
-    MsiCloseHandle(rec);
+    libmsi_unref(rec);
 
-    r = MsiQueryFetch(query, &rec);
+    r = libmsi_query_fetch(query, &rec);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
-    MsiCloseHandle(rec);
-    MsiQueryClose(query);
-    MsiCloseHandle(query);
+    libmsi_unref(rec);
+    libmsi_query_close(query);
+    libmsi_unref(query);
 
-    MsiCloseHandle( hdb );
+    libmsi_unref( hdb );
     DeleteFile(msifile);
 }
 
@@ -2099,7 +2099,7 @@ static unsigned add_table_to_db(LibmsiDatabase *hdb, const char *table_data)
     unsigned r;
 
     write_file("temp_file", table_data, (strlen(table_data) - 1) * sizeof(char));
-    r = MsiDatabaseImport(hdb, CURR_DIR, "temp_file");
+    r = libmsi_database_import(hdb, CURR_DIR, "temp_file");
     DeleteFileA("temp_file");
 
     return r;
@@ -2118,7 +2118,7 @@ static void test_suminfo_import(void)
 
     GetCurrentDirectoryA(MAX_PATH, CURR_DIR);
 
-    r = MsiOpenDatabase(msifile, LIBMSI_DB_OPEN_CREATE, &hdb);
+    r = libmsi_database_open(msifile, LIBMSI_DB_OPEN_CREATE, &hdb);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %u\n", r);
 
     r = add_table_to_db(hdb, suminfo);
@@ -2128,26 +2128,26 @@ static void test_suminfo_import(void)
 
     query = NULL;
     sql = "SELECT * FROM `_SummaryInformation`";
-    r = MsiDatabaseOpenQuery(hdb, sql, &query);
+    r = libmsi_database_open_query(hdb, sql, &query);
     ok(r == ERROR_BAD_QUERY_SYNTAX, "Expected ERROR_BAD_QUERY_SYNTAX, got %u\n", r);
-    MsiCloseHandle(query);
+    libmsi_unref(query);
 
     /* ...its data is added to the special summary information stream */
 
-    r = MsiGetSummaryInformation(hdb, 0, &hsi);
+    r = libmsi_database_get_summary_info(hdb, 0, &hsi);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %u\n", r);
 
-    r = MsiSummaryInfoGetPropertyCount(hsi, &count);
+    r = libmsi_summary_info_get_property_count(hsi, &count);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %u\n", r);
     ok(count == 14, "Expected 14, got %u\n", count);
 
-    r = MsiSummaryInfoGetProperty(hsi, MSI_PID_CODEPAGE, &type, &int_value, NULL, NULL, NULL);
+    r = libmsi_summary_info_get_property(hsi, MSI_PID_CODEPAGE, &type, &int_value, NULL, NULL, NULL);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %u\n", r);
     ok(type ==  VT_I2, "Expected VT_I2, got %u\n", type);
     ok(int_value == 1252, "Expected 1252, got %d\n", int_value);
 
     size = sizeof(str_value);
-    r = MsiSummaryInfoGetProperty(hsi, MSI_PID_TITLE, &type, NULL, NULL, str_value, &size);
+    r = libmsi_summary_info_get_property(hsi, MSI_PID_TITLE, &type, NULL, NULL, str_value, &size);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %u\n", r);
     ok(type == VT_LPSTR, "Expected VT_LPSTR, got %u\n", type);
     ok(size == 18, "Expected 18, got %u\n", size);
@@ -2155,78 +2155,78 @@ static void test_suminfo_import(void)
        "Expected \"Installer Database\", got %s\n", str_value);
 
     size = sizeof(str_value);
-    r = MsiSummaryInfoGetProperty(hsi, MSI_PID_SUBJECT, &type, NULL, NULL, str_value, &size);
+    r = libmsi_summary_info_get_property(hsi, MSI_PID_SUBJECT, &type, NULL, NULL, str_value, &size);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %u\n", r);
     ok(type == VT_LPSTR, "Expected VT_LPSTR, got %u\n", type);
     ok(!strcmp(str_value, "Installer description"),
        "Expected \"Installer description\", got %s\n", str_value);
 
     size = sizeof(str_value);
-    r = MsiSummaryInfoGetProperty(hsi, MSI_PID_AUTHOR, &type, NULL, NULL, str_value, &size);
+    r = libmsi_summary_info_get_property(hsi, MSI_PID_AUTHOR, &type, NULL, NULL, str_value, &size);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %u\n", r);
     ok(type == VT_LPSTR, "Expected VT_LPSTR, got %u\n", type);
     ok(!strcmp(str_value, "WineHQ"),
        "Expected \"WineHQ\", got %s\n", str_value);
 
     size = sizeof(str_value);
-    r = MsiSummaryInfoGetProperty(hsi, MSI_PID_KEYWORDS, &type, NULL, NULL, str_value, &size);
+    r = libmsi_summary_info_get_property(hsi, MSI_PID_KEYWORDS, &type, NULL, NULL, str_value, &size);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %u\n", r);
     ok(type == VT_LPSTR, "Expected VT_LPSTR, got %u\n", type);
     ok(!strcmp(str_value, "Installer"),
        "Expected \"Installer\", got %s\n", str_value);
 
     size = sizeof(str_value);
-    r = MsiSummaryInfoGetProperty(hsi, MSI_PID_COMMENTS, &type, NULL, NULL, str_value, &size);
+    r = libmsi_summary_info_get_property(hsi, MSI_PID_COMMENTS, &type, NULL, NULL, str_value, &size);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %u\n", r);
     ok(type == VT_LPSTR, "Expected VT_LPSTR, got %u\n", type);
     ok(!strcmp(str_value, "Installer comments"),
        "Expected \"Installer comments\", got %s\n", str_value);
 
     size = sizeof(str_value);
-    r = MsiSummaryInfoGetProperty(hsi, MSI_PID_TEMPLATE, &type, NULL, NULL, str_value, &size);
+    r = libmsi_summary_info_get_property(hsi, MSI_PID_TEMPLATE, &type, NULL, NULL, str_value, &size);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %u\n", r);
     ok(type == VT_LPSTR, "Expected VT_LPSTR, got %u\n", type);
     ok(!strcmp(str_value, "Intel;1033,2057"),
        "Expected \"Intel;1033,2057\", got %s\n", str_value);
 
     size = sizeof(str_value);
-    r = MsiSummaryInfoGetProperty(hsi, MSI_PID_REVNUMBER, &type, NULL, NULL, str_value, &size);
+    r = libmsi_summary_info_get_property(hsi, MSI_PID_REVNUMBER, &type, NULL, NULL, str_value, &size);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %u\n", r);
     ok(type == VT_LPSTR, "Expected VT_LPSTR, got %u\n", type);
     ok(!strcmp(str_value, "{12345678-1234-1234-1234-123456789012}"),
        "Expected \"{12345678-1234-1234-1234-123456789012}\", got %s\n", str_value);
 
-    r = MsiSummaryInfoGetProperty(hsi, MSI_PID_CREATE_DTM, &type, NULL, &ft_value, NULL, NULL);
+    r = libmsi_summary_info_get_property(hsi, MSI_PID_CREATE_DTM, &type, NULL, &ft_value, NULL, NULL);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %u\n", r);
     ok(type == VT_FILETIME, "Expected VT_FILETIME, got %u\n", type);
 
-    r = MsiSummaryInfoGetProperty(hsi, MSI_PID_LASTSAVE_DTM, &type, NULL, &ft_value, NULL, NULL);
+    r = libmsi_summary_info_get_property(hsi, MSI_PID_LASTSAVE_DTM, &type, NULL, &ft_value, NULL, NULL);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %u\n", r);
     ok(type == VT_FILETIME, "Expected VT_FILETIME, got %u\n", type);
 
-    r = MsiSummaryInfoGetProperty(hsi, MSI_PID_PAGECOUNT, &type, &int_value, NULL, NULL, NULL);
+    r = libmsi_summary_info_get_property(hsi, MSI_PID_PAGECOUNT, &type, &int_value, NULL, NULL, NULL);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %u\n", r);
     ok(type ==  VT_I4, "Expected VT_I4, got %u\n", type);
     ok(int_value == 200, "Expected 200, got %d\n", int_value);
 
-    r = MsiSummaryInfoGetProperty(hsi, MSI_PID_WORDCOUNT, &type, &int_value, NULL, NULL, NULL);
+    r = libmsi_summary_info_get_property(hsi, MSI_PID_WORDCOUNT, &type, &int_value, NULL, NULL, NULL);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %u\n", r);
     ok(type ==  VT_I4, "Expected VT_I4, got %u\n", type);
     ok(int_value == 2, "Expected 2, got %d\n", int_value);
 
-    r = MsiSummaryInfoGetProperty(hsi, MSI_PID_SECURITY, &type, &int_value, NULL, NULL, NULL);
+    r = libmsi_summary_info_get_property(hsi, MSI_PID_SECURITY, &type, &int_value, NULL, NULL, NULL);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %u\n", r);
     ok(type ==  VT_I4, "Expected VT_I4, got %u\n", type);
     ok(int_value == 2, "Expected 2, got %d\n", int_value);
 
     size = sizeof(str_value);
-    r = MsiSummaryInfoGetProperty(hsi, MSI_PID_APPNAME, &type, NULL, NULL, str_value, &size);
+    r = libmsi_summary_info_get_property(hsi, MSI_PID_APPNAME, &type, NULL, NULL, str_value, &size);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %u\n", r);
     ok(type == VT_LPSTR, "Expected VT_LPSTR, got %u\n", type);
     ok(!strcmp(str_value, "Vim"), "Expected \"Vim\", got %s\n", str_value);
 
-    MsiCloseHandle(hsi);
-    MsiCloseHandle(hdb);
+    libmsi_unref(hsi);
+    libmsi_unref(hdb);
     DeleteFileA(msifile);
 }
 
@@ -2241,7 +2241,7 @@ static void test_msiimport(void)
 
     GetCurrentDirectoryA(MAX_PATH, CURR_DIR);
 
-    r = MsiOpenDatabase(msifile, LIBMSI_DB_OPEN_CREATE, &hdb);
+    r = libmsi_database_open(msifile, LIBMSI_DB_OPEN_CREATE, &hdb);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     r = add_table_to_db(hdb, test_data);
@@ -2258,13 +2258,13 @@ static void test_msiimport(void)
 
     query = NULL;
     sql = "SELECT * FROM `TestTable`";
-    r = MsiDatabaseOpenQuery(hdb, sql, &query);
+    r = libmsi_database_open_query(hdb, sql, &query);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     rec = NULL;
-    r = MsiQueryGetColumnInfo(query, LIBMSI_COL_INFO_NAMES, &rec);
+    r = libmsi_query_get_column_info(query, LIBMSI_COL_INFO_NAMES, &rec);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-    count = MsiRecordGetFieldCount(rec);
+    count = libmsi_record_get_field_count(rec);
     ok(count == 9, "Expected 9, got %d\n", count);
     ok(check_record(rec, 1, "FirstPrimaryColumn"), "Expected FirstPrimaryColumn\n");
     ok(check_record(rec, 2, "SecondPrimaryColumn"), "Expected SecondPrimaryColumn\n");
@@ -2275,12 +2275,12 @@ static void test_msiimport(void)
     ok(check_record(rec, 7, "String"), "Expected String\n");
     ok(check_record(rec, 8, "LocalizableString"), "Expected LocalizableString\n");
     ok(check_record(rec, 9, "LocalizableStringNullable"), "Expected LocalizableStringNullable\n");
-    MsiCloseHandle(rec);
+    libmsi_unref(rec);
 
     rec = NULL;
-    r = MsiQueryGetColumnInfo(query, LIBMSI_COL_INFO_TYPES, &rec);
+    r = libmsi_query_get_column_info(query, LIBMSI_COL_INFO_TYPES, &rec);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-    count = MsiRecordGetFieldCount(rec);
+    count = libmsi_record_get_field_count(rec);
     ok(count == 9, "Expected 9, got %d\n", count);
     ok(check_record(rec, 1, "s255"), "Expected s255\n");
     ok(check_record(rec, 2, "i2"), "Expected i2\n");
@@ -2291,7 +2291,7 @@ static void test_msiimport(void)
     ok(check_record(rec, 7, "S255"), "Expected S255\n");
     ok(check_record(rec, 8, "S0"), "Expected S0\n");
     ok(check_record(rec, 9, "s0"), "Expected s0\n");
-    MsiCloseHandle(rec);
+    libmsi_unref(rec);
 
     sql = "SELECT * FROM `TestTable`";
     r = do_query(hdb, sql, &rec);
@@ -2301,86 +2301,86 @@ static void test_msiimport(void)
     ok(check_record(rec, 8, "localizable"), "Expected 'localizable'\n");
     ok(check_record(rec, 9, "duh"), "Expected 'duh'\n");
 
-    i = MsiRecordGetInteger(rec, 2);
+    i = libmsi_record_get_integer(rec, 2);
     ok(i == 5, "Expected 5, got %d\n", i);
 
-    i = MsiRecordGetInteger(rec, 3);
+    i = libmsi_record_get_integer(rec, 3);
     ok(i == 2, "Expected 2, got %d\n", i);
 
-    i = MsiRecordGetInteger(rec, 4);
+    i = libmsi_record_get_integer(rec, 4);
     ok(i == MSI_NULL_INTEGER, "Expected MSI_NULL_INTEGER, got %d\n", i);
 
-    i = MsiRecordGetInteger(rec, 5);
+    i = libmsi_record_get_integer(rec, 5);
     ok(i == 2147483640, "Expected 2147483640, got %d\n", i);
 
-    i = MsiRecordGetInteger(rec, 6);
+    i = libmsi_record_get_integer(rec, 6);
     ok(i == -2147483640, "Expected -2147483640, got %d\n", i);
 
-    MsiCloseHandle(rec);
-    MsiQueryClose(query);
-    MsiCloseHandle(query);
+    libmsi_unref(rec);
+    libmsi_query_close(query);
+    libmsi_unref(query);
 
     query = NULL;
     sql = "SELECT * FROM `TwoPrimary`";
-    r = MsiDatabaseOpenQuery(hdb, sql, &query);
+    r = libmsi_database_open_query(hdb, sql, &query);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     rec = NULL;
-    r = MsiQueryGetColumnInfo(query, LIBMSI_COL_INFO_NAMES, &rec);
+    r = libmsi_query_get_column_info(query, LIBMSI_COL_INFO_NAMES, &rec);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-    count = MsiRecordGetFieldCount(rec);
+    count = libmsi_record_get_field_count(rec);
     ok(count == 2, "Expected 2, got %d\n", count);
     ok(check_record(rec, 1, "PrimaryOne"), "Expected PrimaryOne\n");
     ok(check_record(rec, 2, "PrimaryTwo"), "Expected PrimaryTwo\n");
 
-    MsiCloseHandle(rec);
+    libmsi_unref(rec);
 
     rec = NULL;
-    r = MsiQueryGetColumnInfo(query, LIBMSI_COL_INFO_TYPES, &rec);
+    r = libmsi_query_get_column_info(query, LIBMSI_COL_INFO_TYPES, &rec);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-    count = MsiRecordGetFieldCount(rec);
+    count = libmsi_record_get_field_count(rec);
     ok(count == 2, "Expected 2, got %d\n", count);
     ok(check_record(rec, 1, "s255"), "Expected s255\n");
     ok(check_record(rec, 2, "s255"), "Expected s255\n");
-    MsiCloseHandle(rec);
+    libmsi_unref(rec);
 
-    r = MsiQueryExecute(query, 0);
+    r = libmsi_query_execute(query, 0);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
-    r = MsiQueryFetch(query, &rec);
+    r = libmsi_query_fetch(query, &rec);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     ok(check_record(rec, 1, "papaya"), "Expected 'papaya'\n");
     ok(check_record(rec, 2, "leaf"), "Expected 'leaf'\n");
 
-    MsiCloseHandle(rec);
+    libmsi_unref(rec);
 
-    r = MsiQueryFetch(query, &rec);
+    r = libmsi_query_fetch(query, &rec);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     ok(check_record(rec, 1, "papaya"), "Expected 'papaya'\n");
     ok(check_record(rec, 2, "flower"), "Expected 'flower'\n");
 
-    MsiCloseHandle(rec);
+    libmsi_unref(rec);
 
-    r = MsiQueryFetch(query, &rec);
+    r = libmsi_query_fetch(query, &rec);
     ok(r == ERROR_NO_MORE_ITEMS,
        "Expected ERROR_NO_MORE_ITEMS, got %d\n", r);
 
-    r = MsiQueryClose(query);
+    r = libmsi_query_close(query);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
-    MsiCloseHandle(query);
+    libmsi_unref(query);
 
     query = NULL;
     sql = "SELECT * FROM `Table`";
-    r = MsiDatabaseOpenQuery(hdb, sql, &query);
+    r = libmsi_database_open_query(hdb, sql, &query);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     rec = NULL;
-    r = MsiQueryGetColumnInfo(query, LIBMSI_COL_INFO_NAMES, &rec);
+    r = libmsi_query_get_column_info(query, LIBMSI_COL_INFO_NAMES, &rec);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-    count = MsiRecordGetFieldCount(rec);
+    count = libmsi_record_get_field_count(rec);
     ok(count == 6, "Expected 6, got %d\n", count);
     ok(check_record(rec, 1, "A"), "Expected A\n");
     ok(check_record(rec, 2, "B"), "Expected B\n");
@@ -2388,12 +2388,12 @@ static void test_msiimport(void)
     ok(check_record(rec, 4, "D"), "Expected D\n");
     ok(check_record(rec, 5, "E"), "Expected E\n");
     ok(check_record(rec, 6, "F"), "Expected F\n");
-    MsiCloseHandle(rec);
+    libmsi_unref(rec);
 
     rec = NULL;
-    r = MsiQueryGetColumnInfo(query, LIBMSI_COL_INFO_TYPES, &rec);
+    r = libmsi_query_get_column_info(query, LIBMSI_COL_INFO_TYPES, &rec);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-    count = MsiRecordGetFieldCount(rec);
+    count = libmsi_record_get_field_count(rec);
     ok(count == 6, "Expected 6, got %d\n", count);
     ok(check_record(rec, 1, "s72"), "Expected s72\n");
     ok(check_record(rec, 2, "s72"), "Expected s72\n");
@@ -2401,20 +2401,20 @@ static void test_msiimport(void)
     ok(check_record(rec, 4, "s72"), "Expected s72\n");
     ok(check_record(rec, 5, "s72"), "Expected s72\n");
     ok(check_record(rec, 6, "s72"), "Expected s72\n");
-    MsiCloseHandle(rec);
+    libmsi_unref(rec);
 
-    MsiQueryClose(query);
-    MsiCloseHandle(query);
+    libmsi_query_close(query);
+    libmsi_unref(query);
 
     query = NULL;
     sql = "SELECT * FROM `Table`";
-    r = MsiDatabaseOpenQuery(hdb, sql, &query);
+    r = libmsi_database_open_query(hdb, sql, &query);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
-    r = MsiQueryExecute(query, 0);
+    r = libmsi_query_execute(query, 0);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
-    r = MsiQueryFetch(query, &rec);
+    r = libmsi_query_fetch(query, &rec);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
     ok(check_record(rec, 1, "a"), "Expected 'a'\n");
     ok(check_record(rec, 2, "b"), "Expected 'b'\n");
@@ -2423,9 +2423,9 @@ static void test_msiimport(void)
     ok(check_record(rec, 5, "e"), "Expected 'e'\n");
     ok(check_record(rec, 6, "f"), "Expected 'f'\n");
 
-    MsiCloseHandle(rec);
+    libmsi_unref(rec);
 
-    r = MsiQueryFetch(query, &rec);
+    r = libmsi_query_fetch(query, &rec);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
     ok(check_record(rec, 1, "g"), "Expected 'g'\n");
     ok(check_record(rec, 2, "h"), "Expected 'h'\n");
@@ -2434,15 +2434,15 @@ static void test_msiimport(void)
     ok(check_record(rec, 5, "k"), "Expected 'k'\n");
     ok(check_record(rec, 6, "l"), "Expected 'l'\n");
 
-    MsiCloseHandle(rec);
+    libmsi_unref(rec);
 
-    r = MsiQueryFetch(query, &rec);
+    r = libmsi_query_fetch(query, &rec);
     ok(r == ERROR_NO_MORE_ITEMS,
        "Expected ERROR_NO_MORE_ITEMS, got %d\n", r);
 
-    MsiQueryClose(query);
-    MsiCloseHandle(query);
-    MsiCloseHandle(hdb);
+    libmsi_query_close(query);
+    libmsi_unref(query);
+    libmsi_unref(hdb);
     DeleteFileA(msifile);
 }
 
@@ -2469,11 +2469,11 @@ static void test_binary_import(void)
     create_file_data("bin_import/filename1.ibd", "just some words", 15);
 
     /* import files into database */
-    r = MsiOpenDatabase(msifile, LIBMSI_DB_OPEN_CREATE, &hdb);
+    r = libmsi_database_open(msifile, LIBMSI_DB_OPEN_CREATE, &hdb);
     ok( r == ERROR_SUCCESS , "Failed to open database\n");
 
     GetCurrentDirectory(MAX_PATH, path);
-    r = MsiDatabaseImport(hdb, path, "bin_import.idt");
+    r = libmsi_database_import(hdb, path, "bin_import.idt");
     ok(r == ERROR_SUCCESS , "Failed to import Binary table\n");
 
     /* read file from the Binary table */
@@ -2482,21 +2482,21 @@ static void test_binary_import(void)
     ok(r == ERROR_SUCCESS, "SELECT query failed: %d\n", r);
 
     size = MAX_PATH;
-    r = MsiRecordGetString(rec, 1, file, &size);
+    r = libmsi_record_get_string(rec, 1, file, &size);
     ok(r == ERROR_SUCCESS, "Failed to get string: %d\n", r);
     ok(!strcmp(file, "filename1"), "Expected 'filename1', got %s\n", file);
 
     size = MAX_PATH;
     memset(buf, 0, MAX_PATH);
-    r = MsiRecordReadStream(rec, 2, buf, &size);
+    r = libmsi_record_save_stream(rec, 2, buf, &size);
     ok(r == ERROR_SUCCESS, "Failed to get stream: %d\n", r);
     ok(!strcmp(buf, "just some words"),
         "Expected 'just some words', got %s\n", buf);
 
-    r = MsiCloseHandle(rec);
+    r = libmsi_unref(rec);
     ok(r == ERROR_SUCCESS , "Failed to close record handle\n");
 
-    r = MsiCloseHandle(hdb);
+    r = libmsi_unref(hdb);
     ok(r == ERROR_SUCCESS , "Failed to close database\n");
 
     DeleteFile("bin_import/filename1.ibd");
@@ -2514,20 +2514,20 @@ static void test_markers(void)
     hdb = create_db();
     ok( hdb, "failed to create db\n");
 
-    rec = MsiCreateRecord(3);
-    MsiRecordSetString(rec, 1, "Table");
-    MsiRecordSetString(rec, 2, "Apples");
-    MsiRecordSetString(rec, 3, "Oranges");
+    rec = libmsi_record_create(3);
+    libmsi_record_set_string(rec, 1, "Table");
+    libmsi_record_set_string(rec, 2, "Apples");
+    libmsi_record_set_string(rec, 3, "Oranges");
 
     /* try a legit create */
     sql = "CREATE TABLE `Table` ( `One` SHORT NOT NULL, `Two` CHAR(255) PRIMARY KEY `One`)";
     r = run_query(hdb, 0, sql);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-    MsiCloseHandle(rec);
+    libmsi_unref(rec);
 
     /* try table name as marker */
-    rec = MsiCreateRecord(1);
-    MsiRecordSetString(rec, 1, "Fable");
+    rec = libmsi_record_create(1);
+    libmsi_record_set_string(rec, 1, "Fable");
     sql = "CREATE TABLE `?` ( `One` SHORT NOT NULL, `Two` CHAR(255) PRIMARY KEY `One`)";
     r = run_query(hdb, rec, sql);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
@@ -2540,32 +2540,32 @@ static void test_markers(void)
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     /* try table name as marker without backticks */
-    MsiRecordSetString(rec, 1, "Mable");
+    libmsi_record_set_string(rec, 1, "Mable");
     sql = "CREATE TABLE ? ( `One` SHORT NOT NULL, `Two` CHAR(255) PRIMARY KEY `One`)";
     r = run_query(hdb, rec, sql);
     ok(r == ERROR_BAD_QUERY_SYNTAX, "Expected ERROR_BAD_QUERY_SYNTAX, got %d\n", r);
 
     /* try one column name as marker */
-    MsiRecordSetString(rec, 1, "One");
+    libmsi_record_set_string(rec, 1, "One");
     sql = "CREATE TABLE `Mable` ( `?` SHORT NOT NULL, `Two` CHAR(255) PRIMARY KEY `One`)";
     r = run_query(hdb, rec, sql);
     ok(r == ERROR_BAD_QUERY_SYNTAX, "Expected ERROR_BAD_QUERY_SYNTAX, got %d\n", r);
-    MsiCloseHandle(rec);
+    libmsi_unref(rec);
 
     /* try column names as markers */
-    rec = MsiCreateRecord(2);
-    MsiRecordSetString(rec, 1, "One");
-    MsiRecordSetString(rec, 2, "Two");
+    rec = libmsi_record_create(2);
+    libmsi_record_set_string(rec, 1, "One");
+    libmsi_record_set_string(rec, 2, "Two");
     sql = "CREATE TABLE `Mable` ( `?` SHORT NOT NULL, `?` CHAR(255) PRIMARY KEY `One`)";
     r = run_query(hdb, rec, sql);
     ok(r == ERROR_BAD_QUERY_SYNTAX, "Expected ERROR_BAD_QUERY_SYNTAX, got %d\n", r);
-    MsiCloseHandle(rec);
+    libmsi_unref(rec);
 
     /* try names with backticks */
-    rec = MsiCreateRecord(3);
-    MsiRecordSetString(rec, 1, "One");
-    MsiRecordSetString(rec, 2, "Two");
-    MsiRecordSetString(rec, 3, "One");
+    rec = libmsi_record_create(3);
+    libmsi_record_set_string(rec, 1, "One");
+    libmsi_record_set_string(rec, 2, "Two");
+    libmsi_record_set_string(rec, 3, "One");
     sql = "CREATE TABLE `Mable` ( `?` SHORT NOT NULL, `?` CHAR(255) PRIMARY KEY `?`)";
     r = run_query(hdb, rec, sql);
     ok(r == ERROR_BAD_QUERY_SYNTAX, "Expected ERROR_BAD_QUERY_SYNTAX, got %d\n", r);
@@ -2579,26 +2579,26 @@ static void test_markers(void)
     sql = "CREATE TABLE `Mable` ( ? SHORT NOT NULL, ? CHAR(255) PRIMARY KEY ?)";
     r = run_query(hdb, rec, sql);
     ok(r == ERROR_BAD_QUERY_SYNTAX, "Expected ERROR_BAD_QUERY_SYNTAX, got %d\n", r);
-    MsiCloseHandle(rec);
+    libmsi_unref(rec);
 
     /* try one long marker */
-    rec = MsiCreateRecord(1);
-    MsiRecordSetString(rec, 1, "`One` SHORT NOT NULL, `Two` CHAR(255) PRIMARY KEY `One`");
+    rec = libmsi_record_create(1);
+    libmsi_record_set_string(rec, 1, "`One` SHORT NOT NULL, `Two` CHAR(255) PRIMARY KEY `One`");
     sql = "CREATE TABLE `Mable` ( ? )";
     r = run_query(hdb, rec, sql);
     ok(r == ERROR_BAD_QUERY_SYNTAX, "Expected ERROR_BAD_QUERY_SYNTAX, got %d\n", r);
-    MsiCloseHandle(rec);
+    libmsi_unref(rec);
 
     /* try all names as markers */
-    rec = MsiCreateRecord(4);
-    MsiRecordSetString(rec, 1, "Mable");
-    MsiRecordSetString(rec, 2, "One");
-    MsiRecordSetString(rec, 3, "Two");
-    MsiRecordSetString(rec, 4, "One");
+    rec = libmsi_record_create(4);
+    libmsi_record_set_string(rec, 1, "Mable");
+    libmsi_record_set_string(rec, 2, "One");
+    libmsi_record_set_string(rec, 3, "Two");
+    libmsi_record_set_string(rec, 4, "One");
     sql = "CREATE TABLE `?` ( `?` SHORT NOT NULL, `?` CHAR(255) PRIMARY KEY `?`)";
     r = run_query(hdb, rec, sql);
     ok(r == ERROR_BAD_QUERY_SYNTAX, "Expected ERROR_BAD_QUERY_SYNTAX, got %d\n", r);
-    MsiCloseHandle(rec);
+    libmsi_unref(rec);
 
     /* try a legit insert */
     sql = "INSERT INTO `Table` ( `One`, `Two` ) VALUES ( 5, 'hello' )";
@@ -2609,83 +2609,83 @@ static void test_markers(void)
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     /* try values as markers */
-    rec = MsiCreateRecord(2);
-    MsiRecordSetInteger(rec, 1, 4);
-    MsiRecordSetString(rec, 2, "hi");
+    rec = libmsi_record_create(2);
+    libmsi_record_set_int(rec, 1, 4);
+    libmsi_record_set_string(rec, 2, "hi");
     sql = "INSERT INTO `Table` ( `One`, `Two` ) VALUES ( ?, '?' )";
     r = run_query(hdb, rec, sql);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-    MsiCloseHandle(rec);
+    libmsi_unref(rec);
 
     /* try column names and values as markers */
-    rec = MsiCreateRecord(4);
-    MsiRecordSetString(rec, 1, "One");
-    MsiRecordSetString(rec, 2, "Two");
-    MsiRecordSetInteger(rec, 3, 5);
-    MsiRecordSetString(rec, 4, "hi");
+    rec = libmsi_record_create(4);
+    libmsi_record_set_string(rec, 1, "One");
+    libmsi_record_set_string(rec, 2, "Two");
+    libmsi_record_set_int(rec, 3, 5);
+    libmsi_record_set_string(rec, 4, "hi");
     sql = "INSERT INTO `Table` ( `?`, `?` ) VALUES ( ?, '?' )";
     r = run_query(hdb, rec, sql);
     ok(r == ERROR_BAD_QUERY_SYNTAX, "Expected ERROR_BAD_QUERY_SYNTAX, got %d\n", r);
-    MsiCloseHandle(rec);
+    libmsi_unref(rec);
 
     /* try column names as markers */
-    rec = MsiCreateRecord(2);
-    MsiRecordSetString(rec, 1, "One");
-    MsiRecordSetString(rec, 2, "Two");
+    rec = libmsi_record_create(2);
+    libmsi_record_set_string(rec, 1, "One");
+    libmsi_record_set_string(rec, 2, "Two");
     sql = "INSERT INTO `Table` ( `?`, `?` ) VALUES ( 3, 'yellow' )";
     r = run_query(hdb, rec, sql);
     ok(r == ERROR_BAD_QUERY_SYNTAX, "Expected ERROR_BAD_QUERY_SYNTAX, got %d\n", r);
-    MsiCloseHandle(rec);
+    libmsi_unref(rec);
 
     /* try table name as a marker */
-    rec = MsiCreateRecord(1);
-    MsiRecordSetString(rec, 1, "Table");
+    rec = libmsi_record_create(1);
+    libmsi_record_set_string(rec, 1, "Table");
     sql = "INSERT INTO `?` ( `One`, `Two` ) VALUES ( 2, 'green' )";
     r = run_query(hdb, rec, sql);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-    MsiCloseHandle(rec);
+    libmsi_unref(rec);
 
     /* try table name and values as markers */
-    rec = MsiCreateRecord(3);
-    MsiRecordSetString(rec, 1, "Table");
-    MsiRecordSetInteger(rec, 2, 10);
-    MsiRecordSetString(rec, 3, "haha");
+    rec = libmsi_record_create(3);
+    libmsi_record_set_string(rec, 1, "Table");
+    libmsi_record_set_int(rec, 2, 10);
+    libmsi_record_set_string(rec, 3, "haha");
     sql = "INSERT INTO `?` ( `One`, `Two` ) VALUES ( ?, '?' )";
     r = run_query(hdb, rec, sql);
     ok(r == ERROR_FUNCTION_FAILED, "Expected ERROR_FUNCTION_FAILED, got %d\n", r);
-    MsiCloseHandle(rec);
+    libmsi_unref(rec);
 
     /* try all markers */
-    rec = MsiCreateRecord(5);
-    MsiRecordSetString(rec, 1, "Table");
-    MsiRecordSetString(rec, 1, "One");
-    MsiRecordSetString(rec, 1, "Two");
-    MsiRecordSetInteger(rec, 2, 10);
-    MsiRecordSetString(rec, 3, "haha");
+    rec = libmsi_record_create(5);
+    libmsi_record_set_string(rec, 1, "Table");
+    libmsi_record_set_string(rec, 1, "One");
+    libmsi_record_set_string(rec, 1, "Two");
+    libmsi_record_set_int(rec, 2, 10);
+    libmsi_record_set_string(rec, 3, "haha");
     sql = "INSERT INTO `?` ( `?`, `?` ) VALUES ( ?, '?' )";
     r = run_query(hdb, rec, sql);
     ok(r == ERROR_BAD_QUERY_SYNTAX, "Expected ERROR_BAD_QUERY_SYNTAX, got %d\n", r);
-    MsiCloseHandle(rec);
+    libmsi_unref(rec);
 
     /* insert an integer as a string */
-    rec = MsiCreateRecord(2);
-    MsiRecordSetString(rec, 1, "11");
-    MsiRecordSetString(rec, 2, "hi");
+    rec = libmsi_record_create(2);
+    libmsi_record_set_string(rec, 1, "11");
+    libmsi_record_set_string(rec, 2, "hi");
     sql = "INSERT INTO `Table` ( `One`, `Two` ) VALUES ( ?, '?' )";
     r = run_query(hdb, rec, sql);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-    MsiCloseHandle(rec);
+    libmsi_unref(rec);
 
     /* leave off the '' for the string */
-    rec = MsiCreateRecord(2);
-    MsiRecordSetInteger(rec, 1, 12);
-    MsiRecordSetString(rec, 2, "hi");
+    rec = libmsi_record_create(2);
+    libmsi_record_set_int(rec, 1, 12);
+    libmsi_record_set_string(rec, 2, "hi");
     sql = "INSERT INTO `Table` ( `One`, `Two` ) VALUES ( ?, ? )";
     r = run_query(hdb, rec, sql);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-    MsiCloseHandle(rec);
+    libmsi_unref(rec);
 
-    MsiCloseHandle(hdb);
+    libmsi_unref(hdb);
     DeleteFileA(msifile);
 }
 
@@ -2706,7 +2706,7 @@ static void test_handle_limit(void)
     for (i=0; i<MY_NQUERIES; i++) {
         static char szQueryBuf[256] = "SELECT * from `_Tables`";
         hqueries[i] = 0xdeadbeeb;
-        r = MsiDatabaseOpenQuery(hdb, szQueryBuf, &hqueries[i]);
+        r = libmsi_database_open_query(hdb, szQueryBuf, &hqueries[i]);
         if( r != ERROR_SUCCESS || hqueries[i] == 0xdeadbeeb || 
             hqueries[i] == 0 || (i && (hqueries[i] == hqueries[i-1])))
             break;
@@ -2716,8 +2716,8 @@ static void test_handle_limit(void)
 
     for (i=0; i<MY_NQUERIES; i++) {
         if (hqueries[i] != 0 && hqueries[i] != 0xdeadbeeb) {
-            MsiQueryClose(hqueries[i]);
-            r = MsiCloseHandle(hqueries[i]);
+            libmsi_query_close(hqueries[i]);
+            r = libmsi_unref(hqueries[i]);
             if (r != ERROR_SUCCESS)
                 break;
         }
@@ -2725,7 +2725,7 @@ static void test_handle_limit(void)
 
     ok( i == MY_NQUERIES, "problem closing queries\n");
 
-    r = MsiCloseHandle(hdb);
+    r = libmsi_unref(hdb);
     ok( r == ERROR_SUCCESS, "failed to close database\n");
 }
 
@@ -2861,39 +2861,39 @@ static unsigned set_summary_info(LibmsiDatabase *hdb)
     LibmsiSummaryInfo *suminfo;
 
     /* build summary info */
-    res = MsiGetSummaryInformation(hdb, 7, &suminfo);
+    res = libmsi_database_get_summary_info(hdb, 7, &suminfo);
     ok( res == ERROR_SUCCESS , "Failed to open summaryinfo\n" );
 
-    res = MsiSummaryInfoSetProperty(suminfo,2, VT_LPSTR, 0,NULL,
+    res = libmsi_summary_info_set_property(suminfo,2, VT_LPSTR, 0,NULL,
                         "Installation Database");
     ok( res == ERROR_SUCCESS , "Failed to set summary info\n" );
 
-    res = MsiSummaryInfoSetProperty(suminfo,3, VT_LPSTR, 0,NULL,
+    res = libmsi_summary_info_set_property(suminfo,3, VT_LPSTR, 0,NULL,
                         "Installation Database");
     ok( res == ERROR_SUCCESS , "Failed to set summary info\n" );
 
-    res = MsiSummaryInfoSetProperty(suminfo,4, VT_LPSTR, 0,NULL,
+    res = libmsi_summary_info_set_property(suminfo,4, VT_LPSTR, 0,NULL,
                         "Wine Hackers");
     ok( res == ERROR_SUCCESS , "Failed to set summary info\n" );
 
-    res = MsiSummaryInfoSetProperty(suminfo,7, VT_LPSTR, 0,NULL,
+    res = libmsi_summary_info_set_property(suminfo,7, VT_LPSTR, 0,NULL,
                     ";1033,2057");
     ok( res == ERROR_SUCCESS , "Failed to set summary info\n" );
 
-    res = MsiSummaryInfoSetProperty(suminfo,9, VT_LPSTR, 0,NULL,
+    res = libmsi_summary_info_set_property(suminfo,9, VT_LPSTR, 0,NULL,
                     "{913B8D18-FBB6-4CAC-A239-C74C11E3FA74}");
     ok( res == ERROR_SUCCESS , "Failed to set summary info\n" );
 
-    res = MsiSummaryInfoSetProperty(suminfo, 14, VT_I4, 100, NULL, NULL);
+    res = libmsi_summary_info_set_property(suminfo, 14, VT_I4, 100, NULL, NULL);
     ok( res == ERROR_SUCCESS , "Failed to set summary info\n" );
 
-    res = MsiSummaryInfoSetProperty(suminfo, 15, VT_I4, 0, NULL, NULL);
+    res = libmsi_summary_info_set_property(suminfo, 15, VT_I4, 0, NULL, NULL);
     ok( res == ERROR_SUCCESS , "Failed to set summary info\n" );
 
-    res = MsiSummaryInfoPersist(suminfo);
+    res = libmsi_summary_info_persist(suminfo);
     ok( res == ERROR_SUCCESS , "Failed to make summary info persist\n" );
 
-    res = MsiCloseHandle( suminfo);
+    res = libmsi_unref( suminfo);
     ok( res == ERROR_SUCCESS , "Failed to close suminfo\n" );
 
     return res;
@@ -2907,12 +2907,12 @@ static LibmsiDatabase *create_package_db(const char *filename)
     DeleteFile(msifile);
 
     /* create an empty database */
-    res = MsiOpenDatabase(filename, LIBMSI_DB_OPEN_CREATE, &hdb );
+    res = libmsi_database_open(filename, LIBMSI_DB_OPEN_CREATE, &hdb );
     ok( res == ERROR_SUCCESS , "Failed to create database\n" );
     if( res != ERROR_SUCCESS )
         return hdb;
 
-    res = MsiDatabaseCommit( hdb );
+    res = libmsi_database_commit( hdb );
     ok( res == ERROR_SUCCESS , "Failed to commit database\n" );
 
     res = set_summary_info(hdb);
@@ -2961,69 +2961,69 @@ static void test_try_transform(void)
     r = run_query(hdb, 0, sql);
     ok(r == ERROR_SUCCESS, "failed to add table\n");
 
-    hrec = MsiCreateRecord(2);
-    r = MsiRecordSetInteger(hrec, 1, 2);
+    hrec = libmsi_record_create(2);
+    r = libmsi_record_set_int(hrec, 1, 2);
     ok(r == ERROR_SUCCESS, "failed to set integer\n");
 
     write_file("testdata.bin", "lamyon", 6);
-    r = MsiRecordSetStream(hrec, 2, "testdata.bin");
+    r = libmsi_record_load_stream(hrec, 2, "testdata.bin");
     ok(r == ERROR_SUCCESS, "failed to set stream\n");
 
     sql = "INSERT INTO `BINARY` ( `ID`, `BLOB` ) VALUES ( ?, ? )";
     r = run_query(hdb, hrec, sql);
     ok(r == ERROR_SUCCESS, "failed to add row with blob\n");
 
-    MsiCloseHandle(hrec);
+    libmsi_unref(hrec);
 
-    r = MsiDatabaseCommit( hdb );
+    r = libmsi_database_commit( hdb );
     ok( r == ERROR_SUCCESS , "Failed to commit database\n" );
 
-    MsiCloseHandle( hdb );
+    libmsi_unref( hdb );
     DeleteFileA("testdata.bin");
 
     generate_transform_manual();
 
-    r = MsiOpenDatabase(msifile, LIBMSI_DB_OPEN_DIRECT, &hdb );
+    r = libmsi_database_open(msifile, LIBMSI_DB_OPEN_DIRECT, &hdb );
     ok( r == ERROR_SUCCESS , "Failed to create database\n" );
 
-    r = MsiDatabaseApplyTransform( hdb, mstfile, 0 );
+    r = libmsi_database_apply_transform( hdb, mstfile, 0 );
     ok( r == ERROR_SUCCESS, "return code %d, should be ERROR_SUCCESS\n", r );
 
-    MsiDatabaseCommit( hdb );
+    libmsi_database_commit( hdb );
 
     /* check new values */
     hrec = 0;
     sql = "select `BAR`,`CAR` from `AAR` where `BAR` = 1 AND `CAR` = 'vw'";
     r = do_query(hdb, sql, &hrec);
     ok(r == ERROR_SUCCESS, "select query failed\n");
-    MsiCloseHandle(hrec);
+    libmsi_unref(hrec);
 
     sql = "select `BAR`,`CAR` from `AAR` where `BAR` = 2 AND `CAR` = 'bmw'";
     hrec = 0;
     r = do_query(hdb, sql, &hrec);
     ok(r == ERROR_SUCCESS, "select query failed\n");
-    MsiCloseHandle(hrec);
+    libmsi_unref(hrec);
 
     /* check updated values */
     hrec = 0;
     sql = "select `NOO`,`OOO` from `MOO` where `NOO` = 1 AND `OOO` = 'c'";
     r = do_query(hdb, sql, &hrec);
     ok(r == ERROR_SUCCESS, "select query failed\n");
-    MsiCloseHandle(hrec);
+    libmsi_unref(hrec);
 
     /* check unchanged value */
     hrec = 0;
     sql = "select `NOO`,`OOO` from `MOO` where `NOO` = 2 AND `OOO` = 'b'";
     r = do_query(hdb, sql, &hrec);
     ok(r == ERROR_SUCCESS, "select query failed\n");
-    MsiCloseHandle(hrec);
+    libmsi_unref(hrec);
 
     /* check deleted value */
     hrec = 0;
     sql = "select * from `MOO` where `NOO` = 3";
     r = do_query(hdb, sql, &hrec);
     ok(r == ERROR_NO_MORE_ITEMS, "select query failed\n");
-    if (hrec) MsiCloseHandle(hrec);
+    if (hrec) libmsi_unref(hrec);
 
     /* check added stream */
     hrec = 0;
@@ -3033,65 +3033,65 @@ static void test_try_transform(void)
 
     /* check the contents of the stream */
     sz = sizeof buffer;
-    r = MsiRecordReadStream( hrec, 1, buffer, &sz );
+    r = libmsi_record_save_stream( hrec, 1, buffer, &sz );
     ok(r == ERROR_SUCCESS, "read stream failed\n");
     ok(!memcmp(buffer, "naengmyon", 9), "stream data was wrong\n");
     ok(sz == 9, "stream data was wrong size\n");
-    if (hrec) MsiCloseHandle(hrec);
+    if (hrec) libmsi_unref(hrec);
 
     /* check the validity of the table with a deleted row */
     hrec = 0;
     sql = "select * from `MOO`";
-    r = MsiDatabaseOpenQuery(hdb, sql, &hquery);
+    r = libmsi_database_open_query(hdb, sql, &hquery);
     ok(r == ERROR_SUCCESS, "open query failed\n");
 
-    r = MsiQueryExecute(hquery, 0);
+    r = libmsi_query_execute(hquery, 0);
     ok(r == ERROR_SUCCESS, "query execute failed\n");
 
-    r = MsiQueryFetch(hquery, &hrec);
+    r = libmsi_query_fetch(hquery, &hrec);
     ok(r == ERROR_SUCCESS, "query fetch failed\n");
 
-    r = MsiRecordGetInteger(hrec, 1);
+    r = libmsi_record_get_integer(hrec, 1);
     ok(r == 1, "Expected 1, got %d\n", r);
 
     sz = sizeof buffer;
-    r = MsiRecordGetString(hrec, 2, buffer, &sz);
+    r = libmsi_record_get_string(hrec, 2, buffer, &sz);
     ok(r == ERROR_SUCCESS, "record get string failed\n");
     ok(!strcmp(buffer, "c"), "Expected c, got %s\n", buffer);
 
-    r = MsiRecordGetInteger(hrec, 3);
+    r = libmsi_record_get_integer(hrec, 3);
     ok(r == 0x80000000, "Expected 0x80000000, got %d\n", r);
 
-    r = MsiRecordGetInteger(hrec, 4);
+    r = libmsi_record_get_integer(hrec, 4);
     ok(r == 5, "Expected 5, got %d\n", r);
 
-    MsiCloseHandle(hrec);
+    libmsi_unref(hrec);
 
-    r = MsiQueryFetch(hquery, &hrec);
+    r = libmsi_query_fetch(hquery, &hrec);
     ok(r == ERROR_SUCCESS, "query fetch failed\n");
 
-    r = MsiRecordGetInteger(hrec, 1);
+    r = libmsi_record_get_integer(hrec, 1);
     ok(r == 2, "Expected 2, got %d\n", r);
 
     sz = sizeof buffer;
-    r = MsiRecordGetString(hrec, 2, buffer, &sz);
+    r = libmsi_record_get_string(hrec, 2, buffer, &sz);
     ok(r == ERROR_SUCCESS, "record get string failed\n");
     ok(!strcmp(buffer, "b"), "Expected b, got %s\n", buffer);
 
-    r = MsiRecordGetInteger(hrec, 3);
+    r = libmsi_record_get_integer(hrec, 3);
     ok(r == 0x80000000, "Expected 0x80000000, got %d\n", r);
 
-    r = MsiRecordGetInteger(hrec, 4);
+    r = libmsi_record_get_integer(hrec, 4);
     ok(r == 0x80000000, "Expected 0x80000000, got %d\n", r);
 
-    MsiCloseHandle(hrec);
+    libmsi_unref(hrec);
 
-    r = MsiQueryFetch(hquery, &hrec);
+    r = libmsi_query_fetch(hquery, &hrec);
     ok(r == ERROR_NO_MORE_ITEMS, "query fetch succeeded\n");
 
-    MsiCloseHandle(hrec);
-    MsiQueryClose(hquery);
-    MsiCloseHandle(hquery);
+    libmsi_unref(hrec);
+    libmsi_query_close(hquery);
+    libmsi_unref(hquery);
 
 #if 0
     LibmsiObject *hpkg = 0;
@@ -3110,11 +3110,11 @@ static void test_try_transform(void)
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
     ok(!strcmp(buffer, "val"), "Expected val, got %s\n", buffer);
 
-    MsiCloseHandle(hpkg);
+    libmsi_unref(hpkg);
 #endif
 
 error:
-    MsiCloseHandle(hdb);
+    libmsi_unref(hdb);
     DeleteFile(msifile);
     DeleteFile(mstfile);
 }
@@ -3338,90 +3338,90 @@ static void test_join(void)
             "FROM `Component`, `FeatureComponents` "
             "WHERE `Component`.`Component` = `FeatureComponents`.`Component_` "
             "ORDER BY `Feature_`";
-    r = MsiDatabaseOpenQuery(hdb, sql, &hquery);
+    r = libmsi_database_open_query(hdb, sql, &hquery);
     ok( r == ERROR_SUCCESS, "failed to open query: %d\n", r );
 
-    r = MsiQueryExecute(hquery, 0);
+    r = libmsi_query_execute(hquery, 0);
     ok( r == ERROR_SUCCESS, "failed to execute query: %d\n", r );
 
     i = 0;
-    while ((r = MsiQueryFetch(hquery, &hrec)) == ERROR_SUCCESS)
+    while ((r = libmsi_query_fetch(hquery, &hrec)) == ERROR_SUCCESS)
     {
-        count = MsiRecordGetFieldCount( hrec );
+        count = libmsi_record_get_field_count( hrec );
         ok( count == 2, "Expected 2 record fields, got %d\n", count );
 
         size = MAX_PATH;
-        r = MsiRecordGetString( hrec, 1, buf, &size );
+        r = libmsi_record_get_string( hrec, 1, buf, &size );
         ok( r == ERROR_SUCCESS, "failed to get record string: %d\n", r );
         ok( !strcmp( buf, join_res_first[i].one ),
             "For (row %d, column 1) expected '%s', got %s\n", i, join_res_first[i].one, buf );
 
         size = MAX_PATH;
-        r = MsiRecordGetString( hrec, 2, buf, &size );
+        r = libmsi_record_get_string( hrec, 2, buf, &size );
         ok( r == ERROR_SUCCESS, "failed to get record string: %d\n", r );
         ok( !strcmp( buf, join_res_first[i].two ),
             "For (row %d, column 2) expected '%s', got %s\n", i, join_res_first[i].two, buf );
 
         i++;
-        MsiCloseHandle(hrec);
+        libmsi_unref(hrec);
     }
 
     ok( i == 5, "Expected 5 rows, got %d\n", i );
     ok( r == ERROR_NO_MORE_ITEMS, "expected no more items: %d\n", r );
 
-    MsiQueryClose(hquery);
-    MsiCloseHandle(hquery);
+    libmsi_query_close(hquery);
+    libmsi_unref(hquery);
 
     /* try a join without a WHERE condition */
     sql = "SELECT `Component`.`ComponentId`, `FeatureComponents`.`Feature_` "
             "FROM `Component`, `FeatureComponents` ";
-    r = MsiDatabaseOpenQuery(hdb, sql, &hquery);
+    r = libmsi_database_open_query(hdb, sql, &hquery);
     ok( r == ERROR_SUCCESS, "failed to open query: %d\n", r );
 
-    r = MsiQueryExecute(hquery, 0);
+    r = libmsi_query_execute(hquery, 0);
     ok( r == ERROR_SUCCESS, "failed to execute query: %d\n", r );
 
     i = 0;
-    while ((r = MsiQueryFetch(hquery, &hrec)) == ERROR_SUCCESS)
+    while ((r = libmsi_query_fetch(hquery, &hrec)) == ERROR_SUCCESS)
     {
         i++;
-        MsiCloseHandle(hrec);
+        libmsi_unref(hrec);
     }
     ok( i == 24, "Expected 24 rows, got %d\n", i );
 
-    MsiQueryClose(hquery);
-    MsiCloseHandle(hquery);
+    libmsi_query_close(hquery);
+    libmsi_unref(hquery);
 
     sql = "SELECT DISTINCT Component, ComponentId FROM FeatureComponents, Component "
             "WHERE FeatureComponents.Component_=Component.Component "
             "AND (Feature_='nasalis') ORDER BY Feature_";
-    r = MsiDatabaseOpenQuery(hdb, sql, &hquery);
+    r = libmsi_database_open_query(hdb, sql, &hquery);
     ok( r == ERROR_SUCCESS, "failed to open query: %d\n", r );
 
-    r = MsiQueryExecute(hquery, 0);
+    r = libmsi_query_execute(hquery, 0);
     ok( r == ERROR_SUCCESS, "failed to execute query: %d\n", r );
 
     i = 0;
     data_correct = true;
-    while ((r = MsiQueryFetch(hquery, &hrec)) == ERROR_SUCCESS)
+    while ((r = libmsi_query_fetch(hquery, &hrec)) == ERROR_SUCCESS)
     {
-        count = MsiRecordGetFieldCount( hrec );
+        count = libmsi_record_get_field_count( hrec );
         ok( count == 2, "Expected 2 record fields, got %d\n", count );
 
         size = MAX_PATH;
-        r = MsiRecordGetString( hrec, 1, buf, &size );
+        r = libmsi_record_get_string( hrec, 1, buf, &size );
         ok( r == ERROR_SUCCESS, "failed to get record string: %d\n", r );
         if( strcmp( buf, join_res_second[i].one ))
             data_correct = false;
 
         size = MAX_PATH;
-        r = MsiRecordGetString( hrec, 2, buf, &size );
+        r = libmsi_record_get_string( hrec, 2, buf, &size );
         ok( r == ERROR_SUCCESS, "failed to get record string: %d\n", r );
         if( strcmp( buf, join_res_second[i].two ))
             data_correct = false;
 
         i++;
-        MsiCloseHandle(hrec);
+        libmsi_unref(hrec);
     }
 
     ok( data_correct, "data returned in the wrong order\n");
@@ -3429,40 +3429,40 @@ static void test_join(void)
     ok( i == 2, "Expected 2 rows, got %d\n", i );
     ok( r == ERROR_NO_MORE_ITEMS, "expected no more items: %d\n", r );
 
-    MsiQueryClose(hquery);
-    MsiCloseHandle(hquery);
+    libmsi_query_close(hquery);
+    libmsi_unref(hquery);
 
     sql = "SELECT `StdDlls`.`File`, `Binary`.`Data` "
             "FROM `StdDlls`, `Binary` "
             "WHERE `StdDlls`.`Binary_` = `Binary`.`Name` "
             "ORDER BY `File`";
-    r = MsiDatabaseOpenQuery(hdb, sql, &hquery);
+    r = libmsi_database_open_query(hdb, sql, &hquery);
     ok( r == ERROR_SUCCESS, "failed to open query: %d\n", r );
 
-    r = MsiQueryExecute(hquery, 0);
+    r = libmsi_query_execute(hquery, 0);
     ok( r == ERROR_SUCCESS, "failed to execute query: %d\n", r );
 
     i = 0;
     data_correct = true;
-    while ((r = MsiQueryFetch(hquery, &hrec)) == ERROR_SUCCESS)
+    while ((r = libmsi_query_fetch(hquery, &hrec)) == ERROR_SUCCESS)
     {
-        count = MsiRecordGetFieldCount( hrec );
+        count = libmsi_record_get_field_count( hrec );
         ok( count == 2, "Expected 2 record fields, got %d\n", count );
 
         size = MAX_PATH;
-        r = MsiRecordGetString( hrec, 1, buf, &size );
+        r = libmsi_record_get_string( hrec, 1, buf, &size );
         ok( r == ERROR_SUCCESS, "failed to get record string: %d\n", r );
         if( strcmp( buf, join_res_third[i].one ) )
             data_correct = false;
 
         size = MAX_PATH;
-        r = MsiRecordGetString( hrec, 2, buf, &size );
+        r = libmsi_record_get_string( hrec, 2, buf, &size );
         ok( r == ERROR_SUCCESS, "failed to get record string: %d\n", r );
         if( strcmp( buf, join_res_third[i].two ) )
             data_correct = false;
 
         i++;
-        MsiCloseHandle(hrec);
+        libmsi_unref(hrec);
     }
     ok( data_correct, "data returned in the wrong order\n");
 
@@ -3470,322 +3470,322 @@ static void test_join(void)
 
     ok( r == ERROR_NO_MORE_ITEMS, "expected no more items: %d\n", r );
 
-    MsiQueryClose(hquery);
-    MsiCloseHandle(hquery);
+    libmsi_query_close(hquery);
+    libmsi_unref(hquery);
 
     sql = "SELECT `StdDlls`.`Binary_`, `Binary`.`Name` "
             "FROM `StdDlls`, `Binary` "
             "WHERE `StdDlls`.`File` = `Binary`.`Data` "
             "ORDER BY `Name`";
-    r = MsiDatabaseOpenQuery(hdb, sql, &hquery);
+    r = libmsi_database_open_query(hdb, sql, &hquery);
     ok( r == ERROR_SUCCESS, "failed to open query: %d\n", r );
 
-    r = MsiQueryExecute(hquery, 0);
+    r = libmsi_query_execute(hquery, 0);
     ok( r == ERROR_SUCCESS, "failed to execute query: %d\n", r );
 
     i = 0;
     data_correct = true;
-    while ((r = MsiQueryFetch(hquery, &hrec)) == ERROR_SUCCESS)
+    while ((r = libmsi_query_fetch(hquery, &hrec)) == ERROR_SUCCESS)
     {
-        count = MsiRecordGetFieldCount( hrec );
+        count = libmsi_record_get_field_count( hrec );
         ok( count == 2, "Expected 2 record fields, got %d\n", count );
 
         size = MAX_PATH;
-        r = MsiRecordGetString( hrec, 1, buf, &size );
+        r = libmsi_record_get_string( hrec, 1, buf, &size );
         ok( r == ERROR_SUCCESS, "failed to get record string: %d\n", r );
         if( strcmp( buf, join_res_fourth[i].one ))
             data_correct = false;
 
         size = MAX_PATH;
-        r = MsiRecordGetString( hrec, 2, buf, &size );
+        r = libmsi_record_get_string( hrec, 2, buf, &size );
         ok( r == ERROR_SUCCESS, "failed to get record string: %d\n", r );
         if( strcmp( buf, join_res_fourth[i].two ))
             data_correct = false;
 
         i++;
-        MsiCloseHandle(hrec);
+        libmsi_unref(hrec);
     }
     ok( data_correct, "data returned in the wrong order\n");
 
     ok( i == 1, "Expected 1 rows, got %d\n", i );
     ok( r == ERROR_NO_MORE_ITEMS, "expected no more items: %d\n", r );
 
-    MsiQueryClose(hquery);
-    MsiCloseHandle(hquery);
+    libmsi_query_close(hquery);
+    libmsi_unref(hquery);
 
     sql = "SELECT `Component`.`ComponentId`, `FeatureComponents`.`Feature_` "
             "FROM `Component`, `FeatureComponents` "
             "WHERE `Component`.`Component` = 'zygomatic' "
             "AND `FeatureComponents`.`Component_` = 'maxilla' "
             "ORDER BY `Feature_`";
-    r = MsiDatabaseOpenQuery(hdb, sql, &hquery);
+    r = libmsi_database_open_query(hdb, sql, &hquery);
     ok( r == ERROR_SUCCESS, "failed to open query: %d\n", r );
 
-    r = MsiQueryExecute(hquery, 0);
+    r = libmsi_query_execute(hquery, 0);
     ok( r == ERROR_SUCCESS, "failed to execute query: %d\n", r );
 
     i = 0;
     data_correct = true;
-    while ((r = MsiQueryFetch(hquery, &hrec)) == ERROR_SUCCESS)
+    while ((r = libmsi_query_fetch(hquery, &hrec)) == ERROR_SUCCESS)
     {
-        count = MsiRecordGetFieldCount( hrec );
+        count = libmsi_record_get_field_count( hrec );
         ok( count == 2, "Expected 2 record fields, got %d\n", count );
 
         size = MAX_PATH;
-        r = MsiRecordGetString( hrec, 1, buf, &size );
+        r = libmsi_record_get_string( hrec, 1, buf, &size );
         ok( r == ERROR_SUCCESS, "failed to get record string: %d\n", r );
         if( strcmp( buf, join_res_fifth[i].one ))
             data_correct = false;
 
         size = MAX_PATH;
-        r = MsiRecordGetString( hrec, 2, buf, &size );
+        r = libmsi_record_get_string( hrec, 2, buf, &size );
         ok( r == ERROR_SUCCESS, "failed to get record string: %d\n", r );
         if( strcmp( buf, join_res_fifth[i].two ))
             data_correct = false;
 
         i++;
-        MsiCloseHandle(hrec);
+        libmsi_unref(hrec);
     }
     ok( data_correct, "data returned in the wrong order\n");
 
     ok( i == 1, "Expected 1 rows, got %d\n", i );
     ok( r == ERROR_NO_MORE_ITEMS, "expected no more items: %d\n", r );
 
-    MsiQueryClose(hquery);
-    MsiCloseHandle(hquery);
+    libmsi_query_close(hquery);
+    libmsi_unref(hquery);
 
     sql = "SELECT `Component`.`ComponentId`, `FeatureComponents`.`Feature_` "
             "FROM `Component`, `FeatureComponents` "
             "WHERE `Component` = 'zygomatic' "
             "ORDER BY `Feature_`";
-    r = MsiDatabaseOpenQuery(hdb, sql, &hquery);
+    r = libmsi_database_open_query(hdb, sql, &hquery);
     ok( r == ERROR_SUCCESS, "failed to open query: %d\n", r );
 
-    r = MsiQueryExecute(hquery, 0);
+    r = libmsi_query_execute(hquery, 0);
     ok( r == ERROR_SUCCESS, "failed to execute query: %d\n", r );
 
     i = 0;
     data_correct = true;
-    while ((r = MsiQueryFetch(hquery, &hrec)) == ERROR_SUCCESS)
+    while ((r = libmsi_query_fetch(hquery, &hrec)) == ERROR_SUCCESS)
     {
-        count = MsiRecordGetFieldCount( hrec );
+        count = libmsi_record_get_field_count( hrec );
         ok( count == 2, "Expected 2 record fields, got %d\n", count );
 
         size = MAX_PATH;
-        r = MsiRecordGetString( hrec, 1, buf, &size );
+        r = libmsi_record_get_string( hrec, 1, buf, &size );
         ok( r == ERROR_SUCCESS, "failed to get record string: %d\n", r );
         if( strcmp( buf, join_res_sixth[i].one ))
             data_correct = false;
 
         size = MAX_PATH;
-        r = MsiRecordGetString( hrec, 2, buf, &size );
+        r = libmsi_record_get_string( hrec, 2, buf, &size );
         ok( r == ERROR_SUCCESS, "failed to get record string: %d\n", r );
         if( strcmp( buf, join_res_sixth[i].two ))
             data_correct = false;
 
         i++;
-        MsiCloseHandle(hrec);
+        libmsi_unref(hrec);
     }
     ok( data_correct, "data returned in the wrong order\n");
 
     ok( i == 6, "Expected 6 rows, got %d\n", i );
     ok( r == ERROR_NO_MORE_ITEMS, "expected no more items: %d\n", r );
 
-    MsiQueryClose(hquery);
-    MsiCloseHandle(hquery);
+    libmsi_query_close(hquery);
+    libmsi_unref(hquery);
 
     sql = "SELECT `Component`.`ComponentId`, `FeatureComponents`.`Feature_` "
             "FROM `Component`, `FeatureComponents` "
             "WHERE `Component` = 'zygomatic' "
             "AND `Feature_` = 'nasalis' "
             "ORDER BY `Feature_`";
-    r = MsiDatabaseOpenQuery(hdb, sql, &hquery);
+    r = libmsi_database_open_query(hdb, sql, &hquery);
     ok( r == ERROR_SUCCESS, "failed to open query: %d\n", r );
 
-    r = MsiQueryExecute(hquery, 0);
+    r = libmsi_query_execute(hquery, 0);
     ok( r == ERROR_SUCCESS, "failed to execute query: %d\n", r );
 
     i = 0;
     data_correct = true;
-    while ((r = MsiQueryFetch(hquery, &hrec)) == ERROR_SUCCESS)
+    while ((r = libmsi_query_fetch(hquery, &hrec)) == ERROR_SUCCESS)
     {
-        count = MsiRecordGetFieldCount( hrec );
+        count = libmsi_record_get_field_count( hrec );
         ok( count == 2, "Expected 2 record fields, got %d\n", count );
 
         size = MAX_PATH;
-        r = MsiRecordGetString( hrec, 1, buf, &size );
+        r = libmsi_record_get_string( hrec, 1, buf, &size );
         ok( r == ERROR_SUCCESS, "failed to get record string: %d\n", r );
         if( strcmp( buf, join_res_seventh[i].one ))
             data_correct = false;
 
         size = MAX_PATH;
-        r = MsiRecordGetString( hrec, 2, buf, &size );
+        r = libmsi_record_get_string( hrec, 2, buf, &size );
         ok( r == ERROR_SUCCESS, "failed to get record string: %d\n", r );
         if( strcmp( buf, join_res_seventh[i].two ))
             data_correct = false;
 
         i++;
-        MsiCloseHandle(hrec);
+        libmsi_unref(hrec);
     }
 
     ok( data_correct, "data returned in the wrong order\n");
     ok( i == 3, "Expected 3 rows, got %d\n", i );
     ok( r == ERROR_NO_MORE_ITEMS, "expected no more items: %d\n", r );
 
-    MsiQueryClose(hquery);
-    MsiCloseHandle(hquery);
+    libmsi_query_close(hquery);
+    libmsi_unref(hquery);
 
     sql = "SELECT `StdDlls`.`File`, `Binary`.`Data` "
             "FROM `StdDlls`, `Binary` ";
-    r = MsiDatabaseOpenQuery(hdb, sql, &hquery);
+    r = libmsi_database_open_query(hdb, sql, &hquery);
     ok( r == ERROR_SUCCESS, "failed to open query: %d\n", r );
 
-    r = MsiQueryExecute(hquery, 0);
+    r = libmsi_query_execute(hquery, 0);
     ok( r == ERROR_SUCCESS, "failed to execute query: %d\n", r );
 
     i = 0;
     data_correct = true;
-    while ((r = MsiQueryFetch(hquery, &hrec)) == ERROR_SUCCESS)
+    while ((r = libmsi_query_fetch(hquery, &hrec)) == ERROR_SUCCESS)
     {
-        count = MsiRecordGetFieldCount( hrec );
+        count = libmsi_record_get_field_count( hrec );
         ok( count == 2, "Expected 2 record fields, got %d\n", count );
 
         size = MAX_PATH;
-        r = MsiRecordGetString( hrec, 1, buf, &size );
+        r = libmsi_record_get_string( hrec, 1, buf, &size );
         ok( r == ERROR_SUCCESS, "failed to get record string: %d\n", r );
         if( strcmp( buf, join_res_eighth[i].one ))
             data_correct = false;
 
         size = MAX_PATH;
-        r = MsiRecordGetString( hrec, 2, buf, &size );
+        r = libmsi_record_get_string( hrec, 2, buf, &size );
         ok( r == ERROR_SUCCESS, "failed to get record string: %d\n", r );
         if( strcmp( buf, join_res_eighth[i].four ))
             data_correct = false;
 
         i++;
-        MsiCloseHandle(hrec);
+        libmsi_unref(hrec);
     }
 
     ok( data_correct, "data returned in the wrong order\n");
     ok( i == 6, "Expected 6 rows, got %d\n", i );
     ok( r == ERROR_NO_MORE_ITEMS, "expected no more items: %d\n", r );
 
-    MsiQueryClose(hquery);
-    MsiCloseHandle(hquery);
+    libmsi_query_close(hquery);
+    libmsi_unref(hquery);
 
     sql = "SELECT * FROM `StdDlls`, `Binary` ";
-    r = MsiDatabaseOpenQuery(hdb, sql, &hquery);
+    r = libmsi_database_open_query(hdb, sql, &hquery);
     ok( r == ERROR_SUCCESS, "failed to open query: %d\n", r );
 
-    r = MsiQueryExecute(hquery, 0);
+    r = libmsi_query_execute(hquery, 0);
     ok( r == ERROR_SUCCESS, "failed to execute query: %d\n", r );
 
     i = 0;
     data_correct = true;
-    while ((r = MsiQueryFetch(hquery, &hrec)) == ERROR_SUCCESS)
+    while ((r = libmsi_query_fetch(hquery, &hrec)) == ERROR_SUCCESS)
     {
-        count = MsiRecordGetFieldCount( hrec );
+        count = libmsi_record_get_field_count( hrec );
         ok( count == 4, "Expected 4 record fields, got %d\n", count );
 
         size = MAX_PATH;
-        r = MsiRecordGetString( hrec, 1, buf, &size );
+        r = libmsi_record_get_string( hrec, 1, buf, &size );
         ok( r == ERROR_SUCCESS, "failed to get record string: %d\n", r );
         if( strcmp( buf, join_res_eighth[i].one ))
             data_correct = false;
 
         size = MAX_PATH;
-        r = MsiRecordGetString( hrec, 2, buf, &size );
+        r = libmsi_record_get_string( hrec, 2, buf, &size );
         ok( r == ERROR_SUCCESS, "failed to get record string: %d\n", r );
         if( strcmp( buf, join_res_eighth[i].two ))
             data_correct = false;
 
         size = MAX_PATH;
-        r = MsiRecordGetString( hrec, 3, buf, &size );
+        r = libmsi_record_get_string( hrec, 3, buf, &size );
         ok( r == ERROR_SUCCESS, "failed to get record string: %d\n", r );
         if( strcmp( buf, join_res_eighth[i].three ))
             data_correct = false;
 
         size = MAX_PATH;
-        r = MsiRecordGetString( hrec, 4, buf, &size );
+        r = libmsi_record_get_string( hrec, 4, buf, &size );
         ok( r == ERROR_SUCCESS, "failed to get record string: %d\n", r );
         if( strcmp( buf, join_res_eighth[i].four ))
             data_correct = false;
 
         i++;
-        MsiCloseHandle(hrec);
+        libmsi_unref(hrec);
     }
     ok( data_correct, "data returned in the wrong order\n");
 
     ok( i == 6, "Expected 6 rows, got %d\n", i );
     ok( r == ERROR_NO_MORE_ITEMS, "expected no more items: %d\n", r );
 
-    MsiQueryClose(hquery);
-    MsiCloseHandle(hquery);
+    libmsi_query_close(hquery);
+    libmsi_unref(hquery);
 
     sql = "SELECT * FROM `One`, `Two`, `Three` ";
-    r = MsiDatabaseOpenQuery(hdb, sql, &hquery);
+    r = libmsi_database_open_query(hdb, sql, &hquery);
     ok( r == ERROR_SUCCESS, "failed to open query: %d\n", r );
 
-    r = MsiQueryExecute(hquery, 0);
+    r = libmsi_query_execute(hquery, 0);
     ok( r == ERROR_SUCCESS, "failed to execute query: %d\n", r );
 
     i = 0;
     data_correct = true;
-    while ((r = MsiQueryFetch(hquery, &hrec)) == ERROR_SUCCESS)
+    while ((r = libmsi_query_fetch(hquery, &hrec)) == ERROR_SUCCESS)
     {
-        count = MsiRecordGetFieldCount( hrec );
+        count = libmsi_record_get_field_count( hrec );
         ok( count == 6, "Expected 6 record fields, got %d\n", count );
 
-        r = MsiRecordGetInteger( hrec, 1 );
+        r = libmsi_record_get_integer( hrec, 1 );
         if( r != join_res_ninth[i].one )
             data_correct = false;
 
-        r = MsiRecordGetInteger( hrec, 2 );
+        r = libmsi_record_get_integer( hrec, 2 );
         if( r != join_res_ninth[i].two )
             data_correct = false;
 
-        r = MsiRecordGetInteger( hrec, 3 );
+        r = libmsi_record_get_integer( hrec, 3 );
         if( r != join_res_ninth[i].three )
             data_correct = false;
 
-        r = MsiRecordGetInteger( hrec, 4 );
+        r = libmsi_record_get_integer( hrec, 4 );
         if( r != join_res_ninth[i].four )
             data_correct = false;
 
-        r = MsiRecordGetInteger( hrec, 5 );
+        r = libmsi_record_get_integer( hrec, 5 );
         if( r != join_res_ninth[i].five )
             data_correct = false;
 
-        r = MsiRecordGetInteger( hrec, 6);
+        r = libmsi_record_get_integer( hrec, 6);
         if( r != join_res_ninth[i].six )
             data_correct = false;
 
         i++;
-        MsiCloseHandle(hrec);
+        libmsi_unref(hrec);
     }
     ok( data_correct, "data returned in the wrong order\n");
 
     ok( i == 6, "Expected 6 rows, got %d\n", i );
     ok( r == ERROR_NO_MORE_ITEMS, "expected no more items: %d\n", r );
 
-    MsiQueryClose(hquery);
-    MsiCloseHandle(hquery);
+    libmsi_query_close(hquery);
+    libmsi_unref(hquery);
 
     sql = "SELECT * FROM `Four`, `Five`";
-    r = MsiDatabaseOpenQuery(hdb, sql, &hquery);
+    r = libmsi_database_open_query(hdb, sql, &hquery);
     ok( r == ERROR_SUCCESS, "failed to open query: %d\n", r );
 
-    r = MsiQueryExecute(hquery, 0);
+    r = libmsi_query_execute(hquery, 0);
     ok( r == ERROR_SUCCESS, "failed to execute query: %d\n", r );
 
-    r = MsiQueryFetch(hquery, &hrec);
+    r = libmsi_query_fetch(hquery, &hrec);
     ok(r == ERROR_NO_MORE_ITEMS, "Expected ERROR_NO_MORE_ITEMS, got %d\n", r);
 
-    MsiQueryClose(hquery);
-    MsiCloseHandle(hquery);
+    libmsi_query_close(hquery);
+    libmsi_unref(hquery);
 
     sql = "SELECT * FROM `Nonexistent`, `One`";
-    r = MsiDatabaseOpenQuery(hdb, sql, &hquery);
+    r = libmsi_database_open_query(hdb, sql, &hquery);
     ok( r == ERROR_BAD_QUERY_SYNTAX,
         "Expected ERROR_BAD_QUERY_SYNTAX, got %d\n", r );
 
@@ -3794,59 +3794,59 @@ static void test_join(void)
             "FROM `Component`, `FeatureComponents` "
             "WHERE `Component`.`Component` = `FeatureComponents`.`Component_` "
             "ORDER BY `Feature_`";
-    r = MsiDatabaseOpenQuery(hdb, sql, &hquery);
+    r = libmsi_database_open_query(hdb, sql, &hquery);
     ok( r == ERROR_SUCCESS, "failed to open query: %d\n", r );
 
-    r = MsiQueryExecute(hquery, 0);
+    r = libmsi_query_execute(hquery, 0);
     ok( r == ERROR_SUCCESS, "failed to execute query: %d\n", r );
 
-    r = MsiQueryFetch(hquery, &hrec);
+    r = libmsi_query_fetch(hquery, &hrec);
     ok( r == ERROR_SUCCESS, "failed to fetch query: %d\n", r );
 
-    r = MsiRecordSetString( hrec, 1, "epicranius" );
+    r = libmsi_record_set_string( hrec, 1, "epicranius" );
     ok( r == ERROR_SUCCESS, "failed to set string: %d\n", r );
 
-    r = MsiQueryModify(hquery, LIBMSI_MODIFY_UPDATE, hrec);
+    r = libmsi_query_modify(hquery, LIBMSI_MODIFY_UPDATE, hrec);
     ok( r == ERROR_SUCCESS, "failed to update row: %d\n", r );
 
     /* try another valid operation for joins */
-    r = MsiQueryModify(hquery, LIBMSI_MODIFY_REFRESH, hrec);
+    r = libmsi_query_modify(hquery, LIBMSI_MODIFY_REFRESH, hrec);
     todo_wine ok( r == ERROR_SUCCESS, "failed to refresh row: %d\n", r );
 
     /* try an invalid operation for joins */
-    r = MsiQueryModify(hquery, LIBMSI_MODIFY_DELETE, hrec);
+    r = libmsi_query_modify(hquery, LIBMSI_MODIFY_DELETE, hrec);
     ok( r == ERROR_FUNCTION_FAILED, "unexpected result: %d\n", r );
 
-    r = MsiRecordSetString( hrec, 2, "epicranius" );
+    r = libmsi_record_set_string( hrec, 2, "epicranius" );
     ok( r == ERROR_SUCCESS, "failed to set string: %d\n", r );
 
     /* primary key cannot be updated */
-    r = MsiQueryModify(hquery, LIBMSI_MODIFY_UPDATE, hrec);
+    r = libmsi_query_modify(hquery, LIBMSI_MODIFY_UPDATE, hrec);
     ok( r == ERROR_FUNCTION_FAILED, "failed to update row: %d\n", r );
 
-    MsiCloseHandle(hrec);
-    MsiQueryClose(hquery);
-    MsiCloseHandle(hquery);
+    libmsi_unref(hrec);
+    libmsi_query_close(hquery);
+    libmsi_unref(hquery);
 
-    r = MsiDatabaseOpenQuery(hdb, sql, &hquery);
-    ok(r == ERROR_SUCCESS, "MsiDatabaseOpenQuery failed\n");
+    r = libmsi_database_open_query(hdb, sql, &hquery);
+    ok(r == ERROR_SUCCESS, "libmsi_database_open_query failed\n");
 
-    r = MsiQueryExecute(hquery, 0);
-    ok(r == ERROR_SUCCESS, "MsiQueryExecute failed\n");
+    r = libmsi_query_execute(hquery, 0);
+    ok(r == ERROR_SUCCESS, "libmsi_query_execute failed\n");
 
-    r = MsiQueryFetch(hquery, &hrec);
-    ok(r == ERROR_SUCCESS, "MsiQueryFetch failed\n");
+    r = libmsi_query_fetch(hquery, &hrec);
+    ok(r == ERROR_SUCCESS, "libmsi_query_fetch failed\n");
 
     size = MAX_PATH;
-    r = MsiRecordGetString( hrec, 1, buf, &size );
+    r = libmsi_record_get_string( hrec, 1, buf, &size );
     ok( r == ERROR_SUCCESS, "failed to get record string: %d\n", r );
     ok( !strcmp( buf, "epicranius" ), "expected 'epicranius', got %s\n", buf );
 
-    MsiCloseHandle(hrec);
-    MsiQueryClose(hquery);
-    MsiCloseHandle(hquery);
+    libmsi_unref(hrec);
+    libmsi_query_close(hquery);
+    libmsi_unref(hquery);
 
-    MsiCloseHandle(hdb);
+    libmsi_unref(hdb);
     DeleteFile(msifile);
 }
 
@@ -3861,46 +3861,46 @@ static void test_temporary_table(void)
     char buf[0x10];
     unsigned sz;
 
-    cond = MsiDatabaseIsTablePersistent(0, NULL);
+    cond = libmsi_database_is_table_persistent(0, NULL);
     ok( cond == LIBMSI_CONDITION_ERROR, "wrong return condition\n");
 
     hdb = create_db();
     ok( hdb, "failed to create db\n");
 
-    cond = MsiDatabaseIsTablePersistent(hdb, NULL);
+    cond = libmsi_database_is_table_persistent(hdb, NULL);
     ok( cond == LIBMSI_CONDITION_ERROR, "wrong return condition\n");
 
-    cond = MsiDatabaseIsTablePersistent(hdb, "_Tables");
+    cond = libmsi_database_is_table_persistent(hdb, "_Tables");
     ok( cond == LIBMSI_CONDITION_NONE, "wrong return condition\n");
 
-    cond = MsiDatabaseIsTablePersistent(hdb, "_Columns");
+    cond = libmsi_database_is_table_persistent(hdb, "_Columns");
     ok( cond == LIBMSI_CONDITION_NONE, "wrong return condition\n");
 
-    cond = MsiDatabaseIsTablePersistent(hdb, "_Storages");
+    cond = libmsi_database_is_table_persistent(hdb, "_Storages");
     ok( cond == LIBMSI_CONDITION_NONE, "wrong return condition\n");
 
-    cond = MsiDatabaseIsTablePersistent(hdb, "_Streams");
+    cond = libmsi_database_is_table_persistent(hdb, "_Streams");
     ok( cond == LIBMSI_CONDITION_NONE, "wrong return condition\n");
 
     sql = "CREATE TABLE `P` ( `B` SHORT NOT NULL, `C` CHAR(255) PRIMARY KEY `C`)";
     r = run_query(hdb, 0, sql);
     ok(r == ERROR_SUCCESS, "failed to add table\n");
 
-    cond = MsiDatabaseIsTablePersistent(hdb, "P");
+    cond = libmsi_database_is_table_persistent(hdb, "P");
     ok( cond == LIBMSI_CONDITION_TRUE, "wrong return condition\n");
 
     sql = "CREATE TABLE `P2` ( `B` SHORT NOT NULL, `C` CHAR(255) PRIMARY KEY `C`) HOLD";
     r = run_query(hdb, 0, sql);
     ok(r == ERROR_SUCCESS, "failed to add table\n");
 
-    cond = MsiDatabaseIsTablePersistent(hdb, "P2");
+    cond = libmsi_database_is_table_persistent(hdb, "P2");
     ok( cond == LIBMSI_CONDITION_TRUE, "wrong return condition\n");
 
     sql = "CREATE TABLE `T` ( `B` SHORT NOT NULL TEMPORARY, `C` CHAR(255) TEMPORARY PRIMARY KEY `C`) HOLD";
     r = run_query(hdb, 0, sql);
     ok(r == ERROR_SUCCESS, "failed to add table\n");
 
-    cond = MsiDatabaseIsTablePersistent(hdb, "T");
+    cond = libmsi_database_is_table_persistent(hdb, "T");
     ok( cond == LIBMSI_CONDITION_FALSE, "wrong return condition\n");
 
     sql = "CREATE TABLE `T2` ( `B` SHORT NOT NULL TEMPORARY, `C` CHAR(255) TEMPORARY PRIMARY KEY `C`)";
@@ -3909,25 +3909,25 @@ static void test_temporary_table(void)
 
     query = NULL;
     sql = "SELECT * FROM `T2`";
-    r = MsiDatabaseOpenQuery(hdb, sql, &query);
+    r = libmsi_database_open_query(hdb, sql, &query);
     ok(r == ERROR_BAD_QUERY_SYNTAX,
        "Expected ERROR_BAD_QUERY_SYNTAX, got %d\n", r);
 
-    cond = MsiDatabaseIsTablePersistent(hdb, "T2");
+    cond = libmsi_database_is_table_persistent(hdb, "T2");
     ok( cond == LIBMSI_CONDITION_NONE, "wrong return condition\n");
 
     sql = "CREATE TABLE `T3` ( `B` SHORT NOT NULL TEMPORARY, `C` CHAR(255) PRIMARY KEY `C`)";
     r = run_query(hdb, 0, sql);
     ok(r == ERROR_SUCCESS, "failed to add table\n");
 
-    cond = MsiDatabaseIsTablePersistent(hdb, "T3");
+    cond = libmsi_database_is_table_persistent(hdb, "T3");
     ok( cond == LIBMSI_CONDITION_TRUE, "wrong return condition\n");
 
     sql = "CREATE TABLE `T4` ( `B` SHORT NOT NULL, `C` CHAR(255) TEMPORARY PRIMARY KEY `C`)";
     r = run_query(hdb, 0, sql);
     ok(r == ERROR_FUNCTION_FAILED, "failed to add table\n");
 
-    cond = MsiDatabaseIsTablePersistent(hdb, "T4");
+    cond = libmsi_database_is_table_persistent(hdb, "T4");
     ok( cond == LIBMSI_CONDITION_NONE, "wrong return condition\n");
 
     sql = "CREATE TABLE `T5` ( `B` SHORT NOT NULL TEMP, `C` CHAR(255) TEMP PRIMARY KEY `C`) HOLD";
@@ -3936,44 +3936,44 @@ static void test_temporary_table(void)
 
     query = NULL;
     sql = "select * from `T`";
-    r = MsiDatabaseOpenQuery(hdb, sql, &query);
+    r = libmsi_database_open_query(hdb, sql, &query);
     ok(r == ERROR_SUCCESS, "failed to query table\n");
 
     rec = NULL;
-    r = MsiQueryGetColumnInfo(query, LIBMSI_COL_INFO_TYPES, &rec);
+    r = libmsi_query_get_column_info(query, LIBMSI_COL_INFO_TYPES, &rec);
     ok(r == ERROR_SUCCESS, "failed to get column info\n");
 
     sz = sizeof buf;
-    r = MsiRecordGetString(rec, 1, buf, &sz);
+    r = libmsi_record_get_string(rec, 1, buf, &sz);
     ok(r == ERROR_SUCCESS, "failed to get string\n");
     ok( 0 == strcmp("G255", buf), "wrong column type\n");
 
     sz = sizeof buf;
-    r = MsiRecordGetString(rec, 2, buf, &sz);
+    r = libmsi_record_get_string(rec, 2, buf, &sz);
     ok(r == ERROR_SUCCESS, "failed to get string\n");
     ok( 0 == strcmp("j2", buf), "wrong column type\n");
 
-    MsiCloseHandle( rec );
-    MsiQueryClose( query );
-    MsiCloseHandle( query );
+    libmsi_unref( rec );
+    libmsi_query_close( query );
+    libmsi_unref( query );
 
     /* query the table data */
     rec = 0;
     r = do_query(hdb, "select * from `_Tables` where `Name` = 'T'", &rec);
     ok( r == ERROR_SUCCESS, "temporary table exists in _Tables\n");
-    MsiCloseHandle( rec );
+    libmsi_unref( rec );
 
     /* query the column data */
     rec = 0;
     r = do_query(hdb, "select * from `_Columns` where `Table` = 'T' AND `Name` = 'B'", &rec);
     ok( r == ERROR_NO_MORE_ITEMS, "temporary table exists in _Columns\n");
-    if (rec) MsiCloseHandle( rec );
+    if (rec) libmsi_unref( rec );
 
     r = do_query(hdb, "select * from `_Columns` where `Table` = 'T' AND `Name` = 'C'", &rec);
     ok( r == ERROR_NO_MORE_ITEMS, "temporary table exists in _Columns\n");
-    if (rec) MsiCloseHandle( rec );
+    if (rec) libmsi_unref( rec );
 
-    MsiCloseHandle( hdb );
+    libmsi_unref( hdb );
 
     DeleteFile(msifile);
 }
@@ -3992,7 +3992,7 @@ static void test_alter(void)
     r = run_query(hdb, 0, sql);
     ok(r == ERROR_SUCCESS, "failed to add table\n");
 
-    cond = MsiDatabaseIsTablePersistent(hdb, "T");
+    cond = libmsi_database_is_table_persistent(hdb, "T");
     ok( cond == LIBMSI_CONDITION_FALSE, "wrong return condition\n");
 
     sql = "ALTER TABLE `T` HOLD";
@@ -4151,7 +4151,7 @@ static void test_alter(void)
     r = run_query(hdb, 0, sql);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
-    MsiCloseHandle( hdb );
+    libmsi_unref( hdb );
     DeleteFile(msifile);
 }
 
@@ -4164,9 +4164,9 @@ static void test_integers(void)
     const char *sql;
     unsigned r;
 
-    /* just MsiOpenDatabase should not create a file */
-    r = MsiOpenDatabase(msifile, LIBMSI_DB_OPEN_CREATE, &hdb);
-    ok(r == ERROR_SUCCESS, "MsiOpenDatabase failed\n");
+    /* just libmsi_database_open should not create a file */
+    r = libmsi_database_open(msifile, LIBMSI_DB_OPEN_CREATE, &hdb);
+    ok(r == ERROR_SUCCESS, "libmsi_database_open failed\n");
 
     /* create a table */
     sql = "CREATE TABLE `integers` ( "
@@ -4174,23 +4174,23 @@ static void test_integers(void)
             "`five` SHORT NOT NULL, `six` INT NOT NULL, "
             "`seven` INTEGER NOT NULL, `eight` LONG NOT NULL "
             "PRIMARY KEY `one`)";
-    r = MsiDatabaseOpenQuery(hdb, sql, &query);
-    ok(r == ERROR_SUCCESS, "MsiDatabaseOpenQuery failed\n");
-    r = MsiQueryExecute(query, 0);
-    ok(r == ERROR_SUCCESS, "MsiQueryExecute failed\n");
-    r = MsiQueryClose(query);
-    ok(r == ERROR_SUCCESS, "MsiQueryClose failed\n");
-    r = MsiCloseHandle(query);
-    ok(r == ERROR_SUCCESS, "MsiCloseHandle failed\n");
+    r = libmsi_database_open_query(hdb, sql, &query);
+    ok(r == ERROR_SUCCESS, "libmsi_database_open_query failed\n");
+    r = libmsi_query_execute(query, 0);
+    ok(r == ERROR_SUCCESS, "libmsi_query_execute failed\n");
+    r = libmsi_query_close(query);
+    ok(r == ERROR_SUCCESS, "libmsi_query_close failed\n");
+    r = libmsi_unref(query);
+    ok(r == ERROR_SUCCESS, "libmsi_unref failed\n");
 
     sql = "SELECT * FROM `integers`";
-    r = MsiDatabaseOpenQuery(hdb, sql, &query);
+    r = libmsi_database_open_query(hdb, sql, &query);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     rec = NULL;
-    r = MsiQueryGetColumnInfo(query, LIBMSI_COL_INFO_NAMES, &rec);
+    r = libmsi_query_get_column_info(query, LIBMSI_COL_INFO_NAMES, &rec);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-    count = MsiRecordGetFieldCount(rec);
+    count = libmsi_record_get_field_count(rec);
     ok(count == 8, "Expected 8, got %d\n", count);
     ok(check_record(rec, 1, "one"), "Expected one\n");
     ok(check_record(rec, 2, "two"), "Expected two\n");
@@ -4200,12 +4200,12 @@ static void test_integers(void)
     ok(check_record(rec, 6, "six"), "Expected six\n");
     ok(check_record(rec, 7, "seven"), "Expected seven\n");
     ok(check_record(rec, 8, "eight"), "Expected eight\n");
-    MsiCloseHandle(rec);
+    libmsi_unref(rec);
 
     rec = NULL;
-    r = MsiQueryGetColumnInfo(query, LIBMSI_COL_INFO_TYPES, &rec);
+    r = libmsi_query_get_column_info(query, LIBMSI_COL_INFO_TYPES, &rec);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-    count = MsiRecordGetFieldCount(rec);
+    count = libmsi_record_get_field_count(rec);
     ok(count == 8, "Expected 8, got %d\n", count);
     ok(check_record(rec, 1, "I2"), "Expected I2\n");
     ok(check_record(rec, 2, "I2"), "Expected I2\n");
@@ -4215,74 +4215,74 @@ static void test_integers(void)
     ok(check_record(rec, 6, "i2"), "Expected i2\n");
     ok(check_record(rec, 7, "i2"), "Expected i2\n");
     ok(check_record(rec, 8, "i4"), "Expected i4\n");
-    MsiCloseHandle(rec);
+    libmsi_unref(rec);
 
-    MsiQueryClose(query);
-    MsiCloseHandle(query);
+    libmsi_query_close(query);
+    libmsi_unref(query);
 
     /* insert values into it, NULL where NOT NULL is specified */
     query = NULL;
     sql = "INSERT INTO `integers` ( `one`, `two`, `three`, `four`, `five`, `six`, `seven`, `eight` )"
         "VALUES('', '', '', '', '', '', '', '')";
-    r = MsiDatabaseOpenQuery(hdb, sql, &query);
+    r = libmsi_database_open_query(hdb, sql, &query);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-    r = MsiQueryExecute(query, 0);
+    r = libmsi_query_execute(query, 0);
     ok(r == ERROR_FUNCTION_FAILED, "Expected ERROR_FUNCTION_FAILED, got %d\n", r);
 
-    MsiQueryClose(query);
-    MsiCloseHandle(query);
+    libmsi_query_close(query);
+    libmsi_unref(query);
 
     sql = "SELECT * FROM `integers`";
     r = do_query(hdb, sql, &rec);
     ok(r == ERROR_NO_MORE_ITEMS, "Expected ERROR_NO_MORE_ITEMS, got %d\n", r);
 
-    r = MsiRecordGetFieldCount(rec);
+    r = libmsi_record_get_field_count(rec);
     ok(r == -1, "record count wrong: %d\n", r);
 
-    MsiCloseHandle(rec);
+    libmsi_unref(rec);
 
     /* insert legitimate values into it */
     query = NULL;
     sql = "INSERT INTO `integers` ( `one`, `two`, `three`, `four`, `five`, `six`, `seven`, `eight` )"
         "VALUES('', '2', '', '4', '5', '6', '7', '8')";
-    r = MsiDatabaseOpenQuery(hdb, sql, &query);
+    r = libmsi_database_open_query(hdb, sql, &query);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-    r = MsiQueryExecute(query, 0);
+    r = libmsi_query_execute(query, 0);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     sql = "SELECT * FROM `integers`";
     r = do_query(hdb, sql, &rec);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
-    r = MsiRecordGetFieldCount(rec);
+    r = libmsi_record_get_field_count(rec);
     ok(r == 8, "record count wrong: %d\n", r);
 
-    i = MsiRecordGetInteger(rec, 1);
+    i = libmsi_record_get_integer(rec, 1);
     ok(i == MSI_NULL_INTEGER, "Expected MSI_NULL_INTEGER, got %d\n", i);
-    i = MsiRecordGetInteger(rec, 3);
+    i = libmsi_record_get_integer(rec, 3);
     ok(i == MSI_NULL_INTEGER, "Expected MSI_NULL_INTEGER, got %d\n", i);
-    i = MsiRecordGetInteger(rec, 2);
+    i = libmsi_record_get_integer(rec, 2);
     ok(i == 2, "Expected 2, got %d\n", i);
-    i = MsiRecordGetInteger(rec, 4);
+    i = libmsi_record_get_integer(rec, 4);
     ok(i == 4, "Expected 4, got %d\n", i);
-    i = MsiRecordGetInteger(rec, 5);
+    i = libmsi_record_get_integer(rec, 5);
     ok(i == 5, "Expected 5, got %d\n", i);
-    i = MsiRecordGetInteger(rec, 6);
+    i = libmsi_record_get_integer(rec, 6);
     ok(i == 6, "Expected 6, got %d\n", i);
-    i = MsiRecordGetInteger(rec, 7);
+    i = libmsi_record_get_integer(rec, 7);
     ok(i == 7, "Expected 7, got %d\n", i);
-    i = MsiRecordGetInteger(rec, 8);
+    i = libmsi_record_get_integer(rec, 8);
     ok(i == 8, "Expected 8, got %d\n", i);
 
-    MsiCloseHandle(rec);
-    MsiQueryClose(query);
-    MsiCloseHandle(query);
+    libmsi_unref(rec);
+    libmsi_query_close(query);
+    libmsi_unref(query);
 
-    r = MsiDatabaseCommit(hdb);
-    ok(r == ERROR_SUCCESS, "MsiDatabaseCommit failed\n");
+    r = libmsi_database_commit(hdb);
+    ok(r == ERROR_SUCCESS, "libmsi_database_commit failed\n");
 
-    r = MsiCloseHandle(hdb);
-    ok(r == ERROR_SUCCESS, "MsiCloseHandle failed\n");
+    r = libmsi_unref(hdb);
+    ok(r == ERROR_SUCCESS, "libmsi_unref failed\n");
 
     r = DeleteFile(msifile);
     ok(r == true, "file didn't exist after commit\n");
@@ -4298,9 +4298,9 @@ static void test_update(void)
     unsigned size;
     unsigned r;
 
-    /* just MsiOpenDatabase should not create a file */
-    r = MsiOpenDatabase(msifile, LIBMSI_DB_OPEN_CREATE, &hdb);
-    ok(r == ERROR_SUCCESS, "MsiOpenDatabase failed\n");
+    /* just libmsi_database_open should not create a file */
+    r = libmsi_database_open(msifile, LIBMSI_DB_OPEN_CREATE, &hdb);
+    ok(r == ERROR_SUCCESS, "libmsi_database_open failed\n");
 
     /* create the Control table */
     sql = "CREATE TABLE `Control` ( "
@@ -4308,14 +4308,14 @@ static void test_update(void)
         "`X` SHORT NOT NULL, `Y` SHORT NOT NULL, `Width` SHORT NOT NULL, `Height` SHORT NOT NULL,"
         "`Attributes` LONG, `Property` CHAR(50), `Text` CHAR(0) LOCALIZABLE, "
         "`Control_Next` CHAR(50), `Help` CHAR(50) LOCALIZABLE PRIMARY KEY `Dialog_`, `Control`)";
-    r = MsiDatabaseOpenQuery(hdb, sql, &query);
-    ok(r == ERROR_SUCCESS, "MsiDatabaseOpenQuery failed\n");
-    r = MsiQueryExecute(query, 0);
-    ok(r == ERROR_SUCCESS, "MsiQueryExecute failed\n");
-    r = MsiQueryClose(query);
-    ok(r == ERROR_SUCCESS, "MsiQueryClose failed\n");
-    r = MsiCloseHandle(query);
-    ok(r == ERROR_SUCCESS, "MsiCloseHandle failed\n");
+    r = libmsi_database_open_query(hdb, sql, &query);
+    ok(r == ERROR_SUCCESS, "libmsi_database_open_query failed\n");
+    r = libmsi_query_execute(query, 0);
+    ok(r == ERROR_SUCCESS, "libmsi_query_execute failed\n");
+    r = libmsi_query_close(query);
+    ok(r == ERROR_SUCCESS, "libmsi_query_close failed\n");
+    r = libmsi_unref(query);
+    ok(r == ERROR_SUCCESS, "libmsi_unref failed\n");
 
     /* add a control */
     query = NULL;
@@ -4323,14 +4323,14 @@ static void test_update(void)
         "`Dialog_`, `Control`, `Type`, `X`, `Y`, `Width`, `Height`, "
         "`Property`, `Text`, `Control_Next`, `Help` )"
         "VALUES('ErrorDialog', 'ErrorText', '1', '5', '5', '5', '5', '', '', '', '')";
-    r = MsiDatabaseOpenQuery(hdb, sql, &query);
+    r = libmsi_database_open_query(hdb, sql, &query);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-    r = MsiQueryExecute(query, 0);
+    r = libmsi_query_execute(query, 0);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-    r = MsiQueryClose(query);
-    ok(r == ERROR_SUCCESS, "MsiQueryClose failed\n");
-    r = MsiCloseHandle(query);
-    ok(r == ERROR_SUCCESS, "MsiCloseHandle failed\n");
+    r = libmsi_query_close(query);
+    ok(r == ERROR_SUCCESS, "libmsi_query_close failed\n");
+    r = libmsi_unref(query);
+    ok(r == ERROR_SUCCESS, "libmsi_unref failed\n");
 
     /* add a second control */
     query = NULL;
@@ -4338,14 +4338,14 @@ static void test_update(void)
         "`Dialog_`, `Control`, `Type`, `X`, `Y`, `Width`, `Height`, "
         "`Property`, `Text`, `Control_Next`, `Help` )"
         "VALUES('ErrorDialog', 'Button', '1', '5', '5', '5', '5', '', '', '', '')";
-    r = MsiDatabaseOpenQuery(hdb, sql, &query);
+    r = libmsi_database_open_query(hdb, sql, &query);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-    r = MsiQueryExecute(query, 0);
+    r = libmsi_query_execute(query, 0);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-    r = MsiQueryClose(query);
-    ok(r == ERROR_SUCCESS, "MsiQueryClose failed\n");
-    r = MsiCloseHandle(query);
-    ok(r == ERROR_SUCCESS, "MsiCloseHandle failed\n");
+    r = libmsi_query_close(query);
+    ok(r == ERROR_SUCCESS, "libmsi_query_close failed\n");
+    r = libmsi_unref(query);
+    ok(r == ERROR_SUCCESS, "libmsi_unref failed\n");
 
     /* add a third control */
     query = NULL;
@@ -4353,186 +4353,186 @@ static void test_update(void)
         "`Dialog_`, `Control`, `Type`, `X`, `Y`, `Width`, `Height`, "
         "`Property`, `Text`, `Control_Next`, `Help` )"
         "VALUES('AnotherDialog', 'ErrorText', '1', '5', '5', '5', '5', '', '', '', '')";
-    r = MsiDatabaseOpenQuery(hdb, sql, &query);
+    r = libmsi_database_open_query(hdb, sql, &query);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-    r = MsiQueryExecute(query, 0);
+    r = libmsi_query_execute(query, 0);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-    r = MsiQueryClose(query);
-    ok(r == ERROR_SUCCESS, "MsiQueryClose failed\n");
-    r = MsiCloseHandle(query);
-    ok(r == ERROR_SUCCESS, "MsiCloseHandle failed\n");
+    r = libmsi_query_close(query);
+    ok(r == ERROR_SUCCESS, "libmsi_query_close failed\n");
+    r = libmsi_unref(query);
+    ok(r == ERROR_SUCCESS, "libmsi_unref failed\n");
 
     /* bad table */
     query = NULL;
     sql = "UPDATE `NotATable` SET `Text` = 'this is text' WHERE `Dialog_` = 'ErrorDialog'";
-    r = MsiDatabaseOpenQuery(hdb, sql, &query);
+    r = libmsi_database_open_query(hdb, sql, &query);
     ok(r == ERROR_BAD_QUERY_SYNTAX, "Expected ERROR_BAD_QUERY_SYNTAX, got %d\n", r);
 
     /* bad set column */
     query = NULL;
     sql = "UPDATE `Control` SET `NotAColumn` = 'this is text' WHERE `Dialog_` = 'ErrorDialog'";
-    r = MsiDatabaseOpenQuery(hdb, sql, &query);
+    r = libmsi_database_open_query(hdb, sql, &query);
     ok(r == ERROR_BAD_QUERY_SYNTAX, "Expected ERROR_BAD_QUERY_SYNTAX, got %d\n", r);
 
     /* bad where condition */
     query = NULL;
     sql = "UPDATE `Control` SET `Text` = 'this is text' WHERE `NotAColumn` = 'ErrorDialog'";
-    r = MsiDatabaseOpenQuery(hdb, sql, &query);
+    r = libmsi_database_open_query(hdb, sql, &query);
     ok(r == ERROR_BAD_QUERY_SYNTAX, "Expected ERROR_BAD_QUERY_SYNTAX, got %d\n", r);
 
     /* just the dialog_ specified */
     query = NULL;
     sql = "UPDATE `Control` SET `Text` = 'this is text' WHERE `Dialog_` = 'ErrorDialog'";
-    r = MsiDatabaseOpenQuery(hdb, sql, &query);
+    r = libmsi_database_open_query(hdb, sql, &query);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-    r = MsiQueryExecute(query, 0);
+    r = libmsi_query_execute(query, 0);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-    r = MsiQueryClose(query);
-    ok(r == ERROR_SUCCESS, "MsiQueryClose failed\n");
-    r = MsiCloseHandle(query);
-    ok(r == ERROR_SUCCESS, "MsiCloseHandle failed\n");
+    r = libmsi_query_close(query);
+    ok(r == ERROR_SUCCESS, "libmsi_query_close failed\n");
+    r = libmsi_unref(query);
+    ok(r == ERROR_SUCCESS, "libmsi_unref failed\n");
 
     /* check the modified text */
     query = NULL;
     sql = "SELECT `Text` FROM `Control` WHERE `Control` = 'ErrorText'";
-    r = MsiDatabaseOpenQuery(hdb, sql, &query);
+    r = libmsi_database_open_query(hdb, sql, &query);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-    r = MsiQueryExecute(query, 0);
+    r = libmsi_query_execute(query, 0);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
-    r = MsiQueryFetch(query, &rec);
+    r = libmsi_query_fetch(query, &rec);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     size = MAX_PATH;
-    r = MsiRecordGetString(rec, 1, result, &size);
+    r = libmsi_record_get_string(rec, 1, result, &size);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
     ok(!strcmp(result, "this is text"), "Expected `this is text`, got %s\n", result);
 
-    MsiCloseHandle(rec);
+    libmsi_unref(rec);
 
-    r = MsiQueryFetch(query, &rec);
+    r = libmsi_query_fetch(query, &rec);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     size = MAX_PATH;
-    r = MsiRecordGetString(rec, 1, result, &size);
+    r = libmsi_record_get_string(rec, 1, result, &size);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
     ok(!strlen(result), "Expected an empty string, got %s\n", result);
 
-    MsiCloseHandle(rec);
+    libmsi_unref(rec);
 
-    r = MsiQueryFetch(query, &rec);
+    r = libmsi_query_fetch(query, &rec);
     ok(r == ERROR_NO_MORE_ITEMS, "Expected ERROR_NO_MORE_ITEMS, got %d\n", r);
 
-    r = MsiQueryClose(query);
-    ok(r == ERROR_SUCCESS, "MsiQueryClose failed\n");
-    r = MsiCloseHandle(query);
-    ok(r == ERROR_SUCCESS, "MsiCloseHandle failed\n");
+    r = libmsi_query_close(query);
+    ok(r == ERROR_SUCCESS, "libmsi_query_close failed\n");
+    r = libmsi_unref(query);
+    ok(r == ERROR_SUCCESS, "libmsi_unref failed\n");
 
     /* dialog_ and control specified */
     query = NULL;
     sql = "UPDATE `Control` SET `Text` = 'this is text' WHERE `Dialog_` = 'ErrorDialog' AND `Control` = 'ErrorText'";
-    r = MsiDatabaseOpenQuery(hdb, sql, &query);
+    r = libmsi_database_open_query(hdb, sql, &query);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-    r = MsiQueryExecute(query, 0);
+    r = libmsi_query_execute(query, 0);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-    r = MsiQueryClose(query);
-    ok(r == ERROR_SUCCESS, "MsiQueryClose failed\n");
-    r = MsiCloseHandle(query);
-    ok(r == ERROR_SUCCESS, "MsiCloseHandle failed\n");
+    r = libmsi_query_close(query);
+    ok(r == ERROR_SUCCESS, "libmsi_query_close failed\n");
+    r = libmsi_unref(query);
+    ok(r == ERROR_SUCCESS, "libmsi_unref failed\n");
 
     /* check the modified text */
     query = NULL;
     sql = "SELECT `Text` FROM `Control` WHERE `Control` = 'ErrorText'";
-    r = MsiDatabaseOpenQuery(hdb, sql, &query);
+    r = libmsi_database_open_query(hdb, sql, &query);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-    r = MsiQueryExecute(query, 0);
+    r = libmsi_query_execute(query, 0);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
-    r = MsiQueryFetch(query, &rec);
+    r = libmsi_query_fetch(query, &rec);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     size = MAX_PATH;
-    r = MsiRecordGetString(rec, 1, result, &size);
+    r = libmsi_record_get_string(rec, 1, result, &size);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
     ok(!strcmp(result, "this is text"), "Expected `this is text`, got %s\n", result);
 
-    MsiCloseHandle(rec);
+    libmsi_unref(rec);
 
-    r = MsiQueryFetch(query, &rec);
+    r = libmsi_query_fetch(query, &rec);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     size = MAX_PATH;
-    r = MsiRecordGetString(rec, 1, result, &size);
+    r = libmsi_record_get_string(rec, 1, result, &size);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
     ok(!strlen(result), "Expected an empty string, got %s\n", result);
 
-    MsiCloseHandle(rec);
+    libmsi_unref(rec);
 
-    r = MsiQueryFetch(query, &rec);
+    r = libmsi_query_fetch(query, &rec);
     ok(r == ERROR_NO_MORE_ITEMS, "Expected ERROR_NO_MORE_ITEMS, got %d\n", r);
 
-    r = MsiQueryClose(query);
-    ok(r == ERROR_SUCCESS, "MsiQueryClose failed\n");
-    r = MsiCloseHandle(query);
-    ok(r == ERROR_SUCCESS, "MsiCloseHandle failed\n");
+    r = libmsi_query_close(query);
+    ok(r == ERROR_SUCCESS, "libmsi_query_close failed\n");
+    r = libmsi_unref(query);
+    ok(r == ERROR_SUCCESS, "libmsi_unref failed\n");
 
     /* no where condition */
     query = NULL;
     sql = "UPDATE `Control` SET `Text` = 'this is text'";
-    r = MsiDatabaseOpenQuery(hdb, sql, &query);
+    r = libmsi_database_open_query(hdb, sql, &query);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-    r = MsiQueryExecute(query, 0);
+    r = libmsi_query_execute(query, 0);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-    r = MsiQueryClose(query);
-    ok(r == ERROR_SUCCESS, "MsiQueryClose failed\n");
-    r = MsiCloseHandle(query);
-    ok(r == ERROR_SUCCESS, "MsiCloseHandle failed\n");
+    r = libmsi_query_close(query);
+    ok(r == ERROR_SUCCESS, "libmsi_query_close failed\n");
+    r = libmsi_unref(query);
+    ok(r == ERROR_SUCCESS, "libmsi_unref failed\n");
 
     /* check the modified text */
     query = NULL;
     sql = "SELECT `Text` FROM `Control`";
-    r = MsiDatabaseOpenQuery(hdb, sql, &query);
+    r = libmsi_database_open_query(hdb, sql, &query);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-    r = MsiQueryExecute(query, 0);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-
-    r = MsiQueryFetch(query, &rec);
+    r = libmsi_query_execute(query, 0);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
-    size = MAX_PATH;
-    r = MsiRecordGetString(rec, 1, result, &size);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-    ok(!strcmp(result, "this is text"), "Expected `this is text`, got %s\n", result);
-
-    MsiCloseHandle(rec);
-
-    r = MsiQueryFetch(query, &rec);
+    r = libmsi_query_fetch(query, &rec);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     size = MAX_PATH;
-    r = MsiRecordGetString(rec, 1, result, &size);
+    r = libmsi_record_get_string(rec, 1, result, &size);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
     ok(!strcmp(result, "this is text"), "Expected `this is text`, got %s\n", result);
 
-    MsiCloseHandle(rec);
+    libmsi_unref(rec);
 
-    r = MsiQueryFetch(query, &rec);
+    r = libmsi_query_fetch(query, &rec);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     size = MAX_PATH;
-    r = MsiRecordGetString(rec, 1, result, &size);
+    r = libmsi_record_get_string(rec, 1, result, &size);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
     ok(!strcmp(result, "this is text"), "Expected `this is text`, got %s\n", result);
 
-    MsiCloseHandle(rec);
+    libmsi_unref(rec);
 
-    r = MsiQueryFetch(query, &rec);
+    r = libmsi_query_fetch(query, &rec);
+    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+
+    size = MAX_PATH;
+    r = libmsi_record_get_string(rec, 1, result, &size);
+    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+    ok(!strcmp(result, "this is text"), "Expected `this is text`, got %s\n", result);
+
+    libmsi_unref(rec);
+
+    r = libmsi_query_fetch(query, &rec);
     ok(r == ERROR_NO_MORE_ITEMS, "Expected ERROR_NO_MORE_ITEMS, got %d\n", r);
 
-    r = MsiQueryClose(query);
-    ok(r == ERROR_SUCCESS, "MsiQueryClose failed\n");
-    r = MsiCloseHandle(query);
-    ok(r == ERROR_SUCCESS, "MsiCloseHandle failed\n");
+    r = libmsi_query_close(query);
+    ok(r == ERROR_SUCCESS, "libmsi_query_close failed\n");
+    r = libmsi_unref(query);
+    ok(r == ERROR_SUCCESS, "libmsi_unref failed\n");
 
     sql = "CREATE TABLE `Apple` ( `Banana` CHAR(72) NOT NULL, "
         "`Orange` CHAR(72),  `Pear` INT PRIMARY KEY `Banana`)";
@@ -4554,57 +4554,57 @@ static void test_update(void)
     r = run_query(hdb, 0, sql);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
-    rec = MsiCreateRecord(2);
-    MsiRecordSetInteger(rec, 1, 8);
-    MsiRecordSetString(rec, 2, "two");
+    rec = libmsi_record_create(2);
+    libmsi_record_set_int(rec, 1, 8);
+    libmsi_record_set_string(rec, 2, "two");
 
     sql = "UPDATE `Apple` SET `Pear` = ? WHERE `Orange` = ?";
     r = run_query(hdb, rec, sql);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
-    MsiCloseHandle(rec);
+    libmsi_unref(rec);
 
     query = NULL;
     sql = "SELECT `Pear` FROM `Apple` ORDER BY `Orange`";
-    r = MsiDatabaseOpenQuery(hdb, sql, &query);
+    r = libmsi_database_open_query(hdb, sql, &query);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-    r = MsiQueryExecute(query, 0);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-
-    r = MsiQueryFetch(query, &rec);
+    r = libmsi_query_execute(query, 0);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
-    r = MsiRecordGetInteger(rec, 1);
+    r = libmsi_query_fetch(query, &rec);
+    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+
+    r = libmsi_record_get_integer(rec, 1);
     ok(r == 8, "Expected 8, got %d\n", r);
 
-    MsiCloseHandle(rec);
+    libmsi_unref(rec);
 
-    r = MsiQueryFetch(query, &rec);
+    r = libmsi_query_fetch(query, &rec);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
-    r = MsiRecordGetInteger(rec, 1);
+    r = libmsi_record_get_integer(rec, 1);
     ok(r == 8, "Expected 8, got %d\n", r);
 
-    MsiCloseHandle(rec);
+    libmsi_unref(rec);
 
-    r = MsiQueryFetch(query, &rec);
+    r = libmsi_query_fetch(query, &rec);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
-    r = MsiRecordGetInteger(rec, 1);
+    r = libmsi_record_get_integer(rec, 1);
     ok(r == 5, "Expected 5, got %d\n", r);
 
-    MsiCloseHandle(rec);
+    libmsi_unref(rec);
 
-    r = MsiQueryFetch(query, &rec);
+    r = libmsi_query_fetch(query, &rec);
     ok(r == ERROR_NO_MORE_ITEMS, "Expectd ERROR_NO_MORE_ITEMS, got %d\n", r);
 
-    MsiQueryClose(query);
-    MsiCloseHandle(query);
+    libmsi_query_close(query);
+    libmsi_unref(query);
 
-    r = MsiDatabaseCommit(hdb);
-    ok(r == ERROR_SUCCESS, "MsiDatabaseCommit failed\n");
-    r = MsiCloseHandle(hdb);
-    ok(r == ERROR_SUCCESS, "MsiCloseHandle failed\n");
+    r = libmsi_database_commit(hdb);
+    ok(r == ERROR_SUCCESS, "libmsi_database_commit failed\n");
+    r = libmsi_unref(hdb);
+    ok(r == ERROR_SUCCESS, "libmsi_unref failed\n");
 
     DeleteFile(msifile);
 }
@@ -4615,8 +4615,8 @@ static void test_special_tables(void)
     LibmsiDatabase *hdb = 0;
     unsigned r;
 
-    r = MsiOpenDatabase(msifile, LIBMSI_DB_OPEN_CREATE, &hdb);
-    ok(r == ERROR_SUCCESS, "MsiOpenDatabase failed\n");
+    r = libmsi_database_open(msifile, LIBMSI_DB_OPEN_CREATE, &hdb);
+    ok(r == ERROR_SUCCESS, "libmsi_database_open failed\n");
 
     sql = "CREATE TABLE `_Properties` ( "
         "`foo` INT NOT NULL, `bar` INT LOCALIZABLE PRIMARY KEY `foo`)";
@@ -4643,8 +4643,8 @@ static void test_special_tables(void)
     r = run_query(hdb, 0, sql);
     ok(r == ERROR_BAD_QUERY_SYNTAX, "created _Columns table\n");
 
-    r = MsiCloseHandle(hdb);
-    ok(r == ERROR_SUCCESS, "MsiCloseHandle failed\n");
+    r = libmsi_unref(hdb);
+    ok(r == ERROR_SUCCESS, "libmsi_unref failed\n");
 }
 
 static void test_tables_order(void)
@@ -4657,8 +4657,8 @@ static void test_tables_order(void)
     char buffer[100];
     unsigned sz;
 
-    r = MsiOpenDatabase(msifile, LIBMSI_DB_OPEN_CREATE, &hdb);
-    ok(r == ERROR_SUCCESS, "MsiOpenDatabase failed\n");
+    r = libmsi_database_open(msifile, LIBMSI_DB_OPEN_CREATE, &hdb);
+    ok(r == ERROR_SUCCESS, "libmsi_database_open failed\n");
 
     sql = "CREATE TABLE `foo` ( "
         "`baz` INT NOT NULL PRIMARY KEY `baz`)";
@@ -4681,124 +4681,124 @@ static void test_tables_order(void)
        be in the same order as these names are created in
        the strings table. */
     sql = "SELECT * FROM `_Tables`";
-    r = MsiDatabaseOpenQuery(hdb, sql, &hquery);
-    ok(r == ERROR_SUCCESS, "MsiDatabaseOpenQuery failed\n");
-    r = MsiQueryExecute(hquery, 0);
-    ok(r == ERROR_SUCCESS, "MsiQueryExecute failed\n");
+    r = libmsi_database_open_query(hdb, sql, &hquery);
+    ok(r == ERROR_SUCCESS, "libmsi_database_open_query failed\n");
+    r = libmsi_query_execute(hquery, 0);
+    ok(r == ERROR_SUCCESS, "libmsi_query_execute failed\n");
 
-    r = MsiQueryFetch(hquery, &hrec);
-    ok(r == ERROR_SUCCESS, "MsiQueryFetch failed\n");
+    r = libmsi_query_fetch(hquery, &hrec);
+    ok(r == ERROR_SUCCESS, "libmsi_query_fetch failed\n");
     sz = sizeof(buffer);
-    r = MsiRecordGetString(hrec, 1, buffer, &sz);
+    r = libmsi_record_get_string(hrec, 1, buffer, &sz);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
     ok(!strcmp(buffer, "foo"), "Expected foo, got %s\n", buffer);
-    r = MsiCloseHandle(hrec);
+    r = libmsi_unref(hrec);
     ok(r == ERROR_SUCCESS, "failed to close record\n");
 
-    r = MsiQueryFetch(hquery, &hrec);
-    ok(r == ERROR_SUCCESS, "MsiQueryFetch failed\n");
+    r = libmsi_query_fetch(hquery, &hrec);
+    ok(r == ERROR_SUCCESS, "libmsi_query_fetch failed\n");
     sz = sizeof(buffer);
-    r = MsiRecordGetString(hrec, 1, buffer, &sz);
+    r = libmsi_record_get_string(hrec, 1, buffer, &sz);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
     ok(!strcmp(buffer, "baz"), "Expected baz, got %s\n", buffer);
-    r = MsiCloseHandle(hrec);
+    r = libmsi_unref(hrec);
     ok(r == ERROR_SUCCESS, "failed to close record\n");
 
-    r = MsiQueryFetch(hquery, &hrec);
-    ok(r == ERROR_SUCCESS, "MsiQueryFetch failed\n");
+    r = libmsi_query_fetch(hquery, &hrec);
+    ok(r == ERROR_SUCCESS, "libmsi_query_fetch failed\n");
     sz = sizeof(buffer);
-    r = MsiRecordGetString(hrec, 1, buffer, &sz);
+    r = libmsi_record_get_string(hrec, 1, buffer, &sz);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
     ok(!strcmp(buffer, "bar"), "Expected bar, got %s\n", buffer);
-    r = MsiCloseHandle(hrec);
+    r = libmsi_unref(hrec);
     ok(r == ERROR_SUCCESS, "failed to close record\n");
 
-    r = MsiQueryClose(hquery);
-    ok(r == ERROR_SUCCESS, "MsiQueryClose failed\n");
-    r = MsiCloseHandle(hquery);
-    ok(r == ERROR_SUCCESS, "MsiCloseHandle failed\n");
+    r = libmsi_query_close(hquery);
+    ok(r == ERROR_SUCCESS, "libmsi_query_close failed\n");
+    r = libmsi_unref(hquery);
+    ok(r == ERROR_SUCCESS, "libmsi_unref failed\n");
 
     /* The names of the tables in the _Columns table must
        be in the same order as these names are created in
        the strings table. */
     sql = "SELECT * FROM `_Columns`";
-    r = MsiDatabaseOpenQuery(hdb, sql, &hquery);
-    ok(r == ERROR_SUCCESS, "MsiDatabaseOpenQuery failed\n");
-    r = MsiQueryExecute(hquery, 0);
-    ok(r == ERROR_SUCCESS, "MsiQueryExecute failed\n");
+    r = libmsi_database_open_query(hdb, sql, &hquery);
+    ok(r == ERROR_SUCCESS, "libmsi_database_open_query failed\n");
+    r = libmsi_query_execute(hquery, 0);
+    ok(r == ERROR_SUCCESS, "libmsi_query_execute failed\n");
 
-    r = MsiQueryFetch(hquery, &hrec);
-    ok(r == ERROR_SUCCESS, "MsiQueryFetch failed\n");
+    r = libmsi_query_fetch(hquery, &hrec);
+    ok(r == ERROR_SUCCESS, "libmsi_query_fetch failed\n");
     sz = sizeof(buffer);
-    r = MsiRecordGetString(hrec, 1, buffer, &sz);
+    r = libmsi_record_get_string(hrec, 1, buffer, &sz);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
     ok(!strcmp(buffer, "foo"), "Expected foo, got %s\n", buffer);
     sz = sizeof(buffer);
-    r = MsiRecordGetString(hrec, 3, buffer, &sz);
+    r = libmsi_record_get_string(hrec, 3, buffer, &sz);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
     ok(!strcmp(buffer, "baz"), "Expected baz, got %s\n", buffer);
-    r = MsiCloseHandle(hrec);
+    r = libmsi_unref(hrec);
     ok(r == ERROR_SUCCESS, "failed to close record\n");
 
-    r = MsiQueryFetch(hquery, &hrec);
-    ok(r == ERROR_SUCCESS, "MsiQueryFetch failed\n");
+    r = libmsi_query_fetch(hquery, &hrec);
+    ok(r == ERROR_SUCCESS, "libmsi_query_fetch failed\n");
     sz = sizeof(buffer);
-    r = MsiRecordGetString(hrec, 1, buffer, &sz);
+    r = libmsi_record_get_string(hrec, 1, buffer, &sz);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
     ok(!strcmp(buffer, "baz"), "Expected baz, got %s\n", buffer);
     sz = sizeof(buffer);
-    r = MsiRecordGetString(hrec, 3, buffer, &sz);
+    r = libmsi_record_get_string(hrec, 3, buffer, &sz);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
     ok(!strcmp(buffer, "bar"), "Expected bar, got %s\n", buffer);
-    r = MsiCloseHandle(hrec);
+    r = libmsi_unref(hrec);
     ok(r == ERROR_SUCCESS, "failed to close record\n");
 
-    r = MsiQueryFetch(hquery, &hrec);
-    ok(r == ERROR_SUCCESS, "MsiQueryFetch failed\n");
+    r = libmsi_query_fetch(hquery, &hrec);
+    ok(r == ERROR_SUCCESS, "libmsi_query_fetch failed\n");
     sz = sizeof(buffer);
-    r = MsiRecordGetString(hrec, 1, buffer, &sz);
+    r = libmsi_record_get_string(hrec, 1, buffer, &sz);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
     ok(!strcmp(buffer, "baz"), "Expected baz, got %s\n", buffer);
     sz = sizeof(buffer);
-    r = MsiRecordGetString(hrec, 3, buffer, &sz);
+    r = libmsi_record_get_string(hrec, 3, buffer, &sz);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
     ok(!strcmp(buffer, "baz"), "Expected baz, got %s\n", buffer);
-    r = MsiCloseHandle(hrec);
+    r = libmsi_unref(hrec);
     ok(r == ERROR_SUCCESS, "failed to close record\n");
 
-    r = MsiQueryFetch(hquery, &hrec);
-    ok(r == ERROR_SUCCESS, "MsiQueryFetch failed\n");
+    r = libmsi_query_fetch(hquery, &hrec);
+    ok(r == ERROR_SUCCESS, "libmsi_query_fetch failed\n");
     sz = sizeof(buffer);
-    r = MsiRecordGetString(hrec, 1, buffer, &sz);
+    r = libmsi_record_get_string(hrec, 1, buffer, &sz);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
     ok(!strcmp(buffer, "baz"), "Expected baz, got %s\n", buffer);
     sz = sizeof(buffer);
-    r = MsiRecordGetString(hrec, 3, buffer, &sz);
+    r = libmsi_record_get_string(hrec, 3, buffer, &sz);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
     ok(!strcmp(buffer, "foo"), "Expected foo, got %s\n", buffer);
-    r = MsiCloseHandle(hrec);
+    r = libmsi_unref(hrec);
     ok(r == ERROR_SUCCESS, "failed to close record\n");
 
-    r = MsiQueryFetch(hquery, &hrec);
-    ok(r == ERROR_SUCCESS, "MsiQueryFetch failed\n");
+    r = libmsi_query_fetch(hquery, &hrec);
+    ok(r == ERROR_SUCCESS, "libmsi_query_fetch failed\n");
     sz = sizeof(buffer);
-    r = MsiRecordGetString(hrec, 1, buffer, &sz);
+    r = libmsi_record_get_string(hrec, 1, buffer, &sz);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
     ok(!strcmp(buffer, "bar"), "Expected bar, got %s\n", buffer);
     sz = sizeof(buffer);
-    r = MsiRecordGetString(hrec, 3, buffer, &sz);
+    r = libmsi_record_get_string(hrec, 3, buffer, &sz);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
     ok(!strcmp(buffer, "foo"), "Expected foo, got %s\n", buffer);
-    r = MsiCloseHandle(hrec);
+    r = libmsi_unref(hrec);
     ok(r == ERROR_SUCCESS, "failed to close record\n");
 
-    r = MsiQueryClose(hquery);
-    ok(r == ERROR_SUCCESS, "MsiQueryClose failed\n");
-    r = MsiCloseHandle(hquery);
-    ok(r == ERROR_SUCCESS, "MsiCloseHandle failed\n");
+    r = libmsi_query_close(hquery);
+    ok(r == ERROR_SUCCESS, "libmsi_query_close failed\n");
+    r = libmsi_unref(hquery);
+    ok(r == ERROR_SUCCESS, "libmsi_unref failed\n");
 
-    r = MsiCloseHandle(hdb);
-    ok(r == ERROR_SUCCESS, "MsiCloseHandle failed\n");
+    r = libmsi_unref(hdb);
+    ok(r == ERROR_SUCCESS, "libmsi_unref failed\n");
 
     DeleteFile(msifile);
 }
@@ -4813,8 +4813,8 @@ static void test_rows_order(void)
     char buffer[100];
     unsigned sz;
 
-    r = MsiOpenDatabase(msifile, LIBMSI_DB_OPEN_CREATE, &hdb);
-    ok(r == ERROR_SUCCESS, "MsiOpenDatabase failed\n");
+    r = libmsi_database_open(msifile, LIBMSI_DB_OPEN_CREATE, &hdb);
+    ok(r == ERROR_SUCCESS, "libmsi_database_open failed\n");
 
     sql = "CREATE TABLE `foo` ( "
         "`bar` LONGCHAR NOT NULL PRIMARY KEY `bar`)";
@@ -4873,70 +4873,70 @@ static void test_rows_order(void)
        in the string table.  */
 
     sql = "SELECT * FROM `bar`";
-    r = MsiDatabaseOpenQuery(hdb, sql, &hquery);
-    ok(r == ERROR_SUCCESS, "MsiDatabaseOpenQuery failed\n");
-    r = MsiQueryExecute(hquery, 0);
-    ok(r == ERROR_SUCCESS, "MsiQueryExecute failed\n");
+    r = libmsi_database_open_query(hdb, sql, &hquery);
+    ok(r == ERROR_SUCCESS, "libmsi_database_open_query failed\n");
+    r = libmsi_query_execute(hquery, 0);
+    ok(r == ERROR_SUCCESS, "libmsi_query_execute failed\n");
 
-    r = MsiQueryFetch(hquery, &hrec);
-    ok(r == ERROR_SUCCESS, "MsiQueryFetch failed\n");
+    r = libmsi_query_fetch(hquery, &hrec);
+    ok(r == ERROR_SUCCESS, "libmsi_query_fetch failed\n");
     sz = sizeof(buffer);
-    r = MsiRecordGetString(hrec, 1, buffer, &sz);
+    r = libmsi_record_get_string(hrec, 1, buffer, &sz);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
     ok(!strcmp(buffer, "A"), "Expected A, got %s\n", buffer);
     sz = sizeof(buffer);
-    r = MsiRecordGetString(hrec, 2, buffer, &sz);
+    r = libmsi_record_get_string(hrec, 2, buffer, &sz);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
     ok(!strcmp(buffer, "B"), "Expected B, got %s\n", buffer);
-    r = MsiCloseHandle(hrec);
+    r = libmsi_unref(hrec);
     ok(r == ERROR_SUCCESS, "failed to close record\n");
 
-    r = MsiQueryFetch(hquery, &hrec);
-    ok(r == ERROR_SUCCESS, "MsiQueryFetch failed\n");
+    r = libmsi_query_fetch(hquery, &hrec);
+    ok(r == ERROR_SUCCESS, "libmsi_query_fetch failed\n");
     sz = sizeof(buffer);
-    r = MsiRecordGetString(hrec, 1, buffer, &sz);
+    r = libmsi_record_get_string(hrec, 1, buffer, &sz);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
     ok(!strcmp(buffer, "C"), "Expected E, got %s\n", buffer);
     sz = sizeof(buffer);
-    r = MsiRecordGetString(hrec, 2, buffer, &sz);
+    r = libmsi_record_get_string(hrec, 2, buffer, &sz);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
     ok(!strcmp(buffer, "E"), "Expected E, got %s\n", buffer);
-    r = MsiCloseHandle(hrec);
+    r = libmsi_unref(hrec);
     ok(r == ERROR_SUCCESS, "failed to close record\n");
 
-    r = MsiQueryFetch(hquery, &hrec);
-    ok(r == ERROR_SUCCESS, "MsiQueryFetch failed\n");
+    r = libmsi_query_fetch(hquery, &hrec);
+    ok(r == ERROR_SUCCESS, "libmsi_query_fetch failed\n");
     sz = sizeof(buffer);
-    r = MsiRecordGetString(hrec, 1, buffer, &sz);
+    r = libmsi_record_get_string(hrec, 1, buffer, &sz);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
     ok(!strcmp(buffer, "D"), "Expected D, got %s\n", buffer);
     sz = sizeof(buffer);
-    r = MsiRecordGetString(hrec, 2, buffer, &sz);
+    r = libmsi_record_get_string(hrec, 2, buffer, &sz);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
     ok(!strcmp(buffer, "E"), "Expected E, got %s\n", buffer);
-    r = MsiCloseHandle(hrec);
+    r = libmsi_unref(hrec);
     ok(r == ERROR_SUCCESS, "failed to close record\n");
 
-    r = MsiQueryFetch(hquery, &hrec);
-    ok(r == ERROR_SUCCESS, "MsiQueryFetch failed\n");
+    r = libmsi_query_fetch(hquery, &hrec);
+    ok(r == ERROR_SUCCESS, "libmsi_query_fetch failed\n");
     sz = sizeof(buffer);
-    r = MsiRecordGetString(hrec, 1, buffer, &sz);
+    r = libmsi_record_get_string(hrec, 1, buffer, &sz);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
     ok(!strcmp(buffer, "F"), "Expected F, got %s\n", buffer);
     sz = sizeof(buffer);
-    r = MsiRecordGetString(hrec, 2, buffer, &sz);
+    r = libmsi_record_get_string(hrec, 2, buffer, &sz);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
     ok(!strcmp(buffer, "A"), "Expected A, got %s\n", buffer);
-    r = MsiCloseHandle(hrec);
+    r = libmsi_unref(hrec);
     ok(r == ERROR_SUCCESS, "failed to close record\n");
 
-    r = MsiQueryClose(hquery);
-    ok(r == ERROR_SUCCESS, "MsiQueryClose failed\n");
-    r = MsiCloseHandle(hquery);
-    ok(r == ERROR_SUCCESS, "MsiCloseHandle failed\n");
+    r = libmsi_query_close(hquery);
+    ok(r == ERROR_SUCCESS, "libmsi_query_close failed\n");
+    r = libmsi_unref(hquery);
+    ok(r == ERROR_SUCCESS, "libmsi_unref failed\n");
 
-    r = MsiCloseHandle(hdb);
-    ok(r == ERROR_SUCCESS, "MsiCloseHandle failed\n");
+    r = libmsi_unref(hdb);
+    ok(r == ERROR_SUCCESS, "libmsi_unref failed\n");
 
     DeleteFile(msifile);
 }
@@ -4965,8 +4965,8 @@ static void test_collation(void)
     char buffer[100];
     unsigned sz;
 
-    r = MsiOpenDatabase(msifile, LIBMSI_DB_OPEN_CREATE, &hdb);
-    ok(r == ERROR_SUCCESS, "MsiOpenDatabase failed\n");
+    r = libmsi_database_open(msifile, LIBMSI_DB_OPEN_CREATE, &hdb);
+    ok(r == ERROR_SUCCESS, "libmsi_database_open failed\n");
 
     sql = "CREATE TABLE `bar` ( "
         "`foo` LONGCHAR NOT NULL, "
@@ -5002,94 +5002,94 @@ static void test_collation(void)
     ok(r == ERROR_SUCCESS, "cannot create table %u\n", r);
 
     sql = "SELECT * FROM `bar`";
-    r = MsiDatabaseOpenQuery(hdb, sql, &hquery);
-    ok(r == ERROR_SUCCESS, "MsiDatabaseOpenQuery failed\n");
-    r = MsiQueryExecute(hquery, 0);
-    ok(r == ERROR_SUCCESS, "MsiQueryExecute failed\n");
+    r = libmsi_database_open_query(hdb, sql, &hquery);
+    ok(r == ERROR_SUCCESS, "libmsi_database_open_query failed\n");
+    r = libmsi_query_execute(hquery, 0);
+    ok(r == ERROR_SUCCESS, "libmsi_query_execute failed\n");
 
-    r = MsiQueryFetch(hquery, &hrec);
-    ok(r == ERROR_SUCCESS, "MsiQueryFetch failed\n");
+    r = libmsi_query_fetch(hquery, &hrec);
+    ok(r == ERROR_SUCCESS, "libmsi_query_fetch failed\n");
     sz = sizeof(buffer);
-    r = MsiRecordGetString(hrec, 1, buffer, &sz);
+    r = libmsi_record_get_string(hrec, 1, buffer, &sz);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
     ok(!strcmp(buffer, "\2"), "Expected \\2, got '%s'\n", buffer);
     sz = sizeof(buffer);
-    r = MsiRecordGetString(hrec, 2, buffer, &sz);
+    r = libmsi_record_get_string(hrec, 2, buffer, &sz);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
     ok(!strcmp(buffer, "A"), "Expected A, got '%s'\n", buffer);
-    MsiCloseHandle(hrec);
+    libmsi_unref(hrec);
 
-    r = MsiQueryFetch(hquery, &hrec);
-    ok(r == ERROR_SUCCESS, "MsiQueryFetch failed\n");
+    r = libmsi_query_fetch(hquery, &hrec);
+    ok(r == ERROR_SUCCESS, "libmsi_query_fetch failed\n");
     sz = sizeof(buffer);
-    r = MsiRecordGetString(hrec, 1, buffer, &sz);
+    r = libmsi_record_get_string(hrec, 1, buffer, &sz);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
     ok(!strcmp(buffer, "\1"), "Expected \\1, got '%s'\n", buffer);
     sz = sizeof(buffer);
-    r = MsiRecordGetString(hrec, 2, buffer, &sz);
+    r = libmsi_record_get_string(hrec, 2, buffer, &sz);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
     ok(!strcmp(buffer, "B"), "Expected B, got '%s'\n", buffer);
-    MsiCloseHandle(hrec);
+    libmsi_unref(hrec);
 
-    r = MsiQueryFetch(hquery, &hrec);
-    ok(r == ERROR_SUCCESS, "MsiQueryFetch failed\n");
+    r = libmsi_query_fetch(hquery, &hrec);
+    ok(r == ERROR_SUCCESS, "libmsi_query_fetch failed\n");
     sz = sizeof(buffer);
-    r = MsiRecordGetString(hrec, 1, buffer, &sz);
+    r = libmsi_record_get_string(hrec, 1, buffer, &sz);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
     ok(!memcmp(buffer, letter_a_ring, sizeof(letter_a_ring)),
        "Expected %s, got %s\n", letter_a_ring, buffer);
     sz = sizeof(buffer);
-    r = MsiRecordGetString(hrec, 2, buffer, &sz);
+    r = libmsi_record_get_string(hrec, 2, buffer, &sz);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
     ok(!strcmp(buffer, "C"), "Expected C, got %s\n", buffer);
-    MsiCloseHandle(hrec);
+    libmsi_unref(hrec);
 
-    r = MsiQueryFetch(hquery, &hrec);
-    ok(r == ERROR_SUCCESS, "MsiQueryFetch failed\n");
+    r = libmsi_query_fetch(hquery, &hrec);
+    ok(r == ERROR_SUCCESS, "libmsi_query_fetch failed\n");
     sz = sizeof(buffer);
-    r = MsiRecordGetString(hrec, 1, buffer, &sz);
+    r = libmsi_record_get_string(hrec, 1, buffer, &sz);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
     ok(!memcmp(buffer, letter_a_with_ring, sizeof(letter_a_with_ring)),
        "Expected %s, got %s\n", letter_a_with_ring, buffer);
     sz = sizeof(buffer);
-    r = MsiRecordGetString(hrec, 2, buffer, &sz);
+    r = libmsi_record_get_string(hrec, 2, buffer, &sz);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
     ok(!strcmp(buffer, "D"), "Expected D, got %s\n", buffer);
-    MsiCloseHandle(hrec);
+    libmsi_unref(hrec);
 
-    r = MsiQueryClose(hquery);
-    ok(r == ERROR_SUCCESS, "MsiQueryClose failed\n");
-    r = MsiCloseHandle(hquery);
-    ok(r == ERROR_SUCCESS, "MsiCloseHandle failed\n");
+    r = libmsi_query_close(hquery);
+    ok(r == ERROR_SUCCESS, "libmsi_query_close failed\n");
+    r = libmsi_unref(hquery);
+    ok(r == ERROR_SUCCESS, "libmsi_unref failed\n");
 
-    r = MsiDatabaseOpenQuery(hdb, sql6, &hquery);
-    ok(r == ERROR_SUCCESS, "MsiDatabaseOpenQuery failed\n");
-    r = MsiQueryExecute(hquery, 0);
-    ok(r == ERROR_SUCCESS, "MsiQueryExecute failed\n");
+    r = libmsi_database_open_query(hdb, sql6, &hquery);
+    ok(r == ERROR_SUCCESS, "libmsi_database_open_query failed\n");
+    r = libmsi_query_execute(hquery, 0);
+    ok(r == ERROR_SUCCESS, "libmsi_query_execute failed\n");
 
-    r = MsiQueryFetch(hquery, &hrec);
-    ok(r == ERROR_SUCCESS, "MsiQueryFetch failed\n");
+    r = libmsi_query_fetch(hquery, &hrec);
+    ok(r == ERROR_SUCCESS, "libmsi_query_fetch failed\n");
     sz = sizeof(buffer);
-    r = MsiRecordGetString(hrec, 1, buffer, &sz);
+    r = libmsi_record_get_string(hrec, 1, buffer, &sz);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
     ok(!memcmp(buffer, letter_a_with_ring, sizeof(letter_a_with_ring)),
        "Expected %s, got %s\n", letter_a_with_ring, buffer);
     sz = sizeof(buffer);
-    r = MsiRecordGetString(hrec, 2, buffer, &sz);
+    r = libmsi_record_get_string(hrec, 2, buffer, &sz);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
     ok(!strcmp(buffer, "D"), "Expected D, got %s\n", buffer);
-    MsiCloseHandle(hrec);
+    libmsi_unref(hrec);
 
-    r = MsiQueryFetch(hquery, &hrec);
-    ok(r == ERROR_NO_MORE_ITEMS, "MsiQueryFetch failed\n");
+    r = libmsi_query_fetch(hquery, &hrec);
+    ok(r == ERROR_NO_MORE_ITEMS, "libmsi_query_fetch failed\n");
 
-    r = MsiQueryClose(hquery);
-    ok(r == ERROR_SUCCESS, "MsiQueryClose failed\n");
-    r = MsiCloseHandle(hquery);
-    ok(r == ERROR_SUCCESS, "MsiCloseHandle failed\n");
+    r = libmsi_query_close(hquery);
+    ok(r == ERROR_SUCCESS, "libmsi_query_close failed\n");
+    r = libmsi_unref(hquery);
+    ok(r == ERROR_SUCCESS, "libmsi_unref failed\n");
 
-    r = MsiCloseHandle(hdb);
-    ok(r == ERROR_SUCCESS, "MsiCloseHandle failed\n");
+    r = libmsi_unref(hdb);
+    ok(r == ERROR_SUCCESS, "libmsi_unref failed\n");
 
     DeleteFile(msifile);
 }
@@ -5128,115 +5128,115 @@ static void test_select_markers(void)
             "( `One`, `Two`, `Three` ) VALUES ( 'banana', 'three', 3 )");
     ok(r == S_OK, "cannot add file to the Media table: %d\n", r);
 
-    rec = MsiCreateRecord(2);
-    MsiRecordSetString(rec, 1, "apple");
-    MsiRecordSetString(rec, 2, "two");
+    rec = libmsi_record_create(2);
+    libmsi_record_set_string(rec, 1, "apple");
+    libmsi_record_set_string(rec, 2, "two");
 
     query = NULL;
     sql = "SELECT * FROM `Table` WHERE `One`=? AND `Two`=? ORDER BY `Three`";
-    r = MsiDatabaseOpenQuery(hdb, sql, &query);
+    r = libmsi_database_open_query(hdb, sql, &query);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
-    r = MsiQueryExecute(query, rec);
+    r = libmsi_query_execute(query, rec);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
-    r = MsiQueryFetch(query, &res);
+    r = libmsi_query_fetch(query, &res);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     size = MAX_PATH;
-    r = MsiRecordGetString(res, 1, buf, &size);
+    r = libmsi_record_get_string(res, 1, buf, &size);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
     ok(!strcmp(buf, "apple"), "Expected apple, got %s\n", buf);
 
     size = MAX_PATH;
-    r = MsiRecordGetString(res, 2, buf, &size);
+    r = libmsi_record_get_string(res, 2, buf, &size);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
     ok(!strcmp(buf, "two"), "Expected two, got %s\n", buf);
 
-    r = MsiRecordGetInteger(res, 3);
+    r = libmsi_record_get_integer(res, 3);
     ok(r == 1, "Expected 1, got %d\n", r);
 
-    MsiCloseHandle(res);
+    libmsi_unref(res);
 
-    r = MsiQueryFetch(query, &res);
+    r = libmsi_query_fetch(query, &res);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     size = MAX_PATH;
-    r = MsiRecordGetString(res, 1, buf, &size);
+    r = libmsi_record_get_string(res, 1, buf, &size);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
     ok(!strcmp(buf, "apple"), "Expected apple, got %s\n", buf);
 
     size = MAX_PATH;
-    r = MsiRecordGetString(res, 2, buf, &size);
+    r = libmsi_record_get_string(res, 2, buf, &size);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
     ok(!strcmp(buf, "two"), "Expected two, got %s\n", buf);
 
-    r = MsiRecordGetInteger(res, 3);
+    r = libmsi_record_get_integer(res, 3);
     ok(r == 2, "Expected 2, got %d\n", r);
 
-    MsiCloseHandle(res);
+    libmsi_unref(res);
 
-    r = MsiQueryFetch(query, &res);
+    r = libmsi_query_fetch(query, &res);
     ok(r == ERROR_NO_MORE_ITEMS, "Expected ERROR_NO_MORE_ITEMS, got %d\n", r);
 
-    MsiCloseHandle(rec);
-    MsiQueryClose(query);
-    MsiCloseHandle(query);
+    libmsi_unref(rec);
+    libmsi_query_close(query);
+    libmsi_unref(query);
 
-    rec = MsiCreateRecord(2);
-    MsiRecordSetString(rec, 1, "one");
-    MsiRecordSetInteger(rec, 2, 1);
+    rec = libmsi_record_create(2);
+    libmsi_record_set_string(rec, 1, "one");
+    libmsi_record_set_int(rec, 2, 1);
 
     query = NULL;
     sql = "SELECT * FROM `Table` WHERE `Two`<>? AND `Three`>? ORDER BY `Three`";
-    r = MsiDatabaseOpenQuery(hdb, sql, &query);
+    r = libmsi_database_open_query(hdb, sql, &query);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-    r = MsiQueryExecute(query, rec);
+    r = libmsi_query_execute(query, rec);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
-    r = MsiQueryFetch(query, &res);
+    r = libmsi_query_fetch(query, &res);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     size = MAX_PATH;
-    r = MsiRecordGetString(res, 1, buf, &size);
+    r = libmsi_record_get_string(res, 1, buf, &size);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
     ok(!strcmp(buf, "apple"), "Expected apple, got %s\n", buf);
 
     size = MAX_PATH;
-    r = MsiRecordGetString(res, 2, buf, &size);
+    r = libmsi_record_get_string(res, 2, buf, &size);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
     ok(!strcmp(buf, "two"), "Expected two, got %s\n", buf);
 
-    r = MsiRecordGetInteger(res, 3);
+    r = libmsi_record_get_integer(res, 3);
     ok(r == 2, "Expected 2, got %d\n", r);
 
-    MsiCloseHandle(res);
+    libmsi_unref(res);
 
-    r = MsiQueryFetch(query, &res);
+    r = libmsi_query_fetch(query, &res);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     size = MAX_PATH;
-    r = MsiRecordGetString(res, 1, buf, &size);
+    r = libmsi_record_get_string(res, 1, buf, &size);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
     ok(!strcmp(buf, "banana"), "Expected banana, got %s\n", buf);
 
     size = MAX_PATH;
-    r = MsiRecordGetString(res, 2, buf, &size);
+    r = libmsi_record_get_string(res, 2, buf, &size);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
     ok(!strcmp(buf, "three"), "Expected three, got %s\n", buf);
 
-    r = MsiRecordGetInteger(res, 3);
+    r = libmsi_record_get_integer(res, 3);
     ok(r == 3, "Expected 3, got %d\n", r);
 
-    MsiCloseHandle(res);
+    libmsi_unref(res);
 
-    r = MsiQueryFetch(query, &res);
+    r = libmsi_query_fetch(query, &res);
     ok(r == ERROR_NO_MORE_ITEMS, "Expected ERROR_NO_MORE_ITEMS, got %d\n", r);
 
-    MsiCloseHandle(rec);
-    MsiQueryClose(query);
-    MsiCloseHandle(query);
-    MsiCloseHandle(hdb);
+    libmsi_unref(rec);
+    libmsi_query_close(query);
+    libmsi_unref(query);
+    libmsi_unref(hdb);
     DeleteFile(msifile);
 }
 
@@ -5251,8 +5251,8 @@ static void test_querymodify_update(void)
 
     DeleteFile(msifile);
 
-    r = MsiOpenDatabase(msifile, LIBMSI_DB_OPEN_CREATE, &hdb);
-    ok(r == ERROR_SUCCESS, "MsiOpenDatabase failed\n");
+    r = libmsi_database_open(msifile, LIBMSI_DB_OPEN_CREATE, &hdb);
+    ok(r == ERROR_SUCCESS, "libmsi_database_open failed\n");
 
     sql = "CREATE TABLE `table` (`A` INT, `B` INT PRIMARY KEY `A`)";
     r = run_query( hdb, 0, sql );
@@ -5271,233 +5271,233 @@ static void test_querymodify_update(void)
     ok(r == ERROR_SUCCESS, "query failed\n");
 
     sql = "SELECT `B` FROM `table`";
-    r = MsiDatabaseOpenQuery(hdb, sql, &hquery);
-    ok(r == ERROR_SUCCESS, "MsiDatabaseOpenQuery failed\n");
-    r = MsiQueryExecute(hquery, 0);
-    ok(r == ERROR_SUCCESS, "MsiQueryExecute failed\n");
-    r = MsiQueryFetch(hquery, &hrec);
-    ok(r == ERROR_SUCCESS, "MsiQueryFetch failed\n");
+    r = libmsi_database_open_query(hdb, sql, &hquery);
+    ok(r == ERROR_SUCCESS, "libmsi_database_open_query failed\n");
+    r = libmsi_query_execute(hquery, 0);
+    ok(r == ERROR_SUCCESS, "libmsi_query_execute failed\n");
+    r = libmsi_query_fetch(hquery, &hrec);
+    ok(r == ERROR_SUCCESS, "libmsi_query_fetch failed\n");
 
-    r = MsiRecordSetInteger(hrec, 1, 0);
+    r = libmsi_record_set_int(hrec, 1, 0);
     ok(r == ERROR_SUCCESS, "failed to set integer\n");
 
-    r = MsiQueryModify(hquery, LIBMSI_MODIFY_UPDATE, hrec);
-    ok(r == ERROR_SUCCESS, "MsiQueryModify failed: %d\n", r);
+    r = libmsi_query_modify(hquery, LIBMSI_MODIFY_UPDATE, hrec);
+    ok(r == ERROR_SUCCESS, "libmsi_query_modify failed: %d\n", r);
 
-    r = MsiCloseHandle(hrec);
+    r = libmsi_unref(hrec);
     ok(r == ERROR_SUCCESS, "failed to close record\n");
 
-    r = MsiQueryClose(hquery);
-    ok(r == ERROR_SUCCESS, "MsiQueryClose failed\n");
-    r = MsiCloseHandle(hquery);
-    ok(r == ERROR_SUCCESS, "MsiCloseHandle failed\n");
+    r = libmsi_query_close(hquery);
+    ok(r == ERROR_SUCCESS, "libmsi_query_close failed\n");
+    r = libmsi_unref(hquery);
+    ok(r == ERROR_SUCCESS, "libmsi_unref failed\n");
 
     sql = "SELECT * FROM `table`";
-    r = MsiDatabaseOpenQuery(hdb, sql, &hquery);
-    ok(r == ERROR_SUCCESS, "MsiDatabaseOpenQuery failed\n");
-    r = MsiQueryExecute(hquery, 0);
-    ok(r == ERROR_SUCCESS, "MsiQueryExecute failed\n");
-    r = MsiQueryFetch(hquery, &hrec);
-    ok(r == ERROR_SUCCESS, "MsiQueryFetch failed\n");
+    r = libmsi_database_open_query(hdb, sql, &hquery);
+    ok(r == ERROR_SUCCESS, "libmsi_database_open_query failed\n");
+    r = libmsi_query_execute(hquery, 0);
+    ok(r == ERROR_SUCCESS, "libmsi_query_execute failed\n");
+    r = libmsi_query_fetch(hquery, &hrec);
+    ok(r == ERROR_SUCCESS, "libmsi_query_fetch failed\n");
 
-    r = MsiRecordGetInteger(hrec, 1);
+    r = libmsi_record_get_integer(hrec, 1);
     ok(r == 1, "Expected 1, got %d\n", r);
-    r = MsiRecordGetInteger(hrec, 2);
+    r = libmsi_record_get_integer(hrec, 2);
     ok(r == 0, "Expected 0, got %d\n", r);
 
-    r = MsiCloseHandle(hrec);
+    r = libmsi_unref(hrec);
     ok(r == ERROR_SUCCESS, "failed to close record\n");
 
-    r = MsiQueryFetch(hquery, &hrec);
-    ok(r == ERROR_SUCCESS, "MsiQueryFetch failed\n");
+    r = libmsi_query_fetch(hquery, &hrec);
+    ok(r == ERROR_SUCCESS, "libmsi_query_fetch failed\n");
 
-    r = MsiRecordGetInteger(hrec, 1);
+    r = libmsi_record_get_integer(hrec, 1);
     ok(r == 3, "Expected 3, got %d\n", r);
-    r = MsiRecordGetInteger(hrec, 2);
+    r = libmsi_record_get_integer(hrec, 2);
     ok(r == 4, "Expected 4, got %d\n", r);
 
-    r = MsiCloseHandle(hrec);
+    r = libmsi_unref(hrec);
     ok(r == ERROR_SUCCESS, "failed to close record\n");
 
-    r = MsiQueryFetch(hquery, &hrec);
-    ok(r == ERROR_SUCCESS, "MsiQueryFetch failed\n");
+    r = libmsi_query_fetch(hquery, &hrec);
+    ok(r == ERROR_SUCCESS, "libmsi_query_fetch failed\n");
 
-    r = MsiRecordGetInteger(hrec, 1);
+    r = libmsi_record_get_integer(hrec, 1);
     ok(r == 5, "Expected 5, got %d\n", r);
-    r = MsiRecordGetInteger(hrec, 2);
+    r = libmsi_record_get_integer(hrec, 2);
     ok(r == 6, "Expected 6, got %d\n", r);
 
-    r = MsiCloseHandle(hrec);
+    r = libmsi_unref(hrec);
     ok(r == ERROR_SUCCESS, "failed to close record\n");
 
-    r = MsiQueryFetch(hquery, &hrec);
+    r = libmsi_query_fetch(hquery, &hrec);
     ok(r == ERROR_NO_MORE_ITEMS, "Expected ERROR_NO_MORE_ITEMS, got %d\n", r);
 
-    r = MsiQueryClose(hquery);
-    ok(r == ERROR_SUCCESS, "MsiQueryClose failed\n");
-    r = MsiCloseHandle(hquery);
-    ok(r == ERROR_SUCCESS, "MsiCloseHandle failed\n");
+    r = libmsi_query_close(hquery);
+    ok(r == ERROR_SUCCESS, "libmsi_query_close failed\n");
+    r = libmsi_unref(hquery);
+    ok(r == ERROR_SUCCESS, "libmsi_unref failed\n");
 
     /* loop through all elements */
     sql = "SELECT `B` FROM `table`";
-    r = MsiDatabaseOpenQuery(hdb, sql, &hquery);
-    ok(r == ERROR_SUCCESS, "MsiDatabaseOpenQuery failed\n");
-    r = MsiQueryExecute(hquery, 0);
-    ok(r == ERROR_SUCCESS, "MsiQueryExecute failed\n");
+    r = libmsi_database_open_query(hdb, sql, &hquery);
+    ok(r == ERROR_SUCCESS, "libmsi_database_open_query failed\n");
+    r = libmsi_query_execute(hquery, 0);
+    ok(r == ERROR_SUCCESS, "libmsi_query_execute failed\n");
 
     while (true)
     {
-        r = MsiQueryFetch(hquery, &hrec);
+        r = libmsi_query_fetch(hquery, &hrec);
         if (r != ERROR_SUCCESS)
             break;
 
-        r = MsiRecordSetInteger(hrec, 1, 0);
+        r = libmsi_record_set_int(hrec, 1, 0);
         ok(r == ERROR_SUCCESS, "failed to set integer\n");
 
-        r = MsiQueryModify(hquery, LIBMSI_MODIFY_UPDATE, hrec);
-        ok(r == ERROR_SUCCESS, "MsiQueryModify failed: %d\n", r);
+        r = libmsi_query_modify(hquery, LIBMSI_MODIFY_UPDATE, hrec);
+        ok(r == ERROR_SUCCESS, "libmsi_query_modify failed: %d\n", r);
 
-        r = MsiCloseHandle(hrec);
+        r = libmsi_unref(hrec);
         ok(r == ERROR_SUCCESS, "failed to close record\n");
     }
 
-    r = MsiQueryClose(hquery);
-    ok(r == ERROR_SUCCESS, "MsiQueryClose failed\n");
-    r = MsiCloseHandle(hquery);
-    ok(r == ERROR_SUCCESS, "MsiCloseHandle failed\n");
+    r = libmsi_query_close(hquery);
+    ok(r == ERROR_SUCCESS, "libmsi_query_close failed\n");
+    r = libmsi_unref(hquery);
+    ok(r == ERROR_SUCCESS, "libmsi_unref failed\n");
 
     sql = "SELECT * FROM `table`";
-    r = MsiDatabaseOpenQuery(hdb, sql, &hquery);
-    ok(r == ERROR_SUCCESS, "MsiDatabaseOpenQuery failed\n");
-    r = MsiQueryExecute(hquery, 0);
-    ok(r == ERROR_SUCCESS, "MsiQueryExecute failed\n");
-    r = MsiQueryFetch(hquery, &hrec);
-    ok(r == ERROR_SUCCESS, "MsiQueryFetch failed\n");
+    r = libmsi_database_open_query(hdb, sql, &hquery);
+    ok(r == ERROR_SUCCESS, "libmsi_database_open_query failed\n");
+    r = libmsi_query_execute(hquery, 0);
+    ok(r == ERROR_SUCCESS, "libmsi_query_execute failed\n");
+    r = libmsi_query_fetch(hquery, &hrec);
+    ok(r == ERROR_SUCCESS, "libmsi_query_fetch failed\n");
 
-    r = MsiRecordGetInteger(hrec, 1);
+    r = libmsi_record_get_integer(hrec, 1);
     ok(r == 1, "Expected 1, got %d\n", r);
-    r = MsiRecordGetInteger(hrec, 2);
+    r = libmsi_record_get_integer(hrec, 2);
     ok(r == 0, "Expected 0, got %d\n", r);
 
-    r = MsiCloseHandle(hrec);
+    r = libmsi_unref(hrec);
     ok(r == ERROR_SUCCESS, "failed to close record\n");
 
-    r = MsiQueryFetch(hquery, &hrec);
-    ok(r == ERROR_SUCCESS, "MsiQueryFetch failed\n");
+    r = libmsi_query_fetch(hquery, &hrec);
+    ok(r == ERROR_SUCCESS, "libmsi_query_fetch failed\n");
 
-    r = MsiRecordGetInteger(hrec, 1);
+    r = libmsi_record_get_integer(hrec, 1);
     ok(r == 3, "Expected 3, got %d\n", r);
-    r = MsiRecordGetInteger(hrec, 2);
+    r = libmsi_record_get_integer(hrec, 2);
     ok(r == 0, "Expected 0, got %d\n", r);
 
-    r = MsiCloseHandle(hrec);
+    r = libmsi_unref(hrec);
     ok(r == ERROR_SUCCESS, "failed to close record\n");
 
-    r = MsiQueryFetch(hquery, &hrec);
-    ok(r == ERROR_SUCCESS, "MsiQueryFetch failed\n");
+    r = libmsi_query_fetch(hquery, &hrec);
+    ok(r == ERROR_SUCCESS, "libmsi_query_fetch failed\n");
 
-    r = MsiRecordGetInteger(hrec, 1);
+    r = libmsi_record_get_integer(hrec, 1);
     ok(r == 5, "Expected 5, got %d\n", r);
-    r = MsiRecordGetInteger(hrec, 2);
+    r = libmsi_record_get_integer(hrec, 2);
     ok(r == 0, "Expected 0, got %d\n", r);
 
-    r = MsiCloseHandle(hrec);
+    r = libmsi_unref(hrec);
     ok(r == ERROR_SUCCESS, "failed to close record\n");
 
-    r = MsiQueryFetch(hquery, &hrec);
+    r = libmsi_query_fetch(hquery, &hrec);
     ok(r == ERROR_NO_MORE_ITEMS, "Expected ERROR_NO_MORE_ITEMS, got %d\n", r);
 
-    r = MsiQueryClose(hquery);
-    ok(r == ERROR_SUCCESS, "MsiQueryClose failed\n");
-    r = MsiCloseHandle(hquery);
-    ok(r == ERROR_SUCCESS, "MsiCloseHandle failed\n");
+    r = libmsi_query_close(hquery);
+    ok(r == ERROR_SUCCESS, "libmsi_query_close failed\n");
+    r = libmsi_unref(hquery);
+    ok(r == ERROR_SUCCESS, "libmsi_unref failed\n");
 
     sql = "CREATE TABLE `table2` (`A` INT, `B` INT PRIMARY KEY `A`)";
     r = run_query( hdb, 0, sql );
     ok(r == ERROR_SUCCESS, "query failed\n");
 
     sql = "INSERT INTO `table2` (`A`, `B`) VALUES (?, ?)";
-    r = MsiDatabaseOpenQuery( hdb, sql, &hquery );
-    ok(r == ERROR_SUCCESS, "MsiDatabaseOpenQuery failed\n");
+    r = libmsi_database_open_query( hdb, sql, &hquery );
+    ok(r == ERROR_SUCCESS, "libmsi_database_open_query failed\n");
 
     test_max = 100;
     offset = 1234;
     for(i = 0; i < test_max; i++)
     {
 
-        hrec = MsiCreateRecord( 2 );
-        MsiRecordSetInteger( hrec, 1, test_max - i );
-        MsiRecordSetInteger( hrec, 2, i );
+        hrec = libmsi_record_create( 2 );
+        libmsi_record_set_int( hrec, 1, test_max - i );
+        libmsi_record_set_int( hrec, 2, i );
 
-        r = MsiQueryExecute( hquery, hrec );
+        r = libmsi_query_execute( hquery, hrec );
         ok(r == ERROR_SUCCESS, "Got %d\n", r);
 
-        r = MsiCloseHandle( hrec );
+        r = libmsi_unref( hrec );
         ok(r == ERROR_SUCCESS, "Got %d\n", r);
     }
 
-    r = MsiQueryClose( hquery );
+    r = libmsi_query_close( hquery );
     ok(r == ERROR_SUCCESS, "Got %d\n", r);
-    r = MsiCloseHandle( hquery );
+    r = libmsi_unref( hquery );
     ok(r == ERROR_SUCCESS, "Got %d\n", r);
 
     /* Update. */
     sql = "SELECT * FROM `table2` ORDER BY `B`";
-    r = MsiDatabaseOpenQuery( hdb, sql, &hquery);
-    ok(r == ERROR_SUCCESS, "MsiDatabaseOpenQuery failed\n");
-    r = MsiQueryExecute( hquery, 0 );
-    ok(r == ERROR_SUCCESS, "MsiQueryExecute failed\n");
+    r = libmsi_database_open_query( hdb, sql, &hquery);
+    ok(r == ERROR_SUCCESS, "libmsi_database_open_query failed\n");
+    r = libmsi_query_execute( hquery, 0 );
+    ok(r == ERROR_SUCCESS, "libmsi_query_execute failed\n");
 
     count = 0;
-    while (MsiQueryFetch( hquery, &hrec ) == ERROR_SUCCESS)
+    while (libmsi_query_fetch( hquery, &hrec ) == ERROR_SUCCESS)
     {
-        unsigned b = MsiRecordGetInteger( hrec, 2 );
+        unsigned b = libmsi_record_get_integer( hrec, 2 );
 
-        r = MsiRecordSetInteger( hrec, 2, b + offset);
+        r = libmsi_record_set_int( hrec, 2, b + offset);
         ok(r == ERROR_SUCCESS, "Got %d\n", r);
 
-        r = MsiQueryModify( hquery, LIBMSI_MODIFY_UPDATE, hrec );
+        r = libmsi_query_modify( hquery, LIBMSI_MODIFY_UPDATE, hrec );
         ok(r == ERROR_SUCCESS, "Got %d\n", r);
 
-        r = MsiCloseHandle(hrec);
+        r = libmsi_unref(hrec);
         ok(r == ERROR_SUCCESS, "failed to close record\n");
         count++;
     }
     ok(count == test_max, "Got count %d\n", count);
 
-    r = MsiQueryClose(hquery);
-    ok(r == ERROR_SUCCESS, "MsiQueryClose failed\n");
-    r = MsiCloseHandle(hquery);
-    ok(r == ERROR_SUCCESS, "MsiCloseHandle failed\n");
+    r = libmsi_query_close(hquery);
+    ok(r == ERROR_SUCCESS, "libmsi_query_close failed\n");
+    r = libmsi_unref(hquery);
+    ok(r == ERROR_SUCCESS, "libmsi_unref failed\n");
 
     /* Recheck. */
     sql = "SELECT * FROM `table2` ORDER BY `B`";
-    r = MsiDatabaseOpenQuery( hdb, sql, &hquery);
-    ok(r == ERROR_SUCCESS, "MsiDatabaseOpenQuery failed\n");
-    r = MsiQueryExecute( hquery, 0 );
-    ok(r == ERROR_SUCCESS, "MsiQueryExecute failed\n");
+    r = libmsi_database_open_query( hdb, sql, &hquery);
+    ok(r == ERROR_SUCCESS, "libmsi_database_open_query failed\n");
+    r = libmsi_query_execute( hquery, 0 );
+    ok(r == ERROR_SUCCESS, "libmsi_query_execute failed\n");
 
     count = 0;
-    while (MsiQueryFetch( hquery, &hrec ) == ERROR_SUCCESS)
+    while (libmsi_query_fetch( hquery, &hrec ) == ERROR_SUCCESS)
     {
-        unsigned a = MsiRecordGetInteger( hrec, 1 );
-        unsigned b = MsiRecordGetInteger( hrec, 2 );
+        unsigned a = libmsi_record_get_integer( hrec, 1 );
+        unsigned b = libmsi_record_get_integer( hrec, 2 );
         ok( ( test_max - a + offset) == b, "Got (%d, %d), expected (%d, %d)\n",
             a, b, test_max - a + offset, b);
 
-        r = MsiCloseHandle(hrec);
+        r = libmsi_unref(hrec);
         ok(r == ERROR_SUCCESS, "failed to close record\n");
         count++;
     }
     ok(count == test_max, "Got count %d\n", count);
 
-    r = MsiQueryClose(hquery);
-    ok(r == ERROR_SUCCESS, "MsiQueryClose failed\n");
-    r = MsiCloseHandle(hquery);
-    ok(r == ERROR_SUCCESS, "MsiCloseHandle failed\n");
+    r = libmsi_query_close(hquery);
+    ok(r == ERROR_SUCCESS, "libmsi_query_close failed\n");
+    r = libmsi_unref(hquery);
+    ok(r == ERROR_SUCCESS, "libmsi_unref failed\n");
 
-    r = MsiCloseHandle( hdb );
-    ok(r == ERROR_SUCCESS, "MsiOpenDatabase close failed\n");
+    r = libmsi_unref( hdb );
+    ok(r == ERROR_SUCCESS, "libmsi_database_open close failed\n");
 }
 
 static void test_querymodify_assign(void)
@@ -5511,8 +5511,8 @@ static void test_querymodify_assign(void)
     /* setup database */
     DeleteFile(msifile);
 
-    r = MsiOpenDatabase(msifile, LIBMSI_DB_OPEN_CREATE, &hdb);
-    ok(r == ERROR_SUCCESS, "MsiOpenDatabase failed\n");
+    r = libmsi_database_open(msifile, LIBMSI_DB_OPEN_CREATE, &hdb);
+    ok(r == ERROR_SUCCESS, "libmsi_database_open failed\n");
 
     sql = "CREATE TABLE `table` (`A` INT, `B` INT PRIMARY KEY `A`)";
     r = run_query( hdb, 0, sql );
@@ -5520,107 +5520,107 @@ static void test_querymodify_assign(void)
 
     /* assign to query, new primary key */
     sql = "SELECT * FROM `table`";
-    r = MsiDatabaseOpenQuery(hdb, sql, &hquery);
-    ok(r == ERROR_SUCCESS, "MsiDatabaseOpenQuery failed\n");
-    r = MsiQueryExecute(hquery, 0);
-    ok(r == ERROR_SUCCESS, "MsiQueryExecute failed\n");
+    r = libmsi_database_open_query(hdb, sql, &hquery);
+    ok(r == ERROR_SUCCESS, "libmsi_database_open_query failed\n");
+    r = libmsi_query_execute(hquery, 0);
+    ok(r == ERROR_SUCCESS, "libmsi_query_execute failed\n");
 
-    hrec = MsiCreateRecord(2);
-    ok(hrec != 0, "MsiCreateRecord failed\n");
+    hrec = libmsi_record_create(2);
+    ok(hrec != 0, "libmsi_record_create failed\n");
 
-    r = MsiRecordSetInteger(hrec, 1, 1);
+    r = libmsi_record_set_int(hrec, 1, 1);
     ok(r == ERROR_SUCCESS, "failed to set integer\n");
-    r = MsiRecordSetInteger(hrec, 2, 2);
+    r = libmsi_record_set_int(hrec, 2, 2);
     ok(r == ERROR_SUCCESS, "failed to set integer\n");
 
-    r = MsiQueryModify(hquery, LIBMSI_MODIFY_ASSIGN, hrec);
-    ok(r == ERROR_SUCCESS, "MsiQueryModify failed: %d\n", r);
+    r = libmsi_query_modify(hquery, LIBMSI_MODIFY_ASSIGN, hrec);
+    ok(r == ERROR_SUCCESS, "libmsi_query_modify failed: %d\n", r);
 
-    r = MsiCloseHandle(hrec);
+    r = libmsi_unref(hrec);
     ok(r == ERROR_SUCCESS, "failed to close record\n");
 
-    r = MsiQueryClose(hquery);
-    ok(r == ERROR_SUCCESS, "MsiQueryClose failed\n");
-    r = MsiCloseHandle(hquery);
-    ok(r == ERROR_SUCCESS, "MsiCloseHandle failed\n");
+    r = libmsi_query_close(hquery);
+    ok(r == ERROR_SUCCESS, "libmsi_query_close failed\n");
+    r = libmsi_unref(hquery);
+    ok(r == ERROR_SUCCESS, "libmsi_unref failed\n");
 
     sql = "SELECT * FROM `table`";
-    r = MsiDatabaseOpenQuery(hdb, sql, &hquery);
-    ok(r == ERROR_SUCCESS, "MsiDatabaseOpenQuery failed\n");
-    r = MsiQueryExecute(hquery, 0);
-    ok(r == ERROR_SUCCESS, "MsiQueryExecute failed\n");
-    r = MsiQueryFetch(hquery, &hrec);
-    ok(r == ERROR_SUCCESS, "MsiQueryFetch failed\n");
+    r = libmsi_database_open_query(hdb, sql, &hquery);
+    ok(r == ERROR_SUCCESS, "libmsi_database_open_query failed\n");
+    r = libmsi_query_execute(hquery, 0);
+    ok(r == ERROR_SUCCESS, "libmsi_query_execute failed\n");
+    r = libmsi_query_fetch(hquery, &hrec);
+    ok(r == ERROR_SUCCESS, "libmsi_query_fetch failed\n");
 
-    r = MsiRecordGetInteger(hrec, 1);
+    r = libmsi_record_get_integer(hrec, 1);
     ok(r == 1, "Expected 1, got %d\n", r);
-    r = MsiRecordGetInteger(hrec, 2);
+    r = libmsi_record_get_integer(hrec, 2);
     ok(r == 2, "Expected 2, got %d\n", r);
 
-    r = MsiCloseHandle(hrec);
+    r = libmsi_unref(hrec);
     ok(r == ERROR_SUCCESS, "failed to close record\n");
 
-    r = MsiQueryFetch(hquery, &hrec);
+    r = libmsi_query_fetch(hquery, &hrec);
     ok(r == ERROR_NO_MORE_ITEMS, "Expected ERROR_NO_MORE_ITEMS, got %d\n", r);
 
-    r = MsiQueryClose(hquery);
-    ok(r == ERROR_SUCCESS, "MsiQueryClose failed\n");
-    r = MsiCloseHandle(hquery);
-    ok(r == ERROR_SUCCESS, "MsiCloseHandle failed\n");
+    r = libmsi_query_close(hquery);
+    ok(r == ERROR_SUCCESS, "libmsi_query_close failed\n");
+    r = libmsi_unref(hquery);
+    ok(r == ERROR_SUCCESS, "libmsi_unref failed\n");
 
     /* assign to query, primary key matches */
     sql = "SELECT * FROM `table`";
-    r = MsiDatabaseOpenQuery(hdb, sql, &hquery);
-    ok(r == ERROR_SUCCESS, "MsiDatabaseOpenQuery failed\n");
-    r = MsiQueryExecute(hquery, 0);
-    ok(r == ERROR_SUCCESS, "MsiQueryExecute failed\n");
+    r = libmsi_database_open_query(hdb, sql, &hquery);
+    ok(r == ERROR_SUCCESS, "libmsi_database_open_query failed\n");
+    r = libmsi_query_execute(hquery, 0);
+    ok(r == ERROR_SUCCESS, "libmsi_query_execute failed\n");
 
-    hrec = MsiCreateRecord(2);
-    ok(hrec != 0, "MsiCreateRecord failed\n");
+    hrec = libmsi_record_create(2);
+    ok(hrec != 0, "libmsi_record_create failed\n");
 
-    r = MsiRecordSetInteger(hrec, 1, 1);
+    r = libmsi_record_set_int(hrec, 1, 1);
     ok(r == ERROR_SUCCESS, "failed to set integer\n");
-    r = MsiRecordSetInteger(hrec, 2, 4);
+    r = libmsi_record_set_int(hrec, 2, 4);
     ok(r == ERROR_SUCCESS, "failed to set integer\n");
 
-    r = MsiQueryModify(hquery, LIBMSI_MODIFY_ASSIGN, hrec);
-    ok(r == ERROR_SUCCESS, "MsiQueryModify failed: %d\n", r);
+    r = libmsi_query_modify(hquery, LIBMSI_MODIFY_ASSIGN, hrec);
+    ok(r == ERROR_SUCCESS, "libmsi_query_modify failed: %d\n", r);
 
-    r = MsiCloseHandle(hrec);
+    r = libmsi_unref(hrec);
     ok(r == ERROR_SUCCESS, "failed to close record\n");
 
-    r = MsiQueryClose(hquery);
-    ok(r == ERROR_SUCCESS, "MsiQueryClose failed\n");
-    r = MsiCloseHandle(hquery);
-    ok(r == ERROR_SUCCESS, "MsiCloseHandle failed\n");
+    r = libmsi_query_close(hquery);
+    ok(r == ERROR_SUCCESS, "libmsi_query_close failed\n");
+    r = libmsi_unref(hquery);
+    ok(r == ERROR_SUCCESS, "libmsi_unref failed\n");
 
     sql = "SELECT * FROM `table`";
-    r = MsiDatabaseOpenQuery(hdb, sql, &hquery);
-    ok(r == ERROR_SUCCESS, "MsiDatabaseOpenQuery failed\n");
-    r = MsiQueryExecute(hquery, 0);
-    ok(r == ERROR_SUCCESS, "MsiQueryExecute failed\n");
-    r = MsiQueryFetch(hquery, &hrec);
-    ok(r == ERROR_SUCCESS, "MsiQueryFetch failed\n");
+    r = libmsi_database_open_query(hdb, sql, &hquery);
+    ok(r == ERROR_SUCCESS, "libmsi_database_open_query failed\n");
+    r = libmsi_query_execute(hquery, 0);
+    ok(r == ERROR_SUCCESS, "libmsi_query_execute failed\n");
+    r = libmsi_query_fetch(hquery, &hrec);
+    ok(r == ERROR_SUCCESS, "libmsi_query_fetch failed\n");
 
-    r = MsiRecordGetInteger(hrec, 1);
+    r = libmsi_record_get_integer(hrec, 1);
     ok(r == 1, "Expected 1, got %d\n", r);
-    r = MsiRecordGetInteger(hrec, 2);
+    r = libmsi_record_get_integer(hrec, 2);
     ok(r == 4, "Expected 4, got %d\n", r);
 
-    r = MsiCloseHandle(hrec);
+    r = libmsi_unref(hrec);
     ok(r == ERROR_SUCCESS, "failed to close record\n");
 
-    r = MsiQueryFetch(hquery, &hrec);
+    r = libmsi_query_fetch(hquery, &hrec);
     ok(r == ERROR_NO_MORE_ITEMS, "Expected ERROR_NO_MORE_ITEMS, got %d\n", r);
 
-    r = MsiQueryClose(hquery);
-    ok(r == ERROR_SUCCESS, "MsiQueryClose failed\n");
-    r = MsiCloseHandle(hquery);
-    ok(r == ERROR_SUCCESS, "MsiCloseHandle failed\n");
+    r = libmsi_query_close(hquery);
+    ok(r == ERROR_SUCCESS, "libmsi_query_close failed\n");
+    r = libmsi_unref(hquery);
+    ok(r == ERROR_SUCCESS, "libmsi_unref failed\n");
 
     /* close database */
-    r = MsiCloseHandle( hdb );
-    ok(r == ERROR_SUCCESS, "MsiOpenDatabase close failed\n");
+    r = libmsi_unref( hdb );
+    ok(r == ERROR_SUCCESS, "libmsi_database_open close failed\n");
 }
 
 static const WCHAR data10[] = { /* MOO */
@@ -5675,7 +5675,7 @@ static void test_stringtable(void)
 
     DeleteFile(msifile);
 
-    r = MsiOpenDatabase(msifile, LIBMSI_DB_OPEN_CREATE, &hdb);
+    r = libmsi_database_open(msifile, LIBMSI_DB_OPEN_CREATE, &hdb);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     sql = "CREATE TABLE `MOO` (`A` INT, `B` CHAR(72) PRIMARY KEY `A`)";
@@ -5698,27 +5698,27 @@ static void test_stringtable(void)
 
     /* open a query */
     sql = "SELECT * FROM `MOO`";
-    r = MsiDatabaseOpenQuery(hdb, sql, &hquery);
+    r = libmsi_database_open_query(hdb, sql, &hquery);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-    r = MsiQueryExecute(hquery, 0);
+    r = libmsi_query_execute(hquery, 0);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
-    hrec = MsiCreateRecord(2);
+    hrec = libmsi_record_create(2);
 
-    r = MsiRecordSetInteger(hrec, 1, 3);
+    r = libmsi_record_set_int(hrec, 1, 3);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-    r = MsiRecordSetString(hrec, 2, "three");
+    r = libmsi_record_set_string(hrec, 2, "three");
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     /* insert a nonpersistent row */
-    r = MsiQueryModify(hquery, LIBMSI_MODIFY_INSERT_TEMPORARY, hrec);
+    r = libmsi_query_modify(hquery, LIBMSI_MODIFY_INSERT_TEMPORARY, hrec);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
-    r = MsiCloseHandle(hrec);
+    r = libmsi_unref(hrec);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-    r = MsiQueryClose(hquery);
+    r = libmsi_query_close(hquery);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-    r = MsiCloseHandle(hquery);
+    r = libmsi_unref(hquery);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     /* insert persistent row */
@@ -5731,100 +5731,100 @@ static void test_stringtable(void)
     r = run_query(hdb, 0, sql);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
-    r = MsiDatabaseCommit(hdb);
+    r = libmsi_database_commit(hdb);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
-    r = MsiCloseHandle(hdb);
+    r = libmsi_unref(hdb);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
-    r = MsiOpenDatabase(msifile, LIBMSI_DB_OPEN_READONLY, &hdb);
+    r = libmsi_database_open(msifile, LIBMSI_DB_OPEN_READONLY, &hdb);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     sql = "SELECT * FROM `MOO`";
-    r = MsiDatabaseOpenQuery(hdb, sql, &hquery);
+    r = libmsi_database_open_query(hdb, sql, &hquery);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
-    r = MsiQueryExecute(hquery, 0);
+    r = libmsi_query_execute(hquery, 0);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
-    r = MsiQueryFetch(hquery, &hrec);
+    r = libmsi_query_fetch(hquery, &hrec);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
-    r = MsiRecordGetFieldCount(hrec);
+    r = libmsi_record_get_field_count(hrec);
     ok(r == 2, "Expected 2, got %d\n", r);
 
-    r = MsiRecordGetInteger(hrec, 1);
+    r = libmsi_record_get_integer(hrec, 1);
     ok(r == 1, "Expected 1, got %d\n", r);
 
     sz = sizeof(buffer);
-    r = MsiRecordGetString(hrec, 2, buffer, &sz);
+    r = libmsi_record_get_string(hrec, 2, buffer, &sz);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
     ok(!strcmp(buffer, "one"), "Expected one, got '%s'\n", buffer);
 
-    r = MsiCloseHandle(hrec);
+    r = libmsi_unref(hrec);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
-    r = MsiQueryFetch(hquery, &hrec);
+    r = libmsi_query_fetch(hquery, &hrec);
     ok(r == ERROR_NO_MORE_ITEMS, "Expected ERROR_NO_MORE_ITEMS, got %d\n", r);
 
-    r = MsiQueryClose(hquery);
+    r = libmsi_query_close(hquery);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-    r = MsiCloseHandle(hquery);
+    r = libmsi_unref(hquery);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-    r = MsiCloseHandle(hrec);
+    r = libmsi_unref(hrec);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     sql = "SELECT * FROM `AAR`";
-    r = MsiDatabaseOpenQuery(hdb, sql, &hquery);
+    r = libmsi_database_open_query(hdb, sql, &hquery);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
-    r = MsiQueryExecute(hquery, 0);
+    r = libmsi_query_execute(hquery, 0);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
-    r = MsiQueryFetch(hquery, &hrec);
+    r = libmsi_query_fetch(hquery, &hrec);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
-    r = MsiRecordGetFieldCount(hrec);
+    r = libmsi_record_get_field_count(hrec);
     ok(r == 2, "Expected 2, got %d\n", r);
 
-    r = MsiRecordGetInteger(hrec, 1);
+    r = libmsi_record_get_integer(hrec, 1);
     ok(r == 2, "Expected 2, got %d\n", r);
 
     sz = sizeof(buffer);
-    r = MsiRecordGetString(hrec, 2, buffer, &sz);
+    r = libmsi_record_get_string(hrec, 2, buffer, &sz);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
     ok(!strcmp(buffer, "two"), "Expected two, got '%s'\n", buffer);
 
-    r = MsiCloseHandle(hrec);
+    r = libmsi_unref(hrec);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
-    r = MsiQueryFetch(hquery, &hrec);
+    r = libmsi_query_fetch(hquery, &hrec);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
-    r = MsiRecordGetFieldCount(hrec);
+    r = libmsi_record_get_field_count(hrec);
     ok(r == 2, "Expected 2, got %d\n", r);
 
-    r = MsiRecordGetInteger(hrec, 1);
+    r = libmsi_record_get_integer(hrec, 1);
     ok(r == 5, "Expected 5, got %d\n", r);
 
     sz = sizeof(buffer);
-    r = MsiRecordGetString(hrec, 2, buffer, &sz);
+    r = libmsi_record_get_string(hrec, 2, buffer, &sz);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
     ok(!strcmp(buffer, "five"), "Expected five, got '%s'\n", buffer);
 
-    r = MsiCloseHandle(hrec);
+    r = libmsi_unref(hrec);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
-    r = MsiQueryFetch(hquery, &hrec);
+    r = libmsi_query_fetch(hquery, &hrec);
     ok(r == ERROR_NO_MORE_ITEMS, "Expected ERROR_NO_MORE_ITEMS, got %d\n", r);
 
-    r = MsiQueryClose(hquery);
+    r = libmsi_query_close(hquery);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-    r = MsiCloseHandle(hquery);
+    r = libmsi_unref(hquery);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-    r = MsiCloseHandle(hrec);
+    r = libmsi_unref(hrec);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-    r = MsiCloseHandle(hdb);
+    r = libmsi_unref(hdb);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     MultiByteToWideChar(CP_ACP, 0, msifile, -1, name, 0x20);
@@ -5904,8 +5904,8 @@ static void test_querymodify_delete(void)
 
     DeleteFile(msifile);
 
-    /* just MsiOpenDatabase should not create a file */
-    r = MsiOpenDatabase(msifile, LIBMSI_DB_OPEN_CREATE, &hdb);
+    /* just libmsi_database_open should not create a file */
+    r = libmsi_database_open(msifile, LIBMSI_DB_OPEN_CREATE, &hdb);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     sql = "CREATE TABLE `phone` ( "
@@ -5930,65 +5930,65 @@ static void test_querymodify_delete(void)
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     sql = "SELECT * FROM `phone` WHERE `id` <= 2";
-    r = MsiDatabaseOpenQuery(hdb, sql, &hquery);
+    r = libmsi_database_open_query(hdb, sql, &hquery);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-    r = MsiQueryExecute(hquery, 0);
+    r = libmsi_query_execute(hquery, 0);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-    r = MsiQueryFetch(hquery, &hrec);
+    r = libmsi_query_fetch(hquery, &hrec);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     /* delete 1 */
-    r = MsiQueryModify(hquery, LIBMSI_MODIFY_DELETE, hrec);
+    r = libmsi_query_modify(hquery, LIBMSI_MODIFY_DELETE, hrec);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
-    r = MsiCloseHandle(hrec);
+    r = libmsi_unref(hrec);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-    r = MsiQueryFetch(hquery, &hrec);
+    r = libmsi_query_fetch(hquery, &hrec);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     /* delete 2 */
-    r = MsiQueryModify(hquery, LIBMSI_MODIFY_DELETE, hrec);
+    r = libmsi_query_modify(hquery, LIBMSI_MODIFY_DELETE, hrec);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
-    r = MsiCloseHandle(hrec);
+    r = libmsi_unref(hrec);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-    r = MsiQueryClose(hquery);
+    r = libmsi_query_close(hquery);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-    r = MsiCloseHandle(hquery);
+    r = libmsi_unref(hquery);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     sql = "SELECT * FROM `phone`";
-    r = MsiDatabaseOpenQuery(hdb, sql, &hquery);
+    r = libmsi_database_open_query(hdb, sql, &hquery);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-    r = MsiQueryExecute(hquery, 0);
+    r = libmsi_query_execute(hquery, 0);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-    r = MsiQueryFetch(hquery, &hrec);
+    r = libmsi_query_fetch(hquery, &hrec);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
-    r = MsiRecordGetInteger(hrec, 1);
+    r = libmsi_record_get_integer(hrec, 1);
     ok(r == 3, "Expected 3, got %d\n", r);
 
     sz = sizeof(buffer);
-    r = MsiRecordGetString(hrec, 2, buffer, &sz);
+    r = libmsi_record_get_string(hrec, 2, buffer, &sz);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
     ok(!strcmp(buffer, "Cindy"), "Expected Cindy, got %s\n", buffer);
 
     sz = sizeof(buffer);
-    r = MsiRecordGetString(hrec, 3, buffer, &sz);
+    r = libmsi_record_get_string(hrec, 3, buffer, &sz);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
     ok(!strcmp(buffer, "2937550"), "Expected 2937550, got %s\n", buffer);
 
-    r = MsiCloseHandle(hrec);
+    r = libmsi_unref(hrec);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
-    r = MsiQueryFetch(hquery, &hrec);
+    r = libmsi_query_fetch(hquery, &hrec);
     ok(r == ERROR_NO_MORE_ITEMS, "Expected ERROR_NO_MORE_ITEMS, got %d\n", r);
 
-    r = MsiQueryClose(hquery);
+    r = libmsi_query_close(hquery);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-    r = MsiCloseHandle(hquery);
+    r = libmsi_unref(hquery);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-    r = MsiCloseHandle(hdb);
+    r = libmsi_unref(hdb);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 }
 
@@ -6079,13 +6079,13 @@ static void test_defaultdatabase(void)
 
     DeleteFile(msifile);
 
-    r = MsiOpenDatabase(msifile, LIBMSI_DB_OPEN_CREATE, &hdb);
+    r = libmsi_database_open(msifile, LIBMSI_DB_OPEN_CREATE, &hdb);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
-    r = MsiDatabaseCommit(hdb);
+    r = libmsi_database_commit(hdb);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
-    MsiCloseHandle(hdb);
+    libmsi_unref(hdb);
 
     hr = StgOpenStorage(msifileW, NULL, STGM_READ | STGM_SHARE_DENY_WRITE, NULL, 0, &stg);
     ok(hr == S_OK, "Expected S_OK, got %08x\n", hr);
@@ -6147,172 +6147,172 @@ static void test_order(void)
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     sql = "SELECT `A`, `B` FROM `Mesa` ORDER BY `C`";
-    r = MsiDatabaseOpenQuery(hdb, sql, &hquery);
+    r = libmsi_database_open_query(hdb, sql, &hquery);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-    r = MsiQueryExecute(hquery, 0);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-
-    r = MsiQueryFetch(hquery, &hrec);
+    r = libmsi_query_execute(hquery, 0);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
-    val = MsiRecordGetInteger(hrec, 1);
+    r = libmsi_query_fetch(hquery, &hrec);
+    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+
+    val = libmsi_record_get_integer(hrec, 1);
     ok(val == 3, "Expected 3, got %d\n", val);
 
-    val = MsiRecordGetInteger(hrec, 2);
+    val = libmsi_record_get_integer(hrec, 2);
     ok(val == 4, "Expected 3, got %d\n", val);
 
-    MsiCloseHandle(hrec);
+    libmsi_unref(hrec);
 
-    r = MsiQueryFetch(hquery, &hrec);
+    r = libmsi_query_fetch(hquery, &hrec);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
-    val = MsiRecordGetInteger(hrec, 1);
+    val = libmsi_record_get_integer(hrec, 1);
     ok(val == 5, "Expected 5, got %d\n", val);
 
-    val = MsiRecordGetInteger(hrec, 2);
+    val = libmsi_record_get_integer(hrec, 2);
     ok(val == 6, "Expected 6, got %d\n", val);
 
-    MsiCloseHandle(hrec);
+    libmsi_unref(hrec);
 
-    r = MsiQueryFetch(hquery, &hrec);
+    r = libmsi_query_fetch(hquery, &hrec);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
-    val = MsiRecordGetInteger(hrec, 1);
+    val = libmsi_record_get_integer(hrec, 1);
     ok(val == 1, "Expected 1, got %d\n", val);
 
-    val = MsiRecordGetInteger(hrec, 2);
+    val = libmsi_record_get_integer(hrec, 2);
     ok(val == 2, "Expected 2, got %d\n", val);
 
-    MsiCloseHandle(hrec);
+    libmsi_unref(hrec);
 
-    r = MsiQueryFetch(hquery, &hrec);
+    r = libmsi_query_fetch(hquery, &hrec);
     ok(r == ERROR_NO_MORE_ITEMS, "Expected ERROR_NO_MORE_ITEMS, got %d\n", r);
 
-    MsiQueryClose(hquery);
-    MsiCloseHandle(hquery);
+    libmsi_query_close(hquery);
+    libmsi_unref(hquery);
 
     sql = "SELECT `A`, `D` FROM `Mesa`, `Sideboard` ORDER BY `F`";
-    r = MsiDatabaseOpenQuery(hdb, sql, &hquery);
+    r = libmsi_database_open_query(hdb, sql, &hquery);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-    r = MsiQueryExecute(hquery, 0);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-
-    r = MsiQueryFetch(hquery, &hrec);
+    r = libmsi_query_execute(hquery, 0);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
-    val = MsiRecordGetInteger(hrec, 1);
+    r = libmsi_query_fetch(hquery, &hrec);
+    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+
+    val = libmsi_record_get_integer(hrec, 1);
     ok(val == 1, "Expected 1, got %d\n", val);
 
-    val = MsiRecordGetInteger(hrec, 2);
+    val = libmsi_record_get_integer(hrec, 2);
     ok(val == 12, "Expected 12, got %d\n", val);
 
-    MsiCloseHandle(hrec);
+    libmsi_unref(hrec);
 
-    r = MsiQueryFetch(hquery, &hrec);
+    r = libmsi_query_fetch(hquery, &hrec);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
-    val = MsiRecordGetInteger(hrec, 1);
+    val = libmsi_record_get_integer(hrec, 1);
     ok(val == 3, "Expected 3, got %d\n", val);
 
-    val = MsiRecordGetInteger(hrec, 2);
+    val = libmsi_record_get_integer(hrec, 2);
     ok(val == 12, "Expected 12, got %d\n", val);
 
-    MsiCloseHandle(hrec);
+    libmsi_unref(hrec);
 
-    r = MsiQueryFetch(hquery, &hrec);
+    r = libmsi_query_fetch(hquery, &hrec);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
-    val = MsiRecordGetInteger(hrec, 1);
+    val = libmsi_record_get_integer(hrec, 1);
     ok(val == 5, "Expected 5, got %d\n", val);
 
-    val = MsiRecordGetInteger(hrec, 2);
+    val = libmsi_record_get_integer(hrec, 2);
     ok(val == 12, "Expected 12, got %d\n", val);
 
-    MsiCloseHandle(hrec);
+    libmsi_unref(hrec);
 
-    r = MsiQueryFetch(hquery, &hrec);
+    r = libmsi_query_fetch(hquery, &hrec);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
-    val = MsiRecordGetInteger(hrec, 1);
+    val = libmsi_record_get_integer(hrec, 1);
     ok(val == 1, "Expected 1, got %d\n", val);
 
-    val = MsiRecordGetInteger(hrec, 2);
+    val = libmsi_record_get_integer(hrec, 2);
     ok(val == 14, "Expected 14, got %d\n", val);
 
-    MsiCloseHandle(hrec);
+    libmsi_unref(hrec);
 
-    r = MsiQueryFetch(hquery, &hrec);
+    r = libmsi_query_fetch(hquery, &hrec);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
-    val = MsiRecordGetInteger(hrec, 1);
+    val = libmsi_record_get_integer(hrec, 1);
     ok(val == 3, "Expected 3, got %d\n", val);
 
-    val = MsiRecordGetInteger(hrec, 2);
+    val = libmsi_record_get_integer(hrec, 2);
     ok(val == 14, "Expected 14, got %d\n", val);
 
-    MsiCloseHandle(hrec);
+    libmsi_unref(hrec);
 
-    r = MsiQueryFetch(hquery, &hrec);
+    r = libmsi_query_fetch(hquery, &hrec);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
-    val = MsiRecordGetInteger(hrec, 1);
+    val = libmsi_record_get_integer(hrec, 1);
     ok(val == 5, "Expected 5, got %d\n", val);
 
-    val = MsiRecordGetInteger(hrec, 2);
+    val = libmsi_record_get_integer(hrec, 2);
     ok(val == 14, "Expected 14, got %d\n", val);
 
-    MsiCloseHandle(hrec);
+    libmsi_unref(hrec);
 
-    r = MsiQueryFetch(hquery, &hrec);
+    r = libmsi_query_fetch(hquery, &hrec);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
-    val = MsiRecordGetInteger(hrec, 1);
+    val = libmsi_record_get_integer(hrec, 1);
     ok(val == 1, "Expected 1, got %d\n", val);
 
-    val = MsiRecordGetInteger(hrec, 2);
+    val = libmsi_record_get_integer(hrec, 2);
     ok(val == 10, "Expected 10, got %d\n", val);
 
-    MsiCloseHandle(hrec);
+    libmsi_unref(hrec);
 
-    r = MsiQueryFetch(hquery, &hrec);
+    r = libmsi_query_fetch(hquery, &hrec);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
-    val = MsiRecordGetInteger(hrec, 1);
+    val = libmsi_record_get_integer(hrec, 1);
     ok(val == 3, "Expected 3, got %d\n", val);
 
-    val = MsiRecordGetInteger(hrec, 2);
+    val = libmsi_record_get_integer(hrec, 2);
     ok(val == 10, "Expected 10, got %d\n", val);
 
-    MsiCloseHandle(hrec);
+    libmsi_unref(hrec);
 
-    r = MsiQueryFetch(hquery, &hrec);
+    r = libmsi_query_fetch(hquery, &hrec);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
-    val = MsiRecordGetInteger(hrec, 1);
+    val = libmsi_record_get_integer(hrec, 1);
     ok(val == 5, "Expected 5, got %d\n", val);
 
-    val = MsiRecordGetInteger(hrec, 2);
+    val = libmsi_record_get_integer(hrec, 2);
     ok(val == 10, "Expected 10, got %d\n", val);
 
-    MsiCloseHandle(hrec);
+    libmsi_unref(hrec);
 
-    r = MsiQueryFetch(hquery, &hrec);
+    r = libmsi_query_fetch(hquery, &hrec);
     ok(r == ERROR_NO_MORE_ITEMS, "Expected ERROR_NO_MORE_ITEMS, got %d\n", r);
 
-    MsiQueryClose(hquery);
-    MsiCloseHandle(hquery);
+    libmsi_query_close(hquery);
+    libmsi_unref(hquery);
 
     sql = "SELECT * FROM `Empty` ORDER BY `A`";
-    r = MsiDatabaseOpenQuery(hdb, sql, &hquery);
+    r = libmsi_database_open_query(hdb, sql, &hquery);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-    r = MsiQueryExecute(hquery, 0);
+    r = libmsi_query_execute(hquery, 0);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
-    r = MsiQueryFetch(hquery, &hrec);
+    r = libmsi_query_fetch(hquery, &hrec);
     ok(r == ERROR_NO_MORE_ITEMS, "Expected ERROR_NO_MORE_ITEMS, got %d\n", r);
 
-    MsiQueryClose(hquery);
-    MsiCloseHandle(hquery);
+    libmsi_query_close(hquery);
+    libmsi_unref(hquery);
 
     sql = "CREATE TABLE `Buffet` ( `One` CHAR(72), `Two` SHORT PRIMARY KEY `One`)";
     r = run_query(hdb, 0, sql);
@@ -6331,30 +6331,30 @@ static void test_order(void)
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     sql = "SELECT * FROM `Buffet` WHERE `One` = 'dos' ORDER BY `Two`";
-    r = MsiDatabaseOpenQuery(hdb, sql, &hquery);
+    r = libmsi_database_open_query(hdb, sql, &hquery);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-    r = MsiQueryExecute(hquery, 0);
+    r = libmsi_query_execute(hquery, 0);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
-    r = MsiQueryFetch(hquery, &hrec);
+    r = libmsi_query_fetch(hquery, &hrec);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     sz = sizeof(buffer);
-    r = MsiRecordGetString(hrec, 1, buffer, &sz);
+    r = libmsi_record_get_string(hrec, 1, buffer, &sz);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
     ok(!strcmp(buffer, "dos"), "Expected \"dos\", got \"%s\"\n", buffer);
 
-    r = MsiRecordGetInteger(hrec, 2);
+    r = libmsi_record_get_integer(hrec, 2);
     ok(r == 3, "Expected 3, got %d\n", r);
 
-    MsiCloseHandle(hrec);
+    libmsi_unref(hrec);
 
-    r = MsiQueryFetch(hquery, &hrec);
+    r = libmsi_query_fetch(hquery, &hrec);
     ok(r == ERROR_NO_MORE_ITEMS, "Expected ERROR_NO_MORE_ITEMS, got %d\n", r);
 
-    MsiQueryClose(hquery);
-    MsiCloseHandle(hquery);
-    MsiCloseHandle(hdb);
+    libmsi_query_close(hquery);
+    libmsi_unref(hquery);
+    libmsi_unref(hdb);
 }
 
 static void test_querymodify_delete_temporary(void)
@@ -6367,7 +6367,7 @@ static void test_querymodify_delete_temporary(void)
 
     DeleteFile(msifile);
 
-    r = MsiOpenDatabase(msifile, LIBMSI_DB_OPEN_CREATE, &hdb);
+    r = libmsi_database_open(msifile, LIBMSI_DB_OPEN_CREATE, &hdb);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     sql = "CREATE TABLE `Table` ( `A` SHORT PRIMARY KEY `A` )";
@@ -6375,103 +6375,103 @@ static void test_querymodify_delete_temporary(void)
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     sql = "SELECT * FROM `Table`";
-    r = MsiDatabaseOpenQuery(hdb, sql, &hquery);
+    r = libmsi_database_open_query(hdb, sql, &hquery);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-    r = MsiQueryExecute(hquery, 0);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-
-    hrec = MsiCreateRecord(1);
-    MsiRecordSetInteger(hrec, 1, 1);
-
-    r = MsiQueryModify(hquery, LIBMSI_MODIFY_INSERT, hrec);
+    r = libmsi_query_execute(hquery, 0);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
-    MsiCloseHandle(hrec);
+    hrec = libmsi_record_create(1);
+    libmsi_record_set_int(hrec, 1, 1);
 
-    hrec = MsiCreateRecord(1);
-    MsiRecordSetInteger(hrec, 1, 2);
-
-    r = MsiQueryModify(hquery, LIBMSI_MODIFY_INSERT_TEMPORARY, hrec);
+    r = libmsi_query_modify(hquery, LIBMSI_MODIFY_INSERT, hrec);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
-    MsiCloseHandle(hrec);
+    libmsi_unref(hrec);
 
-    hrec = MsiCreateRecord(1);
-    MsiRecordSetInteger(hrec, 1, 3);
+    hrec = libmsi_record_create(1);
+    libmsi_record_set_int(hrec, 1, 2);
 
-    r = MsiQueryModify(hquery, LIBMSI_MODIFY_INSERT, hrec);
+    r = libmsi_query_modify(hquery, LIBMSI_MODIFY_INSERT_TEMPORARY, hrec);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
-    MsiCloseHandle(hrec);
+    libmsi_unref(hrec);
 
-    hrec = MsiCreateRecord(1);
-    MsiRecordSetInteger(hrec, 1, 4);
+    hrec = libmsi_record_create(1);
+    libmsi_record_set_int(hrec, 1, 3);
 
-    r = MsiQueryModify(hquery, LIBMSI_MODIFY_INSERT_TEMPORARY, hrec);
+    r = libmsi_query_modify(hquery, LIBMSI_MODIFY_INSERT, hrec);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
-    MsiCloseHandle(hrec);
-    MsiQueryClose(hquery);
-    MsiCloseHandle(hquery);
+    libmsi_unref(hrec);
+
+    hrec = libmsi_record_create(1);
+    libmsi_record_set_int(hrec, 1, 4);
+
+    r = libmsi_query_modify(hquery, LIBMSI_MODIFY_INSERT_TEMPORARY, hrec);
+    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+
+    libmsi_unref(hrec);
+    libmsi_query_close(hquery);
+    libmsi_unref(hquery);
 
     sql = "SELECT * FROM `Table` WHERE  `A` = 2";
-    r = MsiDatabaseOpenQuery(hdb, sql, &hquery);
+    r = libmsi_database_open_query(hdb, sql, &hquery);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-    r = MsiQueryExecute(hquery, 0);
+    r = libmsi_query_execute(hquery, 0);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-    r = MsiQueryFetch(hquery, &hrec);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-
-    r = MsiQueryModify(hquery, LIBMSI_MODIFY_DELETE, hrec);
+    r = libmsi_query_fetch(hquery, &hrec);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
-    MsiCloseHandle(hrec);
-    MsiQueryClose(hquery);
-    MsiCloseHandle(hquery);
+    r = libmsi_query_modify(hquery, LIBMSI_MODIFY_DELETE, hrec);
+    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+
+    libmsi_unref(hrec);
+    libmsi_query_close(hquery);
+    libmsi_unref(hquery);
 
     sql = "SELECT * FROM `Table` WHERE  `A` = 3";
-    r = MsiDatabaseOpenQuery(hdb, sql, &hquery);
+    r = libmsi_database_open_query(hdb, sql, &hquery);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-    r = MsiQueryExecute(hquery, 0);
+    r = libmsi_query_execute(hquery, 0);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-    r = MsiQueryFetch(hquery, &hrec);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-
-    r = MsiQueryModify(hquery, LIBMSI_MODIFY_DELETE, hrec);
+    r = libmsi_query_fetch(hquery, &hrec);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
-    MsiCloseHandle(hrec);
-    MsiQueryClose(hquery);
-    MsiCloseHandle(hquery);
+    r = libmsi_query_modify(hquery, LIBMSI_MODIFY_DELETE, hrec);
+    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+
+    libmsi_unref(hrec);
+    libmsi_query_close(hquery);
+    libmsi_unref(hquery);
 
     sql = "SELECT * FROM `Table` ORDER BY `A`";
-    r = MsiDatabaseOpenQuery(hdb, sql, &hquery);
+    r = libmsi_database_open_query(hdb, sql, &hquery);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-    r = MsiQueryExecute(hquery, 0);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-
-    r = MsiQueryFetch(hquery, &hrec);
+    r = libmsi_query_execute(hquery, 0);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
-    r = MsiRecordGetInteger(hrec, 1);
+    r = libmsi_query_fetch(hquery, &hrec);
+    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+
+    r = libmsi_record_get_integer(hrec, 1);
     ok(r == 1, "Expected 1, got %d\n", r);
 
-    MsiCloseHandle(hrec);
+    libmsi_unref(hrec);
 
-    r = MsiQueryFetch(hquery, &hrec);
+    r = libmsi_query_fetch(hquery, &hrec);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
-    r = MsiRecordGetInteger(hrec, 1);
+    r = libmsi_record_get_integer(hrec, 1);
     ok(r == 4, "Expected 4, got %d\n", r);
 
-    MsiCloseHandle(hrec);
+    libmsi_unref(hrec);
 
-    r = MsiQueryFetch(hquery, &hrec);
+    r = libmsi_query_fetch(hquery, &hrec);
     ok(r == ERROR_NO_MORE_ITEMS, "Expected ERROR_NO_MORE_ITEMS, got %d\n", r);
 
-    MsiQueryClose(hquery);
-    MsiCloseHandle(hquery);
-    MsiCloseHandle(hdb);
+    libmsi_query_close(hquery);
+    libmsi_unref(hquery);
+    libmsi_unref(hdb);
     DeleteFileA(msifile);
 }
 
@@ -6487,7 +6487,7 @@ static void test_deleterow(void)
 
     DeleteFile(msifile);
 
-    r = MsiOpenDatabase(msifile, LIBMSI_DB_OPEN_CREATE, &hdb);
+    r = libmsi_database_open(msifile, LIBMSI_DB_OPEN_CREATE, &hdb);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     sql = "CREATE TABLE `Table` ( `A` CHAR(72) NOT NULL PRIMARY KEY `A` )";
@@ -6506,36 +6506,36 @@ static void test_deleterow(void)
     r = run_query(hdb, 0, sql);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
-    r = MsiDatabaseCommit(hdb);
+    r = libmsi_database_commit(hdb);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
-    MsiCloseHandle(hdb);
+    libmsi_unref(hdb);
 
-    r = MsiOpenDatabase(msifile, LIBMSI_DB_OPEN_READONLY, &hdb);
+    r = libmsi_database_open(msifile, LIBMSI_DB_OPEN_READONLY, &hdb);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     sql = "SELECT * FROM `Table`";
-    r = MsiDatabaseOpenQuery(hdb, sql, &hquery);
+    r = libmsi_database_open_query(hdb, sql, &hquery);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-    r = MsiQueryExecute(hquery, 0);
+    r = libmsi_query_execute(hquery, 0);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
-    r = MsiQueryFetch(hquery, &hrec);
+    r = libmsi_query_fetch(hquery, &hrec);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     size = MAX_PATH;
-    r = MsiRecordGetString(hrec, 1, buf, &size);
+    r = libmsi_record_get_string(hrec, 1, buf, &size);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
     ok(!strcmp(buf, "two"), "Expected two, got %s\n", buf);
 
-    MsiCloseHandle(hrec);
+    libmsi_unref(hrec);
 
-    r = MsiQueryFetch(hquery, &hrec);
+    r = libmsi_query_fetch(hquery, &hrec);
     ok(r == ERROR_NO_MORE_ITEMS, "Expected ERROR_NO_MORE_ITEMS, got %d\n", r);
 
-    MsiQueryClose(hquery);
-    MsiCloseHandle(hquery);
-    MsiCloseHandle(hdb);
+    libmsi_query_close(hquery);
+    libmsi_unref(hquery);
+    libmsi_unref(hdb);
     DeleteFileA(msifile);
 }
 
@@ -6556,7 +6556,7 @@ static void test_quotes(void)
 
     DeleteFile(msifile);
 
-    r = MsiOpenDatabase(msifile, LIBMSI_DB_OPEN_CREATE, &hdb);
+    r = libmsi_database_open(msifile, LIBMSI_DB_OPEN_CREATE, &hdb);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     sql = "CREATE TABLE `Table` ( `A` CHAR(72) NOT NULL PRIMARY KEY `A` )";
@@ -6595,60 +6595,60 @@ static void test_quotes(void)
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     sql = "SELECT * FROM `Table`";
-    r = MsiDatabaseOpenQuery(hdb, sql, &hquery);
+    r = libmsi_database_open_query(hdb, sql, &hquery);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
-    r = MsiQueryExecute(hquery, 0);
+    r = libmsi_query_execute(hquery, 0);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
-    r = MsiQueryFetch(hquery, &hrec);
+    r = libmsi_query_fetch(hquery, &hrec);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     size = MAX_PATH;
-    r = MsiRecordGetString(hrec, 1, buf, &size);
+    r = libmsi_record_get_string(hrec, 1, buf, &size);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
     ok(!strcmp(buf, "This is a \"string\" ok"),
        "Expected \"This is a \"string\" ok\", got %s\n", buf);
 
-    MsiCloseHandle(hrec);
+    libmsi_unref(hrec);
 
-    r = MsiQueryFetch(hquery, &hrec);
+    r = libmsi_query_fetch(hquery, &hrec);
     ok(r == ERROR_NO_MORE_ITEMS, "Expected ERROR_NO_MORE_ITEMS, got %d\n", r);
 
-    MsiQueryClose(hquery);
-    MsiCloseHandle(hquery);
+    libmsi_query_close(hquery);
+    libmsi_unref(hquery);
 
     write_file("import.idt", import_dat, (sizeof(import_dat) - 1) * sizeof(char));
 
-    r = MsiDatabaseImport(hdb, CURR_DIR, "import.idt");
+    r = libmsi_database_import(hdb, CURR_DIR, "import.idt");
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     DeleteFileA("import.idt");
 
     sql = "SELECT * FROM `Table`";
-    r = MsiDatabaseOpenQuery(hdb, sql, &hquery);
+    r = libmsi_database_open_query(hdb, sql, &hquery);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
-    r = MsiQueryExecute(hquery, 0);
+    r = libmsi_query_execute(hquery, 0);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
-    r = MsiQueryFetch(hquery, &hrec);
+    r = libmsi_query_fetch(hquery, &hrec);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     size = MAX_PATH;
-    r = MsiRecordGetString(hrec, 1, buf, &size);
+    r = libmsi_record_get_string(hrec, 1, buf, &size);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
     ok(!strcmp(buf, "This is a new 'string' ok"),
        "Expected \"This is a new 'string' ok\", got %s\n", buf);
 
-    MsiCloseHandle(hrec);
+    libmsi_unref(hrec);
 
-    r = MsiQueryFetch(hquery, &hrec);
+    r = libmsi_query_fetch(hquery, &hrec);
     ok(r == ERROR_NO_MORE_ITEMS, "Expected ERROR_NO_MORE_ITEMS, got %d\n", r);
 
-    MsiQueryClose(hquery);
-    MsiCloseHandle(hquery);
-    MsiCloseHandle(hdb);
+    libmsi_query_close(hquery);
+    libmsi_unref(hquery);
+    libmsi_unref(hdb);
     DeleteFileA(msifile);
 }
 
@@ -6664,7 +6664,7 @@ static void test_carriagereturn(void)
 
     DeleteFile(msifile);
 
-    r = MsiOpenDatabase(msifile, LIBMSI_DB_OPEN_CREATE, &hdb);
+    r = libmsi_database_open(msifile, LIBMSI_DB_OPEN_CREATE, &hdb);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     sql = "CREATE TABLE `Table`\r ( `A` CHAR(72) NOT NULL PRIMARY KEY `A` )";
@@ -6795,48 +6795,48 @@ static void test_carriagereturn(void)
        "Expected ERROR_BAD_QUERY_SYNTAX, got %d\n", r);
 
     sql = "SELECT * FROM `_Tables`";
-    r = MsiDatabaseOpenQuery(hdb, sql, &hquery);
+    r = libmsi_database_open_query(hdb, sql, &hquery);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-    r = MsiQueryExecute(hquery, 0);
+    r = libmsi_query_execute(hquery, 0);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
-    r = MsiQueryFetch(hquery, &hrec);
+    r = libmsi_query_fetch(hquery, &hrec);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     size = MAX_PATH;
-    r = MsiRecordGetString(hrec, 1, buf, &size);
+    r = libmsi_record_get_string(hrec, 1, buf, &size);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
     ok(!strcmp(buf, "\rOne"), "Expected \"\\rOne\", got \"%s\"\n", buf);
 
-    MsiCloseHandle(hrec);
+    libmsi_unref(hrec);
 
-    r = MsiQueryFetch(hquery, &hrec);
+    r = libmsi_query_fetch(hquery, &hrec);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     size = MAX_PATH;
-    r = MsiRecordGetString(hrec, 1, buf, &size);
+    r = libmsi_record_get_string(hrec, 1, buf, &size);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
     ok(!strcmp(buf, "Tw\ro"), "Expected \"Tw\\ro\", got \"%s\"\n", buf);
 
-    MsiCloseHandle(hrec);
+    libmsi_unref(hrec);
 
-    r = MsiQueryFetch(hquery, &hrec);
+    r = libmsi_query_fetch(hquery, &hrec);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     size = MAX_PATH;
-    r = MsiRecordGetString(hrec, 1, buf, &size);
+    r = libmsi_record_get_string(hrec, 1, buf, &size);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
     ok(!strcmp(buf, "Three\r"), "Expected \"Three\r\", got \"%s\"\n", buf);
 
-    MsiCloseHandle(hrec);
+    libmsi_unref(hrec);
 
-    r = MsiQueryFetch(hquery, &hrec);
+    r = libmsi_query_fetch(hquery, &hrec);
     ok(r == ERROR_NO_MORE_ITEMS, "Expected ERROR_NO_MORE_ITEMS, got %d\n", r);
 
-    MsiQueryClose(hquery);
-    MsiCloseHandle(hquery);
+    libmsi_query_close(hquery);
+    libmsi_unref(hquery);
 
-    MsiCloseHandle(hdb);
+    libmsi_unref(hdb);
     DeleteFileA(msifile);
 }
 
@@ -6852,7 +6852,7 @@ static void test_noquotes(void)
 
     DeleteFile(msifile);
 
-    r = MsiOpenDatabase(msifile, LIBMSI_DB_OPEN_CREATE, &hdb);
+    r = libmsi_database_open(msifile, LIBMSI_DB_OPEN_CREATE, &hdb);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     sql = "CREATE TABLE Table ( `A` CHAR(72) NOT NULL PRIMARY KEY `A` )";
@@ -6872,112 +6872,112 @@ static void test_noquotes(void)
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     sql = "SELECT * FROM `_Tables`";
-    r = MsiDatabaseOpenQuery(hdb, sql, &hquery);
+    r = libmsi_database_open_query(hdb, sql, &hquery);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-    r = MsiQueryExecute(hquery, 0);
+    r = libmsi_query_execute(hquery, 0);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
-    r = MsiQueryFetch(hquery, &hrec);
+    r = libmsi_query_fetch(hquery, &hrec);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     size = MAX_PATH;
-    r = MsiRecordGetString(hrec, 1, buf, &size);
+    r = libmsi_record_get_string(hrec, 1, buf, &size);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
     ok(!strcmp(buf, "Table"), "Expected \"Table\", got \"%s\"\n", buf);
 
-    MsiCloseHandle(hrec);
+    libmsi_unref(hrec);
 
-    r = MsiQueryFetch(hquery, &hrec);
+    r = libmsi_query_fetch(hquery, &hrec);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     size = MAX_PATH;
-    r = MsiRecordGetString(hrec, 1, buf, &size);
+    r = libmsi_record_get_string(hrec, 1, buf, &size);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
     ok(!strcmp(buf, "Table2"), "Expected \"Table2\", got \"%s\"\n", buf);
 
-    MsiCloseHandle(hrec);
+    libmsi_unref(hrec);
 
-    r = MsiQueryFetch(hquery, &hrec);
+    r = libmsi_query_fetch(hquery, &hrec);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     size = MAX_PATH;
-    r = MsiRecordGetString(hrec, 1, buf, &size);
+    r = libmsi_record_get_string(hrec, 1, buf, &size);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
     ok(!strcmp(buf, "Table3"), "Expected \"Table3\", got \"%s\"\n", buf);
 
-    MsiCloseHandle(hrec);
+    libmsi_unref(hrec);
 
-    r = MsiQueryFetch(hquery, &hrec);
+    r = libmsi_query_fetch(hquery, &hrec);
     ok(r == ERROR_NO_MORE_ITEMS, "Expected ERROR_NO_MORE_ITEMS, got %d\n", r);
 
-    MsiQueryClose(hquery);
-    MsiCloseHandle(hquery);
+    libmsi_query_close(hquery);
+    libmsi_unref(hquery);
 
     sql = "SELECT * FROM `_Columns`";
-    r = MsiDatabaseOpenQuery(hdb, sql, &hquery);
+    r = libmsi_database_open_query(hdb, sql, &hquery);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-    r = MsiQueryExecute(hquery, 0);
+    r = libmsi_query_execute(hquery, 0);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
-    r = MsiQueryFetch(hquery, &hrec);
+    r = libmsi_query_fetch(hquery, &hrec);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     size = MAX_PATH;
-    r = MsiRecordGetString(hrec, 1, buf, &size);
+    r = libmsi_record_get_string(hrec, 1, buf, &size);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
     ok(!strcmp(buf, "Table"), "Expected \"Table\", got \"%s\"\n", buf);
 
-    r = MsiRecordGetInteger(hrec, 2);
+    r = libmsi_record_get_integer(hrec, 2);
     ok(r == 1, "Expected 1, got %d\n", r);
 
     size = MAX_PATH;
-    r = MsiRecordGetString(hrec, 3, buf, &size);
+    r = libmsi_record_get_string(hrec, 3, buf, &size);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
     ok(!strcmp(buf, "A"), "Expected \"A\", got \"%s\"\n", buf);
 
-    MsiCloseHandle(hrec);
+    libmsi_unref(hrec);
 
-    r = MsiQueryFetch(hquery, &hrec);
+    r = libmsi_query_fetch(hquery, &hrec);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     size = MAX_PATH;
-    r = MsiRecordGetString(hrec, 1, buf, &size);
+    r = libmsi_record_get_string(hrec, 1, buf, &size);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
     ok(!strcmp(buf, "Table2"), "Expected \"Table2\", got \"%s\"\n", buf);
 
-    r = MsiRecordGetInteger(hrec, 2);
+    r = libmsi_record_get_integer(hrec, 2);
     ok(r == 1, "Expected 1, got %d\n", r);
 
     size = MAX_PATH;
-    r = MsiRecordGetString(hrec, 3, buf, &size);
+    r = libmsi_record_get_string(hrec, 3, buf, &size);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
     ok(!strcmp(buf, "A"), "Expected \"A\", got \"%s\"\n", buf);
 
-    MsiCloseHandle(hrec);
+    libmsi_unref(hrec);
 
-    r = MsiQueryFetch(hquery, &hrec);
+    r = libmsi_query_fetch(hquery, &hrec);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     size = MAX_PATH;
-    r = MsiRecordGetString(hrec, 1, buf, &size);
+    r = libmsi_record_get_string(hrec, 1, buf, &size);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
     ok(!strcmp(buf, "Table3"), "Expected \"Table3\", got \"%s\"\n", buf);
 
-    r = MsiRecordGetInteger(hrec, 2);
+    r = libmsi_record_get_integer(hrec, 2);
     ok(r == 1, "Expected 1, got %d\n", r);
 
     size = MAX_PATH;
-    r = MsiRecordGetString(hrec, 3, buf, &size);
+    r = libmsi_record_get_string(hrec, 3, buf, &size);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
     ok(!strcmp(buf, "A"), "Expected \"A\", got \"%s\"\n", buf);
 
-    MsiCloseHandle(hrec);
+    libmsi_unref(hrec);
 
-    r = MsiQueryFetch(hquery, &hrec);
+    r = libmsi_query_fetch(hquery, &hrec);
     ok(r == ERROR_NO_MORE_ITEMS, "Expected ERROR_NO_MORE_ITEMS, got %d\n", r);
 
-    MsiQueryClose(hquery);
-    MsiCloseHandle(hquery);
+    libmsi_query_close(hquery);
+    libmsi_unref(hquery);
 
     sql = "INSERT INTO Table ( `A` ) VALUES ( 'hi' )";
     r = run_query(hdb, 0, sql);
@@ -7005,39 +7005,39 @@ static void test_noquotes(void)
 
     hquery = NULL;
     sql = "SELECT * FROM Table2";
-    r = MsiDatabaseOpenQuery(hdb, sql, &hquery);
+    r = libmsi_database_open_query(hdb, sql, &hquery);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-    r = MsiQueryExecute(hquery, 0);
+    r = libmsi_query_execute(hquery, 0);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
-    r = MsiQueryFetch(hquery, &hrec);
+    r = libmsi_query_fetch(hquery, &hrec);
     ok(r == ERROR_NO_MORE_ITEMS, "Expected ERROR_NO_MORE_ITEMS, got %d\n", r);
 
-    MsiQueryClose(hquery);
-    MsiCloseHandle(hquery);
+    libmsi_query_close(hquery);
+    libmsi_unref(hquery);
 
     sql = "SELECT * FROM `Table` WHERE A = 'hi'";
-    r = MsiDatabaseOpenQuery(hdb, sql, &hquery);
+    r = libmsi_database_open_query(hdb, sql, &hquery);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-    r = MsiQueryExecute(hquery, 0);
+    r = libmsi_query_execute(hquery, 0);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
-    r = MsiQueryFetch(hquery, &hrec);
+    r = libmsi_query_fetch(hquery, &hrec);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     size = MAX_PATH;
-    r = MsiRecordGetString(hrec, 1, buf, &size);
+    r = libmsi_record_get_string(hrec, 1, buf, &size);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
     ok(!strcmp(buf, "hi"), "Expected \"hi\", got \"%s\"\n", buf);
 
-    MsiCloseHandle(hrec);
+    libmsi_unref(hrec);
 
-    r = MsiQueryFetch(hquery, &hrec);
+    r = libmsi_query_fetch(hquery, &hrec);
     ok(r == ERROR_NO_MORE_ITEMS, "Expected ERROR_NO_MORE_ITEMS, got %d\n", r);
 
-    MsiQueryClose(hquery);
-    MsiCloseHandle(hquery);
-    MsiCloseHandle(hdb);
+    libmsi_query_close(hquery);
+    libmsi_unref(hquery);
+    libmsi_unref(hdb);
     DeleteFileA(msifile);
 }
 
@@ -7063,7 +7063,7 @@ static void test_forcecodepage(void)
     DeleteFile(msifile);
     GetCurrentDirectoryA(MAX_PATH, CURR_DIR);
 
-    r = MsiOpenDatabase(msifile, LIBMSI_DB_OPEN_CREATE, &hdb);
+    r = libmsi_database_open(msifile, LIBMSI_DB_OPEN_CREATE, &hdb);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     sql = "SELECT * FROM `_ForceCodepage`";
@@ -7078,16 +7078,16 @@ static void test_forcecodepage(void)
     r = run_query(hdb, 0, sql);
     ok(r == ERROR_BAD_QUERY_SYNTAX, "Expected ERROR_BAD_QUERY_SYNTAX, got %d\n", r);
 
-    r = MsiDatabaseCommit(hdb);
+    r = libmsi_database_commit(hdb);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     sql = "SELECT * FROM `_ForceCodepage`";
     r = run_query(hdb, 0, sql);
     ok(r == ERROR_BAD_QUERY_SYNTAX, "Expected ERROR_BAD_QUERY_SYNTAX, got %d\n", r);
 
-    MsiCloseHandle(hdb);
+    libmsi_unref(hdb);
 
-    r = MsiOpenDatabase(msifile, LIBMSI_DB_OPEN_DIRECT, &hdb);
+    r = libmsi_database_open(msifile, LIBMSI_DB_OPEN_DIRECT, &hdb);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     sql = "SELECT * FROM `_ForceCodepage`";
@@ -7097,7 +7097,7 @@ static void test_forcecodepage(void)
     fd = open("forcecodepage.idt", O_WRONLY | O_BINARY | O_CREAT, 0644);
     ok(fd != -1, "cannot open file\n");
 
-    r = MsiDatabaseExport(hdb, "_ForceCodepage", fd);
+    r = libmsi_database_export(hdb, "_ForceCodepage", fd);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
     close(fd);
 
@@ -7107,13 +7107,13 @@ static void test_forcecodepage(void)
 
     create_file_data("forcecodepage.idt", "\r\n\r\n850\t_ForceCodepage\r\n", 0);
 
-    r = MsiDatabaseImport(hdb, CURR_DIR, "forcecodepage.idt");
+    r = libmsi_database_import(hdb, CURR_DIR, "forcecodepage.idt");
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     fd = open("forcecodepage.idt", O_WRONLY | O_BINARY | O_CREAT, 0644);
     ok(fd != -1, "cannot open file\n");
 
-    r = MsiDatabaseExport(hdb, "_ForceCodepage", fd);
+    r = libmsi_database_export(hdb, "_ForceCodepage", fd);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
     close(fd);
 
@@ -7123,10 +7123,10 @@ static void test_forcecodepage(void)
 
     create_file_data("forcecodepage.idt", "\r\n\r\n9999\t_ForceCodepage\r\n", 0);
 
-    r = MsiDatabaseImport(hdb, CURR_DIR, "forcecodepage.idt");
+    r = libmsi_database_import(hdb, CURR_DIR, "forcecodepage.idt");
     ok(r == ERROR_FUNCTION_FAILED, "Expected ERROR_FUNCTION_FAILED, got %d\n", r);
 
-    MsiCloseHandle(hdb);
+    libmsi_unref(hdb);
     DeleteFileA(msifile);
     DeleteFileA("forcecodepage.idt");
 }
@@ -7143,7 +7143,7 @@ static void test_querymodify_refresh(void)
 
     DeleteFile(msifile);
 
-    r = MsiOpenDatabase(msifile, LIBMSI_DB_OPEN_CREATE, &hdb);
+    r = libmsi_database_open(msifile, LIBMSI_DB_OPEN_CREATE, &hdb);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     sql = "CREATE TABLE `Table` ( `A` CHAR(72) NOT NULL, `B` INT PRIMARY KEY `A` )";
@@ -7155,45 +7155,45 @@ static void test_querymodify_refresh(void)
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     sql = "SELECT * FROM `Table`";
-    r = MsiDatabaseOpenQuery(hdb, sql, &hquery);
+    r = libmsi_database_open_query(hdb, sql, &hquery);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-    r = MsiQueryExecute(hquery, 0);
+    r = libmsi_query_execute(hquery, 0);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
-    r = MsiQueryFetch(hquery, &hrec);
+    r = libmsi_query_fetch(hquery, &hrec);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     sql = "UPDATE `Table` SET `B` = 2 WHERE `A` = 'hi'";
     r = run_query(hdb, 0, sql);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
-    r = MsiQueryModify(hquery, LIBMSI_MODIFY_REFRESH, hrec);
+    r = libmsi_query_modify(hquery, LIBMSI_MODIFY_REFRESH, hrec);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     size = MAX_PATH;
-    r = MsiRecordGetString(hrec, 1, buffer, &size);
+    r = libmsi_record_get_string(hrec, 1, buffer, &size);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
     ok(!strcmp(buffer, "hi"), "Expected \"hi\", got \"%s\"\n", buffer);
     ok(size == 2, "Expected 2, got %d\n", size);
 
-    r = MsiRecordGetInteger(hrec, 2);
+    r = libmsi_record_get_integer(hrec, 2);
     ok(r == 2, "Expected 2, got %d\n", r);
 
-    MsiCloseHandle(hrec);
-    MsiQueryClose(hquery);
-    MsiCloseHandle(hquery);
+    libmsi_unref(hrec);
+    libmsi_query_close(hquery);
+    libmsi_unref(hquery);
 
     sql = "INSERT INTO `Table` ( `A`, `B` ) VALUES ( 'hello', 3 )";
     r = run_query(hdb, 0, sql);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     sql = "SELECT * FROM `Table` WHERE `B` = 3";
-    r = MsiDatabaseOpenQuery(hdb, sql, &hquery);
+    r = libmsi_database_open_query(hdb, sql, &hquery);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-    r = MsiQueryExecute(hquery, 0);
+    r = libmsi_query_execute(hquery, 0);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
-    r = MsiQueryFetch(hquery, &hrec);
+    r = libmsi_query_fetch(hquery, &hrec);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     sql = "UPDATE `Table` SET `B` = 2 WHERE `A` = 'hello'";
@@ -7204,22 +7204,22 @@ static void test_querymodify_refresh(void)
     r = run_query(hdb, 0, sql);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
-    r = MsiQueryModify(hquery, LIBMSI_MODIFY_REFRESH, hrec);
+    r = libmsi_query_modify(hquery, LIBMSI_MODIFY_REFRESH, hrec);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     size = MAX_PATH;
-    r = MsiRecordGetString(hrec, 1, buffer, &size);
+    r = libmsi_record_get_string(hrec, 1, buffer, &size);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
     ok(!strcmp(buffer, "hello"), "Expected \"hello\", got \"%s\"\n", buffer);
     ok(size == 5, "Expected 5, got %d\n", size);
 
-    r = MsiRecordGetInteger(hrec, 2);
+    r = libmsi_record_get_integer(hrec, 2);
     ok(r == 2, "Expected 2, got %d\n", r);
 
-    MsiCloseHandle(hrec);
-    MsiQueryClose(hquery);
-    MsiCloseHandle(hquery);
-    MsiCloseHandle(hdb);
+    libmsi_unref(hrec);
+    libmsi_query_close(hquery);
+    libmsi_unref(hquery);
+    libmsi_unref(hdb);
     DeleteFileA(msifile);
 }
 
@@ -7233,7 +7233,7 @@ static void test_where_querymodify(void)
 
     DeleteFile(msifile);
 
-    r = MsiOpenDatabase(msifile, LIBMSI_DB_OPEN_CREATE, &hdb);
+    r = libmsi_database_open(msifile, LIBMSI_DB_OPEN_CREATE, &hdb);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     sql = "CREATE TABLE `Table` ( `A` INT, `B` INT PRIMARY KEY `A` )";
@@ -7254,76 +7254,76 @@ static void test_where_querymodify(void)
 
     /* `B` = 3 doesn't match, but the query shouldn't be executed */
     sql = "SELECT * FROM `Table` WHERE `B` = 3";
-    r = MsiDatabaseOpenQuery(hdb, sql, &hquery);
+    r = libmsi_database_open_query(hdb, sql, &hquery);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
-    hrec = MsiCreateRecord(2);
-    MsiRecordSetInteger(hrec, 1, 7);
-    MsiRecordSetInteger(hrec, 2, 8);
+    hrec = libmsi_record_create(2);
+    libmsi_record_set_int(hrec, 1, 7);
+    libmsi_record_set_int(hrec, 2, 8);
 
-    r = MsiQueryModify(hquery, LIBMSI_MODIFY_INSERT_TEMPORARY, hrec);
+    r = libmsi_query_modify(hquery, LIBMSI_MODIFY_INSERT_TEMPORARY, hrec);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
-    MsiCloseHandle(hrec);
-    MsiQueryClose(hquery);
-    MsiCloseHandle(hquery);
+    libmsi_unref(hrec);
+    libmsi_query_close(hquery);
+    libmsi_unref(hquery);
 
     sql = "SELECT * FROM `Table` WHERE `A` = 7";
-    r = MsiDatabaseOpenQuery(hdb, sql, &hquery);
+    r = libmsi_database_open_query(hdb, sql, &hquery);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-    r = MsiQueryExecute(hquery, 0);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-
-    r = MsiQueryFetch(hquery, &hrec);
+    r = libmsi_query_execute(hquery, 0);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
-    r = MsiRecordGetInteger(hrec, 1);
+    r = libmsi_query_fetch(hquery, &hrec);
+    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+
+    r = libmsi_record_get_integer(hrec, 1);
     ok(r == 7, "Expected 7, got %d\n", r);
 
-    r = MsiRecordGetInteger(hrec, 2);
+    r = libmsi_record_get_integer(hrec, 2);
     ok(r == 8, "Expected 8, got %d\n", r);
 
-    MsiRecordSetInteger(hrec, 2, 9);
+    libmsi_record_set_int(hrec, 2, 9);
 
-    r = MsiQueryModify(hquery, LIBMSI_MODIFY_UPDATE, hrec);
+    r = libmsi_query_modify(hquery, LIBMSI_MODIFY_UPDATE, hrec);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
-    MsiCloseHandle(hrec);
-    MsiQueryClose(hquery);
-    MsiCloseHandle(hquery);
+    libmsi_unref(hrec);
+    libmsi_query_close(hquery);
+    libmsi_unref(hquery);
 
     sql = "SELECT * FROM `Table` WHERE `A` = 7";
-    r = MsiDatabaseOpenQuery(hdb, sql, &hquery);
+    r = libmsi_database_open_query(hdb, sql, &hquery);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-    r = MsiQueryExecute(hquery, 0);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-
-    r = MsiQueryFetch(hquery, &hrec);
+    r = libmsi_query_execute(hquery, 0);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
-    r = MsiRecordGetInteger(hrec, 1);
+    r = libmsi_query_fetch(hquery, &hrec);
+    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+
+    r = libmsi_record_get_integer(hrec, 1);
     ok(r == 7, "Expected 7, got %d\n", r);
 
-    r = MsiRecordGetInteger(hrec, 2);
+    r = libmsi_record_get_integer(hrec, 2);
     ok(r == 9, "Expected 9, got %d\n", r);
 
     sql = "UPDATE `Table` SET `B` = 10 WHERE `A` = 7";
     r = run_query(hdb, 0, sql);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
-    r = MsiQueryModify(hquery, LIBMSI_MODIFY_REFRESH, hrec);
+    r = libmsi_query_modify(hquery, LIBMSI_MODIFY_REFRESH, hrec);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
-    r = MsiRecordGetInteger(hrec, 1);
+    r = libmsi_record_get_integer(hrec, 1);
     ok(r == 7, "Expected 7, got %d\n", r);
 
-    r = MsiRecordGetInteger(hrec, 2);
+    r = libmsi_record_get_integer(hrec, 2);
     ok(r == 10, "Expected 10, got %d\n", r);
 
-    MsiCloseHandle(hrec);
-    MsiQueryClose(hquery);
-    MsiCloseHandle(hquery);
-    MsiCloseHandle(hdb);
+    libmsi_unref(hrec);
+    libmsi_query_close(hquery);
+    libmsi_unref(hquery);
+    libmsi_unref(hdb);
 }
 
 static bool create_storage(const char *name)
@@ -7375,12 +7375,12 @@ static void test_storages_table(void)
     hdb = create_db();
     ok(hdb, "failed to create db\n");
 
-    r = MsiDatabaseCommit(hdb);
+    r = libmsi_database_commit(hdb);
     ok(r == ERROR_SUCCESS , "Failed to commit database\n");
 
-    MsiCloseHandle(hdb);
+    libmsi_unref(hdb);
 
-    r = MsiOpenDatabase(msifile, LIBMSI_DB_OPEN_TRANSACT, &hdb);
+    r = libmsi_database_open(msifile, LIBMSI_DB_OPEN_TRANSACT, &hdb);
     ok(r == ERROR_SUCCESS , "Failed to open database\n");
 
     /* check the column types */
@@ -7389,7 +7389,7 @@ static void test_storages_table(void)
     ok(check_record(hrec, 1, "s62"), "wrong hrecord type\n");
     ok(check_record(hrec, 2, "V0"), "wrong hrecord type\n");
 
-    MsiCloseHandle(hrec);
+    libmsi_unref(hrec);
 
     /* now try the names */
     hrec = get_column_info(hdb, "SELECT * FROM `_Storages`", LIBMSI_COL_INFO_NAMES);
@@ -7397,61 +7397,61 @@ static void test_storages_table(void)
     ok(check_record(hrec, 1, "Name"), "wrong hrecord type\n");
     ok(check_record(hrec, 2, "Data"), "wrong hrecord type\n");
 
-    MsiCloseHandle(hrec);
+    libmsi_unref(hrec);
 
     create_storage("storage.bin");
 
-    hrec = MsiCreateRecord(2);
-    MsiRecordSetString(hrec, 1, "stgname");
+    hrec = libmsi_record_create(2);
+    libmsi_record_set_string(hrec, 1, "stgname");
 
-    r = MsiRecordSetStream(hrec, 2, "storage.bin");
+    r = libmsi_record_load_stream(hrec, 2, "storage.bin");
     ok(r == ERROR_SUCCESS, "Failed to add stream data to the hrecord: %d\n", r);
 
     DeleteFileA("storage.bin");
 
     sql = "INSERT INTO `_Storages` (`Name`, `Data`) VALUES (?, ?)";
-    r = MsiDatabaseOpenQuery(hdb, sql, &hquery);
+    r = libmsi_database_open_query(hdb, sql, &hquery);
     ok(r == ERROR_SUCCESS, "Failed to open database hquery: %d\n", r);
 
-    r = MsiQueryExecute(hquery, hrec);
+    r = libmsi_query_execute(hquery, hrec);
     ok(r == ERROR_SUCCESS, "Failed to execute hquery: %d\n", r);
 
-    MsiCloseHandle(hrec);
-    MsiQueryClose(hquery);
-    MsiCloseHandle(hquery);
+    libmsi_unref(hrec);
+    libmsi_query_close(hquery);
+    libmsi_unref(hquery);
 
     sql = "SELECT `Name`, `Data` FROM `_Storages`";
-    r = MsiDatabaseOpenQuery(hdb, sql, &hquery);
+    r = libmsi_database_open_query(hdb, sql, &hquery);
     ok(r == ERROR_SUCCESS, "Failed to open database hquery: %d\n", r);
 
-    r = MsiQueryExecute(hquery, 0);
+    r = libmsi_query_execute(hquery, 0);
     ok(r == ERROR_SUCCESS, "Failed to execute hquery: %d\n", r);
 
-    r = MsiQueryFetch(hquery, &hrec);
+    r = libmsi_query_fetch(hquery, &hrec);
     ok(r == ERROR_SUCCESS, "Failed to fetch hrecord: %d\n", r);
 
     size = MAX_PATH;
-    r = MsiRecordGetString(hrec, 1, file, &size);
+    r = libmsi_record_get_string(hrec, 1, file, &size);
     ok(r == ERROR_SUCCESS, "Failed to get string: %d\n", r);
     ok(!strcmp(file, "stgname"), "Expected \"stgname\", got \"%s\"\n", file);
 
     size = MAX_PATH;
     strcpy(buf, "apple");
-    r = MsiRecordReadStream(hrec, 2, buf, &size);
+    r = libmsi_record_save_stream(hrec, 2, buf, &size);
     ok(r == ERROR_INVALID_DATA, "Expected ERROR_INVALID_DATA, got %d\n", r);
     ok(!strcmp(buf, "apple"), "Expected buf to be unchanged, got %s\n", buf);
     ok(size == 0, "Expected 0, got %d\n", size);
 
-    MsiCloseHandle(hrec);
+    libmsi_unref(hrec);
 
-    r = MsiQueryFetch(hquery, &hrec);
+    r = libmsi_query_fetch(hquery, &hrec);
     ok(r == ERROR_NO_MORE_ITEMS, "Expected ERROR_NO_MORE_ITEMS, got %d\n", r);
 
-    MsiQueryClose(hquery);
-    MsiCloseHandle(hquery);
+    libmsi_query_close(hquery);
+    libmsi_unref(hquery);
 
-    MsiDatabaseCommit(hdb);
-    MsiCloseHandle(hdb);
+    libmsi_database_commit(hdb);
+    libmsi_unref(hdb);
 
     MultiByteToWideChar(CP_ACP, 0, msifile, -1, name, MAX_PATH);
     hr = StgOpenStorage(name, NULL, STGM_DIRECT | STGM_READ |
@@ -7492,7 +7492,7 @@ static void test_droptable(void)
     unsigned size;
     unsigned r;
 
-    r = MsiOpenDatabase(msifile, LIBMSI_DB_OPEN_CREATE, &hdb);
+    r = libmsi_database_open(msifile, LIBMSI_DB_OPEN_CREATE, &hdb);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     sql = "CREATE TABLE `One` ( `A` INT PRIMARY KEY `A` )";
@@ -7504,53 +7504,53 @@ static void test_droptable(void)
     ok(r == ERROR_NO_MORE_ITEMS, "Expected ERROR_NO_MORE_ITEMS, got %d\n", r);
 
     sql = "SELECT * FROM `_Tables` WHERE `Name` = 'One'";
-    r = MsiDatabaseOpenQuery(hdb, sql, &hquery);
+    r = libmsi_database_open_query(hdb, sql, &hquery);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-    r = MsiQueryExecute(hquery, 0);
+    r = libmsi_query_execute(hquery, 0);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
-    r = MsiQueryFetch(hquery, &hrec);
+    r = libmsi_query_fetch(hquery, &hrec);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     size = MAX_PATH;
-    r = MsiRecordGetString(hrec, 1, buf, &size);
+    r = libmsi_record_get_string(hrec, 1, buf, &size);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
     ok(!strcmp(buf, "One"), "Expected \"One\", got \"%s\"\n", buf);
 
-    MsiCloseHandle(hrec);
-    MsiQueryClose(hquery);
-    MsiCloseHandle(hquery);
+    libmsi_unref(hrec);
+    libmsi_query_close(hquery);
+    libmsi_unref(hquery);
 
     sql = "SELECT * FROM `_Columns` WHERE `Table` = 'One'";
-    r = MsiDatabaseOpenQuery(hdb, sql, &hquery);
+    r = libmsi_database_open_query(hdb, sql, &hquery);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-    r = MsiQueryExecute(hquery, 0);
+    r = libmsi_query_execute(hquery, 0);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
-    r = MsiQueryFetch(hquery, &hrec);
+    r = libmsi_query_fetch(hquery, &hrec);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     size = MAX_PATH;
-    r = MsiRecordGetString(hrec, 1, buf, &size);
+    r = libmsi_record_get_string(hrec, 1, buf, &size);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
     ok(!strcmp(buf, "One"), "Expected \"One\", got \"%s\"\n", buf);
 
-    r = MsiRecordGetInteger(hrec, 2);
+    r = libmsi_record_get_integer(hrec, 2);
     ok(r == 1, "Expected 1, got %d\n", r);
 
     size = MAX_PATH;
-    r = MsiRecordGetString(hrec, 3, buf, &size);
+    r = libmsi_record_get_string(hrec, 3, buf, &size);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
     ok(!strcmp(buf, "A"), "Expected \"A\", got \"%s\"\n", buf);
 
-    MsiCloseHandle(hrec);
+    libmsi_unref(hrec);
 
-    r = MsiQueryFetch(hquery, &hrec);
+    r = libmsi_query_fetch(hquery, &hrec);
     ok(r == ERROR_NO_MORE_ITEMS,
        "Expected ERROR_NO_MORE_ITEMS, got %d\n", r);
 
-    MsiQueryClose(hquery);
-    MsiCloseHandle(hquery);
+    libmsi_query_close(hquery);
+    libmsi_unref(hquery);
 
     sql = "DROP `One`";
     r = run_query(hdb, 0, sql);
@@ -7564,17 +7564,17 @@ static void test_droptable(void)
 
     sql = "DROP TABLE `One`";
     hquery = 0;
-    r = MsiDatabaseOpenQuery(hdb, sql, &hquery);
+    r = libmsi_database_open_query(hdb, sql, &hquery);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-    r = MsiQueryExecute(hquery, 0);
+    r = libmsi_query_execute(hquery, 0);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
-    r = MsiQueryFetch(hquery, &hrec);
+    r = libmsi_query_fetch(hquery, &hrec);
     ok(r == ERROR_FUNCTION_FAILED,
        "Expected ERROR_FUNCTION_FAILED, got %d\n", r);
 
-    MsiQueryClose(hquery);
-    MsiCloseHandle(hquery);
+    libmsi_query_close(hquery);
+    libmsi_unref(hquery);
 
     sql = "SELECT * FROM `IDontExist`";
     r = do_query(hdb, sql, &hrec);
@@ -7616,71 +7616,71 @@ static void test_droptable(void)
     ok(r == ERROR_NO_MORE_ITEMS, "Expected ERROR_NO_MORE_ITEMS, got %d\n", r);
 
     sql = "SELECT * FROM `_Tables` WHERE `Name` = 'One'";
-    r = MsiDatabaseOpenQuery(hdb, sql, &hquery);
+    r = libmsi_database_open_query(hdb, sql, &hquery);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-    r = MsiQueryExecute(hquery, 0);
+    r = libmsi_query_execute(hquery, 0);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
-    r = MsiQueryFetch(hquery, &hrec);
+    r = libmsi_query_fetch(hquery, &hrec);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     size = MAX_PATH;
-    r = MsiRecordGetString(hrec, 1, buf, &size);
+    r = libmsi_record_get_string(hrec, 1, buf, &size);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
     ok(!strcmp(buf, "One"), "Expected \"One\", got \"%s\"\n", buf);
 
-    MsiCloseHandle(hrec);
-    MsiQueryClose(hquery);
-    MsiCloseHandle(hquery);
+    libmsi_unref(hrec);
+    libmsi_query_close(hquery);
+    libmsi_unref(hquery);
 
     sql = "SELECT * FROM `_Columns` WHERE `Table` = 'One'";
-    r = MsiDatabaseOpenQuery(hdb, sql, &hquery);
+    r = libmsi_database_open_query(hdb, sql, &hquery);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-    r = MsiQueryExecute(hquery, 0);
+    r = libmsi_query_execute(hquery, 0);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
-    r = MsiQueryFetch(hquery, &hrec);
+    r = libmsi_query_fetch(hquery, &hrec);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     size = MAX_PATH;
-    r = MsiRecordGetString(hrec, 1, buf, &size);
+    r = libmsi_record_get_string(hrec, 1, buf, &size);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
     ok(!strcmp(buf, "One"), "Expected \"One\", got \"%s\"\n", buf);
 
-    r = MsiRecordGetInteger(hrec, 2);
+    r = libmsi_record_get_integer(hrec, 2);
     ok(r == 1, "Expected 1, got %d\n", r);
 
     size = MAX_PATH;
-    r = MsiRecordGetString(hrec, 3, buf, &size);
+    r = libmsi_record_get_string(hrec, 3, buf, &size);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
     ok(!strcmp(buf, "B"), "Expected \"B\", got \"%s\"\n", buf);
 
-    MsiCloseHandle(hrec);
+    libmsi_unref(hrec);
 
-    r = MsiQueryFetch(hquery, &hrec);
+    r = libmsi_query_fetch(hquery, &hrec);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     size = MAX_PATH;
-    r = MsiRecordGetString(hrec, 1, buf, &size);
+    r = libmsi_record_get_string(hrec, 1, buf, &size);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
     ok(!strcmp(buf, "One"), "Expected \"One\", got \"%s\"\n", buf);
 
-    r = MsiRecordGetInteger(hrec, 2);
+    r = libmsi_record_get_integer(hrec, 2);
     ok(r == 2, "Expected 2, got %d\n", r);
 
     size = MAX_PATH;
-    r = MsiRecordGetString(hrec, 3, buf, &size);
+    r = libmsi_record_get_string(hrec, 3, buf, &size);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
     ok(!strcmp(buf, "C"), "Expected \"C\", got \"%s\"\n", buf);
 
-    MsiCloseHandle(hrec);
+    libmsi_unref(hrec);
 
-    r = MsiQueryFetch(hquery, &hrec);
+    r = libmsi_query_fetch(hquery, &hrec);
     ok(r == ERROR_NO_MORE_ITEMS,
        "Expected ERROR_NO_MORE_ITEMS, got %d\n", r);
 
-    MsiQueryClose(hquery);
-    MsiCloseHandle(hquery);
+    libmsi_query_close(hquery);
+    libmsi_unref(hquery);
 
     sql = "DROP TABLE One";
     r = run_query(hdb, 0, sql);
@@ -7699,7 +7699,7 @@ static void test_droptable(void)
     r = do_query(hdb, sql, &hrec);
     ok(r == ERROR_NO_MORE_ITEMS, "Expected ERROR_NO_MORE_ITEMS, got %d\n", r);
 
-    MsiCloseHandle(hdb);
+    libmsi_unref(hdb);
     DeleteFileA(msifile);
 }
 
@@ -7714,32 +7714,32 @@ static void test_dbmerge(void)
     unsigned size;
     unsigned r;
 
-    r = MsiOpenDatabase(msifile, LIBMSI_DB_OPEN_CREATE, &hdb);
+    r = libmsi_database_open(msifile, LIBMSI_DB_OPEN_CREATE, &hdb);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
-    r = MsiOpenDatabase("refdb.msi", LIBMSI_DB_OPEN_CREATE, &href);
+    r = libmsi_database_open("refdb.msi", LIBMSI_DB_OPEN_CREATE, &href);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     /* hDatabase is invalid */
-    r = MsiDatabaseMerge(0, href, "MergeErrors");
+    r = libmsi_database_merge(0, href, "MergeErrors");
     ok(r == ERROR_INVALID_HANDLE,
        "Expected ERROR_INVALID_HANDLE, got %d\n", r);
 
     /* hDatabaseMerge is invalid */
-    r = MsiDatabaseMerge(hdb, 0, "MergeErrors");
+    r = libmsi_database_merge(hdb, 0, "MergeErrors");
     ok(r == ERROR_INVALID_HANDLE,
        "Expected ERROR_INVALID_HANDLE, got %d\n", r);
 
     /* szTableName is NULL */
-    r = MsiDatabaseMerge(hdb, href, NULL);
+    r = libmsi_database_merge(hdb, href, NULL);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     /* szTableName is empty */
-    r = MsiDatabaseMerge(hdb, href, "");
+    r = libmsi_database_merge(hdb, href, "");
     ok(r == ERROR_INVALID_TABLE, "Expected ERROR_INVALID_TABLE, got %d\n", r);
 
     /* both DBs empty, szTableName is valid */
-    r = MsiDatabaseMerge(hdb, href, "MergeErrors");
+    r = libmsi_database_merge(hdb, href, "MergeErrors");
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     sql = "CREATE TABLE `One` ( `A` INT PRIMARY KEY `A` )";
@@ -7751,7 +7751,7 @@ static void test_dbmerge(void)
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     /* column types don't match */
-    r = MsiDatabaseMerge(hdb, href, "MergeErrors");
+    r = libmsi_database_merge(hdb, href, "MergeErrors");
     ok(r == ERROR_DATATYPE_MISMATCH,
        "Expected ERROR_DATATYPE_MISMATCH, got %d\n", r);
 
@@ -7796,7 +7796,7 @@ static void test_dbmerge(void)
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     /* column sting types don't match exactly */
-    r = MsiDatabaseMerge(hdb, href, "MergeErrors");
+    r = libmsi_database_merge(hdb, href, "MergeErrors");
     ok(r == ERROR_SUCCESS,
        "Expected ERROR_SUCCESS, got %d\n", r);
 
@@ -7823,7 +7823,7 @@ static void test_dbmerge(void)
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     /* column names don't match */
-    r = MsiDatabaseMerge(hdb, href, "MergeErrors");
+    r = libmsi_database_merge(hdb, href, "MergeErrors");
     ok(r == ERROR_DATATYPE_MISMATCH,
        "Expected ERROR_DATATYPE_MISMATCH, got %d\n", r);
 
@@ -7850,7 +7850,7 @@ static void test_dbmerge(void)
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     /* primary keys don't match */
-    r = MsiDatabaseMerge(hdb, href, "MergeErrors");
+    r = libmsi_database_merge(hdb, href, "MergeErrors");
     ok(r == ERROR_DATATYPE_MISMATCH,
        "Expected ERROR_DATATYPE_MISMATCH, got %d\n", r);
 
@@ -7877,7 +7877,7 @@ static void test_dbmerge(void)
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     /* number of primary keys doesn't match */
-    r = MsiDatabaseMerge(hdb, href, "MergeErrors");
+    r = libmsi_database_merge(hdb, href, "MergeErrors");
     ok(r == ERROR_DATATYPE_MISMATCH,
        "Expected ERROR_DATATYPE_MISMATCH, got %d\n", r);
 
@@ -7908,23 +7908,23 @@ static void test_dbmerge(void)
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     /* number of columns doesn't match */
-    r = MsiDatabaseMerge(hdb, href, "MergeErrors");
+    r = libmsi_database_merge(hdb, href, "MergeErrors");
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     sql = "SELECT * FROM `One`";
     r = do_query(hdb, sql, &hrec);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
-    r = MsiRecordGetInteger(hrec, 1);
+    r = libmsi_record_get_integer(hrec, 1);
     ok(r == 1, "Expected 1, got %d\n", r);
 
-    r = MsiRecordGetInteger(hrec, 2);
+    r = libmsi_record_get_integer(hrec, 2);
     ok(r == 2, "Expected 2, got %d\n", r);
 
-    r = MsiRecordGetInteger(hrec, 3);
+    r = libmsi_record_get_integer(hrec, 3);
     ok(r == MSI_NULL_INTEGER, "Expected MSI_NULL_INTEGER, got %d\n", r);
 
-    MsiCloseHandle(hrec);
+    libmsi_unref(hrec);
 
     /* nothing in MergeErrors */
     sql = "SELECT * FROM `MergeErrors`";
@@ -7953,23 +7953,23 @@ static void test_dbmerge(void)
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     /* number of columns doesn't match */
-    r = MsiDatabaseMerge(hdb, href, "MergeErrors");
+    r = libmsi_database_merge(hdb, href, "MergeErrors");
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     sql = "SELECT * FROM `One`";
     r = do_query(hdb, sql, &hrec);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
-    r = MsiRecordGetInteger(hrec, 1);
+    r = libmsi_record_get_integer(hrec, 1);
     ok(r == 1, "Expected 1, got %d\n", r);
 
-    r = MsiRecordGetInteger(hrec, 2);
+    r = libmsi_record_get_integer(hrec, 2);
     ok(r == 2, "Expected 2, got %d\n", r);
 
-    r = MsiRecordGetInteger(hrec, 3);
+    r = libmsi_record_get_integer(hrec, 3);
     ok(r == MSI_NULL_INTEGER, "Expected MSI_NULL_INTEGER, got %d\n", r);
 
-    MsiCloseHandle(hrec);
+    libmsi_unref(hrec);
 
     /* nothing in MergeErrors */
     sql = "SELECT * FROM `MergeErrors`";
@@ -8010,7 +8010,7 @@ static void test_dbmerge(void)
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     /* primary keys match, rows do not */
-    r = MsiDatabaseMerge(hdb, href, "MergeErrors");
+    r = libmsi_database_merge(hdb, href, "MergeErrors");
     ok(r == ERROR_FUNCTION_FAILED,
        "Expected ERROR_FUNCTION_FAILED, got %d\n", r);
 
@@ -8020,52 +8020,52 @@ static void test_dbmerge(void)
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     size = MAX_PATH;
-    r = MsiRecordGetString(hrec, 1, buf, &size);
+    r = libmsi_record_get_string(hrec, 1, buf, &size);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
     ok(!strcmp(buf, "One"), "Expected \"One\", got \"%s\"\n", buf);
 
-    r = MsiRecordGetInteger(hrec, 2);
+    r = libmsi_record_get_integer(hrec, 2);
     ok(r == 2, "Expected 2, got %d\n", r);
 
-    MsiCloseHandle(hrec);
+    libmsi_unref(hrec);
 
-    r = MsiDatabaseOpenQuery(hdb, "SELECT * FROM `MergeErrors`", &hquery);
+    r = libmsi_database_open_query(hdb, "SELECT * FROM `MergeErrors`", &hquery);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     hrec = NULL;
-    r = MsiQueryGetColumnInfo(hquery, LIBMSI_COL_INFO_NAMES, &hrec);
+    r = libmsi_query_get_column_info(hquery, LIBMSI_COL_INFO_NAMES, &hrec);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     size = MAX_PATH;
-    r = MsiRecordGetString(hrec, 1, buf, &size);
+    r = libmsi_record_get_string(hrec, 1, buf, &size);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
     ok(!strcmp(buf, "Table"), "Expected \"Table\", got \"%s\"\n", buf);
 
     size = MAX_PATH;
-    r = MsiRecordGetString(hrec, 2, buf, &size);
+    r = libmsi_record_get_string(hrec, 2, buf, &size);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
     ok(!strcmp(buf, "NumRowMergeConflicts"),
        "Expected \"NumRowMergeConflicts\", got \"%s\"\n", buf);
 
-    MsiCloseHandle(hrec);
+    libmsi_unref(hrec);
 
     hrec = NULL;
-    r = MsiQueryGetColumnInfo(hquery, LIBMSI_COL_INFO_TYPES, &hrec);
+    r = libmsi_query_get_column_info(hquery, LIBMSI_COL_INFO_TYPES, &hrec);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     size = MAX_PATH;
-    r = MsiRecordGetString(hrec, 1, buf, &size);
+    r = libmsi_record_get_string(hrec, 1, buf, &size);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
     ok(!strcmp(buf, "s255"), "Expected \"s255\", got \"%s\"\n", buf);
 
     size = MAX_PATH;
-    r = MsiRecordGetString(hrec, 2, buf, &size);
+    r = libmsi_record_get_string(hrec, 2, buf, &size);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
     ok(!strcmp(buf, "i2"), "Expected \"i2\", got \"%s\"\n", buf);
 
-    MsiCloseHandle(hrec);
-    MsiQueryClose(hquery);
-    MsiCloseHandle(hquery);
+    libmsi_unref(hrec);
+    libmsi_query_close(hquery);
+    libmsi_unref(hquery);
 
     sql = "DROP TABLE `MergeErrors`";
     r = run_query(hdb, 0, sql);
@@ -8088,22 +8088,22 @@ static void test_dbmerge(void)
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     /* table from merged database is not in target database */
-    r = MsiDatabaseMerge(hdb, href, "MergeErrors");
+    r = libmsi_database_merge(hdb, href, "MergeErrors");
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     sql = "SELECT * FROM `One`";
     r = do_query(hdb, sql, &hrec);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
-    r = MsiRecordGetInteger(hrec, 1);
+    r = libmsi_record_get_integer(hrec, 1);
     ok(r == 1, "Expected 1, got %d\n", r);
 
     size = MAX_PATH;
-    r = MsiRecordGetString(hrec, 2, buf, &size);
+    r = libmsi_record_get_string(hrec, 2, buf, &size);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
     ok(!strcmp(buf, "hi"), "Expected \"hi\", got \"%s\"\n", buf);
 
-    MsiCloseHandle(hrec);
+    libmsi_unref(hrec);
 
     /* nothing in MergeErrors */
     sql = "SELECT * FROM `MergeErrors`";
@@ -8134,7 +8134,7 @@ static void test_dbmerge(void)
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     /* primary key is string */
-    r = MsiDatabaseMerge(hdb, href, "MergeErrors");
+    r = libmsi_database_merge(hdb, href, "MergeErrors");
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     sql = "SELECT * FROM `One`";
@@ -8142,14 +8142,14 @@ static void test_dbmerge(void)
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     size = MAX_PATH;
-    r = MsiRecordGetString(hrec, 1, buf, &size);
+    r = libmsi_record_get_string(hrec, 1, buf, &size);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
     ok(!strcmp(buf, "hi"), "Expected \"hi\", got \"%s\"\n", buf);
 
-    r = MsiRecordGetInteger(hrec, 2);
+    r = libmsi_record_get_integer(hrec, 2);
     ok(r == 1, "Expected 1, got %d\n", r);
 
-    MsiCloseHandle(hrec);
+    libmsi_unref(hrec);
 
     /* nothing in MergeErrors */
     sql = "SELECT * FROM `MergeErrors`";
@@ -8160,7 +8160,7 @@ static void test_dbmerge(void)
     create_file_data("codepage.idt", "\r\n\r\n850\t_ForceCodepage\r\n", 0);
 
     GetCurrentDirectoryA(MAX_PATH, buf);
-    r = MsiDatabaseImport(hdb, buf, "codepage.idt");
+    r = libmsi_database_import(hdb, buf, "codepage.idt");
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     sql = "DROP TABLE `One`";
@@ -8186,22 +8186,22 @@ static void test_dbmerge(void)
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     /* code page does not match */
-    r = MsiDatabaseMerge(hdb, href, "MergeErrors");
+    r = libmsi_database_merge(hdb, href, "MergeErrors");
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     sql = "SELECT * FROM `One`";
     r = do_query(hdb, sql, &hrec);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
-    r = MsiRecordGetInteger(hrec, 1);
+    r = libmsi_record_get_integer(hrec, 1);
     ok(r == 1, "Expected 1, got %d\n", r);
 
     size = MAX_PATH;
-    r = MsiRecordGetString(hrec, 2, buf, &size);
+    r = libmsi_record_get_string(hrec, 2, buf, &size);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
     ok(!strcmp(buf, "hi"), "Expected \"hi\", got \"%s\"\n", buf);
 
-    MsiCloseHandle(hrec);
+    libmsi_unref(hrec);
 
     /* nothing in MergeErrors */
     sql = "SELECT * FROM `MergeErrors`";
@@ -8226,34 +8226,34 @@ static void test_dbmerge(void)
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     create_file("binary.dat");
-    hrec = MsiCreateRecord(1);
-    MsiRecordSetStream(hrec, 1, "binary.dat");
+    hrec = libmsi_record_create(1);
+    libmsi_record_load_stream(hrec, 1, "binary.dat");
 
     sql = "INSERT INTO `One` ( `A`, `B` ) VALUES ( 1, ? )";
     r = run_query(href, hrec, sql);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
-    MsiCloseHandle(hrec);
+    libmsi_unref(hrec);
 
     /* binary data to merge */
-    r = MsiDatabaseMerge(hdb, href, "MergeErrors");
+    r = libmsi_database_merge(hdb, href, "MergeErrors");
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     sql = "SELECT * FROM `One`";
     r = do_query(hdb, sql, &hrec);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
-    r = MsiRecordGetInteger(hrec, 1);
+    r = libmsi_record_get_integer(hrec, 1);
     ok(r == 1, "Expected 1, got %d\n", r);
 
     size = MAX_PATH;
     ZeroMemory(buf, MAX_PATH);
-    r = MsiRecordReadStream(hrec, 2, buf, &size);
+    r = libmsi_record_save_stream(hrec, 2, buf, &size);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
     ok(!strcmp(buf, "binary.dat\n"),
        "Expected \"binary.dat\\n\", got \"%s\"\n", buf);
 
-    MsiCloseHandle(hrec);
+    libmsi_unref(hrec);
 
     /* nothing in MergeErrors */
     sql = "SELECT * FROM `MergeErrors`";
@@ -8283,50 +8283,50 @@ static void test_dbmerge(void)
     r = run_query(href, 0, sql);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
-    r = MsiDatabaseMerge(hdb, href, "MergeErrors");
+    r = libmsi_database_merge(hdb, href, "MergeErrors");
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     sql = "SELECT * FROM `One`";
-    r = MsiDatabaseOpenQuery(hdb, sql, &hquery);
+    r = libmsi_database_open_query(hdb, sql, &hquery);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-    r = MsiQueryExecute(hquery, 0);
-    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-
-    r = MsiQueryFetch(hquery, &hrec);
+    r = libmsi_query_execute(hquery, 0);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
-    r = MsiRecordGetInteger(hrec, 1);
+    r = libmsi_query_fetch(hquery, &hrec);
+    ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
+
+    r = libmsi_record_get_integer(hrec, 1);
     ok(r == 1, "Expected 1, got %d\n", r);
 
     size = MAX_PATH;
-    r = MsiRecordGetString(hrec, 2, buf, &size);
+    r = libmsi_record_get_string(hrec, 2, buf, &size);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
     ok(!strcmp(buf, "foo"), "Expected \"foo\", got \"%s\"\n", buf);
 
-    MsiCloseHandle(hrec);
+    libmsi_unref(hrec);
 
-    r = MsiQueryFetch(hquery, &hrec);
+    r = libmsi_query_fetch(hquery, &hrec);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
-    r = MsiRecordGetInteger(hrec, 1);
+    r = libmsi_record_get_integer(hrec, 1);
     ok(r == 2, "Expected 2, got %d\n", r);
 
     size = MAX_PATH;
-    r = MsiRecordGetString(hrec, 2, buf, &size);
+    r = libmsi_record_get_string(hrec, 2, buf, &size);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
     ok(!strcmp(buf, "bar"), "Expected \"bar\", got \"%s\"\n", buf);
 
-    MsiCloseHandle(hrec);
+    libmsi_unref(hrec);
 
-    r = MsiQueryFetch(hquery, &hrec);
+    r = libmsi_query_fetch(hquery, &hrec);
     ok(r == ERROR_NO_MORE_ITEMS,
        "Expected ERROR_NO_MORE_ITEMS, got %d\n", r);
 
-    MsiQueryClose(hquery);
-    MsiCloseHandle(hquery);
+    libmsi_query_close(hquery);
+    libmsi_unref(hquery);
 
-    MsiCloseHandle(hdb);
-    MsiCloseHandle(href);
+    libmsi_unref(hdb);
+    libmsi_unref(href);
     DeleteFileA(msifile);
     DeleteFileA("refdb.msi");
     DeleteFileA("codepage.idt");
@@ -8382,31 +8382,31 @@ static void test_select_with_tablenames(void)
 
     query = NULL;
     sql = "SELECT T1.A, T2.B FROM T1,T2";
-    r = MsiDatabaseOpenQuery(hdb, sql, &query);
+    r = libmsi_database_open_query(hdb, sql, &query);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-    r = MsiQueryExecute(query, 0);
+    r = libmsi_query_execute(query, 0);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     for (i = 0; i < 4; i++)
     {
-        r = MsiQueryFetch(query, &rec);
+        r = libmsi_query_fetch(query, &rec);
         ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
-        r = MsiRecordGetInteger(rec, 1);
+        r = libmsi_record_get_integer(rec, 1);
         ok(r == vals[i][0], "Expected %d, got %d\n", vals[i][0], r);
 
-        r = MsiRecordGetInteger(rec, 2);
+        r = libmsi_record_get_integer(rec, 2);
         ok(r == vals[i][1], "Expected %d, got %d\n", vals[i][1], r);
 
-        MsiCloseHandle(rec);
+        libmsi_unref(rec);
     }
 
-    r = MsiQueryFetch(query, &rec);
+    r = libmsi_query_fetch(query, &rec);
     ok(r == ERROR_NO_MORE_ITEMS, "Expected ERROR_NO_MORE_ITEMS, got %d\n", r);
 
-    MsiQueryClose(query);
-    MsiCloseHandle(query);
-    MsiCloseHandle(hdb);
+    libmsi_query_close(query);
+    libmsi_unref(query);
+    libmsi_unref(hdb);
     DeleteFileA(msifile);
 }
 
@@ -8491,33 +8491,33 @@ static void test_insertorder(void)
 
     query = NULL;
     sql = "SELECT * FROM `T`";
-    r = MsiDatabaseOpenQuery(hdb, sql, &query);
+    r = libmsi_database_open_query(hdb, sql, &query);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-    r = MsiQueryExecute(query, 0);
+    r = libmsi_query_execute(query, 0);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     for (i = 0; i < 6; i++)
     {
-        r = MsiQueryFetch(query, &rec);
+        r = libmsi_query_fetch(query, &rec);
         ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
-        r = MsiRecordGetInteger(rec, 1);
+        r = libmsi_record_get_integer(rec, 1);
         ok(r == ordervals[i][0], "Expected %d, got %d\n", ordervals[i][0], r);
 
-        r = MsiRecordGetInteger(rec, 2);
+        r = libmsi_record_get_integer(rec, 2);
         ok(r == ordervals[i][1], "Expected %d, got %d\n", ordervals[i][1], r);
 
-        r = MsiRecordGetInteger(rec, 3);
+        r = libmsi_record_get_integer(rec, 3);
         ok(r == ordervals[i][2], "Expected %d, got %d\n", ordervals[i][2], r);
 
-        MsiCloseHandle(rec);
+        libmsi_unref(rec);
     }
 
-    r = MsiQueryFetch(query, &rec);
+    r = libmsi_query_fetch(query, &rec);
     ok(r == ERROR_NO_MORE_ITEMS, "Expected ERROR_NO_MORE_ITEMS, got %d\n", r);
 
-    MsiQueryClose(query);
-    MsiCloseHandle(query);
+    libmsi_query_close(query);
+    libmsi_unref(query);
 
     sql = "DELETE FROM `T` WHERE `A` IS NULL";
     r = run_query(hdb, 0, sql);
@@ -8529,34 +8529,34 @@ static void test_insertorder(void)
 
     query = NULL;
     sql = "SELECT * FROM `T`";
-    r = MsiDatabaseOpenQuery(hdb, sql, &query);
+    r = libmsi_database_open_query(hdb, sql, &query);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-    r = MsiQueryExecute(query, 0);
+    r = libmsi_query_execute(query, 0);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     for (i = 0; i < 6; i++)
     {
-        r = MsiQueryFetch(query, &rec);
+        r = libmsi_query_fetch(query, &rec);
         ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
-        r = MsiRecordGetInteger(rec, 1);
+        r = libmsi_record_get_integer(rec, 1);
         ok(r == ordervals[i][0], "Expected %d, got %d\n", ordervals[i][0], r);
 
-        r = MsiRecordGetInteger(rec, 2);
+        r = libmsi_record_get_integer(rec, 2);
         ok(r == ordervals[i][1], "Expected %d, got %d\n", ordervals[i][1], r);
 
-        r = MsiRecordGetInteger(rec, 3);
+        r = libmsi_record_get_integer(rec, 3);
         ok(r == ordervals[i][2], "Expected %d, got %d\n", ordervals[i][2], r);
 
-        MsiCloseHandle(rec);
+        libmsi_unref(rec);
     }
 
-    r = MsiQueryFetch(query, &rec);
+    r = libmsi_query_fetch(query, &rec);
     ok(r == ERROR_NO_MORE_ITEMS, "Expected ERROR_NO_MORE_ITEMS, got %d\n", r);
 
-    MsiQueryClose(query);
-    MsiCloseHandle(query);
-    MsiCloseHandle(hdb);
+    libmsi_query_close(query);
+    libmsi_unref(query);
+    libmsi_unref(hdb);
     DeleteFileA(msifile);
 }
 
@@ -8601,82 +8601,82 @@ static void test_columnorder(void)
 
     query = NULL;
     sql = "SELECT * FROM `T`";
-    r = MsiDatabaseOpenQuery(hdb, sql, &query);
+    r = libmsi_database_open_query(hdb, sql, &query);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     rec = NULL;
-    r = MsiQueryGetColumnInfo(query, LIBMSI_COL_INFO_TYPES, &rec);
+    r = libmsi_query_get_column_info(query, LIBMSI_COL_INFO_TYPES, &rec);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     sz = MAX_PATH;
     strcpy(buf, "kiwi");
-    r = MsiRecordGetString(rec, 1, buf, &sz);
+    r = libmsi_record_get_string(rec, 1, buf, &sz);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
     ok(!strcmp("s255", buf), "Expected \"s255\", got \"%s\"\n", buf);
 
     sz = MAX_PATH;
     strcpy(buf, "kiwi");
-    r = MsiRecordGetString(rec, 2, buf, &sz);
+    r = libmsi_record_get_string(rec, 2, buf, &sz);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
     ok(!strcmp("I2", buf), "Expected \"I2\", got \"%s\"\n", buf);
 
     sz = MAX_PATH;
     strcpy(buf, "kiwi");
-    r = MsiRecordGetString(rec, 3, buf, &sz);
+    r = libmsi_record_get_string(rec, 3, buf, &sz);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
     ok(!strcmp("S255", buf), "Expected \"S255\", got \"%s\"\n", buf);
 
     sz = MAX_PATH;
     strcpy(buf, "kiwi");
-    r = MsiRecordGetString(rec, 4, buf, &sz);
+    r = libmsi_record_get_string(rec, 4, buf, &sz);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
     ok(!strcmp("i2", buf), "Expected \"i2\", got \"%s\"\n", buf);
 
     sz = MAX_PATH;
     strcpy(buf, "kiwi");
-    r = MsiRecordGetString(rec, 5, buf, &sz);
+    r = libmsi_record_get_string(rec, 5, buf, &sz);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
     ok(!strcmp("i2", buf), "Expected \"i2\", got \"%s\"\n", buf);
 
-    MsiCloseHandle(rec);
+    libmsi_unref(rec);
 
     rec = NULL;
-    r = MsiQueryGetColumnInfo(query, LIBMSI_COL_INFO_NAMES, &rec);
+    r = libmsi_query_get_column_info(query, LIBMSI_COL_INFO_NAMES, &rec);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     sz = MAX_PATH;
     strcpy(buf, "kiwi");
-    r = MsiRecordGetString(rec, 1, buf, &sz);
+    r = libmsi_record_get_string(rec, 1, buf, &sz);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
     ok(!strcmp("D", buf), "Expected \"D\", got \"%s\"\n", buf);
 
     sz = MAX_PATH;
     strcpy(buf, "kiwi");
-    r = MsiRecordGetString(rec, 2, buf, &sz);
+    r = libmsi_record_get_string(rec, 2, buf, &sz);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
     ok(!strcmp("E", buf), "Expected \"E\", got \"%s\"\n", buf);
 
     sz = MAX_PATH;
     strcpy(buf, "kiwi");
-    r = MsiRecordGetString(rec, 3, buf, &sz);
+    r = libmsi_record_get_string(rec, 3, buf, &sz);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
     ok(!strcmp("A", buf), "Expected \"A\", got \"%s\"\n", buf);
 
     sz = MAX_PATH;
     strcpy(buf, "kiwi");
-    r = MsiRecordGetString(rec, 4, buf, &sz);
+    r = libmsi_record_get_string(rec, 4, buf, &sz);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
     ok(!strcmp("C", buf), "Expected \"C\", got \"%s\"\n", buf);
 
     sz = MAX_PATH;
     strcpy(buf, "kiwi");
-    r = MsiRecordGetString(rec, 5, buf, &sz);
+    r = libmsi_record_get_string(rec, 5, buf, &sz);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
     ok(!strcmp("B", buf), "Expected \"B\", got \"%s\"\n", buf);
 
-    MsiCloseHandle(rec);
-    MsiQueryClose(query);
-    MsiCloseHandle(query);
+    libmsi_unref(rec);
+    libmsi_query_close(query);
+    libmsi_unref(query);
 
     sql = "INSERT INTO `T` ( `B`, `C`, `A`, `E`, `D` ) "
             "VALUES ( 1, 2, 'a', 3, 'bc' )";
@@ -8689,139 +8689,139 @@ static void test_columnorder(void)
 
     sz = MAX_PATH;
     strcpy(buf, "kiwi");
-    r = MsiRecordGetString(rec, 1, buf, &sz);
+    r = libmsi_record_get_string(rec, 1, buf, &sz);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
     ok(!strcmp("bc", buf), "Expected \"bc\", got \"%s\"\n", buf);
 
-    r = MsiRecordGetInteger(rec, 2);
+    r = libmsi_record_get_integer(rec, 2);
     ok(r == 3, "Expected 3, got %d\n", r);
 
     sz = MAX_PATH;
     strcpy(buf, "kiwi");
-    r = MsiRecordGetString(rec, 3, buf, &sz);
+    r = libmsi_record_get_string(rec, 3, buf, &sz);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
     ok(!strcmp("a", buf), "Expected \"a\", got \"%s\"\n", buf);
 
-    r = MsiRecordGetInteger(rec, 4);
+    r = libmsi_record_get_integer(rec, 4);
     ok(r == 2, "Expected 2, got %d\n", r);
 
-    r = MsiRecordGetInteger(rec, 5);
+    r = libmsi_record_get_integer(rec, 5);
     ok(r == 1, "Expected 1, got %d\n", r);
 
-    MsiCloseHandle(rec);
+    libmsi_unref(rec);
 
     query = NULL;
     sql = "SELECT * FROM `_Columns` WHERE `Table` = 'T'";
-    r = MsiDatabaseOpenQuery(hdb, sql, &query);
+    r = libmsi_database_open_query(hdb, sql, &query);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-    r = MsiQueryExecute(query, 0);
+    r = libmsi_query_execute(query, 0);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
-    r = MsiQueryFetch(query, &rec);
+    r = libmsi_query_fetch(query, &rec);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     sz = MAX_PATH;
     strcpy(buf, "kiwi");
-    r = MsiRecordGetString(rec, 1, buf, &sz);
+    r = libmsi_record_get_string(rec, 1, buf, &sz);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
     ok(!strcmp("T", buf), "Expected \"T\", got \"%s\"\n", buf);
 
-    r = MsiRecordGetInteger(rec, 2);
+    r = libmsi_record_get_integer(rec, 2);
     ok(r == 1, "Expected 1, got %d\n", r);
 
     sz = MAX_PATH;
     strcpy(buf, "kiwi");
-    r = MsiRecordGetString(rec, 3, buf, &sz);
+    r = libmsi_record_get_string(rec, 3, buf, &sz);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
     ok(!strcmp("D", buf), "Expected \"D\", got \"%s\"\n", buf);
 
-    MsiCloseHandle(rec);
+    libmsi_unref(rec);
 
-    r = MsiQueryFetch(query, &rec);
+    r = libmsi_query_fetch(query, &rec);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     sz = MAX_PATH;
     strcpy(buf, "kiwi");
-    r = MsiRecordGetString(rec, 1, buf, &sz);
+    r = libmsi_record_get_string(rec, 1, buf, &sz);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
     ok(!strcmp("T", buf), "Expected \"T\", got \"%s\"\n", buf);
 
-    r = MsiRecordGetInteger(rec, 2);
+    r = libmsi_record_get_integer(rec, 2);
     ok(r == 2, "Expected 2, got %d\n", r);
 
     sz = MAX_PATH;
     strcpy(buf, "kiwi");
-    r = MsiRecordGetString(rec, 3, buf, &sz);
+    r = libmsi_record_get_string(rec, 3, buf, &sz);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
     ok(!strcmp("E", buf), "Expected \"E\", got \"%s\"\n", buf);
 
-    MsiCloseHandle(rec);
+    libmsi_unref(rec);
 
-    r = MsiQueryFetch(query, &rec);
+    r = libmsi_query_fetch(query, &rec);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     sz = MAX_PATH;
     strcpy(buf, "kiwi");
-    r = MsiRecordGetString(rec, 1, buf, &sz);
+    r = libmsi_record_get_string(rec, 1, buf, &sz);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
     ok(!strcmp("T", buf), "Expected \"T\", got \"%s\"\n", buf);
 
-    r = MsiRecordGetInteger(rec, 2);
+    r = libmsi_record_get_integer(rec, 2);
     ok(r == 3, "Expected 3, got %d\n", r);
 
     sz = MAX_PATH;
     strcpy(buf, "kiwi");
-    r = MsiRecordGetString(rec, 3, buf, &sz);
+    r = libmsi_record_get_string(rec, 3, buf, &sz);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
     ok(!strcmp("A", buf), "Expected \"A\", got \"%s\"\n", buf);
 
-    MsiCloseHandle(rec);
+    libmsi_unref(rec);
 
-    r = MsiQueryFetch(query, &rec);
+    r = libmsi_query_fetch(query, &rec);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     sz = MAX_PATH;
     strcpy(buf, "kiwi");
-    r = MsiRecordGetString(rec, 1, buf, &sz);
+    r = libmsi_record_get_string(rec, 1, buf, &sz);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
     ok(!strcmp("T", buf), "Expected \"T\", got \"%s\"\n", buf);
 
-    r = MsiRecordGetInteger(rec, 2);
+    r = libmsi_record_get_integer(rec, 2);
     ok(r == 4, "Expected 4, got %d\n", r);
 
     sz = MAX_PATH;
     strcpy(buf, "kiwi");
-    r = MsiRecordGetString(rec, 3, buf, &sz);
+    r = libmsi_record_get_string(rec, 3, buf, &sz);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
     ok(!strcmp("C", buf), "Expected \"C\", got \"%s\"\n", buf);
 
-    MsiCloseHandle(rec);
+    libmsi_unref(rec);
 
-    r = MsiQueryFetch(query, &rec);
+    r = libmsi_query_fetch(query, &rec);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     sz = MAX_PATH;
     strcpy(buf, "kiwi");
-    r = MsiRecordGetString(rec, 1, buf, &sz);
+    r = libmsi_record_get_string(rec, 1, buf, &sz);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
     ok(!strcmp("T", buf), "Expected \"T\", got \"%s\"\n", buf);
 
-    r = MsiRecordGetInteger(rec, 2);
+    r = libmsi_record_get_integer(rec, 2);
     ok(r == 5, "Expected 5, got %d\n", r);
 
     sz = MAX_PATH;
     strcpy(buf, "kiwi");
-    r = MsiRecordGetString(rec, 3, buf, &sz);
+    r = libmsi_record_get_string(rec, 3, buf, &sz);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
     ok(!strcmp("B", buf), "Expected \"B\", got \"%s\"\n", buf);
 
-    MsiCloseHandle(rec);
+    libmsi_unref(rec);
 
-    r = MsiQueryFetch(query, &rec);
+    r = libmsi_query_fetch(query, &rec);
     ok(r == ERROR_NO_MORE_ITEMS, "Expected ERROR_NO_MORE_ITEMS, got %d\n", r);
 
-    MsiQueryClose(query);
-    MsiCloseHandle(query);
+    libmsi_query_close(query);
+    libmsi_unref(query);
 
     sql = "CREATE TABLE `Z` ( `B` SHORT NOT NULL, `C` SHORT NOT NULL, "
             "`A` CHAR(255), `E` INT, `D` CHAR(255) NOT NULL "
@@ -8831,82 +8831,82 @@ static void test_columnorder(void)
 
     query = NULL;
     sql = "SELECT * FROM `Z`";
-    r = MsiDatabaseOpenQuery(hdb, sql, &query);
+    r = libmsi_database_open_query(hdb, sql, &query);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     rec = NULL;
-    r = MsiQueryGetColumnInfo(query, LIBMSI_COL_INFO_TYPES, &rec);
+    r = libmsi_query_get_column_info(query, LIBMSI_COL_INFO_TYPES, &rec);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     sz = MAX_PATH;
     strcpy(buf, "kiwi");
-    r = MsiRecordGetString(rec, 1, buf, &sz);
+    r = libmsi_record_get_string(rec, 1, buf, &sz);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
     ok(!strcmp("i2", buf), "Expected \"i2\", got \"%s\"\n", buf);
 
     sz = MAX_PATH;
     strcpy(buf, "kiwi");
-    r = MsiRecordGetString(rec, 2, buf, &sz);
+    r = libmsi_record_get_string(rec, 2, buf, &sz);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
     ok(!strcmp("S255", buf), "Expected \"S255\", got \"%s\"\n", buf);
 
     sz = MAX_PATH;
     strcpy(buf, "kiwi");
-    r = MsiRecordGetString(rec, 3, buf, &sz);
+    r = libmsi_record_get_string(rec, 3, buf, &sz);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
     ok(!strcmp("s255", buf), "Expected \"s255\", got \"%s\"\n", buf);
 
     sz = MAX_PATH;
     strcpy(buf, "kiwi");
-    r = MsiRecordGetString(rec, 4, buf, &sz);
+    r = libmsi_record_get_string(rec, 4, buf, &sz);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
     ok(!strcmp("I2", buf), "Expected \"I2\", got \"%s\"\n", buf);
 
     sz = MAX_PATH;
     strcpy(buf, "kiwi");
-    r = MsiRecordGetString(rec, 5, buf, &sz);
+    r = libmsi_record_get_string(rec, 5, buf, &sz);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
     ok(!strcmp("i2", buf), "Expected \"i2\", got \"%s\"\n", buf);
 
-    MsiCloseHandle(rec);
+    libmsi_unref(rec);
 
     rec = NULL;
-    r = MsiQueryGetColumnInfo(query, LIBMSI_COL_INFO_NAMES, &rec);
+    r = libmsi_query_get_column_info(query, LIBMSI_COL_INFO_NAMES, &rec);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     sz = MAX_PATH;
     strcpy(buf, "kiwi");
-    r = MsiRecordGetString(rec, 1, buf, &sz);
+    r = libmsi_record_get_string(rec, 1, buf, &sz);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
     ok(!strcmp("C", buf), "Expected \"C\", got \"%s\"\n", buf);
 
     sz = MAX_PATH;
     strcpy(buf, "kiwi");
-    r = MsiRecordGetString(rec, 2, buf, &sz);
+    r = libmsi_record_get_string(rec, 2, buf, &sz);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
     ok(!strcmp("A", buf), "Expected \"A\", got \"%s\"\n", buf);
 
     sz = MAX_PATH;
     strcpy(buf, "kiwi");
-    r = MsiRecordGetString(rec, 3, buf, &sz);
+    r = libmsi_record_get_string(rec, 3, buf, &sz);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
     ok(!strcmp("D", buf), "Expected \"D\", got \"%s\"\n", buf);
 
     sz = MAX_PATH;
     strcpy(buf, "kiwi");
-    r = MsiRecordGetString(rec, 4, buf, &sz);
+    r = libmsi_record_get_string(rec, 4, buf, &sz);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
     ok(!strcmp("E", buf), "Expected \"E\", got \"%s\"\n", buf);
 
     sz = MAX_PATH;
     strcpy(buf, "kiwi");
-    r = MsiRecordGetString(rec, 5, buf, &sz);
+    r = libmsi_record_get_string(rec, 5, buf, &sz);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
     ok(!strcmp("B", buf), "Expected \"B\", got \"%s\"\n", buf);
 
-    MsiCloseHandle(rec);
-    MsiQueryClose(query);
-    MsiCloseHandle(query);
+    libmsi_unref(rec);
+    libmsi_query_close(query);
+    libmsi_unref(query);
 
     sql = "INSERT INTO `Z` ( `B`, `C`, `A`, `E`, `D` ) "
             "VALUES ( 1, 2, 'a', 3, 'bc' )";
@@ -8917,143 +8917,143 @@ static void test_columnorder(void)
     r = do_query(hdb, sql, &rec);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
-    r = MsiRecordGetInteger(rec, 1);
+    r = libmsi_record_get_integer(rec, 1);
     ok(r == 2, "Expected 2, got %d\n", r);
 
     sz = MAX_PATH;
     strcpy(buf, "kiwi");
-    r = MsiRecordGetString(rec, 2, buf, &sz);
+    r = libmsi_record_get_string(rec, 2, buf, &sz);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
     ok(!strcmp("a", buf), "Expected \"a\", got \"%s\"\n", buf);
 
     sz = MAX_PATH;
     strcpy(buf, "kiwi");
-    r = MsiRecordGetString(rec, 3, buf, &sz);
+    r = libmsi_record_get_string(rec, 3, buf, &sz);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
     ok(!strcmp("bc", buf), "Expected \"bc\", got \"%s\"\n", buf);
 
-    r = MsiRecordGetInteger(rec, 4);
+    r = libmsi_record_get_integer(rec, 4);
     ok(r == 3, "Expected 3, got %d\n", r);
 
-    r = MsiRecordGetInteger(rec, 5);
+    r = libmsi_record_get_integer(rec, 5);
     ok(r == 1, "Expected 1, got %d\n", r);
 
-    MsiCloseHandle(rec);
+    libmsi_unref(rec);
 
     query = NULL;
     sql = "SELECT * FROM `_Columns` WHERE `Table` = 'T'";
-    r = MsiDatabaseOpenQuery(hdb, sql, &query);
+    r = libmsi_database_open_query(hdb, sql, &query);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
-    r = MsiQueryExecute(query, 0);
+    r = libmsi_query_execute(query, 0);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
-    r = MsiQueryFetch(query, &rec);
+    r = libmsi_query_fetch(query, &rec);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     sz = MAX_PATH;
     strcpy(buf, "kiwi");
-    r = MsiRecordGetString(rec, 1, buf, &sz);
+    r = libmsi_record_get_string(rec, 1, buf, &sz);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
     ok(!strcmp("T", buf), "Expected \"T\", got \"%s\"\n", buf);
 
-    r = MsiRecordGetInteger(rec, 2);
+    r = libmsi_record_get_integer(rec, 2);
     ok(r == 1, "Expected 1, got %d\n", r);
 
     sz = MAX_PATH;
     strcpy(buf, "kiwi");
-    r = MsiRecordGetString(rec, 3, buf, &sz);
+    r = libmsi_record_get_string(rec, 3, buf, &sz);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
     ok(!strcmp("D", buf), "Expected \"D\", got \"%s\"\n", buf);
 
-    MsiCloseHandle(rec);
+    libmsi_unref(rec);
 
-    r = MsiQueryFetch(query, &rec);
+    r = libmsi_query_fetch(query, &rec);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     sz = MAX_PATH;
     strcpy(buf, "kiwi");
-    r = MsiRecordGetString(rec, 1, buf, &sz);
+    r = libmsi_record_get_string(rec, 1, buf, &sz);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
     ok(!strcmp("T", buf), "Expected \"T\", got \"%s\"\n", buf);
 
-    r = MsiRecordGetInteger(rec, 2);
+    r = libmsi_record_get_integer(rec, 2);
     ok(r == 2, "Expected 2, got %d\n", r);
 
     sz = MAX_PATH;
     strcpy(buf, "kiwi");
-    r = MsiRecordGetString(rec, 3, buf, &sz);
+    r = libmsi_record_get_string(rec, 3, buf, &sz);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
     ok(!strcmp("E", buf), "Expected \"E\", got \"%s\"\n", buf);
 
-    MsiCloseHandle(rec);
+    libmsi_unref(rec);
 
-    r = MsiQueryFetch(query, &rec);
+    r = libmsi_query_fetch(query, &rec);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     sz = MAX_PATH;
     strcpy(buf, "kiwi");
-    r = MsiRecordGetString(rec, 1, buf, &sz);
+    r = libmsi_record_get_string(rec, 1, buf, &sz);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
     ok(!strcmp("T", buf), "Expected \"T\", got \"%s\"\n", buf);
 
-    r = MsiRecordGetInteger(rec, 2);
+    r = libmsi_record_get_integer(rec, 2);
     ok(r == 3, "Expected 3, got %d\n", r);
 
     sz = MAX_PATH;
     strcpy(buf, "kiwi");
-    r = MsiRecordGetString(rec, 3, buf, &sz);
+    r = libmsi_record_get_string(rec, 3, buf, &sz);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
     ok(!strcmp("A", buf), "Expected \"A\", got \"%s\"\n", buf);
 
-    MsiCloseHandle(rec);
+    libmsi_unref(rec);
 
-    r = MsiQueryFetch(query, &rec);
+    r = libmsi_query_fetch(query, &rec);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     sz = MAX_PATH;
     strcpy(buf, "kiwi");
-    r = MsiRecordGetString(rec, 1, buf, &sz);
+    r = libmsi_record_get_string(rec, 1, buf, &sz);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
     ok(!strcmp("T", buf), "Expected \"T\", got \"%s\"\n", buf);
 
-    r = MsiRecordGetInteger(rec, 2);
+    r = libmsi_record_get_integer(rec, 2);
     ok(r == 4, "Expected 4, got %d\n", r);
 
     sz = MAX_PATH;
     strcpy(buf, "kiwi");
-    r = MsiRecordGetString(rec, 3, buf, &sz);
+    r = libmsi_record_get_string(rec, 3, buf, &sz);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
     ok(!strcmp("C", buf), "Expected \"C\", got \"%s\"\n", buf);
 
-    MsiCloseHandle(rec);
+    libmsi_unref(rec);
 
-    r = MsiQueryFetch(query, &rec);
+    r = libmsi_query_fetch(query, &rec);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
 
     sz = MAX_PATH;
     strcpy(buf, "kiwi");
-    r = MsiRecordGetString(rec, 1, buf, &sz);
+    r = libmsi_record_get_string(rec, 1, buf, &sz);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
     ok(!strcmp("T", buf), "Expected \"T\", got \"%s\"\n", buf);
 
-    r = MsiRecordGetInteger(rec, 2);
+    r = libmsi_record_get_integer(rec, 2);
     ok(r == 5, "Expected 5, got %d\n", r);
 
     sz = MAX_PATH;
     strcpy(buf, "kiwi");
-    r = MsiRecordGetString(rec, 3, buf, &sz);
+    r = libmsi_record_get_string(rec, 3, buf, &sz);
     ok(r == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", r);
     ok(!strcmp("B", buf), "Expected \"B\", got \"%s\"\n", buf);
 
-    MsiCloseHandle(rec);
+    libmsi_unref(rec);
 
-    r = MsiQueryFetch(query, &rec);
+    r = libmsi_query_fetch(query, &rec);
     ok(r == ERROR_NO_MORE_ITEMS, "Expected ERROR_NO_MORE_ITEMS, got %d\n", r);
 
-    MsiQueryClose(query);
-    MsiCloseHandle(query);
+    libmsi_query_close(query);
+    libmsi_unref(query);
 
-    MsiCloseHandle(hdb);
+    libmsi_unref(hdb);
     DeleteFileA(msifile);
 }
 
@@ -9071,101 +9071,101 @@ static void test_createtable(void)
     ok(hdb, "failed to create db\n");
 
     sql = "CREATE TABLE `blah` (`foo` CHAR(72) NOT NULL PRIMARY KEY `foo`)";
-    res = MsiDatabaseOpenQuery( hdb, sql, &htab );
+    res = libmsi_database_open_query( hdb, sql, &htab );
     ok(res == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", res);
     if(res == ERROR_SUCCESS )
     {
-        res = MsiQueryExecute( htab, hrec );
+        res = libmsi_query_execute( htab, hrec );
         ok(res == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", res);
 
         hrec = NULL;
-        res = MsiQueryGetColumnInfo( htab, LIBMSI_COL_INFO_NAMES, &hrec );
+        res = libmsi_query_get_column_info( htab, LIBMSI_COL_INFO_NAMES, &hrec );
         todo_wine ok(res == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", res);
 
         size = sizeof(buffer);
-        res = MsiRecordGetString(hrec, 1, buffer, &size );
+        res = libmsi_record_get_string(hrec, 1, buffer, &size );
         todo_wine ok(res == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", res);
-        MsiCloseHandle( hrec );
+        libmsi_unref( hrec );
 
-        res = MsiQueryClose( htab );
+        res = libmsi_query_close( htab );
         ok(res == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", res);
 
-        res = MsiCloseHandle( htab );
+        res = libmsi_unref( htab );
         ok(res == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", res);
     }
 
     sql = "CREATE TABLE `a` (`b` INT PRIMARY KEY `b`)";
-    res = MsiDatabaseOpenQuery( hdb, sql, &htab );
+    res = libmsi_database_open_query( hdb, sql, &htab );
     ok(res == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", res);
     if(res == ERROR_SUCCESS )
     {
-        res = MsiQueryExecute( htab, 0 );
+        res = libmsi_query_execute( htab, 0 );
         ok(res == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", res);
 
-        res = MsiQueryClose( htab );
+        res = libmsi_query_close( htab );
         ok(res == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", res);
 
-        res = MsiCloseHandle( htab );
+        res = libmsi_unref( htab );
         ok(res == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", res);
 
         sql = "SELECT * FROM `a`";
-        res = MsiDatabaseOpenQuery( hdb, sql, &htab );
+        res = libmsi_database_open_query( hdb, sql, &htab );
         ok(res == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", res);
 
         hrec = NULL;
-        res = MsiQueryGetColumnInfo( htab, LIBMSI_COL_INFO_NAMES, &hrec );
+        res = libmsi_query_get_column_info( htab, LIBMSI_COL_INFO_NAMES, &hrec );
         ok(res == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", res);
 
         buffer[0] = 0;
         size = sizeof(buffer);
-        res = MsiRecordGetString(hrec, 1, buffer, &size );
+        res = libmsi_record_get_string(hrec, 1, buffer, &size );
         ok(res == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", res);
         ok(!strcmp(buffer,"b"), "b != %s\n", buffer);
-        MsiCloseHandle( hrec );
+        libmsi_unref( hrec );
 
-        res = MsiQueryClose( htab );
+        res = libmsi_query_close( htab );
         ok(res == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", res);
 
-        res = MsiCloseHandle( htab );
+        res = libmsi_unref( htab );
         ok(res == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", res);
 
-        res = MsiDatabaseCommit(hdb);
+        res = libmsi_database_commit(hdb);
         ok(res == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", res);
 
-        res = MsiCloseHandle(hdb);
+        res = libmsi_unref(hdb);
         ok(res == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", res);
 
-        res = MsiOpenDatabase(msifile, LIBMSI_DB_OPEN_TRANSACT, &hdb );
+        res = libmsi_database_open(msifile, LIBMSI_DB_OPEN_TRANSACT, &hdb );
         ok(res == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", res);
 
         sql = "SELECT * FROM `a`";
-        res = MsiDatabaseOpenQuery( hdb, sql, &htab );
+        res = libmsi_database_open_query( hdb, sql, &htab );
         ok(res == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", res);
 
         hrec = NULL;
-        res = MsiQueryGetColumnInfo( htab, LIBMSI_COL_INFO_NAMES, &hrec );
+        res = libmsi_query_get_column_info( htab, LIBMSI_COL_INFO_NAMES, &hrec );
         ok(res == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", res);
 
         buffer[0] = 0;
         size = sizeof(buffer);
-        res = MsiRecordGetString(hrec, 1, buffer, &size );
+        res = libmsi_record_get_string(hrec, 1, buffer, &size );
         ok(res == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", res);
         ok(!strcmp(buffer,"b"), "b != %s\n", buffer);
 
-        res = MsiCloseHandle( hrec );
+        res = libmsi_unref( hrec );
         ok(res == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", res);
 
-        res = MsiQueryClose( htab );
+        res = libmsi_query_close( htab );
         ok(res == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", res);
 
-        res = MsiCloseHandle( htab );
+        res = libmsi_unref( htab );
         ok(res == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", res);
     }
 
-    res = MsiDatabaseCommit(hdb);
+    res = libmsi_database_commit(hdb);
     ok(res == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", res);
 
-    res = MsiCloseHandle(hdb);
+    res = libmsi_unref(hdb);
     ok(res == ERROR_SUCCESS, "Expected ERROR_SUCCESS, got %d\n", res);
 
     DeleteFileA(msifile);
@@ -9183,12 +9183,12 @@ static void test_embedded_nulls(void)
     LibmsiRecord *hrec;
     char buffer[32];
 
-    r = MsiOpenDatabase( msifile, LIBMSI_DB_OPEN_CREATE, &hdb );
+    r = libmsi_database_open( msifile, LIBMSI_DB_OPEN_CREATE, &hdb );
     ok( r == ERROR_SUCCESS, "failed to open database %u\n", r );
 
     GetCurrentDirectoryA( MAX_PATH, CURR_DIR );
     write_file( "temp_file", control_table, sizeof(control_table) );
-    r = MsiDatabaseImport( hdb, CURR_DIR, "temp_file" );
+    r = libmsi_database_import( hdb, CURR_DIR, "temp_file" );
     ok( r == ERROR_SUCCESS, "failed to import table %u\n", r );
     DeleteFileA( "temp_file" );
 
@@ -9197,12 +9197,12 @@ static void test_embedded_nulls(void)
 
     buffer[0] = 0;
     sz = sizeof(buffer);
-    r = MsiRecordGetString( hrec, 1, buffer, &sz );
+    r = libmsi_record_get_string( hrec, 1, buffer, &sz );
     ok( r == ERROR_SUCCESS, "failed to get string %u\n", r );
     ok( !memcmp( "text\r\ntext\ntext", buffer, sizeof("text\r\ntext\ntext") - 1 ), "wrong buffer contents \"%s\"\n", buffer );
 
-    MsiCloseHandle( hrec );
-    MsiCloseHandle( hdb );
+    libmsi_unref( hrec );
+    libmsi_unref( hdb );
     DeleteFileA( msifile );
 }
 
@@ -9217,7 +9217,7 @@ static void test_select_column_names(void)
 
     DeleteFile(msifile);
 
-    r = MsiOpenDatabase( msifile, LIBMSI_DB_OPEN_CREATE, &hdb );
+    r = libmsi_database_open( msifile, LIBMSI_DB_OPEN_CREATE, &hdb );
     ok( r == ERROR_SUCCESS , "failed to open database: %u\n", r );
 
     r = try_query( hdb, "CREATE TABLE `t` (`a` CHAR NOT NULL, `b` CHAR PRIMARY KEY `a`)");
@@ -9257,195 +9257,195 @@ static void test_select_column_names(void)
     ok( r == ERROR_SUCCESS , "query failed: %u\n", r );
 
     query = NULL;
-    r = MsiDatabaseOpenQuery( hdb, "SELECT '' FROM `t`", &query );
+    r = libmsi_database_open_query( hdb, "SELECT '' FROM `t`", &query );
     ok( r == ERROR_SUCCESS, "failed to open database query: %u\n", r );
 
-    r = MsiQueryExecute( query, 0 );
+    r = libmsi_query_execute( query, 0 );
     ok( r == ERROR_SUCCESS, "failed to execute query: %u\n", r );
 
-    r = MsiQueryFetch( query, &rec );
+    r = libmsi_query_fetch( query, &rec );
     ok( r == ERROR_SUCCESS, "unexpected result: %u\n", r );
-    r = MsiRecordGetFieldCount( rec );
+    r = libmsi_record_get_field_count( rec );
     ok( r == 1, "got %u\n",  r );
 
     rec2 = NULL;
-    r = MsiQueryGetColumnInfo( query, LIBMSI_COL_INFO_NAMES, &rec2 );
+    r = libmsi_query_get_column_info( query, LIBMSI_COL_INFO_NAMES, &rec2 );
     ok( r == ERROR_SUCCESS, "unexpected result: %u\n", r );
-    r = MsiRecordGetFieldCount( rec2 );
+    r = libmsi_record_get_field_count( rec2 );
     ok( r == 1, "got %u\n",  r );
     size = sizeof(buffer);
     memset( buffer, 0x55, sizeof(buffer) );
-    r = MsiRecordGetString( rec2, 1, buffer, &size );
+    r = libmsi_record_get_string( rec2, 1, buffer, &size );
     ok( r == ERROR_SUCCESS, "unexpected result: %u\n", r );
     ok( !buffer[0], "got \"%s\"\n", buffer );
-    MsiCloseHandle( rec2 );
+    libmsi_unref( rec2 );
 
     rec2 = NULL;
-    r = MsiQueryGetColumnInfo( query, LIBMSI_COL_INFO_TYPES, &rec2 );
+    r = libmsi_query_get_column_info( query, LIBMSI_COL_INFO_TYPES, &rec2 );
     ok( r == ERROR_SUCCESS, "unexpected result: %u\n", r );
-    r = MsiRecordGetFieldCount( rec2 );
+    r = libmsi_record_get_field_count( rec2 );
     ok( r == 1, "got %u\n",  r );
     size = sizeof(buffer);
     memset( buffer, 0x55, sizeof(buffer) );
-    r = MsiRecordGetString( rec2, 1, buffer, &size );
+    r = libmsi_record_get_string( rec2, 1, buffer, &size );
     ok( r == ERROR_SUCCESS, "unexpected result: %u\n", r );
     ok( !strcmp( buffer, "f0" ), "got \"%s\"\n", buffer );
-    MsiCloseHandle( rec2 );
+    libmsi_unref( rec2 );
 
     size = sizeof(buffer);
     memset( buffer, 0x55, sizeof(buffer) );
-    r = MsiRecordGetString( rec, 1, buffer, &size );
+    r = libmsi_record_get_string( rec, 1, buffer, &size );
     ok( r == ERROR_SUCCESS, "unexpected result: %u\n", r );
     ok( !buffer[0], "got \"%s\"\n", buffer );
-    MsiCloseHandle( rec );
+    libmsi_unref( rec );
 
-    r = MsiQueryFetch( query, &rec );
+    r = libmsi_query_fetch( query, &rec );
     ok( r == ERROR_SUCCESS, "unexpected result: %u\n", r );
     size = sizeof(buffer);
     memset( buffer, 0x55, sizeof(buffer) );
-    r = MsiRecordGetString( rec, 1, buffer, &size );
+    r = libmsi_record_get_string( rec, 1, buffer, &size );
     ok( r == ERROR_SUCCESS, "unexpected result: %u\n", r );
     ok( !buffer[0], "got \"%s\"\n", buffer );
-    MsiCloseHandle( rec );
+    libmsi_unref( rec );
 
-    r = MsiQueryFetch( query, &rec );
+    r = libmsi_query_fetch( query, &rec );
     ok( r == ERROR_NO_MORE_ITEMS, "unexpected result: %u\n", r );
-    MsiCloseHandle( rec );
+    libmsi_unref( rec );
 
-    MsiQueryClose( query );
-    MsiCloseHandle( query );
+    libmsi_query_close( query );
+    libmsi_unref( query );
 
     query = NULL;
-    r = MsiDatabaseOpenQuery( hdb, "SELECT `a`, '' FROM `t`", &query );
+    r = libmsi_database_open_query( hdb, "SELECT `a`, '' FROM `t`", &query );
     ok( r == ERROR_SUCCESS, "failed to open database query: %u\n", r );
 
-    r = MsiQueryExecute( query, 0 );
+    r = libmsi_query_execute( query, 0 );
     ok( r == ERROR_SUCCESS, "failed to execute query: %u\n", r );
 
-    r = MsiQueryFetch( query, &rec );
+    r = libmsi_query_fetch( query, &rec );
     ok( r == ERROR_SUCCESS, "unexpected result: %u\n", r );
-    r = MsiRecordGetFieldCount( rec );
+    r = libmsi_record_get_field_count( rec );
     ok( r == 2, "got %u\n",  r );
     size = sizeof(buffer);
     memset( buffer, 0x55, sizeof(buffer) );
-    r = MsiRecordGetString( rec, 1, buffer, &size );
+    r = libmsi_record_get_string( rec, 1, buffer, &size );
     ok( r == ERROR_SUCCESS, "unexpected result: %u\n", r );
     ok( !strcmp( buffer, "1" ), "got \"%s\"\n", buffer );
-    MsiCloseHandle( rec );
+    libmsi_unref( rec );
 
-    r = MsiQueryFetch( query, &rec );
+    r = libmsi_query_fetch( query, &rec );
     ok( r == ERROR_SUCCESS, "unexpected result: %u\n", r );
     size = sizeof(buffer);
     memset( buffer, 0x55, sizeof(buffer) );
-    r = MsiRecordGetString( rec, 2, buffer, &size );
+    r = libmsi_record_get_string( rec, 2, buffer, &size );
     ok( r == ERROR_SUCCESS, "unexpected result: %u\n", r );
     ok( !buffer[0], "got \"%s\"\n", buffer );
-    MsiCloseHandle( rec );
+    libmsi_unref( rec );
 
-    r = MsiQueryFetch( query, &rec );
+    r = libmsi_query_fetch( query, &rec );
     ok( r == ERROR_NO_MORE_ITEMS, "unexpected result: %u\n", r );
-    MsiCloseHandle( rec );
+    libmsi_unref( rec );
 
-    MsiQueryClose( query );
-    MsiCloseHandle( query );
+    libmsi_query_close( query );
+    libmsi_unref( query );
 
     query = NULL;
-    r = MsiDatabaseOpenQuery( hdb, "SELECT '', `a` FROM `t`", &query );
+    r = libmsi_database_open_query( hdb, "SELECT '', `a` FROM `t`", &query );
     ok( r == ERROR_SUCCESS, "failed to open database query: %u\n", r );
 
-    r = MsiQueryExecute( query, 0 );
+    r = libmsi_query_execute( query, 0 );
     ok( r == ERROR_SUCCESS, "failed to execute query: %u\n", r );
 
-    r = MsiQueryFetch( query, &rec );
+    r = libmsi_query_fetch( query, &rec );
     ok( r == ERROR_SUCCESS, "unexpected result: %u\n", r );
-    r = MsiRecordGetFieldCount( rec );
+    r = libmsi_record_get_field_count( rec );
     ok( r == 2, "got %u\n",  r );
     size = sizeof(buffer);
     memset( buffer, 0x55, sizeof(buffer) );
-    r = MsiRecordGetString( rec, 1, buffer, &size );
+    r = libmsi_record_get_string( rec, 1, buffer, &size );
     ok( r == ERROR_SUCCESS, "unexpected result: %u\n", r );
     ok( !buffer[0], "got \"%s\"\n", buffer );
     size = sizeof(buffer);
     memset( buffer, 0x55, sizeof(buffer) );
-    r = MsiRecordGetString( rec, 2, buffer, &size );
+    r = libmsi_record_get_string( rec, 2, buffer, &size );
     ok( r == ERROR_SUCCESS, "unexpected result: %u\n", r );
     ok( !strcmp( buffer, "1" ), "got \"%s\"\n", buffer );
-    MsiCloseHandle( rec );
+    libmsi_unref( rec );
 
-    r = MsiQueryFetch( query, &rec );
+    r = libmsi_query_fetch( query, &rec );
     ok( r == ERROR_SUCCESS, "unexpected result: %u\n", r );
     size = sizeof(buffer);
     memset( buffer, 0x55, sizeof(buffer) );
-    r = MsiRecordGetString( rec, 1, buffer, &size );
+    r = libmsi_record_get_string( rec, 1, buffer, &size );
     ok( r == ERROR_SUCCESS, "unexpected result: %u\n", r );
     ok( !buffer[0], "got \"%s\"\n", buffer );
     size = sizeof(buffer);
     memset( buffer, 0x55, sizeof(buffer) );
-    r = MsiRecordGetString( rec, 2, buffer, &size );
+    r = libmsi_record_get_string( rec, 2, buffer, &size );
     ok( r == ERROR_SUCCESS, "unexpected result: %u\n", r );
     ok( !strcmp( buffer, "3" ), "got \"%s\"\n", buffer );
-    MsiCloseHandle( rec );
+    libmsi_unref( rec );
 
-    r = MsiQueryFetch( query, &rec );
+    r = libmsi_query_fetch( query, &rec );
     ok( r == ERROR_NO_MORE_ITEMS, "unexpected result: %u\n", r );
-    MsiCloseHandle( rec );
+    libmsi_unref( rec );
 
-    MsiQueryClose( query );
-    MsiCloseHandle( query );
+    libmsi_query_close( query );
+    libmsi_unref( query );
 
     query = NULL;
-    r = MsiDatabaseOpenQuery( hdb, "SELECT `a`, '', `b` FROM `t`", &query );
+    r = libmsi_database_open_query( hdb, "SELECT `a`, '', `b` FROM `t`", &query );
     ok( r == ERROR_SUCCESS, "failed to open database query: %u\n", r );
 
-    r = MsiQueryExecute( query, 0 );
+    r = libmsi_query_execute( query, 0 );
     ok( r == ERROR_SUCCESS, "failed to execute query: %u\n", r );
 
-    r = MsiQueryFetch( query, &rec );
+    r = libmsi_query_fetch( query, &rec );
     ok( r == ERROR_SUCCESS, "unexpected result: %u\n", r );
-    r = MsiRecordGetFieldCount( rec );
+    r = libmsi_record_get_field_count( rec );
     ok( r == 3, "got %u\n",  r );
     size = sizeof(buffer);
     memset( buffer, 0x55, sizeof(buffer) );
-    r = MsiRecordGetString( rec, 1, buffer, &size );
+    r = libmsi_record_get_string( rec, 1, buffer, &size );
     ok( r == ERROR_SUCCESS, "unexpected result: %u\n", r );
     ok( !strcmp( buffer, "1" ), "got \"%s\"\n", buffer );
     size = sizeof(buffer);
     memset( buffer, 0x55, sizeof(buffer) );
-    r = MsiRecordGetString( rec, 2, buffer, &size );
+    r = libmsi_record_get_string( rec, 2, buffer, &size );
     ok( r == ERROR_SUCCESS, "unexpected result: %u\n", r );
     ok( !buffer[0], "got \"%s\"\n", buffer );
     size = sizeof(buffer);
     memset( buffer, 0x55, sizeof(buffer) );
-    r = MsiRecordGetString( rec, 3, buffer, &size );
+    r = libmsi_record_get_string( rec, 3, buffer, &size );
     ok( r == ERROR_SUCCESS, "unexpected result: %u\n", r );
     ok( !strcmp( buffer, "2" ), "got \"%s\"\n", buffer );
-    MsiCloseHandle( rec );
+    libmsi_unref( rec );
 
-    r = MsiQueryFetch( query, &rec );
+    r = libmsi_query_fetch( query, &rec );
     ok( r == ERROR_SUCCESS, "unexpected result: %u\n", r );
     size = sizeof(buffer);
     memset( buffer, 0x55, sizeof(buffer) );
-    r = MsiRecordGetString( rec, 1, buffer, &size );
+    r = libmsi_record_get_string( rec, 1, buffer, &size );
     ok( r == ERROR_SUCCESS, "unexpected result: %u\n", r );
     ok( !strcmp( buffer, "3" ), "got \"%s\"\n", buffer );
     size = sizeof(buffer);
     memset( buffer, 0x55, sizeof(buffer) );
-    r = MsiRecordGetString( rec, 2, buffer, &size );
+    r = libmsi_record_get_string( rec, 2, buffer, &size );
     ok( r == ERROR_SUCCESS, "unexpected result: %u\n", r );
     ok( !buffer[0], "got \"%s\"\n", buffer );
     size = sizeof(buffer);
     memset( buffer, 0x55, sizeof(buffer) );
-    r = MsiRecordGetString( rec, 3, buffer, &size );
+    r = libmsi_record_get_string( rec, 3, buffer, &size );
     ok( r == ERROR_SUCCESS, "unexpected result: %u\n", r );
     ok( !strcmp( buffer, "4" ), "got \"%s\"\n", buffer );
-    MsiCloseHandle( rec );
+    libmsi_unref( rec );
 
-    r = MsiQueryFetch( query, &rec );
+    r = libmsi_query_fetch( query, &rec );
     ok( r == ERROR_NO_MORE_ITEMS, "unexpected result: %u\n", r );
-    MsiCloseHandle( rec );
+    libmsi_unref( rec );
 
-    MsiQueryClose( query );
-    MsiCloseHandle( query );
+    libmsi_query_close( query );
+    libmsi_unref( query );
 
     r = try_query( hdb, "SELECT '' FROM `t` WHERE `t`.`b` = 'x'" );
     ok( r == ERROR_SUCCESS , "query failed: %u\n", r );
@@ -9462,7 +9462,7 @@ static void test_select_column_names(void)
     r = try_query( hdb, "SELECT `t`.`b`, `` FROM `t` WHERE `t`.`b` = 'x'" );
     todo_wine ok( r == ERROR_BAD_QUERY_SYNTAX, "query failed: %u\n", r );
 
-    r = MsiCloseHandle( hdb );
+    r = libmsi_unref( hdb );
     ok(r == ERROR_SUCCESS , "failed to close database: %u\n", r);
 }
 

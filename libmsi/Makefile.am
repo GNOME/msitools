@@ -21,7 +21,9 @@ libmsi_la_SOURCES = alter.c create.c database.c delete.c distinct.c \
 	msiserver_i.c \
 	utf16/snprintfW.c utf16/sprintfW.c utf16/strtolW.c
 
-libmsi_la_LDFLAGS = -no-undefined
+libmsi_la_LDFLAGS = -no-undefined -rpath $(libdir) \
+		    -export-symbols-regex='^libmsi_'
+
 libmsi_la_LIBADD = \
 	$(libmsi_la_DEPENDENCIES) \
 	-lshlwapi \

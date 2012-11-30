@@ -225,7 +225,7 @@ static void set_st_entry( string_table *st, unsigned n, WCHAR *str, uint16_t ref
         st->freeslot = n + 1;
 }
 
-static unsigned msi_string2idA( const string_table *st, const char *buffer, unsigned *id )
+static unsigned _libmsi_id_from_string( const string_table *st, const char *buffer, unsigned *id )
 {
     unsigned sz;
     unsigned r = ERROR_INVALID_PARAMETER;
@@ -247,7 +247,7 @@ static unsigned msi_string2idA( const string_table *st, const char *buffer, unsi
         return ERROR_NOT_ENOUGH_MEMORY;
     MultiByteToWideChar( st->codepage, 0, buffer, -1, str, sz );
 
-    r = msi_string2idW( st, str, id );
+    r = _libmsi_id_from_stringW( st, str, id );
     msi_free( str );
 
     return r;
@@ -270,7 +270,7 @@ static int msi_addstring( string_table *st, unsigned n, const char *data, int le
     }
     else
     {
-        if( ERROR_SUCCESS == msi_string2idA( st, data, &n ) )
+        if( ERROR_SUCCESS == _libmsi_id_from_string( st, data, &n ) )
         {
             if (persistence == StringPersistent)
                 st->strings[n].persistent_refcount += refcount;
@@ -304,7 +304,7 @@ static int msi_addstring( string_table *st, unsigned n, const char *data, int le
     return n;
 }
 
-int msi_addstringW( string_table *st, const WCHAR *data, int len, uint16_t refcount, enum StringPersistence persistence )
+int _libmsi_add_string( string_table *st, const WCHAR *data, int len, uint16_t refcount, enum StringPersistence persistence )
 {
     unsigned n;
     WCHAR *str;
@@ -314,7 +314,7 @@ int msi_addstringW( string_table *st, const WCHAR *data, int len, uint16_t refco
     if( !data[0] )
         return 0;
 
-    if( msi_string2idW( st, data, &n ) == ERROR_SUCCESS )
+    if( _libmsi_id_from_stringW( st, data, &n ) == ERROR_SUCCESS )
     {
         if (persistence == StringPersistent)
             st->strings[n].persistent_refcount += refcount;
@@ -359,7 +359,7 @@ const WCHAR *msi_string_lookup_id( const string_table *st, unsigned id )
 }
 
 /*
- *  msi_id2stringA
+ *  _libmsi_string_id
  *
  *  [in] st         - pointer to the string table
  *  [in] id         - id of the string to retrieve
@@ -369,7 +369,7 @@ const WCHAR *msi_string_lookup_id( const string_table *st, unsigned id )
  *
  *  Returned string is not nul terminated.
  */
-static unsigned msi_id2stringA( const string_table *st, unsigned id, char *buffer, unsigned *sz )
+static unsigned _libmsi_string_id( const string_table *st, unsigned id, char *buffer, unsigned *sz )
 {
     unsigned len, lenW;
     const WCHAR *str;
@@ -392,13 +392,13 @@ static unsigned msi_id2stringA( const string_table *st, unsigned id, char *buffe
 }
 
 /*
- *  msi_string2idW
+ *  _libmsi_id_from_stringW
  *
  *  [in] st         - pointer to the string table
  *  [in] str        - string to find in the string table
  *  [out] id        - id of the string, if found
  */
-unsigned msi_string2idW( const string_table *st, const WCHAR *str, unsigned *id )
+unsigned _libmsi_id_from_stringW( const string_table *st, const WCHAR *str, unsigned *id )
 {
     int i, c, low = 0, high = st->sortcount - 1;
 
@@ -612,7 +612,7 @@ unsigned msi_save_string_table( const string_table *st, IStorage *storage, unsig
         }
 
         sz = datasize - used;
-        r = msi_id2stringA( st, n, data+used, &sz );
+        r = _libmsi_string_id( st, n, data+used, &sz );
         if( r != ERROR_SUCCESS )
         {
             ERR("failed to fetch string\n");

@@ -46,7 +46,7 @@ typedef struct LibmsiSelectView
     unsigned           cols[1];
 } LibmsiSelectView;
 
-static unsigned SELECT_fetch_int( LibmsiView *view, unsigned row, unsigned col, unsigned *val )
+static unsigned select_view_fetch_int( LibmsiView *view, unsigned row, unsigned col, unsigned *val )
 {
     LibmsiSelectView *sv = (LibmsiSelectView*)view;
 
@@ -67,7 +67,7 @@ static unsigned SELECT_fetch_int( LibmsiView *view, unsigned row, unsigned col, 
     return sv->table->ops->fetch_int( sv->table, row, col, val );
 }
 
-static unsigned SELECT_fetch_stream( LibmsiView *view, unsigned row, unsigned col, IStream **stm)
+static unsigned select_view_fetch_stream( LibmsiView *view, unsigned row, unsigned col, IStream **stm)
 {
     LibmsiSelectView *sv = (LibmsiSelectView*)view;
 
@@ -88,7 +88,7 @@ static unsigned SELECT_fetch_stream( LibmsiView *view, unsigned row, unsigned co
     return sv->table->ops->fetch_stream( sv->table, row, col, stm );
 }
 
-static unsigned SELECT_get_row( LibmsiView *view, unsigned row, LibmsiRecord **rec )
+static unsigned select_view_get_row( LibmsiView *view, unsigned row, LibmsiRecord **rec )
 {
     LibmsiSelectView *sv = (LibmsiSelectView *)view;
 
@@ -100,7 +100,7 @@ static unsigned SELECT_get_row( LibmsiView *view, unsigned row, LibmsiRecord **r
     return msi_view_get_row(sv->db, view, row, rec);
 }
 
-static unsigned SELECT_set_row( LibmsiView *view, unsigned row, LibmsiRecord *rec, unsigned mask )
+static unsigned select_view_set_row( LibmsiView *view, unsigned row, LibmsiRecord *rec, unsigned mask )
 {
     LibmsiSelectView *sv = (LibmsiSelectView*)view;
     unsigned i, expanded_mask = 0, r = ERROR_SUCCESS, col_count = 0;
@@ -121,14 +121,14 @@ static unsigned SELECT_set_row( LibmsiView *view, unsigned row, LibmsiRecord *re
         return r;
 
     /* expand the record to the right size for the underlying table */
-    expanded = MsiCreateRecord( col_count );
+    expanded = libmsi_record_create( col_count );
     if ( !expanded )
         return ERROR_FUNCTION_FAILED;
 
     /* move the right fields across */
     for ( i=0; i<sv->num_cols; i++ )
     {
-        r = MSI_RecordCopyField( rec, i+1, expanded, sv->cols[ i ] );
+        r = _libmsi_record_copy_field( rec, i+1, expanded, sv->cols[ i ] );
         if (r != ERROR_SUCCESS)
             break;
         expanded_mask |= (1<<(sv->cols[i]-1));
@@ -142,7 +142,7 @@ static unsigned SELECT_set_row( LibmsiView *view, unsigned row, LibmsiRecord *re
     return r;
 }
 
-static unsigned SELECT_insert_row( LibmsiView *view, LibmsiRecord *record, unsigned row, bool temporary )
+static unsigned select_view_insert_row( LibmsiView *view, LibmsiRecord *record, unsigned row, bool temporary )
 {
     LibmsiSelectView *sv = (LibmsiSelectView*)view;
     unsigned i, table_cols, r;
@@ -158,11 +158,11 @@ static unsigned SELECT_insert_row( LibmsiView *view, LibmsiRecord *record, unsig
     if (r != ERROR_SUCCESS)
         return r;
 
-    outrec = MsiCreateRecord( table_cols + 1 );
+    outrec = libmsi_record_create( table_cols + 1 );
 
     for (i=0; i<sv->num_cols; i++)
     {
-        r = MSI_RecordCopyField( record, i+1, outrec, sv->cols[i] );
+        r = _libmsi_record_copy_field( record, i+1, outrec, sv->cols[i] );
         if (r != ERROR_SUCCESS)
             goto fail;
     }
@@ -175,7 +175,7 @@ fail:
     return r;
 }
 
-static unsigned SELECT_execute( LibmsiView *view, LibmsiRecord *record )
+static unsigned select_view_execute( LibmsiView *view, LibmsiRecord *record )
 {
     LibmsiSelectView *sv = (LibmsiSelectView*)view;
 
@@ -187,7 +187,7 @@ static unsigned SELECT_execute( LibmsiView *view, LibmsiRecord *record )
     return sv->table->ops->execute( sv->table, record );
 }
 
-static unsigned SELECT_close( LibmsiView *view )
+static unsigned select_view_close( LibmsiView *view )
 {
     LibmsiSelectView *sv = (LibmsiSelectView*)view;
 
@@ -199,7 +199,7 @@ static unsigned SELECT_close( LibmsiView *view )
     return sv->table->ops->close( sv->table );
 }
 
-static unsigned SELECT_get_dimensions( LibmsiView *view, unsigned *rows, unsigned *cols )
+static unsigned select_view_get_dimensions( LibmsiView *view, unsigned *rows, unsigned *cols )
 {
     LibmsiSelectView *sv = (LibmsiSelectView*)view;
 
@@ -214,7 +214,7 @@ static unsigned SELECT_get_dimensions( LibmsiView *view, unsigned *rows, unsigne
     return sv->table->ops->get_dimensions( sv->table, rows, NULL );
 }
 
-static unsigned SELECT_get_column_info( LibmsiView *view, unsigned n, const WCHAR **name,
+static unsigned select_view_get_column_info( LibmsiView *view, unsigned n, const WCHAR **name,
                                     unsigned *type, bool *temporary, const WCHAR **table_name )
 {
     LibmsiSelectView *sv = (LibmsiSelectView*)view;
@@ -247,7 +247,7 @@ static unsigned msi_select_update(LibmsiView *view, LibmsiRecord *rec, unsigned 
     const WCHAR *str;
     LibmsiRecord *mod;
 
-    r = SELECT_get_dimensions(view, NULL, &num_columns);
+    r = select_view_get_dimensions(view, NULL, &num_columns);
     if (r != ERROR_SUCCESS)
         return r;
 
@@ -259,7 +259,7 @@ static unsigned msi_select_update(LibmsiView *view, LibmsiRecord *rec, unsigned 
     {
         col = sv->cols[i];
 
-        r = SELECT_get_column_info(view, i + 1, NULL, &type, NULL, NULL);
+        r = select_view_get_column_info(view, i + 1, NULL, &type, NULL, NULL);
         if (r != ERROR_SUCCESS)
         {
             ERR("Failed to get column information: %d\n", r);
@@ -274,13 +274,13 @@ static unsigned msi_select_update(LibmsiView *view, LibmsiRecord *rec, unsigned 
         }
         else if (type & MSITYPE_STRING)
         {
-            str = MSI_RecordGetStringRaw(rec, i + 1);
-            r = MSI_RecordSetStringW(mod, col, str);
+            str = _libmsi_record_get_string_raw(rec, i + 1);
+            r = _libmsi_record_set_stringW(mod, col, str);
         }
         else
         {
-            val = MsiRecordGetInteger(rec, i + 1);
-            r = MsiRecordSetInteger(mod, col, val);
+            val = libmsi_record_get_integer(rec, i + 1);
+            r = libmsi_record_set_int(mod, col, val);
         }
 
         if (r != ERROR_SUCCESS)
@@ -297,7 +297,7 @@ done:
     return r;
 }
 
-static unsigned SELECT_modify( LibmsiView *view, LibmsiModify eModifyMode,
+static unsigned select_view_modify( LibmsiView *view, LibmsiModify eModifyMode,
                            LibmsiRecord *rec, unsigned row )
 {
     LibmsiSelectView *sv = (LibmsiSelectView*)view;
@@ -313,7 +313,7 @@ static unsigned SELECT_modify( LibmsiView *view, LibmsiModify eModifyMode,
     return sv->table->ops->modify( sv->table, eModifyMode, rec, row );
 }
 
-static unsigned SELECT_delete( LibmsiView *view )
+static unsigned select_view_delete( LibmsiView *view )
 {
     LibmsiSelectView *sv = (LibmsiSelectView*)view;
 
@@ -328,7 +328,7 @@ static unsigned SELECT_delete( LibmsiView *view )
     return ERROR_SUCCESS;
 }
 
-static unsigned SELECT_find_matching_rows( LibmsiView *view, unsigned col,
+static unsigned select_view_find_matching_rows( LibmsiView *view, unsigned col,
     unsigned val, unsigned *row, MSIITERHANDLE *handle )
 {
     LibmsiSelectView *sv = (LibmsiSelectView*)view;
@@ -347,21 +347,21 @@ static unsigned SELECT_find_matching_rows( LibmsiView *view, unsigned col,
 }
 
 
-static const LibmsiViewOPS select_ops =
+static const LibmsiViewOps select_ops =
 {
-    SELECT_fetch_int,
-    SELECT_fetch_stream,
-    SELECT_get_row,
-    SELECT_set_row,
-    SELECT_insert_row,
+    select_view_fetch_int,
+    select_view_fetch_stream,
+    select_view_get_row,
+    select_view_set_row,
+    select_view_insert_row,
     NULL,
-    SELECT_execute,
-    SELECT_close,
-    SELECT_get_dimensions,
-    SELECT_get_column_info,
-    SELECT_modify,
-    SELECT_delete,
-    SELECT_find_matching_rows,
+    select_view_execute,
+    select_view_close,
+    select_view_get_dimensions,
+    select_view_get_column_info,
+    select_view_modify,
+    select_view_delete,
+    select_view_find_matching_rows,
     NULL,
     NULL,
     NULL,
@@ -370,7 +370,7 @@ static const LibmsiViewOPS select_ops =
     NULL,
 };
 
-static unsigned SELECT_AddColumn( LibmsiSelectView *sv, const WCHAR *name,
+static unsigned select_view_add_column( LibmsiSelectView *sv, const WCHAR *name,
                               const WCHAR *table_name )
 {
     unsigned r, n;
@@ -396,7 +396,7 @@ static unsigned SELECT_AddColumn( LibmsiSelectView *sv, const WCHAR *name,
     if ( !name[0] ) n = 0;
     else
     {
-        r = VIEW_find_column( table, name, table_name, &n );
+        r = _libmsi_view_find_column( table, name, table_name, &n );
         if( r != ERROR_SUCCESS )
             return r;
     }
@@ -418,7 +418,7 @@ static int select_count_columns( const column_info *col )
     return n;
 }
 
-unsigned SELECT_CreateView( LibmsiDatabase *db, LibmsiView **view, LibmsiView *table,
+unsigned select_view_create( LibmsiDatabase *db, LibmsiView **view, LibmsiView *table,
                         const column_info *columns )
 {
     LibmsiSelectView *sv = NULL;
@@ -441,7 +441,7 @@ unsigned SELECT_CreateView( LibmsiDatabase *db, LibmsiView **view, LibmsiView *t
 
     while( columns )
     {
-        r = SELECT_AddColumn( sv, columns->column, columns->table );
+        r = select_view_add_column( sv, columns->column, columns->table );
         if( r )
             break;
         columns = columns->next;

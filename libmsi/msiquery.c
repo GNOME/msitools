@@ -39,7 +39,7 @@
 #include "initguid.h"
 
 
-static void MSI_CloseQuery( LibmsiObject *arg )
+static void _libmsi_query_destroy( LibmsiObject *arg )
 {
     LibmsiQuery *query = (LibmsiQuery*) arg;
     struct list *ptr, *t;
@@ -54,7 +54,7 @@ static void MSI_CloseQuery( LibmsiObject *arg )
     }
 }
 
-unsigned VIEW_find_column( LibmsiView *table, const WCHAR *name, const WCHAR *table_name, unsigned *n )
+unsigned _libmsi_view_find_column( LibmsiView *table, const WCHAR *name, const WCHAR *table_name, unsigned *n )
 {
     const WCHAR *col_name;
     const WCHAR *haystack_table_name;
@@ -84,7 +84,7 @@ unsigned VIEW_find_column( LibmsiView *table, const WCHAR *name, const WCHAR *ta
     return ERROR_INVALID_PARAMETER;
 }
 
-unsigned MsiDatabaseOpenQuery(LibmsiDatabase *db,
+unsigned libmsi_database_open_query(LibmsiDatabase *db,
               const char *szQuery, LibmsiQuery **pQuery)
 {
     unsigned r;
@@ -105,14 +105,14 @@ unsigned MsiDatabaseOpenQuery(LibmsiDatabase *db,
         return ERROR_INVALID_HANDLE;
     msiobj_addref( &db->hdr);
 
-    r = MSI_DatabaseOpenQueryW( db, szwQuery, pQuery );
+    r = _libmsi_database_open_query( db, szwQuery, pQuery );
     msiobj_release( &db->hdr );
 
     msi_free( szwQuery );
     return r;
 }
 
-unsigned MSI_DatabaseOpenQueryW(LibmsiDatabase *db,
+unsigned _libmsi_database_open_query(LibmsiDatabase *db,
               const WCHAR *szQuery, LibmsiQuery **pView)
 {
     LibmsiQuery *query;
@@ -124,7 +124,7 @@ unsigned MSI_DatabaseOpenQueryW(LibmsiDatabase *db,
         return ERROR_INVALID_PARAMETER;
 
     /* pre allocate a handle to hold a pointer to the view */
-    query = alloc_msiobject( sizeof (LibmsiQuery), MSI_CloseQuery );
+    query = alloc_msiobject( sizeof (LibmsiQuery), _libmsi_query_destroy );
     if( !query )
         return ERROR_FUNCTION_FAILED;
 
@@ -132,7 +132,7 @@ unsigned MSI_DatabaseOpenQueryW(LibmsiDatabase *db,
     query->db = db;
     list_init( &query->mem );
 
-    r = MSI_ParseSQL( db, szQuery, &query->view, &query->mem );
+    r = _libmsi_parse_sql( db, szQuery, &query->view, &query->mem );
     if( r == ERROR_SUCCESS )
     {
         msiobj_addref( &query->hdr );
@@ -143,7 +143,7 @@ unsigned MSI_DatabaseOpenQueryW(LibmsiDatabase *db,
     return r;
 }
 
-unsigned MSI_OpenQuery( LibmsiDatabase *db, LibmsiQuery **view, const WCHAR *fmt, ... )
+unsigned _libmsi_query_open( LibmsiDatabase *db, LibmsiQuery **view, const WCHAR *fmt, ... )
 {
     unsigned r;
     int size = 100, res;
@@ -163,18 +163,18 @@ unsigned MSI_OpenQuery( LibmsiDatabase *db, LibmsiQuery **view, const WCHAR *fmt
         msi_free( query );
     }
     /* perform the query */
-    r = MSI_DatabaseOpenQueryW(db, query, view);
+    r = _libmsi_database_open_query(db, query, view);
     msi_free(query);
     return r;
 }
 
-unsigned MSI_IterateRecords( LibmsiQuery *view, unsigned *count,
+unsigned _libmsi_query_iterate_records( LibmsiQuery *view, unsigned *count,
                          record_func func, void *param )
 {
     LibmsiRecord *rec = NULL;
     unsigned r, n = 0, max = 0;
 
-    r = MSI_QueryExecute( view, NULL );
+    r = _libmsi_query_execute( view, NULL );
     if( r != ERROR_SUCCESS )
         return r;
 
@@ -184,7 +184,7 @@ unsigned MSI_IterateRecords( LibmsiQuery *view, unsigned *count,
     /* iterate a query */
     for( n = 0; (max == 0) || (n < max); n++ )
     {
-        r = MSI_QueryFetch( view, &rec );
+        r = _libmsi_query_fetch( view, &rec );
         if( r != ERROR_SUCCESS )
             break;
         if (func)
@@ -194,7 +194,7 @@ unsigned MSI_IterateRecords( LibmsiQuery *view, unsigned *count,
             break;
     }
 
-    MsiQueryClose( view );
+    libmsi_query_close( view );
 
     if( count )
         *count = n;
@@ -206,7 +206,7 @@ unsigned MSI_IterateRecords( LibmsiQuery *view, unsigned *count,
 }
 
 /* return a single record from a query */
-LibmsiRecord *MSI_QueryGetRecord( LibmsiDatabase *db, const WCHAR *fmt, ... )
+LibmsiRecord *_libmsi_query_get_record( LibmsiDatabase *db, const WCHAR *fmt, ... )
 {
     LibmsiRecord *rec = NULL;
     LibmsiQuery *view = NULL;
@@ -228,14 +228,14 @@ LibmsiRecord *MSI_QueryGetRecord( LibmsiDatabase *db, const WCHAR *fmt, ... )
         msi_free( query );
     }
     /* perform the query */
-    r = MSI_DatabaseOpenQueryW(db, query, &view);
+    r = _libmsi_database_open_query(db, query, &view);
     msi_free(query);
 
     if( r == ERROR_SUCCESS )
     {
-        MSI_QueryExecute( view, NULL );
-        MSI_QueryFetch( view, &rec );
-        MsiQueryClose( view );
+        _libmsi_query_execute( view, NULL );
+        _libmsi_query_fetch( view, &rec );
+        libmsi_query_close( view );
         msiobj_release( &view->hdr );
     }
     return rec;
@@ -257,7 +257,7 @@ unsigned msi_view_get_row(LibmsiDatabase *db, LibmsiView *view, unsigned row, Li
     if (row >= row_count)
         return ERROR_NO_MORE_ITEMS;
 
-    *rec = MsiCreateRecord(col_count);
+    *rec = libmsi_record_create(col_count);
     if (!*rec)
         return ERROR_FUNCTION_FAILED;
 
@@ -277,7 +277,7 @@ unsigned msi_view_get_row(LibmsiDatabase *db, LibmsiView *view, unsigned row, Li
             ret = view->ops->fetch_stream(view, row, i, &stm);
             if ((ret == ERROR_SUCCESS) && stm)
             {
-                MSI_RecordSetIStream(*rec, i, stm);
+                _libmsi_record_set_IStream(*rec, i, stm);
                 IStream_Release(stm);
             }
             else
@@ -305,21 +305,21 @@ unsigned msi_view_get_row(LibmsiDatabase *db, LibmsiView *view, unsigned row, Li
             const WCHAR *sval;
 
             sval = msi_string_lookup_id(db->strings, ival);
-            MSI_RecordSetStringW(*rec, i, sval);
+            _libmsi_record_set_stringW(*rec, i, sval);
         }
         else
         {
             if ((type & MSI_DATASIZEMASK) == 2)
-                MsiRecordSetInteger(*rec, i, ival - (1<<15));
+                libmsi_record_set_int(*rec, i, ival - (1<<15));
             else
-                MsiRecordSetInteger(*rec, i, ival - (1<<31));
+                libmsi_record_set_int(*rec, i, ival - (1<<31));
         }
     }
 
     return ERROR_SUCCESS;
 }
 
-unsigned MSI_QueryFetch(LibmsiQuery *query, LibmsiRecord **prec)
+unsigned _libmsi_query_fetch(LibmsiQuery *query, LibmsiRecord **prec)
 {
     LibmsiView *view;
     unsigned r;
@@ -334,13 +334,13 @@ unsigned MSI_QueryFetch(LibmsiQuery *query, LibmsiRecord **prec)
     if (r == ERROR_SUCCESS)
     {
         query->row ++;
-        MSI_RecordSetIntPtr(*prec, 0, (intptr_t)query);
+        _libmsi_record_set_int_ptr(*prec, 0, (intptr_t)query);
     }
 
     return r;
 }
 
-unsigned MsiQueryFetch(LibmsiQuery *query, LibmsiRecord **record)
+unsigned libmsi_query_fetch(LibmsiQuery *query, LibmsiRecord **record)
 {
     unsigned ret;
 
@@ -353,12 +353,12 @@ unsigned MsiQueryFetch(LibmsiQuery *query, LibmsiRecord **record)
     if( !query )
         return ERROR_INVALID_HANDLE;
     msiobj_addref( &query->hdr);
-    ret = MSI_QueryFetch( query, record );
+    ret = _libmsi_query_fetch( query, record );
     msiobj_release( &query->hdr );
     return ret;
 }
 
-unsigned MsiQueryClose(LibmsiQuery *query)
+unsigned libmsi_query_close(LibmsiQuery *query)
 {
     LibmsiView *view;
     unsigned ret;
@@ -380,7 +380,7 @@ unsigned MsiQueryClose(LibmsiQuery *query)
     return ret;
 }
 
-unsigned MSI_QueryExecute(LibmsiQuery *query, LibmsiRecord *rec )
+unsigned _libmsi_query_execute(LibmsiQuery *query, LibmsiRecord *rec )
 {
     LibmsiView *view;
 
@@ -396,7 +396,7 @@ unsigned MSI_QueryExecute(LibmsiQuery *query, LibmsiRecord *rec )
     return view->ops->execute( view, rec );
 }
 
-unsigned MsiQueryExecute(LibmsiQuery *query, LibmsiRecord *rec)
+unsigned libmsi_query_execute(LibmsiQuery *query, LibmsiRecord *rec)
 {
     unsigned ret;
     
@@ -409,7 +409,7 @@ unsigned MsiQueryExecute(LibmsiQuery *query, LibmsiRecord *rec)
     if( rec )
         msiobj_addref( &rec->hdr );
 
-    ret = MSI_QueryExecute( query, rec );
+    ret = _libmsi_query_execute( query, rec );
 
     msiobj_release( &query->hdr );
     if( rec )
@@ -452,10 +452,10 @@ static unsigned msi_set_record_type_string( LibmsiRecord *rec, unsigned field,
 
     TRACE("type %04x -> %s\n", type, debugstr_w(szType) );
 
-    return MSI_RecordSetStringW( rec, field, szType );
+    return _libmsi_record_set_stringW( rec, field, szType );
 }
 
-unsigned MSI_QueryGetColumnInfo( LibmsiQuery *query, LibmsiColInfo info, LibmsiRecord **prec )
+unsigned _libmsi_query_get_column_info( LibmsiQuery *query, LibmsiColInfo info, LibmsiRecord **prec )
 {
     unsigned r = ERROR_FUNCTION_FAILED, i, count = 0, type;
     LibmsiRecord *rec;
@@ -475,7 +475,7 @@ unsigned MSI_QueryGetColumnInfo( LibmsiQuery *query, LibmsiColInfo info, LibmsiR
     if( !count )
         return ERROR_INVALID_PARAMETER;
 
-    rec = MsiCreateRecord( count );
+    rec = libmsi_record_create( count );
     if( !rec )
         return ERROR_FUNCTION_FAILED;
 
@@ -486,7 +486,7 @@ unsigned MSI_QueryGetColumnInfo( LibmsiQuery *query, LibmsiColInfo info, LibmsiR
         if( r != ERROR_SUCCESS )
             continue;
         if (info == LIBMSI_COL_INFO_NAMES)
-            MSI_RecordSetStringW( rec, i+1, name );
+            _libmsi_record_set_stringW( rec, i+1, name );
         else
             msi_set_record_type_string( rec, i+1, type, temporary );
     }
@@ -494,7 +494,7 @@ unsigned MSI_QueryGetColumnInfo( LibmsiQuery *query, LibmsiColInfo info, LibmsiR
     return ERROR_SUCCESS;
 }
 
-unsigned MsiQueryGetColumnInfo(LibmsiQuery *query, LibmsiColInfo info, LibmsiRecord **prec)
+unsigned libmsi_query_get_column_info(LibmsiQuery *query, LibmsiColInfo info, LibmsiRecord **prec)
 {
     unsigned r;
 
@@ -510,13 +510,13 @@ unsigned MsiQueryGetColumnInfo(LibmsiQuery *query, LibmsiColInfo info, LibmsiRec
         return ERROR_INVALID_HANDLE;
 
     msiobj_addref ( &query->hdr );
-    r = MSI_QueryGetColumnInfo( query, info, prec );
+    r = _libmsi_query_get_column_info( query, info, prec );
     msiobj_release( &query->hdr );
 
     return r;
 }
 
-unsigned MSI_QueryModify( LibmsiQuery *query, LibmsiModify mode, LibmsiRecord *rec )
+unsigned _libmsi_query_modify( LibmsiQuery *query, LibmsiModify mode, LibmsiRecord *rec )
 {
     LibmsiView *view = NULL;
     unsigned r;
@@ -528,7 +528,7 @@ unsigned MSI_QueryModify( LibmsiQuery *query, LibmsiModify mode, LibmsiRecord *r
     if ( !view  || !view->ops->modify)
         return ERROR_FUNCTION_FAILED;
 
-    if ( mode == LIBMSI_MODIFY_UPDATE && MSI_RecordGetIntPtr( rec, 0 ) != (intptr_t)query )
+    if ( mode == LIBMSI_MODIFY_UPDATE && _libmsi_record_get_int_ptr( rec, 0 ) != (intptr_t)query )
         return ERROR_FUNCTION_FAILED;
 
     r = view->ops->modify( view, mode, rec, query->row );
@@ -538,7 +538,7 @@ unsigned MSI_QueryModify( LibmsiQuery *query, LibmsiModify mode, LibmsiRecord *r
     return r;
 }
 
-unsigned MsiQueryModify( LibmsiQuery *query, LibmsiModify eModifyMode,
+unsigned libmsi_query_modify( LibmsiQuery *query, LibmsiModify eModifyMode,
                 LibmsiRecord *rec)
 {
     unsigned r = ERROR_FUNCTION_FAILED;
@@ -553,7 +553,7 @@ unsigned MsiQueryModify( LibmsiQuery *query, LibmsiModify eModifyMode,
     if (rec)
         msiobj_addref( &rec->hdr);
 
-    r = MSI_QueryModify( query, eModifyMode, rec );
+    r = _libmsi_query_modify( query, eModifyMode, rec );
 
     msiobj_release( &query->hdr );
     if( rec )
@@ -562,7 +562,7 @@ unsigned MsiQueryModify( LibmsiQuery *query, LibmsiModify eModifyMode,
     return r;
 }
 
-LibmsiDBError MsiQueryGetError( LibmsiQuery *query, char *buffer, unsigned *buflen )
+LibmsiDBError libmsi_query_get_error( LibmsiQuery *query, char *buffer, unsigned *buflen )
 {
     const WCHAR *column;
     LibmsiDBError r;
@@ -593,7 +593,7 @@ LibmsiDBError MsiQueryGetError( LibmsiQuery *query, char *buffer, unsigned *bufl
     return r;
 }
 
-unsigned MSI_DatabaseApplyTransform( LibmsiDatabase *db,
+unsigned _libmsi_database_apply_transform( LibmsiDatabase *db,
                  const char *szTransformFile, int iErrorCond )
 {
     HRESULT r;
@@ -633,7 +633,7 @@ end:
     return ret;
 }
 
-unsigned MsiDatabaseApplyTransform( LibmsiDatabase *db,
+unsigned libmsi_database_apply_transform( LibmsiDatabase *db,
                  const char *szTransformFile, int iErrorCond)
 {
     unsigned r;
@@ -641,12 +641,12 @@ unsigned MsiDatabaseApplyTransform( LibmsiDatabase *db,
     msiobj_addref( &db->hdr );
     if( !db )
         return ERROR_INVALID_HANDLE;
-    r = MSI_DatabaseApplyTransform( db, szTransformFile, iErrorCond );
+    r = _libmsi_database_apply_transform( db, szTransformFile, iErrorCond );
     msiobj_release( &db->hdr );
     return r;
 }
 
-unsigned MsiDatabaseCommit( LibmsiDatabase *db )
+unsigned libmsi_database_commit( LibmsiDatabase *db )
 {
     unsigned r;
 
@@ -664,7 +664,7 @@ unsigned MsiDatabaseCommit( LibmsiDatabase *db )
 
     /* FIXME: lock the database */
 
-    r = MSI_CommitTables( db );
+    r = _libmsi_database_commit_tables( db );
     if (r != ERROR_SUCCESS) ERR("Failed to commit tables!\n");
 
     /* FIXME: unlock the database */
@@ -693,7 +693,7 @@ static unsigned msi_primary_key_iterator( LibmsiRecord *rec, void *param )
     const WCHAR *table;
     unsigned type;
 
-    type = MsiRecordGetInteger( rec, 4 );
+    type = libmsi_record_get_integer( rec, 4 );
     if( type & MSITYPE_KEY )
     {
         info->n++;
@@ -701,19 +701,19 @@ static unsigned msi_primary_key_iterator( LibmsiRecord *rec, void *param )
         {
             if ( info->n == 1 )
             {
-                table = MSI_RecordGetStringRaw( rec, 1 );
-                MSI_RecordSetStringW( info->rec, 0, table);
+                table = _libmsi_record_get_string_raw( rec, 1 );
+                _libmsi_record_set_stringW( info->rec, 0, table);
             }
 
-            name = MSI_RecordGetStringRaw( rec, 3 );
-            MSI_RecordSetStringW( info->rec, info->n, name );
+            name = _libmsi_record_get_string_raw( rec, 3 );
+            _libmsi_record_set_stringW( info->rec, info->n, name );
         }
     }
 
     return ERROR_SUCCESS;
 }
 
-unsigned MSI_DatabaseGetPrimaryKeys( LibmsiDatabase *db,
+unsigned _libmsi_database_get_primary_keys( LibmsiDatabase *db,
                 const WCHAR *table, LibmsiRecord **prec )
 {
     static const WCHAR sql[] = {
@@ -725,25 +725,25 @@ unsigned MSI_DatabaseGetPrimaryKeys( LibmsiDatabase *db,
     LibmsiQuery *query = NULL;
     unsigned r;
 
-    if (!TABLE_Exists( db, table ))
+    if (!table_view_exists( db, table ))
         return ERROR_INVALID_TABLE;
 
-    r = MSI_OpenQuery( db, &query, sql, table );
+    r = _libmsi_query_open( db, &query, sql, table );
     if( r != ERROR_SUCCESS )
         return r;
 
     /* count the number of primary key records */
     info.n = 0;
     info.rec = 0;
-    r = MSI_IterateRecords( query, 0, msi_primary_key_iterator, &info );
+    r = _libmsi_query_iterate_records( query, 0, msi_primary_key_iterator, &info );
     if( r == ERROR_SUCCESS )
     {
         TRACE("Found %d primary keys\n", info.n );
 
         /* allocate a record and fill in the names of the tables */
-        info.rec = MsiCreateRecord( info.n );
+        info.rec = libmsi_record_create( info.n );
         info.n = 0;
-        r = MSI_IterateRecords( query, 0, msi_primary_key_iterator, &info );
+        r = _libmsi_query_iterate_records( query, 0, msi_primary_key_iterator, &info );
         if( r == ERROR_SUCCESS )
             *prec = info.rec;
         else
@@ -754,7 +754,7 @@ unsigned MSI_DatabaseGetPrimaryKeys( LibmsiDatabase *db,
     return r;
 }
 
-unsigned MsiDatabaseGetPrimaryKeys(LibmsiDatabase *db, 
+unsigned libmsi_database_get_primary_keys(LibmsiDatabase *db, 
                     const char *table, LibmsiRecord **prec)
 {
     WCHAR *szwTable = NULL;
@@ -773,14 +773,14 @@ unsigned MsiDatabaseGetPrimaryKeys(LibmsiDatabase *db,
         return ERROR_INVALID_HANDLE;
 
     msiobj_addref( &db->hdr );
-    r = MSI_DatabaseGetPrimaryKeys( db, szwTable, prec );
+    r = _libmsi_database_get_primary_keys( db, szwTable, prec );
     msiobj_release( &db->hdr );
     msi_free( szwTable );
 
     return r;
 }
 
-LibmsiCondition MsiDatabaseIsTablePersistent(
+LibmsiCondition libmsi_database_is_table_persistent(
               LibmsiDatabase *db, const char *szTableName)
 {
     WCHAR *szwTableName = NULL;
@@ -799,7 +799,7 @@ LibmsiCondition MsiDatabaseIsTablePersistent(
     if( !db )
         return LIBMSI_CONDITION_ERROR;
 
-    r = MSI_DatabaseIsTablePersistent( db, szwTableName );
+    r = _libmsi_database_is_table_persistent( db, szwTableName );
 
     msiobj_release( &db->hdr );
     msi_free( szwTableName );

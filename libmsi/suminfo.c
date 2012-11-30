@@ -93,7 +93,7 @@ static void free_prop( PROPVARIANT *prop )
     prop->vt = VT_EMPTY;
 }
 
-static void MSI_CloseSummaryInfo( LibmsiObject *arg )
+static void _libmsi_summary_info_destroy( LibmsiObject *arg )
 {
     LibmsiSummaryInfo *si = (LibmsiSummaryInfo *) arg;
     unsigned i;
@@ -432,7 +432,7 @@ static unsigned save_summary_info( const LibmsiSummaryInfo * si, IStream *stm )
     return ERROR_SUCCESS;
 }
 
-LibmsiSummaryInfo *MSI_GetSummaryInformation( IStorage *stg, unsigned uiUpdateCount )
+LibmsiSummaryInfo *_libmsi_get_summary_information( IStorage *stg, unsigned uiUpdateCount )
 {
     IStream *stm = NULL;
     LibmsiSummaryInfo *si;
@@ -441,7 +441,7 @@ LibmsiSummaryInfo *MSI_GetSummaryInformation( IStorage *stg, unsigned uiUpdateCo
 
     TRACE("%p %d\n", stg, uiUpdateCount );
 
-    si = alloc_msiobject( sizeof (LibmsiSummaryInfo), MSI_CloseSummaryInfo );
+    si = alloc_msiobject( sizeof (LibmsiSummaryInfo), _libmsi_summary_info_destroy );
     if( !si )
         return si;
 
@@ -461,7 +461,7 @@ LibmsiSummaryInfo *MSI_GetSummaryInformation( IStorage *stg, unsigned uiUpdateCo
     return si;
 }
 
-unsigned MsiGetSummaryInformation( LibmsiDatabase *db, 
+unsigned libmsi_database_get_summary_info( LibmsiDatabase *db, 
               unsigned uiUpdateCount, LibmsiSummaryInfo **psi )
 {
     LibmsiSummaryInfo *si;
@@ -476,7 +476,7 @@ unsigned MsiGetSummaryInformation( LibmsiDatabase *db,
         return ERROR_INVALID_HANDLE;
 
     msiobj_addref( &db->hdr);
-    si = MSI_GetSummaryInformation( db->storage, uiUpdateCount );
+    si = _libmsi_get_summary_information( db->storage, uiUpdateCount );
     if (si)
     {
         *psi = si;
@@ -487,7 +487,7 @@ unsigned MsiGetSummaryInformation( LibmsiDatabase *db,
     return ret;
 }
 
-unsigned MsiSummaryInfoGetPropertyCount(LibmsiSummaryInfo *si, unsigned *pCount)
+unsigned libmsi_summary_info_get_property_count(LibmsiSummaryInfo *si, unsigned *pCount)
 {
     TRACE("%d %p\n", si, pCount);
 
@@ -502,7 +502,7 @@ unsigned MsiSummaryInfoGetPropertyCount(LibmsiSummaryInfo *si, unsigned *pCount)
     return ERROR_SUCCESS;
 }
 
-unsigned MsiSummaryInfoGetProperty(
+unsigned libmsi_summary_info_get_property(
       LibmsiSummaryInfo *si, unsigned uiProperty, unsigned *puiDataType, int *piValue,
       uint64_t *pftValue, char *szValueBuf, unsigned *pcchValueBuf)
 {
@@ -593,7 +593,7 @@ WCHAR *msi_get_suminfo_product( IStorage *stg )
     LibmsiSummaryInfo *si;
     WCHAR *prod;
 
-    si = MSI_GetSummaryInformation( stg, 0 );
+    si = _libmsi_get_summary_information( stg, 0 );
     if (!si)
     {
         ERR("no summary information!\n");
@@ -604,7 +604,7 @@ WCHAR *msi_get_suminfo_product( IStorage *stg )
     return prod;
 }
 
-unsigned MsiSummaryInfoSetProperty( LibmsiSummaryInfo *si, unsigned uiProperty,
+unsigned libmsi_summary_info_set_property( LibmsiSummaryInfo *si, unsigned uiProperty,
                unsigned uiDataType, int iValue, uint64_t* pftValue, const char *szValue )
 {
     PROPVARIANT *prop;
@@ -780,7 +780,7 @@ unsigned msi_add_suminfo( LibmsiDatabase *db, WCHAR ***records, int num_records,
     unsigned i, j;
     LibmsiSummaryInfo *si;
 
-    si = MSI_GetSummaryInformation( db->storage, num_records * (num_columns / 2) );
+    si = _libmsi_get_summary_information( db->storage, num_records * (num_columns / 2) );
     if (!si)
     {
         ERR("no summary information!\n");
@@ -800,7 +800,7 @@ unsigned msi_add_suminfo( LibmsiDatabase *db, WCHAR ***records, int num_records,
             if (r != ERROR_SUCCESS)
                 goto end;
 
-            r = MsiSummaryInfoSetProperty( si, pid, get_type(pid), int_value, &ft_value, str_value );
+            r = libmsi_summary_info_set_property( si, pid, get_type(pid), int_value, &ft_value, str_value );
             if (r != ERROR_SUCCESS)
                 goto end;
 
@@ -816,7 +816,7 @@ end:
     return r;
 }
 
-unsigned MsiSummaryInfoPersist( LibmsiSummaryInfo *si )
+unsigned libmsi_summary_info_persist( LibmsiSummaryInfo *si )
 {
     unsigned ret;
 

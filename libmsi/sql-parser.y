@@ -53,22 +53,22 @@ typedef struct LibmsiSQLInput
     struct list *mem;
 } SQL_input;
 
-static unsigned SQL_getstring( void *info, const struct sql_str *strdata, WCHAR **str );
-static INT SQL_getint( void *info );
+static unsigned sql_unescape_string( void *info, const struct sql_str *strdata, WCHAR **str );
+static INT sql_atoi( void *info );
 static int sql_lex( void *SQL_lval, SQL_input *info );
 
 static WCHAR *parser_add_table( void *info, const WCHAR *list, const WCHAR *table );
 static void *parser_alloc( void *info, unsigned int sz );
 static column_info *parser_alloc_column( void *info, const WCHAR *table, const WCHAR *column );
 
-static bool SQL_MarkPrimaryKeys( column_info **cols, column_info *keys);
+static bool sql_mark_primary_keys( column_info **cols, column_info *keys);
 
-static struct expr * EXPR_complex( void *info, struct expr *l, unsigned op, struct expr *r );
-static struct expr * EXPR_unary( void *info, struct expr *l, unsigned op );
-static struct expr * EXPR_column( void *info, const column_info *column );
-static struct expr * EXPR_ival( void *info, int val );
-static struct expr * EXPR_sval( void *info, const struct sql_str *str );
-static struct expr * EXPR_wildcard( void *info );
+static struct expr * build_expr_complex( void *info, struct expr *l, unsigned op, struct expr *r );
+static struct expr * build_expr_unary( void *info, struct expr *l, unsigned op );
+static struct expr * build_expr_column( void *info, const column_info *column );
+static struct expr * build_expr_ival( void *info, int val );
+static struct expr * build_expr_sval( void *info, const struct sql_str *str );
+static struct expr * build_expr_wildcard( void *info );
 
 #define PARSER_BUBBLE_UP_VIEW( sql, result, current_view ) \
     *sql->view = current_view; \
@@ -152,7 +152,7 @@ oneinsert:
             SQL_input *sql = (SQL_input*) info;
             LibmsiView *insert = NULL;
 
-            INSERT_CreateView( sql->db, &insert, $3, $5, $9, false );
+            insert_view_create( sql->db, &insert, $3, $5, $9, false );
             if( !insert )
                 YYABORT;
 
@@ -163,7 +163,7 @@ oneinsert:
             SQL_input *sql = (SQL_input*) info;
             LibmsiView *insert = NULL;
 
-            INSERT_CreateView( sql->db, &insert, $3, $5, $9, true );
+            insert_view_create( sql->db, &insert, $3, $5, $9, true );
             if( !insert )
                 YYABORT;
 
@@ -180,7 +180,7 @@ onecreate:
 
             if( !$5 )
                 YYABORT;
-            r = CREATE_CreateView( sql->db, &create, $3, $5, false );
+            r = create_view_create( sql->db, &create, $3, $5, false );
             if( !create )
             {
                 sql->r = r;
@@ -196,7 +196,7 @@ onecreate:
 
             if( !$5 )
                 YYABORT;
-            CREATE_CreateView( sql->db, &create, $3, $5, true );
+            create_view_create( sql->db, &create, $3, $5, true );
             if( !create )
                 YYABORT;
 
@@ -210,7 +210,7 @@ oneupdate:
             SQL_input* sql = (SQL_input*) info;
             LibmsiView *update = NULL;
 
-            UPDATE_CreateView( sql->db, &update, $2, $4, $6 );
+            update_view_create( sql->db, &update, $2, $4, $6 );
             if( !update )
                 YYABORT;
 
@@ -221,7 +221,7 @@ oneupdate:
             SQL_input* sql = (SQL_input*) info;
             LibmsiView *update = NULL;
 
-            UPDATE_CreateView( sql->db, &update, $2, $4, NULL );
+            update_view_create( sql->db, &update, $2, $4, NULL );
             if( !update )
                 YYABORT;
 
@@ -235,7 +235,7 @@ onedelete:
             SQL_input* sql = (SQL_input*) info;
             LibmsiView *delete = NULL;
 
-            DELETE_CreateView( sql->db, &delete, $2 );
+            delete_view_create( sql->db, &delete, $2 );
             if( !delete )
                 YYABORT;
 
@@ -249,7 +249,7 @@ onealter:
             SQL_input* sql = (SQL_input*) info;
             LibmsiView *alter = NULL;
 
-            ALTER_CreateView( sql->db, &alter, $3, NULL, $4 );
+            alter_view_create( sql->db, &alter, $3, NULL, $4 );
             if( !alter )
                 YYABORT;
 
@@ -260,7 +260,7 @@ onealter:
             SQL_input *sql = (SQL_input *)info;
             LibmsiView *alter = NULL;
 
-            ALTER_CreateView( sql->db, &alter, $3, $5, 0 );
+            alter_view_create( sql->db, &alter, $3, $5, 0 );
             if (!alter)
                 YYABORT;
 
@@ -271,7 +271,7 @@ onealter:
             SQL_input *sql = (SQL_input *)info;
             LibmsiView *alter = NULL;
 
-            ALTER_CreateView( sql->db, &alter, $3, $5, 1 );
+            alter_view_create( sql->db, &alter, $3, $5, 1 );
             if (!alter)
                 YYABORT;
 
@@ -297,7 +297,7 @@ onedrop:
             LibmsiView* drop = NULL;
             unsigned r;
 
-            r = DROP_CreateView( sql->db, &drop, $3 );
+            r = drop_view_create( sql->db, &drop, $3 );
             if( r != ERROR_SUCCESS || !$$ )
                 YYABORT;
 
@@ -308,7 +308,7 @@ onedrop:
 table_def:
     column_def TK_PRIMARY TK_KEY collist
         {
-            if( SQL_MarkPrimaryKeys( &$1, $4 ) )
+            if( sql_mark_primary_keys( &$1, $4 ) )
                 $$ = $1;
             else
                 $$ = NULL;
@@ -418,7 +418,7 @@ oneselect:
             LibmsiView* distinct = NULL;
             unsigned r;
 
-            r = DISTINCT_CreateView( sql->db, &distinct, $3 );
+            r = distinct_view_create( sql->db, &distinct, $3 );
             if (r != ERROR_SUCCESS)
                 YYABORT;
 
@@ -435,7 +435,7 @@ selectfrom:
 
             if( $1 )
             {
-                r = SELECT_CreateView( sql->db, &select, $2, $1 );
+                r = select_view_create( sql->db, &select, $2, $1 );
                 if (r != ERROR_SUCCESS)
                     YYABORT;
 
@@ -477,7 +477,7 @@ from:
             LibmsiView* table = NULL;
             unsigned r;
 
-            r = TABLE_CreateView( sql->db, $2, &table );
+            r = table_view_create( sql->db, $2, &table );
             if( r != ERROR_SUCCESS || !$$ )
                 YYABORT;
 
@@ -506,7 +506,7 @@ unorderdfrom:
             LibmsiView* where = NULL;
             unsigned r;
 
-            r = WHERE_CreateView( sql->db, &where, $2, NULL );
+            r = where_view_create( sql->db, &where, $2, NULL );
             if( r != ERROR_SUCCESS )
                 YYABORT;
 
@@ -518,7 +518,7 @@ unorderdfrom:
             LibmsiView* where = NULL;
             unsigned r;
 
-            r = WHERE_CreateView( sql->db, &where, $2, $4 );
+            r = where_view_create( sql->db, &where, $2, $4 );
             if( r != ERROR_SUCCESS )
                 YYABORT;
 
@@ -548,61 +548,61 @@ expr:
         }
   | expr TK_AND expr
         {
-            $$ = EXPR_complex( info, $1, OP_AND, $3 );
+            $$ = build_expr_complex( info, $1, OP_AND, $3 );
             if( !$$ )
                 YYABORT;
         }
   | expr TK_OR expr
         {
-            $$ = EXPR_complex( info, $1, OP_OR, $3 );
+            $$ = build_expr_complex( info, $1, OP_OR, $3 );
             if( !$$ )
                 YYABORT;
         }
   | column_val TK_EQ val
         {
-            $$ = EXPR_complex( info, $1, OP_EQ, $3 );
+            $$ = build_expr_complex( info, $1, OP_EQ, $3 );
             if( !$$ )
                 YYABORT;
         }
   | column_val TK_GT val
         {
-            $$ = EXPR_complex( info, $1, OP_GT, $3 );
+            $$ = build_expr_complex( info, $1, OP_GT, $3 );
             if( !$$ )
                 YYABORT;
         }
   | column_val TK_LT val
         {
-            $$ = EXPR_complex( info, $1, OP_LT, $3 );
+            $$ = build_expr_complex( info, $1, OP_LT, $3 );
             if( !$$ )
                 YYABORT;
         }
   | column_val TK_LE val
         {
-            $$ = EXPR_complex( info, $1, OP_LE, $3 );
+            $$ = build_expr_complex( info, $1, OP_LE, $3 );
             if( !$$ )
                 YYABORT;
         }
   | column_val TK_GE val
         {
-            $$ = EXPR_complex( info, $1, OP_GE, $3 );
+            $$ = build_expr_complex( info, $1, OP_GE, $3 );
             if( !$$ )
                 YYABORT;
         }
   | column_val TK_NE val
         {
-            $$ = EXPR_complex( info, $1, OP_NE, $3 );
+            $$ = build_expr_complex( info, $1, OP_NE, $3 );
             if( !$$ )
                 YYABORT;
         }
   | column_val TK_IS TK_NULL
         {
-            $$ = EXPR_unary( info, $1, OP_ISNULL );
+            $$ = build_expr_unary( info, $1, OP_ISNULL );
             if( !$$ )
                 YYABORT;
         }
   | column_val TK_IS TK_NOT TK_NULL
         {
-            $$ = EXPR_unary( info, $1, OP_NOTNULL );
+            $$ = build_expr_unary( info, $1, OP_NOTNULL );
             if( !$$ )
                 YYABORT;
         }
@@ -651,25 +651,25 @@ column_assignment:
 const_val:
     number
         {
-            $$ = EXPR_ival( info, $1 );
+            $$ = build_expr_ival( info, $1 );
             if( !$$ )
                 YYABORT;
         }
   | TK_MINUS number %prec TK_NEGATION
         {
-            $$ = EXPR_ival( info, -$2 );
+            $$ = build_expr_ival( info, -$2 );
             if( !$$ )
                 YYABORT;
         }
   | TK_STRING
         {
-            $$ = EXPR_sval( info, &$1 );
+            $$ = build_expr_sval( info, &$1 );
             if( !$$ )
                 YYABORT;
         }
   | TK_WILDCARD
         {
-            $$ = EXPR_wildcard( info );
+            $$ = build_expr_wildcard( info );
             if( !$$ )
                 YYABORT;
         }
@@ -678,7 +678,7 @@ const_val:
 column_val:
     column
         {
-            $$ = EXPR_column( info, $1 );
+            $$ = build_expr_column( info, $1 );
             if( !$$ )
                 YYABORT;
         }
@@ -730,7 +730,7 @@ table:
 id:
     TK_ID
         {
-            if ( SQL_getstring( info, &$1, &$$ ) != ERROR_SUCCESS || !$$ )
+            if ( sql_unescape_string( info, &$1, &$$ ) != ERROR_SUCCESS || !$$ )
                 YYABORT;
         }
     ;
@@ -738,7 +738,7 @@ id:
 string:
     TK_STRING
         {
-            if ( SQL_getstring( info, &$1, &$$ ) != ERROR_SUCCESS || !$$ )
+            if ( sql_unescape_string( info, &$1, &$$ ) != ERROR_SUCCESS || !$$ )
                 YYABORT;
         }
     ;
@@ -746,7 +746,7 @@ string:
 number:
     TK_INTEGER
         {
-            $$ = SQL_getint( info );
+            $$ = sql_atoi( info );
         }
     ;
 
@@ -807,7 +807,7 @@ static int sql_lex( void *SQL_lval, SQL_input *sql )
             return 0;  /* end of input */
 
         /* TRACE("string : %s\n", debugstr_w(&sql->command[sql->n])); */
-        sql->len = sqliteGetToken( &sql->command[sql->n], &token, &skip );
+        sql->len = sql_get_token( &sql->command[sql->n], &token, &skip );
         if( sql->len==0 )
             break;
         str->data = &sql->command[sql->n];
@@ -821,7 +821,7 @@ static int sql_lex( void *SQL_lval, SQL_input *sql )
     return token;
 }
 
-unsigned SQL_getstring( void *info, const struct sql_str *strdata, WCHAR **str )
+unsigned sql_unescape_string( void *info, const struct sql_str *strdata, WCHAR **str )
 {
     const WCHAR *p = strdata->data;
     unsigned len = strdata->len;
@@ -847,7 +847,7 @@ unsigned SQL_getstring( void *info, const struct sql_str *strdata, WCHAR **str )
     return ERROR_SUCCESS;
 }
 
-INT SQL_getint( void *info )
+INT sql_atoi( void *info )
 {
     SQL_input* sql = (SQL_input*) info;
     const WCHAR *p = &sql->command[sql->n];
@@ -871,7 +871,7 @@ static int sql_error( const char *str )
     return 0;
 }
 
-static struct expr * EXPR_wildcard( void *info )
+static struct expr * build_expr_wildcard( void *info )
 {
     struct expr *e = parser_alloc( info, sizeof *e );
     if( e )
@@ -881,7 +881,7 @@ static struct expr * EXPR_wildcard( void *info )
     return e;
 }
 
-static struct expr * EXPR_complex( void *info, struct expr *l, unsigned op, struct expr *r )
+static struct expr * build_expr_complex( void *info, struct expr *l, unsigned op, struct expr *r )
 {
     struct expr *e = parser_alloc( info, sizeof *e );
     if( e )
@@ -894,7 +894,7 @@ static struct expr * EXPR_complex( void *info, struct expr *l, unsigned op, stru
     return e;
 }
 
-static struct expr * EXPR_unary( void *info, struct expr *l, unsigned op )
+static struct expr * build_expr_unary( void *info, struct expr *l, unsigned op )
 {
     struct expr *e = parser_alloc( info, sizeof *e );
     if( e )
@@ -907,7 +907,7 @@ static struct expr * EXPR_unary( void *info, struct expr *l, unsigned op )
     return e;
 }
 
-static struct expr * EXPR_column( void *info, const column_info *column )
+static struct expr * build_expr_column( void *info, const column_info *column )
 {
     struct expr *e = parser_alloc( info, sizeof *e );
     if( e )
@@ -919,7 +919,7 @@ static struct expr * EXPR_column( void *info, const column_info *column )
     return e;
 }
 
-static struct expr * EXPR_ival( void *info, int val )
+static struct expr * build_expr_ival( void *info, int val )
 {
     struct expr *e = parser_alloc( info, sizeof *e );
     if( e )
@@ -930,13 +930,13 @@ static struct expr * EXPR_ival( void *info, int val )
     return e;
 }
 
-static struct expr * EXPR_sval( void *info, const struct sql_str *str )
+static struct expr * build_expr_sval( void *info, const struct sql_str *str )
 {
     struct expr *e = parser_alloc( info, sizeof *e );
     if( e )
     {
         e->type = EXPR_SVAL;
-        if( SQL_getstring( info, str, (WCHAR **)&e->u.sval ) != ERROR_SUCCESS )
+        if( sql_unescape_string( info, str, (WCHAR **)&e->u.sval ) != ERROR_SUCCESS )
             return NULL; /* e will be freed by query destructor */
     }
     return e;
@@ -971,7 +971,7 @@ static void swap_columns( column_info **cols, column_info *A, int idx )
       *cols = A;
 }
 
-static bool SQL_MarkPrimaryKeys( column_info **cols,
+static bool sql_mark_primary_keys( column_info **cols,
                                  column_info *keys )
 {
     column_info *k;
@@ -998,7 +998,7 @@ static bool SQL_MarkPrimaryKeys( column_info **cols,
     return found;
 }
 
-unsigned MSI_ParseSQL( LibmsiDatabase *db, const WCHAR *command, LibmsiView **phview,
+unsigned _libmsi_parse_sql( LibmsiDatabase *db, const WCHAR *command, LibmsiView **phview,
                    struct list *mem )
 {
     SQL_input sql;

@@ -88,7 +88,7 @@ static void distinct_free( LibmsiDistinctSet *x )
     }
 }
 
-static unsigned DISTINCT_fetch_int( LibmsiView *view, unsigned row, unsigned col, unsigned *val )
+static unsigned distinct_view_fetch_int( LibmsiView *view, unsigned row, unsigned col, unsigned *val )
 {
     LibmsiDistinctView *dv = (LibmsiDistinctView*)view;
 
@@ -105,7 +105,7 @@ static unsigned DISTINCT_fetch_int( LibmsiView *view, unsigned row, unsigned col
     return dv->table->ops->fetch_int( dv->table, row, col, val );
 }
 
-static unsigned DISTINCT_execute( LibmsiView *view, LibmsiRecord *record )
+static unsigned distinct_view_execute( LibmsiView *view, LibmsiRecord *record )
 {
     LibmsiDistinctView *dv = (LibmsiDistinctView*)view;
     unsigned r, i, j, r_count, c_count;
@@ -167,7 +167,7 @@ static unsigned DISTINCT_execute( LibmsiView *view, LibmsiRecord *record )
     return ERROR_SUCCESS;
 }
 
-static unsigned DISTINCT_close( LibmsiView *view )
+static unsigned distinct_view_close( LibmsiView *view )
 {
     LibmsiDistinctView *dv = (LibmsiDistinctView*)view;
 
@@ -183,7 +183,7 @@ static unsigned DISTINCT_close( LibmsiView *view )
     return dv->table->ops->close( dv->table );
 }
 
-static unsigned DISTINCT_get_dimensions( LibmsiView *view, unsigned *rows, unsigned *cols )
+static unsigned distinct_view_get_dimensions( LibmsiView *view, unsigned *rows, unsigned *cols )
 {
     LibmsiDistinctView *dv = (LibmsiDistinctView*)view;
 
@@ -202,7 +202,7 @@ static unsigned DISTINCT_get_dimensions( LibmsiView *view, unsigned *rows, unsig
     return dv->table->ops->get_dimensions( dv->table, NULL, cols );
 }
 
-static unsigned DISTINCT_get_column_info( LibmsiView *view, unsigned n, const WCHAR **name,
+static unsigned distinct_view_get_column_info( LibmsiView *view, unsigned n, const WCHAR **name,
                                       unsigned *type, bool *temporary, const WCHAR **table_name )
 {
     LibmsiDistinctView *dv = (LibmsiDistinctView*)view;
@@ -216,7 +216,7 @@ static unsigned DISTINCT_get_column_info( LibmsiView *view, unsigned n, const WC
                                             type, temporary, table_name );
 }
 
-static unsigned DISTINCT_modify( LibmsiView *view, LibmsiModify eModifyMode,
+static unsigned distinct_view_modify( LibmsiView *view, LibmsiModify eModifyMode,
                              LibmsiRecord *rec, unsigned row )
 {
     LibmsiDistinctView *dv = (LibmsiDistinctView*)view;
@@ -229,7 +229,7 @@ static unsigned DISTINCT_modify( LibmsiView *view, LibmsiModify eModifyMode,
     return dv->table->ops->modify( dv->table, eModifyMode, rec, row );
 }
 
-static unsigned DISTINCT_delete( LibmsiView *view )
+static unsigned distinct_view_delete( LibmsiView *view )
 {
     LibmsiDistinctView *dv = (LibmsiDistinctView*)view;
 
@@ -245,7 +245,7 @@ static unsigned DISTINCT_delete( LibmsiView *view )
     return ERROR_SUCCESS;
 }
 
-static unsigned DISTINCT_find_matching_rows( LibmsiView *view, unsigned col,
+static unsigned distinct_view_find_matching_rows( LibmsiView *view, unsigned col,
     unsigned val, unsigned *row, MSIITERHANDLE *handle )
 {
     LibmsiDistinctView *dv = (LibmsiDistinctView*)view;
@@ -266,21 +266,21 @@ static unsigned DISTINCT_find_matching_rows( LibmsiView *view, unsigned col,
     return r;
 }
 
-static const LibmsiViewOPS distinct_ops =
+static const LibmsiViewOps distinct_ops =
 {
-    DISTINCT_fetch_int,
+    distinct_view_fetch_int,
     NULL,
     NULL,
     NULL,
     NULL,
     NULL,
-    DISTINCT_execute,
-    DISTINCT_close,
-    DISTINCT_get_dimensions,
-    DISTINCT_get_column_info,
-    DISTINCT_modify,
-    DISTINCT_delete,
-    DISTINCT_find_matching_rows,
+    distinct_view_execute,
+    distinct_view_close,
+    distinct_view_get_dimensions,
+    distinct_view_get_column_info,
+    distinct_view_modify,
+    distinct_view_delete,
+    distinct_view_find_matching_rows,
     NULL,
     NULL,
     NULL,
@@ -289,7 +289,7 @@ static const LibmsiViewOPS distinct_ops =
     NULL,
 };
 
-unsigned DISTINCT_CreateView( LibmsiDatabase *db, LibmsiView **view, LibmsiView *table )
+unsigned distinct_view_create( LibmsiDatabase *db, LibmsiView **view, LibmsiView *table )
 {
     LibmsiDistinctView *dv = NULL;
     unsigned count = 0, r;

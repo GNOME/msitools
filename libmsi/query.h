@@ -97,42 +97,42 @@ struct expr
     } u;
 };
 
-unsigned MSI_ParseSQL( LibmsiDatabase *db, const WCHAR *command, LibmsiView **phview,
+unsigned _libmsi_parse_sql( LibmsiDatabase *db, const WCHAR *command, LibmsiView **phview,
                    struct list *mem );
 
-unsigned TABLE_CreateView( LibmsiDatabase *db, const WCHAR *name, LibmsiView **view );
+unsigned table_view_create( LibmsiDatabase *db, const WCHAR *name, LibmsiView **view );
 
-unsigned SELECT_CreateView( LibmsiDatabase *db, LibmsiView **view, LibmsiView *table,
+unsigned select_view_create( LibmsiDatabase *db, LibmsiView **view, LibmsiView *table,
                         const column_info *columns );
 
-unsigned DISTINCT_CreateView( LibmsiDatabase *db, LibmsiView **view, LibmsiView *table );
+unsigned distinct_view_create( LibmsiDatabase *db, LibmsiView **view, LibmsiView *table );
 
-unsigned ORDER_CreateView( LibmsiDatabase *db, LibmsiView **view, LibmsiView *table,
+unsigned order_view_create( LibmsiDatabase *db, LibmsiView **view, LibmsiView *table,
                        column_info *columns );
 
-unsigned WHERE_CreateView( LibmsiDatabase *db, LibmsiView **view, WCHAR *tables,
+unsigned where_view_create( LibmsiDatabase *db, LibmsiView **view, WCHAR *tables,
                        struct expr *cond );
 
-unsigned CREATE_CreateView( LibmsiDatabase *db, LibmsiView **view, const WCHAR *table,
+unsigned create_view_create( LibmsiDatabase *db, LibmsiView **view, const WCHAR *table,
                         column_info *col_info, bool hold );
 
-unsigned INSERT_CreateView( LibmsiDatabase *db, LibmsiView **view, const WCHAR *table,
+unsigned insert_view_create( LibmsiDatabase *db, LibmsiView **view, const WCHAR *table,
                         column_info *columns, column_info *values, bool temp );
 
-unsigned UPDATE_CreateView( LibmsiDatabase *db, LibmsiView **view, WCHAR *table,
+unsigned update_view_create( LibmsiDatabase *db, LibmsiView **view, WCHAR *table,
                         column_info *list, struct expr *expr );
 
-unsigned DELETE_CreateView( LibmsiDatabase *db, LibmsiView **view, LibmsiView *table );
+unsigned delete_view_create( LibmsiDatabase *db, LibmsiView **view, LibmsiView *table );
 
-unsigned ALTER_CreateView( LibmsiDatabase *db, LibmsiView **view, const WCHAR *name, column_info *colinfo, int hold );
+unsigned alter_view_create( LibmsiDatabase *db, LibmsiView **view, const WCHAR *name, column_info *colinfo, int hold );
 
-unsigned STREAMS_CreateView( LibmsiDatabase *db, LibmsiView **view );
+unsigned streams_view_create( LibmsiDatabase *db, LibmsiView **view );
 
-unsigned STORAGES_CreateView( LibmsiDatabase *db, LibmsiView **view );
+unsigned storages_view_create( LibmsiDatabase *db, LibmsiView **view );
 
-unsigned DROP_CreateView( LibmsiDatabase *db, LibmsiView **view, const WCHAR *name );
+unsigned drop_view_create( LibmsiDatabase *db, LibmsiView **view, const WCHAR *name );
 
-int sqliteGetToken(const WCHAR *z, int *tokenType, int *skip);
+int sql_get_token(const WCHAR *z, int *tokenType, int *skip);
 
 LibmsiRecord *msi_query_merge_record( unsigned fields, const column_info *vl, LibmsiRecord *rec );
 

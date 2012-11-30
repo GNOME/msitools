@@ -699,7 +699,7 @@ static unsigned get_tablecolumns( LibmsiDatabase *db, const WCHAR *szTableName, 
     }
 
     /* convert table and column names to IDs from the string table */
-    r = msi_string2idW( db->strings, szTableName, &table_id );
+    r = _libmsi_id_from_stringW( db->strings, szTableName, &table_id );
     if (r != ERROR_SUCCESS)
     {
         WARN("Couldn't find id for %s\n", debugstr_w(szTableName));
@@ -768,7 +768,7 @@ unsigned msi_create_table( LibmsiDatabase *db, const WCHAR *name, column_info *c
     unsigned i;
 
     /* only add tables that don't exist already */
-    if( TABLE_Exists(db, name ) )
+    if( table_view_exists(db, name ) )
     {
         WARN("table %s exists\n", debugstr_w(name));
         return ERROR_BAD_QUERY_SYNTAX;
@@ -799,8 +799,8 @@ unsigned msi_create_table( LibmsiDatabase *db, const WCHAR *name, column_info *c
 
     for( i = 0, col = col_info; col; i++, col = col->next )
     {
-        unsigned table_id = msi_addstringW( db->strings, col->table, -1, 1, string_persistence );
-        unsigned col_id = msi_addstringW( db->strings, col->column, -1, 1, string_persistence );
+        unsigned table_id = _libmsi_add_string( db->strings, col->table, -1, 1, string_persistence );
+        unsigned col_id = _libmsi_add_string( db->strings, col->column, -1, 1, string_persistence );
 
         table->colinfo[ i ].tablename = msi_string_lookup_id( db->strings, table_id );
         table->colinfo[ i ].number = i + 1;
@@ -813,7 +813,7 @@ unsigned msi_create_table( LibmsiDatabase *db, const WCHAR *name, column_info *c
     }
     table_calc_column_offsets( db, table->colinfo, table->col_count);
 
-    r = TABLE_CreateView( db, szTables, &tv );
+    r = table_view_create( db, szTables, &tv );
     TRACE("CreateView returned %x\n", r);
     if( r )
     {
@@ -826,11 +826,11 @@ unsigned msi_create_table( LibmsiDatabase *db, const WCHAR *name, column_info *c
     if( r )
         goto err;
 
-    rec = MsiCreateRecord( 1 );
+    rec = libmsi_record_create( 1 );
     if( !rec )
         goto err;
 
-    r = MSI_RecordSetStringW( rec, 1, name );
+    r = _libmsi_record_set_stringW( rec, 1, name );
     if( r )
         goto err;
 
@@ -848,7 +848,7 @@ unsigned msi_create_table( LibmsiDatabase *db, const WCHAR *name, column_info *c
     if( persistent != LIBMSI_CONDITION_FALSE )
     {
         /* add each column to the _Columns table */
-        r = TABLE_CreateView( db, szColumns, &tv );
+        r = table_view_create( db, szColumns, &tv );
         if( r )
             return r;
 
@@ -857,11 +857,11 @@ unsigned msi_create_table( LibmsiDatabase *db, const WCHAR *name, column_info *c
         if( r )
             goto err;
 
-        rec = MsiCreateRecord( 4 );
+        rec = libmsi_record_create( 4 );
         if( !rec )
             goto err;
 
-        r = MSI_RecordSetStringW( rec, 1, name );
+        r = _libmsi_record_set_stringW( rec, 1, name );
         if( r )
             goto err;
 
@@ -872,15 +872,15 @@ unsigned msi_create_table( LibmsiDatabase *db, const WCHAR *name, column_info *c
         nField = 1;
         for( col = col_info; col; col = col->next )
         {
-            r = MsiRecordSetInteger( rec, 2, nField );
+            r = libmsi_record_set_int( rec, 2, nField );
             if( r )
                 goto err;
 
-            r = MSI_RecordSetStringW( rec, 3, col->column );
+            r = _libmsi_record_set_stringW( rec, 3, col->column );
             if( r )
                 goto err;
 
-            r = MsiRecordSetInteger( rec, 4, col->type );
+            r = libmsi_record_set_int( rec, 4, col->type );
             if( r )
                 goto err;
 
@@ -1011,7 +1011,7 @@ static void msi_update_table_columns( LibmsiDatabase *db, const WCHAR *name )
 }
 
 /* try to find the table name in the _Tables table */
-bool TABLE_Exists( LibmsiDatabase *db, const WCHAR *name )
+bool table_view_exists( LibmsiDatabase *db, const WCHAR *name )
 {
     unsigned r, table_id, i;
     LibmsiTable *table;
@@ -1020,7 +1020,7 @@ bool TABLE_Exists( LibmsiDatabase *db, const WCHAR *name )
         !strcmpW( name, szStreams ) || !strcmpW( name, szStorages ) )
         return true;
 
-    r = msi_string2idW( db->strings, name, &table_id );
+    r = _libmsi_id_from_stringW( db->strings, name, &table_id );
     if( r != ERROR_SUCCESS )
     {
         TRACE("Couldn't find id for %s\n", debugstr_w(name));
@@ -1045,7 +1045,7 @@ bool TABLE_Exists( LibmsiDatabase *db, const WCHAR *name )
 
 /* below is the query interface to a table */
 
-typedef struct LibmsiTableVIEW
+typedef struct LibmsiTableView
 {
     LibmsiView        view;
     LibmsiDatabase   *db;
@@ -1054,11 +1054,11 @@ typedef struct LibmsiTableVIEW
     unsigned           num_cols;
     unsigned           row_size;
     WCHAR          name[1];
-} LibmsiTableVIEW;
+} LibmsiTableView;
 
-static unsigned TABLE_fetch_int( LibmsiView *view, unsigned row, unsigned col, unsigned *val )
+static unsigned table_view_fetch_int( LibmsiView *view, unsigned row, unsigned col, unsigned *val )
 {
-    LibmsiTableVIEW *tv = (LibmsiTableVIEW*)view;
+    LibmsiTableView *tv = (LibmsiTableView*)view;
     unsigned offset, n;
 
     if( !tv->table )
@@ -1093,7 +1093,7 @@ static unsigned TABLE_fetch_int( LibmsiView *view, unsigned row, unsigned col, u
     return ERROR_SUCCESS;
 }
 
-static unsigned msi_stream_name( const LibmsiTableVIEW *tv, unsigned row, WCHAR **pstname )
+static unsigned msi_stream_name( const LibmsiTableView *tv, unsigned row, WCHAR **pstname )
 {
     WCHAR *p;
     WCHAR *stname = NULL;
@@ -1121,7 +1121,7 @@ static unsigned msi_stream_name( const LibmsiTableVIEW *tv, unsigned row, WCHAR 
         {
             WCHAR number[0x20];
 
-            r = TABLE_fetch_int( view, row, i+1, &ival );
+            r = table_view_fetch_int( view, row, i+1, &ival );
             if ( r != ERROR_SUCCESS )
                 goto err;
 
@@ -1185,9 +1185,9 @@ err:
  * the name of the stream in the same table, and the table name
  * which may not be available at higher levels of the query
  */
-static unsigned TABLE_fetch_stream( LibmsiView *view, unsigned row, unsigned col, IStream **stm )
+static unsigned table_view_fetch_stream( LibmsiView *view, unsigned row, unsigned col, IStream **stm )
 {
-    LibmsiTableVIEW *tv = (LibmsiTableVIEW*)view;
+    LibmsiTableView *tv = (LibmsiTableView*)view;
     unsigned r;
     WCHAR *encname;
     WCHAR *full_name = NULL;
@@ -1212,7 +1212,7 @@ static unsigned TABLE_fetch_stream( LibmsiView *view, unsigned row, unsigned col
     return r;
 }
 
-static unsigned TABLE_set_int( LibmsiTableVIEW *tv, unsigned row, unsigned col, unsigned val )
+static unsigned table_view_set_int( LibmsiTableView *tv, unsigned row, unsigned col, unsigned val )
 {
     unsigned offset, n, i;
 
@@ -1249,9 +1249,9 @@ static unsigned TABLE_set_int( LibmsiTableVIEW *tv, unsigned row, unsigned col, 
     return ERROR_SUCCESS;
 }
 
-static unsigned TABLE_get_row( LibmsiView *view, unsigned row, LibmsiRecord **rec )
+static unsigned table_view_get_row( LibmsiView *view, unsigned row, LibmsiRecord **rec )
 {
-    LibmsiTableVIEW *tv = (LibmsiTableVIEW *)view;
+    LibmsiTableView *tv = (LibmsiTableView *)view;
 
     if (!tv->table)
         return ERROR_INVALID_PARAMETER;
@@ -1259,7 +1259,7 @@ static unsigned TABLE_get_row( LibmsiView *view, unsigned row, LibmsiRecord **re
     return msi_view_get_row(tv->db, view, row, rec);
 }
 
-static unsigned msi_addstreamW( LibmsiDatabase *db, const WCHAR *name, IStream *data )
+static unsigned _libmsi_add_stream( LibmsiDatabase *db, const WCHAR *name, IStream *data )
 {
     static const WCHAR insert[] = {
         'I','N','S','E','R','T',' ','I','N','T','O',' ',
@@ -1272,23 +1272,23 @@ static unsigned msi_addstreamW( LibmsiDatabase *db, const WCHAR *name, IStream *
 
     TRACE("%p %s %p\n", db, debugstr_w(name), data);
 
-    rec = MsiCreateRecord( 2 );
+    rec = libmsi_record_create( 2 );
     if ( !rec )
         return ERROR_OUTOFMEMORY;
 
-    r = MSI_RecordSetStringW( rec, 1, name );
+    r = _libmsi_record_set_stringW( rec, 1, name );
     if ( r != ERROR_SUCCESS )
        goto err;
 
-    r = MSI_RecordSetIStream( rec, 2, data );
+    r = _libmsi_record_set_IStream( rec, 2, data );
     if ( r != ERROR_SUCCESS )
        goto err;
 
-    r = MSI_DatabaseOpenQueryW( db, insert, &query );
+    r = _libmsi_database_open_query( db, insert, &query );
     if ( r != ERROR_SUCCESS )
        goto err;
 
-    r = MSI_QueryExecute( query, rec );
+    r = _libmsi_query_execute( query, rec );
 
 err:
     msiobj_release( &query->hdr );
@@ -1296,14 +1296,14 @@ err:
     return r;
 }
 
-static unsigned get_table_value_from_record( LibmsiTableVIEW *tv, LibmsiRecord *rec, unsigned iField, unsigned *pvalue )
+static unsigned get_table_value_from_record( LibmsiTableView *tv, LibmsiRecord *rec, unsigned iField, unsigned *pvalue )
 {
     LibmsiColumnInfo columninfo;
     unsigned r;
 
     if ( (iField <= 0) ||
          (iField > tv->num_cols) ||
-          MsiRecordIsNull( rec, iField ) )
+          libmsi_record_is_null( rec, iField ) )
         return ERROR_FUNCTION_FAILED;
 
     columninfo = tv->columns[ iField - 1 ];
@@ -1314,10 +1314,10 @@ static unsigned get_table_value_from_record( LibmsiTableVIEW *tv, LibmsiRecord *
     }
     else if ( columninfo.type & MSITYPE_STRING )
     {
-        const WCHAR *sval = MSI_RecordGetStringRaw( rec, iField );
+        const WCHAR *sval = _libmsi_record_get_string_raw( rec, iField );
         if (sval)
         {
-            r = msi_string2idW(tv->db->strings, sval, pvalue);
+            r = _libmsi_id_from_stringW(tv->db->strings, sval, pvalue);
             if (r != ERROR_SUCCESS)
                 return ERROR_NOT_FOUND;
         }
@@ -1325,7 +1325,7 @@ static unsigned get_table_value_from_record( LibmsiTableVIEW *tv, LibmsiRecord *
     }
     else if ( bytes_per_column( tv->db, &columninfo, LONG_STR_BYTES ) == 2 )
     {
-        *pvalue = 0x8000 + MsiRecordGetInteger( rec, iField );
+        *pvalue = 0x8000 + libmsi_record_get_integer( rec, iField );
         if ( *pvalue & 0xffff0000 )
         {
             ERR("field %u value %d out of range\n", iField, *pvalue - 0x8000);
@@ -1334,16 +1334,16 @@ static unsigned get_table_value_from_record( LibmsiTableVIEW *tv, LibmsiRecord *
     }
     else
     {
-        int ival = MsiRecordGetInteger( rec, iField );
+        int ival = libmsi_record_get_integer( rec, iField );
         *pvalue = ival ^ 0x80000000;
     }
 
     return ERROR_SUCCESS;
 }
 
-static unsigned TABLE_set_row( LibmsiView *view, unsigned row, LibmsiRecord *rec, unsigned mask )
+static unsigned table_view_set_row( LibmsiView *view, unsigned row, LibmsiRecord *rec, unsigned mask )
 {
-    LibmsiTableVIEW *tv = (LibmsiTableVIEW*)view;
+    LibmsiTableView *tv = (LibmsiTableView*)view;
     unsigned i, val, r = ERROR_SUCCESS;
 
     if ( !tv->table )
@@ -1366,7 +1366,7 @@ static unsigned TABLE_set_row( LibmsiView *view, unsigned row, LibmsiRecord *rec
         /* FIXME: should we allow updating keys? */
 
         val = 0;
-        if ( !MsiRecordIsNull( rec, i + 1 ) )
+        if ( !libmsi_record_is_null( rec, i + 1 ) )
         {
             r = get_table_value_from_record (tv, rec, i + 1, &val);
             if ( MSITYPE_IS_BINARY(tv->columns[ i ].type) )
@@ -1377,7 +1377,7 @@ static unsigned TABLE_set_row( LibmsiView *view, unsigned row, LibmsiRecord *rec
                 if ( r != ERROR_SUCCESS )
                     return ERROR_FUNCTION_FAILED;
 
-                r = MSI_RecordGetIStream( rec, i + 1, &stm );
+                r = _libmsi_record_get_IStream( rec, i + 1, &stm );
                 if ( r != ERROR_SUCCESS )
                     return r;
 
@@ -1388,7 +1388,7 @@ static unsigned TABLE_set_row( LibmsiView *view, unsigned row, LibmsiRecord *rec
                     return r;
                 }
 
-                r = msi_addstreamW( tv->db, stname, stm );
+                r = _libmsi_add_stream( tv->db, stname, stm );
                 IStream_Release( stm );
                 msi_free ( stname );
 
@@ -1401,13 +1401,13 @@ static unsigned TABLE_set_row( LibmsiView *view, unsigned row, LibmsiRecord *rec
 
                 if ( r != ERROR_SUCCESS )
                 {
-                    const WCHAR *sval = MSI_RecordGetStringRaw( rec, i + 1 );
-                    val = msi_addstringW( tv->db->strings, sval, -1, 1,
+                    const WCHAR *sval = _libmsi_record_get_string_raw( rec, i + 1 );
+                    val = _libmsi_add_string( tv->db->strings, sval, -1, 1,
                       persistent ? StringPersistent : StringNonPersistent );
                 }
                 else
                 {
-                    TABLE_fetch_int(&tv->view, row, i + 1, &x);
+                    table_view_fetch_int(&tv->view, row, i + 1, &x);
                     if (val == x)
                         continue;
                 }
@@ -1419,7 +1419,7 @@ static unsigned TABLE_set_row( LibmsiView *view, unsigned row, LibmsiRecord *rec
             }
         }
 
-        r = TABLE_set_int( tv, row, i+1, val );
+        r = table_view_set_int( tv, row, i+1, val );
         if ( r != ERROR_SUCCESS )
             break;
     }
@@ -1428,7 +1428,7 @@ static unsigned TABLE_set_row( LibmsiView *view, unsigned row, LibmsiRecord *rec
 
 static unsigned table_create_new_row( LibmsiView *view, unsigned *num, bool temporary )
 {
-    LibmsiTableVIEW *tv = (LibmsiTableVIEW*)view;
+    LibmsiTableView *tv = (LibmsiTableView*)view;
     uint8_t **p, *row;
     bool *b;
     unsigned sz;
@@ -1485,9 +1485,9 @@ static unsigned table_create_new_row( LibmsiView *view, unsigned *num, bool temp
     return ERROR_SUCCESS;
 }
 
-static unsigned TABLE_execute( LibmsiView *view, LibmsiRecord *record )
+static unsigned table_view_execute( LibmsiView *view, LibmsiRecord *record )
 {
-    LibmsiTableVIEW *tv = (LibmsiTableVIEW*)view;
+    LibmsiTableView *tv = (LibmsiTableView*)view;
 
     TRACE("%p %p\n", tv, record);
 
@@ -1496,16 +1496,16 @@ static unsigned TABLE_execute( LibmsiView *view, LibmsiRecord *record )
     return ERROR_SUCCESS;
 }
 
-static unsigned TABLE_close( LibmsiView *view )
+static unsigned table_view_close( LibmsiView *view )
 {
     TRACE("%p\n", view );
     
     return ERROR_SUCCESS;
 }
 
-static unsigned TABLE_get_dimensions( LibmsiView *view, unsigned *rows, unsigned *cols)
+static unsigned table_view_get_dimensions( LibmsiView *view, unsigned *rows, unsigned *cols)
 {
-    LibmsiTableVIEW *tv = (LibmsiTableVIEW*)view;
+    LibmsiTableView *tv = (LibmsiTableView*)view;
 
     TRACE("%p %p %p\n", view, rows, cols );
 
@@ -1521,11 +1521,11 @@ static unsigned TABLE_get_dimensions( LibmsiView *view, unsigned *rows, unsigned
     return ERROR_SUCCESS;
 }
 
-static unsigned TABLE_get_column_info( LibmsiView *view,
+static unsigned table_view_get_column_info( LibmsiView *view,
                 unsigned n, const WCHAR **name, unsigned *type, bool *temporary,
                 const WCHAR **table_name )
 {
-    LibmsiTableVIEW *tv = (LibmsiTableVIEW*)view;
+    LibmsiTableView *tv = (LibmsiTableView*)view;
 
     TRACE("%p %d %p %p\n", tv, n, name, type );
 
@@ -1555,9 +1555,9 @@ static unsigned TABLE_get_column_info( LibmsiView *view,
     return ERROR_SUCCESS;
 }
 
-static unsigned msi_table_find_row( LibmsiTableVIEW *tv, LibmsiRecord *rec, unsigned *row, unsigned *column );
+static unsigned msi_table_find_row( LibmsiTableView *tv, LibmsiRecord *rec, unsigned *row, unsigned *column );
 
-static unsigned table_validate_new( LibmsiTableVIEW *tv, LibmsiRecord *rec, unsigned *column )
+static unsigned table_validate_new( LibmsiTableView *tv, LibmsiRecord *rec, unsigned *column )
 {
     unsigned r, row, i;
 
@@ -1573,7 +1573,7 @@ static unsigned table_validate_new( LibmsiTableVIEW *tv, LibmsiRecord *rec, unsi
         {
             const WCHAR *str;
 
-            str = MSI_RecordGetStringRaw( rec, i+1 );
+            str = _libmsi_record_get_string_raw( rec, i+1 );
             if (str == NULL || str[0] == 0)
             {
                 if (column) *column = i;
@@ -1584,7 +1584,7 @@ static unsigned table_validate_new( LibmsiTableVIEW *tv, LibmsiRecord *rec, unsi
         {
             unsigned n;
 
-            n = MsiRecordGetInteger( rec, i+1 );
+            n = libmsi_record_get_integer( rec, i+1 );
             if (n == MSI_NULL_INTEGER)
             {
                 if (column) *column = i;
@@ -1601,7 +1601,7 @@ static unsigned table_validate_new( LibmsiTableVIEW *tv, LibmsiRecord *rec, unsi
     return ERROR_SUCCESS;
 }
 
-static int compare_record( LibmsiTableVIEW *tv, unsigned row, LibmsiRecord *rec )
+static int compare_record( LibmsiTableView *tv, unsigned row, LibmsiRecord *rec )
 {
     unsigned r, i, ivalue, x;
 
@@ -1613,10 +1613,10 @@ static int compare_record( LibmsiTableVIEW *tv, unsigned row, LibmsiRecord *rec 
         if (r != ERROR_SUCCESS)
             return 1;
 
-        r = TABLE_fetch_int( &tv->view, row, i + 1, &x );
+        r = table_view_fetch_int( &tv->view, row, i + 1, &x );
         if (r != ERROR_SUCCESS)
         {
-            WARN("TABLE_fetch_int should not fail here %u\n", r);
+            WARN("table_view_fetch_int should not fail here %u\n", r);
             return -1;
         }
         if (ivalue > x)
@@ -1634,7 +1634,7 @@ static int compare_record( LibmsiTableVIEW *tv, unsigned row, LibmsiRecord *rec 
     return 1;
 }
 
-static int find_insert_index( LibmsiTableVIEW *tv, LibmsiRecord *rec )
+static int find_insert_index( LibmsiTableView *tv, LibmsiRecord *rec )
 {
     int idx, c, low = 0, high = tv->table->row_count - 1;
 
@@ -1659,9 +1659,9 @@ static int find_insert_index( LibmsiTableVIEW *tv, LibmsiRecord *rec )
     return high + 1;
 }
 
-static unsigned TABLE_insert_row( LibmsiView *view, LibmsiRecord *rec, unsigned row, bool temporary )
+static unsigned table_view_insert_row( LibmsiView *view, LibmsiRecord *rec, unsigned row, bool temporary )
 {
-    LibmsiTableVIEW *tv = (LibmsiTableVIEW*)view;
+    LibmsiTableView *tv = (LibmsiTableView*)view;
     unsigned i, r;
 
     TRACE("%p %p %s\n", tv, rec, temporary ? "true" : "false" );
@@ -1689,12 +1689,12 @@ static unsigned TABLE_insert_row( LibmsiView *view, LibmsiRecord *rec, unsigned 
 
     /* Re-set the persistence flag */
     tv->table->data_persistent[row] = !temporary;
-    return TABLE_set_row( view, row, rec, (1<<tv->num_cols) - 1 );
+    return table_view_set_row( view, row, rec, (1<<tv->num_cols) - 1 );
 }
 
-static unsigned TABLE_delete_row( LibmsiView *view, unsigned row )
+static unsigned table_view_delete_row( LibmsiView *view, unsigned row )
 {
-    LibmsiTableVIEW *tv = (LibmsiTableVIEW*)view;
+    LibmsiTableView *tv = (LibmsiTableView*)view;
     unsigned r, num_rows, num_cols, i;
 
     TRACE("%p %d\n", tv, row);
@@ -1702,7 +1702,7 @@ static unsigned TABLE_delete_row( LibmsiView *view, unsigned row )
     if ( !tv->table )
         return ERROR_INVALID_PARAMETER;
 
-    r = TABLE_get_dimensions( view, &num_rows, &num_cols );
+    r = table_view_get_dimensions( view, &num_rows, &num_cols );
     if ( r != ERROR_SUCCESS )
         return r;
 
@@ -1732,10 +1732,10 @@ static unsigned TABLE_delete_row( LibmsiView *view, unsigned row )
 
 static unsigned msi_table_update(LibmsiView *view, LibmsiRecord *rec, unsigned row)
 {
-    LibmsiTableVIEW *tv = (LibmsiTableVIEW *)view;
+    LibmsiTableView *tv = (LibmsiTableView *)view;
     unsigned r, new_row;
 
-    /* FIXME: MsiQueryFetch should set rec index 0 to some ID that
+    /* FIXME: libmsi_query_fetch should set rec index 0 to some ID that
      * sets the fetched record apart from other records
      */
 
@@ -1753,12 +1753,12 @@ static unsigned msi_table_update(LibmsiView *view, LibmsiRecord *rec, unsigned r
     if (row != new_row + 1)
         return ERROR_FUNCTION_FAILED;
 
-    return TABLE_set_row(view, new_row, rec, (1 << tv->num_cols) - 1);
+    return table_view_set_row(view, new_row, rec, (1 << tv->num_cols) - 1);
 }
 
 static unsigned msi_table_assign(LibmsiView *view, LibmsiRecord *rec)
 {
-    LibmsiTableVIEW *tv = (LibmsiTableVIEW *)view;
+    LibmsiTableView *tv = (LibmsiTableView *)view;
     unsigned r, row;
 
     if (!tv->table)
@@ -1766,21 +1766,21 @@ static unsigned msi_table_assign(LibmsiView *view, LibmsiRecord *rec)
 
     r = msi_table_find_row(tv, rec, &row, NULL);
     if (r == ERROR_SUCCESS)
-        return TABLE_set_row(view, row, rec, (1 << tv->num_cols) - 1);
+        return table_view_set_row(view, row, rec, (1 << tv->num_cols) - 1);
     else
-        return TABLE_insert_row( view, rec, -1, false );
+        return table_view_insert_row( view, rec, -1, false );
 }
 
 static unsigned modify_delete_row( LibmsiView *view, LibmsiRecord *rec )
 {
-    LibmsiTableVIEW *tv = (LibmsiTableVIEW *)view;
+    LibmsiTableView *tv = (LibmsiTableView *)view;
     unsigned row, r;
 
     r = msi_table_find_row(tv, rec, &row, NULL);
     if (r != ERROR_SUCCESS)
         return r;
 
-    return TABLE_delete_row(view, row);
+    return table_view_delete_row(view, row);
 }
 
 static unsigned msi_refresh_record( LibmsiView *view, LibmsiRecord *rec, unsigned row )
@@ -1788,25 +1788,25 @@ static unsigned msi_refresh_record( LibmsiView *view, LibmsiRecord *rec, unsigne
     LibmsiRecord *curr;
     unsigned r, i, count;
 
-    r = TABLE_get_row(view, row - 1, &curr);
+    r = table_view_get_row(view, row - 1, &curr);
     if (r != ERROR_SUCCESS)
         return r;
 
     /* Close the original record */
-    MSI_CloseRecord(&rec->hdr);
+    _libmsi_record_destroy(&rec->hdr);
 
-    count = MsiRecordGetFieldCount(rec);
+    count = libmsi_record_get_field_count(rec);
     for (i = 0; i < count; i++)
-        MSI_RecordCopyField(curr, i + 1, rec, i + 1);
+        _libmsi_record_copy_field(curr, i + 1, rec, i + 1);
 
     msiobj_release(&curr->hdr);
     return ERROR_SUCCESS;
 }
 
-static unsigned TABLE_modify( LibmsiView *view, LibmsiModify eModifyMode,
+static unsigned table_view_modify( LibmsiView *view, LibmsiModify eModifyMode,
                           LibmsiRecord *rec, unsigned row)
 {
-    LibmsiTableVIEW *tv = (LibmsiTableVIEW*)view;
+    LibmsiTableView *tv = (LibmsiTableView*)view;
     unsigned r, frow, column;
 
     TRACE("%p %d %p\n", view, eModifyMode, rec );
@@ -1830,14 +1830,14 @@ static unsigned TABLE_modify( LibmsiView *view, LibmsiModify eModifyMode,
         r = table_validate_new( tv, rec, NULL );
         if (r != ERROR_SUCCESS)
             break;
-        r = TABLE_insert_row( view, rec, -1, false );
+        r = table_view_insert_row( view, rec, -1, false );
         break;
 
     case LIBMSI_MODIFY_INSERT_TEMPORARY:
         r = table_validate_new( tv, rec, NULL );
         if (r != ERROR_SUCCESS)
             break;
-        r = TABLE_insert_row( view, rec, -1, true );
+        r = table_view_insert_row( view, rec, -1, true );
         break;
 
     case LIBMSI_MODIFY_REFRESH:
@@ -1859,7 +1859,7 @@ static unsigned TABLE_modify( LibmsiView *view, LibmsiModify eModifyMode,
         {
             r = table_validate_new( tv, rec, NULL );
             if (r == ERROR_SUCCESS)
-                r = TABLE_insert_row( view, rec, -1, false );
+                r = table_view_insert_row( view, rec, -1, false );
         }
         break;
 
@@ -1878,9 +1878,9 @@ static unsigned TABLE_modify( LibmsiView *view, LibmsiModify eModifyMode,
     return r;
 }
 
-static unsigned TABLE_delete( LibmsiView *view )
+static unsigned table_view_delete( LibmsiView *view )
 {
-    LibmsiTableVIEW *tv = (LibmsiTableVIEW*)view;
+    LibmsiTableView *tv = (LibmsiTableView*)view;
 
     TRACE("%p\n", view );
 
@@ -1892,10 +1892,10 @@ static unsigned TABLE_delete( LibmsiView *view )
     return ERROR_SUCCESS;
 }
 
-static unsigned TABLE_find_matching_rows( LibmsiView *view, unsigned col,
+static unsigned table_view_find_matching_rows( LibmsiView *view, unsigned col,
     unsigned val, unsigned *row, MSIITERHANDLE *handle )
 {
-    LibmsiTableVIEW *tv = (LibmsiTableVIEW*)view;
+    LibmsiTableView *tv = (LibmsiTableView*)view;
     const LibmsiColumnHashEntry *entry;
 
     TRACE("%p, %d, %u, %p\n", view, col, val, *handle);
@@ -1971,9 +1971,9 @@ static unsigned TABLE_find_matching_rows( LibmsiView *view, unsigned col,
     return ERROR_SUCCESS;
 }
 
-static unsigned TABLE_add_ref(LibmsiView *view)
+static unsigned table_view_add_ref(LibmsiView *view)
 {
-    LibmsiTableVIEW *tv = (LibmsiTableVIEW*)view;
+    LibmsiTableView *tv = (LibmsiTableView*)view;
     unsigned i;
 
     TRACE("%p %d\n", view, tv->table->ref_count);
@@ -1987,29 +1987,29 @@ static unsigned TABLE_add_ref(LibmsiView *view)
     return InterlockedIncrement(&tv->table->ref_count);
 }
 
-static unsigned TABLE_remove_column(LibmsiView *view, const WCHAR *table, unsigned number)
+static unsigned table_view_remove_column(LibmsiView *view, const WCHAR *table, unsigned number)
 {
-    LibmsiTableVIEW *tv = (LibmsiTableVIEW*)view;
+    LibmsiTableView *tv = (LibmsiTableView*)view;
     LibmsiRecord *rec = NULL;
     LibmsiView *columns = NULL;
     unsigned row, r;
 
-    rec = MsiCreateRecord(2);
+    rec = libmsi_record_create(2);
     if (!rec)
         return ERROR_OUTOFMEMORY;
 
-    MSI_RecordSetStringW(rec, 1, table);
-    MsiRecordSetInteger(rec, 2, number);
+    _libmsi_record_set_stringW(rec, 1, table);
+    libmsi_record_set_int(rec, 2, number);
 
-    r = TABLE_CreateView(tv->db, szColumns, &columns);
+    r = table_view_create(tv->db, szColumns, &columns);
     if (r != ERROR_SUCCESS)
         return r;
 
-    r = msi_table_find_row((LibmsiTableVIEW *)columns, rec, &row, NULL);
+    r = msi_table_find_row((LibmsiTableView *)columns, rec, &row, NULL);
     if (r != ERROR_SUCCESS)
         goto done;
 
-    r = TABLE_delete_row(columns, row);
+    r = table_view_delete_row(columns, row);
     if (r != ERROR_SUCCESS)
         goto done;
 
@@ -2021,9 +2021,9 @@ done:
     return r;
 }
 
-static unsigned TABLE_release(LibmsiView *view)
+static unsigned table_view_release(LibmsiView *view)
 {
-    LibmsiTableVIEW *tv = (LibmsiTableVIEW*)view;
+    LibmsiTableView *tv = (LibmsiTableView*)view;
     int ref = tv->table->ref_count;
     unsigned i, r;
 
@@ -2036,7 +2036,7 @@ static unsigned TABLE_release(LibmsiView *view)
             ref = InterlockedDecrement(&tv->table->colinfo[i].ref_count);
             if (ref == 0)
             {
-                r = TABLE_remove_column(view, tv->table->colinfo[i].tablename,
+                r = table_view_remove_column(view, tv->table->colinfo[i].tablename,
                                         tv->table->colinfo[i].number);
                 if (r != ERROR_SUCCESS)
                     break;
@@ -2051,31 +2051,31 @@ static unsigned TABLE_release(LibmsiView *view)
         {
             list_remove(&tv->table->entry);
             free_table(tv->table);
-            TABLE_delete(view);
+            table_view_delete(view);
         }
     }
 
     return ref;
 }
 
-static unsigned TABLE_add_column(LibmsiView *view, const WCHAR *table, unsigned number,
+static unsigned table_view_add_column(LibmsiView *view, const WCHAR *table, unsigned number,
                              const WCHAR *column, unsigned type, bool hold)
 {
-    LibmsiTableVIEW *tv = (LibmsiTableVIEW*)view;
+    LibmsiTableView *tv = (LibmsiTableView*)view;
     LibmsiTable *msitable;
     LibmsiRecord *rec;
     unsigned r, i;
 
-    rec = MsiCreateRecord(4);
+    rec = libmsi_record_create(4);
     if (!rec)
         return ERROR_OUTOFMEMORY;
 
-    MSI_RecordSetStringW(rec, 1, table);
-    MsiRecordSetInteger(rec, 2, number);
-    MSI_RecordSetStringW(rec, 3, column);
-    MsiRecordSetInteger(rec, 4, type);
+    _libmsi_record_set_stringW(rec, 1, table);
+    libmsi_record_set_int(rec, 2, number);
+    _libmsi_record_set_stringW(rec, 3, column);
+    libmsi_record_set_int(rec, 4, type);
 
-    r = TABLE_insert_row(&tv->view, rec, -1, false);
+    r = table_view_insert_row(&tv->view, rec, -1, false);
     if (r != ERROR_SUCCESS)
         goto done;
 
@@ -2099,9 +2099,9 @@ done:
     return r;
 }
 
-static unsigned TABLE_drop(LibmsiView *view)
+static unsigned table_view_drop(LibmsiView *view)
 {
-    LibmsiTableVIEW *tv = (LibmsiTableVIEW*)view;
+    LibmsiTableView *tv = (LibmsiTableView*)view;
     LibmsiView *tables = NULL;
     LibmsiRecord *rec = NULL;
     unsigned r, row;
@@ -2111,27 +2111,27 @@ static unsigned TABLE_drop(LibmsiView *view)
 
     for (i = tv->table->col_count - 1; i >= 0; i--)
     {
-        r = TABLE_remove_column(view, tv->table->colinfo[i].tablename,
+        r = table_view_remove_column(view, tv->table->colinfo[i].tablename,
                                 tv->table->colinfo[i].number);
         if (r != ERROR_SUCCESS)
             return r;
     }
 
-    rec = MsiCreateRecord(1);
+    rec = libmsi_record_create(1);
     if (!rec)
         return ERROR_OUTOFMEMORY;
 
-    MSI_RecordSetStringW(rec, 1, tv->name);
+    _libmsi_record_set_stringW(rec, 1, tv->name);
 
-    r = TABLE_CreateView(tv->db, szTables, &tables);
+    r = table_view_create(tv->db, szTables, &tables);
     if (r != ERROR_SUCCESS)
         return r;
 
-    r = msi_table_find_row((LibmsiTableVIEW *)tables, rec, &row, NULL);
+    r = msi_table_find_row((LibmsiTableView *)tables, rec, &row, NULL);
     if (r != ERROR_SUCCESS)
         goto done;
 
-    r = TABLE_delete_row(tables, row);
+    r = table_view_delete_row(tables, row);
     if (r != ERROR_SUCCESS)
         goto done;
 
@@ -2145,40 +2145,40 @@ done:
     return r;
 }
 
-static const LibmsiViewOPS table_ops =
+static const LibmsiViewOps table_ops =
 {
-    TABLE_fetch_int,
-    TABLE_fetch_stream,
-    TABLE_get_row,
-    TABLE_set_row,
-    TABLE_insert_row,
-    TABLE_delete_row,
-    TABLE_execute,
-    TABLE_close,
-    TABLE_get_dimensions,
-    TABLE_get_column_info,
-    TABLE_modify,
-    TABLE_delete,
-    TABLE_find_matching_rows,
-    TABLE_add_ref,
-    TABLE_release,
-    TABLE_add_column,
-    TABLE_remove_column,
+    table_view_fetch_int,
+    table_view_fetch_stream,
+    table_view_get_row,
+    table_view_set_row,
+    table_view_insert_row,
+    table_view_delete_row,
+    table_view_execute,
+    table_view_close,
+    table_view_get_dimensions,
+    table_view_get_column_info,
+    table_view_modify,
+    table_view_delete,
+    table_view_find_matching_rows,
+    table_view_add_ref,
+    table_view_release,
+    table_view_add_column,
+    table_view_remove_column,
     NULL,
-    TABLE_drop,
+    table_view_drop,
 };
 
-unsigned TABLE_CreateView( LibmsiDatabase *db, const WCHAR *name, LibmsiView **view )
+unsigned table_view_create( LibmsiDatabase *db, const WCHAR *name, LibmsiView **view )
 {
-    LibmsiTableVIEW *tv ;
+    LibmsiTableView *tv ;
     unsigned r, sz;
 
     TRACE("%p %s %p\n", db, debugstr_w(name), view );
 
     if ( !strcmpW( name, szStreams ) )
-        return STREAMS_CreateView( db, view );
+        return streams_view_create( db, view );
     else if ( !strcmpW( name, szStorages ) )
-        return STORAGES_CreateView( db, view );
+        return storages_view_create( db, view );
 
     sz = sizeof *tv + strlenW(name)*sizeof name[0] ;
     tv = alloc_msiobject( sz, NULL );
@@ -2210,7 +2210,7 @@ unsigned TABLE_CreateView( LibmsiDatabase *db, const WCHAR *name, LibmsiView **v
     return ERROR_SUCCESS;
 }
 
-unsigned MSI_CommitTables( LibmsiDatabase *db )
+unsigned _libmsi_database_commit_tables( LibmsiDatabase *db )
 {
     unsigned r, bytes_per_strref;
     HRESULT hr;
@@ -2245,7 +2245,7 @@ unsigned MSI_CommitTables( LibmsiDatabase *db )
     return r;
 }
 
-LibmsiCondition MSI_DatabaseIsTablePersistent( LibmsiDatabase *db, const WCHAR *table )
+LibmsiCondition _libmsi_database_is_table_persistent( LibmsiDatabase *db, const WCHAR *table )
 {
     LibmsiTable *t;
     unsigned r;
@@ -2272,7 +2272,7 @@ static unsigned read_raw_int(const uint8_t *data, unsigned col, unsigned bytes)
     return ret;
 }
 
-static unsigned msi_record_encoded_stream_name( const LibmsiTableVIEW *tv, LibmsiRecord *rec, WCHAR **pstname )
+static unsigned msi_record_encoded_stream_name( const LibmsiTableView *tv, LibmsiRecord *rec, WCHAR **pstname )
 {
     WCHAR *stname = NULL;
     WCHAR *sval;
@@ -2332,7 +2332,7 @@ err:
     return r;
 }
 
-static LibmsiRecord *msi_get_transform_record( const LibmsiTableVIEW *tv, const string_table *st,
+static LibmsiRecord *msi_get_transform_record( const LibmsiTableView *tv, const string_table *st,
                                             IStorage *stg,
                                             const uint8_t *rawdata, unsigned bytes_per_strref )
 {
@@ -2344,7 +2344,7 @@ static LibmsiRecord *msi_get_transform_record( const LibmsiTableVIEW *tv, const 
     mask = rawdata[0] | (rawdata[1] << 8);
     rawdata += 2;
 
-    rec = MsiCreateRecord( tv->num_cols );
+    rec = libmsi_record_create( tv->num_cols );
     if( !rec )
         return rec;
 
@@ -2377,7 +2377,7 @@ static LibmsiRecord *msi_get_transform_record( const LibmsiTableVIEW *tv, const 
                 return NULL;
             }
 
-            MSI_RecordSetStream( rec, i+1, stm );
+            _libmsi_record_load_stream( rec, i+1, stm );
             TRACE(" field %d [%s]\n", i+1, debugstr_w(encname));
             msi_free( encname );
         }
@@ -2387,7 +2387,7 @@ static LibmsiRecord *msi_get_transform_record( const LibmsiTableVIEW *tv, const 
 
             val = read_raw_int(rawdata, ofs, bytes_per_strref);
             sval = msi_string_lookup_id( st, val );
-            MSI_RecordSetStringW( rec, i+1, sval );
+            _libmsi_record_set_stringW( rec, i+1, sval );
             TRACE(" field %d [%s]\n", i+1, debugstr_w(sval));
             ofs += bytes_per_strref;
         }
@@ -2399,13 +2399,13 @@ static LibmsiRecord *msi_get_transform_record( const LibmsiTableVIEW *tv, const 
             case 2:
                 val = read_raw_int(rawdata, ofs, n);
                 if (val)
-                    MsiRecordSetInteger( rec, i+1, val-0x8000 );
+                    libmsi_record_set_int( rec, i+1, val-0x8000 );
                 TRACE(" field %d [0x%04x]\n", i+1, val );
                 break;
             case 4:
                 val = read_raw_int(rawdata, ofs, n);
                 if (val)
-                    MsiRecordSetInteger( rec, i+1, val^0x80000000 );
+                    libmsi_record_set_int( rec, i+1, val^0x80000000 );
                 TRACE(" field %d [0x%08x]\n", i+1, val );
                 break;
             default:
@@ -2422,17 +2422,17 @@ static void dump_record( LibmsiRecord *rec )
 {
     unsigned i, n;
 
-    n = MsiRecordGetFieldCount( rec );
+    n = libmsi_record_get_field_count( rec );
     for( i=1; i<=n; i++ )
     {
         const WCHAR *sval;
 
-        if( MsiRecordIsNull( rec, i ) )
+        if( libmsi_record_is_null( rec, i ) )
             TRACE("row -> []\n");
-        else if( (sval = MSI_RecordGetStringRaw( rec, i )) )
+        else if( (sval = _libmsi_record_get_string_raw( rec, i )) )
             TRACE("row -> [%s]\n", debugstr_w(sval));
         else
-            TRACE("row -> [0x%08x]\n", MsiRecordGetInteger( rec, i ) );
+            TRACE("row -> [0x%08x]\n", libmsi_record_get_integer( rec, i ) );
     }
 }
 
@@ -2448,7 +2448,7 @@ static void dump_table( const string_table *st, const uint16_t *rawdata, unsigne
     }
 }
 
-static unsigned* msi_record_to_row( const LibmsiTableVIEW *tv, LibmsiRecord *rec )
+static unsigned* msi_record_to_row( const LibmsiTableView *tv, LibmsiRecord *rec )
 {
     const WCHAR *str;
     unsigned i, r, *data;
@@ -2465,10 +2465,10 @@ static unsigned* msi_record_to_row( const LibmsiTableVIEW *tv, LibmsiRecord *rec
         if ( ( tv->columns[i].type & MSITYPE_STRING ) &&
              ! MSITYPE_IS_BINARY(tv->columns[i].type) )
         {
-            str = MSI_RecordGetStringRaw( rec, i+1 );
+            str = _libmsi_record_get_string_raw( rec, i+1 );
             if (str)
             {
-                r = msi_string2idW( tv->db->strings, str, &data[i] );
+                r = _libmsi_id_from_stringW( tv->db->strings, str, &data[i] );
 
                 /* if there's no matching string in the string table,
                    these keys can't match any record, so fail now. */
@@ -2482,7 +2482,7 @@ static unsigned* msi_record_to_row( const LibmsiTableVIEW *tv, LibmsiRecord *rec
         }
         else
         {
-            data[i] = MsiRecordGetInteger( rec, i+1 );
+            data[i] = libmsi_record_get_integer( rec, i+1 );
 
             if (data[i] == MSI_NULL_INTEGER)
                 data[i] = 0;
@@ -2495,7 +2495,7 @@ static unsigned* msi_record_to_row( const LibmsiTableVIEW *tv, LibmsiRecord *rec
     return data;
 }
 
-static unsigned msi_row_matches( LibmsiTableVIEW *tv, unsigned row, const unsigned *data, unsigned *column )
+static unsigned msi_row_matches( LibmsiTableView *tv, unsigned row, const unsigned *data, unsigned *column )
 {
     unsigned i, r, x, ret = ERROR_FUNCTION_FAILED;
 
@@ -2505,10 +2505,10 @@ static unsigned msi_row_matches( LibmsiTableVIEW *tv, unsigned row, const unsign
             continue;
 
         /* turn the transform column value into a row value */
-        r = TABLE_fetch_int( &tv->view, row, i+1, &x );
+        r = table_view_fetch_int( &tv->view, row, i+1, &x );
         if ( r != ERROR_SUCCESS )
         {
-            ERR("TABLE_fetch_int shouldn't fail here\n");
+            ERR("table_view_fetch_int shouldn't fail here\n");
             break;
         }
 
@@ -2524,7 +2524,7 @@ static unsigned msi_row_matches( LibmsiTableVIEW *tv, unsigned row, const unsign
     return ret;
 }
 
-static unsigned msi_table_find_row( LibmsiTableVIEW *tv, LibmsiRecord *rec, unsigned *row, unsigned *column )
+static unsigned msi_table_find_row( LibmsiTableView *tv, LibmsiRecord *rec, unsigned *row, unsigned *column )
 {
     unsigned i, r = ERROR_FUNCTION_FAILED, *data;
 
@@ -2555,7 +2555,7 @@ static unsigned msi_table_load_transform( LibmsiDatabase *db, IStorage *stg,
                                       unsigned bytes_per_strref )
 {
     uint8_t *rawdata = NULL;
-    LibmsiTableVIEW *tv = NULL;
+    LibmsiTableView *tv = NULL;
     unsigned r, n, sz, i, mask, num_cols, colcol = 0, rawsize = 0;
     LibmsiRecord *rec = NULL;
     WCHAR coltable[32];
@@ -2578,7 +2578,7 @@ static unsigned msi_table_load_transform( LibmsiDatabase *db, IStorage *stg,
     }
 
     /* create a table view */
-    r = TABLE_CreateView( db, name, (LibmsiView**) &tv );
+    r = table_view_create( db, name, (LibmsiView**) &tv );
     if( r != ERROR_SUCCESS )
         goto err;
 
@@ -2653,8 +2653,8 @@ static unsigned msi_table_load_transform( LibmsiDatabase *db, IStorage *stg,
 
             if (!strcmpW( name, szColumns ))
             {
-                MSI_RecordGetStringW( rec, 1, table, &sz );
-                number = MsiRecordGetInteger( rec, 2 );
+                _libmsi_record_get_stringW( rec, 1, table, &sz );
+                number = libmsi_record_get_integer( rec, 2 );
 
                 /*
                  * Native msi seems writes nul into the Number (2nd) column of
@@ -2670,7 +2670,7 @@ static unsigned msi_table_load_transform( LibmsiDatabase *db, IStorage *stg,
                     }
 
                     /* fix nul column numbers */
-                    MsiRecordSetInteger( rec, 2, ++colcol );
+                    libmsi_record_set_int( rec, 2, ++colcol );
                 }
             }
 
@@ -2682,21 +2682,21 @@ static unsigned msi_table_load_transform( LibmsiDatabase *db, IStorage *stg,
                 if (!mask)
                 {
                     TRACE("deleting row [%d]:\n", row);
-                    r = TABLE_delete_row( &tv->view, row );
+                    r = table_view_delete_row( &tv->view, row );
                     if (r != ERROR_SUCCESS)
                         WARN("failed to delete row %u\n", r);
                 }
                 else if (mask & 1)
                 {
                     TRACE("modifying full row [%d]:\n", row);
-                    r = TABLE_set_row( &tv->view, row, rec, (1 << tv->num_cols) - 1 );
+                    r = table_view_set_row( &tv->view, row, rec, (1 << tv->num_cols) - 1 );
                     if (r != ERROR_SUCCESS)
                         WARN("failed to modify row %u\n", r);
                 }
                 else
                 {
                     TRACE("modifying masked row [%d]:\n", row);
-                    r = TABLE_set_row( &tv->view, row, rec, mask );
+                    r = table_view_set_row( &tv->view, row, rec, mask );
                     if (r != ERROR_SUCCESS)
                         WARN("failed to modify row %u\n", r);
                 }
@@ -2704,7 +2704,7 @@ static unsigned msi_table_load_transform( LibmsiDatabase *db, IStorage *stg,
             else
             {
                 TRACE("inserting row\n");
-                r = TABLE_insert_row( &tv->view, rec, -1, false );
+                r = table_view_insert_row( &tv->view, rec, -1, false );
                 if (r != ERROR_SUCCESS)
                     WARN("failed to insert row %u\n", r);
             }
@@ -2758,7 +2758,7 @@ unsigned msi_table_apply_transform( LibmsiDatabase *db, IStorage *stg )
 
     while ( true )
     {
-        LibmsiTableVIEW *tv = NULL;
+        LibmsiTableView *tv = NULL;
         WCHAR name[0x40];
         unsigned count = 0;
 
@@ -2791,7 +2791,7 @@ unsigned msi_table_apply_transform( LibmsiDatabase *db, IStorage *stg )
         TRACE("transform contains stream %s\n", debugstr_w(name));
 
         /* load the table */
-        r = TABLE_CreateView( db, transform->name, (LibmsiView**) &tv );
+        r = table_view_create( db, transform->name, (LibmsiView**) &tv );
         if( r != ERROR_SUCCESS )
             continue;
 

@@ -78,9 +78,9 @@ int msiobj_release( LibmsiObject *obj )
 }
 
 /***********************************************************
- *   MsiCloseHandle   [MSI.@]
+ *   libmsi_unref   [MSI.@]
  */
-unsigned MsiCloseHandle(void *obj)
+unsigned libmsi_unref(void *obj)
 {
     TRACE("%x\n",obj);
 

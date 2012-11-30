@@ -87,7 +87,7 @@ static const Keyword aKeywordTable[] = {
 /*
 ** Comparison function for binary search.
 */
-static int compKeyword(const void *m1, const void *m2){
+static int sql_compare_keyword(const void *m1, const void *m2){
   const WCHAR *p = m1;
   const Keyword *k = m2;
   const char *q = k->zName;
@@ -111,7 +111,7 @@ static int compKeyword(const void *m1, const void *m2){
 ** keyword.  If it is a keyword, the token code of that keyword is 
 ** returned.  If the input is not a keyword, TK_ID is returned.
 */
-static int sqliteKeywordCode(const WCHAR *z, int n){
+static int sqlite_find_keyword(const WCHAR *z, int n){
   WCHAR str[MAX_TOKEN_LEN+1];
   Keyword *r;
 
@@ -120,7 +120,7 @@ static int sqliteKeywordCode(const WCHAR *z, int n){
 
   memcpy( str, z, n*sizeof (WCHAR) );
   str[n] = 0;
-  r = bsearch( str, aKeywordTable, KEYWORD_COUNT, sizeof (Keyword), compKeyword );
+  r = bsearch( str, aKeywordTable, KEYWORD_COUNT, sizeof (Keyword), sql_compare_keyword );
   if( r )
     return r->tokenType;
   return TK_ID;
@@ -163,7 +163,7 @@ static const char isIdChar[] = {
 ** -1 if the token is (or might be) incomplete.  Store the token
 ** type in *tokenType before returning.
 */
-int sqliteGetToken(const WCHAR *z, int *tokenType, int *skip){
+int sql_get_token(const WCHAR *z, int *tokenType, int *skip){
   int i;
 
   *skip = 0;
@@ -254,7 +254,7 @@ int sqliteGetToken(const WCHAR *z, int *tokenType, int *skip){
         break;
       }
       for(i=1; isIdChar[z[i]]; i++){}
-      *tokenType = sqliteKeywordCode(z, i);
+      *tokenType = sqlite_find_keyword(z, i);
       if( *tokenType == TK_ID && z[i] == '`' ) *skip = 1;
       return i;
   }

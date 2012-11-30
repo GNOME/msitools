@@ -113,7 +113,7 @@ typedef struct LibmsiField
 typedef struct LibmsiRecord
 {
     LibmsiObject hdr;
-    unsigned count;       /* as passed to MsiCreateRecord */
+    unsigned count;       /* as passed to libmsi_record_create */
     LibmsiField fields[1]; /* nb. array size is count+1 */
 } LibmsiRecord;
 
@@ -129,7 +129,7 @@ typedef struct _column_info
 
 typedef const struct LibmsiColumnHashEntry *MSIITERHANDLE;
 
-typedef struct LibmsiViewOPS
+typedef struct LibmsiViewOps
 {
     /*
      * fetch_int - reads one integer from {row,col} in the table
@@ -251,12 +251,12 @@ typedef struct LibmsiViewOPS
      * drop - drops the table from the database
      */
     unsigned (*drop)( LibmsiView *view );
-} LibmsiViewOPS;
+} LibmsiViewOps;
 
 struct LibmsiView
 {
     LibmsiObject hdr;
-    const LibmsiViewOPS *ops;
+    const LibmsiViewOps *ops;
     LibmsiDBError error;
     const WCHAR *error_column;
 };
@@ -296,7 +296,7 @@ extern void msiobj_addref(LibmsiObject *);
 extern int msiobj_release(LibmsiObject *);
 
 extern void free_cached_tables( LibmsiDatabase *db );
-extern unsigned MSI_CommitTables( LibmsiDatabase *db );
+extern unsigned _libmsi_database_commit_tables( LibmsiDatabase *db );
 
 
 /* string table functions */
@@ -306,8 +306,8 @@ enum StringPersistence
     StringNonPersistent = 1
 };
 
-extern int msi_addstringW( string_table *st, const WCHAR *data, int len, uint16_t refcount, enum StringPersistence persistence );
-extern unsigned msi_string2idW( const string_table *st, const WCHAR *buffer, unsigned *id );
+extern int _libmsi_add_string( string_table *st, const WCHAR *data, int len, uint16_t refcount, enum StringPersistence persistence );
+extern unsigned _libmsi_id_from_stringW( const string_table *st, const WCHAR *buffer, unsigned *id );
 extern VOID msi_destroy_stringtable( string_table *st );
 extern const WCHAR *msi_string_lookup_id( const string_table *st, unsigned id );
 extern HRESULT msi_init_string_table( IStorage *stg );
@@ -316,8 +316,8 @@ extern unsigned msi_save_string_table( const string_table *st, IStorage *storage
 extern unsigned msi_get_string_table_codepage( const string_table *st );
 extern unsigned msi_set_string_table_codepage( string_table *st, unsigned codepage );
 
-extern bool TABLE_Exists( LibmsiDatabase *db, const WCHAR *name );
-extern LibmsiCondition MSI_DatabaseIsTablePersistent( LibmsiDatabase *db, const WCHAR *table );
+extern bool table_view_exists( LibmsiDatabase *db, const WCHAR *name );
+extern LibmsiCondition _libmsi_database_is_table_persistent( LibmsiDatabase *db, const WCHAR *table );
 
 extern unsigned read_stream_data( IStorage *stg, const WCHAR *stname, bool table,
                               uint8_t **pdata, unsigned *psz );
@@ -326,27 +326,27 @@ extern unsigned write_stream_data( IStorage *stg, const WCHAR *stname,
 
 /* transform functions */
 extern unsigned msi_table_apply_transform( LibmsiDatabase *db, IStorage *stg );
-extern unsigned MSI_DatabaseApplyTransform( LibmsiDatabase *db,
+extern unsigned _libmsi_database_apply_transform( LibmsiDatabase *db,
                  const char *szTransformFile, int iErrorCond );
 extern void append_storage_to_db( LibmsiDatabase *db, IStorage *stg );
 
 /* record internals */
-extern void MSI_CloseRecord( LibmsiObject * );
-extern unsigned MSI_RecordSetIStream( LibmsiRecord *, unsigned, IStream *);
-extern unsigned MSI_RecordGetIStream( const LibmsiRecord *, unsigned, IStream **);
-extern const WCHAR *MSI_RecordGetStringRaw( const LibmsiRecord *, unsigned );
-extern unsigned MSI_RecordSetIntPtr( LibmsiRecord *, unsigned, intptr_t );
-extern unsigned MSI_RecordSetStringW( LibmsiRecord *, unsigned, const WCHAR *);
-extern unsigned MSI_RecordGetStringW( const LibmsiRecord *, unsigned, WCHAR *, unsigned *);
-extern intptr_t MSI_RecordGetIntPtr( const LibmsiRecord *, unsigned );
-extern unsigned MSI_RecordReadStream( const LibmsiRecord *, unsigned, char *, unsigned *);
-extern unsigned MSI_RecordSetStream(LibmsiRecord *, unsigned, IStream *);
-extern unsigned MSI_RecordStreamToFile( const LibmsiRecord *, unsigned, const WCHAR *);
-extern unsigned MSI_RecordSetStreamFromFile( LibmsiRecord *, unsigned, const char *);
-extern unsigned MSI_RecordCopyField( LibmsiRecord *, unsigned, LibmsiRecord *, unsigned );
-extern LibmsiRecord *MSI_CloneRecord( LibmsiRecord * );
-extern bool MSI_RecordsAreEqual( const LibmsiRecord *, const LibmsiRecord * );
-extern bool MSI_RecordsAreFieldsEqual(const LibmsiRecord *a, const LibmsiRecord *b, unsigned field);
+extern void _libmsi_record_destroy( LibmsiObject * );
+extern unsigned _libmsi_record_set_IStream( LibmsiRecord *, unsigned, IStream *);
+extern unsigned _libmsi_record_get_IStream( const LibmsiRecord *, unsigned, IStream **);
+extern const WCHAR *_libmsi_record_get_string_raw( const LibmsiRecord *, unsigned );
+extern unsigned _libmsi_record_set_int_ptr( LibmsiRecord *, unsigned, intptr_t );
+extern unsigned _libmsi_record_set_stringW( LibmsiRecord *, unsigned, const WCHAR *);
+extern unsigned _libmsi_record_get_stringW( const LibmsiRecord *, unsigned, WCHAR *, unsigned *);
+extern intptr_t _libmsi_record_get_int_ptr( const LibmsiRecord *, unsigned );
+extern unsigned _libmsi_record_save_stream( const LibmsiRecord *, unsigned, char *, unsigned *);
+extern unsigned _libmsi_record_load_stream(LibmsiRecord *, unsigned, IStream *);
+extern unsigned _libmsi_record_save_stream_to_file( const LibmsiRecord *, unsigned, const WCHAR *);
+extern unsigned _libmsi_record_load_stream_from_file( LibmsiRecord *, unsigned, const char *);
+extern unsigned _libmsi_record_copy_field( LibmsiRecord *, unsigned, LibmsiRecord *, unsigned );
+extern LibmsiRecord *_libmsi_record_clone( LibmsiRecord * );
+extern bool _libmsi_record_compare( const LibmsiRecord *, const LibmsiRecord * );
+extern bool _libmsi_record_compare_fields(const LibmsiRecord *a, const LibmsiRecord *b, unsigned field);
 
 /* stream internals */
 extern void enum_stream_names( IStorage *stg );
@@ -357,19 +357,19 @@ extern void decode_streamname(const WCHAR *in, WCHAR *out);
 extern unsigned msi_get_raw_stream( LibmsiDatabase *, const WCHAR *, IStream **);
 extern unsigned msi_clone_open_stream( LibmsiDatabase *, IStorage *, const WCHAR *, IStream ** );
 void msi_destroy_stream( LibmsiDatabase *, const WCHAR * );
-extern unsigned MSI_DatabaseOpenQueryW(LibmsiDatabase *, const WCHAR *, LibmsiQuery **);
-extern unsigned MSI_OpenQuery( LibmsiDatabase *, LibmsiQuery **, const WCHAR *, ... );
+extern unsigned _libmsi_database_open_query(LibmsiDatabase *, const WCHAR *, LibmsiQuery **);
+extern unsigned _libmsi_query_open( LibmsiDatabase *, LibmsiQuery **, const WCHAR *, ... );
 typedef unsigned (*record_func)( LibmsiRecord *, void *);
-extern unsigned MSI_IterateRecords( LibmsiQuery *, unsigned *, record_func, void *);
-extern LibmsiRecord *MSI_QueryGetRecord( LibmsiDatabase *db, const WCHAR *query, ... );
-extern unsigned MSI_DatabaseGetPrimaryKeys( LibmsiDatabase *, const WCHAR *, LibmsiRecord **);
+extern unsigned _libmsi_query_iterate_records( LibmsiQuery *, unsigned *, record_func, void *);
+extern LibmsiRecord *_libmsi_query_get_record( LibmsiDatabase *db, const WCHAR *query, ... );
+extern unsigned _libmsi_database_get_primary_keys( LibmsiDatabase *, const WCHAR *, LibmsiRecord **);
 
 /* view internals */
-extern unsigned MSI_QueryExecute( LibmsiQuery*, LibmsiRecord * );
-extern unsigned MSI_QueryFetch( LibmsiQuery*, LibmsiRecord ** );
-extern unsigned MSI_QueryGetColumnInfo(LibmsiQuery *, LibmsiColInfo, LibmsiRecord **);
-extern unsigned MSI_QueryModify( LibmsiQuery *, LibmsiModify, LibmsiRecord * );
-extern unsigned VIEW_find_column( LibmsiView *, const WCHAR *, const WCHAR *, unsigned *);
+extern unsigned _libmsi_query_execute( LibmsiQuery*, LibmsiRecord * );
+extern unsigned _libmsi_query_fetch( LibmsiQuery*, LibmsiRecord ** );
+extern unsigned _libmsi_query_get_column_info(LibmsiQuery *, LibmsiColInfo, LibmsiRecord **);
+extern unsigned _libmsi_query_modify( LibmsiQuery *, LibmsiModify, LibmsiRecord * );
+extern unsigned _libmsi_view_find_column( LibmsiView *, const WCHAR *, const WCHAR *, unsigned *);
 extern unsigned msi_view_get_row(LibmsiDatabase *, LibmsiView *, unsigned, LibmsiRecord **);
 
 /* summary information */
