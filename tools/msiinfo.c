@@ -248,6 +248,28 @@ static int cmd_tables(struct Command *cmd, int argc, char **argv)
     libmsi_unref(db);
 }
 
+static int cmd_export(struct Command *cmd, int argc, char **argv)
+{
+    LibmsiDatabase *db = NULL;
+    LibmsiResult r;
+
+    if (argc != 3) {
+        cmd_usage(stderr, cmd);
+    }
+
+    r = libmsi_database_open(argv[1], LIBMSI_DB_OPEN_READONLY, &db);
+    if (r) {
+        print_libmsi_error(r);
+    }
+
+    r = libmsi_database_export(db, argv[2], STDOUT_FILENO);
+    if (r) {
+        print_libmsi_error(r);
+    }
+
+    libmsi_unref(db);
+}
+
 static int cmd_version(struct Command *cmd, int argc, char **argv)
 {
     printf("%s (%s) version %s\n", program_name, PACKAGE, VERSION);
@@ -284,6 +306,12 @@ static struct Command cmds[] = {
         .opts = "FILE",
         .desc = "List tables in a .msi file",
         .func = cmd_tables,
+    },
+    {
+        .cmd = "export",
+        .opts = "FILE TABLE",
+        .desc = "Export a table in text form from an .msi file",
+        .func = cmd_export,
     },
     {
         .cmd = "-h",
