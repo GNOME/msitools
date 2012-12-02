@@ -485,3 +485,8 @@ unsigned streams_view_create(LibmsiDatabase *db, LibmsiView **view)
 
     return LIBMSI_RESULT_SUCCESS;
 }
+
+unsigned _libmsi_database_commit_streams( LibmsiDatabase *db )
+{
+    return LIBMSI_RESULT_SUCCESS;
+}

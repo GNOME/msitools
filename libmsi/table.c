@@ -2061,20 +2061,12 @@ unsigned table_view_create( LibmsiDatabase *db, const WCHAR *name, LibmsiView **
     return LIBMSI_RESULT_SUCCESS;
 }
 
-unsigned _libmsi_database_commit_tables( LibmsiDatabase *db )
+unsigned _libmsi_database_commit_tables( LibmsiDatabase *db, unsigned bytes_per_strref )
 {
-    unsigned r, bytes_per_strref;
-    HRESULT hr;
-    LibmsiTable *table = NULL;
+    unsigned r = LIBMSI_RESULT_SUCCESS;
+    LibmsiTable *table;
 
     TRACE("%p\n",db);
-
-    r = msi_save_string_table( db->strings, db->outfile, &bytes_per_strref );
-    if( r != LIBMSI_RESULT_SUCCESS )
-    {
-        WARN("failed to save string table r=%08x\n",r);
-        return r;
-    }
 
     LIST_FOR_EACH_ENTRY( table, &db->tables, LibmsiTable, entry )
     {
@@ -2087,12 +2079,6 @@ unsigned _libmsi_database_commit_tables( LibmsiDatabase *db )
         }
     }
 
-    hr = IStorage_Commit( db->outfile, 0 );
-    if (FAILED( hr ))
-    {
-        WARN("failed to commit changes 0x%08x\n", hr);
-        r = LIBMSI_RESULT_FUNCTION_FAILED;
-    }
     return r;
 }
 

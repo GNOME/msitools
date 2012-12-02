@@ -293,7 +293,7 @@ extern void msiobj_addref(LibmsiObject *);
 extern int msiobj_release(LibmsiObject *);
 
 extern void free_cached_tables( LibmsiDatabase *db );
-extern unsigned _libmsi_database_commit_tables( LibmsiDatabase *db );
+extern unsigned _libmsi_database_commit_tables( LibmsiDatabase *db, unsigned bytes_per_strref );
 
 
 /* string table functions */
@@ -320,12 +320,14 @@ extern unsigned read_stream_data( IStorage *stg, const WCHAR *stname, bool table
                               uint8_t **pdata, unsigned *psz );
 extern unsigned write_stream_data( IStorage *stg, const WCHAR *stname,
                                const void *data, unsigned sz, bool bTable );
+extern unsigned _libmsi_database_commit_streams( LibmsiDatabase *db );
 
 /* transform functions */
 extern unsigned msi_table_apply_transform( LibmsiDatabase *db, IStorage *stg );
 extern unsigned _libmsi_database_apply_transform( LibmsiDatabase *db,
                  const char *szTransformFile, int iErrorCond );
 extern void append_storage_to_db( LibmsiDatabase *db, IStorage *stg );
+extern unsigned _libmsi_database_commit_storages( LibmsiDatabase *db );
 
 /* record internals */
 extern void _libmsi_record_destroy( LibmsiObject * );

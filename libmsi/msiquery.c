@@ -602,27 +602,61 @@ LibmsiResult libmsi_database_apply_transform( LibmsiDatabase *db,
 
 LibmsiResult libmsi_database_commit( LibmsiDatabase *db )
 {
-    unsigned r;
+    unsigned r = LIBMSI_RESULT_SUCCESS;
+    unsigned bytes_per_strref;
+    HRESULT hr;
 
     TRACE("%d\n", db);
 
-    msiobj_addref( &db->hdr );
     if( !db )
         return LIBMSI_RESULT_INVALID_HANDLE;
 
+    msiobj_addref( &db->hdr );
     if (db->mode == LIBMSI_DB_OPEN_READONLY)
-    {
-        msiobj_release( &db->hdr );
-        return LIBMSI_RESULT_SUCCESS;
-    }
+        goto end;
 
     /* FIXME: lock the database */
 
-    r = _libmsi_database_commit_tables( db );
-    if (r != LIBMSI_RESULT_SUCCESS) ERR("Failed to commit tables!\n");
+    r = msi_save_string_table( db->strings, db->outfile, &bytes_per_strref );
+    if( r != LIBMSI_RESULT_SUCCESS )
+    {
+        WARN("failed to save string table r=%08x\n",r);
+        goto end;
+    }
+
+    r = _libmsi_database_commit_storages( db );
+    if (r != LIBMSI_RESULT_SUCCESS)
+    {
+        WARN("failed to save storages r=%08x\n",r);
+        goto end;
+    }
+
+    r = _libmsi_database_commit_streams( db );
+    if (r != LIBMSI_RESULT_SUCCESS)
+    {
+        WARN("failed to save streams r=%08x\n",r);
+        goto end;
+    }
+
+    r = _libmsi_database_commit_tables( db, bytes_per_strref );
+    if (r != LIBMSI_RESULT_SUCCESS)
+    {
+        WARN("failed to save tables r=%08x\n",r);
+        goto end;
+    }
+
+    db->bytes_per_strref = bytes_per_strref;
 
     /* FIXME: unlock the database */
 
+    hr = IStorage_Commit( db->outfile, 0 );
+    if (FAILED( hr ))
+    {
+        WARN("failed to commit changes 0x%08x\n", hr);
+        r = LIBMSI_RESULT_FUNCTION_FAILED;
+    }
+
+end:
     msiobj_release( &db->hdr );
 
     if (r == LIBMSI_RESULT_SUCCESS)
