@@ -601,22 +601,6 @@ int msi_suminfo_get_int32( LibmsiSummaryInfo *si, unsigned uiProperty )
     return prop->lVal;
 }
 
-WCHAR *msi_get_suminfo_product( IStorage *stg )
-{
-    LibmsiSummaryInfo *si;
-    WCHAR *prod;
-
-    si = _libmsi_get_summary_information( stg, 0 );
-    if (!si)
-    {
-        ERR("no summary information!\n");
-        return NULL;
-    }
-    prod = msi_suminfo_dup_string( si, MSI_PID_REVNUMBER );
-    msiobj_release( &si->hdr );
-    return prod;
-}
-
 static LibmsiResult _libmsi_summary_info_set_property( LibmsiSummaryInfo *si, unsigned uiProperty,
                unsigned type, int iValue, uint64_t* pftValue, const char *szValue )
 {

@@ -376,7 +376,6 @@ extern unsigned msi_view_get_row(LibmsiDatabase *, LibmsiView *, unsigned, Libms
 extern LibmsiSummaryInfo *MSI_GetSummaryInformationW( IStorage *stg, unsigned uiUpdateCount );
 extern WCHAR *msi_suminfo_dup_string( LibmsiSummaryInfo *si, unsigned uiProperty );
 extern int msi_suminfo_get_int32( LibmsiSummaryInfo *si, unsigned uiProperty );
-extern WCHAR *msi_get_suminfo_product( IStorage *stg );
 extern unsigned msi_add_suminfo( LibmsiDatabase *db, WCHAR ***records, int num_records, int num_columns );
 
 /* Helpers */
