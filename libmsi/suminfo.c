@@ -452,7 +452,7 @@ LibmsiSummaryInfo *_libmsi_get_summary_information( LibmsiDatabase *db, unsigned
 
     /* read the stream... if we fail, we'll start with an empty property set */
     grfMode = STGM_READ | STGM_SHARE_EXCLUSIVE;
-    r = IStorage_OpenStream( db->storage, szSumInfo, 0, grfMode, 0, &stm );
+    r = IStorage_OpenStream( db->infile, szSumInfo, 0, grfMode, 0, &stm );
     if( SUCCEEDED(r) )
     {
         load_summary_info( si, stm );
@@ -703,7 +703,7 @@ static unsigned suminfo_persist( LibmsiSummaryInfo *si )
     HRESULT r;
 
     grfMode = STGM_CREATE | STGM_READWRITE | STGM_SHARE_EXCLUSIVE;
-    r = IStorage_CreateStream( si->database->storage, szSumInfo, grfMode, 0, 0, &stm );
+    r = IStorage_CreateStream( si->database->outfile, szSumInfo, grfMode, 0, 0, &stm );
     if( SUCCEEDED(r) )
     {
         ret = save_summary_info( si, stm );

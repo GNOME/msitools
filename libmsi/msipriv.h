@@ -73,7 +73,8 @@ struct LibmsiObject
 typedef struct LibmsiDatabase
 {
     LibmsiObject hdr;
-    IStorage *storage;
+    IStorage *infile;
+    IStorage *outfile;
     string_table *strings;
     unsigned bytes_per_strref;
     char *path;

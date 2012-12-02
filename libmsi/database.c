@@ -145,7 +145,7 @@ unsigned msi_open_storage( LibmsiDatabase *db, const WCHAR *stname )
         goto done;
     }
 
-    hr = IStorage_OpenStorage(db->storage, stname, NULL,
+    hr = IStorage_OpenStorage(db->infile, stname, NULL,
                               STGM_READ | STGM_SHARE_EXCLUSIVE, NULL, 0,
                               &storage->stg);
     if (FAILED(hr))
@@ -199,7 +199,7 @@ unsigned msi_create_storage( LibmsiDatabase *db, const WCHAR *stname, IStream *s
     if (r != LIBMSI_RESULT_SUCCESS)
         goto done;
 
-    hr = IStorage_CreateStorage(db->storage, stname,
+    hr = IStorage_CreateStorage(db->outfile, stname,
                                 STGM_WRITE | STGM_SHARE_EXCLUSIVE,
                                 0, 0, &substg);
     if (FAILED(hr))
@@ -320,10 +320,10 @@ unsigned msi_get_raw_stream( LibmsiDatabase *db, const WCHAR *stname, IStream **
     decode_streamname( stname, decoded );
     TRACE("%s -> %s\n", debugstr_w(stname), debugstr_w(decoded));
 
-    if (msi_clone_open_stream( db, db->storage, stname, stm ) == LIBMSI_RESULT_SUCCESS)
+    if (msi_clone_open_stream( db, db->infile, stname, stm ) == LIBMSI_RESULT_SUCCESS)
         return LIBMSI_RESULT_SUCCESS;
 
-    r = IStorage_OpenStream( db->storage, stname, NULL,
+    r = IStorage_OpenStream( db->infile, stname, NULL,
                              STGM_READ | STGM_SHARE_EXCLUSIVE, 0, stm );
     if( FAILED( r ) )
     {
@@ -340,7 +340,7 @@ unsigned msi_get_raw_stream( LibmsiDatabase *db, const WCHAR *stname, IStream **
             }
         }
     }
-    else stg = db->storage;
+    else stg = db->infile;
 
     if( SUCCEEDED(r) )
     {
@@ -438,7 +438,8 @@ static VOID _libmsi_database_destroy( LibmsiObject *arg )
     free_storages( db );
     free_transforms( db );
     if (db->strings) msi_destroy_stringtable( db->strings );
-    IStorage_Release( db->storage );
+    IStorage_Release( db->infile );
+    IStorage_Release( db->outfile );
     if (db->deletefile)
     {
         unlink( db->deletefile );
@@ -598,7 +599,11 @@ LibmsiResult libmsi_database_open(const char *szDBPath, const char *szPersist, L
     if( TRACE_ON( msi ) )
         enum_stream_names( stg );
 
-    db->storage = stg;
+    db->infile = stg;
+    IStorage_AddRef( db->infile );
+    db->outfile = stg;
+    IStorage_AddRef( db->outfile );
+
     db->mode = szMode;
     if (created)
         db->deletefile = strdup( szDBPath );
@@ -607,14 +612,13 @@ LibmsiResult libmsi_database_open(const char *szDBPath, const char *szPersist, L
     list_init( &db->streams );
     list_init( &db->storages );
 
-    db->strings = msi_load_string_table( stg, &db->bytes_per_strref );
+    db->strings = msi_load_string_table( db->infile, &db->bytes_per_strref );
     if( !db->strings )
         goto end;
 
     ret = LIBMSI_RESULT_SUCCESS;
 
     msiobj_addref( &db->hdr );
-    IStorage_AddRef( stg );
     *pdb = db;
 
 end:

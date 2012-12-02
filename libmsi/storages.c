@@ -328,7 +328,7 @@ static int add_storages_to_table(LibmsiStorageView *sv)
     unsigned r;
     unsigned count = 0, size;
 
-    hr = IStorage_EnumElements(sv->db->storage, 0, NULL, 0, &stgenum);
+    hr = IStorage_EnumElements(sv->db->infile, 0, NULL, 0, &stgenum);
     if (FAILED(hr))
         return -1;
 

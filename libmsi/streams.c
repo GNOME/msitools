@@ -184,7 +184,7 @@ static unsigned streams_view_set_row(LibmsiView *view, unsigned row, LibmsiRecor
     encname = encode_streamname(false, name);
     msi_destroy_stream(sv->db, encname);
 
-    r = write_stream_data(sv->db->storage, name, data, count, false);
+    r = write_stream_data(sv->db->outfile, name, data, count, false);
     if (r != LIBMSI_RESULT_SUCCESS)
     {
         WARN("failed to write stream data: %d\n", r);
@@ -195,7 +195,7 @@ static unsigned streams_view_set_row(LibmsiView *view, unsigned row, LibmsiRecor
     if (!stream)
         goto done;
 
-    hr = IStorage_OpenStream(sv->db->storage, encname, 0,
+    hr = IStorage_OpenStream(sv->db->infile, encname, 0,
                              STGM_READ | STGM_SHARE_EXCLUSIVE, 0, &stream->stream);
     if (FAILED(hr))
     {
@@ -400,7 +400,7 @@ static int add_streams_to_table(LibmsiStreamsView *sv)
     HRESULT hr;
     unsigned r, count = 0, size;
 
-    hr = IStorage_EnumElements(sv->db->storage, 0, NULL, 0, &stgenum);
+    hr = IStorage_EnumElements(sv->db->infile, 0, NULL, 0, &stgenum);
     if (FAILED(hr))
         return -1;
 

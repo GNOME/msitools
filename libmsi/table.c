@@ -658,7 +658,7 @@ static unsigned get_table( LibmsiDatabase *db, const WCHAR *name, LibmsiTable **
         free_table( table );
         return r;
     }
-    r = read_table_from_storage( db, table, db->storage );
+    r = read_table_from_storage( db, table, db->infile );
     if (r != LIBMSI_RESULT_SUCCESS)
     {
         free_table( table );
@@ -977,7 +977,7 @@ static unsigned save_table( LibmsiDatabase *db, const LibmsiTable *t, unsigned b
     }
 
     TRACE("writing %d bytes\n", rawsize);
-    r = write_stream_data( db->storage, t->name, rawdata, rawsize, true );
+    r = write_stream_data( db->outfile, t->name, rawdata, rawsize, true );
 
 err:
     msi_free( rawdata );
@@ -2069,7 +2069,7 @@ unsigned _libmsi_database_commit_tables( LibmsiDatabase *db )
 
     TRACE("%p\n",db);
 
-    r = msi_save_string_table( db->strings, db->storage, &bytes_per_strref );
+    r = msi_save_string_table( db->strings, db->outfile, &bytes_per_strref );
     if( r != LIBMSI_RESULT_SUCCESS )
     {
         WARN("failed to save string table r=%08x\n",r);
@@ -2087,7 +2087,7 @@ unsigned _libmsi_database_commit_tables( LibmsiDatabase *db )
         }
     }
 
-    hr = IStorage_Commit( db->storage, 0 );
+    hr = IStorage_Commit( db->outfile, 0 );
     if (FAILED( hr ))
     {
         WARN("failed to commit changes 0x%08x\n", hr);
