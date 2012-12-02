@@ -266,7 +266,7 @@ struct LibmsiView
 typedef struct LibmsiSummaryInfo
 {
     LibmsiObject hdr;
-    IStorage *storage;
+    LibmsiDatabase *database;
     unsigned update_count;
     PROPVARIANT property[MSI_MAX_PROPS];
 } LibmsiSummaryInfo;

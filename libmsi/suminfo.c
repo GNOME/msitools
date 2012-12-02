@@ -101,7 +101,7 @@ static void _libmsi_summary_info_destroy( LibmsiObject *arg )
 
     for( i = 0; i < MSI_MAX_PROPS; i++ )
         free_prop( &si->property[i] );
-    IStorage_Release( si->storage );
+    msiobj_release( &si->database->hdr );
 }
 
 static unsigned get_type( unsigned uiProperty )
@@ -433,26 +433,26 @@ static unsigned save_summary_info( const LibmsiSummaryInfo * si, IStream *stm )
     return LIBMSI_RESULT_SUCCESS;
 }
 
-LibmsiSummaryInfo *_libmsi_get_summary_information( IStorage *stg, unsigned uiUpdateCount )
+LibmsiSummaryInfo *_libmsi_get_summary_information( LibmsiDatabase *db, unsigned uiUpdateCount )
 {
     IStream *stm = NULL;
     LibmsiSummaryInfo *si;
     unsigned grfMode;
     HRESULT r;
 
-    TRACE("%p %d\n", stg, uiUpdateCount );
+    TRACE("%p %d\n", db, uiUpdateCount );
 
     si = alloc_msiobject( sizeof (LibmsiSummaryInfo), _libmsi_summary_info_destroy );
     if( !si )
         return si;
 
     si->update_count = uiUpdateCount;
-    IStorage_AddRef( stg );
-    si->storage = stg;
+    msiobj_addref( &db->hdr );
+    si->database = db;
 
     /* read the stream... if we fail, we'll start with an empty property set */
     grfMode = STGM_READ | STGM_SHARE_EXCLUSIVE;
-    r = IStorage_OpenStream( si->storage, szSumInfo, 0, grfMode, 0, &stm );
+    r = IStorage_OpenStream( db->storage, szSumInfo, 0, grfMode, 0, &stm );
     if( SUCCEEDED(r) )
     {
         load_summary_info( si, stm );
@@ -477,7 +477,7 @@ LibmsiResult libmsi_database_get_summary_info( LibmsiDatabase *db,
         return LIBMSI_RESULT_INVALID_HANDLE;
 
     msiobj_addref( &db->hdr);
-    si = _libmsi_get_summary_information( db->storage, uiUpdateCount );
+    si = _libmsi_get_summary_information( db, uiUpdateCount );
     if (si)
     {
         *psi = si;
@@ -703,7 +703,7 @@ static unsigned suminfo_persist( LibmsiSummaryInfo *si )
     HRESULT r;
 
     grfMode = STGM_CREATE | STGM_READWRITE | STGM_SHARE_EXCLUSIVE;
-    r = IStorage_CreateStream( si->storage, szSumInfo, grfMode, 0, 0, &stm );
+    r = IStorage_CreateStream( si->database->storage, szSumInfo, grfMode, 0, 0, &stm );
     if( SUCCEEDED(r) )
     {
         ret = save_summary_info( si, stm );
@@ -802,7 +802,7 @@ unsigned msi_add_suminfo( LibmsiDatabase *db, WCHAR ***records, int num_records,
     unsigned i, j;
     LibmsiSummaryInfo *si;
 
-    si = _libmsi_get_summary_information( db->storage, num_records * (num_columns / 2) );
+    si = _libmsi_get_summary_information( db, num_records * (num_columns / 2) );
     if (!si)
     {
         ERR("no summary information!\n");
