@@ -116,62 +116,11 @@ static unsigned storages_view_get_row( LibmsiView *view, unsigned row, LibmsiRec
     return LIBMSI_RESULT_CALL_NOT_IMPLEMENTED;
 }
 
-static HRESULT stream_to_storage(IStream *stm, IStorage **stg)
-{
-    ILockBytes *lockbytes = NULL;
-    STATSTG stat;
-    void *data;
-    HRESULT hr;
-    unsigned size, read;
-    ULARGE_INTEGER offset;
-
-    hr = IStream_Stat(stm, &stat, STATFLAG_NONAME);
-    if (FAILED(hr))
-        return hr;
-
-    if (stat.cbSize.QuadPart >> 32)
-    {
-        ERR("Storage is too large\n");
-        return E_FAIL;
-    }
-
-    size = stat.cbSize.QuadPart;
-    data = msi_alloc(size);
-    if (!data)
-        return E_OUTOFMEMORY;
-
-    hr = IStream_Read(stm, data, size, &read);
-    if (FAILED(hr) || read != size)
-        goto done;
-
-    hr = CreateILockBytesOnHGlobal(NULL, true, &lockbytes);
-    if (FAILED(hr))
-        goto done;
-
-    ZeroMemory(&offset, sizeof(ULARGE_INTEGER));
-    hr = ILockBytes_WriteAt(lockbytes, offset, data, size, &read);
-    if (FAILED(hr) || read != size)
-        goto done;
-
-    hr = StgOpenStorageOnILockBytes(lockbytes, NULL,
-                                    STGM_READWRITE | STGM_SHARE_DENY_NONE,
-                                    NULL, 0, stg);
-    if (FAILED(hr))
-        goto done;
-
-done:
-    msi_free(data);
-    if (lockbytes) ILockBytes_Release(lockbytes);
-    return hr;
-}
-
 static unsigned storages_view_set_row(LibmsiView *view, unsigned row, LibmsiRecord *rec, unsigned mask)
 {
     LibmsiStorageView *sv = (LibmsiStorageView *)view;
-    IStorage *stg, *substg = NULL;
     IStream *stm;
     WCHAR *name = NULL;
-    HRESULT hr;
     unsigned r = LIBMSI_RESULT_FUNCTION_FAILED;
 
     TRACE("(%p, %p)\n", view, rec);
@@ -183,13 +132,6 @@ static unsigned storages_view_set_row(LibmsiView *view, unsigned row, LibmsiReco
     if (r != LIBMSI_RESULT_SUCCESS)
         return r;
 
-    r = stream_to_storage(stm, &stg);
-    if (r != LIBMSI_RESULT_SUCCESS)
-    {
-        IStream_Release(stm);
-        return r;
-    }
-
     name = strdupW(_libmsi_record_get_string_raw(rec, 1));
     if (!name)
     {
@@ -197,20 +139,11 @@ static unsigned storages_view_set_row(LibmsiView *view, unsigned row, LibmsiReco
         goto done;
     }
 
-    hr = IStorage_CreateStorage(sv->db->storage, name,
-                                STGM_WRITE | STGM_SHARE_EXCLUSIVE,
-                                0, 0, &substg);
-    if (FAILED(hr))
+    msi_create_storage(sv->db, name, stm);
+    if (r != LIBMSI_RESULT_SUCCESS)
     {
-        r = LIBMSI_RESULT_FUNCTION_FAILED;
-        goto done;
-    }
-
-    hr = IStorage_CopyTo(stg, 0, NULL, NULL, substg);
-    if (FAILED(hr))
-    {
-        r = LIBMSI_RESULT_FUNCTION_FAILED;
-        goto done;
+        IStream_Release(stm);
+        return r;
     }
 
     sv->storages[row] = create_storage(sv, name);
@@ -219,9 +152,6 @@ static unsigned storages_view_set_row(LibmsiView *view, unsigned row, LibmsiReco
 
 done:
     msi_free(name);
-
-    if (substg) IStorage_Release(substg);
-    IStorage_Release(stg);
     IStream_Release(stm);
 
     return r;
@@ -244,7 +174,30 @@ static unsigned storages_view_insert_row(LibmsiView *view, LibmsiRecord *rec, un
 
 static unsigned storages_view_delete_row(LibmsiView *view, unsigned row)
 {
-    FIXME("(%p %d): stub!\n", view, row);
+    LibmsiStorageView *sv = (LibmsiStorageView *)view;
+    const WCHAR *name;
+    WCHAR *encname;
+    unsigned i;
+
+    if (row > sv->num_rows)
+        return LIBMSI_RESULT_FUNCTION_FAILED;
+
+    name = msi_string_lookup_id(sv->db->strings, sv->storages[row]->str_index);
+    if (!name)
+    {
+        WARN("failed to retrieve storage name\n");
+        return LIBMSI_RESULT_FUNCTION_FAILED;
+    }
+
+    msi_destroy_storage(sv->db, name);
+
+    /* shift the remaining rows */
+    for (i = row + 1; i < sv->num_rows; i++)
+    {
+        sv->storages[i - 1] = sv->storages[i];
+    }
+    sv->num_rows--;
+
     return LIBMSI_RESULT_SUCCESS;
 }
 
@@ -399,6 +352,14 @@ static int add_storages_to_table(LibmsiStorageView *sv)
 
         TRACE("enumerated storage %s\n", debugstr_w(stat.pwcsName));
 
+        r = msi_open_storage(sv->db, stat.pwcsName);
+        if (r != LIBMSI_RESULT_SUCCESS)
+        {
+            count = -1;
+            CoTaskMemFree(stat.pwcsName);
+            break;
+        }
+
         storage = create_storage(sv, stat.pwcsName);
         if (!storage)
         {
@@ -406,6 +367,7 @@ static int add_storages_to_table(LibmsiStorageView *sv)
             CoTaskMemFree(stat.pwcsName);
             break;
         }
+
         CoTaskMemFree(stat.pwcsName);
 
         if (!storages_set_table_size(sv, ++count))

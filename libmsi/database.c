@@ -60,12 +60,207 @@ typedef struct LibmsiTransform {
     IStorage *stg;
 } LibmsiTransform;
 
+typedef struct LibmsiStorage {
+    struct list entry;
+    WCHAR *name;
+    IStorage *stg;
+} LibmsiStorage;
+
 typedef struct LibmsiStream {
     struct list entry;
     WCHAR *name;
     IStorage *stg;
     IStream *stm;
 } LibmsiStream;
+
+static HRESULT stream_to_storage(IStream *stm, IStorage **stg)
+{
+    ILockBytes *lockbytes = NULL;
+    STATSTG stat;
+    void *data;
+    HRESULT hr;
+    unsigned size, read;
+    ULARGE_INTEGER offset;
+
+    hr = IStream_Stat(stm, &stat, STATFLAG_NONAME);
+    if (FAILED(hr))
+        return hr;
+
+    if (stat.cbSize.QuadPart >> 32)
+    {
+        ERR("Storage is too large\n");
+        return E_FAIL;
+    }
+
+    size = stat.cbSize.QuadPart;
+    data = msi_alloc(size);
+    if (!data)
+        return E_OUTOFMEMORY;
+
+    hr = IStream_Read(stm, data, size, &read);
+    if (FAILED(hr) || read != size)
+        goto done;
+
+    hr = CreateILockBytesOnHGlobal(NULL, true, &lockbytes);
+    if (FAILED(hr))
+        goto done;
+
+    ZeroMemory(&offset, sizeof(ULARGE_INTEGER));
+    hr = ILockBytes_WriteAt(lockbytes, offset, data, size, &read);
+    if (FAILED(hr) || read != size)
+        goto done;
+
+    hr = StgOpenStorageOnILockBytes(lockbytes, NULL,
+                                    STGM_READWRITE | STGM_SHARE_DENY_NONE,
+                                    NULL, 0, stg);
+    if (FAILED(hr))
+        goto done;
+
+done:
+    msi_free(data);
+    if (lockbytes) ILockBytes_Release(lockbytes);
+    return hr;
+}
+
+unsigned msi_open_storage( LibmsiDatabase *db, const WCHAR *stname )
+{
+    unsigned r;
+    HRESULT hr;
+    LibmsiStorage *storage;
+
+    LIST_FOR_EACH_ENTRY( storage, &db->storages, LibmsiStorage, entry )
+    {
+        if( !strcmpW( stname, storage->name ) )
+        {
+            TRACE("found %s\n", debugstr_w(stname));
+            return;
+        }
+    }
+
+    if (!(storage = msi_alloc_zero( sizeof(LibmsiStorage) ))) return LIBMSI_RESULT_NOT_ENOUGH_MEMORY;
+    storage->name = strdupW( stname );
+    if (!storage->name)
+    {
+        r = LIBMSI_RESULT_NOT_ENOUGH_MEMORY;
+        goto done;
+    }
+
+    hr = IStorage_OpenStorage(db->storage, stname, NULL,
+                              STGM_READ | STGM_SHARE_EXCLUSIVE, NULL, 0,
+                              &storage->stg);
+    if (FAILED(hr))
+    {
+        r = LIBMSI_RESULT_FUNCTION_FAILED;
+        goto done;
+    }
+
+    list_add_tail( &db->storages, &storage->entry );
+    r = LIBMSI_RESULT_SUCCESS;
+
+done:
+    if (r != LIBMSI_RESULT_SUCCESS) {
+        msi_free(storage->name);
+        msi_free(storage);
+    }
+
+    return r;
+}
+
+unsigned msi_create_storage( LibmsiDatabase *db, const WCHAR *stname, IStream *stm )
+{
+    LibmsiStorage *storage;
+    IStorage *origstg = NULL;
+    IStorage *substg = NULL;
+    bool found = false;
+    HRESULT hr;
+    unsigned r;
+
+    LIST_FOR_EACH_ENTRY( storage, &db->storages, LibmsiStorage, entry )
+    {
+        if( !strcmpW( stname, storage->name ) )
+        {
+            TRACE("found %s\n", debugstr_w(stname));
+            found = true;
+            break;
+        }
+    }
+
+    if (!found) {
+        if (!(storage = msi_alloc_zero( sizeof(LibmsiStorage) ))) return LIBMSI_RESULT_NOT_ENOUGH_MEMORY;
+        storage->name = strdupW( stname );
+        if (!storage->name)
+        {
+            msi_free(storage);
+            return LIBMSI_RESULT_NOT_ENOUGH_MEMORY;
+        }
+    }
+
+    r = stream_to_storage(stm, &origstg);
+    if (r != LIBMSI_RESULT_SUCCESS)
+        goto done;
+
+    hr = IStorage_CreateStorage(db->storage, stname,
+                                STGM_WRITE | STGM_SHARE_EXCLUSIVE,
+                                0, 0, &substg);
+    if (FAILED(hr))
+    {
+        r = LIBMSI_RESULT_FUNCTION_FAILED;
+        goto done;
+    }
+
+    hr = IStorage_CopyTo(origstg, 0, NULL, NULL, substg);
+    if (FAILED(hr))
+    {
+        r = LIBMSI_RESULT_FUNCTION_FAILED;
+        goto done;
+    }
+
+    if (found) {
+        if (storage->stg)
+            IStorage_Release(storage->stg);
+    } else {
+        list_add_tail( &db->storages, &storage->entry );
+    }
+
+    storage->stg = origstg;
+    IStorage_AddRef(storage->stg);
+
+    r = LIBMSI_RESULT_SUCCESS;
+
+done:
+    if (r != LIBMSI_RESULT_SUCCESS) {
+        if (!found) {
+            msi_free(storage->name);
+            msi_free(storage);
+        }
+    }
+
+    if (substg)
+        IStorage_Release(substg);
+    if (origstg)
+        IStorage_Release(origstg);
+
+    return r;
+}
+
+void msi_destroy_storage( LibmsiDatabase *db, const WCHAR *stname )
+{
+    LibmsiStorage *storage, *storage2;
+
+    LIST_FOR_EACH_ENTRY_SAFE( storage, storage2, &db->storages, LibmsiStorage, entry )
+    {
+        if (!strcmpW( stname, storage->name ))
+        {
+            TRACE("destroying %s\n", debugstr_w(stname));
+
+            list_remove( &storage->entry );
+            IStorage_Release( storage->stg );
+            IStorage_DestroyElement( storage->stg, stname );
+            msi_free( storage );
+            break;
+        }
+    }
+}
 
 static unsigned find_open_stream( LibmsiDatabase *db, IStorage *stg, const WCHAR *name, IStream **stm )
 {
@@ -195,6 +390,18 @@ void msi_destroy_stream( LibmsiDatabase *db, const WCHAR *stname )
     }
 }
 
+static void free_storages( LibmsiDatabase *db )
+{
+    while( !list_empty( &db->storages ) )
+    {
+        LibmsiStorage *s = LIST_ENTRY(list_head( &db->storages ), LibmsiStorage, entry);
+        list_remove( &s->entry );
+        IStorage_Release( s->stg );
+        msi_free( s->name );
+        msi_free( s );
+    }
+}
+
 static void free_streams( LibmsiDatabase *db )
 {
     while( !list_empty( &db->streams ) )
@@ -228,6 +435,7 @@ static VOID _libmsi_database_destroy( LibmsiObject *arg )
     msi_free(db->path);
     free_cached_tables( db );
     free_streams( db );
+    free_storages( db );
     free_transforms( db );
     if (db->strings) msi_destroy_stringtable( db->strings );
     IStorage_Release( db->storage );
@@ -397,6 +605,7 @@ LibmsiResult libmsi_database_open(const char *szDBPath, const char *szPersist, L
     list_init( &db->tables );
     list_init( &db->transforms );
     list_init( &db->streams );
+    list_init( &db->storages );
 
     db->strings = msi_load_string_table( stg, &db->bytes_per_strref );
     if( !db->strings )

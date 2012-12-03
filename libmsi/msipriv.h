@@ -84,6 +84,7 @@ typedef struct LibmsiDatabase
     struct list tables;
     struct list transforms;
     struct list streams;
+    struct list storages;
 } LibmsiDatabase;
 
 typedef struct LibmsiView LibmsiView;
@@ -352,6 +353,9 @@ extern void decode_streamname(const WCHAR *in, WCHAR *out);
 extern unsigned msi_get_raw_stream( LibmsiDatabase *, const WCHAR *, IStream **);
 extern unsigned msi_clone_open_stream( LibmsiDatabase *, IStorage *, const WCHAR *, IStream ** );
 void msi_destroy_stream( LibmsiDatabase *, const WCHAR * );
+unsigned msi_create_storage( LibmsiDatabase *db, const WCHAR *stname, IStream *stm );
+unsigned msi_open_storage( LibmsiDatabase *db, const WCHAR *stname );
+void msi_destroy_storage( LibmsiDatabase *db, const WCHAR *stname );
 extern unsigned _libmsi_database_open_query(LibmsiDatabase *, const WCHAR *, LibmsiQuery **);
 extern unsigned _libmsi_query_open( LibmsiDatabase *, LibmsiQuery **, const WCHAR *, ... );
 typedef unsigned (*record_func)( LibmsiRecord *, void *);
