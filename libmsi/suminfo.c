@@ -365,16 +365,15 @@ static unsigned write_property_to_data( const PROPVARIANT *prop, uint8_t *data )
     return sz;
 }
 
-static unsigned save_summary_info( const LibmsiSummaryInfo * si, IStream *stm )
+static unsigned suminfo_persist( LibmsiSummaryInfo *si )
 {
-    unsigned ret = LIBMSI_RESULT_FUNCTION_FAILED;
     PROPERTYSETHEADER set_hdr;
     FORMATIDOFFSET format_hdr;
     PROPERTYSECTIONHEADER section_hdr;
     PROPERTYIDOFFSET idofs[MSI_MAX_PROPS];
+    IStream *stm;
     uint8_t *data = NULL;
-    unsigned count, sz;
-    HRESULT r;
+    unsigned r, sz;
     int i;
 
     /* write the header */
@@ -385,17 +384,11 @@ static unsigned save_summary_info( const LibmsiSummaryInfo * si, IStream *stm )
     set_hdr.dwOSVer = 0x00020005; /* build 5, platform id 2 */
     /* set_hdr.clsID is {00000000-0000-0000-0000-000000000000} */
     set_hdr.reserved = 1;
-    r = IStream_Write( stm, &set_hdr, sz, &count );
-    if( FAILED(r) || count != sz )
-        return ret;
 
     /* write the format header */
     sz = sizeof format_hdr;
     format_hdr.fmtid = FMTID_SummaryInformation;
     format_hdr.dwOffset = sizeof format_hdr + sizeof set_hdr;
-    r = IStream_Write( stm, &format_hdr, sz, &count );
-    if( FAILED(r) || count != sz )
-        return ret;
 
     /* add up how much space the data will take and calculate the offsets */
     section_hdr.cbSection = sizeof section_hdr;
@@ -412,9 +405,15 @@ static unsigned save_summary_info( const LibmsiSummaryInfo * si, IStream *stm )
         section_hdr.cbSection += sz;
     }
 
-    data = msi_alloc_zero( section_hdr.cbSection );
+    data = msi_alloc_zero( sizeof set_hdr + sizeof format_hdr + section_hdr.cbSection );
 
     sz = 0;
+    memcpy( &data[sz], &set_hdr, sizeof set_hdr );
+    sz += sizeof set_hdr;
+
+    memcpy( &data[sz], &format_hdr, sizeof format_hdr );
+    sz += sizeof format_hdr;
+
     memcpy( &data[sz], &section_hdr, sizeof section_hdr );
     sz += sizeof section_hdr;
 
@@ -425,12 +424,13 @@ static unsigned save_summary_info( const LibmsiSummaryInfo * si, IStream *stm )
     for( i = 0; i < MSI_MAX_PROPS; i++ )
         sz += write_property_to_data( &si->property[i], &data[sz] );
 
-    r = IStream_Write( stm, data, sz, &count );
+    msi_destroy_stream( si->database, szSumInfo );
+    r = write_raw_stream_data(si->database, szSumInfo, data, sz, &stm);
+    if (r == 0) {
+        IStream_Release( stm );
+    }
     msi_free( data );
-    if( FAILED(r) || count != sz )
-        return ret;
-
-    return LIBMSI_RESULT_SUCCESS;
+    return r;
 }
 
 LibmsiSummaryInfo *_libmsi_get_summary_information( LibmsiDatabase *db, unsigned uiUpdateCount )
@@ -438,7 +438,7 @@ LibmsiSummaryInfo *_libmsi_get_summary_information( LibmsiDatabase *db, unsigned
     IStream *stm = NULL;
     LibmsiSummaryInfo *si;
     unsigned grfMode;
-    HRESULT r;
+    unsigned r;
 
     TRACE("%p %d\n", db, uiUpdateCount );
 
@@ -452,8 +452,8 @@ LibmsiSummaryInfo *_libmsi_get_summary_information( LibmsiDatabase *db, unsigned
 
     /* read the stream... if we fail, we'll start with an empty property set */
     grfMode = STGM_READ | STGM_SHARE_EXCLUSIVE;
-    r = IStorage_OpenStream( db->infile, szSumInfo, 0, grfMode, 0, &stm );
-    if( SUCCEEDED(r) )
+    r = msi_get_raw_stream( db, szSumInfo, &stm );
+    if( r == 0 )
     {
         load_summary_info( si, stm );
         IStream_Release( stm );
@@ -693,23 +693,6 @@ LibmsiResult libmsi_summary_info_set_property( LibmsiSummaryInfo *si, unsigned u
     }
 
     return _libmsi_summary_info_set_property( si, uiProperty, type, iValue, pftValue, szValue );
-}
-
-static unsigned suminfo_persist( LibmsiSummaryInfo *si )
-{
-    unsigned ret = LIBMSI_RESULT_FUNCTION_FAILED;
-    IStream *stm = NULL;
-    unsigned grfMode;
-    HRESULT r;
-
-    grfMode = STGM_CREATE | STGM_READWRITE | STGM_SHARE_EXCLUSIVE;
-    r = IStorage_CreateStream( si->database->outfile, szSumInfo, grfMode, 0, 0, &stm );
-    if( SUCCEEDED(r) )
-    {
-        ret = save_summary_info( si, stm );
-        IStream_Release( stm );
-    }
-    return ret;
 }
 
 static void parse_filetime( const WCHAR *str, uint64_t *ft )
