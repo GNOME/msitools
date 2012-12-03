@@ -338,6 +338,47 @@ end:
     return ret;
 }
 
+static void cache_infile_structure( LibmsiDatabase *db )
+{
+    IEnumSTATSTG *stgenum = NULL;
+    STATSTG stat;
+    IStream *stream;
+    HRESULT hr;
+    unsigned r, size;
+
+    hr = IStorage_EnumElements(db->infile, 0, NULL, 0, &stgenum);
+    if (FAILED(hr))
+        return;
+
+    while (true)
+    {
+        size = 0;
+        hr = IEnumSTATSTG_Next(stgenum, 1, &stat, &size);
+        if (FAILED(hr) || !size)
+            break;
+
+        /* table streams are not in the _Streams table */
+        if (stat.type == STGTY_STREAM && *stat.pwcsName == 0x4840)
+        {
+            CoTaskMemFree(stat.pwcsName);
+            continue;
+        }
+
+        if (stat.type == STGTY_STREAM) {
+            r = msi_get_raw_stream(db, stat.pwcsName, &stream);
+            if ( r == 0 ) {
+                IStream_Release(stream);
+            }
+        } else {
+            msi_open_storage(db, stat.pwcsName);
+        }
+
+        CoTaskMemFree(stat.pwcsName);
+    }
+
+    IEnumSTATSTG_Release(stgenum);
+}
+
 unsigned msi_clone_open_stream( LibmsiDatabase *db, IStorage *stg, const WCHAR *name, IStream **stm )
 {
     IStream *stream;
@@ -673,6 +714,7 @@ LibmsiResult libmsi_database_open(const char *szDBPath, const char *szPersist, L
         }
     }
 
+    cache_infile_structure( db );
     db->strings = msi_load_string_table( db->infile, &db->bytes_per_strref );
     if( !db->strings )
         goto end;
