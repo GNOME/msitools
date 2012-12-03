@@ -40,7 +40,6 @@
 typedef struct tabSTORAGE
 {
     unsigned str_index;
-    IStorage *storage;
 } STORAGE;
 
 typedef struct LibmsiStorageView
@@ -66,7 +65,7 @@ static bool storages_set_table_size(LibmsiStorageView *sv, unsigned size)
     return true;
 }
 
-static STORAGE *create_storage(LibmsiStorageView *sv, const WCHAR *name, IStorage *stg)
+static STORAGE *create_storage(LibmsiStorageView *sv, const WCHAR *name)
 {
     STORAGE *storage;
 
@@ -75,10 +74,6 @@ static STORAGE *create_storage(LibmsiStorageView *sv, const WCHAR *name, IStorag
         return NULL;
 
     storage->str_index = _libmsi_add_string(sv->db->strings, name, -1, 1, StringNonPersistent);
-    storage->storage = stg;
-
-    if (storage->storage)
-        IStorage_AddRef(storage->storage);
 
     return storage;
 }
@@ -218,7 +213,7 @@ static unsigned storages_view_set_row(LibmsiView *view, unsigned row, LibmsiReco
         goto done;
     }
 
-    sv->storages[row] = create_storage(sv, name, stg);
+    sv->storages[row] = create_storage(sv, name);
     if (!sv->storages[row])
         r = LIBMSI_RESULT_FUNCTION_FAILED;
 
@@ -311,11 +306,7 @@ static unsigned storages_view_delete(LibmsiView *view)
     TRACE("(%p)\n", view);
 
     for (i = 0; i < sv->num_rows; i++)
-    {
-        if (sv->storages[i]->storage)
-            IStorage_Release(sv->storages[i]->storage);
         msi_free(sv->storages[i]);
-    }
 
     msi_free(sv->storages);
     sv->storages = NULL;
@@ -381,6 +372,7 @@ static int add_storages_to_table(LibmsiStorageView *sv)
     IEnumSTATSTG *stgenum = NULL;
     STATSTG stat;
     HRESULT hr;
+    unsigned r;
     unsigned count = 0, size;
 
     hr = IStorage_EnumElements(sv->db->storage, 0, NULL, 0, &stgenum);
@@ -407,17 +399,13 @@ static int add_storages_to_table(LibmsiStorageView *sv)
 
         TRACE("enumerated storage %s\n", debugstr_w(stat.pwcsName));
 
-        storage = create_storage(sv, stat.pwcsName, NULL);
+        storage = create_storage(sv, stat.pwcsName);
         if (!storage)
         {
             count = -1;
             CoTaskMemFree(stat.pwcsName);
             break;
         }
-
-        IStorage_OpenStorage(sv->db->storage, stat.pwcsName, NULL,
-                             STGM_READ | STGM_SHARE_EXCLUSIVE, NULL, 0,
-                             &storage->storage);
         CoTaskMemFree(stat.pwcsName);
 
         if (!storages_set_table_size(sv, ++count))
