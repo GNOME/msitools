@@ -812,24 +812,22 @@ static unsigned msi_add_records_to_table(LibmsiDatabase *db, WCHAR **columns, WC
                                      int num_columns, int num_records,
                                      const char *path)
 {
-    unsigned r;
+    unsigned r, num_rows, num_cols;
     int i;
-    LibmsiQuery *view;
+    LibmsiView *view;
     LibmsiRecord *rec;
 
-    static const WCHAR select[] = {
-        'S','E','L','E','C','T',' ','*',' ',
-        'F','R','O','M',' ','`','%','s','`',0
-    };
-
-    r = _libmsi_query_open(db, &view, select, labels[0]);
+    r = table_view_create(db, labels[0], &view);
     if (r != LIBMSI_RESULT_SUCCESS)
         return r;
 
-    while (_libmsi_query_fetch(view, &rec) != LIBMSI_RESULT_NO_MORE_ITEMS)
+    r = view->ops->get_dimensions( view, &num_rows, &num_cols );
+    if (r != LIBMSI_RESULT_SUCCESS)
+        return r;
+
+    while (num_rows > 0)
     {
-        r = _libmsi_query_modify(view, LIBMSI_MODIFY_DELETE, rec);
-        msiobj_release(&rec->hdr);
+        r = view->ops->delete_row(view, --num_rows);
         if (r != LIBMSI_RESULT_SUCCESS)
             goto done;
     }
@@ -840,7 +838,7 @@ static unsigned msi_add_records_to_table(LibmsiDatabase *db, WCHAR **columns, WC
         if (r != LIBMSI_RESULT_SUCCESS)
             goto done;
 
-        r = _libmsi_query_modify(view, LIBMSI_MODIFY_INSERT, rec);
+        r = view->ops->insert_row(view, rec, -1, false);
         if (r != LIBMSI_RESULT_SUCCESS)
         {
             msiobj_release(&rec->hdr);
