@@ -62,6 +62,7 @@ typedef struct LibmsiTransform {
 
 typedef struct LibmsiStream {
     struct list entry;
+    WCHAR *name;
     IStorage *stg;
     IStream *stm;
 } LibmsiStream;
@@ -72,27 +73,14 @@ static unsigned find_open_stream( LibmsiDatabase *db, IStorage *stg, const WCHAR
 
     LIST_FOR_EACH_ENTRY( stream, &db->streams, LibmsiStream, entry )
     {
-        HRESULT r;
-        STATSTG stat;
-
         if (stream->stg != stg) continue;
 
-        r = IStream_Stat( stream->stm, &stat, 0 );
-        if( FAILED( r ) )
-        {
-            WARN("failed to stat stream r = %08x!\n", r);
-            continue;
-        }
-
-        if( !strcmpW( name, stat.pwcsName ) )
+        if( !strcmpW( name, stream->name ) )
         {
             TRACE("found %s\n", debugstr_w(name));
             *stm = stream->stm;
-            CoTaskMemFree( stat.pwcsName );
             return LIBMSI_RESULT_SUCCESS;
         }
-
-        CoTaskMemFree( stat.pwcsName );
     }
 
     return LIBMSI_RESULT_FUNCTION_FAILED;
@@ -164,6 +152,7 @@ unsigned msi_get_raw_stream( LibmsiDatabase *db, const WCHAR *stname, IStream **
         LibmsiStream *stream;
 
         if (!(stream = msi_alloc( sizeof(LibmsiStream) ))) return LIBMSI_RESULT_NOT_ENOUGH_MEMORY;
+        stream->name = strdupW( stname );
         stream->stg = stg;
         IStorage_AddRef( stg );
         stream->stm = *stm;
@@ -192,17 +181,7 @@ void msi_destroy_stream( LibmsiDatabase *db, const WCHAR *stname )
 
     LIST_FOR_EACH_ENTRY_SAFE( stream, stream2, &db->streams, LibmsiStream, entry )
     {
-        HRESULT r;
-        STATSTG stat;
-
-        r = IStream_Stat( stream->stm, &stat, 0 );
-        if (FAILED(r))
-        {
-            WARN("failed to stat stream r = %08x\n", r);
-            continue;
-        }
-
-        if (!strcmpW( stname, stat.pwcsName ))
+        if (!strcmpW( stname, stream->name ))
         {
             TRACE("destroying %s\n", debugstr_w(stname));
 
@@ -211,10 +190,8 @@ void msi_destroy_stream( LibmsiDatabase *db, const WCHAR *stname )
             IStorage_Release( stream->stg );
             IStorage_DestroyElement( stream->stg, stname );
             msi_free( stream );
-            CoTaskMemFree( stat.pwcsName );
             break;
         }
-        CoTaskMemFree( stat.pwcsName );
     }
 }
 
@@ -226,6 +203,7 @@ static void free_streams( LibmsiDatabase *db )
         list_remove( &s->entry );
         IStream_Release( s->stm );
         IStorage_Release( s->stg );
+        msi_free( s->name );
         msi_free( s );
     }
 }
