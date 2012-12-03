@@ -2087,12 +2087,20 @@ unsigned table_view_create( LibmsiDatabase *db, const WCHAR *name, LibmsiView **
 unsigned _libmsi_database_commit_tables( LibmsiDatabase *db, unsigned bytes_per_strref )
 {
     unsigned r = LIBMSI_RESULT_SUCCESS;
-    LibmsiTable *table;
+    LibmsiTable *table, *table2;
+    LibmsiTable *t;
 
     TRACE("%p\n",db);
 
-    LIST_FOR_EACH_ENTRY( table, &db->tables, LibmsiTable, entry )
+    LIST_FOR_EACH_ENTRY_SAFE( table, table2, &db->tables, LibmsiTable, entry )
     {
+        r = get_table( db, table->name, &t );
+        if( r != LIBMSI_RESULT_SUCCESS )
+        {
+            WARN("failed to load table %s (r=%08x)\n",
+                  debugstr_w(table->name), r);
+            return r;
+        }
         /* TODO: delete this if, replace with row_count check in save_table */
         if (table->colinfo) {
             r = save_table( db, table, bytes_per_strref );
@@ -2103,6 +2111,8 @@ unsigned _libmsi_database_commit_tables( LibmsiDatabase *db, unsigned bytes_per_
                   debugstr_w(table->name), r);
             return r;
         }
+        list_remove(&table->entry);
+        free_table(table);
     }
 
     return r;
