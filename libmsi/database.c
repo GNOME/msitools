@@ -447,40 +447,32 @@ static VOID _libmsi_database_destroy( LibmsiObject *arg )
     }
 }
 
-static HRESULT db_initialize( IStorage *stg, const GUID *clsid )
+static HRESULT db_initialize( LibmsiDatabase *db )
 {
     static const WCHAR szTables[]  = { '_','T','a','b','l','e','s',0 };
     HRESULT hr;
 
-    hr = IStorage_SetClass( stg, clsid );
-    if (FAILED( hr ))
-    {
-        WARN("failed to set class id 0x%08x\n", hr);
-        return hr;
-    }
-
     /* create the _Tables stream */
-    hr = write_stream_data( stg, szTables, NULL, 0, true );
+    hr = write_stream_data( db->outfile, szTables, NULL, 0, true );
     if (FAILED( hr ))
     {
         WARN("failed to create _Tables stream 0x%08x\n", hr);
         return hr;
     }
 
-    hr = msi_init_string_table( stg );
+    hr = msi_init_string_table( db->outfile );
     if (FAILED( hr ))
     {
         WARN("failed to initialize string table 0x%08x\n", hr);
         return hr;
     }
 
-    hr = IStorage_Commit( stg, 0 );
+    hr = IStorage_Commit( db->outfile, 0 );
     if (FAILED( hr ))
     {
         WARN("failed to commit changes 0x%08x\n", hr);
         return hr;
     }
-
     return S_OK;
 }
 
@@ -493,7 +485,7 @@ LibmsiResult libmsi_database_open(const char *szDBPath, const char *szPersist, L
     WCHAR *szwDBPath;
     const char *szMode;
     STATSTG stat;
-    bool created = false, patch = false;
+    bool created = false, patch = false, need_init = false;
     char path[MAX_PATH];
 
     TRACE("%s %p\n",debugstr_a(szDBPath),szPersist );
@@ -530,8 +522,10 @@ LibmsiResult libmsi_database_open(const char *szDBPath, const char *szPersist, L
         r = StgCreateDocfile( szwDBPath,
               STGM_CREATE|STGM_TRANSACTED|STGM_READWRITE|STGM_SHARE_EXCLUSIVE, 0, &stg );
 
-        if( SUCCEEDED(r) )
-            r = db_initialize( stg, patch ? &CLSID_MsiPatch : &CLSID_MsiDatabase );
+        if ( SUCCEEDED(r) )
+            r = IStorage_SetClass( stg, patch ? &CLSID_MsiPatch : &CLSID_MsiDatabase );
+
+        need_init = true;
         created = true;
     }
     else if( szPersist == LIBMSI_DB_OPEN_TRANSACT )
@@ -611,6 +605,16 @@ LibmsiResult libmsi_database_open(const char *szDBPath, const char *szPersist, L
     list_init( &db->transforms );
     list_init( &db->streams );
     list_init( &db->storages );
+
+    if (need_init) {
+        r = db_initialize( db );
+
+        if (FAILED( r ))
+        {
+            ret = LIBMSI_RESULT_FUNCTION_FAILED;
+            goto end;
+        }
+    }
 
     db->strings = msi_load_string_table( db->infile, &db->bytes_per_strref );
     if( !db->strings )
