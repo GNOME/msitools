@@ -516,52 +516,6 @@ LibmsiResult libmsi_query_get_column_info(LibmsiQuery *query, LibmsiColInfo info
     return r;
 }
 
-unsigned _libmsi_query_modify( LibmsiQuery *query, LibmsiModify mode, LibmsiRecord *rec )
-{
-    LibmsiView *view = NULL;
-    unsigned r;
-
-    if ( !query || !rec )
-        return LIBMSI_RESULT_INVALID_HANDLE;
-
-    view = query->view;
-    if ( !view  || !view->ops->modify)
-        return LIBMSI_RESULT_FUNCTION_FAILED;
-
-    if ( mode == LIBMSI_MODIFY_UPDATE && _libmsi_record_get_int_ptr( rec, 0 ) != (intptr_t)query )
-        return LIBMSI_RESULT_FUNCTION_FAILED;
-
-    r = view->ops->modify( view, mode, rec, query->row );
-    if (mode == LIBMSI_MODIFY_DELETE && r == LIBMSI_RESULT_SUCCESS)
-        query->row--;
-
-    return r;
-}
-
-LibmsiResult libmsi_query_modify( LibmsiQuery *query, LibmsiModify eModifyMode,
-                LibmsiRecord *rec)
-{
-    unsigned r = LIBMSI_RESULT_FUNCTION_FAILED;
-
-    TRACE("%d %x %d\n", query, eModifyMode, rec);
-
-    if( !query )
-        return LIBMSI_RESULT_INVALID_HANDLE;
-
-    msiobj_addref( &query->hdr);
-
-    if (rec)
-        msiobj_addref( &rec->hdr);
-
-    r = _libmsi_query_modify( query, eModifyMode, rec );
-
-    msiobj_release( &query->hdr );
-    if( rec )
-        msiobj_release( &rec->hdr );
-
-    return r;
-}
-
 LibmsiDBError libmsi_query_get_error( LibmsiQuery *query, char *buffer, unsigned *buflen )
 {
     const WCHAR *column;

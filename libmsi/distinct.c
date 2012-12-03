@@ -216,19 +216,6 @@ static unsigned distinct_view_get_column_info( LibmsiView *view, unsigned n, con
                                             type, temporary, table_name );
 }
 
-static unsigned distinct_view_modify( LibmsiView *view, LibmsiModify eModifyMode,
-                             LibmsiRecord *rec, unsigned row )
-{
-    LibmsiDistinctView *dv = (LibmsiDistinctView*)view;
-
-    TRACE("%p %d %p\n", dv, eModifyMode, rec );
-
-    if( !dv->table )
-         return LIBMSI_RESULT_FUNCTION_FAILED;
-
-    return dv->table->ops->modify( dv->table, eModifyMode, rec, row );
-}
-
 static unsigned distinct_view_delete( LibmsiView *view )
 {
     LibmsiDistinctView *dv = (LibmsiDistinctView*)view;
@@ -278,7 +265,6 @@ static const LibmsiViewOps distinct_ops =
     distinct_view_close,
     distinct_view_get_dimensions,
     distinct_view_get_column_info,
-    distinct_view_modify,
     distinct_view_delete,
     distinct_view_find_matching_rows,
     NULL,

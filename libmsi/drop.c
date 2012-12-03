@@ -102,7 +102,6 @@ static const LibmsiViewOps drop_ops =
     drop_view_close,
     drop_view_get_dimensions,
     NULL,
-    NULL,
     drop_view_delete,
     NULL,
     NULL,

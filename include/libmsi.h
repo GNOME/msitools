@@ -74,23 +74,6 @@ typedef enum LibmsiColInfo
     LIBMSI_COL_INFO_TYPES = 1
 } LibmsiColInfo;
 
-typedef enum LibmsiModify
-{
-    LIBMSI_MODIFY_SEEK = -1,
-    LIBMSI_MODIFY_REFRESH = 0,
-    LIBMSI_MODIFY_INSERT = 1,
-    LIBMSI_MODIFY_UPDATE = 2,
-    LIBMSI_MODIFY_ASSIGN = 3,
-    LIBMSI_MODIFY_REPLACE = 4,
-    LIBMSI_MODIFY_MERGE = 5,
-    LIBMSI_MODIFY_DELETE = 6,
-    LIBMSI_MODIFY_INSERT_TEMPORARY = 7,
-    LIBMSI_MODIFY_VALIDATE = 8,
-    LIBMSI_MODIFY_VALIDATE_NEW = 9,
-    LIBMSI_MODIFY_VALIDATE_FIELD = 10,
-    LIBMSI_MODIFY_VALIDATE_DELETE = 11
-} LibmsiModify;
-
 #define LIBMSI_DB_OPEN_READONLY (const char *)0
 #define LIBMSI_DB_OPEN_TRANSACT (const char *)1
 #define LIBMSI_DB_OPEN_CREATE   (const char *)2
@@ -217,8 +200,6 @@ LibmsiCondition libmsi_database_is_table_persistent(LibmsiDatabase *, const char
 
 LibmsiResult libmsi_summary_info_persist(LibmsiSummaryInfo *);
 LibmsiResult libmsi_summary_info_get_property_count(LibmsiSummaryInfo *,unsigned *);
-
-LibmsiResult libmsi_query_modify(LibmsiQuery *, LibmsiModify, LibmsiRecord *);
 
 LibmsiResult libmsi_database_merge(LibmsiDatabase *, LibmsiDatabase *, const char *);
 

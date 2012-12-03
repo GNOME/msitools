@@ -138,16 +138,6 @@ static unsigned delete_view_get_column_info( LibmsiView *view, unsigned n, const
                                             type, temporary, table_name);
 }
 
-static unsigned delete_view_modify( LibmsiView *view, LibmsiModify eModifyMode,
-                           LibmsiRecord *rec, unsigned row )
-{
-    LibmsiDeleteView *dv = (LibmsiDeleteView*)view;
-
-    TRACE("%p %d %p\n", dv, eModifyMode, rec );
-
-    return LIBMSI_RESULT_FUNCTION_FAILED;
-}
-
 static unsigned delete_view_delete( LibmsiView *view )
 {
     LibmsiDeleteView *dv = (LibmsiDeleteView*)view;
@@ -183,7 +173,6 @@ static const LibmsiViewOps delete_ops =
     delete_view_close,
     delete_view_get_dimensions,
     delete_view_get_column_info,
-    delete_view_modify,
     delete_view_delete,
     delete_view_find_matching_rows,
     NULL,

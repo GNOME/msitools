@@ -240,79 +240,6 @@ static unsigned select_view_get_column_info( LibmsiView *view, unsigned n, const
                                             type, temporary, table_name );
 }
 
-static unsigned msi_select_update(LibmsiView *view, LibmsiRecord *rec, unsigned row)
-{
-    LibmsiSelectView *sv = (LibmsiSelectView*)view;
-    unsigned r, i, num_columns, col, type, val;
-    const WCHAR *str;
-    LibmsiRecord *mod;
-
-    r = select_view_get_dimensions(view, NULL, &num_columns);
-    if (r != LIBMSI_RESULT_SUCCESS)
-        return r;
-
-    r = sv->table->ops->get_row(sv->table, row - 1, &mod);
-    if (r != LIBMSI_RESULT_SUCCESS)
-        return r;
-
-    for (i = 0; i < num_columns; i++)
-    {
-        col = sv->cols[i];
-
-        r = select_view_get_column_info(view, i + 1, NULL, &type, NULL, NULL);
-        if (r != LIBMSI_RESULT_SUCCESS)
-        {
-            ERR("Failed to get column information: %d\n", r);
-            goto done;
-        }
-
-        if (MSITYPE_IS_BINARY(type))
-        {
-            ERR("Cannot modify binary data!\n");
-            r = LIBMSI_RESULT_FUNCTION_FAILED;
-            goto done;
-        }
-        else if (type & MSITYPE_STRING)
-        {
-            str = _libmsi_record_get_string_raw(rec, i + 1);
-            r = _libmsi_record_set_stringW(mod, col, str);
-        }
-        else
-        {
-            val = libmsi_record_get_integer(rec, i + 1);
-            r = libmsi_record_set_int(mod, col, val);
-        }
-
-        if (r != LIBMSI_RESULT_SUCCESS)
-        {
-            ERR("Failed to modify record: %d\n", r);
-            goto done;
-        }
-    }
-
-    r = sv->table->ops->modify(sv->table, LIBMSI_MODIFY_UPDATE, mod, row);
-
-done:
-    msiobj_release(&mod->hdr);
-    return r;
-}
-
-static unsigned select_view_modify( LibmsiView *view, LibmsiModify eModifyMode,
-                           LibmsiRecord *rec, unsigned row )
-{
-    LibmsiSelectView *sv = (LibmsiSelectView*)view;
-
-    TRACE("%p %d %p %d\n", sv, eModifyMode, rec, row );
-
-    if( !sv->table )
-         return LIBMSI_RESULT_FUNCTION_FAILED;
-
-    if (eModifyMode == LIBMSI_MODIFY_UPDATE)
-        return msi_select_update(view, rec, row);
-
-    return sv->table->ops->modify( sv->table, eModifyMode, rec, row );
-}
-
 static unsigned select_view_delete( LibmsiView *view )
 {
     LibmsiSelectView *sv = (LibmsiSelectView*)view;
@@ -359,7 +286,6 @@ static const LibmsiViewOps select_ops =
     select_view_close,
     select_view_get_dimensions,
     select_view_get_column_info,
-    select_view_modify,
     select_view_delete,
     select_view_find_matching_rows,
     NULL,

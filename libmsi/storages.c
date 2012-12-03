@@ -303,94 +303,6 @@ static unsigned storages_view_get_column_info( LibmsiView *view, unsigned n, con
     return LIBMSI_RESULT_SUCCESS;
 }
 
-static unsigned storages_find_row(LibmsiStorageView *sv, LibmsiRecord *rec, unsigned *row)
-{
-    const WCHAR *str;
-    unsigned r, i, id, data;
-
-    str = _libmsi_record_get_string_raw(rec, 1);
-    r = _libmsi_id_from_stringW(sv->db->strings, str, &id);
-    if (r != LIBMSI_RESULT_SUCCESS)
-        return r;
-
-    for (i = 0; i < sv->num_rows; i++)
-    {
-        storages_view_fetch_int(&sv->view, i, 1, &data);
-
-        if (data == id)
-        {
-            *row = i;
-            return LIBMSI_RESULT_SUCCESS;
-        }
-    }
-
-    return LIBMSI_RESULT_FUNCTION_FAILED;
-}
-
-static unsigned storages_modify_update(LibmsiView *view, LibmsiRecord *rec)
-{
-    LibmsiStorageView *sv = (LibmsiStorageView *)view;
-    unsigned r, row;
-
-    r = storages_find_row(sv, rec, &row);
-    if (r != LIBMSI_RESULT_SUCCESS)
-        return LIBMSI_RESULT_FUNCTION_FAILED;
-
-    return storages_view_set_row(view, row, rec, 0);
-}
-
-static unsigned storages_modify_assign(LibmsiView *view, LibmsiRecord *rec)
-{
-    LibmsiStorageView *sv = (LibmsiStorageView *)view;
-    unsigned r, row;
-
-    r = storages_find_row(sv, rec, &row);
-    if (r == LIBMSI_RESULT_SUCCESS)
-        return storages_modify_update(view, rec);
-
-    return storages_view_insert_row(view, rec, -1, false);
-}
-
-static unsigned storages_view_modify(LibmsiView *view, LibmsiModify eModifyMode, LibmsiRecord *rec, unsigned row)
-{
-    unsigned r;
-
-    TRACE("%p %d %p\n", view, eModifyMode, rec);
-
-    switch (eModifyMode)
-    {
-    case LIBMSI_MODIFY_ASSIGN:
-        r = storages_modify_assign(view, rec);
-        break;
-
-    case LIBMSI_MODIFY_INSERT:
-        r = storages_view_insert_row(view, rec, -1, false);
-        break;
-
-    case LIBMSI_MODIFY_UPDATE:
-        r = storages_modify_update(view, rec);
-        break;
-
-    case LIBMSI_MODIFY_VALIDATE_NEW:
-    case LIBMSI_MODIFY_INSERT_TEMPORARY:
-    case LIBMSI_MODIFY_REFRESH:
-    case LIBMSI_MODIFY_REPLACE:
-    case LIBMSI_MODIFY_MERGE:
-    case LIBMSI_MODIFY_DELETE:
-    case LIBMSI_MODIFY_VALIDATE:
-    case LIBMSI_MODIFY_VALIDATE_FIELD:
-    case LIBMSI_MODIFY_VALIDATE_DELETE:
-        FIXME("%p %d %p - mode not implemented\n", view, eModifyMode, rec );
-        r = LIBMSI_RESULT_CALL_NOT_IMPLEMENTED;
-        break;
-
-    default:
-        r = LIBMSI_RESULT_INVALID_DATA;
-    }
-
-    return r;
-}
-
 static unsigned storages_view_delete(LibmsiView *view)
 {
     LibmsiStorageView *sv = (LibmsiStorageView *)view;
@@ -453,7 +365,6 @@ static const LibmsiViewOps storages_ops =
     storages_view_close,
     storages_view_get_dimensions,
     storages_view_get_column_info,
-    storages_view_modify,
     storages_view_delete,
     storages_view_find_matching_rows,
     NULL,

@@ -167,16 +167,6 @@ static unsigned update_view_get_column_info( LibmsiView *view, unsigned n, const
     return wv->ops->get_column_info( wv, n, name, type, temporary, table_name );
 }
 
-static unsigned update_view_modify( LibmsiView *view, LibmsiModify eModifyMode,
-                           LibmsiRecord *rec, unsigned row )
-{
-    LibmsiUpdateView *uv = (LibmsiUpdateView*)view;
-
-    TRACE("%p %d %p\n", uv, eModifyMode, rec );
-
-    return LIBMSI_RESULT_FUNCTION_FAILED;
-}
-
 static unsigned update_view_delete( LibmsiView *view )
 {
     LibmsiUpdateView *uv = (LibmsiUpdateView*)view;
@@ -213,7 +203,6 @@ static const LibmsiViewOps update_ops =
     update_view_close,
     update_view_get_dimensions,
     update_view_get_column_info,
-    update_view_modify,
     update_view_delete,
     update_view_find_matching_rows,
     NULL,

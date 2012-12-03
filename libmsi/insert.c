@@ -293,15 +293,6 @@ static unsigned insert_view_get_column_info( LibmsiView *view, unsigned n, const
     return sv->ops->get_column_info( sv, n, name, type, temporary, table_name );
 }
 
-static unsigned insert_view_modify( LibmsiView *view, LibmsiModify eModifyMode, LibmsiRecord *rec, unsigned row)
-{
-    LibmsiInsertView *iv = (LibmsiInsertView*)view;
-
-    TRACE("%p %d %p\n", iv, eModifyMode, rec );
-
-    return LIBMSI_RESULT_FUNCTION_FAILED;
-}
-
 static unsigned insert_view_delete( LibmsiView *view )
 {
     LibmsiInsertView *iv = (LibmsiInsertView*)view;
@@ -339,7 +330,6 @@ static const LibmsiViewOps insert_ops =
     insert_view_close,
     insert_view_get_dimensions,
     insert_view_get_column_info,
-    insert_view_modify,
     insert_view_delete,
     insert_view_find_matching_rows,
     NULL,

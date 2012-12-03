@@ -876,113 +876,6 @@ static unsigned where_view_get_column_info( LibmsiView *view, unsigned n, const 
                                             type, temporary, table_name);
 }
 
-static unsigned join_find_row( LibmsiWhereView *wv, LibmsiRecord *rec, unsigned *row )
-{
-    const WCHAR *str;
-    unsigned r, i, id, data;
-
-    str = _libmsi_record_get_string_raw( rec, 1 );
-    r = _libmsi_id_from_stringW( wv->db->strings, str, &id );
-    if (r != LIBMSI_RESULT_SUCCESS)
-        return r;
-
-    for (i = 0; i < wv->row_count; i++)
-    {
-        where_view_fetch_int( &wv->view, i, 1, &data );
-
-        if (data == id)
-        {
-            *row = i;
-            return LIBMSI_RESULT_SUCCESS;
-        }
-    }
-
-    return LIBMSI_RESULT_FUNCTION_FAILED;
-}
-
-static unsigned join_modify_update( LibmsiView *view, LibmsiRecord *rec )
-{
-    LibmsiWhereView *wv = (LibmsiWhereView *)view;
-    unsigned r, row, i, mask = 0;
-    LibmsiRecord *current;
-
-
-    r = join_find_row( wv, rec, &row );
-    if (r != LIBMSI_RESULT_SUCCESS)
-        return r;
-
-    r = msi_view_get_row( wv->db, view, row, &current );
-    if (r != LIBMSI_RESULT_SUCCESS)
-        return r;
-
-    assert(libmsi_record_get_field_count(rec) == libmsi_record_get_field_count(current));
-
-    for (i = libmsi_record_get_field_count(rec); i > 0; i--)
-    {
-        if (!_libmsi_record_compare_fields(rec, current, i))
-            mask |= 1 << (i - 1);
-    }
-     msiobj_release(&current->hdr);
-
-    return where_view_set_row( view, row, rec, mask );
-}
-
-static unsigned where_view_modify( LibmsiView *view, LibmsiModify eModifyMode,
-                          LibmsiRecord *rec, unsigned row )
-{
-    LibmsiWhereView *wv = (LibmsiWhereView*)view;
-    JOINTABLE *table = wv->tables;
-    unsigned r;
-
-    TRACE("%p %d %p\n", wv, eModifyMode, rec);
-
-    if (!table)
-        return LIBMSI_RESULT_FUNCTION_FAILED;
-
-    if (!table->next)
-    {
-        unsigned *rows;
-
-        if (find_row(wv, row - 1, &rows) == LIBMSI_RESULT_SUCCESS)
-            row = rows[0] + 1;
-        else
-            row = -1;
-
-        return table->view->ops->modify(table->view, eModifyMode, rec, row);
-    }
-
-    switch (eModifyMode)
-    {
-    case LIBMSI_MODIFY_UPDATE:
-        return join_modify_update( view, rec );
-
-    case LIBMSI_MODIFY_ASSIGN:
-    case LIBMSI_MODIFY_DELETE:
-    case LIBMSI_MODIFY_INSERT:
-    case LIBMSI_MODIFY_INSERT_TEMPORARY:
-    case LIBMSI_MODIFY_MERGE:
-    case LIBMSI_MODIFY_REPLACE:
-    case LIBMSI_MODIFY_SEEK:
-    case LIBMSI_MODIFY_VALIDATE:
-    case LIBMSI_MODIFY_VALIDATE_DELETE:
-    case LIBMSI_MODIFY_VALIDATE_FIELD:
-    case LIBMSI_MODIFY_VALIDATE_NEW:
-        r = LIBMSI_RESULT_FUNCTION_FAILED;
-        break;
-
-    case LIBMSI_MODIFY_REFRESH:
-        r = LIBMSI_RESULT_CALL_NOT_IMPLEMENTED;
-        break;
-
-    default:
-        WARN("%p %d %p %u - unknown mode\n", view, eModifyMode, rec, row );
-        r = LIBMSI_RESULT_INVALID_PARAMETER;
-        break;
-    }
-
-    return r;
-}
-
 static unsigned where_view_delete( LibmsiView *view )
 {
     LibmsiWhereView *wv = (LibmsiWhereView*)view;
@@ -1105,7 +998,6 @@ static const LibmsiViewOps where_ops =
     where_view_close,
     where_view_get_dimensions,
     where_view_get_column_info,
-    where_view_modify,
     where_view_delete,
     where_view_find_matching_rows,
     NULL,

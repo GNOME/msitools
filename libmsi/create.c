@@ -98,16 +98,6 @@ static unsigned create_view_get_column_info( LibmsiView *view, unsigned n, const
     return LIBMSI_RESULT_FUNCTION_FAILED;
 }
 
-static unsigned create_view_modify( LibmsiView *view, LibmsiModify eModifyMode,
-                           LibmsiRecord *rec, unsigned row)
-{
-    LibmsiCreateView *cv = (LibmsiCreateView*)view;
-
-    TRACE("%p %d %p\n", cv, eModifyMode, rec );
-
-    return LIBMSI_RESULT_FUNCTION_FAILED;
-}
-
 static unsigned create_view_delete( LibmsiView *view )
 {
     LibmsiCreateView *cv = (LibmsiCreateView*)view;
@@ -132,7 +122,6 @@ static const LibmsiViewOps create_ops =
     create_view_close,
     create_view_get_dimensions,
     create_view_get_column_info,
-    create_view_modify,
     create_view_delete,
     NULL,
     NULL,

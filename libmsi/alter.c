@@ -197,16 +197,6 @@ static unsigned alter_view_get_column_info( LibmsiView *view, unsigned n, const 
     return LIBMSI_RESULT_FUNCTION_FAILED;
 }
 
-static unsigned alter_view_modify( LibmsiView *view, LibmsiModify eModifyMode,
-                          LibmsiRecord *rec, unsigned row )
-{
-    LibmsiAlterView *av = (LibmsiAlterView*)view;
-
-    TRACE("%p %d %p\n", av, eModifyMode, rec );
-
-    return LIBMSI_RESULT_FUNCTION_FAILED;
-}
-
 static unsigned alter_view_delete( LibmsiView *view )
 {
     LibmsiAlterView *av = (LibmsiAlterView*)view;
@@ -239,7 +229,6 @@ static const LibmsiViewOps alter_ops =
     alter_view_close,
     alter_view_get_dimensions,
     alter_view_get_column_info,
-    alter_view_modify,
     alter_view_delete,
     alter_view_find_matching_rows,
     NULL,

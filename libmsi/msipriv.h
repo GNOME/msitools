@@ -200,11 +200,6 @@ typedef struct LibmsiViewOps
                              bool *temporary, const WCHAR **table_name );
 
     /*
-     * modify - not yet implemented properly
-     */
-    unsigned (*modify)( LibmsiView *view, LibmsiModify eModifyMode, LibmsiRecord *record, unsigned row );
-
-    /*
      * delete - destroys the structure completely
      */
     unsigned (*delete)( LibmsiView * );
@@ -368,7 +363,6 @@ extern unsigned _libmsi_database_get_primary_keys( LibmsiDatabase *, const WCHAR
 extern unsigned _libmsi_query_execute( LibmsiQuery*, LibmsiRecord * );
 extern unsigned _libmsi_query_fetch( LibmsiQuery*, LibmsiRecord ** );
 extern unsigned _libmsi_query_get_column_info(LibmsiQuery *, LibmsiColInfo, LibmsiRecord **);
-extern unsigned _libmsi_query_modify( LibmsiQuery *, LibmsiModify, LibmsiRecord * );
 extern unsigned _libmsi_view_find_column( LibmsiView *, const WCHAR *, const WCHAR *, unsigned *);
 extern unsigned msi_view_get_row(LibmsiDatabase *, LibmsiView *, unsigned, LibmsiRecord **);
 
