@@ -313,6 +313,7 @@ extern unsigned msi_save_string_table( const string_table *st, LibmsiDatabase *d
 extern unsigned msi_get_string_table_codepage( const string_table *st );
 extern unsigned msi_set_string_table_codepage( string_table *st, unsigned codepage );
 
+unsigned _libmsi_open_table( LibmsiDatabase *db, const WCHAR *name, bool encoded );
 extern bool table_view_exists( LibmsiDatabase *db, const WCHAR *name );
 extern LibmsiCondition _libmsi_database_is_table_persistent( LibmsiDatabase *db, const WCHAR *table );
 

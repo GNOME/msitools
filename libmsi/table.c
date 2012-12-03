@@ -625,6 +625,32 @@ static unsigned table_get_column_info( LibmsiDatabase *db, const WCHAR *name, Li
     return r;
 }
 
+unsigned _libmsi_open_table( LibmsiDatabase *db, const WCHAR *name, bool encoded )
+{
+    WCHAR decname[0x40];
+    LibmsiTable *table;
+
+    if (encoded)
+    {
+        assert(name[0] == 0x4840);
+        decode_streamname( name + 1, decname );
+        name = decname;
+    }
+
+    table = msi_alloc_zero( sizeof(LibmsiTable) + strlenW( name ) * sizeof(WCHAR) );
+    if (!table)
+        return LIBMSI_RESULT_FUNCTION_FAILED;
+
+    table->persistent = LIBMSI_CONDITION_TRUE;
+    strcpyW( table->name, name );
+
+    if (!strcmpW( name, szTables ) || !strcmpW( name, szColumns ))
+        table->persistent = LIBMSI_CONDITION_NONE;
+
+    list_add_head( &db->tables, &table->entry );
+    return LIBMSI_RESULT_SUCCESS;
+}
+
 static unsigned get_table( LibmsiDatabase *db, const WCHAR *name, LibmsiTable **table_ret )
 {
     LibmsiTable *table;
@@ -632,41 +658,36 @@ static unsigned get_table( LibmsiDatabase *db, const WCHAR *name, LibmsiTable **
 
     /* first, see if the table is cached */
     table = find_cached_table( db, name );
-    if (table)
+    if (!table)
+    {
+        /* nonexistent tables should be interpreted as empty tables */
+        r = _libmsi_open_table( db, name, false );
+        if (r)
+            return r;
+
+        table = find_cached_table( db, name );
+    }
+
+    if (table->colinfo)
     {
         *table_ret = table;
         return LIBMSI_RESULT_SUCCESS;
     }
 
-    /* nonexistent tables should be interpreted as empty tables */
-    table = msi_alloc( sizeof(LibmsiTable) + strlenW( name ) * sizeof(WCHAR) );
-    if (!table)
-        return LIBMSI_RESULT_FUNCTION_FAILED;
-
-    table->row_count = 0;
-    table->data = NULL;
-    table->data_persistent = NULL;
-    table->colinfo = NULL;
-    table->col_count = 0;
-    table->persistent = LIBMSI_CONDITION_TRUE;
-    strcpyW( table->name, name );
-
-    if (!strcmpW( name, szTables ) || !strcmpW( name, szColumns ))
-        table->persistent = LIBMSI_CONDITION_NONE;
-
     r = table_get_column_info( db, name, &table->colinfo, &table->col_count );
     if (r != LIBMSI_RESULT_SUCCESS)
     {
+        list_remove(&table->entry);
         free_table( table );
         return r;
     }
     r = read_table_from_storage( db, table, db->infile );
     if (r != LIBMSI_RESULT_SUCCESS)
     {
+        list_remove(&table->entry);
         free_table( table );
         return r;
     }
-    list_add_head( &db->tables, &table->entry );
     *table_ret = table;
     return LIBMSI_RESULT_SUCCESS;
 }
@@ -2072,7 +2093,10 @@ unsigned _libmsi_database_commit_tables( LibmsiDatabase *db, unsigned bytes_per_
 
     LIST_FOR_EACH_ENTRY( table, &db->tables, LibmsiTable, entry )
     {
-        r = save_table( db, table, bytes_per_strref );
+        /* TODO: delete this if, replace with row_count check in save_table */
+        if (table->colinfo) {
+            r = save_table( db, table, bytes_per_strref );
+        }
         if( r != LIBMSI_RESULT_SUCCESS )
         {
             WARN("failed to save table %s (r=%08x)\n",

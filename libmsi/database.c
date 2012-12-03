@@ -412,10 +412,13 @@ static void cache_infile_structure( LibmsiDatabase *db )
     IStream *stream;
     HRESULT hr;
     unsigned r, size;
+    WCHAR decname[0x40];
 
     hr = IStorage_EnumElements(db->infile, 0, NULL, 0, &stgenum);
     if (FAILED(hr))
         return;
+
+    /* TODO: error handling */
 
     while (true)
     {
@@ -425,16 +428,25 @@ static void cache_infile_structure( LibmsiDatabase *db )
             break;
 
         /* table streams are not in the _Streams table */
-        if (stat.type == STGTY_STREAM && *stat.pwcsName == 0x4840)
-        {
-            CoTaskMemFree(stat.pwcsName);
-            continue;
-        }
-
         if (stat.type == STGTY_STREAM) {
-            r = msi_get_raw_stream(db, stat.pwcsName, &stream);
-            if ( r == 0 ) {
-                IStream_Release(stream);
+            if (*stat.pwcsName == 0x4840)
+            {
+                decode_streamname( stat.pwcsName + 1, decname );
+                if ( !strcmpW( decname, szStringPool ) ||
+                     !strcmpW( decname, szStringData ) )
+	        {
+                    CoTaskMemFree(stat.pwcsName);
+                    continue;
+	        }
+
+                r = _libmsi_open_table( db, decname, false );
+            }
+            else
+            {
+                r = msi_get_raw_stream(db, stat.pwcsName, &stream);
+                if ( r == 0 ) {
+                    IStream_Release(stream);
+                }
             }
         } else {
             msi_open_storage(db, stat.pwcsName);
