@@ -175,6 +175,9 @@ unsigned msi_create_storage( LibmsiDatabase *db, const WCHAR *stname, IStream *s
     HRESULT hr;
     unsigned r;
 
+    if ( db->mode == LIBMSI_DB_OPEN_READONLY )
+        return LIBMSI_RESULT_ACCESS_DENIED;
+
     LIST_FOR_EACH_ENTRY( storage, &db->storages, LibmsiStorage, entry )
     {
         if( !strcmpW( stname, storage->name ) )
@@ -347,6 +350,9 @@ unsigned msi_create_stream( LibmsiDatabase *db, const WCHAR *stname, IStream *st
     unsigned r = LIBMSI_RESULT_FUNCTION_FAILED;
     unsigned count;
     uint8_t *data;
+
+    if ( db->mode == LIBMSI_DB_OPEN_READONLY )
+        return LIBMSI_RESULT_ACCESS_DENIED;
 
     encname = encode_streamname(false, stname);
     LIST_FOR_EACH_ENTRY( stream, &db->streams, LibmsiStream, entry )
