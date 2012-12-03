@@ -131,15 +131,10 @@ static unsigned streams_view_get_row( LibmsiView *view, unsigned row, LibmsiReco
 static unsigned streams_view_set_row(LibmsiView *view, unsigned row, LibmsiRecord *rec, unsigned mask)
 {
     LibmsiStreamsView *sv = (LibmsiStreamsView *)view;
-    STREAM *stream;
+    STREAM *stream = NULL;
     IStream *stm;
-    STATSTG stat;
-    WCHAR *encname = NULL;
     WCHAR *name = NULL;
-    uint16_t *data = NULL;
-    HRESULT hr;
-    unsigned count;
-    unsigned r = LIBMSI_RESULT_FUNCTION_FAILED;
+    unsigned r;
 
     TRACE("(%p, %d, %p, %08x)\n", view, row, rec, mask);
 
@@ -150,30 +145,6 @@ static unsigned streams_view_set_row(LibmsiView *view, unsigned row, LibmsiRecor
     if (r != LIBMSI_RESULT_SUCCESS)
         return r;
 
-    hr = IStream_Stat(stm, &stat, STATFLAG_NONAME);
-    if (FAILED(hr))
-    {
-        WARN("failed to stat stream: %08x\n", hr);
-        goto done;
-    }
-
-    if (stat.cbSize.QuadPart >> 32)
-    {
-        WARN("stream too large\n");
-        goto done;
-    }
-
-    data = msi_alloc(stat.cbSize.QuadPart);
-    if (!data)
-        goto done;
-
-    hr = IStream_Read(stm, data, stat.cbSize.QuadPart, &count);
-    if (FAILED(hr) || count != stat.cbSize.QuadPart)
-    {
-        WARN("failed to read stream: %08x\n", hr);
-        goto done;
-    }
-
     name = strdupW(_libmsi_record_get_string_raw(rec, 1));
     if (!name)
     {
@@ -181,34 +152,24 @@ static unsigned streams_view_set_row(LibmsiView *view, unsigned row, LibmsiRecor
         goto done;
     }
 
-    encname = encode_streamname(false, name);
-    msi_destroy_stream(sv->db, encname);
-
-    r = write_raw_stream_data(sv->db, encname, data, count);
-    if (r != LIBMSI_RESULT_SUCCESS)
-    {
-        WARN("failed to write stream data: %d\n", r);
-        goto done;
-    }
-
     stream = create_stream(sv, name, false, NULL);
     if (!stream)
         goto done;
 
-    hr = IStorage_OpenStream(sv->db->infile, encname, 0,
-                             STGM_READ | STGM_SHARE_EXCLUSIVE, 0, &stream->stream);
-    if (FAILED(hr))
+    r = msi_create_stream(sv->db, name, stm, &stream->stream);
+    if (r != LIBMSI_RESULT_SUCCESS)
     {
-        WARN("failed to open stream: %08x\n", hr);
+        WARN("failed to create stream: %08x\n", r);
         goto done;
     }
 
     sv->streams[row] = stream;
 
 done:
+    if (r != LIBMSI_RESULT_SUCCESS)
+        msi_free(stream);
+
     msi_free(name);
-    msi_free(data);
-    msi_free(encname);
 
     IStream_Release(stm);
 

@@ -282,7 +282,7 @@ static unsigned find_open_stream( LibmsiDatabase *db, IStorage *stg, const WCHAR
 }
 
 unsigned write_raw_stream_data( LibmsiDatabase *db, const WCHAR *stname,
-                        const void *data, unsigned sz )
+                        const void *data, unsigned sz, IStream **outstm )
 {
     HRESULT r;
     unsigned ret = LIBMSI_RESULT_FUNCTION_FAILED;
@@ -330,12 +330,73 @@ unsigned write_raw_stream_data( LibmsiDatabase *db, const WCHAR *stname,
         }
     }
 
-    ret = LIBMSI_RESULT_SUCCESS;
+    IStream_Release( stm );
+    return msi_get_raw_stream( db, stname, outstm );
 
 end:
     IStream_Release( stm );
-
     return ret;
+}
+
+unsigned msi_create_stream( LibmsiDatabase *db, const WCHAR *stname, IStream *stm, IStream **outstm )
+{
+    LibmsiStream *stream;
+    WCHAR *encname = NULL;
+    STATSTG stat;
+    HRESULT hr;
+    unsigned r = LIBMSI_RESULT_FUNCTION_FAILED;
+    unsigned count;
+    uint8_t *data;
+
+    encname = encode_streamname(false, stname);
+    LIST_FOR_EACH_ENTRY( stream, &db->streams, LibmsiStream, entry )
+    {
+        if (stream->stg != db->infile) continue;
+
+        if( !strcmpW( encname, stream->name ) )
+        {
+            msi_destroy_stream( db, encname );
+            break;
+        }
+    }
+
+    hr = IStream_Stat(stm, &stat, STATFLAG_NONAME);
+    if (FAILED(hr))
+    {
+        WARN("failed to stat stream: %08x\n", hr);
+        goto end;
+    }
+
+    if (stat.cbSize.QuadPart >> 32)
+    {
+        WARN("stream too large\n");
+        goto end;
+    }
+
+    data = msi_alloc(stat.cbSize.QuadPart);
+    if (!data)
+        goto end;
+
+    hr = IStream_Read(stm, data, stat.cbSize.QuadPart, &count);
+    if (FAILED(hr) || count != stat.cbSize.QuadPart)
+    {
+        WARN("failed to read stream: %08x\n", hr);
+        msi_free(data);
+        goto end;
+    }
+
+    r = write_raw_stream_data(db, encname, data, count, outstm);
+    if (r != LIBMSI_RESULT_SUCCESS)
+    {
+        WARN("failed to write stream data: %d\n", r);
+        msi_free(data);
+        return r;
+    }
+
+    msi_free(data);
+end:
+    msi_free(encname);
+    return r;
 }
 
 static void cache_infile_structure( LibmsiDatabase *db )

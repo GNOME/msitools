@@ -321,7 +321,7 @@ extern unsigned read_stream_data( IStorage *stg, const WCHAR *stname,
 extern unsigned write_stream_data( LibmsiDatabase *db, const WCHAR *stname,
                                const void *data, unsigned sz );
 extern unsigned write_raw_stream_data( LibmsiDatabase *db, const WCHAR *stname,
-                                       const void *data, unsigned sz );
+                        const void *data, unsigned sz, IStream **outstm );
 extern unsigned _libmsi_database_commit_streams( LibmsiDatabase *db );
 
 /* transform functions */
@@ -355,6 +355,7 @@ extern WCHAR *encode_streamname(bool bTable, const WCHAR *in);
 extern void decode_streamname(const WCHAR *in, WCHAR *out);
 
 /* database internals */
+unsigned msi_create_stream( LibmsiDatabase *db, const WCHAR *stname, IStream *stm, IStream **outstm );
 extern unsigned msi_get_raw_stream( LibmsiDatabase *, const WCHAR *, IStream **);
 extern unsigned msi_clone_open_stream( LibmsiDatabase *, IStorage *, const WCHAR *, IStream ** );
 void msi_destroy_stream( LibmsiDatabase *, const WCHAR * );
