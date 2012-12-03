@@ -440,6 +440,56 @@ static void cache_infile_structure( LibmsiDatabase *db )
     IEnumSTATSTG_Release(stgenum);
 }
 
+unsigned msi_enum_db_streams(LibmsiDatabase *db,
+                             unsigned (*fn)(const WCHAR *, IStream *, void *),
+                             void *opaque)
+{
+    unsigned r;
+    LibmsiStream *stream, *stream2;
+
+    LIST_FOR_EACH_ENTRY_SAFE( stream, stream2, &db->streams, LibmsiStream, entry )
+    {
+        IStream *stm;
+
+        if (stream->stg != db->infile) continue;
+
+        stm = stream->stm;
+        IStream_AddRef(stm);
+        r = fn( stream->name, stm, opaque);
+        IStream_Release(stm);
+
+        if (r) {
+            return r;
+        }
+    }
+
+    return LIBMSI_RESULT_SUCCESS;
+}
+
+unsigned msi_enum_db_storages(LibmsiDatabase *db,
+                              unsigned (*fn)(const WCHAR *, IStorage *, void *),
+                              void *opaque)
+{
+    unsigned r;
+    LibmsiStorage *storage, *storage2;
+
+    LIST_FOR_EACH_ENTRY_SAFE( storage, storage2, &db->storages, LibmsiStorage, entry )
+    {
+        IStorage *stg;
+
+        stg = storage->stg;
+        IStorage_AddRef(stg);
+        r = fn( storage->name, stg, opaque);
+        IStorage_Release(stg);
+
+        if (r) {
+            return r;
+        }
+    }
+
+    return LIBMSI_RESULT_SUCCESS;
+}
+
 unsigned msi_clone_open_stream( LibmsiDatabase *db, IStorage *stg, const WCHAR *name, IStream **stm )
 {
     IStream *stream;

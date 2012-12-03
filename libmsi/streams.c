@@ -84,6 +84,9 @@ static STREAM *create_stream(LibmsiStreamsView *sv, const WCHAR *name, bool enco
 
     stream->str_index = _libmsi_add_string(sv->db->strings, name, -1, 1, StringNonPersistent);
     stream->stream = stm;
+    if (stream->stream)
+        IStream_AddRef(stm);
+
     return stream;
 }
 
@@ -167,7 +170,9 @@ static unsigned streams_view_set_row(LibmsiView *view, unsigned row, LibmsiRecor
 
 done:
     if (r != LIBMSI_RESULT_SUCCESS)
+    {
         msi_free(stream);
+    }
 
     msi_free(name);
 
@@ -353,78 +358,39 @@ static const LibmsiViewOps streams_ops =
     NULL,
 };
 
-static int add_streams_to_table(LibmsiStreamsView *sv)
+static unsigned add_stream_to_table(const WCHAR *name, IStream *stm, void *opaque)
 {
-    IEnumSTATSTG *stgenum = NULL;
-    STATSTG stat;
-    STREAM *stream = NULL;
-    HRESULT hr;
-    unsigned r, count = 0, size;
+    LibmsiStreamsView *sv = (LibmsiStreamsView *)opaque;
+    STREAM *stream;
 
-    hr = IStorage_EnumElements(sv->db->infile, 0, NULL, 0, &stgenum);
-    if (FAILED(hr))
-        return -1;
+    stream = create_stream(sv, name, true, stm);
+    if (!stream)
+        return LIBMSI_RESULT_NOT_ENOUGH_MEMORY;
 
+    if (!streams_set_table_size(sv, ++sv->num_rows))
+    {
+        msi_free(stream);
+        return LIBMSI_RESULT_NOT_ENOUGH_MEMORY;
+    }
+
+    sv->streams[sv->num_rows - 1] = stream;
+    return LIBMSI_RESULT_SUCCESS;
+}
+
+static unsigned add_streams_to_table(LibmsiStreamsView *sv)
+{
     sv->max_streams = 1;
     sv->streams = msi_alloc_zero(sizeof(STREAM *));
     if (!sv->streams)
-        return -1;
+        return LIBMSI_RESULT_NOT_ENOUGH_MEMORY;
 
-    while (true)
-    {
-        size = 0;
-        hr = IEnumSTATSTG_Next(stgenum, 1, &stat, &size);
-        if (FAILED(hr) || !size)
-            break;
-
-        if (stat.type != STGTY_STREAM)
-        {
-            CoTaskMemFree(stat.pwcsName);
-            continue;
-        }
-
-        /* table streams are not in the _Streams table */
-        if (*stat.pwcsName == 0x4840)
-        {
-            CoTaskMemFree(stat.pwcsName);
-            continue;
-        }
-
-        stream = create_stream(sv, stat.pwcsName, true, NULL);
-        if (!stream)
-        {
-            count = -1;
-            CoTaskMemFree(stat.pwcsName);
-            break;
-        }
-
-        r = msi_get_raw_stream(sv->db, stat.pwcsName, &stream->stream);
-        CoTaskMemFree(stat.pwcsName);
-
-        if (r != LIBMSI_RESULT_SUCCESS)
-        {
-            WARN("unable to get stream %u\n", r);
-            count = -1;
-            break;
-        }
-
-        if (!streams_set_table_size(sv, ++count))
-        {
-            count = -1;
-            break;
-        }
-
-        sv->streams[count - 1] = stream;
-    }
-
-    IEnumSTATSTG_Release(stgenum);
-    return count;
+    return msi_enum_db_streams(sv->db, add_stream_to_table, sv);
 }
 
 unsigned streams_view_create(LibmsiDatabase *db, LibmsiView **view)
 {
     LibmsiStreamsView *sv;
-    int rows;
+    unsigned r;
 
     TRACE("(%p, %p)\n", db, view);
 
@@ -434,13 +400,12 @@ unsigned streams_view_create(LibmsiDatabase *db, LibmsiView **view)
 
     sv->view.ops = &streams_ops;
     sv->db = db;
-    rows = add_streams_to_table(sv);
-    if (rows < 0)
+    r = add_streams_to_table(sv);
+    if (r)
     {
         msi_free( sv );
-        return LIBMSI_RESULT_FUNCTION_FAILED;
+        return r;
     }
-    sv->num_rows = rows;
 
     *view = (LibmsiView *)sv;
 

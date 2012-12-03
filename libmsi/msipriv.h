@@ -359,9 +359,11 @@ unsigned msi_create_stream( LibmsiDatabase *db, const WCHAR *stname, IStream *st
 extern unsigned msi_get_raw_stream( LibmsiDatabase *, const WCHAR *, IStream **);
 extern unsigned msi_clone_open_stream( LibmsiDatabase *, IStorage *, const WCHAR *, IStream ** );
 void msi_destroy_stream( LibmsiDatabase *, const WCHAR * );
+extern unsigned msi_enum_db_streams(LibmsiDatabase *, unsigned (*fn)(const WCHAR *, IStream *, void *), void *);
 unsigned msi_create_storage( LibmsiDatabase *db, const WCHAR *stname, IStream *stm );
 unsigned msi_open_storage( LibmsiDatabase *db, const WCHAR *stname );
 void msi_destroy_storage( LibmsiDatabase *db, const WCHAR *stname );
+extern unsigned msi_enum_db_storages(LibmsiDatabase *, unsigned (*fn)(const WCHAR *, IStorage *, void *), void *);
 extern unsigned _libmsi_database_open_query(LibmsiDatabase *, const WCHAR *, LibmsiQuery **);
 extern unsigned _libmsi_query_open( LibmsiDatabase *, LibmsiQuery **, const WCHAR *, ... );
 typedef unsigned (*record_func)( LibmsiRecord *, void *);
