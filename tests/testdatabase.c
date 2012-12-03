@@ -1339,6 +1339,23 @@ static void test_streamtable(void)
     libmsi_unref( rec );
     libmsi_query_close( query );
     libmsi_unref( query );
+
+    r = run_query( hdb, 0, "DELETE FROM `_Streams` WHERE `Name` = 'data1'" );
+    ok( r == LIBMSI_RESULT_SUCCESS, "Cannot create Binary table: %d\n", r );
+
+    query = NULL;
+    r = libmsi_database_open_query( hdb,
+            "SELECT `Name`, `Data` FROM `_Streams` WHERE `Name` = 'data1'", &query );
+    ok( r == LIBMSI_RESULT_SUCCESS, "Failed to open database query: %d\n", r);
+
+    r = libmsi_query_execute( query, 0 );
+    ok( r == LIBMSI_RESULT_SUCCESS, "Failed to execute query: %d\n", r);
+
+    r = libmsi_query_fetch( query, &rec );
+    ok( r == LIBMSI_RESULT_NO_MORE_ITEMS, "Expected LIBMSI_RESULT_NO_MORE_ITEMS,, got %d\n", r);
+
+    libmsi_query_close( query );
+    libmsi_unref( query );
     libmsi_unref( hdb );
     DeleteFile(msifile);
 }

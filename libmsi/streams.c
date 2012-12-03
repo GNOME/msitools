@@ -239,7 +239,31 @@ static unsigned streams_view_insert_row(LibmsiView *view, LibmsiRecord *rec, uns
 
 static unsigned streams_view_delete_row(LibmsiView *view, unsigned row)
 {
-    FIXME("(%p %d): stub!\n", view, row);
+    LibmsiStreamsView *sv = (LibmsiStreamsView *)view;
+    const WCHAR *name;
+    WCHAR *encname;
+    unsigned i;
+
+    if (row > sv->num_rows)
+        return LIBMSI_RESULT_FUNCTION_FAILED;
+
+    name = msi_string_lookup_id(sv->db->strings, sv->streams[row]->str_index);
+    if (!name)
+    {
+        WARN("failed to retrieve stream name\n");
+        return LIBMSI_RESULT_FUNCTION_FAILED;
+    }
+
+    encname = encode_streamname(false, name);
+    msi_destroy_stream(sv->db, encname);
+
+    /* shift the remaining rows */
+    for (i = row + 1; i < sv->num_rows; i++)
+    {
+        sv->streams[i - 1] = sv->streams[i];
+    }
+    sv->num_rows--;
+
     return LIBMSI_RESULT_SUCCESS;
 }
 
