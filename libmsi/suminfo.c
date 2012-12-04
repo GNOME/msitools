@@ -259,7 +259,7 @@ static unsigned load_summary_info( LibmsiSummaryInfo *si, IStream *stm )
 
     if( set_hdr.wByteOrder != 0xfffe )
     {
-        ERR("property set not big-endian %04X\n", set_hdr.wByteOrder);
+        ERR("property set not little-endian %04X\n", set_hdr.wByteOrder);
         return ret;
     }
 
