@@ -41,6 +41,8 @@
 
 #define LibmsiTable_HASH_TABLE_SIZE 37
 
+static const WCHAR szDot[] = {'.',0};
+
 typedef struct LibmsiColumnHashEntry
 {
     struct LibmsiColumnHashEntry *next;

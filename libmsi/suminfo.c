@@ -30,6 +30,7 @@
 #include "libmsi.h"
 #include "msipriv.h"
 
+static const WCHAR szSumInfo[] = {5 ,'S','u','m','m','a','r','y','I','n','f','o','r','m','a','t','i','o','n',0};
 static const uint8_t fmtid_SummaryInformation[16] =
         { 0xe0, 0x85, 0x9f, 0xf2, 0xf9, 0x4f, 0x68, 0x10, 0xab, 0x91, 0x08, 0x00, 0x2b, 0x27, 0xb3, 0xd9};
 
