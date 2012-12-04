@@ -424,7 +424,6 @@ static unsigned suminfo_persist( LibmsiSummaryInfo *si )
     for( i = 0; i < MSI_MAX_PROPS; i++ )
         sz += write_property_to_data( &si->property[i], &data[sz] );
 
-    msi_destroy_stream( si->database, szSumInfo );
     r = write_raw_stream_data(si->database, szSumInfo, data, sz, &stm);
     if (r == 0) {
         IStream_Release( stm );
