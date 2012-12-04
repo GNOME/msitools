@@ -301,9 +301,12 @@ unsigned write_raw_stream_data( LibmsiDatabase *db, const WCHAR *stname,
     unsigned ret = LIBMSI_RESULT_FUNCTION_FAILED;
     unsigned count;
     IStream *stm = NULL;
-    ULARGE_INTEGER size;
-    LARGE_INTEGER pos;
+    HANDLE hGlob;
     LibmsiStream *stream;
+    ULARGE_INTEGER size;
+
+    if (db->mode == LIBMSI_DB_OPEN_READONLY)
+        return LIBMSI_RESULT_FUNCTION_FAILED;
 
     LIST_FOR_EACH_ENTRY( stream, &db->streams, LibmsiStream, entry )
     {
@@ -314,53 +317,26 @@ unsigned write_raw_stream_data( LibmsiDatabase *db, const WCHAR *stname,
         }
     }
 
-    r = IStorage_CreateStream( db->outfile, stname,
-            STGM_CREATE | STGM_READWRITE | STGM_SHARE_EXCLUSIVE, 0, 0, &stm);
+    hGlob = GlobalAlloc(GMEM_FIXED, sz);
+    if (!hGlob)
+        return LIBMSI_RESULT_FUNCTION_FAILED;
+
+    if (data || sz)
+        memcpy(hGlob, data, sz);
+
+    r = CreateStreamOnHGlobal(hGlob, true, &stm);
     if( FAILED( r ) )
     {
-        WARN("open stream failed r = %08x\n", r);
-        return ret;
+        GlobalFree(hGlob);
+        return LIBMSI_RESULT_FUNCTION_FAILED;
     }
 
+    /* set the correct size - CreateStreamOnHGlobal screws it up */
     size.QuadPart = sz;
-    r = IStream_SetSize( stm, size );
-    if( FAILED( r ) )
-    {
-        WARN("Failed to SetSize\n");
-        goto end;
-    }
+    IStream_SetSize(stm, size);
 
-    pos.QuadPart = 0;
-    r = IStream_Seek( stm, pos, STREAM_SEEK_SET, NULL );
-    if( FAILED( r ) )
-    {
-        WARN("Failed to Seek\n");
-        goto end;
-    }
-
-    if (sz)
-    {
-        r = IStream_Write(stm, data, sz, &count );
-        if( FAILED( r ) || ( count != sz ) )
-        {
-            WARN("Failed to Write\n");
-            goto end;
-        }
-    }
-
-    ret = LIBMSI_RESULT_SUCCESS;
-
-end:
-    IStream_Release( stm );
-    if ( ret == LIBMSI_RESULT_SUCCESS ) {
-        r = IStorage_OpenStream( db->outfile, stname, NULL, 
-                STGM_READ | STGM_SHARE_EXCLUSIVE, 0, outstm);
-        if ( FAILED ( r ) )
-            return LIBMSI_RESULT_FUNCTION_FAILED;
-
-        msi_alloc_stream( db, stname, *outstm );
-    }
-
+    ret = msi_alloc_stream( db, stname, stm);
+    *outstm = stm;
     return ret;
 }
 
@@ -598,7 +574,6 @@ void msi_destroy_stream( LibmsiDatabase *db, const WCHAR *stname )
 
             list_remove( &stream->entry );
             IStream_Release( stream->stm );
-            IStorage_DestroyElement( db->infile, stname );
             msi_free( stream );
             break;
         }
@@ -638,8 +613,13 @@ void append_storage_to_db( LibmsiDatabase *db, IStorage *stg )
     IStorage_AddRef( stg );
     list_add_head( &db->transforms, &t->entry );
 
-    /* the transform may add or replace streams */
+#if 0
+    /* the transform may add or replace streams...
+     *
+     * FIXME: Hmm, the MSI is always searched before the transform though.
+     * For now disable this. */
     free_streams( db );
+#endif
 }
 
 static VOID _libmsi_database_destroy( LibmsiObject *arg )

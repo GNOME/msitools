@@ -600,6 +600,43 @@ LibmsiResult libmsi_database_apply_transform( LibmsiDatabase *db,
     return r;
 }
 
+static unsigned commit_stream( const WCHAR *name, IStream *stm, void *opaque)
+{
+    LibmsiDatabase *db = opaque;
+    STATSTG stat;
+    IStream *outstm;
+    ULARGE_INTEGER cbRead, cbWritten;
+    unsigned ret = LIBMSI_RESULT_FUNCTION_FAILED;
+    HRESULT r;
+    WCHAR decname[0x40];
+
+    decode_streamname(name, decname);
+    TRACE("%s(%s) %p %p\n", debugstr_w(name), debugstr_w(decname), stm, opaque);
+
+    IStream_Stat(stm, &stat, STATFLAG_NONAME);
+    r = IStorage_CreateStream( db->outfile, name,
+            STGM_CREATE | STGM_WRITE | STGM_SHARE_EXCLUSIVE, 0, 0, &outstm);
+    if ( FAILED(r) )
+        return LIBMSI_RESULT_FUNCTION_FAILED;
+
+    IStream_SetSize( outstm, stat.cbSize );
+
+    r = IStream_CopyTo( stm, outstm, stat.cbSize, &cbRead, &cbWritten );
+    if ( FAILED(r) )
+        goto end;
+
+    if (cbRead.QuadPart != stat.cbSize.QuadPart)
+        goto end;
+    if (cbWritten.QuadPart != stat.cbSize.QuadPart)
+        goto end;
+
+    ret = LIBMSI_RESULT_SUCCESS;
+
+end:
+    IStream_Release(outstm);
+    return ret;
+}
+
 LibmsiResult libmsi_database_commit( LibmsiDatabase *db )
 {
     unsigned r = LIBMSI_RESULT_SUCCESS;
@@ -631,7 +668,7 @@ LibmsiResult libmsi_database_commit( LibmsiDatabase *db )
         goto end;
     }
 
-    r = _libmsi_database_commit_streams( db );
+    r = msi_enum_db_streams( db, commit_stream, db );
     if (r != LIBMSI_RESULT_SUCCESS)
     {
         WARN("failed to save streams r=%08x\n",r);
