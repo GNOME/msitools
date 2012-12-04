@@ -585,60 +585,192 @@ static VOID _libmsi_database_destroy( LibmsiObject *arg )
 {
     LibmsiDatabase *db = (LibmsiDatabase *) arg;
 
-    msi_free(db->path);
+    _libmsi_database_close( db, false );
     free_cached_tables( db );
-    free_streams( db );
-    free_storages( db );
     free_transforms( db );
-    if (db->strings) msi_destroy_stringtable( db->strings );
-    IStorage_Release( db->infile );
-    IStorage_Release( db->outfile );
-    if (db->deletefile)
-    {
-        unlink( db->deletefile );
-        msi_free( db->deletefile );
-    }
+    msi_free(db->path);
 }
 
-static HRESULT db_initialize( LibmsiDatabase *db )
+LibmsiResult _libmsi_database_close(LibmsiDatabase *db, bool committed)
 {
-    static const WCHAR szTables[]  = { '_','T','a','b','l','e','s',0 };
+    TRACE("%p %d\n", db, committed);
+
+    if ( db->strings )
+    {
+        msi_destroy_stringtable( db->strings);
+        db->strings = NULL;
+    }
+
+    if ( db->infile )
+    {
+        IStorage_Release( db->infile );
+        db->infile = NULL;
+    }
+
+    if ( db->outfile )
+    {
+        IStorage_Release( db->outfile );
+        db->outfile = NULL;
+    }
+    free_streams( db );
+    free_storages( db );
+
+    if (db->outpath) {
+        if (!committed) {
+            unlink( db->outpath );
+            msi_free( db->outpath );
+        } else if (db->rename_outpath) {
+            unlink(db->path);
+            rename(db->outpath, db->path);
+            msi_free( db->outpath );
+        } else {
+            msi_free( db->path );
+            db->path = db->outpath;
+        }
+    }
+    db->outpath = NULL;
+}
+
+LibmsiResult _libmsi_database_open(LibmsiDatabase *db)
+{
+    WCHAR *szwDBPath;
+    HRESULT hr;
+    STATSTG stat;
+    IStorage *stg;
+    unsigned ret = LIBMSI_RESULT_OPEN_FAILED;
+
+    TRACE("%p %s\n", db, db->path);
+
+    szwDBPath = strdupAtoW(db->path);
+    hr = StgOpenStorage( szwDBPath, NULL,
+          STGM_DIRECT|STGM_READ|STGM_SHARE_DENY_WRITE, NULL, 0, &stg);
+    msi_free(szwDBPath);
+
+    if( FAILED( hr ) )
+    {
+        WARN("open failed hr = %08x for %s\n", hr, debugstr_a(db->path));
+        return LIBMSI_RESULT_OPEN_FAILED;
+    }
+
+    hr = IStorage_Stat( stg, &stat, STATFLAG_NONAME );
+    if( FAILED( hr ) )
+    {
+        FIXME("Failed to stat storage\n");
+        goto end;
+    }
+
+    if ( !IsEqualGUID( &stat.clsid, &CLSID_MsiDatabase ) &&
+         !IsEqualGUID( &stat.clsid, &CLSID_MsiPatch ) &&
+         !IsEqualGUID( &stat.clsid, &CLSID_MsiTransform ) )
+    {
+        ERR("storage GUID is not a MSI database GUID %s\n",
+             debugstr_guid(&stat.clsid) );
+        goto end;
+    }
+
+    if ( db->patch && !IsEqualGUID( &stat.clsid, &CLSID_MsiPatch ) )
+    {
+        ERR("storage GUID is not the MSI patch GUID %s\n",
+             debugstr_guid(&stat.clsid) );
+        goto end;
+    }
+
+    db->infile = stg;
+    IStorage_AddRef( db->infile );
+
+    cache_infile_structure( db );
+
+    db->strings = msi_load_string_table( db->infile, &db->bytes_per_strref );
+    if( !db->strings )
+        goto end;
+
+    ret = LIBMSI_RESULT_SUCCESS;
+end:
+    if (ret) {
+        if (db->infile)
+            IStorage_Release( db->infile );
+        db->infile = NULL;
+    }
+    IStorage_Release( stg );
+    return ret;
+}
+
+LibmsiResult _libmsi_database_start_transaction(LibmsiDatabase *db, const char *szPersist)
+{
+    unsigned ret = LIBMSI_RESULT_SUCCESS;
+    IStorage *stg = NULL;
+    WCHAR *szwPersist;
+    char *tmpfile = NULL;
+    char path[PATH_MAX];
     HRESULT hr;
 
-    /* create the _Tables stream */
-    hr = write_stream_data( db, szTables, NULL, 0 );
-    if (FAILED( hr ))
+    if( db->mode == LIBMSI_DB_OPEN_READONLY )
+        return LIBMSI_RESULT_SUCCESS;
+
+    if( szPersist == LIBMSI_DB_OPEN_TRANSACT )
     {
-        WARN("failed to create _Tables stream 0x%08x\n", hr);
-        return hr;
+        strcpy( path, db->path );
+        strcat( path, ".tmp" );
+        tmpfile = strdup(path);
+        szPersist = tmpfile;
+    }
+    else if( IS_INTMSIDBOPEN(szPersist) )
+    {
+        ERR("unknown flag %p\n",szPersist);
+        return LIBMSI_RESULT_INVALID_PARAMETER;
     }
 
-    hr = msi_init_string_table( db );
-    if (FAILED( hr ))
+    TRACE("%p %s\n", db, szPersist);
+
+    szwPersist = strdupAtoW(szPersist);
+    hr = StgCreateDocfile( szwPersist,
+          STGM_CREATE|STGM_TRANSACTED|STGM_READWRITE|STGM_SHARE_EXCLUSIVE, 0, &stg );
+
+    msi_free(szwPersist);
+
+    if ( SUCCEEDED(hr) )
+        hr = IStorage_SetClass( stg, db->patch ? &CLSID_MsiPatch : &CLSID_MsiDatabase );
+
+    if( FAILED( hr ) )
     {
-        WARN("failed to initialize string table 0x%08x\n", hr);
-        return hr;
+        WARN("open failed hr = %08x for %s\n", hr, debugstr_a(szPersist));
+        ret = LIBMSI_RESULT_FUNCTION_FAILED;
+        goto end;
     }
 
-    hr = IStorage_Commit( db->outfile, 0 );
-    if (FAILED( hr ))
+    db->outfile = stg;
+    IStorage_AddRef( db->outfile );
+
+    if (!strchr( szPersist, '\\' ))
     {
-        WARN("failed to commit changes 0x%08x\n", hr);
-        return hr;
+        getcwd( path, MAX_PATH );
+        strcat( path, "\\" );
+        strcat( path, szPersist );
     }
-    return S_OK;
+    else
+        strcpy( path, szPersist );
+
+    db->outpath = strdup( path );
+    db->rename_outpath = (tmpfile != NULL);
+
+end:
+    if (ret) {
+        if (db->outfile)
+            IStorage_Release( db->outfile );
+        db->outfile = NULL;
+    }
+    if (stg)
+        IStorage_Release( stg );
+    msi_free(tmpfile);
+    return ret;
 }
 
 LibmsiResult libmsi_database_open(const char *szDBPath, const char *szPersist, LibmsiDatabase **pdb)
 {
-    IStorage *stg = NULL;
-    HRESULT r;
     LibmsiDatabase *db = NULL;
-    unsigned ret = LIBMSI_RESULT_FUNCTION_FAILED;
-    WCHAR *szwDBPath;
+    unsigned ret = LIBMSI_RESULT_SUCCESS;
     const char *szMode;
-    STATSTG stat;
-    bool created = false, patch = false, need_init = false;
+    bool patch = false;
     char path[MAX_PATH];
 
     TRACE("%s %p\n",debugstr_a(szDBPath),szPersist );
@@ -654,75 +786,6 @@ LibmsiResult libmsi_database_open(const char *szDBPath, const char *szPersist, L
     }
 
     szMode = szPersist;
-    if( !IS_INTMSIDBOPEN(szPersist) )
-    {
-        if (!CopyFileA( szDBPath, szPersist, false ))
-            return LIBMSI_RESULT_OPEN_FAILED;
-
-        szDBPath = szPersist;
-        szPersist = LIBMSI_DB_OPEN_TRANSACT;
-        created = true;
-    }
-
-    szwDBPath = strdupAtoW(szDBPath);
-    if( szPersist == LIBMSI_DB_OPEN_READONLY )
-    {
-        r = StgOpenStorage( szwDBPath, NULL,
-              STGM_DIRECT|STGM_READ|STGM_SHARE_DENY_WRITE, NULL, 0, &stg);
-    }
-    else if( szPersist == LIBMSI_DB_OPEN_CREATE )
-    {
-        r = StgCreateDocfile( szwDBPath,
-              STGM_CREATE|STGM_TRANSACTED|STGM_READWRITE|STGM_SHARE_EXCLUSIVE, 0, &stg );
-
-        if ( SUCCEEDED(r) )
-            r = IStorage_SetClass( stg, patch ? &CLSID_MsiPatch : &CLSID_MsiDatabase );
-
-        need_init = true;
-        created = true;
-    }
-    else if( szPersist == LIBMSI_DB_OPEN_TRANSACT )
-    {
-        r = StgOpenStorage( szwDBPath, NULL,
-              STGM_TRANSACTED|STGM_READWRITE|STGM_SHARE_DENY_WRITE, NULL, 0, &stg);
-    }
-    else
-    {
-        ERR("unknown flag %p\n",szPersist);
-        return LIBMSI_RESULT_INVALID_PARAMETER;
-    }
-    msi_free(szwDBPath);
-
-    if( FAILED( r ) || !stg )
-    {
-        WARN("open failed r = %08x for %s\n", r, debugstr_a(szDBPath));
-        return LIBMSI_RESULT_FUNCTION_FAILED;
-    }
-
-    r = IStorage_Stat( stg, &stat, STATFLAG_NONAME );
-    if( FAILED( r ) )
-    {
-        FIXME("Failed to stat storage\n");
-        goto end;
-    }
-
-    if ( !IsEqualGUID( &stat.clsid, &CLSID_MsiDatabase ) &&
-         !IsEqualGUID( &stat.clsid, &CLSID_MsiPatch ) &&
-         !IsEqualGUID( &stat.clsid, &CLSID_MsiTransform ) )
-    {
-        ERR("storage GUID is not a MSI database GUID %s\n",
-             debugstr_guid(&stat.clsid) );
-        goto end;
-    }
-
-    if ( patch && !IsEqualGUID( &stat.clsid, &CLSID_MsiPatch ) )
-    {
-        ERR("storage GUID is not the MSI patch GUID %s\n",
-             debugstr_guid(&stat.clsid) );
-        ret = LIBMSI_RESULT_OPEN_FAILED;
-        goto end;
-    }
-
     db = alloc_msiobject( sizeof (LibmsiDatabase), _libmsi_database_destroy );
     if( !db )
     {
@@ -739,39 +802,35 @@ LibmsiResult libmsi_database_open(const char *szDBPath, const char *szPersist, L
     else
         strcpy( path, szDBPath );
 
-    db->path = strdup( path );
-    db->media_transform_offset = MSI_INITIAL_MEDIA_TRANSFORM_OFFSET;
-    db->media_transform_disk_id = MSI_INITIAL_MEDIA_TRANSFORM_DISKID;
-
-    if( TRACE_ON( msi ) )
-        enum_stream_names( stg );
-
-    db->infile = stg;
-    IStorage_AddRef( db->infile );
-    db->outfile = stg;
-    IStorage_AddRef( db->outfile );
-
+    db->patch = patch;
     db->mode = szMode;
-    if (created)
-        db->deletefile = strdup( szDBPath );
     list_init( &db->tables );
     list_init( &db->transforms );
     list_init( &db->streams );
     list_init( &db->storages );
 
-    if (need_init) {
-        r = db_initialize( db );
-
-        if (FAILED( r ))
-        {
-            ret = LIBMSI_RESULT_FUNCTION_FAILED;
+    if( szPersist != LIBMSI_DB_OPEN_CREATE )
+    {
+        db->path = strdup( path );
+        ret = _libmsi_database_open(db);
+        if (ret)
             goto end;
-        }
+    } else {
+        szPersist = szDBPath;
+        db->strings = msi_init_string_table( &db->bytes_per_strref );
     }
 
-    cache_infile_structure( db );
-    db->strings = msi_load_string_table( db->infile, &db->bytes_per_strref );
-    if( !db->strings )
+    db->media_transform_offset = MSI_INITIAL_MEDIA_TRANSFORM_OFFSET;
+    db->media_transform_disk_id = MSI_INITIAL_MEDIA_TRANSFORM_DISKID;
+
+    if( TRACE_ON( msi ) )
+        enum_stream_names( db->infile );
+
+    if( szPersist == LIBMSI_DB_OPEN_CREATE )
+        ret = _libmsi_database_start_transaction(db, szDBPath);
+    else
+        ret = _libmsi_database_start_transaction(db, szPersist);
+    if (ret)
         goto end;
 
     ret = LIBMSI_RESULT_SUCCESS;
@@ -782,8 +841,6 @@ LibmsiResult libmsi_database_open(const char *szDBPath, const char *szPersist, L
 end:
     if( db )
         msiobj_release( &db->hdr );
-    if( stg )
-        IStorage_Release( stg );
 
     return ret;
 }

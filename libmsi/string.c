@@ -457,22 +457,14 @@ static void string_totalsize( const string_table *st, unsigned *datasize, unsign
     TRACE("data %u pool %u codepage %x\n", *datasize, *poolsize, st->codepage );
 }
 
-HRESULT msi_init_string_table( LibmsiDatabase *db )
+string_table *msi_init_string_table( unsigned *bytes_per_strref )
 {
-    uint16_t zero[2] = { 0, 0 };
-    unsigned ret;
+    string_table *st;
 
-    /* create the StringPool stream... add the zero string to it*/
-    ret = write_stream_data(db, szStringPool, zero, sizeof zero);
-    if (ret != LIBMSI_RESULT_SUCCESS)
-        return E_FAIL;
+    *bytes_per_strref = sizeof(uint16_t);
+    st = init_stringtable( 1, CP_ACP );
 
-    /* create the StringData stream... make it zero length */
-    ret = write_stream_data(db, szStringData, NULL, 0);
-    if (ret != LIBMSI_RESULT_SUCCESS)
-        return E_FAIL;
-
-    return S_OK;
+    return st;
 }
 
 string_table *msi_load_string_table( IStorage *stg, unsigned *bytes_per_strref )

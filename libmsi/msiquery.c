@@ -718,16 +718,15 @@ LibmsiResult libmsi_database_commit( LibmsiDatabase *db )
     {
         WARN("failed to commit changes 0x%08x\n", hr);
         r = LIBMSI_RESULT_FUNCTION_FAILED;
+        goto end;
     }
+
+    _libmsi_database_close(db, true);
+    _libmsi_database_open(db);
+    _libmsi_database_start_transaction(db, LIBMSI_DB_OPEN_TRANSACT);
 
 end:
     msiobj_release( &db->hdr );
-
-    if (r == LIBMSI_RESULT_SUCCESS)
-    {
-        msi_free( db->deletefile );
-        db->deletefile = NULL;
-    }
 
     return r;
 }

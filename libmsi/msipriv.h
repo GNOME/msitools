@@ -78,7 +78,9 @@ typedef struct LibmsiDatabase
     string_table *strings;
     unsigned bytes_per_strref;
     char *path;
-    char *deletefile;
+    char *outpath;
+    bool rename_outpath;
+    bool patch;
     const char *mode;
     unsigned media_transform_offset;
     unsigned media_transform_disk_id;
@@ -307,7 +309,7 @@ extern int _libmsi_add_string( string_table *st, const WCHAR *data, int len, uin
 extern unsigned _libmsi_id_from_stringW( const string_table *st, const WCHAR *buffer, unsigned *id );
 extern VOID msi_destroy_stringtable( string_table *st );
 extern const WCHAR *msi_string_lookup_id( const string_table *st, unsigned id );
-extern HRESULT msi_init_string_table( LibmsiDatabase *db );
+extern string_table *msi_init_string_table( unsigned *bytes_per_strref );
 extern string_table *msi_load_string_table( IStorage *stg, unsigned *bytes_per_strref );
 extern unsigned msi_save_string_table( const string_table *st, LibmsiDatabase *db, unsigned *bytes_per_strref );
 extern unsigned msi_get_string_table_codepage( const string_table *st );
@@ -356,6 +358,9 @@ extern WCHAR *encode_streamname(bool bTable, const WCHAR *in);
 extern void decode_streamname(const WCHAR *in, WCHAR *out);
 
 /* database internals */
+extern LibmsiResult _libmsi_database_start_transaction(LibmsiDatabase *db, const char *szPersist);
+extern LibmsiResult _libmsi_database_open(LibmsiDatabase *db);
+extern LibmsiResult _libmsi_database_close(LibmsiDatabase *db, bool committed);
 unsigned msi_create_stream( LibmsiDatabase *db, const WCHAR *stname, IStream *stm );
 extern unsigned msi_get_raw_stream( LibmsiDatabase *, const WCHAR *, IStream **);
 void msi_destroy_stream( LibmsiDatabase *, const WCHAR * );

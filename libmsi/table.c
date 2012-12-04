@@ -295,6 +295,9 @@ unsigned read_stream_data( IStorage *stg, const WCHAR *stname,
 
     TRACE("%s -> %s\n",debugstr_w(stname),debugstr_w(encname));
 
+    if ( !stg )
+        return LIBMSI_RESULT_FUNCTION_FAILED;
+
     r = IStorage_OpenStream(stg, encname, NULL, 
             STGM_READ | STGM_SHARE_EXCLUSIVE, 0, &stm);
     msi_free( encname );
@@ -940,6 +943,13 @@ static unsigned save_table( LibmsiDatabase *db, const LibmsiTable *t, unsigned b
 
     /* Nothing to do for non-persistent tables */
     if( t->persistent == LIBMSI_CONDITION_FALSE )
+        return LIBMSI_RESULT_SUCCESS;
+
+    /* All tables are copied to the new file when committing, so
+     * we can just skip them if they are empty.  However, always
+     * save the Tables stream.
+     */
+    if ( t->row_count == 0 && strcmpW(t->name, szTables) )
         return LIBMSI_RESULT_SUCCESS;
 
     TRACE("Saving %s\n", debugstr_w( t->name ) );
@@ -2092,6 +2102,9 @@ unsigned _libmsi_database_commit_tables( LibmsiDatabase *db, unsigned bytes_per_
 
     TRACE("%p\n",db);
 
+    /* Ensure the Tables stream is written.  */
+    get_table( db, szTables, &t );
+
     LIST_FOR_EACH_ENTRY_SAFE( table, table2, &db->tables, LibmsiTable, entry )
     {
         r = get_table( db, table->name, &t );
@@ -2101,10 +2114,7 @@ unsigned _libmsi_database_commit_tables( LibmsiDatabase *db, unsigned bytes_per_
                   debugstr_w(table->name), r);
             return r;
         }
-        /* TODO: delete this if, replace with row_count check in save_table */
-        if (table->colinfo) {
-            r = save_table( db, table, bytes_per_strref );
-        }
+        r = save_table( db, table, bytes_per_strref );
         if( r != LIBMSI_RESULT_SUCCESS )
         {
             WARN("failed to save table %s (r=%08x)\n",
