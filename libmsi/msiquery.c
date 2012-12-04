@@ -34,9 +34,6 @@
 #include "winnls.h"
 
 #include "query.h"
-#include "msiserver.h"
-
-#include "initguid.h"
 
 
 static void _libmsi_query_destroy( LibmsiObject *arg )
@@ -572,7 +569,7 @@ unsigned _libmsi_database_apply_transform( LibmsiDatabase *db,
     if ( FAILED( r ) )
         goto end;
 
-    if ( !IsEqualGUID( &stat.clsid, &CLSID_MsiTransform ) )
+    if ( memcmp( &stat.clsid, &clsid_msi_transform, 16 ) != 0 )
         goto end;
 
     if( TRACE_ON( msi ) )

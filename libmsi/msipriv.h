@@ -290,6 +290,10 @@ typedef struct LibmsiSummaryInfo
     LibmsiOLEVariant property[MSI_MAX_PROPS];
 } LibmsiSummaryInfo;
 
+extern const char clsid_msi_transform[16];
+extern const char clsid_msi_database[16];
+extern const char clsid_msi_patch[16];
+
 /* handle unicode/ascii output in the Msi* API functions */
 typedef struct {
     bool unicode;

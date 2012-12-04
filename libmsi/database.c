@@ -36,11 +36,11 @@
 #include "msipriv.h"
 #include "objidl.h"
 #include "objbase.h"
-#include "msiserver.h"
 #include "query.h"
 
-#include "initguid.h"
-
+const char clsid_msi_transform[16] = { 0x82, 0x10, 0x0c, 0x00, 0x00, 0x00, 0x00, 0x00, 0xc0,0x00, 0x00,0x00,0x00,0x00,0x00,0x46 };
+const char clsid_msi_database[16] = { 0x84, 0x10, 0x0c, 0x00, 0x00, 0x00, 0x00, 0x00, 0xc0,0x00, 0x00,0x00,0x00,0x00,0x00,0x46 };
+const char clsid_msi_patch[16] = { 0x86, 0x10, 0x0c, 0x00, 0x00, 0x00, 0x00, 0x00, 0xc0,0x00, 0x00,0x00,0x00,0x00,0x00,0x46 };
 
 /*
  *  .MSI  file format
@@ -659,16 +659,16 @@ LibmsiResult _libmsi_database_open(LibmsiDatabase *db)
         goto end;
     }
 
-    if ( !IsEqualGUID( &stat.clsid, &CLSID_MsiDatabase ) &&
-         !IsEqualGUID( &stat.clsid, &CLSID_MsiPatch ) &&
-         !IsEqualGUID( &stat.clsid, &CLSID_MsiTransform ) )
+    if ( memcmp( &stat.clsid, &clsid_msi_database, 16 ) != 0 &&
+         memcmp( &stat.clsid, &clsid_msi_patch, 16 ) != 0 &&
+         memcmp( &stat.clsid, &clsid_msi_transform, 16 ) != 0 )
     {
         ERR("storage GUID is not a MSI database GUID %s\n",
              debugstr_guid(&stat.clsid) );
         goto end;
     }
 
-    if ( db->patch && !IsEqualGUID( &stat.clsid, &CLSID_MsiPatch ) )
+    if ( db->patch && memcmp( &stat.clsid, &clsid_msi_patch, 16 ) != 0 )
     {
         ERR("storage GUID is not the MSI patch GUID %s\n",
              debugstr_guid(&stat.clsid) );
@@ -729,7 +729,7 @@ LibmsiResult _libmsi_database_start_transaction(LibmsiDatabase *db, const char *
     msi_free(szwPersist);
 
     if ( SUCCEEDED(hr) )
-        hr = IStorage_SetClass( stg, db->patch ? &CLSID_MsiPatch : &CLSID_MsiDatabase );
+        hr = IStorage_SetClass( stg, db->patch ? &clsid_msi_patch : &clsid_msi_database );
 
     if( FAILED( hr ) )
     {
