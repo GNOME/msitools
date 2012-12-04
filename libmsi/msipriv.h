@@ -254,7 +254,6 @@ typedef struct LibmsiViewOps
 
 struct LibmsiView
 {
-    LibmsiObject hdr;
     const LibmsiViewOps *ops;
     LibmsiDBError error;
     const WCHAR *error_column;

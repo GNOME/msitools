@@ -160,7 +160,7 @@ unsigned create_view_create( LibmsiDatabase *db, LibmsiView **view, const WCHAR 
     if( r != LIBMSI_RESULT_SUCCESS )
         return r;
 
-    cv = alloc_msiobject( sizeof *cv, NULL );
+    cv = msi_alloc_zero( sizeof *cv );
     if( !cv )
         return LIBMSI_RESULT_FUNCTION_FAILED;
 

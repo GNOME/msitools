@@ -189,7 +189,7 @@ unsigned delete_view_create( LibmsiDatabase *db, LibmsiView **view, LibmsiView *
 
     TRACE("%p\n", dv );
 
-    dv = alloc_msiobject( sizeof *dv, NULL );
+    dv = msi_alloc_zero( sizeof *dv );
     if( !dv )
         return LIBMSI_RESULT_FUNCTION_FAILED;
     

@@ -1255,7 +1255,7 @@ static unsigned msi_add_records_to_table(LibmsiDatabase *db, WCHAR **columns, WC
     }
 
 done:
-    msiobj_release(&view->hdr);
+    msi_free(view);
     return r;
 }
 

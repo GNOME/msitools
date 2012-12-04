@@ -237,7 +237,7 @@ unsigned update_view_create( LibmsiDatabase *db, LibmsiView **view, WCHAR *table
         return r;
     }
 
-    uv = alloc_msiobject( sizeof *uv, NULL );
+    uv = msi_alloc_zero( sizeof *uv );
     if( !uv )
     {
         wv->ops->delete( wv );

@@ -119,7 +119,7 @@ unsigned drop_view_create(LibmsiDatabase *db, LibmsiView **view, const WCHAR *na
 
     TRACE("%p %s\n", view, debugstr_w(name));
 
-    dv = alloc_msiobject(sizeof *dv, NULL);
+    dv = msi_alloc_zero(sizeof *dv );
     if(!dv)
         return LIBMSI_RESULT_FUNCTION_FAILED;
 

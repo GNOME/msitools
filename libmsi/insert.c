@@ -373,7 +373,7 @@ unsigned insert_view_create( LibmsiDatabase *db, LibmsiView **view, const WCHAR 
         return r;
     }
 
-    iv = alloc_msiobject( sizeof *iv, NULL );
+    iv = msi_alloc_zero( sizeof *iv );
     if( !iv )
         return LIBMSI_RESULT_FUNCTION_FAILED;
 
