@@ -356,7 +356,7 @@ extern WCHAR *encode_streamname(bool bTable, const WCHAR *in);
 extern void decode_streamname(const WCHAR *in, WCHAR *out);
 
 /* database internals */
-unsigned msi_create_stream( LibmsiDatabase *db, const WCHAR *stname, IStream *stm, IStream **outstm );
+unsigned msi_create_stream( LibmsiDatabase *db, const WCHAR *stname, IStream *stm );
 extern unsigned msi_get_raw_stream( LibmsiDatabase *, const WCHAR *, IStream **);
 void msi_destroy_stream( LibmsiDatabase *, const WCHAR * );
 extern unsigned msi_enum_db_streams(LibmsiDatabase *, unsigned (*fn)(const WCHAR *, IStream *, void *), void *);

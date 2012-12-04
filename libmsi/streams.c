@@ -155,25 +155,22 @@ static unsigned streams_view_set_row(LibmsiView *view, unsigned row, LibmsiRecor
         goto done;
     }
 
-    stream = create_stream(sv, name, false, NULL);
+    stream = create_stream(sv, name, false, stm);
     if (!stream)
         goto done;
 
-    r = msi_create_stream(sv->db, name, stm, &stream->stream);
+    r = msi_create_stream(sv->db, name, stm);
     if (r != LIBMSI_RESULT_SUCCESS)
     {
         WARN("failed to create stream: %08x\n", r);
+        IStream_Release(stream->stream);
+        msi_free(stream);
         goto done;
     }
 
     sv->streams[row] = stream;
 
 done:
-    if (r != LIBMSI_RESULT_SUCCESS)
-    {
-        msi_free(stream);
-    }
-
     msi_free(name);
 
     IStream_Release(stm);

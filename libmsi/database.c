@@ -340,57 +340,36 @@ unsigned write_raw_stream_data( LibmsiDatabase *db, const WCHAR *stname,
     return ret;
 }
 
-unsigned msi_create_stream( LibmsiDatabase *db, const WCHAR *stname, IStream *stm, IStream **outstm )
+unsigned msi_create_stream( LibmsiDatabase *db, const WCHAR *stname, IStream *stm )
 {
     LibmsiStream *stream;
     WCHAR *encname = NULL;
-    STATSTG stat;
-    HRESULT hr;
     unsigned r = LIBMSI_RESULT_FUNCTION_FAILED;
-    unsigned count;
-    uint8_t *data;
+    bool found = false;
 
     if ( db->mode == LIBMSI_DB_OPEN_READONLY )
         return LIBMSI_RESULT_ACCESS_DENIED;
 
     encname = encode_streamname(false, stname);
 
-    hr = IStream_Stat(stm, &stat, STATFLAG_NONAME);
-    if (FAILED(hr))
+    LIST_FOR_EACH_ENTRY( stream, &db->streams, LibmsiStream, entry )
     {
-        WARN("failed to stat stream: %08x\n", hr);
-        goto end;
+        if( !strcmpW( encname, stream->name ) )
+        {
+            found = true;
+            break;
+        }
     }
 
-    if (stat.cbSize.QuadPart >> 32)
-    {
-        WARN("stream too large\n");
-        goto end;
-    }
+    if (found) {
+        if (stream->stm)
+            IStream_Release(stream->stm);
+        stream->stm = stm;
+        IStream_AddRef(stream->stm);
+        r = LIBMSI_RESULT_SUCCESS;
+    } else
+        r = msi_alloc_stream( db, encname, stm );
 
-    data = msi_alloc(stat.cbSize.QuadPart);
-    if (!data)
-        goto end;
-
-    hr = IStream_Read(stm, data, stat.cbSize.QuadPart, &count);
-    if (FAILED(hr) || count != stat.cbSize.QuadPart)
-    {
-        WARN("failed to read stream: %08x\n", hr);
-        msi_free(data);
-        goto end;
-    }
-
-    r = write_raw_stream_data(db, encname, data, count, outstm);
-    if (r != LIBMSI_RESULT_SUCCESS)
-    {
-        WARN("failed to write stream data: %d\n", r);
-        msi_free(data);
-        return r;
-    }
-
-    msi_free(data);
-end:
-    msi_free(encname);
     return r;
 }
 
