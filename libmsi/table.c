@@ -280,7 +280,7 @@ void enum_stream_names( IStorage *stg )
     IEnumSTATSTG_Release( stgenum );
 }
 
-unsigned read_stream_data( IStorage *stg, const WCHAR *stname, bool table,
+unsigned read_stream_data( IStorage *stg, const WCHAR *stname,
                        uint8_t **pdata, unsigned *psz )
 {
     HRESULT r;
@@ -291,7 +291,7 @@ unsigned read_stream_data( IStorage *stg, const WCHAR *stname, bool table,
     STATSTG stat;
     WCHAR *encname;
 
-    encname = encode_streamname(table, stname);
+    encname = encode_streamname(true, stname);
 
     TRACE("%s -> %s\n",debugstr_w(stname),debugstr_w(encname));
 
@@ -344,24 +344,27 @@ end:
     return ret;
 }
 
-unsigned write_stream_data( IStorage *stg, const WCHAR *stname,
-                        const void *data, unsigned sz, bool bTable )
+unsigned write_stream_data( LibmsiDatabase *db, const WCHAR *stname,
+                        const void *data, unsigned sz )
 {
-    HRESULT r;
     unsigned ret = LIBMSI_RESULT_FUNCTION_FAILED;
-    unsigned count;
-    IStream *stm = NULL;
+    WCHAR *encname;
+    HRESULT r;
+    IStream *stm;
     ULARGE_INTEGER size;
     LARGE_INTEGER pos;
-    WCHAR *encname;
+    unsigned count;
 
-    encname = encode_streamname(bTable, stname );
-    r = IStorage_OpenStream( stg, encname, NULL, 
+    if (!db->outfile)
+        return ret;
+
+    encname = encode_streamname(true, stname );
+    r = IStorage_OpenStream( db->outfile, encname, NULL, 
             STGM_WRITE | STGM_SHARE_EXCLUSIVE, 0, &stm);
     if( FAILED(r) )
     {
-        r = IStorage_CreateStream( stg, encname,
-                STGM_WRITE | STGM_SHARE_EXCLUSIVE, 0, 0, &stm);
+        r = IStorage_CreateStream( db->outfile, encname,
+                STGM_CREATE | STGM_WRITE | STGM_SHARE_EXCLUSIVE, 0, 0, &stm);
     }
     msi_free( encname );
     if( FAILED( r ) )
@@ -400,7 +403,6 @@ unsigned write_stream_data( IStorage *stg, const WCHAR *stname,
 
 end:
     IStream_Release( stm );
-
     return ret;
 }
 
@@ -451,7 +453,7 @@ static unsigned read_table_from_storage( LibmsiDatabase *db, LibmsiTable *t, ISt
     row_size_mem = msi_table_get_row_size( db, t->colinfo, t->col_count, LONG_STR_BYTES );
 
     /* if we can't read the table, just assume that it's empty */
-    read_stream_data( stg, t->name, true, &rawdata, &rawsize );
+    read_stream_data( stg, t->name, &rawdata, &rawsize );
     if( !rawdata )
         return LIBMSI_RESULT_SUCCESS;
 
@@ -977,7 +979,7 @@ static unsigned save_table( LibmsiDatabase *db, const LibmsiTable *t, unsigned b
     }
 
     TRACE("writing %d bytes\n", rawsize);
-    r = write_stream_data( db->outfile, t->name, rawdata, rawsize, true );
+    r = write_stream_data( db, t->name, rawdata, rawsize );
 
 err:
     msi_free( rawdata );
@@ -2407,7 +2409,7 @@ static unsigned msi_table_load_transform( LibmsiDatabase *db, IStorage *stg,
     TRACE("%p %p %p %s\n", db, stg, st, debugstr_w(name) );
 
     /* read the transform data */
-    read_stream_data( stg, name, true, &rawdata, &rawsize );
+    read_stream_data( stg, name, &rawdata, &rawsize );
     if ( !rawdata )
     {
         TRACE("table %s empty\n", debugstr_w(name) );

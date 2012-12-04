@@ -617,7 +617,7 @@ LibmsiResult libmsi_database_commit( LibmsiDatabase *db )
 
     /* FIXME: lock the database */
 
-    r = msi_save_string_table( db->strings, db->outfile, &bytes_per_strref );
+    r = msi_save_string_table( db->strings, db, &bytes_per_strref );
     if( r != LIBMSI_RESULT_SUCCESS )
     {
         WARN("failed to save string table r=%08x\n",r);

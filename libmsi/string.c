@@ -457,18 +457,18 @@ static void string_totalsize( const string_table *st, unsigned *datasize, unsign
     TRACE("data %u pool %u codepage %x\n", *datasize, *poolsize, st->codepage );
 }
 
-HRESULT msi_init_string_table( IStorage *stg )
+HRESULT msi_init_string_table( LibmsiDatabase *db )
 {
     uint16_t zero[2] = { 0, 0 };
     unsigned ret;
 
     /* create the StringPool stream... add the zero string to it*/
-    ret = write_stream_data(stg, szStringPool, zero, sizeof zero, true);
+    ret = write_stream_data(db, szStringPool, zero, sizeof zero);
     if (ret != LIBMSI_RESULT_SUCCESS)
         return E_FAIL;
 
     /* create the StringData stream... make it zero length */
-    ret = write_stream_data(stg, szStringData, NULL, 0, true);
+    ret = write_stream_data(db, szStringData, NULL, 0);
     if (ret != LIBMSI_RESULT_SUCCESS)
         return E_FAIL;
 
@@ -483,10 +483,10 @@ string_table *msi_load_string_table( IStorage *stg, unsigned *bytes_per_strref )
     unsigned r, datasize = 0, poolsize = 0, codepage;
     unsigned i, count, offset, len, n, refs;
 
-    r = read_stream_data( stg, szStringPool, true, (uint8_t **)&pool, &poolsize );
+    r = read_stream_data( stg, szStringPool, (uint8_t **)&pool, &poolsize );
     if( r != LIBMSI_RESULT_SUCCESS)
         goto end;
-    r = read_stream_data( stg, szStringData, true, (uint8_t **)&data, &datasize );
+    r = read_stream_data( stg, szStringData, (uint8_t **)&data, &datasize );
     if( r != LIBMSI_RESULT_SUCCESS)
         goto end;
 
@@ -557,7 +557,7 @@ end:
     return st;
 }
 
-unsigned msi_save_string_table( const string_table *st, IStorage *storage, unsigned *bytes_per_strref )
+unsigned msi_save_string_table( const string_table *st, LibmsiDatabase *db, unsigned *bytes_per_strref )
 {
     unsigned i, datasize = 0, poolsize = 0, sz, used, r, codepage, n;
     unsigned ret = LIBMSI_RESULT_FUNCTION_FAILED;
@@ -658,11 +658,11 @@ unsigned msi_save_string_table( const string_table *st, IStorage *storage, unsig
     }
 
     /* write the streams */
-    r = write_stream_data( storage, szStringData, data, datasize, true );
+    r = write_stream_data( db, szStringData, data, datasize );
     TRACE("Wrote StringData r=%08x\n", r);
     if( r )
         goto err;
-    r = write_stream_data( storage, szStringPool, pool, poolsize, true );
+    r = write_stream_data( db, szStringPool, pool, poolsize );
     TRACE("Wrote StringPool r=%08x\n", r);
     if( r )
         goto err;

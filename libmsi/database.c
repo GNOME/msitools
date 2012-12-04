@@ -281,6 +281,63 @@ static unsigned find_open_stream( LibmsiDatabase *db, IStorage *stg, const WCHAR
     return LIBMSI_RESULT_FUNCTION_FAILED;
 }
 
+unsigned write_raw_stream_data( LibmsiDatabase *db, const WCHAR *stname,
+                        const void *data, unsigned sz )
+{
+    HRESULT r;
+    unsigned ret = LIBMSI_RESULT_FUNCTION_FAILED;
+    unsigned count;
+    IStream *stm = NULL;
+    ULARGE_INTEGER size;
+    LARGE_INTEGER pos;
+
+    r = IStorage_OpenStream( db->outfile, stname, NULL, 
+            STGM_WRITE | STGM_SHARE_EXCLUSIVE, 0, &stm);
+    if( FAILED(r) )
+    {
+        r = IStorage_CreateStream( db->outfile, stname,
+                STGM_CREATE | STGM_WRITE | STGM_SHARE_EXCLUSIVE, 0, 0, &stm);
+    }
+    if( FAILED( r ) )
+    {
+        WARN("open stream failed r = %08x\n", r);
+        return ret;
+    }
+
+    size.QuadPart = sz;
+    r = IStream_SetSize( stm, size );
+    if( FAILED( r ) )
+    {
+        WARN("Failed to SetSize\n");
+        goto end;
+    }
+
+    pos.QuadPart = 0;
+    r = IStream_Seek( stm, pos, STREAM_SEEK_SET, NULL );
+    if( FAILED( r ) )
+    {
+        WARN("Failed to Seek\n");
+        goto end;
+    }
+
+    if (sz)
+    {
+        r = IStream_Write(stm, data, sz, &count );
+        if( FAILED( r ) || ( count != sz ) )
+        {
+            WARN("Failed to Write\n");
+            goto end;
+        }
+    }
+
+    ret = LIBMSI_RESULT_SUCCESS;
+
+end:
+    IStream_Release( stm );
+
+    return ret;
+}
+
 unsigned msi_clone_open_stream( LibmsiDatabase *db, IStorage *stg, const WCHAR *name, IStream **stm )
 {
     IStream *stream;
@@ -453,14 +510,14 @@ static HRESULT db_initialize( LibmsiDatabase *db )
     HRESULT hr;
 
     /* create the _Tables stream */
-    hr = write_stream_data( db->outfile, szTables, NULL, 0, true );
+    hr = write_stream_data( db, szTables, NULL, 0 );
     if (FAILED( hr ))
     {
         WARN("failed to create _Tables stream 0x%08x\n", hr);
         return hr;
     }
 
-    hr = msi_init_string_table( db->outfile );
+    hr = msi_init_string_table( db );
     if (FAILED( hr ))
     {
         WARN("failed to initialize string table 0x%08x\n", hr);

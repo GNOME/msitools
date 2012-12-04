@@ -184,7 +184,7 @@ static unsigned streams_view_set_row(LibmsiView *view, unsigned row, LibmsiRecor
     encname = encode_streamname(false, name);
     msi_destroy_stream(sv->db, encname);
 
-    r = write_stream_data(sv->db->outfile, name, data, count, false);
+    r = write_raw_stream_data(sv->db, encname, data, count);
     if (r != LIBMSI_RESULT_SUCCESS)
     {
         WARN("failed to write stream data: %d\n", r);

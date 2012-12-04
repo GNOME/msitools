@@ -307,19 +307,21 @@ extern int _libmsi_add_string( string_table *st, const WCHAR *data, int len, uin
 extern unsigned _libmsi_id_from_stringW( const string_table *st, const WCHAR *buffer, unsigned *id );
 extern VOID msi_destroy_stringtable( string_table *st );
 extern const WCHAR *msi_string_lookup_id( const string_table *st, unsigned id );
-extern HRESULT msi_init_string_table( IStorage *stg );
+extern HRESULT msi_init_string_table( LibmsiDatabase *db );
 extern string_table *msi_load_string_table( IStorage *stg, unsigned *bytes_per_strref );
-extern unsigned msi_save_string_table( const string_table *st, IStorage *storage, unsigned *bytes_per_strref );
+extern unsigned msi_save_string_table( const string_table *st, LibmsiDatabase *db, unsigned *bytes_per_strref );
 extern unsigned msi_get_string_table_codepage( const string_table *st );
 extern unsigned msi_set_string_table_codepage( string_table *st, unsigned codepage );
 
 extern bool table_view_exists( LibmsiDatabase *db, const WCHAR *name );
 extern LibmsiCondition _libmsi_database_is_table_persistent( LibmsiDatabase *db, const WCHAR *table );
 
-extern unsigned read_stream_data( IStorage *stg, const WCHAR *stname, bool table,
+extern unsigned read_stream_data( IStorage *stg, const WCHAR *stname,
                               uint8_t **pdata, unsigned *psz );
-extern unsigned write_stream_data( IStorage *stg, const WCHAR *stname,
-                               const void *data, unsigned sz, bool bTable );
+extern unsigned write_stream_data( LibmsiDatabase *db, const WCHAR *stname,
+                               const void *data, unsigned sz );
+extern unsigned write_raw_stream_data( LibmsiDatabase *db, const WCHAR *stname,
+                                       const void *data, unsigned sz );
 extern unsigned _libmsi_database_commit_streams( LibmsiDatabase *db );
 
 /* transform functions */
