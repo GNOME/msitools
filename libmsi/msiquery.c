@@ -600,6 +600,33 @@ LibmsiResult libmsi_database_apply_transform( LibmsiDatabase *db,
     return r;
 }
 
+static unsigned commit_storage( const WCHAR *name, IStorage *stg, void *opaque)
+{
+    LibmsiDatabase *db = opaque;
+    STATSTG stat;
+    IStream *outstg;
+    ULARGE_INTEGER cbRead, cbWritten;
+    unsigned ret = LIBMSI_RESULT_FUNCTION_FAILED;
+    HRESULT r;
+
+    TRACE("%s %p %p\n", debugstr_w(name), stg, opaque);
+
+    r = IStorage_CreateStorage( db->outfile, name,
+            STGM_WRITE | STGM_SHARE_EXCLUSIVE, 0, 0, &outstg);
+    if ( FAILED(r) )
+        return LIBMSI_RESULT_FUNCTION_FAILED;
+
+    r = IStorage_CopyTo( stg, 0, NULL, NULL, outstg );
+    if ( FAILED(r) )
+        goto end;
+
+    ret = LIBMSI_RESULT_SUCCESS;
+
+end:
+    IStorage_Release(outstg);
+    return ret;
+}
+
 static unsigned commit_stream( const WCHAR *name, IStream *stm, void *opaque)
 {
     LibmsiDatabase *db = opaque;
@@ -661,7 +688,7 @@ LibmsiResult libmsi_database_commit( LibmsiDatabase *db )
         goto end;
     }
 
-    r = _libmsi_database_commit_storages( db );
+    r = msi_enum_db_storages( db, commit_storage, db );
     if (r != LIBMSI_RESULT_SUCCESS)
     {
         WARN("failed to save storages r=%08x\n",r);

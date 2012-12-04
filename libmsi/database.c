@@ -169,7 +169,6 @@ unsigned msi_create_storage( LibmsiDatabase *db, const WCHAR *stname, IStream *s
 {
     LibmsiStorage *storage;
     IStorage *origstg = NULL;
-    IStorage *substg = NULL;
     bool found = false;
     HRESULT hr;
     unsigned r;
@@ -201,22 +200,6 @@ unsigned msi_create_storage( LibmsiDatabase *db, const WCHAR *stname, IStream *s
     if (r != LIBMSI_RESULT_SUCCESS)
         goto done;
 
-    hr = IStorage_CreateStorage(db->outfile, stname,
-                                STGM_WRITE | STGM_SHARE_EXCLUSIVE,
-                                0, 0, &substg);
-    if (FAILED(hr))
-    {
-        r = LIBMSI_RESULT_FUNCTION_FAILED;
-        goto done;
-    }
-
-    hr = IStorage_CopyTo(origstg, 0, NULL, NULL, substg);
-    if (FAILED(hr))
-    {
-        r = LIBMSI_RESULT_FUNCTION_FAILED;
-        goto done;
-    }
-
     if (found) {
         if (storage->stg)
             IStorage_Release(storage->stg);
@@ -237,8 +220,6 @@ done:
         }
     }
 
-    if (substg)
-        IStorage_Release(substg);
     if (origstg)
         IStorage_Release(origstg);
 
@@ -257,7 +238,6 @@ void msi_destroy_storage( LibmsiDatabase *db, const WCHAR *stname )
 
             list_remove( &storage->entry );
             IStorage_Release( storage->stg );
-            IStorage_DestroyElement( storage->stg, stname );
             msi_free( storage );
             break;
         }
