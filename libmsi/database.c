@@ -265,13 +265,13 @@ void msi_destroy_storage( LibmsiDatabase *db, const WCHAR *stname )
     }
 }
 
-static unsigned find_open_stream( LibmsiDatabase *db, IStorage *stg, const WCHAR *name, IStream **stm )
+static unsigned find_infile_stream( LibmsiDatabase *db, const WCHAR *name, IStream **stm )
 {
     LibmsiStream *stream;
 
     LIST_FOR_EACH_ENTRY( stream, &db->streams, LibmsiStream, entry )
     {
-        if (stream->stg != stg) continue;
+        if (stream->stg != NULL) continue;
 
         if( !strcmpW( name, stream->name ) )
         {
@@ -357,7 +357,7 @@ unsigned msi_create_stream( LibmsiDatabase *db, const WCHAR *stname, IStream *st
     encname = encode_streamname(false, stname);
     LIST_FOR_EACH_ENTRY( stream, &db->streams, LibmsiStream, entry )
     {
-        if (stream->stg != db->infile) continue;
+        if (stream->stg != NULL) continue;
 
         if( !strcmpW( encname, stream->name ) )
         {
@@ -469,7 +469,7 @@ unsigned msi_enum_db_streams(LibmsiDatabase *db,
     {
         IStream *stm;
 
-        if (stream->stg != db->infile) continue;
+        if (stream->stg != NULL) continue;
 
         stm = stream->stm;
         IStream_AddRef(stm);
@@ -508,11 +508,11 @@ unsigned msi_enum_db_storages(LibmsiDatabase *db,
     return LIBMSI_RESULT_SUCCESS;
 }
 
-unsigned msi_clone_open_stream( LibmsiDatabase *db, IStorage *stg, const WCHAR *name, IStream **stm )
+unsigned clone_infile_stream( LibmsiDatabase *db, const WCHAR *name, IStream **stm )
 {
     IStream *stream;
 
-    if (find_open_stream( db, stg, name, &stream ) == LIBMSI_RESULT_SUCCESS)
+    if (find_infile_stream( db, name, &stream ) == LIBMSI_RESULT_SUCCESS)
     {
         HRESULT r;
         LARGE_INTEGER pos;
@@ -538,16 +538,31 @@ unsigned msi_clone_open_stream( LibmsiDatabase *db, IStorage *stg, const WCHAR *
     return LIBMSI_RESULT_FUNCTION_FAILED;
 }
 
+static unsigned msi_alloc_stream( LibmsiDatabase *db, const WCHAR *stname, IStorage *stg, IStream *stm)
+{
+    LibmsiStream *stream;
+
+    if (!(stream = msi_alloc( sizeof(LibmsiStream) ))) return LIBMSI_RESULT_NOT_ENOUGH_MEMORY;
+    stream->name = strdupW( stname );
+    stream->stg = stg;
+    if (stg)
+        IStorage_AddRef( stg );
+    stream->stm = stm;
+    IStream_AddRef( stm );
+    list_add_tail( &db->streams, &stream->entry );
+    return LIBMSI_RESULT_SUCCESS;
+}
+
 unsigned msi_get_raw_stream( LibmsiDatabase *db, const WCHAR *stname, IStream **stm )
 {
     HRESULT r;
-    IStorage *stg;
+    IStorage *stg = NULL;
     WCHAR decoded[MAX_STREAM_NAME_LEN];
 
     decode_streamname( stname, decoded );
     TRACE("%s -> %s\n", debugstr_w(stname), debugstr_w(decoded));
 
-    if (msi_clone_open_stream( db, db->infile, stname, stm ) == LIBMSI_RESULT_SUCCESS)
+    if (clone_infile_stream( db, stname, stm ) == LIBMSI_RESULT_SUCCESS)
         return LIBMSI_RESULT_SUCCESS;
 
     r = IStorage_OpenStream( db->infile, stname, NULL,
@@ -567,22 +582,11 @@ unsigned msi_get_raw_stream( LibmsiDatabase *db, const WCHAR *stname, IStream **
             }
         }
     }
-    else stg = db->infile;
 
-    if( SUCCEEDED(r) )
-    {
-        LibmsiStream *stream;
+    if( FAILED(r) )
+        return LIBMSI_RESULT_FUNCTION_FAILED;
 
-        if (!(stream = msi_alloc( sizeof(LibmsiStream) ))) return LIBMSI_RESULT_NOT_ENOUGH_MEMORY;
-        stream->name = strdupW( stname );
-        stream->stg = stg;
-        IStorage_AddRef( stg );
-        stream->stm = *stm;
-        IStream_AddRef( *stm );
-        list_add_tail( &db->streams, &stream->entry );
-    }
-
-    return SUCCEEDED(r) ? LIBMSI_RESULT_SUCCESS : LIBMSI_RESULT_FUNCTION_FAILED;
+    return msi_alloc_stream(db, stname, stg, *stm);
 }
 
 static void free_transforms( LibmsiDatabase *db )
@@ -609,8 +613,9 @@ void msi_destroy_stream( LibmsiDatabase *db, const WCHAR *stname )
 
             list_remove( &stream->entry );
             IStream_Release( stream->stm );
-            IStorage_Release( stream->stg );
-            IStorage_DestroyElement( stream->stg, stname );
+            if ( stream->stg )
+                IStorage_Release( stream->stg );
+            IStorage_DestroyElement( stream->stg?:db->infile, stname );
             msi_free( stream );
             break;
         }
@@ -636,7 +641,8 @@ static void free_streams( LibmsiDatabase *db )
         LibmsiStream *s = LIST_ENTRY(list_head( &db->streams ), LibmsiStream, entry);
         list_remove( &s->entry );
         IStream_Release( s->stm );
-        IStorage_Release( s->stg );
+        if (s->stg)
+            IStorage_Release( s->stg );
         msi_free( s->name );
         msi_free( s );
     }

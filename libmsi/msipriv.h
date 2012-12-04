@@ -358,7 +358,6 @@ extern void decode_streamname(const WCHAR *in, WCHAR *out);
 /* database internals */
 unsigned msi_create_stream( LibmsiDatabase *db, const WCHAR *stname, IStream *stm, IStream **outstm );
 extern unsigned msi_get_raw_stream( LibmsiDatabase *, const WCHAR *, IStream **);
-extern unsigned msi_clone_open_stream( LibmsiDatabase *, IStorage *, const WCHAR *, IStream ** );
 void msi_destroy_stream( LibmsiDatabase *, const WCHAR * );
 extern unsigned msi_enum_db_streams(LibmsiDatabase *, unsigned (*fn)(const WCHAR *, IStream *, void *), void *);
 unsigned msi_create_storage( LibmsiDatabase *db, const WCHAR *stname, IStream *stm );
