@@ -38,54 +38,8 @@
 #include "msiserver.h"
 
 
-const CLSID FMTID_SummaryInformation =
-        { 0xf29f85e0, 0x4ff9, 0x1068, {0xab, 0x91, 0x08, 0x00, 0x2b, 0x27, 0xb3, 0xd9}};
-
-#include "pshpack1.h"
-
-typedef struct { 
-    WORD wByteOrder;
-    WORD wFormat;
-    unsigned dwOSVer;
-    CLSID clsID;
-    unsigned reserved;
-} PROPERTYSETHEADER;
-
-typedef struct { 
-    FMTID fmtid;
-    unsigned dwOffset;
-} FORMATIDOFFSET;
-
-typedef struct { 
-    unsigned cbSection;
-    unsigned cProperties;
-} PROPERTYSECTIONHEADER; 
- 
-typedef struct { 
-    unsigned propid;
-    unsigned dwOffset;
-} PROPERTYIDOFFSET; 
-
-typedef struct {
-    unsigned type;
-    union {
-        int i4;
-        short i2;
-        uint64_t ft;
-        struct {
-            unsigned len;
-            uint8_t str[1];
-        } str;
-    } u;
-} PROPERTY_DATA;
- 
-#include "poppack.h"
-
-static HRESULT (WINAPI *pPropVariantChangeType)
-    (PROPVARIANT *ppropvarDest, REFPROPVARIANT propvarSrc,
-     PROPVAR_CHANGE_FLAGS flags, VARTYPE vt);
-
-#define SECT_HDR_SIZE (sizeof(PROPERTYSECTIONHEADER))
+static const uint8_t fmtid_SummaryInformation[16] =
+        { 0xe0, 0x85, 0x9f, 0xf2, 0xf9, 0x4f, 0x68, 0x10, 0xab, 0x91, 0x08, 0x00, 0x2b, 0x27, 0xb3, 0xd9};
 
 static void free_prop( PROPVARIANT *prop )
 {
@@ -148,164 +102,249 @@ static unsigned get_property_count( const PROPVARIANT *property )
     return n;
 }
 
-static unsigned propvar_changetype(PROPVARIANT *changed, PROPVARIANT *property, VARTYPE vt)
+static unsigned read_word( uint8_t *data, unsigned *ofs )
 {
-    HRESULT hr;
-    HMODULE propsys = LoadLibraryA("propsys.dll");
-    pPropVariantChangeType = (void *)GetProcAddress(propsys, "PropVariantChangeType");
+    unsigned val = 0;
+    val = data[*ofs];
+    val |= data[*ofs+1] << 8;
+    *ofs += 2;
+    return val;
+}
 
-    if (!pPropVariantChangeType)
-    {
-        ERR("PropVariantChangeType function missing!\n");
-        return LIBMSI_RESULT_FUNCTION_FAILED;
-    }
+static unsigned read_dword( uint8_t *data, unsigned *ofs )
+{
+    unsigned val = 0;
+    val = data[*ofs];
+    val |= data[*ofs+1] << 8;
+    val |= data[*ofs+2] << 16;
+    val |= data[*ofs+3] << 24;
+    *ofs += 4;
+    return val;
+}
 
-    hr = pPropVariantChangeType(changed, property, 0, vt);
-    return (hr == S_OK) ? LIBMSI_RESULT_SUCCESS : LIBMSI_RESULT_FUNCTION_FAILED;
+static void parse_filetime( const WCHAR *str, uint64_t *ft )
+{
+    struct tm tm;
+    time_t t;
+    const WCHAR *p = str;
+    WCHAR *end;
+
+
+    /* YYYY/MM/DD hh:mm:ss */
+
+    while ( *p == ' ' || *p == '\t' ) p++;
+
+    tm.tm_year = strtolW( p, &end, 10 );
+    if (*end != '/') return;
+    p = end + 1;
+
+    tm.tm_mon = strtolW( p, &end, 10 ) - 1;
+    if (*end != '/') return;
+    p = end + 1;
+
+    tm.tm_mday = strtolW( p, &end, 10 );
+    if (*end != ' ') return;
+    p = end + 1;
+
+    while ( *p == ' ' || *p == '\t' ) p++;
+
+    tm.tm_hour = strtolW( p, &end, 10 );
+    if (*end != ':') return;
+    p = end + 1;
+
+    tm.tm_min = strtolW( p, &end, 10 );
+    if (*end != ':') return;
+    p = end + 1;
+
+    tm.tm_sec = strtolW( p, &end, 10 );
+
+    t = mktime(&tm);
+
+    /* Add number of seconds between 1601-01-01 and 1970-01-01,
+     * then convert to 100 ns units.
+     */
+    *ft = (t + 134774ULL * 86400ULL) * 10000000ULL;
 }
 
 /* FIXME: doesn't deal with endian conversion */
-static void read_properties_from_data( PROPVARIANT *prop, uint8_t *data, unsigned sz )
+static void read_properties_from_data( PROPVARIANT *prop, uint8_t *data, unsigned sz, uint32_t cProperties )
 {
     unsigned type;
-    unsigned i, size;
-    PROPERTY_DATA *propdata;
-    PROPVARIANT property;
-    PROPVARIANT *ptr;
-    PROPVARIANT changed;
-    PROPERTYIDOFFSET *idofs;
-    PROPERTYSECTIONHEADER *section_hdr;
+    unsigned i;
+    PROPVARIANT *property;
+    uint32_t idofs, len;
+    char *str;
 
-    section_hdr = (PROPERTYSECTIONHEADER*) &data[0];
-    idofs = (PROPERTYIDOFFSET*) &data[SECT_HDR_SIZE];
+    idofs = 8;
 
     /* now set all the properties */
-    for( i = 0; i < section_hdr->cProperties; i++ )
+    for( i = 0; i < cProperties; i++ )
     {
-        if( idofs[i].propid >= MSI_MAX_PROPS )
+        int propid = read_dword(data, &idofs);
+        int dwOffset = read_dword(data, &idofs);
+        int proptype;
+
+        if( propid >= MSI_MAX_PROPS )
         {
-            ERR("Unknown property ID %d\n", idofs[i].propid );
+            ERR("Unknown property ID %d\n", propid );
             break;
         }
 
-        type = get_type( idofs[i].propid );
+        type = get_type( propid );
         if( type == VT_EMPTY )
         {
-            ERR("propid %d has unknown type\n", idofs[i].propid);
+            ERR("propid %d has unknown type\n", propid);
             break;
         }
 
-        propdata = (PROPERTY_DATA*) &data[ idofs[i].dwOffset ];
+        property = &prop[ propid ];
 
-        /* check we don't run off the end of the data */
-        size = sz - idofs[i].dwOffset - sizeof(unsigned);
-        if( sizeof(unsigned) > size ||
-            ( propdata->type == VT_FILETIME && sizeof(uint64_t) > size ) ||
-            ( propdata->type == VT_LPSTR && (propdata->u.str.len + sizeof(unsigned)) > size ) )
+        if( dwOffset + 4 > sz )
         {
-            ERR("not enough data\n");
+            ERR("not enough data for type %d %d \n", dwOffset, sz);
             break;
         }
 
-        property.vt = propdata->type;
-        if( propdata->type == VT_LPSTR)
+        proptype = read_dword(data, &dwOffset);
+        if( dwOffset + 4 > sz )
         {
-            char *str = msi_alloc( propdata->u.str.len );
-            memcpy( str, propdata->u.str.str, propdata->u.str.len );
-            str[ propdata->u.str.len - 1 ] = 0;
-            property.pszVal = str;
+            ERR("not enough data for type %d %d \n", dwOffset, sz);
+            break;
         }
-        else if( propdata->type == VT_FILETIME )
-	{
-            property.filetime.dwLowDateTime = (unsigned) (propdata->u.ft & 0xFFFFFFFFULL);
-            property.filetime.dwHighDateTime = (unsigned) (propdata->u.ft >> 32);
-	}
-        else if( propdata->type == VT_I2 )
-            property.iVal = propdata->u.i2;
-        else if( propdata->type == VT_I4 )
-            property.lVal = propdata->u.i4;
+
+        property->vt = proptype;
+        switch(proptype)
+        {
+        case VT_I2:
+            property->iVal = read_dword(data, &dwOffset);
+            break;
+        case VT_I4:
+            property->lVal = read_dword(data, &dwOffset);
+            break;
+        case VT_FILETIME:
+            if( dwOffset + 8 > sz )
+            {
+                ERR("not enough data for type %d %d \n", dwOffset, sz);
+                break;
+            }
+            property->filetime.dwLowDateTime = read_dword(data, &dwOffset);
+            property->filetime.dwHighDateTime = read_dword(data, &dwOffset);
+            break;
+        case VT_LPSTR:
+            len = read_dword(data, &dwOffset);
+            if( dwOffset + len > sz )
+            {
+                ERR("not enough data for type %d %d %d \n", dwOffset, len, sz);
+                break;
+            }
+            str = msi_alloc( len );
+            memcpy( str, &data[dwOffset], len-1 );
+            str[ len - 1 ] = 0;
+            break;
+        }
 
         /* check the type is the same as we expect */
-        if( type != propdata->type )
-        {
-            propvar_changetype(&changed, &property, type);
-            ptr = &changed;
+        if( type == VT_LPSTR && proptype == VT_LPSTR)
+           property->pszVal = str;
+        else if (type == proptype)
+           ;
+        else if( proptype == VT_LPSTR) {
+            if( type == VT_I2) {
+                property->iVal = atoi( str );
+            } else if( type == VT_I4) {
+                property->lVal = atoi( str );
+            } else if( type == VT_FILETIME) {
+                WCHAR *wstr = strdupAtoW(str);
+                uint64_t ft_value;
+                parse_filetime( wstr, &ft_value );
+                property->filetime.dwLowDateTime = ft_value & 0xFFFFFFFFULL;
+                property->filetime.dwHighDateTime = ft_value >> 32;
+                msi_free (wstr);
+            }
+            msi_free (str);
         }
         else
-            ptr = &property;
-
-        prop[ idofs[i].propid ] = *ptr;
+        {
+            ERR("invalid type \n");
+            break;
+        }
     }
 }
 
 static unsigned load_summary_info( LibmsiSummaryInfo *si, IStream *stm )
 {
     unsigned ret = LIBMSI_RESULT_FUNCTION_FAILED;
-    PROPERTYSETHEADER set_hdr;
-    FORMATIDOFFSET format_hdr;
-    PROPERTYSECTIONHEADER section_hdr;
     uint8_t *data = NULL;
-    LARGE_INTEGER ofs;
-    unsigned count, sz;
+    unsigned ofs, dwOffset;
+    unsigned count, size, cbSection, cProperties;
     HRESULT r;
+    STATSTG stat;
 
     TRACE("%p %p\n", si, stm);
 
-    /* read the header */
-    sz = sizeof set_hdr;
-    r = IStream_Read( stm, &set_hdr, sz, &count );
-    if( FAILED(r) || count != sz )
-        return ret;
+    r = IStream_Stat(stm, &stat, STATFLAG_NONAME);
+    if (FAILED(r))
+        return r;
 
-    if( set_hdr.wByteOrder != 0xfffe )
+    if (stat.cbSize.QuadPart >> 32)
     {
-        ERR("property set not little-endian %04X\n", set_hdr.wByteOrder);
+        ERR("Storage is too large\n");
         return ret;
     }
 
-    sz = sizeof format_hdr;
-    r = IStream_Read( stm, &format_hdr, sz, &count );
-    if( FAILED(r) || count != sz )
+    size = stat.cbSize.QuadPart;
+    data = msi_alloc(size);
+
+    ofs = 0;
+    r = IStream_Read( stm, data, size, &count );
+    if( FAILED(r) || count != size )
         return ret;
 
+    /* process the set header */
+    if( read_word( data, &ofs) != 0xfffe )
+    {
+        ERR("property set not little-endian\n");
+        return ret;
+    }
+
+    /* process the format header */
+
     /* check the format id is correct */
-    if( !IsEqualGUID( &FMTID_SummaryInformation, &format_hdr.fmtid ) )
+    ofs = 28;
+    if( memcmp( &fmtid_SummaryInformation, &data[ofs], 16 ) )
         return ret;
 
     /* seek to the location of the section */
-    ofs.QuadPart = format_hdr.dwOffset;
-    r = IStream_Seek( stm, ofs, STREAM_SEEK_SET, NULL );
-    if( FAILED(r) )
-        return ret;
+    ofs += 16;
+    ofs = dwOffset = read_dword(data, &ofs);
 
     /* read the section itself */
-    sz = SECT_HDR_SIZE;
-    r = IStream_Read( stm, &section_hdr, sz, &count );
-    if( FAILED(r) || count != sz )
-        return ret;
+    cbSection = read_dword( data, &ofs );
+    cProperties = read_dword( data, &ofs );
 
-    if( section_hdr.cProperties > MSI_MAX_PROPS )
+    if( cProperties > MSI_MAX_PROPS )
     {
-        ERR("too many properties %d\n", section_hdr.cProperties);
+        ERR("too many properties %d\n", cProperties);
         return ret;
     }
 
-    data = msi_alloc( section_hdr.cbSection);
-    if( !data )
-        return ret;
-
-    memcpy( data, &section_hdr, SECT_HDR_SIZE );
-
     /* read all the data in one go */
-    sz = section_hdr.cbSection - SECT_HDR_SIZE;
-    r = IStream_Read( stm, &data[ SECT_HDR_SIZE ], sz, &count );
-    if( SUCCEEDED(r) && count == sz )
-        read_properties_from_data( si->property, data, sz + SECT_HDR_SIZE );
-    else
-        ERR("failed to read properties %d %d\n", count, sz);
+    read_properties_from_data( si->property,
+                               &data[dwOffset],
+                               cbSection, cProperties );
 
     msi_free( data );
     return ret;
+}
+
+static unsigned write_word( uint8_t *data, unsigned ofs, unsigned val )
+{
+    if( data )
+    {
+        data[ofs++] = val&0xff;
+        data[ofs++] = (val>>8)&0xff;
+    }
+    return 2;
 }
 
 static unsigned write_dword( uint8_t *data, unsigned ofs, unsigned val )
@@ -367,62 +406,58 @@ static unsigned write_property_to_data( const PROPVARIANT *prop, uint8_t *data )
 
 static unsigned suminfo_persist( LibmsiSummaryInfo *si )
 {
-    PROPERTYSETHEADER set_hdr;
-    FORMATIDOFFSET format_hdr;
-    PROPERTYSECTIONHEADER section_hdr;
-    PROPERTYIDOFFSET idofs[MSI_MAX_PROPS];
+    int cProperties, cbSection, dwOffset;
     IStream *stm;
     uint8_t *data = NULL;
     unsigned r, sz;
     int i;
 
-    /* write the header */
-    sz = sizeof set_hdr;
-    memset( &set_hdr, 0, sz );
-    set_hdr.wByteOrder = 0xfffe;
-    set_hdr.wFormat = 0;
-    set_hdr.dwOSVer = 0x00020005; /* build 5, platform id 2 */
-    /* set_hdr.clsID is {00000000-0000-0000-0000-000000000000} */
-    set_hdr.reserved = 1;
+    /* add up how much space the data will take and calculate the offsets */
+    cProperties = get_property_count( si->property );
+    cbSection = 8 + cProperties * 8;
+    for( i = 0; i < MSI_MAX_PROPS; i++ )
+        cbSection += write_property_to_data( &si->property[i], NULL );
+
+    sz = 28 + 20 + cbSection;
+    data = msi_alloc_zero( sz );
+
+    /* write the set header */
+    sz = 0;
+    sz += write_word(data, sz, 0xfffe); /* wByteOrder */
+    sz += write_word(data, sz, 0);      /* wFormat */
+    sz += write_dword(data, sz, 0x00020005); /* dwOSVer - build 5, platform id 2 */
+    sz += 16; /* clsID */
+    sz += write_dword(data, sz, 1); /* reserved */
 
     /* write the format header */
-    sz = sizeof format_hdr;
-    format_hdr.fmtid = FMTID_SummaryInformation;
-    format_hdr.dwOffset = sizeof format_hdr + sizeof set_hdr;
+    memcpy( &data[sz], &fmtid_SummaryInformation, 16 );
+    sz += 16;
 
-    /* add up how much space the data will take and calculate the offsets */
-    section_hdr.cbSection = sizeof section_hdr;
-    section_hdr.cbSection += (get_property_count( si->property ) * sizeof idofs[0]);
-    section_hdr.cProperties = 0;
+    sz += write_dword(data, sz, 28 + 20); /* dwOffset */
+    assert(sz == 28 + 20);
+
+    /* write the section header */
+    sz += write_dword(data, sz, cbSection);
+    sz += write_dword(data, sz, cProperties);
+    assert(sz == 28 + 20 + 8);
+
+    dwOffset = 8 + cProperties * 8;
     for( i = 0; i < MSI_MAX_PROPS; i++ )
     {
-        sz = write_property_to_data( &si->property[i], NULL );
-        if( !sz )
+        int propsz = write_property_to_data( &si->property[i], NULL );
+        if( !propsz )
             continue;
-        idofs[ section_hdr.cProperties ].propid = i;
-        idofs[ section_hdr.cProperties ].dwOffset = section_hdr.cbSection;
-        section_hdr.cProperties++;
-        section_hdr.cbSection += sz;
+        sz += write_dword(data, sz, i);
+        sz += write_dword(data, sz, dwOffset);
+        dwOffset += propsz;
     }
-
-    data = msi_alloc_zero( sizeof set_hdr + sizeof format_hdr + section_hdr.cbSection );
-
-    sz = 0;
-    memcpy( &data[sz], &set_hdr, sizeof set_hdr );
-    sz += sizeof set_hdr;
-
-    memcpy( &data[sz], &format_hdr, sizeof format_hdr );
-    sz += sizeof format_hdr;
-
-    memcpy( &data[sz], &section_hdr, sizeof section_hdr );
-    sz += sizeof section_hdr;
-
-    memcpy( &data[sz], idofs, section_hdr.cProperties * sizeof idofs[0] );
-    sz += section_hdr.cProperties * sizeof idofs[0];
+    assert(dwOffset == cbSection);
 
     /* write out the data */
     for( i = 0; i < MSI_MAX_PROPS; i++ )
         sz += write_property_to_data( &si->property[i], &data[sz] );
+
+    assert(sz == 28 + 20 + cbSection);
 
     r = write_raw_stream_data(si->database, szSumInfo, data, sz, &stm);
     if (r == 0) {
@@ -692,50 +727,6 @@ LibmsiResult libmsi_summary_info_set_property( LibmsiSummaryInfo *si, unsigned u
     }
 
     return _libmsi_summary_info_set_property( si, uiProperty, type, iValue, pftValue, szValue );
-}
-
-static void parse_filetime( const WCHAR *str, uint64_t *ft )
-{
-    struct tm tm;
-    time_t t;
-    const WCHAR *p = str;
-    WCHAR *end;
-
-
-    /* YYYY/MM/DD hh:mm:ss */
-
-    while ( *p == ' ' || *p == '\t' ) p++;
-
-    tm.tm_year = strtolW( p, &end, 10 );
-    if (*end != '/') return;
-    p = end + 1;
-
-    tm.tm_mon = strtolW( p, &end, 10 ) - 1;
-    if (*end != '/') return;
-    p = end + 1;
-
-    tm.tm_mday = strtolW( p, &end, 10 );
-    if (*end != ' ') return;
-    p = end + 1;
-
-    while ( *p == ' ' || *p == '\t' ) p++;
-
-    tm.tm_hour = strtolW( p, &end, 10 );
-    if (*end != ':') return;
-    p = end + 1;
-
-    tm.tm_min = strtolW( p, &end, 10 );
-    if (*end != ':') return;
-    p = end + 1;
-
-    tm.tm_sec = strtolW( p, &end, 10 );
-
-    t = mktime(&tm);
-
-    /* Add number of seconds between 1601-01-01 and 1970-01-01,
-     * then convert to 100 ns units.
-     */
-    *ft = (t + 134774ULL * 86400ULL) * 10000000ULL;
 }
 
 static unsigned parse_prop( const WCHAR *prop, const WCHAR *value, unsigned *pid, int *int_value,
