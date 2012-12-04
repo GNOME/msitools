@@ -1,3 +1,4 @@
+#define __WINE_PROPVARUTIL_H
 #define _WINSPOOL_
 #define _WINGDI_
 #define _IMM_

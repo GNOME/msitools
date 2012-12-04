@@ -262,12 +262,32 @@ struct LibmsiView
 
 #define MSI_MAX_PROPS 20
 
+enum LibmsiOLEVariantType
+{
+    OLEVT_EMPTY = 0,
+    OLEVT_NULL = 1,
+    OLEVT_I2 = 2,
+    OLEVT_I4 = 3,
+    OLEVT_LPSTR = 30,
+    OLEVT_FILETIME = 64,
+};
+
+typedef struct LibmsiOLEVariant
+{
+    enum LibmsiOLEVariantType vt;
+    union {
+        int intval;
+        char *strval;
+        uint64_t filetime;
+    };
+} LibmsiOLEVariant;
+
 typedef struct LibmsiSummaryInfo
 {
     LibmsiObject hdr;
     LibmsiDatabase *database;
     unsigned update_count;
-    PROPVARIANT property[MSI_MAX_PROPS];
+    LibmsiOLEVariant property[MSI_MAX_PROPS];
 } LibmsiSummaryInfo;
 
 /* handle unicode/ascii output in the Msi* API functions */
@@ -385,8 +405,6 @@ extern unsigned msi_view_get_row(LibmsiDatabase *, LibmsiView *, unsigned, Libms
 
 /* summary information */
 extern LibmsiSummaryInfo *MSI_GetSummaryInformationW( IStorage *stg, unsigned uiUpdateCount );
-extern WCHAR *msi_suminfo_dup_string( LibmsiSummaryInfo *si, unsigned uiProperty );
-extern int msi_suminfo_get_int32( LibmsiSummaryInfo *si, unsigned uiProperty );
 extern unsigned msi_add_suminfo( LibmsiDatabase *db, WCHAR ***records, int num_records, int num_columns );
 
 /* Helpers */

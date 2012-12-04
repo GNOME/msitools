@@ -25,27 +25,20 @@
 #define COBJMACROS
 #define NONAMELESSUNION
 
-#include "windef.h"
-#include "winbase.h"
-#include "winnls.h"
-#include "shlwapi.h"
 #include "debug.h"
 #include "unicode.h"
 #include "libmsi.h"
 #include "msipriv.h"
-#include "objidl.h"
-#include "propvarutil.h"
 #include "msiserver.h"
-
 
 static const uint8_t fmtid_SummaryInformation[16] =
         { 0xe0, 0x85, 0x9f, 0xf2, 0xf9, 0x4f, 0x68, 0x10, 0xab, 0x91, 0x08, 0x00, 0x2b, 0x27, 0xb3, 0xd9};
 
-static void free_prop( PROPVARIANT *prop )
+static void free_prop( LibmsiOLEVariant *prop )
 {
-    if (prop->vt == VT_LPSTR)
-        msi_free( prop->pszVal );
-    prop->vt = VT_EMPTY;
+    if (prop->vt == OLEVT_LPSTR)
+        msi_free( prop->strval );
+    prop->vt = OLEVT_EMPTY;
 }
 
 static void _libmsi_summary_info_destroy( LibmsiObject *arg )
@@ -63,7 +56,7 @@ static unsigned get_type( unsigned uiProperty )
     switch( uiProperty )
     {
     case MSI_PID_CODEPAGE:
-         return VT_I2;
+         return OLEVT_I2;
 
     case MSI_PID_SUBJECT:
     case MSI_PID_AUTHOR:
@@ -74,30 +67,30 @@ static unsigned get_type( unsigned uiProperty )
     case MSI_PID_REVNUMBER:
     case MSI_PID_APPNAME:
     case MSI_PID_TITLE:
-         return VT_LPSTR;
+         return OLEVT_LPSTR;
 
     case MSI_PID_LASTPRINTED:
     case MSI_PID_CREATE_DTM:
     case MSI_PID_LASTSAVE_DTM:
-         return VT_FILETIME;
+         return OLEVT_FILETIME;
 
     case MSI_PID_WORDCOUNT:
     case MSI_PID_CHARCOUNT:
     case MSI_PID_SECURITY:
     case MSI_PID_PAGECOUNT:
-         return VT_I4;
+         return OLEVT_I4;
     }
-    return VT_EMPTY;
+    return OLEVT_EMPTY;
 }
 
-static unsigned get_property_count( const PROPVARIANT *property )
+static unsigned get_property_count( const LibmsiOLEVariant *property )
 {
     unsigned i, n = 0;
 
     if( !property )
         return n;
     for( i = 0; i < MSI_MAX_PROPS; i++ )
-        if( property[i].vt != VT_EMPTY )
+        if( property[i].vt != OLEVT_EMPTY )
             n++;
     return n;
 }
@@ -167,11 +160,11 @@ static void parse_filetime( const WCHAR *str, uint64_t *ft )
 }
 
 /* FIXME: doesn't deal with endian conversion */
-static void read_properties_from_data( PROPVARIANT *prop, uint8_t *data, unsigned sz, uint32_t cProperties )
+static void read_properties_from_data( LibmsiOLEVariant *prop, uint8_t *data, unsigned sz, uint32_t cProperties )
 {
     unsigned type;
     unsigned i;
-    PROPVARIANT *property;
+    LibmsiOLEVariant *property;
     uint32_t idofs, len;
     char *str;
 
@@ -191,7 +184,7 @@ static void read_properties_from_data( PROPVARIANT *prop, uint8_t *data, unsigne
         }
 
         type = get_type( propid );
-        if( type == VT_EMPTY )
+        if( type == OLEVT_EMPTY )
         {
             ERR("propid %d has unknown type\n", propid);
             break;
@@ -215,22 +208,20 @@ static void read_properties_from_data( PROPVARIANT *prop, uint8_t *data, unsigne
         property->vt = proptype;
         switch(proptype)
         {
-        case VT_I2:
-            property->iVal = read_dword(data, &dwOffset);
+        case OLEVT_I2:
+        case OLEVT_I4:
+            property->intval = read_dword(data, &dwOffset);
             break;
-        case VT_I4:
-            property->lVal = read_dword(data, &dwOffset);
-            break;
-        case VT_FILETIME:
+        case OLEVT_FILETIME:
             if( dwOffset + 8 > sz )
             {
                 ERR("not enough data for type %d %d \n", dwOffset, sz);
                 break;
             }
-            property->filetime.dwLowDateTime = read_dword(data, &dwOffset);
-            property->filetime.dwHighDateTime = read_dword(data, &dwOffset);
+            property->filetime = read_dword(data, &dwOffset);
+            property->filetime |= (uint64_t)read_dword(data, &dwOffset) << 32;
             break;
-        case VT_LPSTR:
+        case OLEVT_LPSTR:
             len = read_dword(data, &dwOffset);
             if( dwOffset + len > sz )
             {
@@ -244,21 +235,16 @@ static void read_properties_from_data( PROPVARIANT *prop, uint8_t *data, unsigne
         }
 
         /* check the type is the same as we expect */
-        if( type == VT_LPSTR && proptype == VT_LPSTR)
-           property->pszVal = str;
+        if( type == OLEVT_LPSTR && proptype == OLEVT_LPSTR)
+           property->strval = str;
         else if (type == proptype)
            ;
-        else if( proptype == VT_LPSTR) {
-            if( type == VT_I2) {
-                property->iVal = atoi( str );
-            } else if( type == VT_I4) {
-                property->lVal = atoi( str );
-            } else if( type == VT_FILETIME) {
+        else if( proptype == OLEVT_LPSTR) {
+            if( type == OLEVT_I2 || type == OLEVT_I4) {
+                property->intval = atoi( str );
+            } else if( type == OLEVT_FILETIME) {
                 WCHAR *wstr = strdupAtoW(str);
-                uint64_t ft_value;
-                parse_filetime( wstr, &ft_value );
-                property->filetime.dwLowDateTime = ft_value & 0xFFFFFFFFULL;
-                property->filetime.dwHighDateTime = ft_value >> 32;
+                parse_filetime( wstr, &property->filetime );
                 msi_free (wstr);
             }
             msi_free (str);
@@ -375,30 +361,27 @@ static unsigned write_string( uint8_t *data, unsigned ofs, const char *str )
     return (7 + len) & ~3;
 }
 
-static unsigned write_property_to_data( const PROPVARIANT *prop, uint8_t *data )
+static unsigned write_property_to_data( const LibmsiOLEVariant *prop, uint8_t *data )
 {
     unsigned sz = 0;
 
-    if( prop->vt == VT_EMPTY )
+    if( prop->vt == OLEVT_EMPTY )
         return sz;
 
     /* add the type */
     sz += write_dword( data, sz, prop->vt );
     switch( prop->vt )
     {
-    case VT_I2:
-        sz += write_dword( data, sz, prop->iVal );
+    case OLEVT_I2:
+    case OLEVT_I4:
+        sz += write_dword( data, sz, prop->intval );
         break;
-    case VT_I4:
-        sz += write_dword( data, sz, prop->lVal );
-        break;
-    case VT_FILETIME: {
-        uint64_t i8 = prop->filetime.dwLowDateTime | ((uint64_t)prop->filetime.dwHighDateTime << 32);
-        sz += write_filetime( data, sz, &i8 );
+    case OLEVT_FILETIME: {
+        sz += write_filetime( data, sz, &prop->filetime );
         break;
     }
-    case VT_LPSTR:
-        sz += write_string( data, sz, prop->pszVal );
+    case OLEVT_LPSTR:
+        sz += write_string( data, sz, prop->strval );
         break;
     }
     return sz;
@@ -538,14 +521,14 @@ LibmsiResult libmsi_summary_info_get_property_count(LibmsiSummaryInfo *si, unsig
 }
 
 LibmsiResult libmsi_summary_info_get_property(
-      LibmsiSummaryInfo *si, unsigned uiProperty, unsigned *puiDataType, int *piValue,
+      LibmsiSummaryInfo *si, unsigned uiProperty, unsigned *puiDataType, int *pintvalue,
       uint64_t *pftValue, char *szValueBuf, unsigned *pcchValueBuf)
 {
-    PROPVARIANT *prop;
+    LibmsiOLEVariant *prop;
     unsigned ret = LIBMSI_RESULT_SUCCESS;
 
     TRACE("%d %d %p %p %p %p %p\n", si, uiProperty, puiDataType,
-          piValue, pftValue, szValueBuf, pcchValueBuf);
+          pintvalue, pftValue, szValueBuf, pcchValueBuf);
 
     if ( uiProperty >= MSI_MAX_PROPS )
     {
@@ -561,21 +544,15 @@ LibmsiResult libmsi_summary_info_get_property(
 
     switch( prop->vt )
     {
-    case VT_I2:
+    case OLEVT_I2:
+    case OLEVT_I4:
         if( puiDataType )
             *puiDataType = LIBMSI_PROPERTY_TYPE_INT;
 
-        if( piValue )
-            *piValue = prop->iVal;
+        if( pintvalue )
+            *pintvalue = prop->intval;
         break;
-    case VT_I4:
-        if( puiDataType )
-            *puiDataType = LIBMSI_PROPERTY_TYPE_INT;
-
-        if( piValue )
-            *piValue = prop->lVal;
-        break;
-    case VT_LPSTR:
+    case OLEVT_LPSTR:
         if( puiDataType )
             *puiDataType = LIBMSI_PROPERTY_TYPE_STRING;
 
@@ -583,22 +560,22 @@ LibmsiResult libmsi_summary_info_get_property(
         {
             unsigned len = 0;
 
-            len = strlen( prop->pszVal );
+            len = strlen( prop->strval );
             if( szValueBuf )
-                strcpynA(szValueBuf, prop->pszVal, *pcchValueBuf );
+                strcpynA(szValueBuf, prop->strval, *pcchValueBuf );
             if (len >= *pcchValueBuf)
                 ret = LIBMSI_RESULT_MORE_DATA;
             *pcchValueBuf = len;
         }
         break;
-    case VT_FILETIME:
+    case OLEVT_FILETIME:
         if( puiDataType )
             *puiDataType = LIBMSI_PROPERTY_TYPE_FILETIME;
 
         if( pftValue )
-            *pftValue = prop->filetime.dwLowDateTime | ((uint64_t)prop->filetime.dwHighDateTime << 32);
+            *pftValue = prop->filetime;
         break;
-    case VT_EMPTY:
+    case OLEVT_EMPTY:
         if( puiDataType )
             *puiDataType = LIBMSI_PROPERTY_TYPE_EMPTY;
 
@@ -611,48 +588,24 @@ LibmsiResult libmsi_summary_info_get_property(
     return ret;
 }
 
-WCHAR *msi_suminfo_dup_string( LibmsiSummaryInfo *si, unsigned uiProperty )
-{
-    PROPVARIANT *prop;
-
-    if ( uiProperty >= MSI_MAX_PROPS )
-        return NULL;
-    prop = &si->property[uiProperty];
-    if( prop->vt != VT_LPSTR)
-        return NULL;
-    return strdupAtoW( prop->pszVal );
-}
-
-int msi_suminfo_get_int32( LibmsiSummaryInfo *si, unsigned uiProperty )
-{
-    PROPVARIANT *prop;
-
-    if ( uiProperty >= MSI_MAX_PROPS )
-        return -1;
-    prop = &si->property[uiProperty];
-    if( prop->vt != VT_I4 )
-        return -1;
-    return prop->lVal;
-}
-
 static LibmsiResult _libmsi_summary_info_set_property( LibmsiSummaryInfo *si, unsigned uiProperty,
-               unsigned type, int iValue, uint64_t* pftValue, const char *szValue )
+               unsigned type, int intvalue, uint64_t* pftValue, const char *szValue )
 {
-    PROPVARIANT *prop;
+    LibmsiOLEVariant *prop;
     unsigned len;
     unsigned ret;
 
-    if( type == VT_LPSTR && !szValue )
+    if( type == OLEVT_LPSTR && !szValue )
         return LIBMSI_RESULT_INVALID_PARAMETER;
 
-    if( type == VT_FILETIME && !pftValue )
+    if( type == OLEVT_FILETIME && !pftValue )
         return LIBMSI_RESULT_INVALID_PARAMETER;
 
     msiobj_addref( &si->hdr);
 
     prop = &si->property[uiProperty];
 
-    if( prop->vt == VT_EMPTY )
+    if( prop->vt == OLEVT_EMPTY )
     {
         ret = LIBMSI_RESULT_FUNCTION_FAILED;
         if( !si->update_count )
@@ -670,20 +623,17 @@ static LibmsiResult _libmsi_summary_info_set_property( LibmsiSummaryInfo *si, un
     prop->vt = type;
     switch( type )
     {
-    case VT_I4:
-        prop->lVal = iValue;
+    case OLEVT_I2:
+    case OLEVT_I4:
+        prop->intval = intvalue;
         break;
-    case VT_I2:
-        prop->iVal = iValue;
+    case OLEVT_FILETIME:
+        prop->filetime = *pftValue;
         break;
-    case VT_FILETIME:
-        prop->filetime.dwLowDateTime = (unsigned) (*pftValue);
-        prop->filetime.dwHighDateTime = (unsigned) (*pftValue >> 32);
-        break;
-    case VT_LPSTR:
+    case OLEVT_LPSTR:
         len = strlen( szValue ) + 1;
-        prop->pszVal = msi_alloc( len );
-        strcpy( prop->pszVal, szValue );
+        prop->strval = msi_alloc( len );
+        strcpy( prop->strval, szValue );
         break;
     }
 
@@ -694,11 +644,11 @@ end:
 }
 
 LibmsiResult libmsi_summary_info_set_property( LibmsiSummaryInfo *si, unsigned uiProperty,
-               unsigned uiDataType, int iValue, uint64_t* pftValue, const char *szValue )
+               unsigned uiDataType, int intvalue, uint64_t* pftValue, const char *szValue )
 {
     int type;
 
-    TRACE("%p %u %u %i %p %p\n", si, uiProperty, type, iValue,
+    TRACE("%p %u %u %i %p %p\n", si, uiProperty, type, intvalue,
           pftValue, szValue );
 
     if( !si )
@@ -706,27 +656,27 @@ LibmsiResult libmsi_summary_info_set_property( LibmsiSummaryInfo *si, unsigned u
 
     type = get_type( uiProperty );
     switch (type) {
-    case VT_EMPTY:
+    case OLEVT_EMPTY:
         return LIBMSI_RESULT_DATATYPE_MISMATCH;
-    case VT_I2:
-    case VT_I4:
+    case OLEVT_I2:
+    case OLEVT_I4:
         if (uiDataType != LIBMSI_PROPERTY_TYPE_INT) {
             return LIBMSI_RESULT_DATATYPE_MISMATCH;
         }
         break;
-    case VT_LPSTR:
+    case OLEVT_LPSTR:
         if (uiDataType != LIBMSI_PROPERTY_TYPE_STRING) {
             return LIBMSI_RESULT_DATATYPE_MISMATCH;
         }
         break;
-    case VT_FILETIME:
+    case OLEVT_FILETIME:
         if (uiDataType != LIBMSI_PROPERTY_TYPE_FILETIME) {
             return LIBMSI_RESULT_DATATYPE_MISMATCH;
         }
         break;
     }
 
-    return _libmsi_summary_info_set_property( si, uiProperty, type, iValue, pftValue, szValue );
+    return _libmsi_summary_info_set_property( si, uiProperty, type, intvalue, pftValue, szValue );
 }
 
 static unsigned parse_prop( const WCHAR *prop, const WCHAR *value, unsigned *pid, int *int_value,
@@ -795,7 +745,7 @@ unsigned msi_add_suminfo( LibmsiDatabase *db, WCHAR ***records, int num_records,
             if (r != LIBMSI_RESULT_SUCCESS)
                 goto end;
 
-            assert( get_type(pid) != VT_EMPTY );
+            assert( get_type(pid) != OLEVT_EMPTY );
             r = _libmsi_summary_info_set_property( si, pid, get_type(pid), int_value, &ft_value, str_value );
             if (r != LIBMSI_RESULT_SUCCESS)
                 goto end;
