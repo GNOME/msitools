@@ -53,7 +53,7 @@ void msiobj_addref( LibmsiObject *info )
         return;
 
     assert(info->magic == 0xC007C0DE);
-    InterlockedIncrement(&info->refcount);
+    __sync_add_and_fetch(&info->refcount, 1);
 }
 
 int msiobj_release( LibmsiObject *obj )
@@ -64,7 +64,7 @@ int msiobj_release( LibmsiObject *obj )
         return -1;
 
     assert(obj->magic == 0xC007C0DE);
-    ret = InterlockedDecrement( &obj->refcount );
+    ret = __sync_sub_and_fetch( &obj->refcount, 1 );
     if( ret==0 )
     {
         if( obj->destructor )

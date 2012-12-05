@@ -1868,10 +1868,10 @@ static unsigned table_view_add_ref(LibmsiView *view)
     for (i = 0; i < tv->table->col_count; i++)
     {
         if (tv->table->colinfo[i].type & MSITYPE_TEMPORARY)
-            InterlockedIncrement(&tv->table->colinfo[i].ref_count);
+            __sync_add_and_fetch(&tv->table->colinfo[i].ref_count, 1);
     }
 
-    return InterlockedIncrement(&tv->table->ref_count);
+    return __sync_add_and_fetch(&tv->table->ref_count, 1);
 }
 
 static unsigned table_view_remove_column(LibmsiView *view, const WCHAR *table, unsigned number)
@@ -1920,7 +1920,7 @@ static unsigned table_view_release(LibmsiView *view)
     {
         if (tv->table->colinfo[i].type & MSITYPE_TEMPORARY)
         {
-            ref = InterlockedDecrement(&tv->table->colinfo[i].ref_count);
+            ref = __sync_sub_and_fetch(&tv->table->colinfo[i].ref_count, 1);
             if (ref == 0)
             {
                 r = table_view_remove_column(view, tv->table->colinfo[i].tablename,
@@ -1931,7 +1931,7 @@ static unsigned table_view_release(LibmsiView *view)
         }
     }
 
-    ref = InterlockedDecrement(&tv->table->ref_count);
+    ref = __sync_sub_and_fetch(&tv->table->ref_count, 1);
     if (ref == 0)
     {
         if (!tv->table->row_count)
@@ -1976,7 +1976,7 @@ static unsigned table_view_add_column(LibmsiView *view, const WCHAR *table, unsi
     {
         if (!strcmpW( msitable->colinfo[i].colname, column ))
         {
-            InterlockedIncrement(&msitable->colinfo[i].ref_count);
+            __sync_add_and_fetch(&msitable->colinfo[i].ref_count, 1);
             break;
         }
     }
