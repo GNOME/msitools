@@ -650,10 +650,10 @@ LibmsiResult _libmsi_database_start_transaction(LibmsiDatabase *db, const char *
     db->outfile = stg;
     g_object_ref(G_OBJECT(db->outfile));
 
-    if (!strchr( szPersist, '\\' ))
+    if (!strstr( szPersist, DIRSEP ))
     {
         getcwd( path, MAX_PATH );
-        strcat( path, "\\" );
+        strcat( path, DIRSEP );
         strcat( path, szPersist );
     }
     else
@@ -702,10 +702,10 @@ LibmsiResult libmsi_database_open(const char *szDBPath, const char *szPersist, L
         goto end;
     }
 
-    if (!strchr( szDBPath, '\\' ))
+    if (!strstr( szDBPath, DIRSEP ))
     {
         getcwd( path, MAX_PATH );
-        strcat( path, "\\" );
+        strcat( path, DIRSEP );
         strcat( path, szDBPath );
     }
     else
@@ -1051,8 +1051,8 @@ static char *msi_import_stream_filename(const char *path, const char *name)
         msi_free (fullname);
         return NULL;
     }
-    *ptr++ = '\\';
-    strcpy( ptr, name );
+    strcpy( ptr, DIRSEP );
+    strcat( ptr, name );
     return fullname;
 }
 
@@ -1177,7 +1177,7 @@ static unsigned _libmsi_database_import(LibmsiDatabase *db, const char *folder, 
         return LIBMSI_RESULT_OUTOFMEMORY;
 
     strcpy( path, folder );
-    strcat( path, "\\" );
+    strcat( path, DIRSEP );
     strcat( path, file );
 
     data = msi_read_text_archive( path, &len );
