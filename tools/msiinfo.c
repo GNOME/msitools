@@ -23,9 +23,12 @@
 #include "config.h"
 #include "libmsi.h"
 #include <stdio.h>
+#include <assert.h>
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+#include <fcntl.h>
+#include <limits.h>
 
 static const char *program_name;
 
@@ -336,6 +339,83 @@ static int cmd_suminfo(struct Command *cmd, int argc, char **argv)
     libmsi_unref(si);
 }
 
+static void full_write(int fd, char *buf, size_t sz)
+{
+    while (sz > 0) {
+        ssize_t rc = write(fd, buf, sz);
+        if (rc < 0) {
+            perror("write");
+            exit(1);
+        }
+        buf += rc;
+        sz -= rc;
+    }
+}
+
+static int cmd_extract(struct Command *cmd, int argc, char **argv)
+{
+    LibmsiDatabase *db = NULL;
+    LibmsiQuery *query = NULL;
+    LibmsiRecord *rec = NULL;
+    LibmsiResult r;
+    char *buf;
+    unsigned size, bufsize;
+
+    if (argc != 3) {
+        cmd_usage(stderr, cmd);
+    }
+
+    r = libmsi_database_open(argv[1], LIBMSI_DB_OPEN_READONLY, &db);
+    if (r) {
+        print_libmsi_error(r);
+    }
+
+    r = libmsi_database_open_query(db, "SELECT `Data` FROM `_Streams` WHERE `Name` = ?", &query);
+    if (r) {
+        print_libmsi_error(r);
+    }
+
+    rec = libmsi_record_create(1);
+    libmsi_record_set_string(rec, 1, argv[2]);
+    r = libmsi_query_execute(query, rec);
+    libmsi_unref(rec);
+    if (r) {
+        print_libmsi_error(r);
+    }
+
+    r = libmsi_query_fetch(query, &rec);
+    if (r) {
+        print_libmsi_error(r);
+    }
+
+    r = libmsi_record_save_stream(rec, 1, NULL, &size);
+    if (r) {
+        print_libmsi_error(r);
+    }
+
+    bufsize = (size > 1048576 ? 1048576 : size);
+    buf = malloc(bufsize);
+    if (!buf) {
+        perror("malloc");
+        exit(1);
+    }
+
+#if O_BINARY
+    _setmode(STDOUT_FILENO, O_BINARY);
+#endif
+
+    while (size > 0) {
+        r = libmsi_record_save_stream(rec, 1, buf, &bufsize);
+        assert(size >= bufsize);
+        full_write(STDOUT_FILENO, buf, bufsize);
+        size -= bufsize;
+    }
+
+    libmsi_unref(rec);
+    libmsi_unref(query);
+    libmsi_unref(db);
+}
+
 static int cmd_export(struct Command *cmd, int argc, char **argv)
 {
     LibmsiDatabase *db = NULL;
@@ -394,6 +474,12 @@ static struct Command cmds[] = {
         .opts = "FILE",
         .desc = "List tables in a .msi file",
         .func = cmd_tables,
+    },
+    {
+        .cmd = "extract",
+        .opts = "FILE STREAM",
+        .desc = "Extract a binary stream from an .msi file",
+        .func = cmd_extract,
     },
     {
         .cmd = "export",
