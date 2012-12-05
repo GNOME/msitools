@@ -435,13 +435,13 @@ extern unsigned msi_get_property( LibmsiDatabase *, const char *, char *, unsign
 extern int msi_get_property_int( LibmsiDatabase *package, const char *prop, int def );
 
 /* common strings */
-static const char szEmpty[] = {0};
-static const char szStreams[] = {'_','S','t','r','e','a','m','s',0};
-static const char szStorages[] = {'_','S','t','o','r','a','g','e','s',0};
-static const char szStringData[] = {'_','S','t','r','i','n','g','D','a','t','a',0};
-static const char szStringPool[] = {'_','S','t','r','i','n','g','P','o','o','l',0};
-static const char szName[] = {'N','a','m','e',0};
-static const char szData[] = {'D','a','t','a',0};
+static const char szEmpty[] = "";
+static const char szStreams[] = "_Streams";
+static const char szStorages[] = "_Storages";
+static const char szStringData[] = "_StringData";
+static const char szStringPool[] = "_StringPool";
+static const char szName[] = "Name";
+static const char szData[] = "Data";
 
 /* memory allocation macro functions */
 

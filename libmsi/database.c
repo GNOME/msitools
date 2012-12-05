@@ -842,7 +842,7 @@ static char *msi_build_createsql_prelude(char *table)
     char *prelude;
     unsigned size;
 
-    static const char create_fmt[] = {'C','R','E','A','T','E',' ','T','A','B','L','E',' ','`','%','s','`',' ','(',' ',0};
+    static const char create_fmt[] = "CREATE TABLE `%s` (";
 
     size = sizeof(create_fmt)/sizeof(create_fmt[0]) + strlen(table) - 2;
     prelude = msi_alloc(size * sizeof(char));
@@ -862,14 +862,14 @@ static char *msi_build_createsql_columns(char **columns_data, char **types, unsi
     char expanded[128], *ptr;
     char size[10], comma[2], extra[30];
 
-    static const char column_fmt[] = {'`','%','s','`',' ','%','s','%','s','%','s','%','s',' ',0};
-    static const char size_fmt[] = {'(','%','s',')',0};
-    static const char type_char[] = {'C','H','A','R',0};
-    static const char type_int[] = {'I','N','T',0};
-    static const char type_long[] = {'L','O','N','G',0};
-    static const char type_object[] = {'O','B','J','E','C','T',0};
-    static const char type_notnull[] = {' ','N','O','T',' ','N','U','L','L',0};
-    static const char localizable[] = {' ','L','O','C','A','L','I','Z','A','B','L','E',0};
+    static const char column_fmt[] = "`%s` %s%s%s%s ";
+    static const char size_fmt[] = "(%s)";
+    static const char type_char[] = "CHAR";
+    static const char type_int[] = "INT";
+    static const char type_long[] = "LONG";
+    static const char type_object[] = "OBJECT";
+    static const char type_notnull[] = " NOT NULL";
+    static const char localizable[] = " LOCALIZABLE";
 
     columns = msi_alloc_zero(sql_size * sizeof(char));
     if (!columns)
@@ -957,8 +957,8 @@ static char *msi_build_createsql_postlude(char **primary_keys, unsigned num_keys
     char *ptr;
     unsigned size, key_size, i;
 
-    static const char key_fmt[] = {'`','%','s','`',',',' ',0};
-    static const char postlude_fmt[] = {'P','R','I','M','A','R','Y',' ','K','E','Y',' ','%','s',')',0};
+    static const char key_fmt[] = "`%s`, ";
+    static const char postlude_fmt[] = "PRIMARY KEY %s)";
 
     for (i = 0, size = 1; i < num_keys; i++)
         size += strlen(key_fmt) + strlen(primary_keys[i]) - 2;
@@ -1161,10 +1161,8 @@ static unsigned _libmsi_database_import(LibmsiDatabase *db, const char *folder, 
     char ***records = NULL;
     char ***temp_records;
 
-    static const char suminfo[] =
-        {'_','S','u','m','m','a','r','y','I','n','f','o','r','m','a','t','i','o','n',0};
-    static const char forcecodepage[] =
-        {'_','F','o','r','c','e','C','o','d','e','p','a','g','e',0};
+    static const char suminfo[] = "_SummaryInformation";
+    static const char forcecodepage[] = "_ForceCodepage";
 
     TRACE("%p %s %s\n", db, debugstr_a(folder), debugstr_a(file) );
 
@@ -1349,10 +1347,8 @@ static unsigned msi_export_forcecodepage( int fd, unsigned codepage )
 static unsigned _libmsi_database_export( LibmsiDatabase *db, const char *table,
                int fd)
 {
-    static const char query[] = {
-        's','e','l','e','c','t',' ','*',' ','f','r','o','m',' ','%','s',0 };
-    static const char forcecodepage[] = {
-        '_','F','o','r','c','e','C','o','d','e','p','a','g','e',0 };
+    static const char query[] = "select * from %s";
+    static const char forcecodepage[] = "_ForceCodepage";
     LibmsiRecord *rec = NULL;
     LibmsiQuery *view = NULL;
     unsigned r;
@@ -1601,7 +1597,7 @@ static char *get_key_value(LibmsiQuery *view, const char *key, LibmsiRecord *rec
     if (_libmsi_record_get_string_raw(rec, i))  /* check record field is a string */
     {
         /* quote string record fields */
-        const char szQuote[] = {'\'', 0};
+        const char szQuote[] = "'";
         sz += 2;
         val = msi_alloc(sz*sizeof(char));
         if (!val)
@@ -1643,13 +1639,9 @@ static char *create_diff_row_query(LibmsiDatabase *merge, LibmsiQuery *view,
     LibmsiRecord *keys;
     unsigned r, i, count;
 
-    static const char keyset[] = {
-        '`','%','s','`',' ','=',' ','%','s',' ','A','N','D',' ',0};
-    static const char lastkeyset[] = {
-        '`','%','s','`',' ','=',' ','%','s',' ',0};
-    static const char fmt[] = {'S','E','L','E','C','T',' ','*',' ',
-        'F','R','O','M',' ','`','%','s','`',' ',
-        'W','H','E','R','E',' ','%','s',0};
+    static const char keyset[] = "`%s` = %s AND";
+    static const char lastkeyset[] = "`%s` = %s ";
+    static const char fmt[] = "SELECT * FROM %s WHERE %s";
 
     r = _libmsi_database_get_primary_keys(merge, table, &keys);
     if (r != LIBMSI_RESULT_SUCCESS)
@@ -1897,8 +1889,7 @@ static unsigned msi_get_merge_table (LibmsiDatabase *db, const char *name, MERGE
     MERGETABLE *table;
     LibmsiQuery *mergeview = NULL;
 
-    static const char query[] = {'S','E','L','E','C','T',' ','*',' ',
-        'F','R','O','M',' ','`','%','s','`',0};
+    static const char query[] = "SELECT * FROM %s";
 
     table = msi_alloc_zero(sizeof(MERGETABLE));
     if (!table)
@@ -1948,8 +1939,7 @@ static unsigned merge_diff_tables(LibmsiRecord *rec, void *param)
     const char *name;
     unsigned r;
 
-    static const char query[] = {'S','E','L','E','C','T',' ','*',' ',
-        'F','R','O','M',' ','`','%','s','`',0};
+    static const char query[] = "SELECT * FROM %s";
 
     name = _libmsi_record_get_string_raw(rec, 1);
 
@@ -1996,9 +1986,7 @@ done:
 static unsigned gather_merge_data(LibmsiDatabase *db, LibmsiDatabase *merge,
                               struct list *tabledata)
 {
-    static const char query[] = {
-        'S','E','L','E','C','T',' ','*',' ','F','R','O','M',' ',
-        '`','_','T','a','b','l','e','s','`',0};
+    static const char query[] = "SELECT * FROM _Tables";
     LibmsiQuery *view;
     MERGEDATA data;
     unsigned r;
@@ -2051,20 +2039,11 @@ static unsigned update_merge_errors(LibmsiDatabase *db, const char *error,
     unsigned r;
     LibmsiQuery *view;
 
-    static const char create[] = {
-        'C','R','E','A','T','E',' ','T','A','B','L','E',' ',
-        '`','%','s','`',' ','(','`','T','a','b','l','e','`',' ',
-        'C','H','A','R','(','2','5','5',')',' ','N','O','T',' ',
-        'N','U','L','L',',',' ','`','N','u','m','R','o','w','M','e','r','g','e',
-        'C','o','n','f','l','i','c','t','s','`',' ','S','H','O','R','T',' ',
-        'N','O','T',' ','N','U','L','L',' ','P','R','I','M','A','R','Y',' ',
-        'K','E','Y',' ','`','T','a','b','l','e','`',')',0};
-    static const char insert[] = {
-        'I','N','S','E','R','T',' ','I','N','T','O',' ',
-        '`','%','s','`',' ','(','`','T','a','b','l','e','`',',',' ',
-        '`','N','u','m','R','o','w','M','e','r','g','e',
-        'C','o','n','f','l','i','c','t','s','`',')',' ','V','A','L','U','E','S',
-        ' ','(','\'','%','s','\'',',',' ','%','d',')',0};
+    static const char create[] =
+        "CREATE TABLE `%s` (`Table` CHAR(255) NOT NULL, "
+	"`NumRowMergeConflicts` SHORT NOT NULL PRIMARY KEY `Table`)";
+    static const char insert[] =
+        "INSERT INTO `%s` (`Table`, `NumRowMergeConflicts`) VALUES ('%s', %d)";
 
     if (!table_view_exists(db, error))
     {

@@ -398,7 +398,7 @@ LibmsiResult libmsi_query_execute(LibmsiQuery *query, LibmsiRecord *rec)
 static unsigned msi_set_record_type_string( LibmsiRecord *rec, unsigned field,
                                         unsigned type, bool temporary )
 {
-    static const char fmt[] = { '%','d',0 };
+    static const char fmt[] = "%d";
     char szType[0x10];
 
     if (MSITYPE_IS_BINARY(type))
@@ -746,11 +746,7 @@ static unsigned msi_primary_key_iterator( LibmsiRecord *rec, void *param )
 unsigned _libmsi_database_get_primary_keys( LibmsiDatabase *db,
                 const char *table, LibmsiRecord **prec )
 {
-    static const char sql[] = {
-        's','e','l','e','c','t',' ','*',' ',
-        'f','r','o','m',' ','`','_','C','o','l','u','m','n','s','`',' ',
-        'w','h','e','r','e',' ',
-        '`','T','a','b','l','e','`',' ','=',' ','\'','%','s','\'',0 };
+    static const char sql[] = "select * from `_Columns` where `Table` = '%s'";
     struct msi_primary_key_record_info info;
     LibmsiQuery *query = NULL;
     unsigned r;

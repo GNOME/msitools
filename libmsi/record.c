@@ -343,7 +343,7 @@ unsigned _libmsi_record_get_string(const LibmsiRecord *rec, unsigned iField,
 {
     unsigned len=0, ret;
     char buffer[16];
-    static const char szFormat[] = { '%','d',0 };
+    static const char szFormat[] = "%d";
 
     TRACE("%p %d %p %p\n", rec, iField, szValue, pcchValue);
 

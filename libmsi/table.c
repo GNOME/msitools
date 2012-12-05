@@ -30,7 +30,7 @@
 
 #define LibmsiTable_HASH_TABLE_SIZE 37
 
-static const char szDot[] = {'.',0};
+static const char szDot[] = ".";
 
 typedef struct LibmsiColumnHashEntry
 {
@@ -65,11 +65,11 @@ struct LibmsiTable
 };
 
 /* information for default tables */
-static const char szTables[]  = {'_','T','a','b','l','e','s',0};
-static const char szTable[]   = {'T','a','b','l','e',0};
-static const char szColumns[] = {'_','C','o','l','u','m','n','s',0};
-static const char szNumber[]  = {'N','u','m','b','e','r',0};
-static const char szType[]    = {'T','y','p','e',0};
+static const char szTables[]  = "_Tables";
+static const char szTable[]   = "Table";
+static const char szColumns[] = "_Columns";
+static const char szNumber[]  = "Number";
+static const char szType[]    = "Type";
 
 static const LibmsiColumnInfo _Columns_cols[4] = {
     { szColumns, 1, szTable,  MSITYPE_VALID | MSITYPE_STRING | MSITYPE_KEY | 64, 0, 0, 0, NULL },
@@ -1100,7 +1100,7 @@ static unsigned msi_stream_name( const LibmsiTableView *tv, unsigned row, char *
             }
             else
             {
-                static const char fmt[] = { '%','d',0 };
+                static const char fmt[] = "%d";
                 unsigned n = bytes_per_column( tv->db, &tv->columns[i], LONG_STR_BYTES );
 
                 switch( n )
@@ -1225,11 +1225,8 @@ static unsigned table_view_get_row( LibmsiView *view, unsigned row, LibmsiRecord
 
 static unsigned _libmsi_add_stream( LibmsiDatabase *db, const char *name, GsfInput *data )
 {
-    static const char insert[] = {
-        'I','N','S','E','R','T',' ','I','N','T','O',' ',
-        '`','_','S','t','r','e','a','m','s','`',' ',
-        '(','`','N','a','m','e','`',',','`','D','a','t','a','`',')',' ',
-        'V','A','L','U','E','S',' ','(','?',',','?',')',0};
+    static const char insert[] =
+        "INSERT INTO `_Streams`(`Name`, `Data`) VALUES (?, ?)";
     LibmsiQuery *query = NULL;
     LibmsiRecord *rec;
     unsigned r;

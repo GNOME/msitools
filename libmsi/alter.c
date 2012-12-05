@@ -75,12 +75,8 @@ static bool check_column_exists(LibmsiDatabase *db, const char *table, const cha
     LibmsiRecord *rec;
     unsigned r;
 
-    static const char query[] = {
-        'S','E','L','E','C','T',' ','*',' ','F','R','O','M',' ',
-        '`','_','C','o','l','u','m','n','s','`',' ','W','H','E','R','E',' ',
-        '`','T','a','b','l','e','`','=','\'','%','s','\'',' ','A','N','D',' ',
-        '`','N','a','m','e','`','=','\'','%','s','\'',0
-    };
+    static const char query[] =
+	    "SELECT * FROM `_Columns` WHERE `Table`='%s' AND `Name`='%s'";
 
     r = _libmsi_query_open(db, &view, query, table, column);
     if (r != LIBMSI_RESULT_SUCCESS)
@@ -105,13 +101,9 @@ static unsigned alter_add_column(LibmsiAlterView *av)
     LibmsiQuery *view;
     LibmsiView *columns;
 
-    static const char szColumns[] = {'_','C','o','l','u','m','n','s',0};
-    static const char query[] = {
-        'S','E','L','E','C','T',' ','*',' ','F','R','O','M',' ',
-        '`','_','C','o','l','u','m','n','s','`',' ','W','H','E','R','E',' ',
-        '`','T','a','b','l','e','`','=','\'','%','s','\'',' ','O','R','D','E','R',' ',
-        'B','Y',' ','`','N','u','m','b','e','r','`',0
-    };
+    static const char szColumns[] = "_Columns";
+    static const char query[] =
+        "SELECT * FROM `_Columns` WHERE `Table`='%s' ORDER BY `Number`";
 
     r = table_view_create(av->db, szColumns, &columns);
     if (r != LIBMSI_RESULT_SUCCESS)
