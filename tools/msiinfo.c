@@ -164,7 +164,7 @@ static LibmsiResult print_strings_from_query(LibmsiQuery *query)
     char name[PATH_MAX];
 
     while ((r = libmsi_query_fetch(query, &rec)) == LIBMSI_RESULT_SUCCESS) {
-        size_t size = PATH_MAX;
+        unsigned size = PATH_MAX;
         r = libmsi_record_get_string(rec, 1, name, &size);
         if (r) {
             print_libmsi_error(r);
@@ -254,7 +254,7 @@ static void print_suminfo(LibmsiSummaryInfo *si, int prop, const char *name)
     int val;
     uint64_t valtime;
     char *buf;
-    size_t sz;
+    unsigned sz;
     unsigned r;
     time_t t;
 
