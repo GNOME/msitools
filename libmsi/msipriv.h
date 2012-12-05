@@ -462,7 +462,7 @@ static inline void *msi_realloc_zero( void *mem, size_t oldlen, size_t len )
     return mem;
 }
 
-static inline bool msi_free( void *mem )
+static inline void msi_free( void *mem )
 {
     free(mem);
 }
