@@ -37,7 +37,7 @@
 #define YYLEX_PARAM info
 #define YYPARSE_PARAM info
 
-static int sql_error(const char *str);
+static int sql_error(void *info, const char *str);
 
 
 typedef struct LibmsiSQLInput
@@ -77,6 +77,7 @@ static struct expr * build_expr_wildcard( void *info );
 %}
 
 %define api.prefix "sql_"
+%parse-param {void *info}
 %pure-parser
 
 %union
@@ -866,7 +867,7 @@ INT sql_atoi( void *info )
     return r;
 }
 
-static int sql_error( const char *str )
+static int sql_error(void *info, const char *str )
 {
     return 0;
 }
