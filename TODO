@@ -1,0 +1,20 @@
+- verify gsf conversion, some tests fail on Windows but not POSIX?
+- add GObject/GIR support
+- make a SummaryInformation API that does not suck (including converting
+  FILETIME usage to GDateTime)
+- add an API to open a query and return a pointer to the next SQL
+  statement in the passed string
+- add a SQL tool with readline
+- add API to export a table as SQL
+- add API to import from a string
+- add API to write a stream field to a GIO stream or back
+- change Foo** APIs to use GError instead
+- convert tests to use gtester or something like that instead of
+  comparing output
+- add tests for the tools using Autoconf's Autotest framework
+
+...
+
+Missing functionality:
+
+- generating transforms
