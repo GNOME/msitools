@@ -27,12 +27,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "windef.h"
-#include "winbase.h"
 #include "query.h"
 #include "list.h"
 #include "debug.h"
-#include "unicode.h"
 
 #define YYLEX_PARAM info
 #define YYPARSE_PARAM info
@@ -54,7 +51,7 @@ typedef struct LibmsiSQLInput
 } SQL_input;
 
 static unsigned sql_unescape_string( void *info, const struct sql_str *strdata, char **str );
-static INT sql_atoi( void *info );
+static int sql_atoi( void *info );
 static int sql_lex( void *SQL_lval, SQL_input *info );
 
 static char *parser_add_table( void *info, const char *list, const char *table );
@@ -848,11 +845,11 @@ unsigned sql_unescape_string( void *info, const struct sql_str *strdata, char **
     return LIBMSI_RESULT_SUCCESS;
 }
 
-INT sql_atoi( void *info )
+int sql_atoi( void *info )
 {
     SQL_input* sql = (SQL_input*) info;
     const char *p = &sql->command[sql->n];
-    INT i, r = 0;
+    int i, r = 0;
 
     for( i=0; i<sql->len; i++ )
     {

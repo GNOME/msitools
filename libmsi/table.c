@@ -21,22 +21,11 @@
 #include <stdarg.h>
 #include <assert.h>
 
-#define COBJMACROS
-#define NONAMELESSUNION
-#define NONAMELESSSTRUCT
-
-#include "windef.h"
-#include "winbase.h"
-#include "winerror.h"
 #include "libmsi.h"
-#include "objbase.h"
-#include "objidl.h"
-#include "winnls.h"
 #include "msipriv.h"
 #include "query.h"
 
 #include "debug.h"
-#include "unicode.h"
 
 
 #define LibmsiTable_HASH_TABLE_SIZE 37
@@ -258,7 +247,7 @@ unsigned read_stream_data( GsfInfile *stg, const char *stname,
                        uint8_t **pdata, unsigned *psz )
 {
     unsigned ret = LIBMSI_RESULT_FUNCTION_FAILED;
-    VOID *data;
+    void *data;
     unsigned sz;
     GsfInput *stm = NULL;
     char *encname;

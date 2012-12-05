@@ -1,6 +1,6 @@
 #include <stdarg.h>
 #include <stdbool.h>
-#include "debug.h"
+#include <stdio.h>
 
 #define todo_wine if(0)
 

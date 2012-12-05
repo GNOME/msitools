@@ -20,18 +20,11 @@
 
 #include <stdarg.h>
 
-#define COBJMACROS
-
-#include "windef.h"
-#include "winbase.h"
-#include "winerror.h"
 #include "libmsi.h"
-#include "objbase.h"
 #include "msipriv.h"
 #include "query.h"
 
 #include "debug.h"
-#include "unicode.h"
 
 
 #define NUM_STREAMS_COLS    2
@@ -307,7 +300,7 @@ static unsigned streams_view_find_matching_rows(LibmsiView *view, unsigned col,
                                        unsigned val, unsigned *row, MSIITERHANDLE *handle)
 {
     LibmsiStreamsView *sv = (LibmsiStreamsView *)view;
-    unsigned index = PtrToUlong(*handle);
+    unsigned index = (uintptr_t)(*handle);
 
     TRACE("(%p, %d, %d, %p, %p)\n", view, col, val, row, handle);
 
@@ -325,7 +318,7 @@ static unsigned streams_view_find_matching_rows(LibmsiView *view, unsigned col,
         index++;
     }
 
-    *handle = UlongToPtr(++index);
+    *handle = (MSIITERHANDLE)(uintptr_t)++index;
 
     if (index > sv->num_rows)
         return LIBMSI_RESULT_NO_MORE_ITEMS;

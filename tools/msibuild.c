@@ -24,6 +24,7 @@
 #include <unistd.h>
 #include <sys/stat.h>
 #include <libmsi.h>
+#include <limits.h>
 
 #ifdef HAVE_LIBUUID
 #include <uuid.h>

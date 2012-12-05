@@ -22,11 +22,7 @@
 #include <time.h>
 #include <assert.h>
 
-#define COBJMACROS
-#define NONAMELESSUNION
-
 #include "debug.h"
-#include "unicode.h"
 #include "libmsi.h"
 #include "msipriv.h"
 

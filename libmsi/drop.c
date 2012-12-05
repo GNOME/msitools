@@ -20,13 +20,8 @@
 
 #include <stdarg.h>
 
-#include "windef.h"
-#include "winbase.h"
-#include "winerror.h"
 #include "debug.h"
 #include "libmsi.h"
-#include "objbase.h"
-#include "objidl.h"
 #include "msipriv.h"
 
 #include "query.h"

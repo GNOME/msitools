@@ -1,7 +1,6 @@
 lib_LTLIBRARIES = libmsi.la
 
-AM_CPPFLAGS = -I$(top_srcdir)/include -I$(srcdir) -I. -DUNICODE \
-	      -I$(srcdir)/winstubs -include $(srcdir)/winstubs/winstubs.h \
+AM_CPPFLAGS = -I$(top_srcdir)/include -I$(srcdir) -I. \
 	      $(GLIB_CFLAGS) $(GSF_CFLAGS)
 
 AM_CFLAGS = -Wunused -Wimplicit
@@ -11,8 +10,7 @@ BUILT_SOURCES = sql-parser.c sql-parser.h
 noinst_HEADERS = \
 	list.h \
 	msipriv.h \
-	query.h \
-	unicode.h
+	query.h
 
 libmsi_la_SOURCES = alter.c create.c database.c delete.c distinct.c \
 	drop.c handle.c insert.c msiquery.c record.c select.c storages.c \

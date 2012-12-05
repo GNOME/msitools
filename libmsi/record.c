@@ -20,20 +20,9 @@
 
 #include <stdarg.h>
 
-#define COBJMACROS
-
-#include "windef.h"
-#include "winbase.h"
-#include "winerror.h"
 #include "debug.h"
-#include "unicode.h"
 #include "libmsi.h"
 #include "msipriv.h"
-#include "objidl.h"
-#include "winnls.h"
-#include "ole2.h"
-
-#include "shlwapi.h"
 
 #include "query.h"
 

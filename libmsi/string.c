@@ -20,25 +20,17 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA
  */
 
-#define COBJMACROS
-
 #include <stdarg.h>
 #include <assert.h>
 #include <gsf/gsf-msole-utils.h>
 
-#include "windef.h"
-#include "winbase.h"
-#include "winerror.h"
 #include "debug.h"
-#include "unicode.h"
 #include "libmsi.h"
-#include "objbase.h"
-#include "objidl.h"
 #include "msipriv.h"
-#include "winnls.h"
 
 #include "query.h"
 
+#define CP_ACP 0
 
 struct msistring
 {
@@ -60,7 +52,7 @@ struct string_table
 static bool validate_codepage( unsigned codepage )
 {
     switch (codepage) {
-    case 0: /* CP_ACP */
+    case CP_ACP:
     case 37: case 424: case 437: case 500: case 737: case 775: case 850:
     case 852: case 855: case 856: case 857: case 860: case 861: case 862:
     case 863: case 864: case 865: case 866: case 869: case 874: case 875:
@@ -115,7 +107,7 @@ static string_table *init_stringtable( int entries, unsigned codepage )
     return st;
 }
 
-VOID msi_destroy_stringtable( string_table *st )
+void msi_destroy_stringtable( string_table *st )
 {
     unsigned i;
 

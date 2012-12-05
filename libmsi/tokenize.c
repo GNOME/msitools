@@ -20,9 +20,6 @@
 #include <stdarg.h>
 #include <stdlib.h>
 
-#include "windef.h"
-#include "winbase.h"
-#include "unicode.h"
 #include "query.h"
 #include "sql-parser.h"
 

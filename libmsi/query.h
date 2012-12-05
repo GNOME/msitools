@@ -18,17 +18,12 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA
  */
 
-#ifndef __WINE_MSI_QUERY_H
-#define __WINE_MSI_QUERY_H
+#ifndef __LIBMSI_QUERY_H
+#define __LIBMSI_QUERY_H
 
 #include <stdarg.h>
 
-#include "windef.h"
-#include "winbase.h"
-#include "objbase.h"
-#include "objidl.h"
-#include "msi.h"
-#include "msiquery.h"
+#include "libmsi.h"
 #include "msipriv.h"
 #include "list.h"
 
@@ -141,4 +136,4 @@ unsigned msi_create_table( LibmsiDatabase *db, const char *name, column_info *co
 
 #pragma GCC visibility pop
 
-#endif /* __WINE_MSI_QUERY_H */
+#endif /* __LIBMSI_QUERY_H */

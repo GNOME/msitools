@@ -26,9 +26,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
-#include <windef.h>
-#include <winbase.h>
-#include <winnls.h>
+#include <glib.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -71,17 +69,15 @@ static inline const char *wine_dbg_sprintf( const char *format, ...)
     va_list ap;
 
     va_start(ap, format);
-    len = _vscprintf(format, ap);
+    ret = g_strdup_vprintf(format, ap);
+    len = strlen(ret);
     va_end(ap);
 
     i = (i + 1) % 10;
-    ret = p_ret[i];
-    ret = realloc(ret, len + 1);
-
-    va_start(ap, format);
-    vsprintf(ret, format, ap);
-    va_end(ap);
-    return ret;
+    p_ret[i] = realloc(p_ret[i], len + 1);
+    strcpy(p_ret[i], ret);
+    g_free(ret);
+    return p_ret[i];
 }
 
 #define wine_dbg_printf(format,...) (printf(format, ## __VA_ARGS__), fflush(stdout))
@@ -98,25 +94,6 @@ static inline const char *wine_dbgstr_guid( const uint8_t *id )
     return wine_dbg_sprintf( "{%02x%02x%02x%02x-%02x%02x-%02x%02x-%02x%02x-%02x%02x%02x%02x%02x%02x}",
              id[0], id[1], id[2], id[3], id[4], id[5], id[6], id[7],
              id[8], id[9], id[10], id[11], id[12], id[13], id[14], id[15]);
-}
-
-static inline const char *wine_dbgstr_point( const POINT *pt )
-{
-    if (!pt) return "(null)";
-    return wine_dbg_sprintf( "(%d,%d)", pt->x, pt->y );
-}
-
-static inline const char *wine_dbgstr_size( const SIZE *size )
-{
-    if (!size) return "(null)";
-    return wine_dbg_sprintf( "(%d,%d)", size->cx, size->cy );
-}
-
-static inline const char *wine_dbgstr_rect( const RECT *rect )
-{
-    if (!rect) return "(null)";
-    return wine_dbg_sprintf( "(%d,%d)-(%d,%d)", rect->left, rect->top,
-                             rect->right, rect->bottom );
 }
 
 static inline const char *wine_dbgstr_longlong( unsigned long long ll )

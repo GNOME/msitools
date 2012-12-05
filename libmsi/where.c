@@ -22,16 +22,9 @@
 #include <stdarg.h>
 #include <assert.h>
 
-#include "windef.h"
-#include "winbase.h"
-#include "winerror.h"
 #include "debug.h"
-#include "unicode.h"
 #include "libmsi.h"
-#include "objbase.h"
-#include "objidl.h"
 #include "msipriv.h"
-#include "winnls.h"
 
 #include "query.h"
 
@@ -139,7 +132,7 @@ static unsigned add_row(LibmsiWhereView *wv, unsigned vals[])
         wv->reorder_size = newsize;
     }
 
-    new = msi_alloc(FIELD_OFFSET( LibmsiRowEntry, values[wv->table_count] ));
+    new = msi_alloc(offsetof( LibmsiRowEntry, values[wv->table_count] ));
 
     if (!new)
         return LIBMSI_RESULT_OUTOFMEMORY;
@@ -921,7 +914,7 @@ static unsigned where_view_find_matching_rows( LibmsiView *view, unsigned col,
     if (col == 0 || col > wv->col_count)
         return LIBMSI_RESULT_INVALID_PARAMETER;
 
-    for (i = PtrToUlong(*handle); i < wv->row_count; i++)
+    for (i = (uintptr_t)*handle; i < wv->row_count; i++)
     {
         if (view->ops->fetch_int( view, i, col, &row_value ) != LIBMSI_RESULT_SUCCESS)
             continue;
@@ -929,7 +922,7 @@ static unsigned where_view_find_matching_rows( LibmsiView *view, unsigned col,
         if (row_value == val)
         {
             *row = i;
-            *handle = UlongToPtr(i + 1);
+            *handle = (MSIITERHANDLE)(uintptr_t)(i + 1);
             return LIBMSI_RESULT_SUCCESS;
         }
     }

@@ -24,18 +24,9 @@
 #include <fcntl.h>
 #include <sys/stat.h>
 
-#define COBJMACROS
-#define NONAMELESSUNION
-
-#include "windef.h"
-#include "winbase.h"
-#include "winnls.h"
 #include "debug.h"
-#include "unicode.h"
 #include "libmsi.h"
 #include "msipriv.h"
-#include "objidl.h"
-#include "objbase.h"
 #include "query.h"
 
 const uint8_t clsid_msi_transform[16] = { 0x82, 0x10, 0x0c, 0x00, 0x00, 0x00, 0x00, 0x00, 0xc0,0x00, 0x00,0x00,0x00,0x00,0x00,0x46 };
@@ -492,7 +483,7 @@ void append_storage_to_db( LibmsiDatabase *db, GsfInfile *stg )
 #endif
 }
 
-static VOID _libmsi_database_destroy( LibmsiObject *arg )
+static void _libmsi_database_destroy( LibmsiObject *arg )
 {
     LibmsiDatabase *db = (LibmsiDatabase *) arg;
 

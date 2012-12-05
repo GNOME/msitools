@@ -23,6 +23,8 @@
 #define __WINE_MSI_PRIVATE__
 
 #include <stdarg.h>
+#include <string.h>
+#include <stdlib.h>
 #include <glib.h>
 
 #include <gsf/gsf.h>
@@ -37,16 +39,14 @@
 #include <gsf/gsf-outfile-msole.h>
 
 
-#include "unicode.h"
-#include "windef.h"
-#include "winbase.h"
 #include "libmsi.h"
-#include "objbase.h"
-#include "objidl.h"
-#include "winnls.h"
 #include "list.h"
 
 #pragma GCC visibility push(hidden)
+
+#ifndef MAX_PATH
+#define MAX_PATH PATH_MAX
+#endif
 
 #define MSI_DATASIZEMASK 0x00ff
 #define MSITYPE_VALID    0x0100
@@ -71,12 +71,12 @@ typedef struct string_table string_table;
 struct LibmsiObject;
 typedef struct LibmsiObject LibmsiObject;
 
-typedef VOID (*msihandledestructor)( LibmsiObject * );
+typedef void (*msihandledestructor)( LibmsiObject * );
 
 struct LibmsiObject
 {
     unsigned magic;
-    LONG refcount;
+    int refcount;
     msihandledestructor destructor;
 };
 
@@ -343,7 +343,7 @@ enum StringPersistence
 
 extern int _libmsi_add_string( string_table *st, const char *data, int len, uint16_t refcount, enum StringPersistence persistence );
 extern unsigned _libmsi_id_from_string_utf8( const string_table *st, const char *buffer, unsigned *id );
-extern VOID msi_destroy_stringtable( string_table *st );
+extern void msi_destroy_stringtable( string_table *st );
 extern const char *msi_string_lookup_id( const string_table *st, unsigned id );
 extern string_table *msi_init_string_table( unsigned *bytes_per_strref );
 extern string_table *msi_load_string_table( GsfInfile *stg, unsigned *bytes_per_strref );
