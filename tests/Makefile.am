@@ -1,5 +1,6 @@
 AM_CPPFLAGS = -I$(top_srcdir)/include -I$(srcdir) -I.
 
+if WIN32
 check_PROGRAMS = testdatabase testrecord testsuminfo
 
 testdatabase_SOURCES = testdatabase.c
@@ -15,13 +16,14 @@ TESTS = \
 	testsuminfo$(EXEEXT)
 
 TESTS_ENVIRONMENT = srcdir=$(srcdir) ./runtest
+endif
 
 CLEANFILES = \
 	testdatabase.log testdatabase.diff \
 	testrecord.log testrecord.diff \
 	testsuminfo.log testsuminfo.diff
 
-EXTRA_DIST = \
+EXTRA_DIST = runtest \
 	testdatabase.ok \
 	testrecord.ok \
 	testsuminfo.ok
