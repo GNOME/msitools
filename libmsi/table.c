@@ -41,7 +41,7 @@
 
 #define LibmsiTable_HASH_TABLE_SIZE 37
 
-static const WCHAR szDot[] = {'.',0};
+static const char szDot[] = {'.',0};
 
 typedef struct LibmsiColumnHashEntry
 {
@@ -52,9 +52,9 @@ typedef struct LibmsiColumnHashEntry
 
 typedef struct LibmsiColumnInfo
 {
-    const WCHAR *tablename;
+    const char *tablename;
     unsigned    number;
-    const WCHAR *colname;
+    const char *colname;
     unsigned    type;
     unsigned    offset;
     int     ref_count;
@@ -72,15 +72,15 @@ struct LibmsiTable
     unsigned col_count;
     LibmsiCondition persistent;
     int ref_count;
-    WCHAR name[1];
+    char name[1];
 };
 
 /* information for default tables */
-static const WCHAR szTables[]  = {'_','T','a','b','l','e','s',0};
-static const WCHAR szTable[]   = {'T','a','b','l','e',0};
-static const WCHAR szColumns[] = {'_','C','o','l','u','m','n','s',0};
-static const WCHAR szNumber[]  = {'N','u','m','b','e','r',0};
-static const WCHAR szType[]    = {'T','y','p','e',0};
+static const char szTables[]  = {'_','T','a','b','l','e','s',0};
+static const char szTable[]   = {'T','a','b','l','e',0};
+static const char szColumns[] = {'_','C','o','l','u','m','n','s',0};
+static const char szNumber[]  = {'N','u','m','b','e','r',0};
+static const char szType[]    = {'T','y','p','e',0};
 
 static const LibmsiColumnInfo _Columns_cols[4] = {
     { szColumns, 1, szTable,  MSITYPE_VALID | MSITYPE_STRING | MSITYPE_KEY | 64, 0, 0, 0, NULL },
@@ -127,16 +127,15 @@ static int utf2mime(int x)
     return -1;
 }
 
-WCHAR *encode_streamname(bool bTable, const WCHAR *in)
+char *encode_streamname(bool bTable, const char *in)
 {
     unsigned count = MAX_STREAM_NAME;
     unsigned ch, next;
-    WCHAR *out_wc;
-    CHAR *out;
-    CHAR *p;
+    char *out;
+    char *p;
 
     if( !bTable )
-        count = strlenW( in )+2;
+        count = strlen( in )+2;
     if (!(out = msi_alloc( count*3 ))) return NULL;
     p = out;
 
@@ -154,11 +153,7 @@ WCHAR *encode_streamname(bool bTable, const WCHAR *in)
         if( !ch )
         {
             *p = ch;
-
-            /* Convert UTF-8 to WCHAR */
-	    out_wc = strdupUTF8toW(out);
-	    msi_free(out);
-            return out_wc;
+            return out;
         }
         if( ( ch < 0x80 ) && ( utf2mime(ch) >= 0 ) )
         {
@@ -183,11 +178,10 @@ WCHAR *encode_streamname(bool bTable, const WCHAR *in)
                 in++;
             }
         } else {
-            // *p++ = ch;
-            p += WideCharToMultiByte( CP_UTF8, 0, &ch, 1, p, 5, NULL, NULL );
+            *p++ = ch;
         }
     }
-    ERR("Failed to encode stream name (%s)\n",debugstr_w(in));
+    ERR("Failed to encode stream name (%s)\n",debugstr_a(in));
     msi_free( out );
     return NULL;
 }
@@ -205,14 +199,11 @@ static int mime2utf(int x)
     return '_';
 }
 
-void decode_streamname(const WCHAR *in, WCHAR *out)
+void decode_streamname(const char *in, char *out)
 {
     unsigned count = 0;
-    uint8_t *enc_utf8 = strdupWtoUTF8(in);
-    uint8_t *p = enc_utf8;
-
-    uint8_t *dec_utf8 = strdup(enc_utf8);
-    uint8_t *q = dec_utf8;
+    const uint8_t *p = (const uint8_t *)in;
+    uint8_t *q = (uint8_t *)out;
 
     while ( *p )
     {
@@ -246,51 +237,41 @@ void decode_streamname(const WCHAR *in, WCHAR *out)
         count++;
     }
     *q = 0;
-    msi_free(enc_utf8);
-
-    /* convert UTF8 to WCHAR */
-    MultiByteToWideChar( CP_UTF8, 0, dec_utf8, -1, out, count + 1 );
-    msi_free(dec_utf8);
 }
 
 void enum_stream_names( GsfInfile *stg )
 {
     unsigned n, i;
-    WCHAR name[0x40];
+    char name[0x40];
 
     n = gsf_infile_num_children(stg);
     for (i = 0; i < n; i++)
     {
-        const char *utf8name = gsf_infile_name_by_index(stg, i);
-        WCHAR *stname = strdupUTF8toW(utf8name);
+        const char *stname = gsf_infile_name_by_index(stg, i);
         decode_streamname( stname, name );
         TRACE("stream %2d -> %s %s\n", n,
-              debugstr_w(stname), debugstr_w(name) );
-        msi_free(stname);
+              debugstr_a(stname), debugstr_a(name) );
     }
 }
 
-unsigned read_stream_data( GsfInfile *stg, const WCHAR *stname,
+unsigned read_stream_data( GsfInfile *stg, const char *stname,
                        uint8_t **pdata, unsigned *psz )
 {
     unsigned ret = LIBMSI_RESULT_FUNCTION_FAILED;
     VOID *data;
     unsigned sz;
     GsfInput *stm = NULL;
-    WCHAR *encname;
-    char *utf8name;
+    char *encname;
 
     encname = encode_streamname(true, stname);
-    utf8name = strdupWtoUTF8(encname);
 
-    TRACE("%s -> %s\n",debugstr_w(stname),debugstr_w(encname));
-    msi_free(encname);
+    TRACE("%s -> %s\n",debugstr_a(stname),debugstr_a(encname));
 
     if ( !stg )
         return LIBMSI_RESULT_FUNCTION_FAILED;
 
-    stm = gsf_infile_child_by_name(stg, utf8name );
-    msi_free( utf8name );
+    stm = gsf_infile_child_by_name(stg, encname );
+    msi_free(encname);
     if( !stm )
     {
         WARN("open stream failed - empty table?\n");
@@ -336,23 +317,20 @@ end:
     return ret;
 }
 
-unsigned write_stream_data( LibmsiDatabase *db, const WCHAR *stname,
+unsigned write_stream_data( LibmsiDatabase *db, const char *stname,
                         const void *data, unsigned sz )
 {
     unsigned ret = LIBMSI_RESULT_FUNCTION_FAILED;
-    WCHAR *encname;
-    char *utf8name;
+    char *encname;
     GsfOutput *stm;
 
     if (!db->outfile)
         return ret;
 
     encname = encode_streamname(true, stname );
-    utf8name = strdupWtoUTF8(encname);
-    msi_free( encname );
 
-    stm = gsf_outfile_new_child( db->outfile, utf8name, false );
-    msi_free( utf8name );
+    stm = gsf_outfile_new_child( db->outfile, encname, false );
+    msi_free( encname );
     if( !stm )
     {
         WARN("open stream failed\n");
@@ -414,7 +392,7 @@ static unsigned read_table_from_storage( LibmsiDatabase *db, LibmsiTable *t, Gsf
     uint8_t *rawdata = NULL;
     unsigned rawsize = 0, i, j, row_size, row_size_mem;
 
-    TRACE("%s\n",debugstr_w(t->name));
+    TRACE("%s\n",debugstr_a(t->name));
 
     row_size = msi_table_get_row_size( db, t->colinfo, t->col_count, db->bytes_per_strref );
     row_size_mem = msi_table_get_row_size( db, t->colinfo, t->col_count, LONG_STR_BYTES );
@@ -500,12 +478,12 @@ void free_cached_tables( LibmsiDatabase *db )
     }
 }
 
-static LibmsiTable *find_cached_table( LibmsiDatabase *db, const WCHAR *name )
+static LibmsiTable *find_cached_table( LibmsiDatabase *db, const char *name )
 {
     LibmsiTable *t;
 
     LIST_FOR_EACH_ENTRY( t, &db->tables, LibmsiTable, entry )
-        if( !strcmpW( name, t->name ) )
+        if( !strcmp( name, t->name ) )
             return t;
 
     return NULL;
@@ -523,24 +501,24 @@ static void table_calc_column_offsets( LibmsiDatabase *db, LibmsiColumnInfo *col
          else colinfo[i].offset = 0;
 
          TRACE("column %d is [%s] with type %08x ofs %d\n",
-               colinfo[i].number, debugstr_w(colinfo[i].colname),
+               colinfo[i].number, debugstr_a(colinfo[i].colname),
                colinfo[i].type, colinfo[i].offset);
     }
 }
 
-static unsigned get_defaulttablecolumns( LibmsiDatabase *db, const WCHAR *name, LibmsiColumnInfo *colinfo, unsigned *sz )
+static unsigned get_defaulttablecolumns( LibmsiDatabase *db, const char *name, LibmsiColumnInfo *colinfo, unsigned *sz )
 {
     const LibmsiColumnInfo *p;
     unsigned i, n;
 
-    TRACE("%s\n", debugstr_w(name));
+    TRACE("%s\n", debugstr_a(name));
 
-    if (!strcmpW( name, szTables ))
+    if (!strcmp( name, szTables ))
     {
         p = _Tables_cols;
         n = 1;
     }
-    else if (!strcmpW( name, szColumns ))
+    else if (!strcmp( name, szColumns ))
     {
         p = _Columns_cols;
         n = 4;
@@ -557,9 +535,9 @@ static unsigned get_defaulttablecolumns( LibmsiDatabase *db, const WCHAR *name, 
     return LIBMSI_RESULT_SUCCESS;
 }
 
-static unsigned get_tablecolumns( LibmsiDatabase *db, const WCHAR *szTableName, LibmsiColumnInfo *colinfo, unsigned *sz );
+static unsigned get_tablecolumns( LibmsiDatabase *db, const char *szTableName, LibmsiColumnInfo *colinfo, unsigned *sz );
 
-static unsigned table_get_column_info( LibmsiDatabase *db, const WCHAR *name, LibmsiColumnInfo **pcols, unsigned *pcount )
+static unsigned table_get_column_info( LibmsiDatabase *db, const char *name, LibmsiColumnInfo **pcols, unsigned *pcount )
 {
     unsigned r, column_count = 0;
     LibmsiColumnInfo *columns;
@@ -576,7 +554,7 @@ static unsigned table_get_column_info( LibmsiDatabase *db, const WCHAR *name, Li
     if (!column_count)
         return LIBMSI_RESULT_INVALID_PARAMETER;
 
-    TRACE("table %s found\n", debugstr_w(name));
+    TRACE("table %s found\n", debugstr_a(name));
 
     columns = msi_alloc( column_count * sizeof(LibmsiColumnInfo) );
     if (!columns)
@@ -592,33 +570,33 @@ static unsigned table_get_column_info( LibmsiDatabase *db, const WCHAR *name, Li
     return r;
 }
 
-unsigned _libmsi_open_table( LibmsiDatabase *db, const WCHAR *name, bool encoded )
+unsigned _libmsi_open_table( LibmsiDatabase *db, const char *name, bool encoded )
 {
-    WCHAR decname[0x40];
+    char decname[0x40];
     LibmsiTable *table;
 
     if (encoded)
     {
-        assert(name[0] == 0x4840);
+        assert(name[0] == 0xe4 && name[1] == 0xa1 && name[2] == 0x80);
         decode_streamname( name + 1, decname );
         name = decname;
     }
 
-    table = msi_alloc_zero( sizeof(LibmsiTable) + strlenW( name ) * sizeof(WCHAR) );
+    table = msi_alloc_zero( sizeof(LibmsiTable) + strlen( name ) * sizeof(char) );
     if (!table)
         return LIBMSI_RESULT_FUNCTION_FAILED;
 
     table->persistent = LIBMSI_CONDITION_TRUE;
-    strcpyW( table->name, name );
+    strcpy( table->name, name );
 
-    if (!strcmpW( name, szTables ) || !strcmpW( name, szColumns ))
+    if (!strcmp( name, szTables ) || !strcmp( name, szColumns ))
         table->persistent = LIBMSI_CONDITION_NONE;
 
     list_add_head( &db->tables, &table->entry );
     return LIBMSI_RESULT_SUCCESS;
 }
 
-static unsigned get_table( LibmsiDatabase *db, const WCHAR *name, LibmsiTable **table_ret )
+static unsigned get_table( LibmsiDatabase *db, const char *name, LibmsiTable **table_ret )
 {
     LibmsiTable *table;
     unsigned r;
@@ -669,12 +647,12 @@ static unsigned read_table_int( uint8_t *const *data, unsigned row, unsigned col
     return ret;
 }
 
-static unsigned get_tablecolumns( LibmsiDatabase *db, const WCHAR *szTableName, LibmsiColumnInfo *colinfo, unsigned *sz )
+static unsigned get_tablecolumns( LibmsiDatabase *db, const char *szTableName, LibmsiColumnInfo *colinfo, unsigned *sz )
 {
     unsigned r, i, n = 0, table_id, count, maxcount = *sz;
     LibmsiTable *table = NULL;
 
-    TRACE("%s\n", debugstr_w(szTableName));
+    TRACE("%s\n", debugstr_a(szTableName));
 
     /* first check if there is a default table with that name */
     r = get_defaulttablecolumns( db, szTableName, colinfo, sz );
@@ -689,10 +667,10 @@ static unsigned get_tablecolumns( LibmsiDatabase *db, const WCHAR *szTableName, 
     }
 
     /* convert table and column names to IDs from the string table */
-    r = _libmsi_id_from_stringW( db->strings, szTableName, &table_id );
+    r = _libmsi_id_from_string_utf8( db->strings, szTableName, &table_id );
     if (r != LIBMSI_RESULT_SUCCESS)
     {
-        WARN("Couldn't find id for %s\n", debugstr_w(szTableName));
+        WARN("Couldn't find id for %s\n", debugstr_a(szTableName));
         return r;
     }
     TRACE("Table id is %d, row count is %d\n", table_id, table->row_count);
@@ -733,11 +711,11 @@ static unsigned get_tablecolumns( LibmsiDatabase *db, const WCHAR *szTableName, 
         }
         n++;
     }
-    TRACE("%s has %d columns\n", debugstr_w(szTableName), n);
+    TRACE("%s has %d columns\n", debugstr_a(szTableName), n);
 
     if (colinfo && n != maxcount)
     {
-        ERR("missing column in table %s\n", debugstr_w(szTableName));
+        ERR("missing column in table %s\n", debugstr_a(szTableName));
         msi_free_colinfo( colinfo, maxcount );
         return LIBMSI_RESULT_FUNCTION_FAILED;
     }
@@ -746,7 +724,7 @@ static unsigned get_tablecolumns( LibmsiDatabase *db, const WCHAR *szTableName, 
     return LIBMSI_RESULT_SUCCESS;
 }
 
-unsigned msi_create_table( LibmsiDatabase *db, const WCHAR *name, column_info *col_info,
+unsigned msi_create_table( LibmsiDatabase *db, const char *name, column_info *col_info,
                        LibmsiCondition persistent )
 {
     enum StringPersistence string_persistence = (persistent) ? StringPersistent : StringNonPersistent;
@@ -760,11 +738,11 @@ unsigned msi_create_table( LibmsiDatabase *db, const WCHAR *name, column_info *c
     /* only add tables that don't exist already */
     if( table_view_exists(db, name ) )
     {
-        WARN("table %s exists\n", debugstr_w(name));
+        WARN("table %s exists\n", debugstr_a(name));
         return LIBMSI_RESULT_BAD_QUERY_SYNTAX;
     }
 
-    table = msi_alloc( sizeof (LibmsiTable) + strlenW(name)*sizeof (WCHAR) );
+    table = msi_alloc( sizeof (LibmsiTable) + strlen(name)*sizeof (char) );
     if( !table )
         return LIBMSI_RESULT_FUNCTION_FAILED;
 
@@ -775,7 +753,7 @@ unsigned msi_create_table( LibmsiDatabase *db, const WCHAR *name, column_info *c
     table->colinfo = NULL;
     table->col_count = 0;
     table->persistent = persistent;
-    strcpyW( table->name, name );
+    strcpy( table->name, name );
 
     for( col = col_info; col; col = col->next )
         table->col_count++;
@@ -820,7 +798,7 @@ unsigned msi_create_table( LibmsiDatabase *db, const WCHAR *name, column_info *c
     if( !rec )
         goto err;
 
-    r = _libmsi_record_set_stringW( rec, 1, name );
+    r = libmsi_record_set_string( rec, 1, name );
     if( r )
         goto err;
 
@@ -851,7 +829,7 @@ unsigned msi_create_table( LibmsiDatabase *db, const WCHAR *name, column_info *c
         if( !rec )
             goto err;
 
-        r = _libmsi_record_set_stringW( rec, 1, name );
+        r = libmsi_record_set_string( rec, 1, name );
         if( r )
             goto err;
 
@@ -866,7 +844,7 @@ unsigned msi_create_table( LibmsiDatabase *db, const WCHAR *name, column_info *c
             if( r )
                 goto err;
 
-            r = _libmsi_record_set_stringW( rec, 3, col->column );
+            r = libmsi_record_set_string( rec, 3, col->column );
             if( r )
                 goto err;
 
@@ -913,10 +891,10 @@ static unsigned save_table( LibmsiDatabase *db, const LibmsiTable *t, unsigned b
      * we can just skip them if they are empty.  However, always
      * save the Tables stream.
      */
-    if ( t->row_count == 0 && strcmpW(t->name, szTables) )
+    if ( t->row_count == 0 && strcmp(t->name, szTables) )
         return LIBMSI_RESULT_SUCCESS;
 
-    TRACE("Saving %s\n", debugstr_w( t->name ) );
+    TRACE("Saving %s\n", debugstr_a( t->name ) );
 
     row_size = msi_table_get_row_size( db, t->colinfo, t->col_count, bytes_per_strref );
     row_count = t->row_count;
@@ -981,7 +959,7 @@ err:
     return r;
 }
 
-static void msi_update_table_columns( LibmsiDatabase *db, const WCHAR *name )
+static void msi_update_table_columns( LibmsiDatabase *db, const char *name )
 {
     LibmsiTable *table;
     unsigned size, offset, old_count;
@@ -1008,26 +986,26 @@ static void msi_update_table_columns( LibmsiDatabase *db, const WCHAR *name )
 }
 
 /* try to find the table name in the _Tables table */
-bool table_view_exists( LibmsiDatabase *db, const WCHAR *name )
+bool table_view_exists( LibmsiDatabase *db, const char *name )
 {
     unsigned r, table_id, i;
     LibmsiTable *table;
 
-    if( !strcmpW( name, szTables ) || !strcmpW( name, szColumns ) ||
-        !strcmpW( name, szStreams ) || !strcmpW( name, szStorages ) )
+    if( !strcmp( name, szTables ) || !strcmp( name, szColumns ) ||
+        !strcmp( name, szStreams ) || !strcmp( name, szStorages ) )
         return true;
 
-    r = _libmsi_id_from_stringW( db->strings, name, &table_id );
+    r = _libmsi_id_from_string_utf8( db->strings, name, &table_id );
     if( r != LIBMSI_RESULT_SUCCESS )
     {
-        TRACE("Couldn't find id for %s\n", debugstr_w(name));
+        TRACE("Couldn't find id for %s\n", debugstr_a(name));
         return false;
     }
 
     r = get_table( db, szTables, &table );
     if( r != LIBMSI_RESULT_SUCCESS )
     {
-        ERR("table %s not available\n", debugstr_w(szTables));
+        ERR("table %s not available\n", debugstr_a(szTables));
         return false;
     }
 
@@ -1050,7 +1028,7 @@ typedef struct LibmsiTableView
     LibmsiColumnInfo *columns;
     unsigned           num_cols;
     unsigned           row_size;
-    WCHAR          name[1];
+    char          name[1];
 } LibmsiTableView;
 
 static unsigned table_view_fetch_int( LibmsiView *view, unsigned row, unsigned col, unsigned *val )
@@ -1090,33 +1068,33 @@ static unsigned table_view_fetch_int( LibmsiView *view, unsigned row, unsigned c
     return LIBMSI_RESULT_SUCCESS;
 }
 
-static unsigned msi_stream_name( const LibmsiTableView *tv, unsigned row, WCHAR **pstname )
+static unsigned msi_stream_name( const LibmsiTableView *tv, unsigned row, char **pstname )
 {
-    WCHAR *p;
-    WCHAR *stname = NULL;
+    char *p;
+    char *stname = NULL;
     unsigned i, r, type, ival;
     unsigned len;
-    const WCHAR *sval;
+    const char *sval;
     LibmsiView *view = (LibmsiView *) tv;
 
     TRACE("%p %d\n", tv, row);
 
-    len = strlenW( tv->name ) + 1;
-    stname = msi_alloc( len*sizeof(WCHAR) );
+    len = strlen( tv->name ) + 1;
+    stname = msi_alloc( len*sizeof(char) );
     if ( !stname )
     {
        r = LIBMSI_RESULT_OUTOFMEMORY;
        goto err;
     }
 
-    strcpyW( stname, tv->name );
+    strcpy( stname, tv->name );
 
     for ( i = 0; i < tv->num_cols; i++ )
     {
         type = tv->columns[i].type;
         if ( type & MSITYPE_KEY )
         {
-            WCHAR number[0x20];
+            char number[0x20];
 
             r = table_view_fetch_int( view, row, i+1, &ival );
             if ( r != LIBMSI_RESULT_SUCCESS )
@@ -1133,16 +1111,16 @@ static unsigned msi_stream_name( const LibmsiTableView *tv, unsigned row, WCHAR 
             }
             else
             {
-                static const WCHAR fmt[] = { '%','d',0 };
+                static const char fmt[] = { '%','d',0 };
                 unsigned n = bytes_per_column( tv->db, &tv->columns[i], LONG_STR_BYTES );
 
                 switch( n )
                 {
                 case 2:
-                    sprintfW( number, fmt, ival-0x8000 );
+                    sprintf( number, fmt, ival-0x8000 );
                     break;
                 case 4:
-                    sprintfW( number, fmt, ival^0x80000000 );
+                    sprintf( number, fmt, ival^0x80000000 );
                     break;
                 default:
                     ERR( "oops - unknown column width %d\n", n );
@@ -1152,8 +1130,8 @@ static unsigned msi_stream_name( const LibmsiTableView *tv, unsigned row, WCHAR 
                 sval = number;
             }
 
-            len += strlenW( szDot ) + strlenW( sval );
-            p = msi_realloc ( stname, len*sizeof(WCHAR) );
+            len += strlen( szDot ) + strlen( sval );
+            p = msi_realloc ( stname, len*sizeof(char) );
             if ( !p )
             {
                 r = LIBMSI_RESULT_OUTOFMEMORY;
@@ -1161,8 +1139,8 @@ static unsigned msi_stream_name( const LibmsiTableView *tv, unsigned row, WCHAR 
             }
             stname = p;
 
-            strcatW( stname, szDot );
-            strcatW( stname, sval );
+            strcat( stname, szDot );
+            strcat( stname, sval );
         }
         else
            continue;
@@ -1186,8 +1164,8 @@ static unsigned table_view_fetch_stream( LibmsiView *view, unsigned row, unsigne
 {
     LibmsiTableView *tv = (LibmsiTableView*)view;
     unsigned r;
-    WCHAR *encname;
-    WCHAR *full_name = NULL;
+    char *encname;
+    char *full_name = NULL;
 
     if( !view->ops->fetch_int )
         return LIBMSI_RESULT_INVALID_PARAMETER;
@@ -1202,7 +1180,7 @@ static unsigned table_view_fetch_stream( LibmsiView *view, unsigned row, unsigne
     encname = encode_streamname( false, full_name );
     r = msi_get_raw_stream( tv->db, encname, stm );
     if( r )
-        ERR("fetching stream %s, error = %d\n",debugstr_w(full_name), r);
+        ERR("fetching stream %s, error = %d\n",debugstr_a(full_name), r);
 
     msi_free( full_name );
     msi_free( encname );
@@ -1256,9 +1234,9 @@ static unsigned table_view_get_row( LibmsiView *view, unsigned row, LibmsiRecord
     return msi_view_get_row(tv->db, view, row, rec);
 }
 
-static unsigned _libmsi_add_stream( LibmsiDatabase *db, const WCHAR *name, GsfInput *data )
+static unsigned _libmsi_add_stream( LibmsiDatabase *db, const char *name, GsfInput *data )
 {
-    static const WCHAR insert[] = {
+    static const char insert[] = {
         'I','N','S','E','R','T',' ','I','N','T','O',' ',
         '`','_','S','t','r','e','a','m','s','`',' ',
         '(','`','N','a','m','e','`',',','`','D','a','t','a','`',')',' ',
@@ -1267,13 +1245,13 @@ static unsigned _libmsi_add_stream( LibmsiDatabase *db, const WCHAR *name, GsfIn
     LibmsiRecord *rec;
     unsigned r;
 
-    TRACE("%p %s %p\n", db, debugstr_w(name), data);
+    TRACE("%p %s %p\n", db, debugstr_a(name), data);
 
     rec = libmsi_record_create( 2 );
     if ( !rec )
         return LIBMSI_RESULT_OUTOFMEMORY;
 
-    r = _libmsi_record_set_stringW( rec, 1, name );
+    r = libmsi_record_set_string( rec, 1, name );
     if ( r != LIBMSI_RESULT_SUCCESS )
        goto err;
 
@@ -1311,10 +1289,10 @@ static unsigned get_table_value_from_record( LibmsiTableView *tv, LibmsiRecord *
     }
     else if ( columninfo.type & MSITYPE_STRING )
     {
-        const WCHAR *sval = _libmsi_record_get_string_raw( rec, iField );
+        const char *sval = _libmsi_record_get_string_raw( rec, iField );
         if (sval)
         {
-            r = _libmsi_id_from_stringW(tv->db->strings, sval, pvalue);
+            r = _libmsi_id_from_string_utf8(tv->db->strings, sval, pvalue);
             if (r != LIBMSI_RESULT_SUCCESS)
                 return LIBMSI_RESULT_NOT_FOUND;
         }
@@ -1369,7 +1347,7 @@ static unsigned table_view_set_row( LibmsiView *view, unsigned row, LibmsiRecord
             if ( MSITYPE_IS_BINARY(tv->columns[ i ].type) )
             {
                 GsfInput *stm;
-                WCHAR *stname;
+                char *stname;
 
                 if ( r != LIBMSI_RESULT_SUCCESS )
                     return LIBMSI_RESULT_FUNCTION_FAILED;
@@ -1398,7 +1376,7 @@ static unsigned table_view_set_row( LibmsiView *view, unsigned row, LibmsiRecord
 
                 if ( r != LIBMSI_RESULT_SUCCESS )
                 {
-                    const WCHAR *sval = _libmsi_record_get_string_raw( rec, i + 1 );
+                    const char *sval = _libmsi_record_get_string_raw( rec, i + 1 );
                     val = _libmsi_add_string( tv->db->strings, sval, -1, 1,
                       persistent ? StringPersistent : StringNonPersistent );
                 }
@@ -1519,8 +1497,8 @@ static unsigned table_view_get_dimensions( LibmsiView *view, unsigned *rows, uns
 }
 
 static unsigned table_view_get_column_info( LibmsiView *view,
-                unsigned n, const WCHAR **name, unsigned *type, bool *temporary,
-                const WCHAR **table_name )
+                unsigned n, const char **name, unsigned *type, bool *temporary,
+                const char **table_name )
 {
     LibmsiTableView *tv = (LibmsiTableView*)view;
 
@@ -1568,7 +1546,7 @@ static unsigned table_validate_new( LibmsiTableView *tv, LibmsiRecord *rec, unsi
             TRACE("skipping binary column\n");
         else if ( tv->columns[i].type & MSITYPE_STRING )
         {
-            const WCHAR *str;
+            const char *str;
 
             str = _libmsi_record_get_string_raw( rec, i+1 );
             if (str == NULL || str[0] == 0)
@@ -1836,7 +1814,7 @@ static unsigned table_view_add_ref(LibmsiView *view)
     return __sync_add_and_fetch(&tv->table->ref_count, 1);
 }
 
-static unsigned table_view_remove_column(LibmsiView *view, const WCHAR *table, unsigned number)
+static unsigned table_view_remove_column(LibmsiView *view, const char *table, unsigned number)
 {
     LibmsiTableView *tv = (LibmsiTableView*)view;
     LibmsiRecord *rec = NULL;
@@ -1847,7 +1825,7 @@ static unsigned table_view_remove_column(LibmsiView *view, const WCHAR *table, u
     if (!rec)
         return LIBMSI_RESULT_OUTOFMEMORY;
 
-    _libmsi_record_set_stringW(rec, 1, table);
+    libmsi_record_set_string(rec, 1, table);
     libmsi_record_set_int(rec, 2, number);
 
     r = table_view_create(tv->db, szColumns, &columns);
@@ -1907,8 +1885,8 @@ static unsigned table_view_release(LibmsiView *view)
     return ref;
 }
 
-static unsigned table_view_add_column(LibmsiView *view, const WCHAR *table, unsigned number,
-                             const WCHAR *column, unsigned type, bool hold)
+static unsigned table_view_add_column(LibmsiView *view, const char *table, unsigned number,
+                             const char *column, unsigned type, bool hold)
 {
     LibmsiTableView *tv = (LibmsiTableView*)view;
     LibmsiTable *msitable;
@@ -1919,9 +1897,9 @@ static unsigned table_view_add_column(LibmsiView *view, const WCHAR *table, unsi
     if (!rec)
         return LIBMSI_RESULT_OUTOFMEMORY;
 
-    _libmsi_record_set_stringW(rec, 1, table);
+    libmsi_record_set_string(rec, 1, table);
     libmsi_record_set_int(rec, 2, number);
-    _libmsi_record_set_stringW(rec, 3, column);
+    libmsi_record_set_string(rec, 3, column);
     libmsi_record_set_int(rec, 4, type);
 
     r = table_view_insert_row(&tv->view, rec, -1, false);
@@ -1936,7 +1914,7 @@ static unsigned table_view_add_column(LibmsiView *view, const WCHAR *table, unsi
     msitable = find_cached_table(tv->db, table);
     for (i = 0; i < msitable->col_count; i++)
     {
-        if (!strcmpW( msitable->colinfo[i].colname, column ))
+        if (!strcmp( msitable->colinfo[i].colname, column ))
         {
             __sync_add_and_fetch(&msitable->colinfo[i].ref_count, 1);
             break;
@@ -1956,7 +1934,7 @@ static unsigned table_view_drop(LibmsiView *view)
     unsigned r, row;
     int i;
 
-    TRACE("dropping table %s\n", debugstr_w(tv->name));
+    TRACE("dropping table %s\n", debugstr_a(tv->name));
 
     for (i = tv->table->col_count - 1; i >= 0; i--)
     {
@@ -1970,7 +1948,7 @@ static unsigned table_view_drop(LibmsiView *view)
     if (!rec)
         return LIBMSI_RESULT_OUTOFMEMORY;
 
-    _libmsi_record_set_stringW(rec, 1, tv->name);
+    libmsi_record_set_string(rec, 1, tv->name);
 
     r = table_view_create(tv->db, szTables, &tables);
     if (r != LIBMSI_RESULT_SUCCESS)
@@ -2016,19 +1994,19 @@ static const LibmsiViewOps table_ops =
     table_view_drop,
 };
 
-unsigned table_view_create( LibmsiDatabase *db, const WCHAR *name, LibmsiView **view )
+unsigned table_view_create( LibmsiDatabase *db, const char *name, LibmsiView **view )
 {
     LibmsiTableView *tv ;
     unsigned r, sz;
 
-    TRACE("%p %s %p\n", db, debugstr_w(name), view );
+    TRACE("%p %s %p\n", db, debugstr_a(name), view );
 
-    if ( !strcmpW( name, szStreams ) )
+    if ( !strcmp( name, szStreams ) )
         return streams_view_create( db, view );
-    else if ( !strcmpW( name, szStorages ) )
+    else if ( !strcmp( name, szStorages ) )
         return storages_view_create( db, view );
 
-    sz = sizeof *tv + strlenW(name)*sizeof name[0] ;
+    sz = sizeof *tv + strlen(name)*sizeof name[0] ;
     tv = msi_alloc_zero( sz );
     if( !tv )
         return LIBMSI_RESULT_FUNCTION_FAILED;
@@ -2050,10 +2028,10 @@ unsigned table_view_create( LibmsiDatabase *db, const WCHAR *name, LibmsiView **
     tv->num_cols = tv->table->col_count;
     tv->row_size = msi_table_get_row_size( db, tv->table->colinfo, tv->table->col_count, LONG_STR_BYTES );
 
-    TRACE("%s one row is %d bytes\n", debugstr_w(name), tv->row_size );
+    TRACE("%s one row is %d bytes\n", debugstr_a(name), tv->row_size );
 
     *view = (LibmsiView*) tv;
-    strcpyW( tv->name, name );
+    strcpy( tv->name, name );
 
     return LIBMSI_RESULT_SUCCESS;
 }
@@ -2075,14 +2053,14 @@ unsigned _libmsi_database_commit_tables( LibmsiDatabase *db, unsigned bytes_per_
         if( r != LIBMSI_RESULT_SUCCESS )
         {
             WARN("failed to load table %s (r=%08x)\n",
-                  debugstr_w(table->name), r);
+                  debugstr_a(table->name), r);
             return r;
         }
         r = save_table( db, table, bytes_per_strref );
         if( r != LIBMSI_RESULT_SUCCESS )
         {
             WARN("failed to save table %s (r=%08x)\n",
-                  debugstr_w(table->name), r);
+                  debugstr_a(table->name), r);
             return r;
         }
         list_remove(&table->entry);
@@ -2092,12 +2070,12 @@ unsigned _libmsi_database_commit_tables( LibmsiDatabase *db, unsigned bytes_per_
     return r;
 }
 
-LibmsiCondition _libmsi_database_is_table_persistent( LibmsiDatabase *db, const WCHAR *table )
+LibmsiCondition _libmsi_database_is_table_persistent( LibmsiDatabase *db, const char *table )
 {
     LibmsiTable *t;
     unsigned r;
 
-    TRACE("%p %s\n", db, debugstr_w(table));
+    TRACE("%p %s\n", db, debugstr_a(table));
 
     if (!table)
         return LIBMSI_CONDITION_ERROR;
@@ -2119,25 +2097,25 @@ static unsigned read_raw_int(const uint8_t *data, unsigned col, unsigned bytes)
     return ret;
 }
 
-static unsigned msi_record_encoded_stream_name( const LibmsiTableView *tv, LibmsiRecord *rec, WCHAR **pstname )
+static unsigned msi_record_encoded_stream_name( const LibmsiTableView *tv, LibmsiRecord *rec, char **pstname )
 {
-    WCHAR *stname = NULL;
-    WCHAR *sval;
-    WCHAR *p;
+    char *stname = NULL;
+    char *sval;
+    char *p;
     unsigned len;
     unsigned i, r;
 
     TRACE("%p %p\n", tv, rec);
 
-    len = strlenW( tv->name ) + 1;
-    stname = msi_alloc( len*sizeof(WCHAR) );
+    len = strlen( tv->name ) + 1;
+    stname = msi_alloc( len*sizeof(char) );
     if ( !stname )
     {
        r = LIBMSI_RESULT_OUTOFMEMORY;
        goto err;
     }
 
-    strcpyW( stname, tv->name );
+    strcpy( stname, tv->name );
 
     for ( i = 0; i < tv->num_cols; i++ )
     {
@@ -2150,8 +2128,8 @@ static unsigned msi_record_encoded_stream_name( const LibmsiTableView *tv, Libms
                 goto err;
             }
 
-            len += strlenW( szDot ) + strlenW ( sval );
-            p = msi_realloc ( stname, len*sizeof(WCHAR) );
+            len += strlen( szDot ) + strlen ( sval );
+            p = msi_realloc ( stname, len*sizeof(char) );
             if ( !p )
             {
                 r = LIBMSI_RESULT_OUTOFMEMORY;
@@ -2159,8 +2137,8 @@ static unsigned msi_record_encoded_stream_name( const LibmsiTableView *tv, Libms
             }
             stname = p;
 
-            strcatW( stname, szDot );
-            strcatW( stname, sval );
+            strcat( stname, szDot );
+            strcat( stname, sval );
 
             msi_free( sval );
         }
@@ -2206,8 +2184,7 @@ static LibmsiRecord *msi_get_transform_record( const LibmsiTableView *tv, const 
 
         if( MSITYPE_IS_BINARY(tv->columns[i].type) )
         {
-            WCHAR *encname;
-            char *utf8name;
+            char *encname;
             GsfInput *stm = NULL;
             unsigned r;
 
@@ -2217,9 +2194,7 @@ static LibmsiRecord *msi_get_transform_record( const LibmsiTableView *tv, const 
             if ( r != LIBMSI_RESULT_SUCCESS )
                 return NULL;
 
-            utf8name = strdupWtoUTF8(encname);
-            stm = gsf_infile_child_by_name( stg, utf8name );
-            msi_free(utf8name);
+            stm = gsf_infile_child_by_name( stg, encname );
             if ( r != LIBMSI_RESULT_SUCCESS )
             {
                 msi_free( encname );
@@ -2227,17 +2202,17 @@ static LibmsiRecord *msi_get_transform_record( const LibmsiTableView *tv, const 
             }
 
             _libmsi_record_load_stream( rec, i+1, stm );
-            TRACE(" field %d [%s]\n", i+1, debugstr_w(encname));
+            TRACE(" field %d [%s]\n", i+1, debugstr_a(encname));
             msi_free( encname );
         }
         else if( columns[i].type & MSITYPE_STRING )
         {
-            const WCHAR *sval;
+            const char *sval;
 
             val = read_raw_int(rawdata, ofs, bytes_per_strref);
             sval = msi_string_lookup_id( st, val );
-            _libmsi_record_set_stringW( rec, i+1, sval );
-            TRACE(" field %d [%s]\n", i+1, debugstr_w(sval));
+            libmsi_record_set_string( rec, i+1, sval );
+            TRACE(" field %d [%s]\n", i+1, debugstr_a(sval));
             ofs += bytes_per_strref;
         }
         else
@@ -2274,12 +2249,12 @@ static void dump_record( LibmsiRecord *rec )
     n = libmsi_record_get_field_count( rec );
     for( i=1; i<=n; i++ )
     {
-        const WCHAR *sval;
+        const char *sval;
 
         if( libmsi_record_is_null( rec, i ) )
             TRACE("row -> []\n");
         else if( (sval = _libmsi_record_get_string_raw( rec, i )) )
-            TRACE("row -> [%s]\n", debugstr_w(sval));
+            TRACE("row -> [%s]\n", debugstr_a(sval));
         else
             TRACE("row -> [0x%08x]\n", libmsi_record_get_integer( rec, i ) );
     }
@@ -2287,19 +2262,19 @@ static void dump_record( LibmsiRecord *rec )
 
 static void dump_table( const string_table *st, const uint16_t *rawdata, unsigned rawsize )
 {
-    const WCHAR *sval;
+    const char *sval;
     unsigned i;
 
     for( i=0; i<(rawsize/2); i++ )
     {
         sval = msi_string_lookup_id( st, rawdata[i] );
-        TRACE(" %04x %s\n", rawdata[i], debugstr_w(sval) );
+        TRACE(" %04x %s\n", rawdata[i], debugstr_a(sval) );
     }
 }
 
 static unsigned* msi_record_to_row( const LibmsiTableView *tv, LibmsiRecord *rec )
 {
-    const WCHAR *str;
+    const char *str;
     unsigned i, r, *data;
 
     data = msi_alloc( tv->num_cols *sizeof (unsigned) );
@@ -2317,7 +2292,7 @@ static unsigned* msi_record_to_row( const LibmsiTableView *tv, LibmsiRecord *rec
             str = _libmsi_record_get_string_raw( rec, i+1 );
             if (str)
             {
-                r = _libmsi_id_from_stringW( tv->db->strings, str, &data[i] );
+                r = _libmsi_id_from_string_utf8( tv->db->strings, str, &data[i] );
 
                 /* if there's no matching string in the string table,
                    these keys can't match any record, so fail now. */
@@ -2396,7 +2371,7 @@ static unsigned msi_table_find_row( LibmsiTableView *tv, LibmsiRecord *rec, unsi
 typedef struct
 {
     struct list entry;
-    WCHAR *name;
+    char *name;
 } TRANSFORMDATA;
 
 static unsigned msi_table_load_transform( LibmsiDatabase *db, GsfInfile *stg,
@@ -2407,8 +2382,8 @@ static unsigned msi_table_load_transform( LibmsiDatabase *db, GsfInfile *stg,
     LibmsiTableView *tv = NULL;
     unsigned r, n, sz, i, mask, num_cols, colcol = 0, rawsize = 0;
     LibmsiRecord *rec = NULL;
-    WCHAR coltable[32];
-    const WCHAR *name;
+    char coltable[32];
+    const char *name;
 
     if (!transform)
         return LIBMSI_RESULT_SUCCESS;
@@ -2416,13 +2391,13 @@ static unsigned msi_table_load_transform( LibmsiDatabase *db, GsfInfile *stg,
     name = transform->name;
 
     coltable[0] = 0;
-    TRACE("%p %p %p %s\n", db, stg, st, debugstr_w(name) );
+    TRACE("%p %p %p %s\n", db, stg, st, debugstr_a(name) );
 
     /* read the transform data */
     read_stream_data( stg, name, &rawdata, &rawsize );
     if ( !rawdata )
     {
-        TRACE("table %s empty\n", debugstr_w(name) );
+        TRACE("table %s empty\n", debugstr_a(name) );
         return LIBMSI_RESULT_INVALID_TABLE;
     }
 
@@ -2436,7 +2411,7 @@ static unsigned msi_table_load_transform( LibmsiDatabase *db, GsfInfile *stg,
         goto err;
 
     TRACE("name = %s columns = %u row_size = %u raw size = %u\n",
-          debugstr_w(name), tv->num_cols, tv->row_size, rawsize );
+          debugstr_a(name), tv->num_cols, tv->row_size, rawsize );
 
     /* interpret the data */
     for (n = 0; n < rawsize;)
@@ -2495,14 +2470,14 @@ static unsigned msi_table_load_transform( LibmsiDatabase *db, GsfInfile *stg,
         rec = msi_get_transform_record( tv, st, stg, &rawdata[n], bytes_per_strref );
         if (rec)
         {
-            WCHAR table[32];
+            char table[32];
             unsigned sz = 32;
             unsigned number = MSI_NULL_INTEGER;
             unsigned row = 0;
 
-            if (!strcmpW( name, szColumns ))
+            if (!strcmp( name, szColumns ))
             {
-                _libmsi_record_get_stringW( rec, 1, table, &sz );
+                _libmsi_record_get_string( rec, 1, table, &sz );
                 number = libmsi_record_get_integer( rec, 2 );
 
                 /*
@@ -2512,10 +2487,10 @@ static unsigned msi_table_load_transform( LibmsiDatabase *db, GsfInfile *stg,
                 if ( number == MSI_NULL_INTEGER )
                 {
                     /* reset the column number on a new table */
-                    if (strcmpW( coltable, table ))
+                    if (strcmp( coltable, table ))
                     {
                         colcol = 0;
-                        strcpyW( coltable, table );
+                        strcpy( coltable, table );
                     }
 
                     /* fix nul column numbers */
@@ -2558,7 +2533,7 @@ static unsigned msi_table_load_transform( LibmsiDatabase *db, GsfInfile *stg,
                     WARN("failed to insert row %u\n", r);
             }
 
-            if (number != MSI_NULL_INTEGER && !strcmpW( name, szColumns ))
+            if (number != MSI_NULL_INTEGER && !strcmp( name, szColumns ))
                 msi_update_table_columns( db, table );
 
             msiobj_release( &rec->hdr );
@@ -2604,22 +2579,16 @@ unsigned msi_table_apply_transform( LibmsiDatabase *db, GsfInfile *stg )
     for (i = 0; i < n; i++)
     {
         LibmsiTableView *tv = NULL;
-        const uint8_t *utf8name;
-        WCHAR *encname;
-        WCHAR name[0x40];
+        const uint8_t *encname;
+        char name[0x40];
 
-        utf8name = (const uint8_t *) gsf_infile_name_by_index(stg, i);
-        encname = strdupUTF8toW(utf8name);
-        if ( encname[0] != 0x4840 )
-        {
-            msi_free( encname );
+        encname = (const uint8_t *) gsf_infile_name_by_index(stg, i);
+        if ( encname[0] != 0xe4 || encname[1] != 0xa1 || encname[2] != 0x80)
             continue;
-        }
 
         decode_streamname( encname, name );
-        msi_free( encname );
-        if ( !strcmpW( name+1, szStringPool ) ||
-             !strcmpW( name+1, szStringData ) )
+        if ( !strcmp( name+3, szStringPool ) ||
+             !strcmp( name+3, szStringData ) )
             continue;
 
         transform = msi_alloc_zero( sizeof(TRANSFORMDATA) );
@@ -2628,14 +2597,14 @@ unsigned msi_table_apply_transform( LibmsiDatabase *db, GsfInfile *stg )
 
         list_add_tail( &transforms, &transform->entry );
 
-        transform->name = strdupW( name + 1 );
+        transform->name = strdup( name + 1 );
 
-        if ( !strcmpW( transform->name, szTables ) )
+        if ( !strcmp( transform->name, szTables ) )
             tables = transform;
-        else if (!strcmpW( transform->name, szColumns ) )
+        else if (!strcmp( transform->name, szColumns ) )
             columns = transform;
 
-        TRACE("transform contains stream %s\n", debugstr_w(name));
+        TRACE("transform contains stream %s\n", debugstr_a(name));
 
         /* load the table */
         r = table_view_create( db, transform->name, (LibmsiView**) &tv );
@@ -2670,8 +2639,8 @@ unsigned msi_table_apply_transform( LibmsiDatabase *db, GsfInfile *stg )
     {
         transform = LIST_ENTRY( list_head( &transforms ), TRANSFORMDATA, entry );
 
-        if ( strcmpW( transform->name, szColumns ) &&
-             strcmpW( transform->name, szTables ) &&
+        if ( strcmp( transform->name, szColumns ) &&
+             strcmp( transform->name, szTables ) &&
              ret == LIBMSI_RESULT_SUCCESS )
         {
             ret = msi_table_load_transform( db, stg, strings, transform, bytes_per_strref );

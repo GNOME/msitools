@@ -43,7 +43,7 @@ static int sql_error(void *info, const char *str);
 typedef struct LibmsiSQLInput
 {
     LibmsiDatabase *db;
-    const WCHAR *command;
+    const char *command;
     unsigned n, len;
     unsigned r;
     LibmsiView **view;  /* View structure for the resulting query.  This value
@@ -53,13 +53,13 @@ typedef struct LibmsiSQLInput
     struct list *mem;
 } SQL_input;
 
-static unsigned sql_unescape_string( void *info, const struct sql_str *strdata, WCHAR **str );
+static unsigned sql_unescape_string( void *info, const struct sql_str *strdata, char **str );
 static INT sql_atoi( void *info );
 static int sql_lex( void *SQL_lval, SQL_input *info );
 
-static WCHAR *parser_add_table( void *info, const WCHAR *list, const WCHAR *table );
+static char *parser_add_table( void *info, const char *list, const char *table );
 static void *parser_alloc( void *info, unsigned int sz );
-static column_info *parser_alloc_column( void *info, const WCHAR *table, const WCHAR *column );
+static column_info *parser_alloc_column( void *info, const char *table, const char *column );
 
 static bool sql_mark_primary_keys( column_info **cols, column_info *keys);
 
@@ -83,7 +83,7 @@ static struct expr * build_expr_wildcard( void *info );
 %union
 {
     struct sql_str str;
-    WCHAR *string;
+    char *string;
     column_info *column_list;
     LibmsiView *query;
     struct expr *expr;
@@ -753,18 +753,18 @@ number:
 
 %%
 
-static WCHAR *parser_add_table( void *info, const WCHAR *list, const WCHAR *table )
+static char *parser_add_table( void *info, const char *list, const char *table )
 {
-    static const WCHAR space[] = {' ',0};
-    unsigned len = strlenW( list ) + strlenW( table ) + 2;
-    WCHAR *ret;
+    static const char space[] = {' ',0};
+    unsigned len = strlen( list ) + strlen( table ) + 2;
+    char *ret;
 
-    ret = parser_alloc( info, len * sizeof(WCHAR) );
+    ret = parser_alloc( info, len * sizeof(char) );
     if( ret )
     {
-        strcpyW( ret, list );
-        strcatW( ret, space );
-        strcatW( ret, table );
+        strcpy( ret, list );
+        strcat( ret, space );
+        strcat( ret, table );
     }
     return ret;
 }
@@ -779,7 +779,7 @@ static void *parser_alloc( void *info, unsigned int sz )
     return &mem[1];
 }
 
-static column_info *parser_alloc_column( void *info, const WCHAR *table, const WCHAR *column )
+static column_info *parser_alloc_column( void *info, const char *table, const char *column )
 {
     column_info *col;
 
@@ -807,7 +807,7 @@ static int sql_lex( void *SQL_lval, SQL_input *sql )
         if( ! sql->command[sql->n] )
             return 0;  /* end of input */
 
-        /* TRACE("string : %s\n", debugstr_w(&sql->command[sql->n])); */
+        /* TRACE("string : %s\n", debugstr_a(&sql->command[sql->n])); */
         sql->len = sql_get_token( &sql->command[sql->n], &token, &skip );
         if( sql->len==0 )
             break;
@@ -817,14 +817,14 @@ static int sql_lex( void *SQL_lval, SQL_input *sql )
     }
     while( token == TK_SPACE );
 
-    /* TRACE("token : %d (%s)\n", token, debugstr_wn(&sql->command[sql->n], sql->len)); */
+    /* TRACE("token : %d (%s)\n", token, debugstr_an(&sql->command[sql->n], sql->len)); */
 
     return token;
 }
 
-unsigned sql_unescape_string( void *info, const struct sql_str *strdata, WCHAR **str )
+unsigned sql_unescape_string( void *info, const struct sql_str *strdata, char **str )
 {
-    const WCHAR *p = strdata->data;
+    const char *p = strdata->data;
     unsigned len = strdata->len;
 
     /* match quotes */
@@ -839,10 +839,10 @@ unsigned sql_unescape_string( void *info, const struct sql_str *strdata, WCHAR *
         p++;
         len -= 2;
     }
-    *str = parser_alloc( info, (len + 1)*sizeof(WCHAR) );
+    *str = parser_alloc( info, (len + 1)*sizeof(char) );
     if( !*str )
         return LIBMSI_RESULT_OUTOFMEMORY;
-    memcpy( *str, p, len*sizeof(WCHAR) );
+    memcpy( *str, p, len*sizeof(char) );
     (*str)[len]=0;
 
     return LIBMSI_RESULT_SUCCESS;
@@ -851,7 +851,7 @@ unsigned sql_unescape_string( void *info, const struct sql_str *strdata, WCHAR *
 INT sql_atoi( void *info )
 {
     SQL_input* sql = (SQL_input*) info;
-    const WCHAR *p = &sql->command[sql->n];
+    const char *p = &sql->command[sql->n];
     INT i, r = 0;
 
     for( i=0; i<sql->len; i++ )
@@ -937,7 +937,7 @@ static struct expr * build_expr_sval( void *info, const struct sql_str *str )
     if( e )
     {
         e->type = EXPR_SVAL;
-        if( sql_unescape_string( info, str, (WCHAR **)&e->u.sval ) != LIBMSI_RESULT_SUCCESS )
+        if( sql_unescape_string( info, str, (char **)&e->u.sval ) != LIBMSI_RESULT_SUCCESS )
             return NULL; /* e will be freed by query destructor */
     }
     return e;
@@ -987,7 +987,7 @@ static bool sql_mark_primary_keys( column_info **cols,
         found = false;
         for( c = *cols, idx = 0; c && !found; c = c->next, idx++ )
         {
-            if( strcmpW( k->column, c->column ) )
+            if( strcmp( k->column, c->column ) )
                 continue;
             c->type |= MSITYPE_KEY;
             found = true;
@@ -999,7 +999,7 @@ static bool sql_mark_primary_keys( column_info **cols,
     return found;
 }
 
-unsigned _libmsi_parse_sql( LibmsiDatabase *db, const WCHAR *command, LibmsiView **phview,
+unsigned _libmsi_parse_sql( LibmsiDatabase *db, const char *command, LibmsiView **phview,
                    struct list *mem )
 {
     SQL_input sql;

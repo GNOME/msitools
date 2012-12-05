@@ -122,7 +122,7 @@ typedef struct LibmsiField
     {
         int iVal;
         intptr_t pVal;
-        WCHAR *szwVal;
+        char *szVal;
         GsfInput *stream;
     } u;
 } LibmsiField;
@@ -136,8 +136,8 @@ typedef struct LibmsiRecord
 
 typedef struct _column_info
 {
-    const WCHAR *table;
-    const WCHAR *column;
+    const char *table;
+    const char *column;
     int   type;
     bool   temporary;
     struct expr *val;
@@ -213,8 +213,8 @@ typedef struct LibmsiViewOps
      *
      *  The column information can be queried at any time.
      */
-    unsigned (*get_column_info)( LibmsiView *view, unsigned n, const WCHAR **name, unsigned *type,
-                             bool *temporary, const WCHAR **table_name );
+    unsigned (*get_column_info)( LibmsiView *view, unsigned n, const char **name, unsigned *type,
+                             bool *temporary, const char **table_name );
 
     /*
      * delete - destroys the structure completely
@@ -247,12 +247,12 @@ typedef struct LibmsiViewOps
     /*
      * add_column - adds a column to the table
      */
-    unsigned (*add_column)( LibmsiView *view, const WCHAR *table, unsigned number, const WCHAR *column, unsigned type, bool hold );
+    unsigned (*add_column)( LibmsiView *view, const char *table, unsigned number, const char *column, unsigned type, bool hold );
 
     /*
      * remove_column - removes the column represented by table name and column number from the table
      */
-    unsigned (*remove_column)( LibmsiView *view, const WCHAR *table, unsigned number );
+    unsigned (*remove_column)( LibmsiView *view, const char *table, unsigned number );
 
     /*
      * sort - orders the table by columns
@@ -269,7 +269,7 @@ struct LibmsiView
 {
     const LibmsiViewOps *ops;
     LibmsiDBError error;
-    const WCHAR *error_column;
+    const char *error_column;
 };
 
 #define MSI_MAX_PROPS 20
@@ -311,7 +311,7 @@ typedef struct {
     bool unicode;
     union {
        char *a;
-       WCHAR *w;
+       char *w;
     } str;
 } awstring;
 
@@ -319,11 +319,11 @@ typedef struct {
     bool unicode;
     union {
        const char *a;
-       const WCHAR *w;
+       const char *w;
     } str;
 } awcstring;
 
-unsigned msi_strcpy_to_awstring( const WCHAR *str, awstring *awbuf, unsigned *sz );
+unsigned msi_strcpy_to_awstring( const char *str, awstring *awbuf, unsigned *sz );
 
 /* handle functions */
 extern void *alloc_msiobject(unsigned size, msihandledestructor destroy );
@@ -341,25 +341,25 @@ enum StringPersistence
     StringNonPersistent = 1
 };
 
-extern int _libmsi_add_string( string_table *st, const WCHAR *data, int len, uint16_t refcount, enum StringPersistence persistence );
-extern unsigned _libmsi_id_from_stringW( const string_table *st, const WCHAR *buffer, unsigned *id );
+extern int _libmsi_add_string( string_table *st, const char *data, int len, uint16_t refcount, enum StringPersistence persistence );
+extern unsigned _libmsi_id_from_string_utf8( const string_table *st, const char *buffer, unsigned *id );
 extern VOID msi_destroy_stringtable( string_table *st );
-extern const WCHAR *msi_string_lookup_id( const string_table *st, unsigned id );
+extern const char *msi_string_lookup_id( const string_table *st, unsigned id );
 extern string_table *msi_init_string_table( unsigned *bytes_per_strref );
 extern string_table *msi_load_string_table( GsfInfile *stg, unsigned *bytes_per_strref );
 extern unsigned msi_save_string_table( const string_table *st, LibmsiDatabase *db, unsigned *bytes_per_strref );
 extern unsigned msi_get_string_table_codepage( const string_table *st );
 extern unsigned msi_set_string_table_codepage( string_table *st, unsigned codepage );
 
-unsigned _libmsi_open_table( LibmsiDatabase *db, const WCHAR *name, bool encoded );
-extern bool table_view_exists( LibmsiDatabase *db, const WCHAR *name );
-extern LibmsiCondition _libmsi_database_is_table_persistent( LibmsiDatabase *db, const WCHAR *table );
+unsigned _libmsi_open_table( LibmsiDatabase *db, const char *name, bool encoded );
+extern bool table_view_exists( LibmsiDatabase *db, const char *name );
+extern LibmsiCondition _libmsi_database_is_table_persistent( LibmsiDatabase *db, const char *table );
 
-extern unsigned read_stream_data( GsfInfile *stg, const WCHAR *stname,
+extern unsigned read_stream_data( GsfInfile *stg, const char *stname,
                               uint8_t **pdata, unsigned *psz );
-extern unsigned write_stream_data( LibmsiDatabase *db, const WCHAR *stname,
+extern unsigned write_stream_data( LibmsiDatabase *db, const char *stname,
                                const void *data, unsigned sz );
-extern unsigned write_raw_stream_data( LibmsiDatabase *db, const WCHAR *stname,
+extern unsigned write_raw_stream_data( LibmsiDatabase *db, const char *stname,
                         const void *data, unsigned sz, GsfInput **outstm );
 extern unsigned _libmsi_database_commit_streams( LibmsiDatabase *db );
 
@@ -374,14 +374,13 @@ extern unsigned _libmsi_database_commit_storages( LibmsiDatabase *db );
 extern void _libmsi_record_destroy( LibmsiObject * );
 extern unsigned _libmsi_record_set_gsf_input( LibmsiRecord *, unsigned, GsfInput *);
 extern unsigned _libmsi_record_get_gsf_input( const LibmsiRecord *, unsigned, GsfInput **);
-extern const WCHAR *_libmsi_record_get_string_raw( const LibmsiRecord *, unsigned );
+extern const char *_libmsi_record_get_string_raw( const LibmsiRecord *, unsigned );
 extern unsigned _libmsi_record_set_int_ptr( LibmsiRecord *, unsigned, intptr_t );
-extern unsigned _libmsi_record_set_stringW( LibmsiRecord *, unsigned, const WCHAR *);
-extern unsigned _libmsi_record_get_stringW( const LibmsiRecord *, unsigned, WCHAR *, unsigned *);
+extern unsigned _libmsi_record_get_string( const LibmsiRecord *, unsigned, char *, unsigned *);
 extern intptr_t _libmsi_record_get_int_ptr( const LibmsiRecord *, unsigned );
 extern unsigned _libmsi_record_save_stream( const LibmsiRecord *, unsigned, char *, unsigned *);
 extern unsigned _libmsi_record_load_stream(LibmsiRecord *, unsigned, GsfInput *);
-extern unsigned _libmsi_record_save_stream_to_file( const LibmsiRecord *, unsigned, const WCHAR *);
+extern unsigned _libmsi_record_save_stream_to_file( const LibmsiRecord *, unsigned, const char *);
 extern unsigned _libmsi_record_load_stream_from_file( LibmsiRecord *, unsigned, const char *);
 extern unsigned _libmsi_record_copy_field( LibmsiRecord *, unsigned, LibmsiRecord *, unsigned );
 extern LibmsiRecord *_libmsi_record_clone( LibmsiRecord * );
@@ -390,53 +389,53 @@ extern bool _libmsi_record_compare_fields(const LibmsiRecord *a, const LibmsiRec
 
 /* stream internals */
 extern void enum_stream_names( GsfInfile *stg );
-extern WCHAR *encode_streamname(bool bTable, const WCHAR *in);
-extern void decode_streamname(const WCHAR *in, WCHAR *out);
+extern char *encode_streamname(bool bTable, const char *in);
+extern void decode_streamname(const char *in, char *out);
 
 /* database internals */
 extern LibmsiResult _libmsi_database_start_transaction(LibmsiDatabase *db, const char *szPersist);
 extern LibmsiResult _libmsi_database_open(LibmsiDatabase *db);
 extern LibmsiResult _libmsi_database_close(LibmsiDatabase *db, bool committed);
-unsigned msi_create_stream( LibmsiDatabase *db, const WCHAR *stname, GsfInput *stm );
-extern unsigned msi_get_raw_stream( LibmsiDatabase *, const WCHAR *, GsfInput **);
-void msi_destroy_stream( LibmsiDatabase *, const WCHAR * );
-extern unsigned msi_enum_db_streams(LibmsiDatabase *, unsigned (*fn)(const WCHAR *, GsfInput *, void *), void *);
-unsigned msi_create_storage( LibmsiDatabase *db, const WCHAR *stname, GsfInput *stm );
-unsigned msi_open_storage( LibmsiDatabase *db, const WCHAR *stname );
-void msi_destroy_storage( LibmsiDatabase *db, const WCHAR *stname );
-extern unsigned msi_enum_db_storages(LibmsiDatabase *, unsigned (*fn)(const WCHAR *, GsfInfile *, void *), void *);
-extern unsigned _libmsi_database_open_query(LibmsiDatabase *, const WCHAR *, LibmsiQuery **);
-extern unsigned _libmsi_query_open( LibmsiDatabase *, LibmsiQuery **, const WCHAR *, ... );
+unsigned msi_create_stream( LibmsiDatabase *db, const char *stname, GsfInput *stm );
+extern unsigned msi_get_raw_stream( LibmsiDatabase *, const char *, GsfInput **);
+void msi_destroy_stream( LibmsiDatabase *, const char * );
+extern unsigned msi_enum_db_streams(LibmsiDatabase *, unsigned (*fn)(const char *, GsfInput *, void *), void *);
+unsigned msi_create_storage( LibmsiDatabase *db, const char *stname, GsfInput *stm );
+unsigned msi_open_storage( LibmsiDatabase *db, const char *stname );
+void msi_destroy_storage( LibmsiDatabase *db, const char *stname );
+extern unsigned msi_enum_db_storages(LibmsiDatabase *, unsigned (*fn)(const char *, GsfInfile *, void *), void *);
+extern unsigned _libmsi_database_open_query(LibmsiDatabase *, const char *, LibmsiQuery **);
+extern unsigned _libmsi_query_open( LibmsiDatabase *, LibmsiQuery **, const char *, ... );
 typedef unsigned (*record_func)( LibmsiRecord *, void *);
 extern unsigned _libmsi_query_iterate_records( LibmsiQuery *, unsigned *, record_func, void *);
-extern LibmsiRecord *_libmsi_query_get_record( LibmsiDatabase *db, const WCHAR *query, ... );
-extern unsigned _libmsi_database_get_primary_keys( LibmsiDatabase *, const WCHAR *, LibmsiRecord **);
+extern LibmsiRecord *_libmsi_query_get_record( LibmsiDatabase *db, const char *query, ... );
+extern unsigned _libmsi_database_get_primary_keys( LibmsiDatabase *, const char *, LibmsiRecord **);
 
 /* view internals */
 extern unsigned _libmsi_query_execute( LibmsiQuery*, LibmsiRecord * );
 extern unsigned _libmsi_query_fetch( LibmsiQuery*, LibmsiRecord ** );
 extern unsigned _libmsi_query_get_column_info(LibmsiQuery *, LibmsiColInfo, LibmsiRecord **);
-extern unsigned _libmsi_view_find_column( LibmsiView *, const WCHAR *, const WCHAR *, unsigned *);
+extern unsigned _libmsi_view_find_column( LibmsiView *, const char *, const char *, unsigned *);
 extern unsigned msi_view_get_row(LibmsiDatabase *, LibmsiView *, unsigned, LibmsiRecord **);
 
 /* summary information */
-extern unsigned msi_add_suminfo( LibmsiDatabase *db, WCHAR ***records, int num_records, int num_columns );
+extern unsigned msi_add_suminfo( LibmsiDatabase *db, char ***records, int num_records, int num_columns );
 
 /* Helpers */
-extern WCHAR *msi_dup_record_field(LibmsiRecord *row, int index);
-extern WCHAR *msi_dup_property( LibmsiDatabase *db, const WCHAR *prop );
-extern unsigned msi_set_property( LibmsiDatabase *, const WCHAR *, const WCHAR *);
-extern unsigned msi_get_property( LibmsiDatabase *, const WCHAR *, WCHAR *, unsigned *);
-extern int msi_get_property_int( LibmsiDatabase *package, const WCHAR *prop, int def );
+extern char *msi_dup_record_field(LibmsiRecord *row, int index);
+extern char *msi_dup_property( LibmsiDatabase *db, const char *prop );
+extern unsigned msi_set_property( LibmsiDatabase *, const char *, const char *);
+extern unsigned msi_get_property( LibmsiDatabase *, const char *, char *, unsigned *);
+extern int msi_get_property_int( LibmsiDatabase *package, const char *prop, int def );
 
 /* common strings */
-static const WCHAR szEmpty[] = {0};
-static const WCHAR szStreams[] = {'_','S','t','r','e','a','m','s',0};
-static const WCHAR szStorages[] = {'_','S','t','o','r','a','g','e','s',0};
-static const WCHAR szStringData[] = {'_','S','t','r','i','n','g','D','a','t','a',0};
-static const WCHAR szStringPool[] = {'_','S','t','r','i','n','g','P','o','o','l',0};
-static const WCHAR szName[] = {'N','a','m','e',0};
-static const WCHAR szData[] = {'D','a','t','a',0};
+static const char szEmpty[] = {0};
+static const char szStreams[] = {'_','S','t','r','e','a','m','s',0};
+static const char szStorages[] = {'_','S','t','o','r','a','g','e','s',0};
+static const char szStringData[] = {'_','S','t','r','i','n','g','D','a','t','a',0};
+static const char szStringPool[] = {'_','S','t','r','i','n','g','P','o','o','l',0};
+static const char szName[] = {'N','a','m','e',0};
+static const char szData[] = {'D','a','t','a',0};
 
 /* memory allocation macro functions */
 
@@ -477,7 +476,7 @@ static inline void msi_free( void *mem )
     free(mem);
 }
 
-static inline char *strcpynA( char *dst, const char *src, unsigned count )
+static inline char *strcpyn( char *dst, const char *src, unsigned count )
 {
     char *d = dst;
     const char *s = src;
@@ -489,68 +488,6 @@ static inline char *strcpynA( char *dst, const char *src, unsigned count )
     }
     if (count) *d = 0;
     return dst;
-}
-
-static inline char *strdupWtoUTF8( const WCHAR *str )
-{
-    char *ret = NULL;
-    unsigned len;
-
-    if (!str) return ret;
-    len = WideCharToMultiByte( CP_UTF8, 0, str, -1, NULL, 0, NULL, NULL);
-    ret = msi_alloc( len );
-    if (ret)
-        WideCharToMultiByte( CP_UTF8, 0, str, -1, ret, len, NULL, NULL );
-    return ret;
-}
-
-static inline WCHAR *strdupUTF8toW( const char *str )
-{
-    WCHAR *ret = NULL;
-    unsigned len;
-
-    if (!str) return ret;
-    len = MultiByteToWideChar( CP_UTF8, 0, str, -1, NULL, 0 );
-    ret = msi_alloc( len * sizeof(WCHAR) );
-    if (ret)
-        MultiByteToWideChar( CP_UTF8, 0, str, -1, ret, len );
-    return ret;
-}
-
-static inline char *strdupWtoA( const WCHAR *str )
-{
-    char *ret = NULL;
-    unsigned len;
-
-    if (!str) return ret;
-    len = WideCharToMultiByte( CP_ACP, 0, str, -1, NULL, 0, NULL, NULL);
-    ret = msi_alloc( len );
-    if (ret)
-        WideCharToMultiByte( CP_ACP, 0, str, -1, ret, len, NULL, NULL );
-    return ret;
-}
-
-static inline WCHAR *strdupAtoW( const char *str )
-{
-    WCHAR *ret = NULL;
-    unsigned len;
-
-    if (!str) return ret;
-    len = MultiByteToWideChar( CP_ACP, 0, str, -1, NULL, 0 );
-    ret = msi_alloc( len * sizeof(WCHAR) );
-    if (ret)
-        MultiByteToWideChar( CP_ACP, 0, str, -1, ret, len );
-    return ret;
-}
-
-static inline WCHAR *strdupW( const WCHAR *src )
-{
-    WCHAR *dest;
-    if (!src) return NULL;
-    dest = msi_alloc( (strlenW(src)+1)*sizeof(WCHAR) );
-    if (dest)
-        strcpyW(dest, src);
-    return dest;
 }
 
 #pragma GCC visibility pop

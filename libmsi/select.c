@@ -214,8 +214,8 @@ static unsigned select_view_get_dimensions( LibmsiView *view, unsigned *rows, un
     return sv->table->ops->get_dimensions( sv->table, rows, NULL );
 }
 
-static unsigned select_view_get_column_info( LibmsiView *view, unsigned n, const WCHAR **name,
-                                    unsigned *type, bool *temporary, const WCHAR **table_name )
+static unsigned select_view_get_column_info( LibmsiView *view, unsigned n, const char **name,
+                                    unsigned *type, bool *temporary, const char **table_name )
 {
     LibmsiSelectView *sv = (LibmsiSelectView*)view;
 
@@ -296,14 +296,14 @@ static const LibmsiViewOps select_ops =
     NULL,
 };
 
-static unsigned select_view_add_column( LibmsiSelectView *sv, const WCHAR *name,
-                              const WCHAR *table_name )
+static unsigned select_view_add_column( LibmsiSelectView *sv, const char *name,
+                              const char *table_name )
 {
     unsigned r, n;
     LibmsiView *table;
 
-    TRACE("%p adding %s.%s\n", sv, debugstr_w( table_name ),
-          debugstr_w( name ));
+    TRACE("%p adding %s.%s\n", sv, debugstr_a( table_name ),
+          debugstr_a( name ));
 
     if( sv->view.ops != &select_ops )
         return LIBMSI_RESULT_FUNCTION_FAILED;
@@ -329,7 +329,7 @@ static unsigned select_view_add_column( LibmsiSelectView *sv, const WCHAR *name,
 
     sv->cols[sv->num_cols] = n;
     TRACE("Translating column %s from %d -> %d\n", 
-          debugstr_w( name ), sv->num_cols, n);
+          debugstr_a( name ), sv->num_cols, n);
 
     sv->num_cols++;
 

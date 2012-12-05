@@ -178,7 +178,7 @@ static unsigned parse_column(LibmsiWhereView *wv, union ext_column *column,
 
     do
     {
-        const WCHAR *table_name;
+        const char *table_name;
 
         if (column->unparsed.table)
         {
@@ -186,20 +186,20 @@ static unsigned parse_column(LibmsiWhereView *wv, union ext_column *column,
                                                   NULL, &table_name);
             if (r != LIBMSI_RESULT_SUCCESS)
                 return r;
-            if (strcmpW(table_name, column->unparsed.table) != 0)
+            if (strcmp(table_name, column->unparsed.table) != 0)
                 continue;
         }
 
         for(i = 1; i <= table->col_count; i++)
         {
-            const WCHAR *col_name;
+            const char *col_name;
 
             r = table->view->ops->get_column_info(table->view, i, &col_name, column_type,
                                                   NULL, NULL);
             if(r != LIBMSI_RESULT_SUCCESS )
                 return r;
 
-            if(strcmpW(col_name, column->unparsed.column))
+            if(strcmp(col_name, column->unparsed.column))
                 continue;
             column->parsed.column = i;
             column->parsed.table = table;
@@ -208,7 +208,7 @@ static unsigned parse_column(LibmsiWhereView *wv, union ext_column *column,
     }
     while ((table = table->next));
 
-    WARN("Couldn't find column %s.%s\n", debugstr_w( column->unparsed.table ), debugstr_w( column->unparsed.column ) );
+    WARN("Couldn't find column %s.%s\n", debugstr_a( column->unparsed.table ), debugstr_a( column->unparsed.column ) );
     return LIBMSI_RESULT_BAD_QUERY_SYNTAX;
 }
 
@@ -484,7 +484,7 @@ static unsigned expr_eval_unary( LibmsiWhereView *wv, const unsigned rows[],
 static unsigned expr_eval_string( LibmsiWhereView *wv, const unsigned rows[],
                                      const struct expr *expr,
                                      const LibmsiRecord *record,
-                                     const WCHAR **str )
+                                     const char **str )
 {
     unsigned val = 0, r = LIBMSI_RESULT_SUCCESS;
 
@@ -519,7 +519,7 @@ static unsigned expr_eval_strcmp( LibmsiWhereView *wv, const unsigned rows[], co
                              int *val, const LibmsiRecord *record )
 {
     int sr;
-    const WCHAR *l_str, *r_str;
+    const char *l_str, *r_str;
     unsigned r;
 
     *val = true;
@@ -538,7 +538,7 @@ static unsigned expr_eval_strcmp( LibmsiWhereView *wv, const unsigned rows[], co
     else if( r_str && ! l_str )
         sr = -1;
     else
-        sr = strcmpW( l_str, r_str );
+        sr = strcmp( l_str, r_str );
 
     *val = ( expr->op == OP_EQ && ( sr == 0 ) ) ||
            ( expr->op == OP_NE && ( sr != 0 ) );
@@ -857,8 +857,8 @@ static unsigned where_view_get_dimensions( LibmsiView *view, unsigned *rows, uns
     return LIBMSI_RESULT_SUCCESS;
 }
 
-static unsigned where_view_get_column_info( LibmsiView *view, unsigned n, const WCHAR **name,
-                                   unsigned *type, bool *temporary, const WCHAR **table_name )
+static unsigned where_view_get_column_info( LibmsiView *view, unsigned n, const char **name,
+                                   unsigned *type, bool *temporary, const char **table_name )
 {
     LibmsiWhereView *wv = (LibmsiWhereView*)view;
     JOINTABLE *table;
@@ -1097,14 +1097,14 @@ static unsigned where_view_verify_condition( LibmsiWhereView *wv, struct expr *c
     return LIBMSI_RESULT_SUCCESS;
 }
 
-unsigned where_view_create( LibmsiDatabase *db, LibmsiView **view, WCHAR *tables,
+unsigned where_view_create( LibmsiDatabase *db, LibmsiView **view, char *tables,
                        struct expr *cond )
 {
     LibmsiWhereView *wv = NULL;
     unsigned r, valid = 0;
-    WCHAR *ptr;
+    char *ptr;
 
-    TRACE("(%s)\n", debugstr_w(tables) );
+    TRACE("(%s)\n", debugstr_a(tables) );
 
     wv = msi_alloc_zero( sizeof *wv );
     if( !wv )
@@ -1120,7 +1120,7 @@ unsigned where_view_create( LibmsiDatabase *db, LibmsiView **view, WCHAR *tables
     {
         JOINTABLE *table;
 
-        if ((ptr = strchrW(tables, ' ')))
+        if ((ptr = strchr(tables, ' ')))
             *ptr = '\0';
 
         table = msi_alloc(sizeof(JOINTABLE));
@@ -1133,7 +1133,7 @@ unsigned where_view_create( LibmsiDatabase *db, LibmsiView **view, WCHAR *tables
         r = table_view_create(db, tables, &table->view);
         if (r != LIBMSI_RESULT_SUCCESS)
         {
-            WARN("can't create table: %s\n", debugstr_w(tables));
+            WARN("can't create table: %s\n", debugstr_a(tables));
             msi_free(table);
             r = LIBMSI_RESULT_BAD_QUERY_SYNTAX;
             goto end;

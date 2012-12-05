@@ -60,23 +60,6 @@ static inline const char *wine_dbgstr_an( const char * s, int n )
     if (!s) return "";
     return s;
 }
-static inline const char *wine_dbgstr_wn( const WCHAR *s, int n )
-{
-    static char *p_ret[10];
-    static int i;
-
-    char *ret;
-    unsigned len;
-
-    if (!s) return "";
-    i = (i + 1) % 10;
-    ret = p_ret[i];
-    len = WideCharToMultiByte( CP_ACP, 0, s, -1, NULL, 0, NULL, NULL);
-    ret = realloc( ret, len );
-    if (ret)
-        WideCharToMultiByte( CP_ACP, 0, s, -1, ret, len, NULL, NULL );
-    return ret;
-}
 
 static inline const char *wine_dbg_sprintf( const char *format, ...)
 {
@@ -108,11 +91,6 @@ static inline const char *wine_dbg_sprintf( const char *format, ...)
 static inline const char *wine_dbgstr_a( const char *s )
 {
     return wine_dbgstr_an( s, -1 );
-}
-
-static inline const char *wine_dbgstr_w( const WCHAR *s )
-{
-    return wine_dbgstr_wn( s, -1 );
 }
 
 static inline const char *wine_dbgstr_guid( const uint8_t *id )
@@ -151,10 +129,8 @@ static inline const char *wine_dbgstr_longlong( unsigned long long ll )
 /* Wine uses shorter names that are very likely to conflict with other software */
 
 static inline const char *debugstr_an( const char * s, int n ) { return wine_dbgstr_an( s, n ); }
-static inline const char *debugstr_wn( const WCHAR *s, int n ) { return wine_dbgstr_wn( s, n ); }
 static inline const char *debugstr_guid( const uint8_t *id )  { return wine_dbgstr_guid( id ); }
 static inline const char *debugstr_a( const char *s )  { return wine_dbgstr_an( s, -1 ); }
-static inline const char *debugstr_w( const WCHAR *s ) { return wine_dbgstr_wn( s, -1 ); }
 
 #undef ERR  /* Solaris got an 'ERR' define in <sys/reg.h> */
 #define TRACE(fmt, ...)     (void)0 // WINE_DPRINTF(TRACE, __func__, fmt, ## __VA_ARGS__)

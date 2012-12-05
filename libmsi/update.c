@@ -152,8 +152,8 @@ static unsigned update_view_get_dimensions( LibmsiView *view, unsigned *rows, un
     return wv->ops->get_dimensions( wv, rows, cols );
 }
 
-static unsigned update_view_get_column_info( LibmsiView *view, unsigned n, const WCHAR **name,
-                                    unsigned *type, bool *temporary, const WCHAR **table_name )
+static unsigned update_view_get_column_info( LibmsiView *view, unsigned n, const char **name,
+                                    unsigned *type, bool *temporary, const char **table_name )
 {
     LibmsiUpdateView *uv = (LibmsiUpdateView*)view;
     LibmsiView *wv;
@@ -212,7 +212,7 @@ static const LibmsiViewOps update_ops =
     NULL,
 };
 
-unsigned update_view_create( LibmsiDatabase *db, LibmsiView **view, WCHAR *table,
+unsigned update_view_create( LibmsiDatabase *db, LibmsiView **view, char *table,
                         column_info *columns, struct expr *expr )
 {
     LibmsiUpdateView *uv = NULL;

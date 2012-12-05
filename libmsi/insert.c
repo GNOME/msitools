@@ -78,8 +78,8 @@ LibmsiRecord *msi_query_merge_record( unsigned fields, const column_info *vl, Li
         switch( vl->val->type )
         {
         case EXPR_SVAL:
-            TRACE("field %d -> %s\n", i, debugstr_w(vl->val->u.sval));
-            _libmsi_record_set_stringW( merged, i, vl->val->u.sval );
+            TRACE("field %d -> %s\n", i, debugstr_a(vl->val->u.sval));
+            libmsi_record_set_string( merged, i, vl->val->u.sval );
             break;
         case EXPR_IVAL:
             libmsi_record_set_int( merged, i, vl->val->u.ival );
@@ -107,8 +107,8 @@ err:
  */
 static bool msi_columns_in_order(LibmsiInsertView *iv, unsigned col_count)
 {
-    const WCHAR *a;
-    const WCHAR *b;
+    const char *a;
+    const char *b;
     unsigned i;
 
     for (i = 1; i <= col_count; i++)
@@ -116,7 +116,7 @@ static bool msi_columns_in_order(LibmsiInsertView *iv, unsigned col_count)
         iv->sv->ops->get_column_info(iv->sv, i, &a, NULL, NULL, NULL);
         iv->table->ops->get_column_info(iv->table, i, &b, NULL, NULL, NULL);
 
-        if (strcmpW( a, b )) return false;
+        if (strcmp( a, b )) return false;
     }
     return true;
 }
@@ -129,8 +129,8 @@ static unsigned msi_arrange_record(LibmsiInsertView *iv, LibmsiRecord **values)
     LibmsiRecord *padded;
     unsigned col_count, val_count;
     unsigned r, i, colidx;
-    const WCHAR *a;
-    const WCHAR *b;
+    const char *a;
+    const char *b;
 
     r = iv->table->ops->get_dimensions(iv->table, NULL, &col_count);
     if (r != LIBMSI_RESULT_SUCCESS)
@@ -161,7 +161,7 @@ static unsigned msi_arrange_record(LibmsiInsertView *iv, LibmsiRecord **values)
             if (r != LIBMSI_RESULT_SUCCESS)
                 goto err;
 
-            if (!strcmpW( a, b ))
+            if (!strcmp( a, b ))
             {
                 _libmsi_record_copy_field(*values, colidx, padded, i);
                 break;
@@ -278,8 +278,8 @@ static unsigned insert_view_get_dimensions( LibmsiView *view, unsigned *rows, un
     return sv->ops->get_dimensions( sv, rows, cols );
 }
 
-static unsigned insert_view_get_column_info( LibmsiView *view, unsigned n, const WCHAR **name,
-                                    unsigned *type, bool *temporary, const WCHAR **table_name )
+static unsigned insert_view_get_column_info( LibmsiView *view, unsigned n, const char **name,
+                                    unsigned *type, bool *temporary, const char **table_name )
 {
     LibmsiInsertView *iv = (LibmsiInsertView*)view;
     LibmsiView *sv;
@@ -348,7 +348,7 @@ static unsigned count_column_info( const column_info *ci )
     return n;
 }
 
-unsigned insert_view_create( LibmsiDatabase *db, LibmsiView **view, const WCHAR *table,
+unsigned insert_view_create( LibmsiDatabase *db, LibmsiView **view, const char *table,
                         column_info *columns, column_info *values, bool temp )
 {
     LibmsiInsertView *iv = NULL;

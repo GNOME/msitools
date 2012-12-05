@@ -65,7 +65,7 @@ static bool storages_set_table_size(LibmsiStorageView *sv, unsigned size)
     return true;
 }
 
-static STORAGE *create_storage(LibmsiStorageView *sv, const WCHAR *name)
+static STORAGE *create_storage(LibmsiStorageView *sv, const char *name)
 {
     STORAGE *storage;
 
@@ -120,7 +120,7 @@ static unsigned storages_view_set_row(LibmsiView *view, unsigned row, LibmsiReco
 {
     LibmsiStorageView *sv = (LibmsiStorageView *)view;
     GsfInput *stm;
-    WCHAR *name = NULL;
+    char *name = NULL;
     unsigned r = LIBMSI_RESULT_FUNCTION_FAILED;
 
     TRACE("(%p, %p)\n", view, rec);
@@ -132,7 +132,7 @@ static unsigned storages_view_set_row(LibmsiView *view, unsigned row, LibmsiReco
     if (r != LIBMSI_RESULT_SUCCESS)
         return r;
 
-    name = strdupW(_libmsi_record_get_string_raw(rec, 1));
+    name = strdup(_libmsi_record_get_string_raw(rec, 1));
     if (!name)
     {
         r = LIBMSI_RESULT_OUTOFMEMORY;
@@ -169,7 +169,7 @@ static unsigned storages_view_insert_row(LibmsiView *view, LibmsiRecord *rec, un
 static unsigned storages_view_delete_row(LibmsiView *view, unsigned row)
 {
     LibmsiStorageView *sv = (LibmsiStorageView *)view;
-    const WCHAR *name;
+    const char *name;
     unsigned i;
 
     if (row > sv->num_rows)
@@ -218,8 +218,8 @@ static unsigned storages_view_get_dimensions(LibmsiView *view, unsigned *rows, u
     return LIBMSI_RESULT_SUCCESS;
 }
 
-static unsigned storages_view_get_column_info( LibmsiView *view, unsigned n, const WCHAR **name,
-                                      unsigned *type, bool *temporary, const WCHAR **table_name )
+static unsigned storages_view_get_column_info( LibmsiView *view, unsigned n, const char **name,
+                                      unsigned *type, bool *temporary, const char **table_name )
 {
     TRACE("(%p, %d, %p, %p, %p, %p)\n", view, n, name, type, temporary,
           table_name);
@@ -312,7 +312,7 @@ static const LibmsiViewOps storages_ops =
     NULL,
 };
 
-static unsigned add_storage_to_table(const WCHAR *name, GsfInfile *stg, void *opaque)
+static unsigned add_storage_to_table(const char *name, GsfInfile *stg, void *opaque)
 {
     LibmsiStorageView *sv = (LibmsiStorageView *)opaque;
     STORAGE *storage;

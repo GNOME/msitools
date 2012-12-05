@@ -62,44 +62,41 @@ typedef struct LibmsiTransform {
 
 typedef struct LibmsiStorage {
     struct list entry;
-    WCHAR *name;
+    char *name;
     GsfInfile *stg;
 } LibmsiStorage;
 
 typedef struct LibmsiStream {
     struct list entry;
-    WCHAR *name;
+    char *name;
     GsfInput *stm;
 } LibmsiStream;
 
-unsigned msi_open_storage( LibmsiDatabase *db, const WCHAR *stname )
+unsigned msi_open_storage( LibmsiDatabase *db, const char *stname )
 {
     unsigned r = LIBMSI_RESULT_NOT_ENOUGH_MEMORY;
     LibmsiStorage *storage;
     GsfInput *in;
-    char *utf8name;
 
     LIST_FOR_EACH_ENTRY( storage, &db->storages, LibmsiStorage, entry )
     {
-        if( !strcmpW( stname, storage->name ) )
+        if( !strcmp( stname, storage->name ) )
         {
-            TRACE("found %s\n", debugstr_w(stname));
+            TRACE("found %s\n", debugstr_a(stname));
             return;
         }
     }
 
     if (!(storage = msi_alloc_zero( sizeof(LibmsiStorage) ))) return LIBMSI_RESULT_NOT_ENOUGH_MEMORY;
-    storage->name = strdupW( stname );
+    storage->name = strdup( stname );
     if (!storage->name)
         goto done;
 
-    utf8name = strdupWtoUTF8(stname);
-    in = gsf_infile_child_by_name(db->infile, utf8name);
+    in = gsf_infile_child_by_name(db->infile, stname);
     if (!GSF_IS_INFILE(in))
         goto done;
 
     storage->stg = GSF_INFILE(in);
-    msi_free(utf8name);
     if (!storage->stg)
         goto done;
 
@@ -115,7 +112,7 @@ done:
     return r;
 }
 
-unsigned msi_create_storage( LibmsiDatabase *db, const WCHAR *stname, GsfInput *stm )
+unsigned msi_create_storage( LibmsiDatabase *db, const char *stname, GsfInput *stm )
 {
     LibmsiStorage *storage;
     GsfInfile *origstg = NULL;
@@ -127,9 +124,9 @@ unsigned msi_create_storage( LibmsiDatabase *db, const WCHAR *stname, GsfInput *
 
     LIST_FOR_EACH_ENTRY( storage, &db->storages, LibmsiStorage, entry )
     {
-        if( !strcmpW( stname, storage->name ) )
+        if( !strcmp( stname, storage->name ) )
         {
-            TRACE("found %s\n", debugstr_w(stname));
+            TRACE("found %s\n", debugstr_a(stname));
             found = true;
             break;
         }
@@ -137,7 +134,7 @@ unsigned msi_create_storage( LibmsiDatabase *db, const WCHAR *stname, GsfInput *
 
     if (!found) {
         if (!(storage = msi_alloc_zero( sizeof(LibmsiStorage) ))) return LIBMSI_RESULT_NOT_ENOUGH_MEMORY;
-        storage->name = strdupW( stname );
+        storage->name = strdup( stname );
         if (!storage->name)
         {
             msi_free(storage);
@@ -175,15 +172,15 @@ done:
     return r;
 }
 
-void msi_destroy_storage( LibmsiDatabase *db, const WCHAR *stname )
+void msi_destroy_storage( LibmsiDatabase *db, const char *stname )
 {
     LibmsiStorage *storage, *storage2;
 
     LIST_FOR_EACH_ENTRY_SAFE( storage, storage2, &db->storages, LibmsiStorage, entry )
     {
-        if (!strcmpW( stname, storage->name ))
+        if (!strcmp( stname, storage->name ))
         {
-            TRACE("destroying %s\n", debugstr_w(stname));
+            TRACE("destroying %s\n", debugstr_a(stname));
 
             list_remove( &storage->entry );
             g_object_unref(G_OBJECT(storage->stg));
@@ -193,15 +190,15 @@ void msi_destroy_storage( LibmsiDatabase *db, const WCHAR *stname )
     }
 }
 
-static unsigned find_infile_stream( LibmsiDatabase *db, const WCHAR *name, GsfInput **stm )
+static unsigned find_infile_stream( LibmsiDatabase *db, const char *name, GsfInput **stm )
 {
     LibmsiStream *stream;
 
     LIST_FOR_EACH_ENTRY( stream, &db->streams, LibmsiStream, entry )
     {
-        if( !strcmpW( name, stream->name ) )
+        if( !strcmp( name, stream->name ) )
         {
-            TRACE("found %s\n", debugstr_w(name));
+            TRACE("found %s\n", debugstr_a(name));
             *stm = stream->stm;
             return LIBMSI_RESULT_SUCCESS;
         }
@@ -210,20 +207,20 @@ static unsigned find_infile_stream( LibmsiDatabase *db, const WCHAR *name, GsfIn
     return LIBMSI_RESULT_FUNCTION_FAILED;
 }
 
-static unsigned msi_alloc_stream( LibmsiDatabase *db, const WCHAR *stname, GsfInput *stm)
+static unsigned msi_alloc_stream( LibmsiDatabase *db, const char *stname, GsfInput *stm)
 {
     LibmsiStream *stream;
 
-    TRACE("%p %s %p", db, debugstr_w(stname), stm);
+    TRACE("%p %s %p", db, debugstr_a(stname), stm);
     if (!(stream = msi_alloc( sizeof(LibmsiStream) ))) return LIBMSI_RESULT_NOT_ENOUGH_MEMORY;
-    stream->name = strdupW( stname );
+    stream->name = strdup( stname );
     stream->stm = stm;
     g_object_ref(G_OBJECT(stm));
     list_add_tail( &db->streams, &stream->entry );
     return LIBMSI_RESULT_SUCCESS;
 }
 
-unsigned write_raw_stream_data( LibmsiDatabase *db, const WCHAR *stname,
+unsigned write_raw_stream_data( LibmsiDatabase *db, const char *stname,
                         const void *data, unsigned sz, GsfInput **outstm )
 {
     unsigned ret = LIBMSI_RESULT_FUNCTION_FAILED;
@@ -236,7 +233,7 @@ unsigned write_raw_stream_data( LibmsiDatabase *db, const WCHAR *stname,
 
     LIST_FOR_EACH_ENTRY( stream, &db->streams, LibmsiStream, entry )
     {
-        if( !strcmpW( stname, stream->name ) )
+        if( !strcmp( stname, stream->name ) )
         {
             msi_destroy_stream( db, stname );
             break;
@@ -256,10 +253,10 @@ unsigned write_raw_stream_data( LibmsiDatabase *db, const WCHAR *stname,
     return ret;
 }
 
-unsigned msi_create_stream( LibmsiDatabase *db, const WCHAR *stname, GsfInput *stm )
+unsigned msi_create_stream( LibmsiDatabase *db, const char *stname, GsfInput *stm )
 {
     LibmsiStream *stream;
-    WCHAR *encname = NULL;
+    char *encname = NULL;
     unsigned r = LIBMSI_RESULT_FUNCTION_FAILED;
     bool found = false;
 
@@ -270,7 +267,7 @@ unsigned msi_create_stream( LibmsiDatabase *db, const WCHAR *stname, GsfInput *s
 
     LIST_FOR_EACH_ENTRY( stream, &db->streams, LibmsiStream, entry )
     {
-        if( !strcmpW( encname, stream->name ) )
+        if( !strcmp( encname, stream->name ) )
         {
             found = true;
             break;
@@ -286,13 +283,14 @@ unsigned msi_create_stream( LibmsiDatabase *db, const WCHAR *stname, GsfInput *s
     } else
         r = msi_alloc_stream( db, encname, stm );
 
+    msi_free(encname);
     return r;
 }
 
 static void cache_infile_structure( LibmsiDatabase *db )
 {
     int i, n;
-    WCHAR decname[0x40];
+    char decname[0x40];
     unsigned r;
 
     n = gsf_infile_num_children(db->infile);
@@ -303,37 +301,33 @@ static void cache_infile_structure( LibmsiDatabase *db )
     {
         GsfInput *in = gsf_infile_child_by_index(db->infile, i);
         const uint8_t *name = (const uint8_t *) gsf_input_name(in);
-        WCHAR *stname = strdupUTF8toW(name);
 
         /* table streams are not in the _Streams table */
         if (!GSF_IS_INFILE(in) || gsf_infile_num_children(GSF_INFILE(in)) == -1) {
-            if (*stname == 0x4840)
+            /* UTF-8 encoding of 0x4840.  */
+            if (name[0] == 0xe4 && name[1] == 0xa1 && name[2] == 0x80)
             {
-                decode_streamname( stname + 1, decname );
-                if ( !strcmpW( decname, szStringPool ) ||
-                     !strcmpW( decname, szStringData ) )
-	        {
-                    msi_free(stname);
+                decode_streamname( name + 3, decname );
+                if ( !strcmp( decname, szStringPool ) ||
+                     !strcmp( decname, szStringData ) )
                     continue;
-	        }
 
                 r = _libmsi_open_table( db, decname, false );
             }
             else
             {
-                r = msi_alloc_stream(db, stname, GSF_INPUT(in));
+                r = msi_alloc_stream(db, name, GSF_INPUT(in));
                 g_object_unref(G_OBJECT(in));
             }
         } else {
-            msi_open_storage(db, stname);
+            msi_open_storage(db, name);
         }
 
-        msi_free(stname);
     }
 }
 
 unsigned msi_enum_db_streams(LibmsiDatabase *db,
-                             unsigned (*fn)(const WCHAR *, GsfInput *, void *),
+                             unsigned (*fn)(const char *, GsfInput *, void *),
                              void *opaque)
 {
     unsigned r;
@@ -357,7 +351,7 @@ unsigned msi_enum_db_streams(LibmsiDatabase *db,
 }
 
 unsigned msi_enum_db_storages(LibmsiDatabase *db,
-                              unsigned (*fn)(const WCHAR *, GsfInfile *, void *),
+                              unsigned (*fn)(const char *, GsfInfile *, void *),
                               void *opaque)
 {
     unsigned r;
@@ -380,7 +374,7 @@ unsigned msi_enum_db_storages(LibmsiDatabase *db,
     return LIBMSI_RESULT_SUCCESS;
 }
 
-unsigned clone_infile_stream( LibmsiDatabase *db, const WCHAR *name, GsfInput **stm )
+unsigned clone_infile_stream( LibmsiDatabase *db, const char *name, GsfInput **stm )
 {
     GsfInput *stream;
 
@@ -401,22 +395,21 @@ unsigned clone_infile_stream( LibmsiDatabase *db, const WCHAR *name, GsfInput **
     return LIBMSI_RESULT_FUNCTION_FAILED;
 }
 
-unsigned msi_get_raw_stream( LibmsiDatabase *db, const WCHAR *stname, GsfInput **stm )
+unsigned msi_get_raw_stream( LibmsiDatabase *db, const char *stname, GsfInput **stm )
 {
     unsigned ret = LIBMSI_RESULT_FUNCTION_FAILED;
-    WCHAR decoded[MAX_STREAM_NAME_LEN];
+    char decoded[MAX_STREAM_NAME_LEN];
     LibmsiTransform *transform;
 
     decode_streamname( stname, decoded );
-    TRACE("%s -> %s\n", debugstr_w(stname), debugstr_w(decoded));
+    TRACE("%s -> %s\n", debugstr_a(stname), debugstr_a(decoded));
 
     if (clone_infile_stream( db, stname, stm ) == LIBMSI_RESULT_SUCCESS)
         return LIBMSI_RESULT_SUCCESS;
 
-    char *utf8name = strdupWtoUTF8(stname);
     LIST_FOR_EACH_ENTRY( transform, &db->transforms, LibmsiTransform, entry )
     {
-        *stm = gsf_infile_child_by_name( transform->stg, utf8name );
+        *stm = gsf_infile_child_by_name( transform->stg, stname );
         if (*stm)
         {
             ret = LIBMSI_RESULT_SUCCESS;
@@ -424,7 +417,6 @@ unsigned msi_get_raw_stream( LibmsiDatabase *db, const WCHAR *stname, GsfInput *
         }
     }
 
-    msi_free(utf8name);
     return ret;
 }
 
@@ -440,15 +432,15 @@ static void free_transforms( LibmsiDatabase *db )
     }
 }
 
-void msi_destroy_stream( LibmsiDatabase *db, const WCHAR *stname )
+void msi_destroy_stream( LibmsiDatabase *db, const char *stname )
 {
     LibmsiStream *stream, *stream2;
 
     LIST_FOR_EACH_ENTRY_SAFE( stream, stream2, &db->streams, LibmsiStream, entry )
     {
-        if (!strcmpW( stname, stream->name ))
+        if (!strcmp( stname, stream->name ))
         {
-            TRACE("destroying %s\n", debugstr_w(stname));
+            TRACE("destroying %s\n", debugstr_a(stname));
 
             list_remove( &stream->entry );
             g_object_unref(G_OBJECT(stream->stm));
@@ -771,43 +763,23 @@ end:
     return ret;
 }
 
-static WCHAR *msi_read_text_archive(const char *path, unsigned *len)
+static char *msi_read_text_archive(const char *path, unsigned *len)
 {
-    int fd;
-    struct stat st;
-    char *data = NULL;
-    WCHAR *wdata = NULL;
-    ssize_t nread;
+    char *data;
+    size_t nread;
 
-    /* TODO g_file_get_contents */
-    fd = open( path, O_RDONLY | O_BINARY);
-    if (fd == -1)
+    if (!g_file_get_contents(path, &data, &nread, NULL))
         return NULL;
 
-    fstat (fd, &st);
-    if (!(data = msi_alloc( st.st_size ))) goto done;
-
-    nread = read(fd, data, st.st_size);
-    if (nread != st.st_size) goto done;
-
-    while (!data[st.st_size - 1]) st.st_size--;
-    *len = MultiByteToWideChar( CP_ACP, 0, data, st.st_size, NULL, 0 );
-    if ((wdata = msi_alloc( (*len + 1) * sizeof(WCHAR) )))
-    {
-        MultiByteToWideChar( CP_ACP, 0, data, st.st_size, wdata, *len );
-        wdata[*len] = 0;
-    }
-
-done:
-    close( fd );
-    msi_free( data );
-    return wdata;
+    while (!data[nread - 1]) nread--;
+    *len = nread;
+    return data;
 }
 
-static void msi_parse_line(WCHAR **line, WCHAR ***entries, unsigned *num_entries, unsigned *len)
+static void msi_parse_line(char **line, char ***entries, unsigned *num_entries, unsigned *len)
 {
-    WCHAR *ptr = *line;
-    WCHAR *save;
+    char *ptr = *line;
+    char *save;
     unsigned i, count = 1, chars_left = *len;
 
     *entries = NULL;
@@ -823,7 +795,7 @@ static void msi_parse_line(WCHAR **line, WCHAR ***entries, unsigned *num_entries
         chars_left--;
     }
 
-    *entries = msi_alloc(count * sizeof(WCHAR *));
+    *entries = msi_alloc(count * sizeof(char *));
     if (!*entries)
         return;
 
@@ -874,41 +846,41 @@ static void msi_parse_line(WCHAR **line, WCHAR ***entries, unsigned *num_entries
         *num_entries = count;
 }
 
-static WCHAR *msi_build_createsql_prelude(WCHAR *table)
+static char *msi_build_createsql_prelude(char *table)
 {
-    WCHAR *prelude;
+    char *prelude;
     unsigned size;
 
-    static const WCHAR create_fmt[] = {'C','R','E','A','T','E',' ','T','A','B','L','E',' ','`','%','s','`',' ','(',' ',0};
+    static const char create_fmt[] = {'C','R','E','A','T','E',' ','T','A','B','L','E',' ','`','%','s','`',' ','(',' ',0};
 
-    size = sizeof(create_fmt)/sizeof(create_fmt[0]) + strlenW(table) - 2;
-    prelude = msi_alloc(size * sizeof(WCHAR));
+    size = sizeof(create_fmt)/sizeof(create_fmt[0]) + strlen(table) - 2;
+    prelude = msi_alloc(size * sizeof(char));
     if (!prelude)
         return NULL;
 
-    sprintfW(prelude, create_fmt, table);
+    sprintf(prelude, create_fmt, table);
     return prelude;
 }
 
-static WCHAR *msi_build_createsql_columns(WCHAR **columns_data, WCHAR **types, unsigned num_columns)
+static char *msi_build_createsql_columns(char **columns_data, char **types, unsigned num_columns)
 {
-    WCHAR *columns;
-    WCHAR *p;
-    const WCHAR *type;
+    char *columns;
+    char *p;
+    const char *type;
     unsigned sql_size = 1, i, len;
-    WCHAR expanded[128], *ptr;
-    WCHAR size[10], comma[2], extra[30];
+    char expanded[128], *ptr;
+    char size[10], comma[2], extra[30];
 
-    static const WCHAR column_fmt[] = {'`','%','s','`',' ','%','s','%','s','%','s','%','s',' ',0};
-    static const WCHAR size_fmt[] = {'(','%','s',')',0};
-    static const WCHAR type_char[] = {'C','H','A','R',0};
-    static const WCHAR type_int[] = {'I','N','T',0};
-    static const WCHAR type_long[] = {'L','O','N','G',0};
-    static const WCHAR type_object[] = {'O','B','J','E','C','T',0};
-    static const WCHAR type_notnull[] = {' ','N','O','T',' ','N','U','L','L',0};
-    static const WCHAR localizable[] = {' ','L','O','C','A','L','I','Z','A','B','L','E',0};
+    static const char column_fmt[] = {'`','%','s','`',' ','%','s','%','s','%','s','%','s',' ',0};
+    static const char size_fmt[] = {'(','%','s',')',0};
+    static const char type_char[] = {'C','H','A','R',0};
+    static const char type_int[] = {'I','N','T',0};
+    static const char type_long[] = {'L','O','N','G',0};
+    static const char type_object[] = {'O','B','J','E','C','T',0};
+    static const char type_notnull[] = {' ','N','O','T',' ','N','U','L','L',0};
+    static const char localizable[] = {' ','L','O','C','A','L','I','Z','A','B','L','E',0};
 
-    columns = msi_alloc_zero(sql_size * sizeof(WCHAR));
+    columns = msi_alloc_zero(sql_size * sizeof(char));
     if (!columns)
         return NULL;
 
@@ -923,28 +895,28 @@ static WCHAR *msi_build_createsql_columns(WCHAR **columns_data, WCHAR **types, u
             comma[0] = ',';
 
         ptr = &types[i][1];
-        len = atolW(ptr);
+        len = atol(ptr);
         extra[0] = '\0';
 
         switch (types[i][0])
         {
             case 'l':
-                strcpyW(extra, type_notnull);
+                strcpy(extra, type_notnull);
                 /* fall through */
             case 'L':
-                strcatW(extra, localizable);
+                strcat(extra, localizable);
                 type = type_char;
-                sprintfW(size, size_fmt, ptr);
+                sprintf(size, size_fmt, ptr);
                 break;
             case 's':
-                strcpyW(extra, type_notnull);
+                strcpy(extra, type_notnull);
                 /* fall through */
             case 'S':
                 type = type_char;
-                sprintfW(size, size_fmt, ptr);
+                sprintf(size, size_fmt, ptr);
                 break;
             case 'i':
-                strcpyW(extra, type_notnull);
+                strcpy(extra, type_notnull);
                 /* fall through */
             case 'I':
                 if (len <= 2)
@@ -959,7 +931,7 @@ static WCHAR *msi_build_createsql_columns(WCHAR **columns_data, WCHAR **types, u
                 }
                 break;
             case 'v':
-                strcpyW(extra, type_notnull);
+                strcpy(extra, type_notnull);
                 /* fall through */
             case 'V':
                 type = type_object;
@@ -970,10 +942,10 @@ static WCHAR *msi_build_createsql_columns(WCHAR **columns_data, WCHAR **types, u
                 return NULL;
         }
 
-        sprintfW(expanded, column_fmt, columns_data[i], type, size, extra, comma);
-        sql_size += strlenW(expanded);
+        sprintf(expanded, column_fmt, columns_data[i], type, size, extra, comma);
+        sql_size += strlen(expanded);
 
-        p = msi_realloc(columns, sql_size * sizeof(WCHAR));
+        p = msi_realloc(columns, sql_size * sizeof(char));
         if (!p)
         {
             msi_free(columns);
@@ -981,60 +953,60 @@ static WCHAR *msi_build_createsql_columns(WCHAR **columns_data, WCHAR **types, u
         }
         columns = p;
 
-        strcatW(columns, expanded);
+        strcat(columns, expanded);
     }
 
     return columns;
 }
 
-static WCHAR *msi_build_createsql_postlude(WCHAR **primary_keys, unsigned num_keys)
+static char *msi_build_createsql_postlude(char **primary_keys, unsigned num_keys)
 {
-    WCHAR *postlude;
-    WCHAR *keys;
-    WCHAR *ptr;
+    char *postlude;
+    char *keys;
+    char *ptr;
     unsigned size, key_size, i;
 
-    static const WCHAR key_fmt[] = {'`','%','s','`',',',' ',0};
-    static const WCHAR postlude_fmt[] = {'P','R','I','M','A','R','Y',' ','K','E','Y',' ','%','s',')',0};
+    static const char key_fmt[] = {'`','%','s','`',',',' ',0};
+    static const char postlude_fmt[] = {'P','R','I','M','A','R','Y',' ','K','E','Y',' ','%','s',')',0};
 
     for (i = 0, size = 1; i < num_keys; i++)
-        size += strlenW(key_fmt) + strlenW(primary_keys[i]) - 2;
+        size += strlen(key_fmt) + strlen(primary_keys[i]) - 2;
 
-    keys = msi_alloc(size * sizeof(WCHAR));
+    keys = msi_alloc(size * sizeof(char));
     if (!keys)
         return NULL;
 
     for (i = 0, ptr = keys; i < num_keys; i++)
     {
-        key_size = strlenW(key_fmt) + strlenW(primary_keys[i]) -2;
-        sprintfW(ptr, key_fmt, primary_keys[i]);
+        key_size = strlen(key_fmt) + strlen(primary_keys[i]) -2;
+        sprintf(ptr, key_fmt, primary_keys[i]);
         ptr += key_size;
     }
 
     /* remove final ', ' */
     *(ptr - 2) = '\0';
 
-    size = strlenW(postlude_fmt) + size - 1;
-    postlude = msi_alloc(size * sizeof(WCHAR));
+    size = strlen(postlude_fmt) + size - 1;
+    postlude = msi_alloc(size * sizeof(char));
     if (!postlude)
         goto done;
 
-    sprintfW(postlude, postlude_fmt, keys);
+    sprintf(postlude, postlude_fmt, keys);
 
 done:
     msi_free(keys);
     return postlude;
 }
 
-static unsigned msi_add_table_to_db(LibmsiDatabase *db, WCHAR **columns, WCHAR **types, WCHAR **labels, unsigned num_labels, unsigned num_columns)
+static unsigned msi_add_table_to_db(LibmsiDatabase *db, char **columns, char **types, char **labels, unsigned num_labels, unsigned num_columns)
 {
     unsigned r = LIBMSI_RESULT_OUTOFMEMORY;
     unsigned size;
     LibmsiQuery *view;
-    WCHAR *create_sql = NULL;
-    WCHAR *prelude;
-    WCHAR *columns_sql;
-    WCHAR *postlude;
+    char *create_sql = NULL;
+    char *prelude;
+    char *columns_sql;
+    char *postlude;
 
     prelude = msi_build_createsql_prelude(labels[0]);
     columns_sql = msi_build_createsql_columns(columns, types, num_columns);
@@ -1043,14 +1015,14 @@ static unsigned msi_add_table_to_db(LibmsiDatabase *db, WCHAR **columns, WCHAR *
     if (!prelude || !columns_sql || !postlude)
         goto done;
 
-    size = strlenW(prelude) + strlenW(columns_sql) + strlenW(postlude) + 1;
-    create_sql = msi_alloc(size * sizeof(WCHAR));
+    size = strlen(prelude) + strlen(columns_sql) + strlen(postlude) + 1;
+    create_sql = msi_alloc(size * sizeof(char));
     if (!create_sql)
         goto done;
 
-    strcpyW(create_sql, prelude);
-    strcatW(create_sql, columns_sql);
-    strcatW(create_sql, postlude);
+    strcpy(create_sql, prelude);
+    strcat(create_sql, columns_sql);
+    strcat(create_sql, postlude);
 
     r = _libmsi_database_open_query( db, create_sql, &view );
     if (r != LIBMSI_RESULT_SUCCESS)
@@ -1068,14 +1040,13 @@ done:
     return r;
 }
 
-static char *msi_import_stream_filename(const char *path, const WCHAR *name)
+static char *msi_import_stream_filename(const char *path, const char *name)
 {
     unsigned len;
-    char *ascii_name = strdupWtoA(name);
     char *fullname;
     char *ptr;
 
-    len = strlen(path) + strlen(ascii_name) + 1;
+    len = strlen(path) + strlen(name) + 1;
     fullname = msi_alloc(len);
     if (!fullname)
        return NULL;
@@ -1090,13 +1061,12 @@ static char *msi_import_stream_filename(const char *path, const WCHAR *name)
         return NULL;
     }
     *ptr++ = '\\';
-    strcpy( ptr, ascii_name );
-    msi_free( ascii_name );
+    strcpy( ptr, name );
     return fullname;
 }
 
-static unsigned construct_record(unsigned num_columns, WCHAR **types,
-                             WCHAR **data, const char *path, LibmsiRecord **rec)
+static unsigned construct_record(unsigned num_columns, char **types,
+                             char **data, const char *path, LibmsiRecord **rec)
 {
     unsigned i;
 
@@ -1109,11 +1079,11 @@ static unsigned construct_record(unsigned num_columns, WCHAR **types,
         switch (types[i][0])
         {
             case 'L': case 'l': case 'S': case 's':
-                _libmsi_record_set_stringW(*rec, i + 1, data[i]);
+                libmsi_record_set_string(*rec, i + 1, data[i]);
                 break;
             case 'I': case 'i':
                 if (*data[i])
-                    libmsi_record_set_int(*rec, i + 1, atoiW(data[i]));
+                    libmsi_record_set_int(*rec, i + 1, atoi(data[i]));
                 break;
             case 'V': case 'v':
                 if (*data[i])
@@ -1139,8 +1109,8 @@ static unsigned construct_record(unsigned num_columns, WCHAR **types,
     return LIBMSI_RESULT_SUCCESS;
 }
 
-static unsigned msi_add_records_to_table(LibmsiDatabase *db, WCHAR **columns, WCHAR **types,
-                                     WCHAR **labels, WCHAR ***records,
+static unsigned msi_add_records_to_table(LibmsiDatabase *db, char **columns, char **types,
+                                     char **labels, char ***records,
                                      int num_columns, int num_records,
                                      const char *path)
 {
@@ -1192,17 +1162,17 @@ static unsigned _libmsi_database_import(LibmsiDatabase *db, const char *folder, 
     unsigned num_labels, num_types;
     unsigned num_columns, num_records = 0;
     char *path;
-    WCHAR **columns;
-    WCHAR **types;
-    WCHAR **labels;
-    WCHAR *ptr;
-    WCHAR *data;
-    WCHAR ***records = NULL;
-    WCHAR ***temp_records;
+    char **columns;
+    char **types;
+    char **labels;
+    char *ptr;
+    char *data;
+    char ***records = NULL;
+    char ***temp_records;
 
-    static const WCHAR suminfo[] =
+    static const char suminfo[] =
         {'_','S','u','m','m','a','r','y','I','n','f','o','r','m','a','t','i','o','n',0};
-    static const WCHAR forcecodepage[] =
+    static const char forcecodepage[] =
         {'_','F','o','r','c','e','C','o','d','e','p','a','g','e',0};
 
     TRACE("%p %s %s\n", db, debugstr_a(folder), debugstr_a(file) );
@@ -1229,9 +1199,9 @@ static unsigned _libmsi_database_import(LibmsiDatabase *db, const char *folder, 
     msi_parse_line( &ptr, &labels, &num_labels, &len );
 
     if (num_columns == 1 && !columns[0][0] && num_labels == 1 && !labels[0][0] &&
-        num_types == 2 && !strcmpW( types[1], forcecodepage ))
+        num_types == 2 && !strcmp( types[1], forcecodepage ))
     {
-        r = msi_set_string_table_codepage( db->strings, atoiW( types[0] ) );
+        r = msi_set_string_table_codepage( db->strings, atoi( types[0] ) );
         goto done;
     }
 
@@ -1241,7 +1211,7 @@ static unsigned _libmsi_database_import(LibmsiDatabase *db, const char *folder, 
         goto done;
     }
 
-    records = msi_alloc(sizeof(WCHAR **));
+    records = msi_alloc(sizeof(char **));
     if (!records)
     {
         r = LIBMSI_RESULT_OUTOFMEMORY;
@@ -1254,7 +1224,7 @@ static unsigned _libmsi_database_import(LibmsiDatabase *db, const char *folder, 
         msi_parse_line( &ptr, &records[num_records], NULL, &len );
 
         num_records++;
-        temp_records = msi_realloc(records, (num_records + 1) * sizeof(WCHAR **));
+        temp_records = msi_realloc(records, (num_records + 1) * sizeof(char **));
         if (!temp_records)
         {
             r = LIBMSI_RESULT_OUTOFMEMORY;
@@ -1263,7 +1233,7 @@ static unsigned _libmsi_database_import(LibmsiDatabase *db, const char *folder, 
         records = temp_records;
     }
 
-    if (!strcmpW(labels[0], suminfo))
+    if (!strcmp(labels[0], suminfo))
     {
         r = msi_add_suminfo( db, records, num_records, num_columns );
         if (r != LIBMSI_RESULT_SUCCESS)
@@ -1385,20 +1355,20 @@ static unsigned msi_export_forcecodepage( int fd, unsigned codepage )
     return LIBMSI_RESULT_SUCCESS;
 }
 
-static unsigned _libmsi_database_export( LibmsiDatabase *db, const WCHAR *table,
+static unsigned _libmsi_database_export( LibmsiDatabase *db, const char *table,
                int fd)
 {
-    static const WCHAR query[] = {
+    static const char query[] = {
         's','e','l','e','c','t',' ','*',' ','f','r','o','m',' ','%','s',0 };
-    static const WCHAR forcecodepage[] = {
+    static const char forcecodepage[] = {
         '_','F','o','r','c','e','C','o','d','e','p','a','g','e',0 };
     LibmsiRecord *rec = NULL;
     LibmsiQuery *view = NULL;
     unsigned r;
 
-    TRACE("%p %s %d\n", db, debugstr_w(table), fd );
+    TRACE("%p %s %d\n", db, debugstr_a(table), fd );
 
-    if (!strcmpW( table, forcecodepage ))
+    if (!strcmp( table, forcecodepage ))
     {
         unsigned codepage = msi_get_string_table_codepage( db->strings );
         r = msi_export_forcecodepage( fd, codepage );
@@ -1428,7 +1398,7 @@ static unsigned _libmsi_database_export( LibmsiDatabase *db, const WCHAR *table,
         r = _libmsi_database_get_primary_keys( db, table, &rec );
         if (r == LIBMSI_RESULT_SUCCESS)
         {
-            _libmsi_record_set_stringW( rec, 0, table );
+            libmsi_record_set_string( rec, 0, table );
             msi_export_record( fd, rec, 0 );
             msiobj_release( &rec->hdr );
         }
@@ -1443,7 +1413,7 @@ done:
 }
 
 /***********************************************************************
- * MsiExportDatabaseW        [MSI.@]
+ * MsiExportDatabase        [MSI.@]
  *
  * Writes a file containing the table data as tab separated ASCII.
  *
@@ -1460,32 +1430,16 @@ done:
 LibmsiResult libmsi_database_export( LibmsiDatabase *db, const char *szTable,
                int fd )
 {
-    WCHAR *path = NULL;
-    WCHAR *file = NULL;
-    WCHAR *table = NULL;
     unsigned r = LIBMSI_RESULT_OUTOFMEMORY;
 
     TRACE("%x %s %d\n", db, debugstr_a(szTable), fd);
-
-    if( szTable )
-    {
-        table = strdupAtoW( szTable );
-        if( !table )
-            goto end;
-    }
 
     if( !db )
         return LIBMSI_RESULT_INVALID_HANDLE;
 
     msiobj_addref ( &db->hdr );
-    r = _libmsi_database_export( db, table, fd );
+    r = _libmsi_database_export( db, szTable, fd );
     msiobj_release( &db->hdr );
-
-end:
-    msi_free( table );
-    msi_free( path );
-    msi_free( file );
-
     return r;
 }
 
@@ -1493,13 +1447,13 @@ typedef struct _tagMERGETABLE
 {
     struct list entry;
     struct list rows;
-    WCHAR *name;
+    char *name;
     unsigned numconflicts;
-    WCHAR **columns;
+    char **columns;
     unsigned numcolumns;
-    WCHAR **types;
+    char **types;
     unsigned numtypes;
-    WCHAR **labels;
+    char **labels;
     unsigned numlabels;
 } MERGETABLE;
 
@@ -1518,7 +1472,7 @@ typedef struct _tagMERGEDATA
     struct list *tabledata;
 } MERGEDATA;
 
-static bool merge_type_match(const WCHAR *type1, const WCHAR *type2)
+static bool merge_type_match(const char *type1, const char *type2)
 {
     if (((type1[0] == 'l') || (type1[0] == 's')) &&
         ((type2[0] == 'l') || (type2[0] == 's')))
@@ -1528,7 +1482,7 @@ static bool merge_type_match(const WCHAR *type1, const WCHAR *type2)
         ((type2[0] == 'L') || (type2[0] == 'S')))
         return true;
 
-    return !strcmpW( type1, type2 );
+    return !strcmp( type1, type2 );
 }
 
 static unsigned merge_verify_colnames(LibmsiQuery *dbview, LibmsiQuery *mergeview)
@@ -1550,7 +1504,7 @@ static unsigned merge_verify_colnames(LibmsiQuery *dbview, LibmsiQuery *mergevie
         if (!_libmsi_record_get_string_raw(mergerec, i))
             break;
 
-        if (strcmpW( _libmsi_record_get_string_raw( dbrec, i ), _libmsi_record_get_string_raw( mergerec, i ) ))
+        if (strcmp( _libmsi_record_get_string_raw( dbrec, i ), _libmsi_record_get_string_raw( mergerec, i ) ))
         {
             r = LIBMSI_RESULT_DATATYPE_MISMATCH;
             goto done;
@@ -1591,7 +1545,7 @@ done:
 }
 
 static unsigned merge_verify_primary_keys(LibmsiDatabase *db, LibmsiDatabase *mergedb,
-                                      const WCHAR *table)
+                                      const char *table)
 {
     LibmsiRecord *dbrec, *mergerec = NULL;
     unsigned r, i, count;
@@ -1613,7 +1567,7 @@ static unsigned merge_verify_primary_keys(LibmsiDatabase *db, LibmsiDatabase *me
 
     for (i = 1; i <= count; i++)
     {
-        if (strcmpW( _libmsi_record_get_string_raw( dbrec, i ), _libmsi_record_get_string_raw( mergerec, i ) ))
+        if (strcmp( _libmsi_record_get_string_raw( dbrec, i ), _libmsi_record_get_string_raw( mergerec, i ) ))
         {
             r = LIBMSI_RESULT_DATATYPE_MISMATCH;
             goto done;
@@ -1627,11 +1581,11 @@ done:
     return r;
 }
 
-static WCHAR *get_key_value(LibmsiQuery *view, const WCHAR *key, LibmsiRecord *rec)
+static char *get_key_value(LibmsiQuery *view, const char *key, LibmsiRecord *rec)
 {
     LibmsiRecord *colnames;
-    WCHAR *str;
-    WCHAR *val;
+    char *str;
+    char *val;
     unsigned r, i = 0, sz = 0;
     int cmp;
 
@@ -1642,13 +1596,13 @@ static WCHAR *get_key_value(LibmsiQuery *view, const WCHAR *key, LibmsiRecord *r
     do
     {
         str = msi_dup_record_field(colnames, ++i);
-        cmp = strcmpW( key, str );
+        cmp = strcmp( key, str );
         msi_free(str);
     } while (cmp);
 
     msiobj_release(&colnames->hdr);
 
-    r = _libmsi_record_get_stringW(rec, i, NULL, &sz);
+    r = _libmsi_record_get_string(rec, i, NULL, &sz);
     if (r != LIBMSI_RESULT_SUCCESS)
         return NULL;
     sz++;
@@ -1656,24 +1610,24 @@ static WCHAR *get_key_value(LibmsiQuery *view, const WCHAR *key, LibmsiRecord *r
     if (_libmsi_record_get_string_raw(rec, i))  /* check record field is a string */
     {
         /* quote string record fields */
-        const WCHAR szQuote[] = {'\'', 0};
+        const char szQuote[] = {'\'', 0};
         sz += 2;
-        val = msi_alloc(sz*sizeof(WCHAR));
+        val = msi_alloc(sz*sizeof(char));
         if (!val)
             return NULL;
 
-        strcpyW(val, szQuote);
-        r = _libmsi_record_get_stringW(rec, i, val+1, &sz);
-        strcpyW(val+1+sz, szQuote);
+        strcpy(val, szQuote);
+        r = _libmsi_record_get_string(rec, i, val+1, &sz);
+        strcpy(val+1+sz, szQuote);
     }
     else
     {
         /* do not quote integer record fields */
-        val = msi_alloc(sz*sizeof(WCHAR));
+        val = msi_alloc(sz*sizeof(char));
         if (!val)
             return NULL;
 
-        r = _libmsi_record_get_stringW(rec, i, val, &sz);
+        r = _libmsi_record_get_string(rec, i, val, &sz);
     }
 
     if (r != LIBMSI_RESULT_SUCCESS)
@@ -1686,23 +1640,23 @@ static WCHAR *get_key_value(LibmsiQuery *view, const WCHAR *key, LibmsiRecord *r
     return val;
 }
 
-static WCHAR *create_diff_row_query(LibmsiDatabase *merge, LibmsiQuery *view,
-                                    WCHAR *table, LibmsiRecord *rec)
+static char *create_diff_row_query(LibmsiDatabase *merge, LibmsiQuery *view,
+                                    char *table, LibmsiRecord *rec)
 {
-    WCHAR *query = NULL;
-    WCHAR *clause = NULL;
-    WCHAR *val;
-    const WCHAR *setptr;
-    const WCHAR *key;
+    char *query = NULL;
+    char *clause = NULL;
+    char *val;
+    const char *setptr;
+    const char *key;
     unsigned size, oldsize;
     LibmsiRecord *keys;
     unsigned r, i, count;
 
-    static const WCHAR keyset[] = {
+    static const char keyset[] = {
         '`','%','s','`',' ','=',' ','%','s',' ','A','N','D',' ',0};
-    static const WCHAR lastkeyset[] = {
+    static const char lastkeyset[] = {
         '`','%','s','`',' ','=',' ','%','s',' ',0};
-    static const WCHAR fmt[] = {'S','E','L','E','C','T',' ','*',' ',
+    static const char fmt[] = {'S','E','L','E','C','T',' ','*',' ',
         'F','R','O','M',' ','`','%','s','`',' ',
         'W','H','E','R','E',' ','%','s',0};
 
@@ -1710,7 +1664,7 @@ static WCHAR *create_diff_row_query(LibmsiDatabase *merge, LibmsiQuery *view,
     if (r != LIBMSI_RESULT_SUCCESS)
         return NULL;
 
-    clause = msi_alloc_zero(sizeof(WCHAR));
+    clause = msi_alloc_zero(sizeof(char));
     if (!clause)
         goto done;
 
@@ -1727,24 +1681,24 @@ static WCHAR *create_diff_row_query(LibmsiDatabase *merge, LibmsiQuery *view,
             setptr = keyset;
 
         oldsize = size;
-        size += strlenW(setptr) + strlenW(key) + strlenW(val) - 4;
-        clause = msi_realloc(clause, size * sizeof (WCHAR));
+        size += strlen(setptr) + strlen(key) + strlen(val) - 4;
+        clause = msi_realloc(clause, size * sizeof (char));
         if (!clause)
         {
             msi_free(val);
             goto done;
         }
 
-        sprintfW(clause + oldsize - 1, setptr, key, val);
+        sprintf(clause + oldsize - 1, setptr, key, val);
         msi_free(val);
     }
 
-    size = strlenW(fmt) + strlenW(table) + strlenW(clause) + 1;
-    query = msi_alloc(size * sizeof(WCHAR));
+    size = strlen(fmt) + strlen(table) + strlen(clause) + 1;
+    query = msi_alloc(size * sizeof(char));
     if (!query)
         goto done;
 
-    sprintfW(query, fmt, table, clause);
+    sprintf(query, fmt, table, clause);
 
 done:
     msi_free(clause);
@@ -1759,7 +1713,7 @@ static unsigned merge_diff_row(LibmsiRecord *rec, void *param)
     MERGEROW *mergerow;
     LibmsiQuery *dbview = NULL;
     LibmsiRecord *row = NULL;
-    WCHAR *query = NULL;
+    char *query = NULL;
     unsigned r = LIBMSI_RESULT_SUCCESS;
 
     if (table_view_exists(data->db, table->name))
@@ -1812,7 +1766,7 @@ done:
     return r;
 }
 
-static unsigned msi_get_table_labels(LibmsiDatabase *db, const WCHAR *table, WCHAR ***labels, unsigned *numlabels)
+static unsigned msi_get_table_labels(LibmsiDatabase *db, const char *table, char ***labels, unsigned *numlabels)
 {
     unsigned r, i, count;
     LibmsiRecord *prec = NULL;
@@ -1823,17 +1777,17 @@ static unsigned msi_get_table_labels(LibmsiDatabase *db, const WCHAR *table, WCH
 
     count = libmsi_record_get_field_count(prec);
     *numlabels = count + 1;
-    *labels = msi_alloc((*numlabels)*sizeof(WCHAR *));
+    *labels = msi_alloc((*numlabels)*sizeof(char *));
     if (!*labels)
     {
         r = LIBMSI_RESULT_OUTOFMEMORY;
         goto end;
     }
 
-    (*labels)[0] = strdupW(table);
+    (*labels)[0] = strdup(table);
     for (i=1; i<=count; i++ )
     {
-        (*labels)[i] = strdupW(_libmsi_record_get_string_raw(prec, i));
+        (*labels)[i] = strdup(_libmsi_record_get_string_raw(prec, i));
     }
 
 end:
@@ -1841,7 +1795,7 @@ end:
     return r;
 }
 
-static unsigned msi_get_query_columns(LibmsiQuery *query, WCHAR ***columns, unsigned *numcolumns)
+static unsigned msi_get_query_columns(LibmsiQuery *query, char ***columns, unsigned *numcolumns)
 {
     unsigned r, i, count;
     LibmsiRecord *prec = NULL;
@@ -1851,7 +1805,7 @@ static unsigned msi_get_query_columns(LibmsiQuery *query, WCHAR ***columns, unsi
         return r;
 
     count = libmsi_record_get_field_count(prec);
-    *columns = msi_alloc(count*sizeof(WCHAR *));
+    *columns = msi_alloc(count*sizeof(char *));
     if (!*columns)
     {
         r = LIBMSI_RESULT_OUTOFMEMORY;
@@ -1860,7 +1814,7 @@ static unsigned msi_get_query_columns(LibmsiQuery *query, WCHAR ***columns, unsi
 
     for (i=1; i<=count; i++ )
     {
-        (*columns)[i-1] = strdupW(_libmsi_record_get_string_raw(prec, i));
+        (*columns)[i-1] = strdup(_libmsi_record_get_string_raw(prec, i));
     }
 
     *numcolumns = count;
@@ -1870,7 +1824,7 @@ end:
     return r;
 }
 
-static unsigned msi_get_query_types(LibmsiQuery *query, WCHAR ***types, unsigned *numtypes)
+static unsigned msi_get_query_types(LibmsiQuery *query, char ***types, unsigned *numtypes)
 {
     unsigned r, i, count;
     LibmsiRecord *prec = NULL;
@@ -1880,7 +1834,7 @@ static unsigned msi_get_query_types(LibmsiQuery *query, WCHAR ***types, unsigned
         return r;
 
     count = libmsi_record_get_field_count(prec);
-    *types = msi_alloc(count*sizeof(WCHAR *));
+    *types = msi_alloc(count*sizeof(char *));
     if (!*types)
     {
         r = LIBMSI_RESULT_OUTOFMEMORY;
@@ -1890,7 +1844,7 @@ static unsigned msi_get_query_types(LibmsiQuery *query, WCHAR ***types, unsigned
     *numtypes = count;
     for (i=1; i<=count; i++ )
     {
-        (*types)[i-1] = strdupW(_libmsi_record_get_string_raw(prec, i));
+        (*types)[i-1] = strdup(_libmsi_record_get_string_raw(prec, i));
     }
 
 end:
@@ -1946,13 +1900,13 @@ static void free_merge_table(MERGETABLE *table)
     msi_free(table);
 }
 
-static unsigned msi_get_merge_table (LibmsiDatabase *db, const WCHAR *name, MERGETABLE **ptable)
+static unsigned msi_get_merge_table (LibmsiDatabase *db, const char *name, MERGETABLE **ptable)
 {
     unsigned r;
     MERGETABLE *table;
     LibmsiQuery *mergeview = NULL;
 
-    static const WCHAR query[] = {'S','E','L','E','C','T',' ','*',' ',
+    static const char query[] = {'S','E','L','E','C','T',' ','*',' ',
         'F','R','O','M',' ','`','%','s','`',0};
 
     table = msi_alloc_zero(sizeof(MERGETABLE));
@@ -1980,7 +1934,7 @@ static unsigned msi_get_merge_table (LibmsiDatabase *db, const WCHAR *name, MERG
 
     list_init(&table->rows);
 
-    table->name = strdupW(name);
+    table->name = strdup(name);
     table->numconflicts = 0;
 
     msiobj_release(&mergeview->hdr);
@@ -2000,10 +1954,10 @@ static unsigned merge_diff_tables(LibmsiRecord *rec, void *param)
     MERGETABLE *table;
     LibmsiQuery *dbview = NULL;
     LibmsiQuery *mergeview = NULL;
-    const WCHAR *name;
+    const char *name;
     unsigned r;
 
-    static const WCHAR query[] = {'S','E','L','E','C','T',' ','*',' ',
+    static const char query[] = {'S','E','L','E','C','T',' ','*',' ',
         'F','R','O','M',' ','`','%','s','`',0};
 
     name = _libmsi_record_get_string_raw(rec, 1);
@@ -2051,7 +2005,7 @@ done:
 static unsigned gather_merge_data(LibmsiDatabase *db, LibmsiDatabase *merge,
                               struct list *tabledata)
 {
-    static const WCHAR query[] = {
+    static const char query[] = {
         'S','E','L','E','C','T',' ','*',' ','F','R','O','M',' ',
         '`','_','T','a','b','l','e','s','`',0};
     LibmsiQuery *view;
@@ -2100,13 +2054,13 @@ static unsigned merge_table(LibmsiDatabase *db, MERGETABLE *table)
     return LIBMSI_RESULT_SUCCESS;
 }
 
-static unsigned update_merge_errors(LibmsiDatabase *db, const WCHAR *error,
-                                WCHAR *table, unsigned numconflicts)
+static unsigned update_merge_errors(LibmsiDatabase *db, const char *error,
+                                char *table, unsigned numconflicts)
 {
     unsigned r;
     LibmsiQuery *view;
 
-    static const WCHAR create[] = {
+    static const char create[] = {
         'C','R','E','A','T','E',' ','T','A','B','L','E',' ',
         '`','%','s','`',' ','(','`','T','a','b','l','e','`',' ',
         'C','H','A','R','(','2','5','5',')',' ','N','O','T',' ',
@@ -2114,7 +2068,7 @@ static unsigned update_merge_errors(LibmsiDatabase *db, const WCHAR *error,
         'C','o','n','f','l','i','c','t','s','`',' ','S','H','O','R','T',' ',
         'N','O','T',' ','N','U','L','L',' ','P','R','I','M','A','R','Y',' ',
         'K','E','Y',' ','`','T','a','b','l','e','`',')',0};
-    static const WCHAR insert[] = {
+    static const char insert[] = {
         'I','N','S','E','R','T',' ','I','N','T','O',' ',
         '`','%','s','`',' ','(','`','T','a','b','l','e','`',',',' ',
         '`','N','u','m','R','o','w','M','e','r','g','e',
@@ -2147,7 +2101,6 @@ LibmsiResult libmsi_database_merge(LibmsiDatabase *db, LibmsiDatabase *merge,
 {
     struct list tabledata = LIST_INIT(tabledata);
     struct list *item, *cursor;
-    WCHAR *szwTableName;
     MERGETABLE *table;
     bool conflicts;
     unsigned r;
@@ -2161,7 +2114,6 @@ LibmsiResult libmsi_database_merge(LibmsiDatabase *db, LibmsiDatabase *merge,
     if (!db || !merge)
         return LIBMSI_RESULT_INVALID_HANDLE;
 
-    szwTableName = strdupAtoW(szTableName);
     msiobj_addref( &db->hdr );
     msiobj_addref( &merge->hdr );
     r = gather_merge_data(db, merge, &tabledata);
@@ -2175,7 +2127,7 @@ LibmsiResult libmsi_database_merge(LibmsiDatabase *db, LibmsiDatabase *merge,
         {
             conflicts = true;
 
-            r = update_merge_errors(db, szwTableName, table->name,
+            r = update_merge_errors(db, szTableName, table->name,
                                     table->numconflicts);
             if (r != LIBMSI_RESULT_SUCCESS)
                 break;

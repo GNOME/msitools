@@ -66,10 +66,10 @@ static bool streams_set_table_size(LibmsiStreamsView *sv, unsigned size)
     return true;
 }
 
-static STREAM *create_stream(LibmsiStreamsView *sv, const WCHAR *name, bool encoded, GsfInput *stm)
+static STREAM *create_stream(LibmsiStreamsView *sv, const char *name, bool encoded, GsfInput *stm)
 {
     STREAM *stream;
-    WCHAR decoded[MAX_STREAM_NAME_LEN];
+    char decoded[MAX_STREAM_NAME_LEN];
 
     stream = msi_alloc(sizeof(STREAM));
     if (!stream)
@@ -78,7 +78,7 @@ static STREAM *create_stream(LibmsiStreamsView *sv, const WCHAR *name, bool enco
     if (encoded)
     {
         decode_streamname(name, decoded);
-        TRACE("stream -> %s %s\n", debugstr_w(name), debugstr_w(decoded));
+        TRACE("stream -> %s %s\n", debugstr_a(name), debugstr_a(decoded));
         name = decoded;
     }
 
@@ -136,7 +136,7 @@ static unsigned streams_view_set_row(LibmsiView *view, unsigned row, LibmsiRecor
     LibmsiStreamsView *sv = (LibmsiStreamsView *)view;
     STREAM *stream = NULL;
     GsfInput *stm;
-    WCHAR *name = NULL;
+    char *name = NULL;
     unsigned r;
 
     TRACE("(%p, %d, %p, %08x)\n", view, row, rec, mask);
@@ -148,7 +148,7 @@ static unsigned streams_view_set_row(LibmsiView *view, unsigned row, LibmsiRecor
     if (r != LIBMSI_RESULT_SUCCESS)
         return r;
 
-    name = strdupW(_libmsi_record_get_string_raw(rec, 1));
+    name = strdup(_libmsi_record_get_string_raw(rec, 1));
     if (!name)
     {
         WARN("failed to retrieve stream name\n");
@@ -203,8 +203,8 @@ static unsigned streams_view_insert_row(LibmsiView *view, LibmsiRecord *rec, uns
 static unsigned streams_view_delete_row(LibmsiView *view, unsigned row)
 {
     LibmsiStreamsView *sv = (LibmsiStreamsView *)view;
-    const WCHAR *name;
-    WCHAR *encname;
+    const char *name;
+    char *encname;
     unsigned i;
 
     if (row > sv->num_rows)
@@ -254,8 +254,8 @@ static unsigned streams_view_get_dimensions(LibmsiView *view, unsigned *rows, un
     return LIBMSI_RESULT_SUCCESS;
 }
 
-static unsigned streams_view_get_column_info( LibmsiView *view, unsigned n, const WCHAR **name,
-                                     unsigned *type, bool *temporary, const WCHAR **table_name )
+static unsigned streams_view_get_column_info( LibmsiView *view, unsigned n, const char **name,
+                                     unsigned *type, bool *temporary, const char **table_name )
 {
     TRACE("(%p, %d, %p, %p, %p, %p)\n", view, n, name, type, temporary,
           table_name);
@@ -355,7 +355,7 @@ static const LibmsiViewOps streams_ops =
     NULL,
 };
 
-static unsigned add_stream_to_table(const WCHAR *name, GsfInput *stm, void *opaque)
+static unsigned add_stream_to_table(const char *name, GsfInput *stm, void *opaque)
 {
     LibmsiStreamsView *sv = (LibmsiStreamsView *)opaque;
     STREAM *stream;

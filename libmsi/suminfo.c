@@ -30,7 +30,7 @@
 #include "libmsi.h"
 #include "msipriv.h"
 
-static const WCHAR szSumInfo[] = {5 ,'S','u','m','m','a','r','y','I','n','f','o','r','m','a','t','i','o','n',0};
+static const char szSumInfo[] = {5 ,'S','u','m','m','a','r','y','I','n','f','o','r','m','a','t','i','o','n',0};
 static const uint8_t fmtid_SummaryInformation[16] =
         { 0xe0, 0x85, 0x9f, 0xf2, 0xf9, 0x4f, 0x68, 0x10, 0xab, 0x91, 0x08, 0x00, 0x2b, 0x27, 0xb3, 0xd9};
 
@@ -115,41 +115,41 @@ static unsigned read_dword( const uint8_t *data, unsigned *ofs )
     return val;
 }
 
-static void parse_filetime( const WCHAR *str, uint64_t *ft )
+static void parse_filetime( const char *str, uint64_t *ft )
 {
     struct tm tm;
     time_t t;
-    const WCHAR *p = str;
-    WCHAR *end;
+    const char *p = str;
+    char *end;
 
 
     /* YYYY/MM/DD hh:mm:ss */
 
     while ( *p == ' ' || *p == '\t' ) p++;
 
-    tm.tm_year = strtolW( p, &end, 10 );
+    tm.tm_year = strtol( p, &end, 10 );
     if (*end != '/') return;
     p = end + 1;
 
-    tm.tm_mon = strtolW( p, &end, 10 ) - 1;
+    tm.tm_mon = strtol( p, &end, 10 ) - 1;
     if (*end != '/') return;
     p = end + 1;
 
-    tm.tm_mday = strtolW( p, &end, 10 );
+    tm.tm_mday = strtol( p, &end, 10 );
     if (*end != ' ') return;
     p = end + 1;
 
     while ( *p == ' ' || *p == '\t' ) p++;
 
-    tm.tm_hour = strtolW( p, &end, 10 );
+    tm.tm_hour = strtol( p, &end, 10 );
     if (*end != ':') return;
     p = end + 1;
 
-    tm.tm_min = strtolW( p, &end, 10 );
+    tm.tm_min = strtol( p, &end, 10 );
     if (*end != ':') return;
     p = end + 1;
 
-    tm.tm_sec = strtolW( p, &end, 10 );
+    tm.tm_sec = strtol( p, &end, 10 );
 
     t = mktime(&tm);
 
@@ -243,9 +243,7 @@ static void read_properties_from_data( LibmsiOLEVariant *prop, const uint8_t *da
             if( type == OLEVT_I2 || type == OLEVT_I4) {
                 property->intval = atoi( str );
             } else if( type == OLEVT_FILETIME) {
-                WCHAR *wstr = strdupAtoW(str);
-                parse_filetime( wstr, &property->filetime );
-                msi_free (wstr);
+                parse_filetime( str, &property->filetime );
             }
             msi_free (str);
         }
@@ -553,7 +551,7 @@ LibmsiResult libmsi_summary_info_get_property(
 
             len = strlen( prop->strval );
             if( szValueBuf )
-                strcpynA(szValueBuf, prop->strval, *pcchValueBuf );
+                strcpyn(szValueBuf, prop->strval, *pcchValueBuf );
             if (len >= *pcchValueBuf)
                 ret = LIBMSI_RESULT_MORE_DATA;
             *pcchValueBuf = len;
@@ -670,10 +668,10 @@ LibmsiResult libmsi_summary_info_set_property( LibmsiSummaryInfo *si, unsigned u
     return _libmsi_summary_info_set_property( si, uiProperty, type, intvalue, pftValue, szValue );
 }
 
-static unsigned parse_prop( const WCHAR *prop, const WCHAR *value, unsigned *pid, int *int_value,
+static unsigned parse_prop( const char *prop, const char *value, unsigned *pid, int *int_value,
                         uint64_t *ft_value, char **str_value )
 {
-    *pid = atoiW( prop );
+    *pid = atoi( prop );
     switch (*pid)
     {
     case MSI_PID_CODEPAGE:
@@ -681,7 +679,7 @@ static unsigned parse_prop( const WCHAR *prop, const WCHAR *value, unsigned *pid
     case MSI_PID_CHARCOUNT:
     case MSI_PID_SECURITY:
     case MSI_PID_PAGECOUNT:
-        *int_value = atoiW( value );
+        *int_value = atoi( value );
         break;
 
     case MSI_PID_LASTPRINTED:
@@ -699,7 +697,7 @@ static unsigned parse_prop( const WCHAR *prop, const WCHAR *value, unsigned *pid
     case MSI_PID_REVNUMBER:
     case MSI_PID_APPNAME:
     case MSI_PID_TITLE:
-        *str_value = strdupWtoA(value);
+        *str_value = strdup(value);
         break;
 
     default:
@@ -710,7 +708,7 @@ static unsigned parse_prop( const WCHAR *prop, const WCHAR *value, unsigned *pid
     return LIBMSI_RESULT_SUCCESS;
 }
 
-unsigned msi_add_suminfo( LibmsiDatabase *db, WCHAR ***records, int num_records, int num_columns )
+unsigned msi_add_suminfo( LibmsiDatabase *db, char ***records, int num_records, int num_columns )
 {
     unsigned r = LIBMSI_RESULT_FUNCTION_FAILED;
     unsigned i, j;

@@ -24,6 +24,7 @@
 
 #include <stdarg.h>
 #include <assert.h>
+#include <gsf/gsf-msole-utils.h>
 
 #include "windef.h"
 #include "winbase.h"
@@ -43,7 +44,7 @@ struct msistring
 {
     uint16_t persistent_refcount;
     uint16_t nonpersistent_refcount;
-    WCHAR *str;
+    char *str;
 };
 
 struct string_table
@@ -179,7 +180,7 @@ static int find_insert_index( const string_table *st, unsigned string_id )
     while (low <= high)
     {
         i = (low + high) / 2;
-        c = strcmpW( st->strings[string_id].str, st->strings[st->sorted[i]].str );
+        c = strcmp( st->strings[string_id].str, st->strings[st->sorted[i]].str );
 
         if (c < 0)
             high = i - 1;
@@ -204,7 +205,7 @@ static void insert_string_sorted( string_table *st, unsigned string_id )
     st->sortcount++;
 }
 
-static void set_st_entry( string_table *st, unsigned n, WCHAR *str, uint16_t refcount, enum StringPersistence persistence )
+static void set_st_entry( string_table *st, unsigned n, char *str, uint16_t refcount, enum StringPersistence persistence )
 {
     if (persistence == StringPersistent)
     {
@@ -227,9 +228,11 @@ static void set_st_entry( string_table *st, unsigned n, WCHAR *str, uint16_t ref
 
 static unsigned _libmsi_id_from_string( const string_table *st, const char *buffer, unsigned *id )
 {
-    unsigned sz;
+    size_t sz;
     unsigned r = LIBMSI_RESULT_INVALID_PARAMETER;
-    WCHAR *str;
+    char *str;
+    int codepage;
+    GIConv cpconv;
 
     TRACE("Finding string %s in string table\n", debugstr_a(buffer) );
 
@@ -239,24 +242,24 @@ static unsigned _libmsi_id_from_string( const string_table *st, const char *buff
         return LIBMSI_RESULT_SUCCESS;
     }
 
-    sz = MultiByteToWideChar( st->codepage, 0, buffer, -1, NULL, 0 );
-    if( sz <= 0 )
-        return r;
-    str = msi_alloc( sz*sizeof(WCHAR) );
+    codepage = st->codepage ? st->codepage : gsf_msole_iconv_win_codepage();
+    cpconv = gsf_msole_iconv_open_codepage_for_export(codepage);
+    str = g_convert_with_iconv(buffer, -1, cpconv, NULL, &sz, NULL);
+    g_iconv_close(cpconv);
     if( !str )
-        return LIBMSI_RESULT_NOT_ENOUGH_MEMORY;
-    MultiByteToWideChar( st->codepage, 0, buffer, -1, str, sz );
+        return r;
 
-    r = _libmsi_id_from_stringW( st, str, id );
+    r = _libmsi_id_from_string_utf8( st, str, id );
     msi_free( str );
-
     return r;
 }
 
 static int msi_addstring( string_table *st, unsigned n, const char *data, int len, uint16_t refcount, enum StringPersistence persistence )
 {
-    WCHAR *str;
-    int sz;
+    char *str;
+    size_t sz;
+    int codepage;
+    GIConv cpconv;
 
     if( !data )
         return 0;
@@ -290,31 +293,27 @@ static int msi_addstring( string_table *st, unsigned n, const char *data, int le
     }
 
     /* allocate a new string */
-    if( len < 0 )
-        len = strlen(data);
-    sz = MultiByteToWideChar( st->codepage, 0, data, len, NULL, 0 );
-    str = msi_alloc( (sz+1)*sizeof(WCHAR) );
-    if( !str )
-        return -1;
-    MultiByteToWideChar( st->codepage, 0, data, len, str, sz );
-    str[sz] = 0;
+    codepage = st->codepage ? st->codepage : gsf_msole_iconv_win_codepage();
+    cpconv = gsf_msole_iconv_open_for_import(codepage);
+    str = g_convert_with_iconv(data, len, cpconv, NULL, &sz, NULL);
+    g_iconv_close(cpconv);
 
     set_st_entry( st, n, str, refcount, persistence );
 
     return n;
 }
 
-int _libmsi_add_string( string_table *st, const WCHAR *data, int len, uint16_t refcount, enum StringPersistence persistence )
+int _libmsi_add_string( string_table *st, const char *data, int len, uint16_t refcount, enum StringPersistence persistence )
 {
     unsigned n;
-    WCHAR *str;
+    char *str;
 
     if( !data )
         return 0;
     if( !data[0] )
         return 0;
 
-    if( _libmsi_id_from_stringW( st, data, &n ) == LIBMSI_RESULT_SUCCESS )
+    if( _libmsi_id_from_string_utf8( st, data, &n ) == LIBMSI_RESULT_SUCCESS )
     {
         if (persistence == StringPersistent)
             st->strings[n].persistent_refcount += refcount;
@@ -329,13 +328,13 @@ int _libmsi_add_string( string_table *st, const WCHAR *data, int len, uint16_t r
 
     /* allocate a new string */
     if(len<0)
-        len = strlenW(data);
-    TRACE("%s, n = %d len = %d\n", debugstr_w(data), n, len );
+        len = strlen(data);
+    TRACE("%s, n = %d len = %d\n", debugstr_a(data), n, len );
 
-    str = msi_alloc( (len+1)*sizeof(WCHAR) );
+    str = msi_alloc( (len+1)*sizeof(char) );
     if( !str )
         return -1;
-    memcpy( str, data, len*sizeof(WCHAR) );
+    memcpy( str, data, len*sizeof(char) );
     str[len] = 0;
 
     set_st_entry( st, n, str, refcount, persistence );
@@ -344,7 +343,7 @@ int _libmsi_add_string( string_table *st, const WCHAR *data, int len, uint16_t r
 }
 
 /* find the string identified by an id - return null if there's none */
-const WCHAR *msi_string_lookup_id( const string_table *st, unsigned id )
+const char *msi_string_lookup_id( const string_table *st, unsigned id )
 {
     if( id == 0 )
         return szEmpty;
@@ -367,45 +366,52 @@ const WCHAR *msi_string_lookup_id( const string_table *st, unsigned id )
  *  [in/out] sz     - number of bytes available in the buffer on input
  *                    number of bytes used on output
  *
- *  Returned string is not nul terminated.
+ * Returned string is not NUL-terminated.
  */
 static unsigned _libmsi_string_id( const string_table *st, unsigned id, char *buffer, unsigned *sz )
 {
-    unsigned len, lenW;
-    const WCHAR *str;
+    const char *str_utf8;
+    char *str;
+    size_t len;
+    GIConv cpconv;
+    int codepage;
 
     TRACE("Finding string %d of %d\n", id, st->maxcount);
 
-    str = msi_string_lookup_id( st, id );
-    if( !str )
+    str_utf8 = msi_string_lookup_id( st, id );
+    if( !str_utf8 )
         return LIBMSI_RESULT_FUNCTION_FAILED;
 
-    lenW = strlenW( str );
-    len = WideCharToMultiByte( st->codepage, 0, str, lenW, NULL, 0, NULL, NULL );
+    codepage = st->codepage ? st->codepage : gsf_msole_iconv_win_codepage();
+    cpconv = gsf_msole_iconv_open_codepage_for_export(codepage);
+    str = g_convert_with_iconv(str_utf8, -1, cpconv, NULL, &len, NULL);
+    g_iconv_close(cpconv);
     if( *sz < len )
     {
         *sz = len;
         return LIBMSI_RESULT_MORE_DATA;
     }
-    *sz = WideCharToMultiByte( st->codepage, 0, str, lenW, buffer, *sz, NULL, NULL );
+    *sz = len;
+    memcpy(buffer, str, len);
+    msi_free(str);
     return LIBMSI_RESULT_SUCCESS;
 }
 
 /*
- *  _libmsi_id_from_stringW
+ *  _libmsi_id_from_string_utf8
  *
  *  [in] st         - pointer to the string table
  *  [in] str        - string to find in the string table
  *  [out] id        - id of the string, if found
  */
-unsigned _libmsi_id_from_stringW( const string_table *st, const WCHAR *str, unsigned *id )
+unsigned _libmsi_id_from_string_utf8( const string_table *st, const char *str, unsigned *id )
 {
     int i, c, low = 0, high = st->sortcount - 1;
 
     while (low <= high)
     {
         i = (low + high) / 2;
-        c = strcmpW( str, st->strings[st->sorted[i]].str );
+        c = strcmp( str, st->strings[st->sorted[i]].str );
 
         if (c < 0)
             high = i - 1;
@@ -423,10 +429,16 @@ unsigned _libmsi_id_from_stringW( const string_table *st, const WCHAR *str, unsi
 
 static void string_totalsize( const string_table *st, unsigned *datasize, unsigned *poolsize )
 {
-    unsigned i, len, holesize;
+    unsigned i, holesize;
+    size_t len;
+    int codepage;
+    GIConv cpconv;
+    char *str;
 
     if( st->strings[0].str || st->strings[0].persistent_refcount || st->strings[0].nonpersistent_refcount)
         ERR("oops. element 0 has a string\n");
+
+    codepage = st->codepage ? st->codepage : gsf_msole_iconv_win_codepage();
 
     *poolsize = 4;
     *datasize = 0;
@@ -435,16 +447,16 @@ static void string_totalsize( const string_table *st, unsigned *datasize, unsign
     {
         if( !st->strings[i].persistent_refcount )
         {
-            TRACE("[%u] nonpersistent = %s\n", i, debugstr_w(st->strings[i].str));
+            TRACE("[%u] nonpersistent = %s\n", i, debugstr_a(st->strings[i].str));
             (*poolsize) += 4;
         }
         else if( st->strings[i].str )
         {
-            TRACE("[%u] = %s\n", i, debugstr_w(st->strings[i].str));
-            len = WideCharToMultiByte( st->codepage, 0,
-                     st->strings[i].str, -1, NULL, 0, NULL, NULL);
-            if( len )
-                len--;
+            TRACE("[%u] = %s\n", i, debugstr_a(st->strings[i].str));
+            cpconv = gsf_msole_iconv_open_codepage_for_export(codepage);
+            str = g_convert_with_iconv( st->strings[i].str, -1, cpconv, NULL, &len, NULL);
+            g_iconv_close(cpconv);
+	    msi_free(str);
             (*datasize) += len;
             if (len>0xffff)
                 (*poolsize) += 4;

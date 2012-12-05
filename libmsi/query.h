@@ -58,7 +58,7 @@
 #define EXPR_UNARY    12
 
 struct sql_str {
-    const WCHAR *data;
+    const char *data;
     int len;
 };
 
@@ -74,8 +74,8 @@ union ext_column
 {
     struct
     {
-        const WCHAR *column;
-        const WCHAR *table;
+        const char *column;
+        const char *table;
     } unparsed;
     struct
     {
@@ -92,15 +92,15 @@ struct expr
         struct complex_expr expr;
         int   ival;
         unsigned  uval;
-        const WCHAR *sval;
+        const char *sval;
         union ext_column column;
     } u;
 };
 
-unsigned _libmsi_parse_sql( LibmsiDatabase *db, const WCHAR *command, LibmsiView **phview,
+unsigned _libmsi_parse_sql( LibmsiDatabase *db, const char *command, LibmsiView **phview,
                    struct list *mem );
 
-unsigned table_view_create( LibmsiDatabase *db, const WCHAR *name, LibmsiView **view );
+unsigned table_view_create( LibmsiDatabase *db, const char *name, LibmsiView **view );
 
 unsigned select_view_create( LibmsiDatabase *db, LibmsiView **view, LibmsiView *table,
                         const column_info *columns );
@@ -110,33 +110,33 @@ unsigned distinct_view_create( LibmsiDatabase *db, LibmsiView **view, LibmsiView
 unsigned order_view_create( LibmsiDatabase *db, LibmsiView **view, LibmsiView *table,
                        column_info *columns );
 
-unsigned where_view_create( LibmsiDatabase *db, LibmsiView **view, WCHAR *tables,
+unsigned where_view_create( LibmsiDatabase *db, LibmsiView **view, char *tables,
                        struct expr *cond );
 
-unsigned create_view_create( LibmsiDatabase *db, LibmsiView **view, const WCHAR *table,
+unsigned create_view_create( LibmsiDatabase *db, LibmsiView **view, const char *table,
                         column_info *col_info, bool hold );
 
-unsigned insert_view_create( LibmsiDatabase *db, LibmsiView **view, const WCHAR *table,
+unsigned insert_view_create( LibmsiDatabase *db, LibmsiView **view, const char *table,
                         column_info *columns, column_info *values, bool temp );
 
-unsigned update_view_create( LibmsiDatabase *db, LibmsiView **view, WCHAR *table,
+unsigned update_view_create( LibmsiDatabase *db, LibmsiView **view, char *table,
                         column_info *list, struct expr *expr );
 
 unsigned delete_view_create( LibmsiDatabase *db, LibmsiView **view, LibmsiView *table );
 
-unsigned alter_view_create( LibmsiDatabase *db, LibmsiView **view, const WCHAR *name, column_info *colinfo, int hold );
+unsigned alter_view_create( LibmsiDatabase *db, LibmsiView **view, const char *name, column_info *colinfo, int hold );
 
 unsigned streams_view_create( LibmsiDatabase *db, LibmsiView **view );
 
 unsigned storages_view_create( LibmsiDatabase *db, LibmsiView **view );
 
-unsigned drop_view_create( LibmsiDatabase *db, LibmsiView **view, const WCHAR *name );
+unsigned drop_view_create( LibmsiDatabase *db, LibmsiView **view, const char *name );
 
-int sql_get_token(const WCHAR *z, int *tokenType, int *skip);
+int sql_get_token(const char *z, int *tokenType, int *skip);
 
 LibmsiRecord *msi_query_merge_record( unsigned fields, const column_info *vl, LibmsiRecord *rec );
 
-unsigned msi_create_table( LibmsiDatabase *db, const WCHAR *name, column_info *col_info,
+unsigned msi_create_table( LibmsiDatabase *db, const char *name, column_info *col_info,
                        LibmsiCondition persistent );
 
 #pragma GCC visibility pop

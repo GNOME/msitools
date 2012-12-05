@@ -74,13 +74,13 @@ static unsigned count_iter(LibmsiRecord *row, void *param)
     return LIBMSI_RESULT_SUCCESS;
 }
 
-static bool check_column_exists(LibmsiDatabase *db, const WCHAR *table, const WCHAR *column)
+static bool check_column_exists(LibmsiDatabase *db, const char *table, const char *column)
 {
     LibmsiQuery *view;
     LibmsiRecord *rec;
     unsigned r;
 
-    static const WCHAR query[] = {
+    static const char query[] = {
         'S','E','L','E','C','T',' ','*',' ','F','R','O','M',' ',
         '`','_','C','o','l','u','m','n','s','`',' ','W','H','E','R','E',' ',
         '`','T','a','b','l','e','`','=','\'','%','s','\'',' ','A','N','D',' ',
@@ -110,8 +110,8 @@ static unsigned alter_add_column(LibmsiAlterView *av)
     LibmsiQuery *view;
     LibmsiView *columns;
 
-    static const WCHAR szColumns[] = {'_','C','o','l','u','m','n','s',0};
-    static const WCHAR query[] = {
+    static const char szColumns[] = {'_','C','o','l','u','m','n','s',0};
+    static const char query[] = {
         'S','E','L','E','C','T',' ','*',' ','F','R','O','M',' ',
         '`','_','C','o','l','u','m','n','s','`',' ','W','H','E','R','E',' ',
         '`','T','a','b','l','e','`','=','\'','%','s','\'',' ','O','R','D','E','R',' ',
@@ -187,8 +187,8 @@ static unsigned alter_view_get_dimensions( LibmsiView *view, unsigned *rows, uns
     return LIBMSI_RESULT_FUNCTION_FAILED;
 }
 
-static unsigned alter_view_get_column_info( LibmsiView *view, unsigned n, const WCHAR **name,
-                                   unsigned *type, bool *temporary, const WCHAR **table_name )
+static unsigned alter_view_get_column_info( LibmsiView *view, unsigned n, const char **name,
+                                   unsigned *type, bool *temporary, const char **table_name )
 {
     LibmsiAlterView *av = (LibmsiAlterView*)view;
 
@@ -239,12 +239,12 @@ static const LibmsiViewOps alter_ops =
     NULL,
 };
 
-unsigned alter_view_create( LibmsiDatabase *db, LibmsiView **view, const WCHAR *name, column_info *colinfo, int hold )
+unsigned alter_view_create( LibmsiDatabase *db, LibmsiView **view, const char *name, column_info *colinfo, int hold )
 {
     LibmsiAlterView *av;
     unsigned r;
 
-    TRACE("%p %p %s %d\n", view, colinfo, debugstr_w(name), hold );
+    TRACE("%p %p %s %d\n", view, colinfo, debugstr_a(name), hold );
 
     av = msi_alloc_zero( sizeof *av );
     if( !av )

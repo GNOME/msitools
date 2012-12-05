@@ -202,8 +202,8 @@ static unsigned distinct_view_get_dimensions( LibmsiView *view, unsigned *rows, 
     return dv->table->ops->get_dimensions( dv->table, NULL, cols );
 }
 
-static unsigned distinct_view_get_column_info( LibmsiView *view, unsigned n, const WCHAR **name,
-                                      unsigned *type, bool *temporary, const WCHAR **table_name )
+static unsigned distinct_view_get_column_info( LibmsiView *view, unsigned n, const char **name,
+                                      unsigned *type, bool *temporary, const char **table_name )
 {
     LibmsiDistinctView *dv = (LibmsiDistinctView*)view;
 

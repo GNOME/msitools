@@ -41,7 +41,7 @@ typedef struct LibmsiCreateView
 {
     LibmsiView          view;
     LibmsiDatabase     *db;
-    const WCHAR *         name;
+    const char *         name;
     bool             bIsTemp;
     bool             hold;
     column_info     *col_info;
@@ -61,7 +61,7 @@ static unsigned create_view_execute( LibmsiView *view, LibmsiRecord *record )
     LibmsiCreateView *cv = (LibmsiCreateView*)view;
     bool persist = (cv->bIsTemp) ? LIBMSI_CONDITION_FALSE : LIBMSI_CONDITION_TRUE;
 
-    TRACE("%p Table %s (%s)\n", cv, debugstr_w(cv->name),
+    TRACE("%p Table %s (%s)\n", cv, debugstr_a(cv->name),
           cv->bIsTemp?"temporary":"permanent");
 
     if (cv->bIsTemp && !cv->hold)
@@ -88,8 +88,8 @@ static unsigned create_view_get_dimensions( LibmsiView *view, unsigned *rows, un
     return LIBMSI_RESULT_FUNCTION_FAILED;
 }
 
-static unsigned create_view_get_column_info( LibmsiView *view, unsigned n, const WCHAR **name,
-                                    unsigned *type, bool *temporary, const WCHAR **table_name )
+static unsigned create_view_get_column_info( LibmsiView *view, unsigned n, const char **name,
+                                    unsigned *type, bool *temporary, const char **table_name )
 {
     LibmsiCreateView *cv = (LibmsiCreateView*)view;
 
@@ -139,13 +139,13 @@ static unsigned check_columns( const column_info *col_info )
     /* check for two columns with the same name */
     for( c1 = col_info; c1; c1 = c1->next )
         for( c2 = c1->next; c2; c2 = c2->next )
-            if (!strcmpW( c1->column, c2->column ))
+            if (!strcmp( c1->column, c2->column ))
                 return LIBMSI_RESULT_BAD_QUERY_SYNTAX;
 
     return LIBMSI_RESULT_SUCCESS;
 }
 
-unsigned create_view_create( LibmsiDatabase *db, LibmsiView **view, const WCHAR *table,
+unsigned create_view_create( LibmsiDatabase *db, LibmsiView **view, const char *table,
                         column_info *col_info, bool hold )
 {
     LibmsiCreateView *cv = NULL;

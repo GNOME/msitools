@@ -124,8 +124,8 @@ static unsigned delete_view_get_dimensions( LibmsiView *view, unsigned *rows, un
     return dv->table->ops->get_dimensions( dv->table, NULL, cols );
 }
 
-static unsigned delete_view_get_column_info( LibmsiView *view, unsigned n, const WCHAR **name,
-                                    unsigned *type, bool *temporary, const WCHAR **table_name )
+static unsigned delete_view_get_column_info( LibmsiView *view, unsigned n, const char **name,
+                                    unsigned *type, bool *temporary, const char **table_name )
 {
     LibmsiDeleteView *dv = (LibmsiDeleteView*)view;
 

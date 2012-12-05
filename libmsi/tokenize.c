@@ -88,7 +88,7 @@ static const Keyword aKeywordTable[] = {
 ** Comparison function for binary search.
 */
 static int sql_compare_keyword(const void *m1, const void *m2){
-  const WCHAR *p = m1;
+  const char *p = m1;
   const Keyword *k = m2;
   const char *q = k->zName;
 
@@ -111,14 +111,14 @@ static int sql_compare_keyword(const void *m1, const void *m2){
 ** keyword.  If it is a keyword, the token code of that keyword is 
 ** returned.  If the input is not a keyword, TK_ID is returned.
 */
-static int sqlite_find_keyword(const WCHAR *z, int n){
-  WCHAR str[MAX_TOKEN_LEN+1];
+static int sqlite_find_keyword(const char *z, int n){
+  char str[MAX_TOKEN_LEN+1];
   Keyword *r;
 
   if( n>MAX_TOKEN_LEN )
     return TK_ID;
 
-  memcpy( str, z, n*sizeof (WCHAR) );
+  memcpy( str, z, n*sizeof (char) );
   str[n] = 0;
   r = bsearch( str, aKeywordTable, KEYWORD_COUNT, sizeof (Keyword), sql_compare_keyword );
   if( r )
@@ -163,7 +163,7 @@ static const char isIdChar[] = {
 ** -1 if the token is (or might be) incomplete.  Store the token
 ** type in *tokenType before returning.
 */
-int sql_get_token(const WCHAR *z, int *tokenType, int *skip){
+int sql_get_token(const char *z, int *tokenType, int *skip){
   int i;
 
   *skip = 0;

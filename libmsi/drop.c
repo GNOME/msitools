@@ -112,12 +112,12 @@ static const LibmsiViewOps drop_ops =
     NULL,
 };
 
-unsigned drop_view_create(LibmsiDatabase *db, LibmsiView **view, const WCHAR *name)
+unsigned drop_view_create(LibmsiDatabase *db, LibmsiView **view, const char *name)
 {
     LibmsiDropView *dv;
     unsigned r;
 
-    TRACE("%p %s\n", view, debugstr_w(name));
+    TRACE("%p %s\n", view, debugstr_a(name));
 
     dv = msi_alloc_zero(sizeof *dv );
     if(!dv)

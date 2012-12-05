@@ -17,8 +17,7 @@ noinst_HEADERS = \
 libmsi_la_SOURCES = alter.c create.c database.c delete.c distinct.c \
 	drop.c handle.c insert.c msiquery.c record.c select.c storages.c \
 	streams.c string.c suminfo.c table.c tokenize.c update.c where.c \
-	sql-parser.y \
-	utf16/snprintfW.c utf16/sprintfW.c utf16/strtolW.c
+	sql-parser.y
 
 libmsi_la_LDFLAGS = -no-undefined -rpath $(libdir) \
 		    -export-symbols-regex='^libmsi_'
