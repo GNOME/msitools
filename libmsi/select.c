@@ -67,7 +67,7 @@ static unsigned select_view_fetch_int( LibmsiView *view, unsigned row, unsigned 
     return sv->table->ops->fetch_int( sv->table, row, col, val );
 }
 
-static unsigned select_view_fetch_stream( LibmsiView *view, unsigned row, unsigned col, IStream **stm)
+static unsigned select_view_fetch_stream( LibmsiView *view, unsigned row, unsigned col, GsfInput **stm)
 {
     LibmsiSelectView *sv = (LibmsiSelectView*)view;
 

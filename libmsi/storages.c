@@ -95,7 +95,7 @@ static unsigned storages_view_fetch_int(LibmsiView *view, unsigned row, unsigned
     return LIBMSI_RESULT_SUCCESS;
 }
 
-static unsigned storages_view_fetch_stream(LibmsiView *view, unsigned row, unsigned col, IStream **stm)
+static unsigned storages_view_fetch_stream(LibmsiView *view, unsigned row, unsigned col, GsfInput **stm)
 {
     LibmsiStorageView *sv = (LibmsiStorageView *)view;
 
@@ -119,7 +119,7 @@ static unsigned storages_view_get_row( LibmsiView *view, unsigned row, LibmsiRec
 static unsigned storages_view_set_row(LibmsiView *view, unsigned row, LibmsiRecord *rec, unsigned mask)
 {
     LibmsiStorageView *sv = (LibmsiStorageView *)view;
-    IStream *stm;
+    GsfInput *stm;
     WCHAR *name = NULL;
     unsigned r = LIBMSI_RESULT_FUNCTION_FAILED;
 
@@ -128,7 +128,7 @@ static unsigned storages_view_set_row(LibmsiView *view, unsigned row, LibmsiReco
     if (row > sv->num_rows)
         return LIBMSI_RESULT_FUNCTION_FAILED;
 
-    r = _libmsi_record_get_IStream(rec, 2, &stm);
+    r = _libmsi_record_get_gsf_input(rec, 2, &stm);
     if (r != LIBMSI_RESULT_SUCCESS)
         return r;
 
@@ -140,19 +140,13 @@ static unsigned storages_view_set_row(LibmsiView *view, unsigned row, LibmsiReco
     }
 
     msi_create_storage(sv->db, name, stm);
-    if (r != LIBMSI_RESULT_SUCCESS)
-    {
-        IStream_Release(stm);
-        return r;
-    }
-
     sv->storages[row] = create_storage(sv, name);
     if (!sv->storages[row])
         r = LIBMSI_RESULT_FUNCTION_FAILED;
 
 done:
     msi_free(name);
-    IStream_Release(stm);
+    g_object_unref(G_OBJECT(stm));
 
     return r;
 }
@@ -176,7 +170,6 @@ static unsigned storages_view_delete_row(LibmsiView *view, unsigned row)
 {
     LibmsiStorageView *sv = (LibmsiStorageView *)view;
     const WCHAR *name;
-    WCHAR *encname;
     unsigned i;
 
     if (row > sv->num_rows)
@@ -319,7 +312,7 @@ static const LibmsiViewOps storages_ops =
     NULL,
 };
 
-static unsigned add_storage_to_table(const WCHAR *name, IStorage *stg, void *opaque)
+static unsigned add_storage_to_table(const WCHAR *name, GsfInfile *stg, void *opaque)
 {
     LibmsiStorageView *sv = (LibmsiStorageView *)opaque;
     STORAGE *storage;

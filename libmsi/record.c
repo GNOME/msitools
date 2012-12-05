@@ -56,7 +56,7 @@ static void _libmsi_free_field( LibmsiField *field )
         msi_free( field->u.szwVal);
         break;
     case LIBMSI_FIELD_TYPE_STREAM:
-        IStream_Release( field->u.stream );
+        g_object_unref(G_OBJECT(field->u.stream));
         break;
     default:
         ERR("Invalid field type %d\n", field->type);
@@ -153,7 +153,7 @@ unsigned _libmsi_record_copy_field( LibmsiRecord *in_rec, unsigned in_n,
                 out->u.szwVal = str;
             break;
         case LIBMSI_FIELD_TYPE_STREAM:
-            IStream_AddRef( in->u.stream );
+            g_object_ref(G_OBJECT(in->u.stream));
             out->u.stream = in->u.stream;
             break;
         default:
@@ -402,17 +402,6 @@ unsigned _libmsi_record_get_stringW(const LibmsiRecord *rec, unsigned iField,
     return ret;
 }
 
-static unsigned msi_get_stream_size( IStream *stm )
-{
-    STATSTG stat;
-    HRESULT r;
-
-    r = IStream_Stat( stm, &stat, STATFLAG_NONAME );
-    if( FAILED(r) )
-        return 0;
-    return stat.cbSize.QuadPart;
-}
-
 unsigned libmsi_record_get_field_size(const LibmsiRecord *rec, unsigned iField)
 {
     TRACE("%p %d\n", rec, iField);
@@ -432,7 +421,7 @@ unsigned libmsi_record_get_field_size(const LibmsiRecord *rec, unsigned iField)
     case LIBMSI_FIELD_TYPE_NULL:
         break;
     case LIBMSI_FIELD_TYPE_STREAM:
-        return msi_get_stream_size( rec->fields[iField].u.stream );
+        return gsf_input_size( rec->fields[iField].u.stream );
     }
     return 0;
 }
@@ -476,57 +465,47 @@ unsigned _libmsi_record_set_stringW( LibmsiRecord *rec, unsigned iField, const W
     return 0;
 }
 
-/* read the data in a file into an IStream */
-static unsigned _libmsi_addstream_from_file(const char *szFile, IStream **pstm)
+/* read the data in a file into a memory-backed GsfInput */
+static unsigned _libmsi_addstream_from_file(const char *szFile, GsfInput **pstm)
 {
-    unsigned sz, szHighWord = 0, read;
-    HANDLE handle;
-    HGLOBAL hGlob = 0;
-    HRESULT hr;
-    ULARGE_INTEGER ulSize;
+    GsfInput *stm;
+    char *data;
+    off_t sz;
 
-    TRACE("reading %s\n", debugstr_a(szFile));
-
-    /* read the file into memory */
-    handle = CreateFileA(szFile, GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, 0, NULL);
-    if( handle == INVALID_HANDLE_VALUE )
-        return GetLastError();
-    sz = GetFileSize(handle, &szHighWord);
-    if( sz != INVALID_FILE_SIZE && szHighWord == 0 )
+    stm = gsf_input_stdio_new(szFile, NULL);
+    if (!stm)
     {
-        hGlob = GlobalAlloc(GMEM_FIXED, sz);
-        if( hGlob )
+        WARN("open file failed for %s\n", debugstr_a(szFile));
+        return LIBMSI_RESULT_OPEN_FAILED;
+    }
+
+    sz = gsf_input_size(stm);
+    if (sz == 0)
+    {
+        data = g_malloc(1);
+    }
+    else
+    {
+        data = g_try_malloc(sz);
+        if (!data)
+            return LIBMSI_RESULT_NOT_ENOUGH_MEMORY;
+
+        if (!gsf_input_read(stm, sz, data))
         {
-            bool r = ReadFile(handle, hGlob, sz, &read, NULL);
-            if( !r )
-            {
-                GlobalFree(hGlob);
-                hGlob = 0;
-            }
+            g_object_unref(G_OBJECT(stm));
+            return LIBMSI_RESULT_FUNCTION_FAILED;
         }
     }
-    CloseHandle(handle);
-    if( !hGlob )
-        return LIBMSI_RESULT_FUNCTION_FAILED;
 
-    /* make a stream out of it, and set the correct file size */
-    hr = CreateStreamOnHGlobal(hGlob, true, pstm);
-    if( FAILED( hr ) )
-    {
-        GlobalFree(hGlob);
-        return LIBMSI_RESULT_FUNCTION_FAILED;
-    }
+    g_object_unref(G_OBJECT(stm));
+    *pstm = gsf_input_memory_new(data, sz, true);
 
-    /* set the correct size - CreateStreamOnHGlobal screws it up */
-    ulSize.QuadPart = sz;
-    IStream_SetSize(*pstm, ulSize);
-
-    TRACE("read %s, %d bytes into IStream %p\n", debugstr_a(szFile), sz, *pstm);
+    TRACE("read %s, %d bytes into GsfInput %p\n", debugstr_a(szFile), sz, *pstm);
 
     return LIBMSI_RESULT_SUCCESS;
 }
 
-unsigned _libmsi_record_load_stream(LibmsiRecord *rec, unsigned iField, IStream *stream)
+unsigned _libmsi_record_load_stream(LibmsiRecord *rec, unsigned iField, GsfInput *stream)
 {
     if ( (iField == 0) || (iField > rec->count) )
         return LIBMSI_RESULT_INVALID_PARAMETER;
@@ -540,8 +519,8 @@ unsigned _libmsi_record_load_stream(LibmsiRecord *rec, unsigned iField, IStream 
 
 unsigned _libmsi_record_load_stream_from_file(LibmsiRecord *rec, unsigned iField, const char *szFilename)
 {
-    IStream *stm = NULL;
-    HRESULT r;
+    GsfInput *stm;
+    unsigned r;
 
     if( (iField == 0) || (iField > rec->count) )
         return LIBMSI_RESULT_INVALID_PARAMETER;
@@ -549,9 +528,6 @@ unsigned _libmsi_record_load_stream_from_file(LibmsiRecord *rec, unsigned iField
     /* no filename means we should seek back to the start of the stream */
     if( !szFilename )
     {
-        LARGE_INTEGER ofs;
-        ULARGE_INTEGER cur;
-
         if( rec->fields[iField].type != LIBMSI_FIELD_TYPE_STREAM )
             return LIBMSI_RESULT_INVALID_FIELD;
 
@@ -559,10 +535,7 @@ unsigned _libmsi_record_load_stream_from_file(LibmsiRecord *rec, unsigned iField
         if( !stm )
             return LIBMSI_RESULT_INVALID_FIELD;
 
-        ofs.QuadPart = 0;
-        r = IStream_Seek( stm, ofs, STREAM_SEEK_SET, &cur );
-        if( FAILED( r ) )
-            return LIBMSI_RESULT_FUNCTION_FAILED;
+        gsf_input_seek( stm, 0, G_SEEK_SET );
     }
     else
     {
@@ -595,9 +568,8 @@ LibmsiResult libmsi_record_load_stream(LibmsiRecord *rec, unsigned iField, const
 
 unsigned _libmsi_record_save_stream(const LibmsiRecord *rec, unsigned iField, char *buf, unsigned *sz)
 {
-    unsigned count;
-    HRESULT r;
-    IStream *stm;
+    uint64_t left;
+    GsfInput *stm;
 
     TRACE("%p %d %p %p\n", rec, iField, buf, sz);
 
@@ -620,33 +592,25 @@ unsigned _libmsi_record_save_stream(const LibmsiRecord *rec, unsigned iField, ch
     if( !stm )
         return LIBMSI_RESULT_INVALID_PARAMETER;
 
+    left = gsf_input_size(stm) - gsf_input_tell(stm);
+
     /* if there's no buffer pointer, calculate the length to the end */
     if( !buf )
     {
-        LARGE_INTEGER ofs;
-        ULARGE_INTEGER end, cur;
-
-        ofs.QuadPart = cur.QuadPart = 0;
-        end.QuadPart = 0;
-        IStream_Seek( stm, ofs, STREAM_SEEK_SET, &cur );
-        IStream_Seek( stm, ofs, STREAM_SEEK_END, &end );
-        ofs.QuadPart = cur.QuadPart;
-        IStream_Seek( stm, ofs, STREAM_SEEK_SET, &cur );
-        *sz = end.QuadPart - cur.QuadPart;
+        *sz = left;
 
         return LIBMSI_RESULT_SUCCESS;
     }
 
     /* read the data */
-    count = 0;
-    r = IStream_Read( stm, buf, *sz, &count );
-    if( FAILED( r ) )
+    if (*sz > left)
+        *sz = left;
+
+    if (*sz > 0 && !gsf_input_read( stm, *sz, buf ))
     {
         *sz = 0;
         return LIBMSI_RESULT_FUNCTION_FAILED;
     }
-
-    *sz = count;
 
     return LIBMSI_RESULT_SUCCESS;
 }
@@ -666,7 +630,7 @@ LibmsiResult libmsi_record_save_stream(LibmsiRecord *rec, unsigned iField, char 
     return ret;
 }
 
-unsigned _libmsi_record_set_IStream( LibmsiRecord *rec, unsigned iField, IStream *stm )
+unsigned _libmsi_record_set_gsf_input( LibmsiRecord *rec, unsigned iField, GsfInput *stm )
 {
     TRACE("%p %d %p\n", rec, iField, stm);
 
@@ -677,12 +641,12 @@ unsigned _libmsi_record_set_IStream( LibmsiRecord *rec, unsigned iField, IStream
 
     rec->fields[iField].type = LIBMSI_FIELD_TYPE_STREAM;
     rec->fields[iField].u.stream = stm;
-    IStream_AddRef( stm );
+    g_object_ref(G_OBJECT(stm));
 
     return LIBMSI_RESULT_SUCCESS;
 }
 
-unsigned _libmsi_record_get_IStream( const LibmsiRecord *rec, unsigned iField, IStream **pstm)
+unsigned _libmsi_record_get_gsf_input( const LibmsiRecord *rec, unsigned iField, GsfInput **pstm)
 {
     TRACE("%p %d %p\n", rec, iField, pstm);
 
@@ -693,55 +657,43 @@ unsigned _libmsi_record_get_IStream( const LibmsiRecord *rec, unsigned iField, I
         return LIBMSI_RESULT_INVALID_FIELD;
 
     *pstm = rec->fields[iField].u.stream;
-    IStream_AddRef( *pstm );
+    g_object_ref(G_OBJECT(*pstm));
 
     return LIBMSI_RESULT_SUCCESS;
 }
 
-static unsigned msi_dump_stream_to_file( IStream *stm, const WCHAR *name )
+static unsigned msi_dump_stream_to_file( GsfInput *stm, const WCHAR *fname )
 {
-    ULARGE_INTEGER size;
-    LARGE_INTEGER pos;
-    IStream *out;
-    unsigned stgm;
-    HRESULT r;
+    GsfOutput *out;
+    char *name;
+    bool ok;
 
-    stgm = STGM_READWRITE | STGM_SHARE_EXCLUSIVE | STGM_FAILIFTHERE;
-    r = SHCreateStreamOnFileW( name, stgm, &out );
-    if( FAILED( r ) )
+    name = strdupWtoA(fname);
+    out = gsf_output_stdio_new( name, NULL );
+    free(name);
+    if( !out )
         return LIBMSI_RESULT_FUNCTION_FAILED;
 
-    pos.QuadPart = 0;
-    r = IStream_Seek( stm, pos, STREAM_SEEK_END, &size );
-    if( FAILED( r ) )
-        goto end;
-
-    pos.QuadPart = 0;
-    r = IStream_Seek( stm, pos, STREAM_SEEK_SET, NULL );
-    if( FAILED( r ) )
-        goto end;
-
-    r = IStream_CopyTo( stm, out, size, NULL, NULL );
-
-end:
-    IStream_Release( out );
-    if( FAILED( r ) )
+    gsf_input_seek( stm, 0, G_SEEK_SET );
+    ok = gsf_input_copy( stm, out );
+    g_object_unref(G_OBJECT(out));
+    if( !ok )
         return LIBMSI_RESULT_FUNCTION_FAILED;
     return LIBMSI_RESULT_SUCCESS;
 }
 
 unsigned _libmsi_record_save_stream_to_file( const LibmsiRecord *rec, unsigned iField, const WCHAR *name )
 {
-    IStream *stm = NULL;
+    GsfInput *stm = NULL;
     unsigned r;
 
     TRACE("%p %u %s\n", rec, iField, debugstr_w(name));
 
-    r = _libmsi_record_get_IStream( rec, iField, &stm );
+    r = _libmsi_record_get_gsf_input( rec, iField, &stm );
     if( r == LIBMSI_RESULT_SUCCESS )
     {
         r = msi_dump_stream_to_file( stm, name );
-        IStream_Release( stm );
+        g_object_unref(G_OBJECT(stm));
     }
 
     return r;
@@ -761,12 +713,13 @@ LibmsiRecord *_libmsi_record_clone(LibmsiRecord *rec)
     {
         if (rec->fields[i].type == LIBMSI_FIELD_TYPE_STREAM)
         {
-            if (FAILED(IStream_Clone(rec->fields[i].u.stream,
-                                     &clone->fields[i].u.stream)))
+            GsfInput *stm = gsf_input_dup(rec->fields[i].u.stream, NULL);
+            if (!stm)
             {
                 msiobj_release(&clone->hdr);
                 return NULL;
             }
+	    clone->fields[i].u.stream = stm;
             clone->fields[i].type = LIBMSI_FIELD_TYPE_STREAM;
         }
         else

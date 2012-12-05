@@ -433,6 +433,7 @@ static void test_summary_binary(void)
 
 void main()
 {
+    g_type_init();
     test_suminfo();
     test_summary_binary();
 }

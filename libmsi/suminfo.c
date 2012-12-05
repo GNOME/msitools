@@ -95,7 +95,7 @@ static unsigned get_property_count( const LibmsiOLEVariant *property )
     return n;
 }
 
-static unsigned read_word( uint8_t *data, unsigned *ofs )
+static unsigned read_word( const uint8_t *data, unsigned *ofs )
 {
     unsigned val = 0;
     val = data[*ofs];
@@ -104,7 +104,7 @@ static unsigned read_word( uint8_t *data, unsigned *ofs )
     return val;
 }
 
-static unsigned read_dword( uint8_t *data, unsigned *ofs )
+static unsigned read_dword( const uint8_t *data, unsigned *ofs )
 {
     unsigned val = 0;
     val = data[*ofs];
@@ -160,7 +160,7 @@ static void parse_filetime( const WCHAR *str, uint64_t *ft )
 }
 
 /* FIXME: doesn't deal with endian conversion */
-static void read_properties_from_data( LibmsiOLEVariant *prop, uint8_t *data, unsigned sz, uint32_t cProperties )
+static void read_properties_from_data( LibmsiOLEVariant *prop, const uint8_t *data, unsigned sz, uint32_t cProperties )
 {
     unsigned type;
     unsigned i;
@@ -257,40 +257,32 @@ static void read_properties_from_data( LibmsiOLEVariant *prop, uint8_t *data, un
     }
 }
 
-static unsigned load_summary_info( LibmsiSummaryInfo *si, IStream *stm )
+static unsigned load_summary_info( LibmsiSummaryInfo *si, GsfInput *stm )
 {
     unsigned ret = LIBMSI_RESULT_FUNCTION_FAILED;
     uint8_t *data = NULL;
     unsigned ofs, dwOffset;
-    unsigned count, size, cbSection, cProperties;
-    HRESULT r;
-    STATSTG stat;
+    unsigned cbSection, cProperties;
+    off_t sz;
 
     TRACE("%p %p\n", si, stm);
 
-    r = IStream_Stat(stm, &stat, STATFLAG_NONAME);
-    if (FAILED(r))
-        return r;
-
-    if (stat.cbSize.QuadPart >> 32)
-    {
-        ERR("Storage is too large\n");
+    sz = gsf_input_size(stm);
+    if (!sz)
         return ret;
-    }
+    data = g_try_malloc(gsf_input_size(stm));
+    if (!data)
+        return LIBMSI_RESULT_NOT_ENOUGH_MEMORY;
 
-    size = stat.cbSize.QuadPart;
-    data = msi_alloc(size);
-
-    ofs = 0;
-    r = IStream_Read( stm, data, size, &count );
-    if( FAILED(r) || count != size )
-        return ret;
+    if (!gsf_input_read(stm, sz, data))
+        goto done;
 
     /* process the set header */
+    ofs = 0;
     if( read_word( data, &ofs) != 0xfffe )
     {
         ERR("property set not little-endian\n");
-        return ret;
+        goto done;
     }
 
     /* process the format header */
@@ -298,7 +290,7 @@ static unsigned load_summary_info( LibmsiSummaryInfo *si, IStream *stm )
     /* check the format id is correct */
     ofs = 28;
     if( memcmp( &fmtid_SummaryInformation, &data[ofs], 16 ) )
-        return ret;
+        goto done;
 
     /* seek to the location of the section */
     ofs += 16;
@@ -311,7 +303,7 @@ static unsigned load_summary_info( LibmsiSummaryInfo *si, IStream *stm )
     if( cProperties > MSI_MAX_PROPS )
     {
         ERR("too many properties %d\n", cProperties);
-        return ret;
+        goto done;
     }
 
     /* read all the data in one go */
@@ -319,6 +311,7 @@ static unsigned load_summary_info( LibmsiSummaryInfo *si, IStream *stm )
                                &data[dwOffset],
                                cbSection, cProperties );
 
+done:
     msi_free( data );
     return ret;
 }
@@ -390,7 +383,7 @@ static unsigned write_property_to_data( const LibmsiOLEVariant *prop, uint8_t *d
 static unsigned suminfo_persist( LibmsiSummaryInfo *si )
 {
     int cProperties, cbSection, dwOffset;
-    IStream *stm;
+    GsfInput *stm;
     uint8_t *data = NULL;
     unsigned r, sz;
     int i;
@@ -444,7 +437,7 @@ static unsigned suminfo_persist( LibmsiSummaryInfo *si )
 
     r = write_raw_stream_data(si->database, szSumInfo, data, sz, &stm);
     if (r == 0) {
-        IStream_Release( stm );
+        g_object_unref(G_OBJECT(stm));
     }
     msi_free( data );
     return r;
@@ -452,9 +445,8 @@ static unsigned suminfo_persist( LibmsiSummaryInfo *si )
 
 LibmsiSummaryInfo *_libmsi_get_summary_information( LibmsiDatabase *db, unsigned uiUpdateCount )
 {
-    IStream *stm = NULL;
+    GsfInput *stm = NULL;
     LibmsiSummaryInfo *si;
-    unsigned grfMode;
     unsigned r;
 
     TRACE("%p %d\n", db, uiUpdateCount );
@@ -468,12 +460,11 @@ LibmsiSummaryInfo *_libmsi_get_summary_information( LibmsiDatabase *db, unsigned
     si->database = db;
 
     /* read the stream... if we fail, we'll start with an empty property set */
-    grfMode = STGM_READ | STGM_SHARE_EXCLUSIVE;
     r = msi_get_raw_stream( db, szSumInfo, &stm );
     if( r == 0 )
     {
         load_summary_info( si, stm );
-        IStream_Release( stm );
+        g_object_unref(G_OBJECT(stm));
     }
 
     return si;

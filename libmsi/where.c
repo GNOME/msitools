@@ -235,7 +235,7 @@ static unsigned where_view_fetch_int( LibmsiView *view, unsigned row, unsigned c
     return table->view->ops->fetch_int(table->view, rows[table->table_index], col, val);
 }
 
-static unsigned where_view_fetch_stream( LibmsiView *view, unsigned row, unsigned col, IStream **stm )
+static unsigned where_view_fetch_stream( LibmsiView *view, unsigned row, unsigned col, GsfInput **stm )
 {
     LibmsiWhereView *wv = (LibmsiWhereView*)view;
     JOINTABLE *table;

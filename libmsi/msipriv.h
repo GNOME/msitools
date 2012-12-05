@@ -24,7 +24,18 @@
 
 #include <stdarg.h>
 #include <glib.h>
+
 #include <gsf/gsf.h>
+#include <gsf/gsf-input.h>
+#include <gsf/gsf-infile.h>
+#include <gsf/gsf-output.h>
+#include <gsf/gsf-outfile.h>
+#include <gsf/gsf-input-memory.h>
+#include <gsf/gsf-input-stdio.h>
+#include <gsf/gsf-output-stdio.h>
+#include <gsf/gsf-infile-msole.h>
+#include <gsf/gsf-outfile-msole.h>
+
 
 #include "unicode.h"
 #include "windef.h"
@@ -75,8 +86,8 @@ struct LibmsiObject
 typedef struct LibmsiDatabase
 {
     LibmsiObject hdr;
-    IStorage *infile;
-    IStorage *outfile;
+    GsfInfile *infile;
+    GsfOutfile *outfile;
     string_table *strings;
     unsigned bytes_per_strref;
     char *path;
@@ -112,7 +123,7 @@ typedef struct LibmsiField
         int iVal;
         intptr_t pVal;
         WCHAR *szwVal;
-        IStream *stream;
+        GsfInput *stream;
     } u;
 } LibmsiField;
 
@@ -154,7 +165,7 @@ typedef struct LibmsiViewOps
      *  This function is similar to fetch_int, except fetches a
      *    stream instead of an integer.
      */
-    unsigned (*fetch_stream)( LibmsiView *view, unsigned row, unsigned col, IStream **stm );
+    unsigned (*fetch_stream)( LibmsiView *view, unsigned row, unsigned col, GsfInput **stm );
 
     /*
      * get_row - gets values from a row
@@ -291,9 +302,9 @@ typedef struct LibmsiSummaryInfo
     LibmsiOLEVariant property[MSI_MAX_PROPS];
 } LibmsiSummaryInfo;
 
-extern const char clsid_msi_transform[16];
-extern const char clsid_msi_database[16];
-extern const char clsid_msi_patch[16];
+extern const guint8 clsid_msi_transform[16];
+extern const guint8 clsid_msi_database[16];
+extern const guint8 clsid_msi_patch[16];
 
 /* handle unicode/ascii output in the Msi* API functions */
 typedef struct {
@@ -335,7 +346,7 @@ extern unsigned _libmsi_id_from_stringW( const string_table *st, const WCHAR *bu
 extern VOID msi_destroy_stringtable( string_table *st );
 extern const WCHAR *msi_string_lookup_id( const string_table *st, unsigned id );
 extern string_table *msi_init_string_table( unsigned *bytes_per_strref );
-extern string_table *msi_load_string_table( IStorage *stg, unsigned *bytes_per_strref );
+extern string_table *msi_load_string_table( GsfInfile *stg, unsigned *bytes_per_strref );
 extern unsigned msi_save_string_table( const string_table *st, LibmsiDatabase *db, unsigned *bytes_per_strref );
 extern unsigned msi_get_string_table_codepage( const string_table *st );
 extern unsigned msi_set_string_table_codepage( string_table *st, unsigned codepage );
@@ -344,32 +355,32 @@ unsigned _libmsi_open_table( LibmsiDatabase *db, const WCHAR *name, bool encoded
 extern bool table_view_exists( LibmsiDatabase *db, const WCHAR *name );
 extern LibmsiCondition _libmsi_database_is_table_persistent( LibmsiDatabase *db, const WCHAR *table );
 
-extern unsigned read_stream_data( IStorage *stg, const WCHAR *stname,
+extern unsigned read_stream_data( GsfInfile *stg, const WCHAR *stname,
                               uint8_t **pdata, unsigned *psz );
 extern unsigned write_stream_data( LibmsiDatabase *db, const WCHAR *stname,
                                const void *data, unsigned sz );
 extern unsigned write_raw_stream_data( LibmsiDatabase *db, const WCHAR *stname,
-                        const void *data, unsigned sz, IStream **outstm );
+                        const void *data, unsigned sz, GsfInput **outstm );
 extern unsigned _libmsi_database_commit_streams( LibmsiDatabase *db );
 
 /* transform functions */
-extern unsigned msi_table_apply_transform( LibmsiDatabase *db, IStorage *stg );
+extern unsigned msi_table_apply_transform( LibmsiDatabase *db, GsfInfile *stg );
 extern unsigned _libmsi_database_apply_transform( LibmsiDatabase *db,
                  const char *szTransformFile, int iErrorCond );
-extern void append_storage_to_db( LibmsiDatabase *db, IStorage *stg );
+extern void append_storage_to_db( LibmsiDatabase *db, GsfInfile *stg );
 extern unsigned _libmsi_database_commit_storages( LibmsiDatabase *db );
 
 /* record internals */
 extern void _libmsi_record_destroy( LibmsiObject * );
-extern unsigned _libmsi_record_set_IStream( LibmsiRecord *, unsigned, IStream *);
-extern unsigned _libmsi_record_get_IStream( const LibmsiRecord *, unsigned, IStream **);
+extern unsigned _libmsi_record_set_gsf_input( LibmsiRecord *, unsigned, GsfInput *);
+extern unsigned _libmsi_record_get_gsf_input( const LibmsiRecord *, unsigned, GsfInput **);
 extern const WCHAR *_libmsi_record_get_string_raw( const LibmsiRecord *, unsigned );
 extern unsigned _libmsi_record_set_int_ptr( LibmsiRecord *, unsigned, intptr_t );
 extern unsigned _libmsi_record_set_stringW( LibmsiRecord *, unsigned, const WCHAR *);
 extern unsigned _libmsi_record_get_stringW( const LibmsiRecord *, unsigned, WCHAR *, unsigned *);
 extern intptr_t _libmsi_record_get_int_ptr( const LibmsiRecord *, unsigned );
 extern unsigned _libmsi_record_save_stream( const LibmsiRecord *, unsigned, char *, unsigned *);
-extern unsigned _libmsi_record_load_stream(LibmsiRecord *, unsigned, IStream *);
+extern unsigned _libmsi_record_load_stream(LibmsiRecord *, unsigned, GsfInput *);
 extern unsigned _libmsi_record_save_stream_to_file( const LibmsiRecord *, unsigned, const WCHAR *);
 extern unsigned _libmsi_record_load_stream_from_file( LibmsiRecord *, unsigned, const char *);
 extern unsigned _libmsi_record_copy_field( LibmsiRecord *, unsigned, LibmsiRecord *, unsigned );
@@ -378,7 +389,7 @@ extern bool _libmsi_record_compare( const LibmsiRecord *, const LibmsiRecord * )
 extern bool _libmsi_record_compare_fields(const LibmsiRecord *a, const LibmsiRecord *b, unsigned field);
 
 /* stream internals */
-extern void enum_stream_names( IStorage *stg );
+extern void enum_stream_names( GsfInfile *stg );
 extern WCHAR *encode_streamname(bool bTable, const WCHAR *in);
 extern void decode_streamname(const WCHAR *in, WCHAR *out);
 
@@ -386,14 +397,14 @@ extern void decode_streamname(const WCHAR *in, WCHAR *out);
 extern LibmsiResult _libmsi_database_start_transaction(LibmsiDatabase *db, const char *szPersist);
 extern LibmsiResult _libmsi_database_open(LibmsiDatabase *db);
 extern LibmsiResult _libmsi_database_close(LibmsiDatabase *db, bool committed);
-unsigned msi_create_stream( LibmsiDatabase *db, const WCHAR *stname, IStream *stm );
-extern unsigned msi_get_raw_stream( LibmsiDatabase *, const WCHAR *, IStream **);
+unsigned msi_create_stream( LibmsiDatabase *db, const WCHAR *stname, GsfInput *stm );
+extern unsigned msi_get_raw_stream( LibmsiDatabase *, const WCHAR *, GsfInput **);
 void msi_destroy_stream( LibmsiDatabase *, const WCHAR * );
-extern unsigned msi_enum_db_streams(LibmsiDatabase *, unsigned (*fn)(const WCHAR *, IStream *, void *), void *);
-unsigned msi_create_storage( LibmsiDatabase *db, const WCHAR *stname, IStream *stm );
+extern unsigned msi_enum_db_streams(LibmsiDatabase *, unsigned (*fn)(const WCHAR *, GsfInput *, void *), void *);
+unsigned msi_create_storage( LibmsiDatabase *db, const WCHAR *stname, GsfInput *stm );
 unsigned msi_open_storage( LibmsiDatabase *db, const WCHAR *stname );
 void msi_destroy_storage( LibmsiDatabase *db, const WCHAR *stname );
-extern unsigned msi_enum_db_storages(LibmsiDatabase *, unsigned (*fn)(const WCHAR *, IStorage *, void *), void *);
+extern unsigned msi_enum_db_storages(LibmsiDatabase *, unsigned (*fn)(const WCHAR *, GsfInfile *, void *), void *);
 extern unsigned _libmsi_database_open_query(LibmsiDatabase *, const WCHAR *, LibmsiQuery **);
 extern unsigned _libmsi_query_open( LibmsiDatabase *, LibmsiQuery **, const WCHAR *, ... );
 typedef unsigned (*record_func)( LibmsiRecord *, void *);
@@ -409,7 +420,6 @@ extern unsigned _libmsi_view_find_column( LibmsiView *, const WCHAR *, const WCH
 extern unsigned msi_view_get_row(LibmsiDatabase *, LibmsiView *, unsigned, LibmsiRecord **);
 
 /* summary information */
-extern LibmsiSummaryInfo *MSI_GetSummaryInformationW( IStorage *stg, unsigned uiUpdateCount );
 extern unsigned msi_add_suminfo( LibmsiDatabase *db, WCHAR ***records, int num_records, int num_columns );
 
 /* Helpers */

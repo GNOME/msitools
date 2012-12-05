@@ -253,90 +253,77 @@ void decode_streamname(const WCHAR *in, WCHAR *out)
     msi_free(dec_utf8);
 }
 
-void enum_stream_names( IStorage *stg )
+void enum_stream_names( GsfInfile *stg )
 {
-    IEnumSTATSTG *stgenum = NULL;
-    HRESULT r;
-    STATSTG stat;
-    unsigned n, count;
+    unsigned n, i;
     WCHAR name[0x40];
 
-    r = IStorage_EnumElements( stg, 0, NULL, 0, &stgenum );
-    if( FAILED( r ) )
-        return;
-
-    n = 0;
-    while( 1 )
+    n = gsf_infile_num_children(stg);
+    for (i = 0; i < n; i++)
     {
-        count = 0;
-        r = IEnumSTATSTG_Next( stgenum, 1, &stat, &count );
-        if( FAILED( r ) || !count )
-            break;
-        decode_streamname( stat.pwcsName, name );
+        const char *utf8name = gsf_infile_name_by_index(stg, i);
+        WCHAR *stname = strdupUTF8toW(utf8name);
+        decode_streamname( stname, name );
         TRACE("stream %2d -> %s %s\n", n,
-              debugstr_w(stat.pwcsName), debugstr_w(name) );
-        CoTaskMemFree( stat.pwcsName );
-        n++;
+              debugstr_w(stname), debugstr_w(name) );
+        msi_free(stname);
     }
-
-    IEnumSTATSTG_Release( stgenum );
 }
 
-unsigned read_stream_data( IStorage *stg, const WCHAR *stname,
+unsigned read_stream_data( GsfInfile *stg, const WCHAR *stname,
                        uint8_t **pdata, unsigned *psz )
 {
-    HRESULT r;
     unsigned ret = LIBMSI_RESULT_FUNCTION_FAILED;
     VOID *data;
-    unsigned sz, count;
-    IStream *stm = NULL;
-    STATSTG stat;
+    unsigned sz;
+    GsfInput *stm = NULL;
     WCHAR *encname;
+    char *utf8name;
 
     encname = encode_streamname(true, stname);
+    utf8name = strdupWtoUTF8(encname);
 
     TRACE("%s -> %s\n",debugstr_w(stname),debugstr_w(encname));
+    msi_free(encname);
 
     if ( !stg )
         return LIBMSI_RESULT_FUNCTION_FAILED;
 
-    r = IStorage_OpenStream(stg, encname, NULL, 
-            STGM_READ | STGM_SHARE_EXCLUSIVE, 0, &stm);
-    msi_free( encname );
-    if( FAILED( r ) )
+    stm = gsf_infile_child_by_name(stg, utf8name );
+    msi_free( utf8name );
+    if( !stm )
     {
-        WARN("open stream failed r = %08x - empty table?\n", r);
+        WARN("open stream failed - empty table?\n");
         return ret;
     }
 
-    r = IStream_Stat(stm, &stat, STATFLAG_NONAME );
-    if( FAILED( r ) )
-    {
-        WARN("open stream failed r = %08x!\n", r);
-        goto end;
-    }
-
-    if( stat.cbSize.QuadPart >> 32 )
+    if( gsf_input_size(stm) >> 32 )
     {
         WARN("Too big!\n");
         goto end;
     }
         
-    sz = stat.cbSize.QuadPart;
-    data = msi_alloc( sz );
-    if( !data )
+    sz = gsf_input_size(stm);
+    if ( !sz )
     {
-        WARN("couldn't allocate memory r=%08x!\n", r);
-        ret = LIBMSI_RESULT_NOT_ENOUGH_MEMORY;
-        goto end;
+        data = NULL;
     }
-        
-    r = IStream_Read(stm, data, sz, &count );
-    if( FAILED( r ) || ( count != sz ) )
+    else
     {
-        msi_free( data );
-        WARN("read stream failed r = %08x!\n", r);
-        goto end;
+        data = g_try_malloc( sz );
+        if( !data )
+        {
+            WARN("couldn't allocate memory (%u bytes)!\n", sz);
+            ret = LIBMSI_RESULT_NOT_ENOUGH_MEMORY;
+            goto end;
+        }
+        
+        if (! gsf_input_read( stm, sz, data ))
+        {
+            msi_free( data );
+            WARN("read stream failed\n");
+            goto end;
+        }
     }
 
     *pdata = data;
@@ -344,7 +331,7 @@ unsigned read_stream_data( IStorage *stg, const WCHAR *stname,
     ret = LIBMSI_RESULT_SUCCESS;
 
 end:
-    IStream_Release( stm );
+    g_object_unref(G_OBJECT(stm));
 
     return ret;
 }
@@ -354,60 +341,35 @@ unsigned write_stream_data( LibmsiDatabase *db, const WCHAR *stname,
 {
     unsigned ret = LIBMSI_RESULT_FUNCTION_FAILED;
     WCHAR *encname;
-    HRESULT r;
-    IStream *stm;
-    ULARGE_INTEGER size;
-    LARGE_INTEGER pos;
-    unsigned count;
+    char *utf8name;
+    GsfOutput *stm;
 
     if (!db->outfile)
         return ret;
 
     encname = encode_streamname(true, stname );
-    r = IStorage_OpenStream( db->outfile, encname, NULL, 
-            STGM_WRITE | STGM_SHARE_EXCLUSIVE, 0, &stm);
-    if( FAILED(r) )
-    {
-        r = IStorage_CreateStream( db->outfile, encname,
-                STGM_CREATE | STGM_WRITE | STGM_SHARE_EXCLUSIVE, 0, 0, &stm);
-    }
+    utf8name = strdupWtoUTF8(encname);
     msi_free( encname );
-    if( FAILED( r ) )
+
+    stm = gsf_outfile_new_child( db->outfile, utf8name, false );
+    msi_free( utf8name );
+    if( !stm )
     {
-        WARN("open stream failed r = %08x\n", r);
+        WARN("open stream failed\n");
         return ret;
     }
 
-    size.QuadPart = sz;
-    r = IStream_SetSize( stm, size );
-    if( FAILED( r ) )
+    if (! gsf_output_write(stm, sz, data) )
     {
-        WARN("Failed to SetSize\n");
+        WARN("Failed to Write\n");
         goto end;
-    }
-
-    pos.QuadPart = 0;
-    r = IStream_Seek( stm, pos, STREAM_SEEK_SET, NULL );
-    if( FAILED( r ) )
-    {
-        WARN("Failed to Seek\n");
-        goto end;
-    }
-
-    if (sz)
-    {
-        r = IStream_Write(stm, data, sz, &count );
-        if( FAILED( r ) || ( count != sz ) )
-        {
-            WARN("Failed to Write\n");
-            goto end;
-        }
     }
 
     ret = LIBMSI_RESULT_SUCCESS;
 
 end:
-    IStream_Release( stm );
+    gsf_output_close(GSF_OUTPUT(stm));
+    g_object_unref(G_OBJECT(stm));
     return ret;
 }
 
@@ -447,7 +409,7 @@ static unsigned msi_table_get_row_size( LibmsiDatabase *db, const LibmsiColumnIn
 }
 
 /* add this table to the list of cached tables in the database */
-static unsigned read_table_from_storage( LibmsiDatabase *db, LibmsiTable *t, IStorage *stg )
+static unsigned read_table_from_storage( LibmsiDatabase *db, LibmsiTable *t, GsfInfile *stg )
 {
     uint8_t *rawdata = NULL;
     unsigned rawsize = 0, i, j, row_size, row_size_mem;
@@ -1220,7 +1182,7 @@ err:
  * the name of the stream in the same table, and the table name
  * which may not be available at higher levels of the query
  */
-static unsigned table_view_fetch_stream( LibmsiView *view, unsigned row, unsigned col, IStream **stm )
+static unsigned table_view_fetch_stream( LibmsiView *view, unsigned row, unsigned col, GsfInput **stm )
 {
     LibmsiTableView *tv = (LibmsiTableView*)view;
     unsigned r;
@@ -1294,7 +1256,7 @@ static unsigned table_view_get_row( LibmsiView *view, unsigned row, LibmsiRecord
     return msi_view_get_row(tv->db, view, row, rec);
 }
 
-static unsigned _libmsi_add_stream( LibmsiDatabase *db, const WCHAR *name, IStream *data )
+static unsigned _libmsi_add_stream( LibmsiDatabase *db, const WCHAR *name, GsfInput *data )
 {
     static const WCHAR insert[] = {
         'I','N','S','E','R','T',' ','I','N','T','O',' ',
@@ -1315,7 +1277,7 @@ static unsigned _libmsi_add_stream( LibmsiDatabase *db, const WCHAR *name, IStre
     if ( r != LIBMSI_RESULT_SUCCESS )
        goto err;
 
-    r = _libmsi_record_set_IStream( rec, 2, data );
+    r = _libmsi_record_set_gsf_input( rec, 2, data );
     if ( r != LIBMSI_RESULT_SUCCESS )
        goto err;
 
@@ -1406,25 +1368,25 @@ static unsigned table_view_set_row( LibmsiView *view, unsigned row, LibmsiRecord
             r = get_table_value_from_record (tv, rec, i + 1, &val);
             if ( MSITYPE_IS_BINARY(tv->columns[ i ].type) )
             {
-                IStream *stm;
+                GsfInput *stm;
                 WCHAR *stname;
 
                 if ( r != LIBMSI_RESULT_SUCCESS )
                     return LIBMSI_RESULT_FUNCTION_FAILED;
 
-                r = _libmsi_record_get_IStream( rec, i + 1, &stm );
+                r = _libmsi_record_get_gsf_input( rec, i + 1, &stm );
                 if ( r != LIBMSI_RESULT_SUCCESS )
                     return r;
 
                 r = msi_stream_name( tv, row, &stname );
                 if ( r != LIBMSI_RESULT_SUCCESS )
                 {
-                    IStream_Release( stm );
+                    g_object_unref(G_OBJECT(stm));
                     return r;
                 }
 
                 r = _libmsi_add_stream( tv->db, stname, stm );
-                IStream_Release( stm );
+                g_object_unref(G_OBJECT(stm));
                 msi_free ( stname );
 
                 if ( r != LIBMSI_RESULT_SUCCESS )
@@ -2218,7 +2180,7 @@ err:
 }
 
 static LibmsiRecord *msi_get_transform_record( const LibmsiTableView *tv, const string_table *st,
-                                            IStorage *stg,
+                                            GsfInfile *stg,
                                             const uint8_t *rawdata, unsigned bytes_per_strref )
 {
     unsigned i, val, ofs = 0;
@@ -2245,7 +2207,8 @@ static LibmsiRecord *msi_get_transform_record( const LibmsiTableView *tv, const 
         if( MSITYPE_IS_BINARY(tv->columns[i].type) )
         {
             WCHAR *encname;
-            IStream *stm = NULL;
+            char *utf8name;
+            GsfInput *stm = NULL;
             unsigned r;
 
             ofs += bytes_per_column( tv->db, &columns[i], bytes_per_strref );
@@ -2254,8 +2217,9 @@ static LibmsiRecord *msi_get_transform_record( const LibmsiTableView *tv, const 
             if ( r != LIBMSI_RESULT_SUCCESS )
                 return NULL;
 
-            r = IStorage_OpenStream( stg, encname, NULL,
-                     STGM_READ | STGM_SHARE_EXCLUSIVE, 0, &stm );
+            utf8name = strdupWtoUTF8(encname);
+            stm = gsf_infile_child_by_name( stg, utf8name );
+            msi_free(utf8name);
             if ( r != LIBMSI_RESULT_SUCCESS )
             {
                 msi_free( encname );
@@ -2435,7 +2399,7 @@ typedef struct
     WCHAR *name;
 } TRANSFORMDATA;
 
-static unsigned msi_table_load_transform( LibmsiDatabase *db, IStorage *stg,
+static unsigned msi_table_load_transform( LibmsiDatabase *db, GsfInfile *stg,
                                       string_table *st, TRANSFORMDATA *transform,
                                       unsigned bytes_per_strref )
 {
@@ -2617,14 +2581,12 @@ err:
  *
  * Enumerate the table transforms in a transform storage and apply each one.
  */
-unsigned msi_table_apply_transform( LibmsiDatabase *db, IStorage *stg )
+unsigned msi_table_apply_transform( LibmsiDatabase *db, GsfInfile *stg )
 {
     struct list transforms;
-    IEnumSTATSTG *stgenum = NULL;
     TRANSFORMDATA *transform;
     TRANSFORMDATA *tables = NULL, *columns = NULL;
-    HRESULT r;
-    STATSTG stat;
+    unsigned i, n, r;
     string_table *strings;
     unsigned ret = LIBMSI_RESULT_FUNCTION_FAILED;
     unsigned bytes_per_strref;
@@ -2635,27 +2597,27 @@ unsigned msi_table_apply_transform( LibmsiDatabase *db, IStorage *stg )
     if( !strings )
         goto end;
 
-    r = IStorage_EnumElements( stg, 0, NULL, 0, &stgenum );
-    if( FAILED( r ) )
-        goto end;
+    n = gsf_infile_num_children(stg);
 
     list_init(&transforms);
 
-    while ( true )
+    for (i = 0; i < n; i++)
     {
         LibmsiTableView *tv = NULL;
+        const uint8_t *utf8name;
+        WCHAR *encname;
         WCHAR name[0x40];
-        unsigned count = 0;
 
-        r = IEnumSTATSTG_Next( stgenum, 1, &stat, &count );
-        if ( FAILED( r ) || !count )
-            break;
-
-        decode_streamname( stat.pwcsName, name );
-        CoTaskMemFree( stat.pwcsName );
-        if ( name[0] != 0x4840 )
+        utf8name = (const uint8_t *) gsf_infile_name_by_index(stg, i);
+        encname = strdupUTF8toW(utf8name);
+        if ( encname[0] != 0x4840 )
+        {
+            msi_free( encname );
             continue;
+        }
 
+        decode_streamname( encname, name );
+        msi_free( encname );
         if ( !strcmpW( name+1, szStringPool ) ||
              !strcmpW( name+1, szStringData ) )
             continue;
@@ -2724,8 +2686,6 @@ unsigned msi_table_apply_transform( LibmsiDatabase *db, IStorage *stg )
         append_storage_to_db( db, stg );
 
 end:
-    if ( stgenum )
-        IEnumSTATSTG_Release( stgenum );
     if ( strings )
         msi_destroy_stringtable( strings );
 

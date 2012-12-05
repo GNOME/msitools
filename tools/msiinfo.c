@@ -516,6 +516,7 @@ int main(int argc, char **argv)
 {
     struct Command *cmd = NULL;
 
+    g_type_init();
     program_name = get_basename(argv[0]);
 
     if (argc == 1) {

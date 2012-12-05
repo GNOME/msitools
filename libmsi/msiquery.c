@@ -269,13 +269,13 @@ unsigned msi_view_get_row(LibmsiDatabase *db, LibmsiView *view, unsigned row, Li
 
         if (MSITYPE_IS_BINARY(type))
         {
-            IStream *stm = NULL;
+            GsfInput *stm = NULL;
 
             ret = view->ops->fetch_stream(view, row, i, &stm);
             if ((ret == LIBMSI_RESULT_SUCCESS) && stm)
             {
-                _libmsi_record_set_IStream(*rec, i, stm);
-                IStream_Release(stm);
+                _libmsi_record_set_gsf_input(*rec, i, stm);
+                g_object_unref(G_OBJECT(stm));
             }
             else
                 WARN("failed to get stream\n");
@@ -547,29 +547,28 @@ LibmsiDBError libmsi_query_get_error( LibmsiQuery *query, char *buffer, unsigned
 unsigned _libmsi_database_apply_transform( LibmsiDatabase *db,
                  const char *szTransformFile, int iErrorCond )
 {
-    HRESULT r;
     unsigned ret = LIBMSI_RESULT_FUNCTION_FAILED;
-    IStorage *stg = NULL;
-    STATSTG stat;
-    WCHAR *szwTransformFile = NULL;
+    GsfInput *in;
+    GsfInfile *stg;
+    uint8_t uuid[16];
 
     TRACE("%p %s %d\n", db, debugstr_a(szTransformFile), iErrorCond);
-    szwTransformFile = strdupAtoW(szTransformFile);
-    if (!szwTransformFile) goto end;
-
-    r = StgOpenStorage( szwTransformFile, NULL,
-           STGM_DIRECT|STGM_READ|STGM_SHARE_DENY_WRITE, NULL, 0, &stg);
-    if ( FAILED(r) )
+    in = gsf_input_stdio_new(szTransformFile, NULL);
+    if (!in)
     {
-        WARN("failed to open transform 0x%08x\n", r);
-        return ret;
+        WARN("open file failed for transform %s\n", debugstr_a(szTransformFile));
+        return LIBMSI_RESULT_OPEN_FAILED;
+    }
+    stg = gsf_infile_msole_new( in, NULL );
+    g_object_unref(G_OBJECT(in));
+
+    if( !gsf_infile_msole_get_class_id (GSF_INFILE_MSOLE(stg), uuid))
+    {
+        FIXME("Failed to stat storage\n");
+        goto end;
     }
 
-    r = IStorage_Stat( stg, &stat, STATFLAG_NONAME );
-    if ( FAILED( r ) )
-        goto end;
-
-    if ( memcmp( &stat.clsid, &clsid_msi_transform, 16 ) != 0 )
+    if ( memcmp( uuid, clsid_msi_transform, 16 ) != 0 )
         goto end;
 
     if( TRACE_ON( msi ) )
@@ -578,8 +577,7 @@ unsigned _libmsi_database_apply_transform( LibmsiDatabase *db,
     ret = msi_table_apply_transform( db, stg );
 
 end:
-    msi_free(szwTransformFile);
-    IStorage_Release( stg );
+    g_object_unref(G_OBJECT(stg));
 
     return ret;
 }
@@ -597,67 +595,85 @@ LibmsiResult libmsi_database_apply_transform( LibmsiDatabase *db,
     return r;
 }
 
-static unsigned commit_storage( const WCHAR *name, IStorage *stg, void *opaque)
+static int gsf_infile_copy(GsfInfile *inf, GsfOutfile *outf)
+{
+    int n = gsf_infile_num_children(inf);
+    int i;
+
+    for (i = 0; i < n; i++) {
+        const char *name = gsf_infile_name_by_index(inf, i);
+        GsfInput *child = gsf_infile_child_by_index(inf, i);
+        GsfInfile *childf = GSF_IS_INFILE (child) ? GSF_INFILE (child) : NULL;
+        gboolean is_dir = childf && gsf_infile_num_children (childf) > 0;
+        GsfOutput *dest = gsf_outfile_new_child(outf, name, is_dir);
+        gboolean ok;
+
+        if (is_dir)
+            ok = gsf_infile_copy(childf, GSF_OUTFILE(dest));
+        else
+            ok = gsf_input_copy(child, dest);
+
+        g_object_unref(G_OBJECT(child));
+        g_object_unref(G_OBJECT(dest));
+        if (!ok)
+            return false;
+    }
+    return true;
+}
+
+static unsigned commit_storage( const WCHAR *name, GsfInfile *stg, void *opaque)
 {
     LibmsiDatabase *db = opaque;
-    STATSTG stat;
-    IStream *outstg;
-    ULARGE_INTEGER cbRead, cbWritten;
+    GsfOutfile *outstg;
     unsigned ret = LIBMSI_RESULT_FUNCTION_FAILED;
-    HRESULT r;
+    char *utf8name;
 
     TRACE("%s %p %p\n", debugstr_w(name), stg, opaque);
 
-    r = IStorage_CreateStorage( db->outfile, name,
-            STGM_WRITE | STGM_SHARE_EXCLUSIVE, 0, 0, &outstg);
-    if ( FAILED(r) )
+    utf8name = strdupWtoUTF8(name);
+    outstg = GSF_OUTFILE(gsf_outfile_new_child( db->outfile, utf8name, true ));
+    msi_free( utf8name );
+    if ( !outstg )
         return LIBMSI_RESULT_FUNCTION_FAILED;
 
-    r = IStorage_CopyTo( stg, 0, NULL, NULL, outstg );
-    if ( FAILED(r) )
+    if ( !gsf_infile_copy( stg, outstg ) )
         goto end;
 
     ret = LIBMSI_RESULT_SUCCESS;
 
 end:
-    IStorage_Release(outstg);
+    gsf_output_close(GSF_OUTPUT(outstg));
+    g_object_unref(G_OBJECT(outstg));
     return ret;
 }
 
-static unsigned commit_stream( const WCHAR *name, IStream *stm, void *opaque)
+static unsigned commit_stream( const WCHAR *name, GsfInput *stm, void *opaque)
 {
     LibmsiDatabase *db = opaque;
-    STATSTG stat;
-    IStream *outstm;
-    ULARGE_INTEGER cbRead, cbWritten;
+    GsfOutput *outstm;
     unsigned ret = LIBMSI_RESULT_FUNCTION_FAILED;
-    HRESULT r;
     WCHAR decname[0x40];
+    char *utf8name;
 
     decode_streamname(name, decname);
     TRACE("%s(%s) %p %p\n", debugstr_w(name), debugstr_w(decname), stm, opaque);
 
-    IStream_Stat(stm, &stat, STATFLAG_NONAME);
-    r = IStorage_CreateStream( db->outfile, name,
-            STGM_CREATE | STGM_WRITE | STGM_SHARE_EXCLUSIVE, 0, 0, &outstm);
-    if ( FAILED(r) )
+    utf8name = strdupWtoUTF8(name);
+    outstm = gsf_outfile_new_child( db->outfile, utf8name, false );
+    msi_free( utf8name );
+    if ( !outstm )
         return LIBMSI_RESULT_FUNCTION_FAILED;
 
-    IStream_SetSize( outstm, stat.cbSize );
-
-    r = IStream_CopyTo( stm, outstm, stat.cbSize, &cbRead, &cbWritten );
-    if ( FAILED(r) )
-        goto end;
-
-    if (cbRead.QuadPart != stat.cbSize.QuadPart)
-        goto end;
-    if (cbWritten.QuadPart != stat.cbSize.QuadPart)
+    gsf_input_seek (stm, 0, G_SEEK_SET);
+    gsf_output_seek (outstm, 0, G_SEEK_SET);
+    if ( !gsf_input_copy( stm, outstm ))
         goto end;
 
     ret = LIBMSI_RESULT_SUCCESS;
 
 end:
-    IStream_Release(outstm);
+    gsf_output_close(GSF_OUTPUT(outstm));
+    g_object_unref(G_OBJECT(outstm));
     return ret;
 }
 
@@ -665,7 +681,6 @@ LibmsiResult libmsi_database_commit( LibmsiDatabase *db )
 {
     unsigned r = LIBMSI_RESULT_SUCCESS;
     unsigned bytes_per_strref;
-    HRESULT hr;
 
     TRACE("%d\n", db);
 
@@ -709,14 +724,6 @@ LibmsiResult libmsi_database_commit( LibmsiDatabase *db )
     db->bytes_per_strref = bytes_per_strref;
 
     /* FIXME: unlock the database */
-
-    hr = IStorage_Commit( db->outfile, 0 );
-    if (FAILED( hr ))
-    {
-        WARN("failed to commit changes 0x%08x\n", hr);
-        r = LIBMSI_RESULT_FUNCTION_FAILED;
-        goto end;
-    }
 
     _libmsi_database_close(db, true);
     _libmsi_database_open(db);

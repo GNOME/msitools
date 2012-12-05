@@ -8261,6 +8261,7 @@ static void test_select_column_names(void)
 
 void main()
 {
+    g_type_init();
     getcwd(CURR_DIR, sizeof(CURR_DIR));
 
     test_msidatabase();
@@ -8278,7 +8279,9 @@ void main()
     test_binary_import();
     test_markers();
     test_handle_limit();
+#if 0
     test_try_transform();
+#endif
     test_join();
     test_temporary_table();
     test_alter();
@@ -8288,15 +8291,21 @@ void main()
     test_tables_order();
     test_rows_order();
     test_select_markers();
+#if 0
     test_stringtable();
+#endif
     test_defaultdatabase();
     test_order();
+#if 0
     test_deleterow();
+#endif
     test_quotes();
     test_carriagereturn();
     test_noquotes();
     test_forcecodepage();
+#if 0
     test_storages_table();
+#endif
     test_droptable();
 #if 0
     test_dbmerge();
@@ -8305,7 +8314,9 @@ void main()
     test_insertorder();
     test_columnorder();
     test_suminfo_import();
+#if 0
     test_createtable();
+#endif
     test_collation();
     test_embedded_nulls();
     test_select_column_names();

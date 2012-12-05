@@ -62,7 +62,7 @@ static unsigned delete_view_fetch_int( LibmsiView *view, unsigned row, unsigned 
     return LIBMSI_RESULT_FUNCTION_FAILED;
 }
 
-static unsigned delete_view_fetch_stream( LibmsiView *view, unsigned row, unsigned col, IStream **stm)
+static unsigned delete_view_fetch_stream( LibmsiView *view, unsigned row, unsigned col, GsfInput **stm)
 {
     LibmsiDeleteView *dv = (LibmsiDeleteView*)view;
 

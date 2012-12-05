@@ -467,7 +467,7 @@ string_table *msi_init_string_table( unsigned *bytes_per_strref )
     return st;
 }
 
-string_table *msi_load_string_table( IStorage *stg, unsigned *bytes_per_strref )
+string_table *msi_load_string_table( GsfInfile *stg, unsigned *bytes_per_strref )
 {
     string_table *st = NULL;
     char *data = NULL;

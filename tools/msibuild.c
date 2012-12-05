@@ -204,6 +204,7 @@ int main(int argc, char *argv[])
     int r;
     int n;
 
+    g_type_init();
     if (argc <= 2 )
     {
         show_usage();

@@ -23,8 +23,4 @@ libmsi_la_SOURCES = alter.c create.c database.c delete.c distinct.c \
 libmsi_la_LDFLAGS = -no-undefined -rpath $(libdir) \
 		    -export-symbols-regex='^libmsi_'
 
-libmsi_la_LIBADD = \
-	$(GLIB_LIBS) \
-	$(GSF_LIBS) \
-	-lshlwapi \
-	-lole32
+libmsi_la_LIBADD = $(GLIB_LIBS) $(GSF_LIBS)

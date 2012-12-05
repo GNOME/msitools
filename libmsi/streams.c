@@ -39,7 +39,7 @@
 typedef struct tabSTREAM
 {
     unsigned str_index;
-    IStream *stream;
+    GsfInput *stream;
 } STREAM;
 
 typedef struct LibmsiStreamsView
@@ -66,7 +66,7 @@ static bool streams_set_table_size(LibmsiStreamsView *sv, unsigned size)
     return true;
 }
 
-static STREAM *create_stream(LibmsiStreamsView *sv, const WCHAR *name, bool encoded, IStream *stm)
+static STREAM *create_stream(LibmsiStreamsView *sv, const WCHAR *name, bool encoded, GsfInput *stm)
 {
     STREAM *stream;
     WCHAR decoded[MAX_STREAM_NAME_LEN];
@@ -85,7 +85,7 @@ static STREAM *create_stream(LibmsiStreamsView *sv, const WCHAR *name, bool enco
     stream->str_index = _libmsi_add_string(sv->db->strings, name, -1, 1, StringNonPersistent);
     stream->stream = stm;
     if (stream->stream)
-        IStream_AddRef(stm);
+        g_object_ref(G_OBJECT(stm));
 
     return stream;
 }
@@ -107,7 +107,7 @@ static unsigned streams_view_fetch_int(LibmsiView *view, unsigned row, unsigned 
     return LIBMSI_RESULT_SUCCESS;
 }
 
-static unsigned streams_view_fetch_stream(LibmsiView *view, unsigned row, unsigned col, IStream **stm)
+static unsigned streams_view_fetch_stream(LibmsiView *view, unsigned row, unsigned col, GsfInput **stm)
 {
     LibmsiStreamsView *sv = (LibmsiStreamsView *)view;
 
@@ -116,7 +116,7 @@ static unsigned streams_view_fetch_stream(LibmsiView *view, unsigned row, unsign
     if (row >= sv->num_rows)
         return LIBMSI_RESULT_FUNCTION_FAILED;
 
-    IStream_AddRef(sv->streams[row]->stream);
+    g_object_ref(G_OBJECT(sv->streams[row]->stream));
     *stm = sv->streams[row]->stream;
 
     return LIBMSI_RESULT_SUCCESS;
@@ -135,7 +135,7 @@ static unsigned streams_view_set_row(LibmsiView *view, unsigned row, LibmsiRecor
 {
     LibmsiStreamsView *sv = (LibmsiStreamsView *)view;
     STREAM *stream = NULL;
-    IStream *stm;
+    GsfInput *stm;
     WCHAR *name = NULL;
     unsigned r;
 
@@ -144,7 +144,7 @@ static unsigned streams_view_set_row(LibmsiView *view, unsigned row, LibmsiRecor
     if (row > sv->num_rows)
         return LIBMSI_RESULT_FUNCTION_FAILED;
 
-    r = _libmsi_record_get_IStream(rec, 2, &stm);
+    r = _libmsi_record_get_gsf_input(rec, 2, &stm);
     if (r != LIBMSI_RESULT_SUCCESS)
         return r;
 
@@ -163,7 +163,7 @@ static unsigned streams_view_set_row(LibmsiView *view, unsigned row, LibmsiRecor
     if (r != LIBMSI_RESULT_SUCCESS)
     {
         WARN("failed to create stream: %08x\n", r);
-        IStream_Release(stream->stream);
+        g_object_unref(G_OBJECT(stream->stream));
         msi_free(stream);
         goto done;
     }
@@ -173,7 +173,7 @@ static unsigned streams_view_set_row(LibmsiView *view, unsigned row, LibmsiRecor
 done:
     msi_free(name);
 
-    IStream_Release(stm);
+    g_object_unref(G_OBJECT(stm));
 
     return r;
 }
@@ -292,7 +292,7 @@ static unsigned streams_view_delete(LibmsiView *view)
         if (sv->streams[i])
         {
             if (sv->streams[i]->stream)
-                IStream_Release(sv->streams[i]->stream);
+                g_object_unref(G_OBJECT(sv->streams[i]->stream));
             msi_free(sv->streams[i]);
         }
     }
@@ -355,7 +355,7 @@ static const LibmsiViewOps streams_ops =
     NULL,
 };
 
-static unsigned add_stream_to_table(const WCHAR *name, IStream *stm, void *opaque)
+static unsigned add_stream_to_table(const WCHAR *name, GsfInput *stm, void *opaque)
 {
     LibmsiStreamsView *sv = (LibmsiStreamsView *)opaque;
     STREAM *stream;

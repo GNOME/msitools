@@ -50,7 +50,7 @@ static unsigned alter_view_fetch_int( LibmsiView *view, unsigned row, unsigned c
     return LIBMSI_RESULT_FUNCTION_FAILED;
 }
 
-static unsigned alter_view_fetch_stream( LibmsiView *view, unsigned row, unsigned col, IStream **stm)
+static unsigned alter_view_fetch_stream( LibmsiView *view, unsigned row, unsigned col, GsfInput **stm)
 {
     LibmsiAlterView *av = (LibmsiAlterView*)view;
 

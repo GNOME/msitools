@@ -595,6 +595,7 @@ static void test_fieldzero(void)
 
 void main()
 {
+    g_type_init();
     test_msirecord();
     test_MsiRecordGetString();
     test_MsiRecordGetInteger();
