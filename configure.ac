@@ -17,6 +17,11 @@ AC_PROG_YACC
 
 AM_PATH_GLIB_2_0([2.12.0])
 PKG_CHECK_MODULES([GSF], [libgsf-1])
+PKG_CHECK_MODULES([UUID], [uuid], [uuid=yes], [uuid=no])
+AS_IF([test "$uuid" = yes],
+      [AC_DEFINE([HAVE_LIBUUID], 1,
+                 [Define to 1 if libuuid is present on the system])],
+      [AC_MSG_WARN([libuuid not found, msibuild will generate packages without a GUID])])
 
 LT_INIT([win32-dll disable-fast-install])
 

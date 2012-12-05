@@ -18,15 +18,54 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA
  */
 
+#include <config.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
 #include <sys/stat.h>
 #include <libmsi.h>
 
-LibmsiDatabase *db;
+#ifdef HAVE_LIBUUID
+#include <uuid.h>
+#endif
 
-LibmsiResult open_database(const char *msifile, LibmsiDatabase **db)
+static void init_suminfo(LibmsiSummaryInfo *si)
+{
+    libmsi_summary_info_set_property(si, MSI_PID_TITLE,
+                                     LIBMSI_PROPERTY_TYPE_STRING, 0, NULL,
+                                     "Installation Database");
+    libmsi_summary_info_set_property(si, MSI_PID_KEYWORDS,
+                                     LIBMSI_PROPERTY_TYPE_STRING, 0, NULL,
+                                     "Installer, MSI");
+    libmsi_summary_info_set_property(si, MSI_PID_TEMPLATE,
+                                     LIBMSI_PROPERTY_TYPE_STRING, 0, NULL,
+                                     ";1033");
+    libmsi_summary_info_set_property(si, MSI_PID_APPNAME,
+                                     LIBMSI_PROPERTY_TYPE_STRING, 0, NULL,
+                                     "libmsi msibuild");
+    libmsi_summary_info_set_property(si, MSI_PID_MSIVERSION,
+                                     LIBMSI_PROPERTY_TYPE_INT, 200, NULL, NULL);
+    libmsi_summary_info_set_property(si, MSI_PID_MSISOURCE,
+                                     LIBMSI_PROPERTY_TYPE_INT, 0, NULL, NULL);
+    libmsi_summary_info_set_property(si, MSI_PID_MSIRESTRICT,
+                                     LIBMSI_PROPERTY_TYPE_INT, 0, NULL, NULL);
+
+#ifdef HAVE_LIBUUID
+    {
+        uuid_t uu;
+        char uustr[40];
+        uuid_generate(uu);
+        uustr[0] = '{';
+        uuid_unparse_upper(uu, uustr + 1);
+        strcat(uustr, "}");
+        libmsi_summary_info_set_property(si, MSI_PID_REVNUMBER,
+                                         LIBMSI_PROPERTY_TYPE_STRING, 0, NULL, uustr);
+    }
+#endif
+}
+
+static LibmsiResult open_database(const char *msifile, LibmsiDatabase **db,
+                                  LibmsiSummaryInfo **si)
 {
     LibmsiResult r;
     struct stat st;
@@ -39,6 +78,16 @@ LibmsiResult open_database(const char *msifile, LibmsiDatabase **db)
             fprintf(stderr, "failed to create package database %s (%u)\n", msifile, r);
             return r;
         }
+
+        r = libmsi_database_get_summary_info(*db, INT_MAX, si);
+        if (r != LIBMSI_RESULT_SUCCESS)
+        {
+            fprintf(stderr, "failed to open summary info (%u)\n", r);
+            return r;
+        }
+
+        init_suminfo(*si);
+
         r = libmsi_database_commit(*db);
         if (r != LIBMSI_RESULT_SUCCESS)
         {
@@ -55,10 +104,20 @@ LibmsiResult open_database(const char *msifile, LibmsiDatabase **db)
             fprintf(stderr, "failed to open package database %s (%u)\n", msifile, r);
             return r;
         }
+
+        r = libmsi_database_get_summary_info(*db, INT_MAX, si);
+        if (r != LIBMSI_RESULT_SUCCESS)
+        {
+            fprintf(stderr, "failed to open summary info (%u)\n", r);
+            return r;
+        }
     }
 
     return r;
 }
+
+static LibmsiDatabase *db;
+static LibmsiSummaryInfo *si;
 
 static int import_table(char *table)
 {
@@ -75,6 +134,29 @@ static int import_table(char *table)
     }
 
     return (r != LIBMSI_RESULT_SUCCESS);
+}
+
+static int add_summary_info(const char *name, const char *author,
+                            const char *template, const char *uuid)
+{
+    libmsi_summary_info_set_property(si, MSI_PID_SUBJECT,
+                                     LIBMSI_PROPERTY_TYPE_STRING,
+                                     0, NULL, name);
+    if (author) {
+        libmsi_summary_info_set_property(si, MSI_PID_AUTHOR,
+                                         LIBMSI_PROPERTY_TYPE_STRING,
+                                         0, NULL, author);
+    }
+    if (template) {
+        libmsi_summary_info_set_property(si, MSI_PID_TEMPLATE,
+                                         LIBMSI_PROPERTY_TYPE_STRING,
+                                         0, NULL, template);
+    }
+    if (uuid) {
+        libmsi_summary_info_set_property(si, MSI_PID_REVNUMBER,
+                                         LIBMSI_PROPERTY_TYPE_STRING,
+                                         0, NULL, uuid);
+    }
 }
 
 static int add_stream(const char *stream, const char *file)
@@ -109,6 +191,7 @@ static void show_usage(void)
     printf(
         "Usage: msibuild MSIFILE [OPTION]...\n"
         "Options:\n"
+        "  -s name [author] [template] [uuid] Set summary information.\n"
         "  -i table1.idt    Import one table into the database.\n"
         "  -a stream file   Add 'stream' to storage with contents of 'file'.\n"
         "\nExisting tables or streams will be overwritten. If package.msi does not exist a new file\n"
@@ -119,6 +202,7 @@ static void show_usage(void)
 int main(int argc, char *argv[])
 {
     int r;
+    int n;
 
     if (argc <= 2 )
     {
@@ -128,10 +212,10 @@ int main(int argc, char *argv[])
 
     /* Accept package after first option for winemsibuilder compatibility.  */
     if (argc >= 3 && argv[1][0] == '-') {
-        r = open_database(argv[2], &db);
+        r = open_database(argv[2], &db, &si);
         argv[2] = argv[1];
     } else {
-        r = open_database(argv[1], &db);
+        r = open_database(argv[1], &db, &si);
     }
     if (r != LIBMSI_RESULT_SUCCESS) return 1;
 
@@ -146,6 +230,17 @@ int main(int argc, char *argv[])
 
         switch (argv[0][1])
         {
+        case 's':
+            n = 2;
+            if (argv[2] && argv[2][0] != '-') n++;
+            if (argv[3] && argv[3][0] != '-') n++;
+            if (argv[4] && argv[4][0] != '-') n++;
+            ret = add_summary_info(argv[1],
+                                   n > 2 ? argv[2] : NULL,
+                                   n > 3 ? argv[3] : NULL,
+                                   n > 4 ? argv[4] : NULL);
+            argc -= 3, argv += 3;
+            break;
         case 'i':
             do {
                 ret = import_table(argv[1]);
@@ -169,10 +264,20 @@ int main(int argc, char *argv[])
     }
 
     if (r == LIBMSI_RESULT_SUCCESS) {
+        r = libmsi_summary_info_persist(si);
+        if (r != LIBMSI_RESULT_SUCCESS)
+        {
+            fprintf(stderr, "failed to commit summary info (%u)\n", r);
+            exit(1);
+        }
         r = libmsi_database_commit(db);
         if (r != LIBMSI_RESULT_SUCCESS)
+        {
             fprintf(stderr, "failed to commit database (%u)\n", r);
+            exit(1);
+        }
     }
+    libmsi_unref(si);
     libmsi_unref(db);
     return r != LIBMSI_RESULT_SUCCESS;
 }
