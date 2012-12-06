@@ -141,14 +141,25 @@ static unsigned streams_view_set_row(LibmsiView *view, unsigned row, LibmsiRecor
     if (r != LIBMSI_RESULT_SUCCESS)
         return r;
 
-    name = strdup(_libmsi_record_get_string_raw(rec, 1));
-    if (!name)
-    {
-        WARN("failed to retrieve stream name\n");
-        goto done;
+    if (sv->streams[row]) {
+        if (mask & 1) {
+            FIXME("renaming stream via UPDATE on _Streams table");
+            goto done;
+        }
+
+        stream = sv->streams[row];
+        name = strdup(msi_string_lookup_id(sv->db->strings, stream->str_index));
+    } else {
+        name = strdup(_libmsi_record_get_string_raw(rec, 1));
+        if (!name)
+        {
+            WARN("failed to retrieve stream name\n");
+            goto done;
+        }
+
+        stream = create_stream(sv, name, false, stm);
     }
 
-    stream = create_stream(sv, name, false, stm);
     if (!stream)
         goto done;
 

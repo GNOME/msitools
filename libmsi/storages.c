@@ -112,6 +112,7 @@ static unsigned storages_view_get_row( LibmsiView *view, unsigned row, LibmsiRec
 static unsigned storages_view_set_row(LibmsiView *view, unsigned row, LibmsiRecord *rec, unsigned mask)
 {
     LibmsiStorageView *sv = (LibmsiStorageView *)view;
+    STORAGE *storage;
     GsfInput *stm;
     char *name = NULL;
     unsigned r = LIBMSI_RESULT_FUNCTION_FAILED;
@@ -125,7 +126,17 @@ static unsigned storages_view_set_row(LibmsiView *view, unsigned row, LibmsiReco
     if (r != LIBMSI_RESULT_SUCCESS)
         return r;
 
-    name = strdup(_libmsi_record_get_string_raw(rec, 1));
+    if (sv->storages[row]) {
+        if (mask & 1) {
+            FIXME("renaming storage via UPDATE on _Storages table\n");
+            goto done;
+        }
+
+        storage = sv->storages[row];
+        name = strdup(msi_string_lookup_id(sv->db->strings, storage->str_index));
+    } else {
+        name = strdup(_libmsi_record_get_string_raw(rec, 1));
+    }
     if (!name)
     {
         r = LIBMSI_RESULT_OUTOFMEMORY;
@@ -133,9 +144,11 @@ static unsigned storages_view_set_row(LibmsiView *view, unsigned row, LibmsiReco
     }
 
     msi_create_storage(sv->db, name, stm);
-    sv->storages[row] = create_storage(sv, name);
-    if (!sv->storages[row])
+    storage = create_storage(sv, name);
+    if (!storage)
         r = LIBMSI_RESULT_FUNCTION_FAILED;
+
+    sv->storages[row] = storage;
 
 done:
     msi_free(name);
