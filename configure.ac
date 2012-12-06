@@ -25,6 +25,12 @@ AS_IF([test "$uuid" = yes],
 
 LT_INIT([win32-dll disable-fast-install])
 
+AM_MISSING_PROG([AUTOM4TE], [autom4te])
+AC_CONFIG_TESTDIR([.])
+AC_CONFIG_FILES([tests/package.m4.tmp:tests/package.m4.in],
+                [$srcdir/build-aux/move-if-change tests/package.m4.tmp $srcdir/tests/package.m4
+                 cp $srcdir/tests/package.m4 tests/package.m4.tmp])
+
 AC_CONFIG_FILES([Makefile libmsi/Makefile tests/Makefile])
 AC_CONFIG_FILES([tests/runtest], [chmod +x tests/runtest])
 AC_OUTPUT
