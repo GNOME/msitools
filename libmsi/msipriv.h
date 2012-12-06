@@ -370,7 +370,6 @@ extern unsigned _libmsi_record_get_stringW( const LibmsiRecord *, unsigned, WCHA
 extern intptr_t _libmsi_record_get_int_ptr( const LibmsiRecord *, unsigned );
 extern unsigned _libmsi_record_save_stream( const LibmsiRecord *, unsigned, char *, unsigned *);
 extern unsigned _libmsi_record_load_stream(LibmsiRecord *, unsigned, IStream *);
-extern unsigned _libmsi_record_save_stream_to_file( const LibmsiRecord *, unsigned, const WCHAR *);
 extern unsigned _libmsi_record_load_stream_from_file( LibmsiRecord *, unsigned, const char *);
 extern unsigned _libmsi_record_copy_field( LibmsiRecord *, unsigned, LibmsiRecord *, unsigned );
 extern LibmsiRecord *_libmsi_record_clone( LibmsiRecord * );

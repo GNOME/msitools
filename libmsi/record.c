@@ -698,55 +698,6 @@ unsigned _libmsi_record_get_IStream( const LibmsiRecord *rec, unsigned iField, I
     return LIBMSI_RESULT_SUCCESS;
 }
 
-static unsigned msi_dump_stream_to_file( IStream *stm, const WCHAR *name )
-{
-    ULARGE_INTEGER size;
-    LARGE_INTEGER pos;
-    IStream *out;
-    unsigned stgm;
-    HRESULT r;
-
-    stgm = STGM_READWRITE | STGM_SHARE_EXCLUSIVE | STGM_FAILIFTHERE;
-    r = SHCreateStreamOnFileW( name, stgm, &out );
-    if( FAILED( r ) )
-        return LIBMSI_RESULT_FUNCTION_FAILED;
-
-    pos.QuadPart = 0;
-    r = IStream_Seek( stm, pos, STREAM_SEEK_END, &size );
-    if( FAILED( r ) )
-        goto end;
-
-    pos.QuadPart = 0;
-    r = IStream_Seek( stm, pos, STREAM_SEEK_SET, NULL );
-    if( FAILED( r ) )
-        goto end;
-
-    r = IStream_CopyTo( stm, out, size, NULL, NULL );
-
-end:
-    IStream_Release( out );
-    if( FAILED( r ) )
-        return LIBMSI_RESULT_FUNCTION_FAILED;
-    return LIBMSI_RESULT_SUCCESS;
-}
-
-unsigned _libmsi_record_save_stream_to_file( const LibmsiRecord *rec, unsigned iField, const WCHAR *name )
-{
-    IStream *stm = NULL;
-    unsigned r;
-
-    TRACE("%p %u %s\n", rec, iField, debugstr_w(name));
-
-    r = _libmsi_record_get_IStream( rec, iField, &stm );
-    if( r == LIBMSI_RESULT_SUCCESS )
-    {
-        r = msi_dump_stream_to_file( stm, name );
-        IStream_Release( stm );
-    }
-
-    return r;
-}
-
 LibmsiRecord *_libmsi_record_clone(LibmsiRecord *rec)
 {
     LibmsiRecord *clone;
