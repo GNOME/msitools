@@ -1,4 +1,4 @@
-AC_INIT([msitools], [0.0])
+AC_INIT([msitools], [0.01])
 AC_PREREQ([2.64])
 
 AC_CONFIG_HEADERS([config.h])
