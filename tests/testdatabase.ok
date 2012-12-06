@@ -4,8 +4,8 @@ ok: res == LIBMSI_RESULT_SUCCESS
 ok: INVALID_FILE_ATTRIBUTES != GetFileAttributes( msifile )
 ok: res == LIBMSI_RESULT_SUCCESS
 ok: res == LIBMSI_RESULT_SUCCESS
-ok: INVALID_FILE_ATTRIBUTES != GetFileAttributes( msifile2 )
 ok: res == LIBMSI_RESULT_SUCCESS
+ok: INVALID_FILE_ATTRIBUTES != GetFileAttributes( msifile2 )
 ok: res == LIBMSI_RESULT_SUCCESS
 ok: res == LIBMSI_RESULT_SUCCESS
 ok: res == LIBMSI_RESULT_SUCCESS
@@ -21,7 +21,6 @@ ok: res == LIBMSI_RESULT_SUCCESS
 ok: res == LIBMSI_RESULT_SUCCESS
 ok: INVALID_FILE_ATTRIBUTES != GetFileAttributes( msifile )
 ok: res == LIBMSI_RESULT_SUCCESS
-ok: INVALID_FILE_ATTRIBUTES != GetFileAttributes( msifile )
 ok: res == LIBMSI_RESULT_SUCCESS
 ok: INVALID_FILE_ATTRIBUTES == GetFileAttributes( msifile )
 ok: res == LIBMSI_RESULT_SUCCESS

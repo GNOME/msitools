@@ -61,10 +61,10 @@ static void test_msidatabase(void)
     res = libmsi_database_open( msifile, msifile2, &hdb2 );
     ok( res == LIBMSI_RESULT_SUCCESS , "Failed to open database\n" );
 
-    ok( INVALID_FILE_ATTRIBUTES != GetFileAttributes( msifile2 ), "database should exist\n");
-
     res = libmsi_database_commit( hdb2 );
     ok( res == LIBMSI_RESULT_SUCCESS , "Failed to commit database\n" );
+
+    ok( INVALID_FILE_ATTRIBUTES != GetFileAttributes( msifile2 ), "database should exist\n");
 
     res = libmsi_unref( hdb2 );
     ok( res == LIBMSI_RESULT_SUCCESS , "Failed to close database\n" );
@@ -104,16 +104,16 @@ static void test_msidatabase(void)
     ok( res == LIBMSI_RESULT_SUCCESS , "Failed to close database\n" );
     ok( INVALID_FILE_ATTRIBUTES != GetFileAttributes( msifile ), "database should exist\n");
 
+    DeleteFile( msifile );
+
     /* LIBMSI_DB_OPEN_CREATE deletes the database if MsiCommitDatabase isn't called */
     res = libmsi_database_open( msifile, LIBMSI_DB_OPEN_CREATE, &hdb );
     ok( res == LIBMSI_RESULT_SUCCESS , "Failed to open database\n" );
 
-    ok( INVALID_FILE_ATTRIBUTES != GetFileAttributes( msifile ), "database should exist\n");
-
     res = libmsi_unref( hdb );
     ok( res == LIBMSI_RESULT_SUCCESS , "Failed to close database\n" );
 
-    ok( INVALID_FILE_ATTRIBUTES == GetFileAttributes( msifile ), "database should exist\n");
+    ok( INVALID_FILE_ATTRIBUTES == GetFileAttributes( msifile ), "database should not exist\n");
 
     res = libmsi_database_open( msifile, LIBMSI_DB_OPEN_CREATE, &hdb );
     ok( res == LIBMSI_RESULT_SUCCESS , "Failed to open database\n" );
