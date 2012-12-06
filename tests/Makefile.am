@@ -1,5 +1,6 @@
 AM_CPPFLAGS = -I$(top_srcdir)/include -I$(srcdir) -I.
 
+dist_noinst_HEADERS = test.h
 noinst_PROGRAMS = testrecord testdatabase
 
 testrecord_SOURCES = testrecord.c
