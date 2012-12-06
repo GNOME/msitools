@@ -22,6 +22,8 @@
 
 #include "config.h"
 #include "libmsi.h"
+
+#include <glib.h>
 #include <stdio.h>
 #include <assert.h>
 #include <stdlib.h>
@@ -416,10 +418,246 @@ static int cmd_extract(struct Command *cmd, int argc, char **argv)
     libmsi_unref(db);
 }
 
+static unsigned export_create_table(const char *table, 
+                                    LibmsiRecord *names,
+                                    LibmsiRecord *types,
+                                    LibmsiRecord *keys)
+{
+    int num_columns = libmsi_record_get_field_count(names);
+    int num_keys = libmsi_record_get_field_count(keys);
+    int i, len;
+    unsigned r;
+    char type[30], name[100], size[20], extra[30];
+    unsigned sz;
+
+
+    printf("CREATE TABLE `%s` (", table);
+    for (i = 1; i <= num_columns; i++)
+    {
+        sz = sizeof(name);
+        r = libmsi_record_get_string(names, i, name, &sz);
+        if (r) {
+            return r;
+        }
+
+        sz = sizeof(type);
+        r = libmsi_record_get_string(types, i, type, &sz);
+        if (r) {
+            return r;
+        }
+
+        if (i > 1) {
+            printf(", ");
+        }
+
+        extra[0] = '\0';
+        if (islower(type[0])) {
+            strcat(extra, " NOT NULL");
+        }
+
+        switch (type[0])
+        {
+            case 'l': case 'L':
+                strcat(extra, " LOCALIZABLE");
+                /* fall through */
+            case 's': case 'S':
+                strcpy(size, type+1);
+                sprintf(type, "CHAR(%s)", size);
+                break;
+            case 'i': case 'I':
+                len = atol(type + 1);
+                if (len <= 2)
+                    strcpy(type, "INT");
+                else if (len == 4)
+                    strcpy(type, "LONG");
+                else
+                    abort();
+                break;
+            case 'v': case 'V':
+                strcpy(type, "OBJECT");
+                break;
+            default:
+                abort();
+        }
+
+        printf("`%s` %s%s", name, type, extra);
+    }
+    for (i = 1; i <= num_keys; i++)
+    {
+        sz = sizeof(name);
+        r = libmsi_record_get_string(names, i, name, &sz);
+        if (r) {
+            return r;
+        }
+
+        printf("%s `%s`", (i > 1 ? "," : " PRIMARY KEY"), name);
+    }
+    printf(")\n");
+    return r;
+}
+
+static void print_quoted_string(const char *s)
+{
+    putchar('\'');
+    for (; *s; s++) {
+        switch (*s) {
+        case '\n': putchar('\\'); putchar('n'); break;
+        case '\r': putchar('\\'); putchar('r'); break;
+        case '\\': putchar('\\'); putchar('\\'); break;
+        case '\'': putchar('\\'); putchar('\''); break;
+        default: putchar(*s);
+        }
+    }
+    putchar('\'');
+}
+
+static unsigned export_insert(const char *table, 
+                              LibmsiRecord *names,
+                              LibmsiRecord *types,
+                              LibmsiRecord *vals)
+{
+    int num_columns = libmsi_record_get_field_count(names);
+    int i;
+    unsigned r;
+    char type[30], name[100];
+    unsigned sz;
+    char *s;
+
+    printf("INSERT INTO `%s` (", table);
+    for (i = 1; i <= num_columns; i++)
+    {
+        sz = sizeof(name);
+        r = libmsi_record_get_string(names, i, name, &sz);
+        if (r) {
+            return r;
+        }
+
+        if (i > 1) {
+            printf(", ");
+        }
+
+        printf("`%s`", name);
+    }
+    printf(") VALUES (");
+    for (i = 1; i <= num_columns; i++)
+    {
+        if (i > 1) {
+            printf(", ");
+        }
+
+        if (libmsi_record_is_null(vals, i)) {
+            printf("NULL");
+            continue;
+        }
+
+        sz = sizeof(type);
+        r = libmsi_record_get_string(types, i, type, &sz);
+        if (r) {
+            return r;
+        }
+
+        switch (type[0])
+        {
+            case 'l': case 'L':
+            case 's': case 'S':
+                sz = INT_MAX;
+                r = libmsi_record_get_string(vals, i, NULL, &sz);
+                if (r) {
+                    return r;
+                }
+
+                s = g_malloc(++sz);
+                libmsi_record_get_string(vals, i, s, &sz);
+                print_quoted_string(s);
+                g_free(s);
+                break;
+
+            case 'i': case 'I':
+                printf("%d", libmsi_record_get_integer(vals, i));
+                break;
+            case 'v': case 'V':
+                printf("''", s);
+                break;
+            default:
+                abort();
+        }
+    }
+    printf(")\n");
+    return r;
+}
+
+static unsigned export_sql( LibmsiDatabase *db, const char *table)
+{
+    LibmsiRecord *name = NULL;
+    LibmsiRecord *type = NULL;
+    LibmsiRecord *keys = NULL;
+    LibmsiRecord *rec = NULL;
+    LibmsiQuery *query = NULL;
+    unsigned r;
+    char *sql;
+
+    sql = g_strdup_printf("select * from `%s`", table);
+    r = libmsi_database_open_query(db, sql, &query);
+    if (r) {
+        return r;
+    }
+
+    /* write out row 1, the column names */
+    r = libmsi_query_get_column_info(query, LIBMSI_COL_INFO_NAMES, &name);
+    if (r) {
+        goto done;
+    }
+
+    /* write out row 2, the column types */
+    r = libmsi_query_get_column_info(query, LIBMSI_COL_INFO_TYPES, &type);
+    if (r) {
+        goto done;
+    }
+
+    /* write out row 3, the table name + keys */
+    r = libmsi_database_get_primary_keys( db, table, &keys );
+    if (r) {
+        goto done;
+    }
+
+    r = export_create_table(table, name, type, keys);
+    if (r) {
+        goto done;
+    }
+
+    /* write out row 4 onwards, the data */
+    while ((r = libmsi_query_fetch(query, &rec)) == LIBMSI_RESULT_SUCCESS) {
+        unsigned size = PATH_MAX;
+        r = export_insert(table, name, type, rec);
+        libmsi_unref(rec);
+        if (r) {
+            break;
+        }
+    }
+
+    if (r == LIBMSI_RESULT_NO_MORE_ITEMS) {
+        r = LIBMSI_RESULT_SUCCESS;
+    }
+
+done:
+    libmsi_unref(name);
+    libmsi_unref(type);
+    libmsi_unref(keys);
+    libmsi_unref(query);
+    return r;
+}
+
 static int cmd_export(struct Command *cmd, int argc, char **argv)
 {
     LibmsiDatabase *db = NULL;
     LibmsiResult r;
+    bool sql = false;
+
+    if (!strcmp(argv[1], "-s")) {
+        sql = true;
+        argc--;
+        argv++;
+    }
 
     if (argc != 3) {
         cmd_usage(stderr, cmd);
@@ -430,7 +668,12 @@ static int cmd_export(struct Command *cmd, int argc, char **argv)
         print_libmsi_error(r);
     }
 
-    r = libmsi_database_export(db, argv[2], STDOUT_FILENO);
+    if (sql) {
+        r = export_sql(db, argv[2]);
+    } else {
+        r = libmsi_database_export(db, argv[2], STDOUT_FILENO);
+    }
+
     if (r) {
         print_libmsi_error(r);
     }
@@ -483,7 +726,8 @@ static struct Command cmds[] = {
     },
     {
         .cmd = "export",
-        .opts = "FILE TABLE",
+        .opts = "[-s] FILE TABLE\n\nOptions:\n"
+                "  -s                Format output as an SQL query",
         .desc = "Export a table in text form from an .msi file",
         .func = cmd_export,
     },
