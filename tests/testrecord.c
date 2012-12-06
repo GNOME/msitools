@@ -18,8 +18,14 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA
  */
 
-#include <windows.h>
 #include <libmsi.h>
+#include <string.h>
+#include <fcntl.h>
+#include <unistd.h>
+
+#ifdef _WIN32
+#include <windows.h>
+#endif
 
 #include "test.h"
 
@@ -30,20 +36,25 @@ static bool create_temp_file(char *name)
     unsigned r;
     unsigned char buffer[26], i;
     unsigned sz;
-    HANDLE handle;
+    int fd;
     
+#ifdef _WIN32
     r = GetTempFileName(".", "msitest",0,name);
     if(!r)
         return r;
-    handle = CreateFile(name, GENERIC_READ|GENERIC_WRITE, 
-        0, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
-    if(handle==INVALID_HANDLE_VALUE)
-        return 0;
+    fd = open(name, O_WRONLY);
+#else
+    strcpy(name, "msitext-XXXXXX.tmp");
+    fd = mkstemp(name);
+#endif
+
+    if(fd == -1)
+        return false;
     for(i=0; i<26; i++)
         buffer[i]=i+'a';
-    r = WriteFile(handle,buffer,sizeof buffer,&sz,NULL);
-    CloseHandle(handle);
-    return r;
+    write(fd, buffer, sizeof(buffer));
+    close(fd);
+    return true;
 }
 
 static void test_msirecord(void)
@@ -53,28 +64,23 @@ static void test_msirecord(void)
     LibmsiRecord *h;
     char buf[10];
     const char str[] = "hello";
-    char filename[MAX_PATH];
+    char filename[100];
 
     /* check behaviour with an invalid record */
     r = libmsi_record_get_field_count(0);
     ok(r==-1, "field count for invalid record not -1\n");
-    SetLastError(0);
     r = libmsi_record_is_null(0, 0);
     ok(r==0, "invalid handle not considered to be non-null...\n");
-    ok(GetLastError()==0, "libmsi_record_is_null set LastError\n");
     r = libmsi_record_get_integer(0,0);
     ok(r == MSI_NULL_INTEGER, "got integer from invalid record\n");
     r = libmsi_record_set_int(0,0,0);
     ok(r == LIBMSI_RESULT_INVALID_HANDLE, "libmsi_record_set_int returned wrong error\n");
     r = libmsi_record_set_int(0,-1,0);
     ok(r == LIBMSI_RESULT_INVALID_HANDLE, "libmsi_record_set_int returned wrong error\n");
-    SetLastError(0);
     h = libmsi_record_create(-1);
     ok(h==0, "created record with -1 elements\n");
     h = libmsi_record_create(0x10000);
     ok(h==0, "created record with 0x10000 elements\n");
-    /* doesn't set LastError */
-    ok(GetLastError()==0, "libmsi_record_create set last error\n");
     r = libmsi_record_clear_data(0);
     ok(r == LIBMSI_RESULT_INVALID_HANDLE, "libmsi_record_clear_data returned wrong error\n");
     r = libmsi_record_get_field_size(0,0);
@@ -305,7 +311,7 @@ static void test_msirecord(void)
     ok(r == LIBMSI_RESULT_SUCCESS, "failed to add stream to record\n");
     r = libmsi_record_save_stream(h, 1, buf, NULL);
     ok(r == LIBMSI_RESULT_INVALID_PARAMETER, "should return error\n");
-    DeleteFile(filename); /* Windows 98 doesn't like this at all, so don't check return. */
+    unlink(filename); /* Windows 98 doesn't like this at all, so don't check return. */
     r = libmsi_record_save_stream(h, 1, NULL, NULL);
     ok(r == LIBMSI_RESULT_INVALID_PARAMETER, "should return error\n");
     sz = sizeof buf;
@@ -350,32 +356,32 @@ static void test_msirecord(void)
     /* now close the stream record */
     r = libmsi_unref(h);
     ok(r == LIBMSI_RESULT_SUCCESS, "Failed to close handle\n");
-    DeleteFile(filename); /* Delete it for sure, when everything else is closed. */
+    unlink(filename); /* Delete it for sure, when everything else is closed. */
 }
 
 static void test_MsiRecordGetString(void)
 {
     LibmsiRecord *rec;
-    char buf[MAX_PATH];
+    char buf[100];
     unsigned sz;
     unsigned r;
 
     rec = libmsi_record_create(2);
     ok(rec != 0, "Expected a valid handle\n");
 
-    sz = MAX_PATH;
+    sz = sizeof(buf);
     r = libmsi_record_get_string(rec, 1, NULL, &sz);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n",r);
     ok(sz == 0, "Expected 0, got %d\n",sz);
 
-    sz = MAX_PATH;
+    sz = sizeof(buf);
     strcpy(buf, "apple");
     r = libmsi_record_get_string(rec, 1, buf, &sz);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     ok(!strcmp(buf, ""), "Expected \"\", got \"%s\"\n", buf);
     ok(sz == 0, "Expected 0, got %d\n", sz);
 
-    sz = MAX_PATH;
+    sz = sizeof(buf);
     strcpy(buf, "apple");
     r = libmsi_record_get_string(rec, 10, buf, &sz);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
@@ -390,12 +396,12 @@ static void test_MsiRecordGetString(void)
     r = libmsi_record_set_int(rec, 1, 5);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
-    sz = MAX_PATH;
+    sz = sizeof(buf);
     r = libmsi_record_get_string(rec, 1, NULL, &sz);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n",r);
     ok(sz == 1, "Expected 1, got %d\n",sz);
 
-    sz = MAX_PATH;
+    sz = sizeof(buf);
     strcpy(buf, "apple");
     r = libmsi_record_get_string(rec, 1, buf, &sz);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
@@ -405,7 +411,7 @@ static void test_MsiRecordGetString(void)
     r = libmsi_record_set_int(rec, 1, -5);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
-    sz = MAX_PATH;
+    sz = sizeof(buf);
     strcpy(buf, "apple");
     r = libmsi_record_get_string(rec, 1, buf, &sz);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
@@ -450,7 +456,7 @@ static void test_fieldzero(void)
     LibmsiDatabase *hdb;
     LibmsiQuery *hview;
     LibmsiRecord *rec;
-    char buf[MAX_PATH];
+    char buf[100];
     const char *query;
     unsigned sz;
     unsigned r;
@@ -461,7 +467,7 @@ static void test_fieldzero(void)
     r = libmsi_record_get_integer(rec, 0);
     ok(r == MSI_NULL_INTEGER, "Expected MSI_NULL_INTEGER, got %d\n", r);
 
-    sz = MAX_PATH;
+    sz = sizeof(buf);
     strcpy(buf, "apple");
     r = libmsi_record_get_string(rec, 0, buf, &sz);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
@@ -480,7 +486,7 @@ static void test_fieldzero(void)
     r = libmsi_record_get_integer(rec, 0);
     ok(r == MSI_NULL_INTEGER, "Expected MSI_NULL_INTEGER, got %d\n", r);
 
-    sz = MAX_PATH;
+    sz = sizeof(buf);
     strcpy(buf, "apple");
     r = libmsi_record_get_string(rec, 0, buf, &sz);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
@@ -499,7 +505,7 @@ static void test_fieldzero(void)
     r = libmsi_record_get_integer(rec, 0);
     ok(r == MSI_NULL_INTEGER, "Expected MSI_NULL_INTEGER, got %d\n", r);
 
-    sz = MAX_PATH;
+    sz = sizeof(buf);
     strcpy(buf, "apple");
     r = libmsi_record_get_string(rec, 0, buf, &sz);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
@@ -509,7 +515,7 @@ static void test_fieldzero(void)
     r = libmsi_record_is_null(rec, 0);
     ok(r == true, "Expected true, got %d\n", r);
 
-    sz = MAX_PATH;
+    sz = sizeof(buf);
     strcpy(buf, "apple");
     r = libmsi_record_get_string(rec, 1, buf, &sz);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
@@ -551,7 +557,7 @@ static void test_fieldzero(void)
     r = libmsi_record_get_integer(rec, 0);
     ok(r == MSI_NULL_INTEGER, "Expected MSI_NULL_INTEGER, got %d\n", r);
 
-    sz = MAX_PATH;
+    sz = sizeof(buf);
     strcpy(buf, "apple");
     r = libmsi_record_get_string(rec, 0, buf, &sz);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
@@ -584,7 +590,7 @@ static void test_fieldzero(void)
     ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_unref failed\n");
     libmsi_unref(rec);
     libmsi_unref(hdb);
-    DeleteFileA(msifile);
+    unlink(msifile);
 }
 
 void main()

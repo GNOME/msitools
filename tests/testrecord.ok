@@ -1,12 +1,10 @@
 ok: r==-1
 ok: r==0
-ok: GetLastError()==0
 ok: r == MSI_NULL_INTEGER
 ok: r == LIBMSI_RESULT_INVALID_HANDLE
 ok: r == LIBMSI_RESULT_INVALID_HANDLE
 ok: h==0
 ok: h==0
-ok: GetLastError()==0
 ok: r == LIBMSI_RESULT_INVALID_HANDLE
 ok: r == 0
 ok: h!=0
