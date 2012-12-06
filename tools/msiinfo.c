@@ -729,7 +729,7 @@ static struct Command cmds[] = {
     },
     {
         .cmd = "suminfo",
-        .opts = "FILE TABLE",
+        .opts = "FILE",
         .desc = "Print summary information",
         .func = cmd_suminfo,
     },
