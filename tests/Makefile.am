@@ -1,16 +1,18 @@
 AM_CPPFLAGS = -I$(top_srcdir)/include -I$(srcdir) -I.
 
-check_PROGRAMS = testrecord
+noinst_PROGRAMS = testrecord testdatabase
+
 testrecord_SOURCES = testrecord.c
 testrecord_LDADD = ../libmsi/libmsi.la
+testdatabase_SOURCES = testdatabase.c
+testdatabase_LDADD = ../libmsi/libmsi.la
 
 TESTS_ENVIRONMENT = srcdir=$(srcdir) ./runtest
 
 if WIN32
-check_PROGRAMS += testdatabase testrecord testsuminfo
+noinst_PROGRAMS += testsuminfo
 
-testdatabase_SOURCES = testdatabase.c
-testdatabase_LDADD = ../libmsi/libmsi.la -lole32
+testdatabase_LDADD += -lole32
 testsuminfo_SOURCES = testsuminfo.c
 testsuminfo_LDADD = ../libmsi/libmsi.la -lole32
 

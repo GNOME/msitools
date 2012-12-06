@@ -21,20 +21,36 @@
 #define COBJMACROS
 
 #include <stdio.h>
+#include <string.h>
+#include <assert.h>
+#include <stdlib.h>
 #include <fcntl.h>
 #include <unistd.h>
+#include <stdint.h>
 
+#ifdef _WIN32
 #include <windows.h>
+#include <objidl.h>
+#endif
+
 #include <libmsi.h>
 
-#include <objidl.h>
-
 #include "test.h"
+
+#ifdef _WIN32
+#define mkdir(dir, mode) mkdir(dir)
+#else
+typedef uint16_t WCHAR;
+#define O_BINARY 0
+#endif
 
 static const char *msifile = "winetest-db.msi";
 static const char *msifile2 = "winetst2-db.msi";
 static const char *mstfile = "winetst-db.mst";
+
 static const WCHAR msifileW[] = {'w','i','n','e','t','e','s','t','-','d','b','.','m','s','i',0};
+
+static char CURR_DIR[260];
 
 static void test_msidatabase(void)
 {
@@ -42,7 +58,7 @@ static void test_msidatabase(void)
     LibmsiDatabase *hdb2 = 0;
     unsigned res;
 
-    DeleteFile(msifile);
+    unlink(msifile);
 
     res = libmsi_database_open( msifile, msifile2, &hdb );
     ok( res == LIBMSI_RESULT_OPEN_FAILED, "expected failure\n");
@@ -54,7 +70,7 @@ static void test_msidatabase(void)
     res = libmsi_database_commit( hdb );
     ok( res == LIBMSI_RESULT_SUCCESS , "Failed to commit database\n" );
 
-    ok( INVALID_FILE_ATTRIBUTES != GetFileAttributes( msifile ), "database should exist\n");
+    ok( -1 != access( msifile, F_OK ), "database should exist\n");
 
     res = libmsi_unref( hdb );
     ok( res == LIBMSI_RESULT_SUCCESS , "Failed to close database\n" );
@@ -64,7 +80,7 @@ static void test_msidatabase(void)
     res = libmsi_database_commit( hdb2 );
     ok( res == LIBMSI_RESULT_SUCCESS , "Failed to commit database\n" );
 
-    ok( INVALID_FILE_ATTRIBUTES != GetFileAttributes( msifile2 ), "database should exist\n");
+    ok( -1 != access( msifile2, F_OK ), "database should exist\n");
 
     res = libmsi_unref( hdb2 );
     ok( res == LIBMSI_RESULT_SUCCESS , "Failed to close database\n" );
@@ -75,7 +91,7 @@ static void test_msidatabase(void)
     res = libmsi_unref( hdb2 );
     ok( res == LIBMSI_RESULT_SUCCESS , "Failed to close database\n" );
 
-    ok( INVALID_FILE_ATTRIBUTES == GetFileAttributes( msifile2 ), "uncommitted database should not exist\n");
+    ok( -1 == access( msifile2, F_OK ), "uncommitted database should not exist\n");
 
     res = libmsi_database_open( msifile, msifile2, &hdb2 );
     ok( res == LIBMSI_RESULT_SUCCESS , "Failed to close database\n" );
@@ -86,7 +102,7 @@ static void test_msidatabase(void)
     res = libmsi_unref( hdb2 );
     ok( res == LIBMSI_RESULT_SUCCESS , "Failed to close database\n" );
 
-    ok( INVALID_FILE_ATTRIBUTES != GetFileAttributes( msifile2 ), "committed database should exist\n");
+    ok( -1 != access( msifile2, F_OK ), "committed database should exist\n");
 
     res = libmsi_database_open( msifile, LIBMSI_DB_OPEN_READONLY, &hdb );
     ok( res == LIBMSI_RESULT_SUCCESS , "Failed to open database\n" );
@@ -102,9 +118,9 @@ static void test_msidatabase(void)
 
     res = libmsi_unref( hdb );
     ok( res == LIBMSI_RESULT_SUCCESS , "Failed to close database\n" );
-    ok( INVALID_FILE_ATTRIBUTES != GetFileAttributes( msifile ), "database should exist\n");
+    ok( -1 != access( msifile, F_OK ), "database should exist\n");
 
-    DeleteFile( msifile );
+    unlink( msifile );
 
     /* LIBMSI_DB_OPEN_CREATE deletes the database if MsiCommitDatabase isn't called */
     res = libmsi_database_open( msifile, LIBMSI_DB_OPEN_CREATE, &hdb );
@@ -113,7 +129,7 @@ static void test_msidatabase(void)
     res = libmsi_unref( hdb );
     ok( res == LIBMSI_RESULT_SUCCESS , "Failed to close database\n" );
 
-    ok( INVALID_FILE_ATTRIBUTES == GetFileAttributes( msifile ), "database should not exist\n");
+    ok( -1 == access( msifile, F_OK ), "database should not exist\n");
 
     res = libmsi_database_open( msifile, LIBMSI_DB_OPEN_CREATE, &hdb );
     ok( res == LIBMSI_RESULT_SUCCESS , "Failed to open database\n" );
@@ -121,16 +137,16 @@ static void test_msidatabase(void)
     res = libmsi_database_commit( hdb );
     ok( res == LIBMSI_RESULT_SUCCESS , "Failed to commit database\n" );
 
-    ok( INVALID_FILE_ATTRIBUTES != GetFileAttributes( msifile ), "database should exist\n");
+    ok( -1 != access( msifile, F_OK ), "database should exist\n");
 
     res = libmsi_unref( hdb );
     ok( res == LIBMSI_RESULT_SUCCESS , "Failed to close database\n" );
 
-    res = DeleteFile( msifile2 );
-    ok( res == true, "Failed to delete database\n" );
+    res = unlink( msifile2 );
+    ok( res == 0, "Failed to delete database\n" );
 
-    res = DeleteFile( msifile );
-    ok( res == true, "Failed to delete database\n" );
+    res = unlink( msifile );
+    ok( res == 0, "Failed to delete database\n" );
 }
 
 static unsigned do_query(LibmsiDatabase *hdb, const char *sql, LibmsiRecord **phrec)
@@ -242,10 +258,10 @@ static unsigned create_binary_table( LibmsiDatabase *hdb )
         char *sql; \
         unsigned sz, r; \
         sz = strlen(values) + sizeof insert; \
-        sql = HeapAlloc(GetProcessHeap(),0,sz); \
+        sql = malloc(sz); \
         sprintf(sql,insert,values); \
         r = run_query( hdb, 0, sql ); \
-        HeapFree(GetProcessHeap(), 0, sql); \
+        free(sql); \
         return r; \
     }
 
@@ -279,7 +295,7 @@ static void test_msiinsert(void)
     char buf[80];
     unsigned sz;
 
-    DeleteFile(msifile);
+    unlink(msifile);
 
     /* just libmsi_database_open should not create a file */
     r = libmsi_database_open(msifile, LIBMSI_DB_OPEN_CREATE, &hdb);
@@ -358,7 +374,7 @@ static void test_msiinsert(void)
     ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_unref failed\n");
 
     /* open a select query */
-    hrec = 100;
+    hrec = NULL;
     sql = "SELECT * FROM `phone` WHERE `id` >= 10";
     r = do_query(hdb, sql, &hrec);
     ok(r == LIBMSI_RESULT_NO_MORE_ITEMS, "libmsi_query_fetch failed\n");
@@ -425,8 +441,8 @@ static void test_msiinsert(void)
     r = libmsi_unref(hdb);
     ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_unref failed\n");
 
-    r = DeleteFile(msifile);
-    ok(r == true, "file didn't exist after commit\n");
+    r = unlink(msifile);
+    ok(r == 0, "file didn't exist after commit\n");
 }
 
 static unsigned try_query_param( LibmsiDatabase *hdb, const char *szQuery, LibmsiRecord *hrec )
@@ -478,7 +494,7 @@ static void test_msibadqueries(void)
     LibmsiDatabase *hdb = 0;
     unsigned r;
 
-    DeleteFile(msifile);
+    unlink(msifile);
 
     /* just libmsi_database_open should not create a file */
     r = libmsi_database_open(msifile, LIBMSI_DB_OPEN_CREATE, &hdb);
@@ -688,8 +704,8 @@ static void test_msibadqueries(void)
     r = libmsi_unref( hdb );
     ok(r == LIBMSI_RESULT_SUCCESS , "Failed to close database transact\n");
 
-    r = DeleteFile( msifile );
-    ok(r == true, "file didn't exist after commit\n");
+    r = unlink( msifile );
+    ok(r == 0, "file didn't exist after commit\n");
 }
 
 static LibmsiDatabase *create_db(void)
@@ -697,7 +713,7 @@ static LibmsiDatabase *create_db(void)
     LibmsiDatabase *hdb = 0;
     unsigned res;
 
-    DeleteFile(msifile);
+    unlink(msifile);
 
     /* create an empty database */
     res = libmsi_database_open(msifile, LIBMSI_DB_OPEN_CREATE, &hdb );
@@ -951,7 +967,6 @@ static void test_msiexport(void)
     const char *sql;
     int fd;
     const char file[] = "phone.txt";
-    HANDLE handle;
     char buffer[0x100];
     unsigned length;
     const char expected[] =
@@ -960,7 +975,7 @@ static void test_msiexport(void)
         "phone\tid\r\n"
         "1\tAbe\t8675309\r\n";
 
-    DeleteFile(msifile);
+    unlink(msifile);
 
     /* just libmsi_database_open should not create a file */
     r = libmsi_database_open(msifile, LIBMSI_DB_OPEN_CREATE, &hdb);
@@ -1004,19 +1019,19 @@ static void test_msiexport(void)
     /* check the data that was written */
     length = 0;
     memset(buffer, 0, sizeof buffer);
-    handle = CreateFile(file, GENERIC_READ, 0, NULL, OPEN_EXISTING, 0, NULL);
-    if (handle != INVALID_HANDLE_VALUE)
+    fd = open(file, O_RDONLY | O_BINARY);
+    if (fd != -1)
     {
-        ReadFile(handle, buffer, sizeof buffer, &length, NULL);
-        CloseHandle(handle);
-        DeleteFile(file);
+        length = read(fd, buffer, sizeof buffer);
+        close(fd);
+        unlink(file);
     }
     else
         ok(0, "failed to open file %s\n", file);
 
     ok( length == strlen(expected), "length of data wrong\n");
     ok( !strcmp(buffer, expected), "data doesn't match\n");
-    DeleteFile(msifile);
+    unlink(msifile);
 }
 
 static void test_longstrings(void)
@@ -1031,7 +1046,7 @@ static void test_longstrings(void)
     unsigned r;
     const unsigned STRING_LENGTH = 0x10005;
 
-    DeleteFile(msifile);
+    unlink(msifile);
     /* just libmsi_database_open should not create a file */
     r = libmsi_database_open(msifile, LIBMSI_DB_OPEN_CREATE, &hdb);
     ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_database_open failed\n");
@@ -1042,7 +1057,7 @@ static void test_longstrings(void)
     ok(r == LIBMSI_RESULT_SUCCESS, "query failed\n");
 
     /* try a insert a very long string */
-    str = HeapAlloc(GetProcessHeap(), 0, STRING_LENGTH+sizeof insert_query);
+    str = malloc(STRING_LENGTH+sizeof insert_query);
     len = strchr(insert_query, 'Z') - insert_query;
     strcpy(str, insert_query);
     memset(str+len, 'Z', STRING_LENGTH);
@@ -1050,7 +1065,7 @@ static void test_longstrings(void)
     r = try_query( hdb, str );
     ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_database_open_query failed\n");
 
-    HeapFree(GetProcessHeap(), 0, str);
+    free(str);
 
     r = libmsi_database_commit(hdb);
     ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_database_commit failed\n");
@@ -1077,28 +1092,23 @@ static void test_longstrings(void)
 
     libmsi_unref(hrec);
     libmsi_unref(hdb);
-    DeleteFile(msifile);
+    unlink(msifile);
 }
 
 static void create_file_data(const char *name, const char *data, unsigned size)
 {
-    HANDLE file;
-    unsigned written;
+    int file;
 
-    file = CreateFileA(name, GENERIC_WRITE, 0, NULL, CREATE_ALWAYS, 0, NULL);
-    if (file == INVALID_HANDLE_VALUE)
+    file = open(name, O_CREAT | O_WRONLY | O_BINARY, 0644);
+    if (file == -1)
         return;
 
-    WriteFile(file, data, strlen(data), &written, NULL);
-    WriteFile(file, "\n", strlen("\n"), &written, NULL);
+    write(file, data, size ? size : strlen(data));
+    if (size == 0)
+        write(file, "\n", strlen("\n"));
+    assert(size == 0 || size == lseek(file, 0, SEEK_CUR));
 
-    if (size)
-    {
-        SetFilePointer(file, size, NULL, FILE_BEGIN);
-        SetEndOfFile(file);
-    }
-
-    CloseHandle(file);
+    close(file);
 }
 
 #define create_file(name) create_file_data(name, name, 0)
@@ -1109,8 +1119,8 @@ static void test_streamtable(void)
     LibmsiRecord *rec;
     LibmsiQuery *query;
     LibmsiSummaryInfo *hsi;
-    char file[MAX_PATH];
-    char buf[MAX_PATH];
+    char file[256];
+    char buf[256];
     unsigned size;
     unsigned r;
 
@@ -1204,7 +1214,7 @@ static void test_streamtable(void)
     r = libmsi_record_load_stream( rec, 2, "test.txt" );
     ok( r == LIBMSI_RESULT_SUCCESS, "Failed to add stream data to the record: %d\n", r);
 
-    DeleteFile("test.txt");
+    unlink("test.txt");
 
     query = NULL;
     r = libmsi_database_open_query( hdb,
@@ -1227,7 +1237,7 @@ static void test_streamtable(void)
     r = libmsi_record_load_stream( rec, 2, "test1.txt" );
     ok( r == LIBMSI_RESULT_SUCCESS, "Failed to add stream data to the record: %d\n", r);
 
-    DeleteFile("test1.txt");
+    unlink("test1.txt");
 
     query = NULL;
     r = libmsi_database_open_query( hdb,
@@ -1252,13 +1262,13 @@ static void test_streamtable(void)
     r = libmsi_query_fetch( query, &rec );
     ok( r == LIBMSI_RESULT_SUCCESS, "Failed to fetch record: %d\n", r);
 
-    size = MAX_PATH;
+    size = sizeof(file);
     r = libmsi_record_get_string( rec, 1, file, &size );
     ok( r == LIBMSI_RESULT_SUCCESS, "Failed to get string: %d\n", r);
     ok( !strcmp(file, "data"), "Expected 'data', got %s\n", file);
 
-    size = MAX_PATH;
-    memset(buf, 0, MAX_PATH);
+    size = sizeof(buf);
+    memset(buf, 0, sizeof(buf));
     r = libmsi_record_save_stream( rec, 2, buf, &size );
     ok( r == LIBMSI_RESULT_SUCCESS, "Failed to get stream: %d\n", r);
     ok( !strcmp(buf, "test.txt\n"), "Expected 'test.txt\\n', got %s\n", buf);
@@ -1278,13 +1288,13 @@ static void test_streamtable(void)
     r = libmsi_query_fetch( query, &rec );
     ok( r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
-    size = MAX_PATH;
+    size = sizeof(file);
     r = libmsi_record_get_string( rec, 1, file, &size );
     ok( r == LIBMSI_RESULT_SUCCESS, "Failed to get string: %d\n", r);
     ok( !strcmp(file, "data1"), "Expected 'data1', got %s\n", file);
 
-    size = MAX_PATH;
-    memset(buf, 0, MAX_PATH);
+    size = sizeof(buf);
+    memset(buf, 0, sizeof(buf));
     r = libmsi_record_save_stream( rec, 2, buf, &size );
     ok( r == LIBMSI_RESULT_SUCCESS, "Failed to get stream: %d\n", r);
     ok( !strcmp(buf, "test1.txt\n"), "Expected 'test1.txt\\n', got %s\n", buf);
@@ -1300,7 +1310,7 @@ static void test_streamtable(void)
     r = libmsi_record_load_stream( rec, 1, "test2.txt" );
     ok( r == LIBMSI_RESULT_SUCCESS, "Failed to add stream data to the record: %d\n", r);
 
-    DeleteFile("test2.txt");
+    unlink("test2.txt");
 
     query = NULL;
     r = libmsi_database_open_query( hdb,
@@ -1325,13 +1335,13 @@ static void test_streamtable(void)
     r = libmsi_query_fetch( query, &rec );
     ok( r == LIBMSI_RESULT_SUCCESS, "Failed to fetch record: %d\n", r);
 
-    size = MAX_PATH;
+    size = sizeof(file);
     r = libmsi_record_get_string( rec, 1, file, &size );
     ok( r == LIBMSI_RESULT_SUCCESS, "Failed to get string: %d\n", r);
     ok( !strcmp(file, "data1"), "Expected 'data1', got %s\n", file);
 
-    size = MAX_PATH;
-    memset(buf, 0, MAX_PATH);
+    size = sizeof(buf);
+    memset(buf, 0, sizeof(buf));
     r = libmsi_record_save_stream( rec, 2, buf, &size );
     ok( r == LIBMSI_RESULT_SUCCESS, "Failed to get stream: %d\n", r);
     todo_wine ok( !strcmp(buf, "test2.txt\n"), "Expected 'test2.txt\\n', got %s\n", buf);
@@ -1357,15 +1367,15 @@ static void test_streamtable(void)
     libmsi_query_close( query );
     libmsi_unref( query );
     libmsi_unref( hdb );
-    DeleteFile(msifile);
+    unlink(msifile);
 }
 
 static void test_binary(void)
 {
     LibmsiDatabase *hdb = 0;
     LibmsiRecord *rec;
-    char file[MAX_PATH];
-    char buf[MAX_PATH];
+    char file[256];
+    char buf[256];
     unsigned size;
     const char *sql;
     unsigned r;
@@ -1382,7 +1392,7 @@ static void test_binary(void)
     rec = libmsi_record_create( 1 );
     r = libmsi_record_load_stream( rec, 1, "test.txt" );
     ok( r == LIBMSI_RESULT_SUCCESS, "Failed to add stream data to the record: %d\n", r);
-    DeleteFile( "test.txt" );
+    unlink( "test.txt" );
 
     sql = "INSERT INTO `Binary` ( `Name`, `ID`, `Data` ) VALUES ( 'filename1', 1, ? )";
     r = run_query( hdb, rec, sql );
@@ -1405,13 +1415,13 @@ static void test_binary(void)
     r = do_query( hdb, sql, &rec );
     ok( r == LIBMSI_RESULT_SUCCESS, "SELECT query failed: %d\n", r );
 
-    size = MAX_PATH;
+    size = sizeof(file);
     r = libmsi_record_get_string( rec, 1, file, &size );
     ok( r == LIBMSI_RESULT_SUCCESS, "Failed to get string: %d\n", r );
     ok( !strcmp(file, "Binary.filename1.1"), "Expected 'Binary.filename1.1', got %s\n", file );
 
-    size = MAX_PATH;
-    memset( buf, 0, MAX_PATH );
+    size = sizeof(buf);
+    memset( buf, 0, sizeof(buf) );
     r = libmsi_record_save_stream( rec, 2, buf, &size );
     ok( r == LIBMSI_RESULT_SUCCESS, "Failed to get stream: %d\n", r );
     ok( !strcmp(buf, "test.txt\n"), "Expected 'test.txt\\n', got %s\n", buf );
@@ -1424,13 +1434,13 @@ static void test_binary(void)
     r = do_query( hdb, sql, &rec );
     ok( r == LIBMSI_RESULT_SUCCESS, "SELECT query failed: %d\n", r );
 
-    size = MAX_PATH;
+    size = sizeof(file);
     r = libmsi_record_get_string( rec, 1, file, &size );
     ok( r == LIBMSI_RESULT_SUCCESS, "Failed to get string: %d\n", r );
     ok( !strcmp(file, "filename1"), "Expected 'filename1', got %s\n", file );
 
-    size = MAX_PATH;
-    memset( buf, 0, MAX_PATH );
+    size = sizeof(buf);
+    memset( buf, 0, sizeof(buf) );
     r = libmsi_record_save_stream( rec, 3, buf, &size );
     ok( r == LIBMSI_RESULT_SUCCESS, "Failed to get stream: %d\n", r );
     ok( !strcmp(buf, "test.txt\n"), "Expected 'test.txt\\n', got %s\n", buf );
@@ -1441,7 +1451,7 @@ static void test_binary(void)
     r = libmsi_unref( hdb );
     ok( r == LIBMSI_RESULT_SUCCESS , "Failed to close database\n" );
 
-    DeleteFile( msifile );
+    unlink( msifile );
 }
 
 static void test_where_not_in_selected(void)
@@ -1460,58 +1470,58 @@ static void test_where_not_in_selected(void)
             "`Action` CHAR(64), "
             "`Condition` CHAR(64), "
             "`Sequence` LONG PRIMARY KEY `Sequence`)");
-    ok( r == S_OK, "Cannot create IESTable table: %d\n", r);
+    ok( r == LIBMSI_RESULT_SUCCESS, "Cannot create IESTable table: %d\n", r);
 
     r = run_query(hdb, 0,
             "CREATE TABLE `CATable` ("
             "`Action` CHAR(64), "
             "`Type` LONG PRIMARY KEY `Type`)");
-    ok( r == S_OK, "Cannot create CATable table: %d\n", r);
+    ok( r == LIBMSI_RESULT_SUCCESS, "Cannot create CATable table: %d\n", r);
 
     r = run_query(hdb, 0, "INSERT INTO `IESTable` "
             "( `Action`, `Condition`, `Sequence`) "
             "VALUES ( 'clean', 'cond4', 4)");
-    ok( r == S_OK, "cannot add entry to IESTable table:%d\n", r );
+    ok( r == LIBMSI_RESULT_SUCCESS, "cannot add entry to IESTable table:%d\n", r );
 
     r = run_query(hdb, 0, "INSERT INTO `IESTable` "
             "( `Action`, `Condition`, `Sequence`) "
             "VALUES ( 'depends', 'cond1', 1)");
-    ok( r == S_OK, "cannot add entry to IESTable table:%d\n", r );
+    ok( r == LIBMSI_RESULT_SUCCESS, "cannot add entry to IESTable table:%d\n", r );
 
     r = run_query(hdb, 0, "INSERT INTO `IESTable` "
             "( `Action`, `Condition`, `Sequence`) "
             "VALUES ( 'build', 'cond2', 2)");
-    ok( r == S_OK, "cannot add entry to IESTable table:%d\n", r );
+    ok( r == LIBMSI_RESULT_SUCCESS, "cannot add entry to IESTable table:%d\n", r );
 
     r = run_query(hdb, 0, "INSERT INTO `IESTable` "
             "( `Action`, `Condition`, `Sequence`) "
             "VALUES ( 'build2', 'cond6', 6)");
-    ok( r == S_OK, "cannot add entry to IESTable table:%d\n", r );
+    ok( r == LIBMSI_RESULT_SUCCESS, "cannot add entry to IESTable table:%d\n", r );
 
     r = run_query(hdb, 0, "INSERT INTO `IESTable` "
             "( `Action`, `Condition`, `Sequence`) "
             "VALUES ( 'build', 'cond3', 3)");
-    ok(r == S_OK, "cannot add entry to IESTable table:%d\n", r );
+    ok(r == LIBMSI_RESULT_SUCCESS, "cannot add entry to IESTable table:%d\n", r );
 
     r = run_query(hdb, 0, "INSERT INTO `CATable` "
             "( `Action`, `Type` ) "
             "VALUES ( 'build', 32)");
-    ok(r == S_OK, "cannot add entry to CATable table:%d\n", r );
+    ok(r == LIBMSI_RESULT_SUCCESS, "cannot add entry to CATable table:%d\n", r );
 
     r = run_query(hdb, 0, "INSERT INTO `CATable` "
             "( `Action`, `Type` ) "
             "VALUES ( 'depends', 64)");
-    ok(r == S_OK, "cannot add entry to CATable table:%d\n", r );
+    ok(r == LIBMSI_RESULT_SUCCESS, "cannot add entry to CATable table:%d\n", r );
 
     r = run_query(hdb, 0, "INSERT INTO `CATable` "
             "( `Action`, `Type` ) "
             "VALUES ( 'clean', 63)");
-    ok(r == S_OK, "cannot add entry to CATable table:%d\n", r );
+    ok(r == LIBMSI_RESULT_SUCCESS, "cannot add entry to CATable table:%d\n", r );
 
     r = run_query(hdb, 0, "INSERT INTO `CATable` "
             "( `Action`, `Type` ) "
             "VALUES ( 'build2', 34)");
-    ok(r == S_OK, "cannot add entry to CATable table:%d\n", r );
+    ok(r == LIBMSI_RESULT_SUCCESS, "cannot add entry to CATable table:%d\n", r );
 
     query = NULL;
     sql = "Select IESTable.Condition from CATable, IESTable where "
@@ -1538,7 +1548,7 @@ static void test_where_not_in_selected(void)
     libmsi_unref(query);
 
     libmsi_unref( hdb );
-    DeleteFile(msifile);
+    unlink(msifile);
 
 }
 
@@ -1551,7 +1561,7 @@ static void test_where(void)
     const char *sql;
     unsigned r;
     unsigned size;
-    char buf[MAX_PATH];
+    char buf[256];
     unsigned count;
 
     hdb = create_db();
@@ -1566,22 +1576,22 @@ static void test_where(void)
             "`VolumeLabel` CHAR(32), "
             "`Source` CHAR(72) "
             "PRIMARY KEY `DiskId`)" );
-    ok( r == S_OK, "cannot create Media table: %d\n", r );
+    ok( r == LIBMSI_RESULT_SUCCESS, "cannot create Media table: %d\n", r );
 
     r = run_query( hdb, 0, "INSERT INTO `Media` "
             "( `DiskId`, `LastSequence`, `DiskPrompt`, `Cabinet`, `VolumeLabel`, `Source` ) "
             "VALUES ( 1, 0, '', 'zero.cab', '', '' )" );
-    ok( r == S_OK, "cannot add file to the Media table: %d\n", r );
+    ok( r == LIBMSI_RESULT_SUCCESS, "cannot add file to the Media table: %d\n", r );
 
     r = run_query( hdb, 0, "INSERT INTO `Media` "
             "( `DiskId`, `LastSequence`, `DiskPrompt`, `Cabinet`, `VolumeLabel`, `Source` ) "
             "VALUES ( 2, 1, '', 'one.cab', '', '' )" );
-    ok( r == S_OK, "cannot add file to the Media table: %d\n", r );
+    ok( r == LIBMSI_RESULT_SUCCESS, "cannot add file to the Media table: %d\n", r );
 
     r = run_query( hdb, 0, "INSERT INTO `Media` "
             "( `DiskId`, `LastSequence`, `DiskPrompt`, `Cabinet`, `VolumeLabel`, `Source` ) "
             "VALUES ( 3, 2, '', 'two.cab', '', '' )" );
-    ok( r == S_OK, "cannot add file to the Media table: %d\n", r );
+    ok( r == LIBMSI_RESULT_SUCCESS, "cannot add file to the Media table: %d\n", r );
 
     sql = "SELECT * FROM `Media`";
     r = do_query(hdb, sql, &rec);
@@ -1614,7 +1624,7 @@ static void test_where(void)
     count = libmsi_record_get_field_count( rec );
     ok( count == 1, "Expected 1 record fields, got %d\n", count );
 
-    size = MAX_PATH;
+    size = sizeof(buf);
     r = libmsi_record_get_string( rec, 1, buf, &size );
     ok( r == LIBMSI_RESULT_SUCCESS, "failed to get record string: %d\n", r );
     ok( !strcmp( buf, "2" ),
@@ -1624,7 +1634,7 @@ static void test_where(void)
     r = libmsi_query_fetch(query, &rec);
     ok( r == LIBMSI_RESULT_SUCCESS, "failed to fetch query: %d\n", r );
 
-    size = MAX_PATH;
+    size = sizeof(buf);
     r = libmsi_record_get_string( rec, 1, buf, &size );
     ok( r == LIBMSI_RESULT_SUCCESS, "failed to get record string: %d\n", r );
     ok( !strcmp( buf, "3" ),
@@ -1690,10 +1700,8 @@ static void test_where(void)
     libmsi_unref(query);
 
     libmsi_unref( hdb );
-    DeleteFile(msifile);
+    unlink(msifile);
 }
-
-static char CURR_DIR[MAX_PATH];
 
 static const char test_data[] = "FirstPrimaryColumn\tSecondPrimaryColumn\tShortInt\tShortIntNullable\tLongInt\tLongIntNullable\tString\tLocalizableString\tLocalizableStringNullable\n"
                                 "s255\ti2\ti2\tI2\ti4\tI4\tS255\tS0\ts0\n"
@@ -1738,13 +1746,14 @@ static const char suminfo[] = "PropertyId\tValue\n"
 
 static void write_file(const char *filename, const char *data, int data_size)
 {
-    unsigned size;
+    int file;
 
-    HANDLE hf = CreateFile(filename, GENERIC_WRITE, 0, NULL,
-                           CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
+    file = open(filename, O_CREAT | O_WRONLY | O_BINARY, 0644);
+    if (file == -1)
+        return;
 
-    WriteFile(hf, data, data_size, &size, NULL);
-    CloseHandle(hf);
+    write(file, data, data_size);
+    close(file);
 }
 
 static unsigned add_table_to_db(LibmsiDatabase *hdb, const char *table_data)
@@ -1753,7 +1762,7 @@ static unsigned add_table_to_db(LibmsiDatabase *hdb, const char *table_data)
 
     write_file("temp_file", table_data, (strlen(table_data) - 1) * sizeof(char));
     r = libmsi_database_import(hdb, CURR_DIR, "temp_file");
-    DeleteFileA("temp_file");
+    unlink("temp_file");
 
     return r;
 }
@@ -1768,8 +1777,6 @@ static void test_suminfo_import(void)
     char str_value[50];
     int int_value;
     uint64_t ft_value;
-
-    GetCurrentDirectoryA(MAX_PATH, CURR_DIR);
 
     r = libmsi_database_open(msifile, LIBMSI_DB_OPEN_CREATE, &hdb);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %u\n", r);
@@ -1880,7 +1887,7 @@ static void test_suminfo_import(void)
 
     libmsi_unref(hsi);
     libmsi_unref(hdb);
-    DeleteFileA(msifile);
+    unlink(msifile);
 }
 
 static void test_msiimport(void)
@@ -1891,8 +1898,6 @@ static void test_msiimport(void)
     const char *sql;
     unsigned r, count;
     signed int i;
-
-    GetCurrentDirectoryA(MAX_PATH, CURR_DIR);
 
     r = libmsi_database_open(msifile, LIBMSI_DB_OPEN_CREATE, &hdb);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
@@ -2096,7 +2101,7 @@ static void test_msiimport(void)
     libmsi_query_close(query);
     libmsi_unref(query);
     libmsi_unref(hdb);
-    DeleteFileA(msifile);
+    unlink(msifile);
 }
 
 static const char bin_import_dat[] = "Name\tData\r\n"
@@ -2108,9 +2113,8 @@ static void test_binary_import(void)
 {
     LibmsiDatabase *hdb = 0;
     LibmsiRecord *rec;
-    char file[MAX_PATH];
-    char buf[MAX_PATH];
-    char path[MAX_PATH];
+    char file[256];
+    char buf[256];
     unsigned size;
     const char *sql;
     unsigned r;
@@ -2118,15 +2122,14 @@ static void test_binary_import(void)
     /* create files to import */
     write_file("bin_import.idt", bin_import_dat,
           (sizeof(bin_import_dat) - 1) * sizeof(char));
-    CreateDirectory("bin_import", NULL);
+    mkdir("bin_import", 0755);
     create_file_data("bin_import/filename1.ibd", "just some words", 15);
 
     /* import files into database */
     r = libmsi_database_open(msifile, LIBMSI_DB_OPEN_CREATE, &hdb);
     ok( r == LIBMSI_RESULT_SUCCESS , "Failed to open database\n");
 
-    GetCurrentDirectory(MAX_PATH, path);
-    r = libmsi_database_import(hdb, path, "bin_import.idt");
+    r = libmsi_database_import(hdb, CURR_DIR, "bin_import.idt");
     ok(r == LIBMSI_RESULT_SUCCESS , "Failed to import Binary table\n");
 
     /* read file from the Binary table */
@@ -2134,13 +2137,13 @@ static void test_binary_import(void)
     r = do_query(hdb, sql, &rec);
     ok(r == LIBMSI_RESULT_SUCCESS, "SELECT query failed: %d\n", r);
 
-    size = MAX_PATH;
+    size = sizeof(file);
     r = libmsi_record_get_string(rec, 1, file, &size);
     ok(r == LIBMSI_RESULT_SUCCESS, "Failed to get string: %d\n", r);
     ok(!strcmp(file, "filename1"), "Expected 'filename1', got %s\n", file);
 
-    size = MAX_PATH;
-    memset(buf, 0, MAX_PATH);
+    size = sizeof(buf);
+    memset(buf, 0, size);
     r = libmsi_record_save_stream(rec, 2, buf, &size);
     ok(r == LIBMSI_RESULT_SUCCESS, "Failed to get stream: %d\n", r);
     ok(!strcmp(buf, "just some words"),
@@ -2152,9 +2155,9 @@ static void test_binary_import(void)
     r = libmsi_unref(hdb);
     ok(r == LIBMSI_RESULT_SUCCESS , "Failed to close database\n");
 
-    DeleteFile("bin_import/filename1.ibd");
-    RemoveDirectory("bin_import");
-    DeleteFile("bin_import.idt");
+    unlink("bin_import/filename1.ibd");
+    rmdir("bin_import");
+    unlink("bin_import.idt");
 }
 
 static void test_markers(void)
@@ -2339,7 +2342,7 @@ static void test_markers(void)
     libmsi_unref(rec);
 
     libmsi_unref(hdb);
-    DeleteFileA(msifile);
+    unlink(msifile);
 }
 
 #define MY_NQUERIES 4000    /* Largest installer I've seen uses < 2k */
@@ -2358,9 +2361,9 @@ static void test_handle_limit(void)
 
     for (i=0; i<MY_NQUERIES; i++) {
         static char szQueryBuf[256] = "SELECT * from `_Tables`";
-        hqueries[i] = 0xdeadbeeb;
+        hqueries[i] = (void*)0xdeadbeeb;
         r = libmsi_database_open_query(hdb, szQueryBuf, &hqueries[i]);
-        if( r != LIBMSI_RESULT_SUCCESS || hqueries[i] == 0xdeadbeeb || 
+        if( r != LIBMSI_RESULT_SUCCESS || hqueries[i] == (void*)0xdeadbeeb || 
             hqueries[i] == 0 || (i && (hqueries[i] == hqueries[i-1])))
             break;
     }
@@ -2368,7 +2371,7 @@ static void test_handle_limit(void)
     ok( i == MY_NQUERIES, "problem opening queries\n");
 
     for (i=0; i<MY_NQUERIES; i++) {
-        if (hqueries[i] != 0 && hqueries[i] != 0xdeadbeeb) {
+        if (hqueries[i] != 0 && hqueries[i] != (void*)0xdeadbeeb) {
             libmsi_query_close(hqueries[i]);
             r = libmsi_unref(hqueries[i]);
             if (r != LIBMSI_RESULT_SUCCESS)
@@ -2469,6 +2472,7 @@ static const struct {
 
 static void generate_transform_manual(void)
 {
+#ifdef _WIN32
     IStorage *stg = NULL;
     IStream *stm;
     WCHAR name[0x20];
@@ -2506,6 +2510,7 @@ static void generate_transform_manual(void)
     }
 
     IStorage_Release(stg);
+#endif
 }
 
 static unsigned set_summary_info(LibmsiDatabase *hdb)
@@ -2557,7 +2562,7 @@ static LibmsiDatabase *create_package_db(const char *filename)
     LibmsiDatabase *hdb = 0;
     unsigned res;
 
-    DeleteFile(msifile);
+    unlink(msifile);
 
     /* create an empty database */
     res = libmsi_database_open(filename, LIBMSI_DB_OPEN_CREATE, &hdb );
@@ -2579,6 +2584,7 @@ static LibmsiDatabase *create_package_db(const char *filename)
 
 static void test_try_transform(void)
 {
+#ifdef _WIN32
     LibmsiDatabase *hdb;
     LibmsiQuery *hquery;
     LibmsiRecord *hrec;
@@ -2587,8 +2593,8 @@ static void test_try_transform(void)
     unsigned sz;
     char buffer[MAX_PATH];
 
-    DeleteFile(msifile);
-    DeleteFile(mstfile);
+    unlink(msifile);
+    unlink(mstfile);
 
     /* create the database */
     hdb = create_package_db(msifile);
@@ -2632,7 +2638,7 @@ static void test_try_transform(void)
     ok( r == LIBMSI_RESULT_SUCCESS , "Failed to commit database\n" );
 
     libmsi_unref( hdb );
-    DeleteFileA("testdata.bin");
+    unlink("testdata.bin");
 
     generate_transform_manual();
 
@@ -2768,22 +2774,23 @@ static void test_try_transform(void)
 
 error:
     libmsi_unref(hdb);
-    DeleteFile(msifile);
-    DeleteFile(mstfile);
+    unlink(msifile);
+    unlink(mstfile);
+#endif
 }
 
 struct join_res
 {
-    const char one[MAX_PATH];
-    const char two[MAX_PATH];
+    const char one[32];
+    const char two[32];
 };
 
 struct join_res_4col
 {
-    const char one[MAX_PATH];
-    const char two[MAX_PATH];
-    const char three[MAX_PATH];
-    const char four[MAX_PATH];
+    const char one[32];
+    const char two[32];
+    const char three[32];
+    const char four[32];
 };
 
 struct join_res_uint
@@ -2870,7 +2877,7 @@ static void test_join(void)
     LibmsiQuery *hquery;
     LibmsiRecord *hrec;
     const char *sql;
-    char buf[MAX_PATH];
+    char buf[256];
     unsigned r, count;
     unsigned size, i;
     bool data_correct;
@@ -3003,13 +3010,13 @@ static void test_join(void)
         count = libmsi_record_get_field_count( hrec );
         ok( count == 2, "Expected 2 record fields, got %d\n", count );
 
-        size = MAX_PATH;
+        size = sizeof(buf);
         r = libmsi_record_get_string( hrec, 1, buf, &size );
         ok( r == LIBMSI_RESULT_SUCCESS, "failed to get record string: %d\n", r );
         ok( !strcmp( buf, join_res_first[i].one ),
             "For (row %d, column 1) expected '%s', got %s\n", i, join_res_first[i].one, buf );
 
-        size = MAX_PATH;
+        size = sizeof(buf);
         r = libmsi_record_get_string( hrec, 2, buf, &size );
         ok( r == LIBMSI_RESULT_SUCCESS, "failed to get record string: %d\n", r );
         ok( !strcmp( buf, join_res_first[i].two ),
@@ -3061,13 +3068,13 @@ static void test_join(void)
         count = libmsi_record_get_field_count( hrec );
         ok( count == 2, "Expected 2 record fields, got %d\n", count );
 
-        size = MAX_PATH;
+        size = sizeof(buf);
         r = libmsi_record_get_string( hrec, 1, buf, &size );
         ok( r == LIBMSI_RESULT_SUCCESS, "failed to get record string: %d\n", r );
         if( strcmp( buf, join_res_second[i].one ))
             data_correct = false;
 
-        size = MAX_PATH;
+        size = sizeof(buf);
         r = libmsi_record_get_string( hrec, 2, buf, &size );
         ok( r == LIBMSI_RESULT_SUCCESS, "failed to get record string: %d\n", r );
         if( strcmp( buf, join_res_second[i].two ))
@@ -3102,13 +3109,13 @@ static void test_join(void)
         count = libmsi_record_get_field_count( hrec );
         ok( count == 2, "Expected 2 record fields, got %d\n", count );
 
-        size = MAX_PATH;
+        size = sizeof(buf);
         r = libmsi_record_get_string( hrec, 1, buf, &size );
         ok( r == LIBMSI_RESULT_SUCCESS, "failed to get record string: %d\n", r );
         if( strcmp( buf, join_res_third[i].one ) )
             data_correct = false;
 
-        size = MAX_PATH;
+        size = sizeof(buf);
         r = libmsi_record_get_string( hrec, 2, buf, &size );
         ok( r == LIBMSI_RESULT_SUCCESS, "failed to get record string: %d\n", r );
         if( strcmp( buf, join_res_third[i].two ) )
@@ -3143,13 +3150,13 @@ static void test_join(void)
         count = libmsi_record_get_field_count( hrec );
         ok( count == 2, "Expected 2 record fields, got %d\n", count );
 
-        size = MAX_PATH;
+        size = sizeof(buf);
         r = libmsi_record_get_string( hrec, 1, buf, &size );
         ok( r == LIBMSI_RESULT_SUCCESS, "failed to get record string: %d\n", r );
         if( strcmp( buf, join_res_fourth[i].one ))
             data_correct = false;
 
-        size = MAX_PATH;
+        size = sizeof(buf);
         r = libmsi_record_get_string( hrec, 2, buf, &size );
         ok( r == LIBMSI_RESULT_SUCCESS, "failed to get record string: %d\n", r );
         if( strcmp( buf, join_res_fourth[i].two ))
@@ -3184,13 +3191,13 @@ static void test_join(void)
         count = libmsi_record_get_field_count( hrec );
         ok( count == 2, "Expected 2 record fields, got %d\n", count );
 
-        size = MAX_PATH;
+        size = sizeof(buf);
         r = libmsi_record_get_string( hrec, 1, buf, &size );
         ok( r == LIBMSI_RESULT_SUCCESS, "failed to get record string: %d\n", r );
         if( strcmp( buf, join_res_fifth[i].one ))
             data_correct = false;
 
-        size = MAX_PATH;
+        size = sizeof(buf);
         r = libmsi_record_get_string( hrec, 2, buf, &size );
         ok( r == LIBMSI_RESULT_SUCCESS, "failed to get record string: %d\n", r );
         if( strcmp( buf, join_res_fifth[i].two ))
@@ -3224,13 +3231,13 @@ static void test_join(void)
         count = libmsi_record_get_field_count( hrec );
         ok( count == 2, "Expected 2 record fields, got %d\n", count );
 
-        size = MAX_PATH;
+        size = sizeof(buf);
         r = libmsi_record_get_string( hrec, 1, buf, &size );
         ok( r == LIBMSI_RESULT_SUCCESS, "failed to get record string: %d\n", r );
         if( strcmp( buf, join_res_sixth[i].one ))
             data_correct = false;
 
-        size = MAX_PATH;
+        size = sizeof(buf);
         r = libmsi_record_get_string( hrec, 2, buf, &size );
         ok( r == LIBMSI_RESULT_SUCCESS, "failed to get record string: %d\n", r );
         if( strcmp( buf, join_res_sixth[i].two ))
@@ -3265,13 +3272,13 @@ static void test_join(void)
         count = libmsi_record_get_field_count( hrec );
         ok( count == 2, "Expected 2 record fields, got %d\n", count );
 
-        size = MAX_PATH;
+        size = sizeof(buf);
         r = libmsi_record_get_string( hrec, 1, buf, &size );
         ok( r == LIBMSI_RESULT_SUCCESS, "failed to get record string: %d\n", r );
         if( strcmp( buf, join_res_seventh[i].one ))
             data_correct = false;
 
-        size = MAX_PATH;
+        size = sizeof(buf);
         r = libmsi_record_get_string( hrec, 2, buf, &size );
         ok( r == LIBMSI_RESULT_SUCCESS, "failed to get record string: %d\n", r );
         if( strcmp( buf, join_res_seventh[i].two ))
@@ -3303,13 +3310,13 @@ static void test_join(void)
         count = libmsi_record_get_field_count( hrec );
         ok( count == 2, "Expected 2 record fields, got %d\n", count );
 
-        size = MAX_PATH;
+        size = sizeof(buf);
         r = libmsi_record_get_string( hrec, 1, buf, &size );
         ok( r == LIBMSI_RESULT_SUCCESS, "failed to get record string: %d\n", r );
         if( strcmp( buf, join_res_eighth[i].one ))
             data_correct = false;
 
-        size = MAX_PATH;
+        size = sizeof(buf);
         r = libmsi_record_get_string( hrec, 2, buf, &size );
         ok( r == LIBMSI_RESULT_SUCCESS, "failed to get record string: %d\n", r );
         if( strcmp( buf, join_res_eighth[i].four ))
@@ -3340,25 +3347,25 @@ static void test_join(void)
         count = libmsi_record_get_field_count( hrec );
         ok( count == 4, "Expected 4 record fields, got %d\n", count );
 
-        size = MAX_PATH;
+        size = sizeof(buf);
         r = libmsi_record_get_string( hrec, 1, buf, &size );
         ok( r == LIBMSI_RESULT_SUCCESS, "failed to get record string: %d\n", r );
         if( strcmp( buf, join_res_eighth[i].one ))
             data_correct = false;
 
-        size = MAX_PATH;
+        size = sizeof(buf);
         r = libmsi_record_get_string( hrec, 2, buf, &size );
         ok( r == LIBMSI_RESULT_SUCCESS, "failed to get record string: %d\n", r );
         if( strcmp( buf, join_res_eighth[i].two ))
             data_correct = false;
 
-        size = MAX_PATH;
+        size = sizeof(buf);
         r = libmsi_record_get_string( hrec, 3, buf, &size );
         ok( r == LIBMSI_RESULT_SUCCESS, "failed to get record string: %d\n", r );
         if( strcmp( buf, join_res_eighth[i].three ))
             data_correct = false;
 
-        size = MAX_PATH;
+        size = sizeof(buf);
         r = libmsi_record_get_string( hrec, 4, buf, &size );
         ok( r == LIBMSI_RESULT_SUCCESS, "failed to get record string: %d\n", r );
         if( strcmp( buf, join_res_eighth[i].four ))
@@ -3443,7 +3450,7 @@ static void test_join(void)
         "Expected LIBMSI_RESULT_BAD_QUERY_SYNTAX, got %d\n", r );
 
     libmsi_unref(hdb);
-    DeleteFile(msifile);
+    unlink(msifile);
 }
 
 static void test_temporary_table(void)
@@ -3571,7 +3578,7 @@ static void test_temporary_table(void)
 
     libmsi_unref( hdb );
 
-    DeleteFile(msifile);
+    unlink(msifile);
 }
 
 static void test_alter(void)
@@ -3748,7 +3755,7 @@ static void test_alter(void)
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     libmsi_unref( hdb );
-    DeleteFile(msifile);
+    unlink(msifile);
 }
 
 static void test_integers(void)
@@ -3880,8 +3887,8 @@ static void test_integers(void)
     r = libmsi_unref(hdb);
     ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_unref failed\n");
 
-    r = DeleteFile(msifile);
-    ok(r == true, "file didn't exist after commit\n");
+    r = unlink(msifile);
+    ok(r == 0, "file didn't exist after commit\n");
 }
 
 static void test_update(void)
@@ -3889,7 +3896,7 @@ static void test_update(void)
     LibmsiDatabase *hdb = 0;
     LibmsiQuery *query = 0;
     LibmsiRecord *rec = 0;
-    char result[MAX_PATH];
+    char result[256];
     const char *sql;
     unsigned size;
     unsigned r;
@@ -3999,7 +4006,7 @@ static void test_update(void)
     r = libmsi_query_fetch(query, &rec);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
-    size = MAX_PATH;
+    size = sizeof(result);
     r = libmsi_record_get_string(rec, 1, result, &size);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     ok(!strcmp(result, "this is text"), "Expected `this is text`, got %s\n", result);
@@ -4009,7 +4016,7 @@ static void test_update(void)
     r = libmsi_query_fetch(query, &rec);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
-    size = MAX_PATH;
+    size = sizeof(result);
     r = libmsi_record_get_string(rec, 1, result, &size);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     ok(!strlen(result), "Expected an empty string, got %s\n", result);
@@ -4047,7 +4054,7 @@ static void test_update(void)
     r = libmsi_query_fetch(query, &rec);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
-    size = MAX_PATH;
+    size = sizeof(result);
     r = libmsi_record_get_string(rec, 1, result, &size);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     ok(!strcmp(result, "this is text"), "Expected `this is text`, got %s\n", result);
@@ -4057,7 +4064,7 @@ static void test_update(void)
     r = libmsi_query_fetch(query, &rec);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
-    size = MAX_PATH;
+    size = sizeof(result);
     r = libmsi_record_get_string(rec, 1, result, &size);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     ok(!strlen(result), "Expected an empty string, got %s\n", result);
@@ -4095,7 +4102,7 @@ static void test_update(void)
     r = libmsi_query_fetch(query, &rec);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
-    size = MAX_PATH;
+    size = sizeof(result);
     r = libmsi_record_get_string(rec, 1, result, &size);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     ok(!strcmp(result, "this is text"), "Expected `this is text`, got %s\n", result);
@@ -4105,7 +4112,7 @@ static void test_update(void)
     r = libmsi_query_fetch(query, &rec);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
-    size = MAX_PATH;
+    size = sizeof(result);
     r = libmsi_record_get_string(rec, 1, result, &size);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     ok(!strcmp(result, "this is text"), "Expected `this is text`, got %s\n", result);
@@ -4115,7 +4122,7 @@ static void test_update(void)
     r = libmsi_query_fetch(query, &rec);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
-    size = MAX_PATH;
+    size = sizeof(result);
     r = libmsi_record_get_string(rec, 1, result, &size);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     ok(!strcmp(result, "this is text"), "Expected `this is text`, got %s\n", result);
@@ -4202,7 +4209,7 @@ static void test_update(void)
     r = libmsi_unref(hdb);
     ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_unref failed\n");
 
-    DeleteFile(msifile);
+    unlink(msifile);
 }
 
 static void test_special_tables(void)
@@ -4396,7 +4403,7 @@ static void test_tables_order(void)
     r = libmsi_unref(hdb);
     ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_unref failed\n");
 
-    DeleteFile(msifile);
+    unlink(msifile);
 }
 
 static void test_rows_order(void)
@@ -4534,7 +4541,7 @@ static void test_rows_order(void)
     r = libmsi_unref(hdb);
     ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_unref failed\n");
 
-    DeleteFile(msifile);
+    unlink(msifile);
 }
 
 static void test_collation(void)
@@ -4687,7 +4694,7 @@ static void test_collation(void)
     r = libmsi_unref(hdb);
     ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_unref failed\n");
 
-    DeleteFile(msifile);
+    unlink(msifile);
 }
 
 static void test_select_markers(void)
@@ -4699,30 +4706,30 @@ static void test_select_markers(void)
     const char *sql;
     unsigned r;
     unsigned size;
-    char buf[MAX_PATH];
+    char buf[256];
 
     hdb = create_db();
     ok( hdb, "failed to create db\n");
 
     r = run_query(hdb, 0,
             "CREATE TABLE `Table` (`One` CHAR(72), `Two` CHAR(72), `Three` SHORT PRIMARY KEY `One`, `Two`, `Three`)");
-    ok(r == S_OK, "cannot create table: %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "cannot create table: %d\n", r);
 
     r = run_query(hdb, 0, "INSERT INTO `Table` "
             "( `One`, `Two`, `Three` ) VALUES ( 'apple', 'one', 1 )");
-    ok(r == S_OK, "cannot add file to the Media table: %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "cannot add file to the Media table: %d\n", r);
 
     r = run_query(hdb, 0, "INSERT INTO `Table` "
             "( `One`, `Two`, `Three` ) VALUES ( 'apple', 'two', 1 )");
-    ok(r == S_OK, "cannot add file to the Media table: %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "cannot add file to the Media table: %d\n", r);
 
     r = run_query(hdb, 0, "INSERT INTO `Table` "
             "( `One`, `Two`, `Three` ) VALUES ( 'apple', 'two', 2 )");
-    ok(r == S_OK, "cannot add file to the Media table: %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "cannot add file to the Media table: %d\n", r);
 
     r = run_query(hdb, 0, "INSERT INTO `Table` "
             "( `One`, `Two`, `Three` ) VALUES ( 'banana', 'three', 3 )");
-    ok(r == S_OK, "cannot add file to the Media table: %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "cannot add file to the Media table: %d\n", r);
 
     rec = libmsi_record_create(2);
     libmsi_record_set_string(rec, 1, "apple");
@@ -4739,12 +4746,12 @@ static void test_select_markers(void)
     r = libmsi_query_fetch(query, &res);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
-    size = MAX_PATH;
+    size = sizeof(buf);
     r = libmsi_record_get_string(res, 1, buf, &size);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     ok(!strcmp(buf, "apple"), "Expected apple, got %s\n", buf);
 
-    size = MAX_PATH;
+    size = sizeof(buf);
     r = libmsi_record_get_string(res, 2, buf, &size);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     ok(!strcmp(buf, "two"), "Expected two, got %s\n", buf);
@@ -4757,12 +4764,12 @@ static void test_select_markers(void)
     r = libmsi_query_fetch(query, &res);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
-    size = MAX_PATH;
+    size = sizeof(buf);
     r = libmsi_record_get_string(res, 1, buf, &size);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     ok(!strcmp(buf, "apple"), "Expected apple, got %s\n", buf);
 
-    size = MAX_PATH;
+    size = sizeof(buf);
     r = libmsi_record_get_string(res, 2, buf, &size);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     ok(!strcmp(buf, "two"), "Expected two, got %s\n", buf);
@@ -4793,12 +4800,12 @@ static void test_select_markers(void)
     r = libmsi_query_fetch(query, &res);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
-    size = MAX_PATH;
+    size = sizeof(buf);
     r = libmsi_record_get_string(res, 1, buf, &size);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     ok(!strcmp(buf, "apple"), "Expected apple, got %s\n", buf);
 
-    size = MAX_PATH;
+    size = sizeof(buf);
     r = libmsi_record_get_string(res, 2, buf, &size);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     ok(!strcmp(buf, "two"), "Expected two, got %s\n", buf);
@@ -4811,12 +4818,12 @@ static void test_select_markers(void)
     r = libmsi_query_fetch(query, &res);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
-    size = MAX_PATH;
+    size = sizeof(buf);
     r = libmsi_record_get_string(res, 1, buf, &size);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     ok(!strcmp(buf, "banana"), "Expected banana, got %s\n", buf);
 
-    size = MAX_PATH;
+    size = sizeof(buf);
     r = libmsi_record_get_string(res, 2, buf, &size);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     ok(!strcmp(buf, "three"), "Expected three, got %s\n", buf);
@@ -4833,7 +4840,7 @@ static void test_select_markers(void)
     libmsi_query_close(query);
     libmsi_unref(query);
     libmsi_unref(hdb);
-    DeleteFile(msifile);
+    unlink(msifile);
 }
 
 static const WCHAR data10[] = { /* MOO */
@@ -4867,6 +4874,7 @@ static const WCHAR data13[] = { /* _StringPool */
 
 static void test_stringtable(void)
 {
+#ifdef _WIN32
     LibmsiDatabase *hdb = 0;
     LibmsiQuery *hquery = 0;
     LibmsiRecord *hrec = 0;
@@ -4886,7 +4894,7 @@ static void test_stringtable(void)
     static const WCHAR moo[] = {0x4840, 0x3e16, 0x4818, 0}; /* MOO */
     static const WCHAR aar[] = {0x4840, 0x3a8a, 0x481b, 0}; /* AAR */
 
-    DeleteFile(msifile);
+    unlink(msifile);
 
     r = libmsi_database_open(msifile, LIBMSI_DB_OPEN_CREATE, &hdb);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
@@ -5082,7 +5090,8 @@ static void test_stringtable(void)
     hr = IStorage_Release(stg);
     ok(hr == S_OK, "Expected S_OK, got %d\n", hr);
 
-    DeleteFileA(msifile);
+    unlink(msifile);
+#endif
 }
 
 static const WCHAR _Tables[] = {0x4840, 0x3f7f, 0x4164, 0x422f, 0x4836, 0};
@@ -5105,6 +5114,7 @@ static const struct {
     {_StringPool, data14, sizeof data14},
 };
 
+#ifdef _WIN32
 static void enum_stream_names(IStorage *stg)
 {
     IEnumSTATSTG *stgenum = NULL;
@@ -5162,15 +5172,17 @@ static void enum_stream_names(IStorage *stg)
 
     IEnumSTATSTG_Release(stgenum);
 }
+#endif
 
 static void test_defaultdatabase(void)
 {
+#ifdef _WIN32
     unsigned r;
     HRESULT hr;
     LibmsiDatabase *hdb;
     IStorage *stg = NULL;
 
-    DeleteFile(msifile);
+    unlink(msifile);
 
     r = libmsi_database_open(msifile, LIBMSI_DB_OPEN_CREATE, &hdb);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
@@ -5187,7 +5199,8 @@ static void test_defaultdatabase(void)
     enum_stream_names(stg);
 
     IStorage_Release(stg);
-    DeleteFileA(msifile);
+    unlink(msifile);
+#endif
 }
 
 static void test_order(void)
@@ -5195,7 +5208,7 @@ static void test_order(void)
     LibmsiDatabase *hdb;
     LibmsiQuery *hquery;
     LibmsiRecord *hrec;
-    char buffer[MAX_PATH];
+    char buffer[256];
     const char *sql;
     unsigned r, sz;
     int val;
@@ -5456,11 +5469,11 @@ static void test_deleterow(void)
     LibmsiQuery *hquery;
     LibmsiRecord *hrec;
     const char *sql;
-    char buf[MAX_PATH];
+    char buf[256];
     unsigned r;
     unsigned size;
 
-    DeleteFile(msifile);
+    unlink(msifile);
 
     r = libmsi_database_open(msifile, LIBMSI_DB_OPEN_CREATE, &hdb);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
@@ -5498,7 +5511,7 @@ static void test_deleterow(void)
     r = libmsi_query_fetch(hquery, &hrec);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
-    size = MAX_PATH;
+    size = sizeof(buf);
     r = libmsi_record_get_string(hrec, 1, buf, &size);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     ok(!strcmp(buf, "two"), "Expected two, got %s\n", buf);
@@ -5511,7 +5524,7 @@ static void test_deleterow(void)
     libmsi_query_close(hquery);
     libmsi_unref(hquery);
     libmsi_unref(hdb);
-    DeleteFileA(msifile);
+    unlink(msifile);
 }
 
 static const char import_dat[] = "A\n"
@@ -5525,11 +5538,11 @@ static void test_quotes(void)
     LibmsiQuery *hquery;
     LibmsiRecord *hrec;
     const char *sql;
-    char buf[MAX_PATH];
+    char buf[256];
     unsigned r;
     unsigned size;
 
-    DeleteFile(msifile);
+    unlink(msifile);
 
     r = libmsi_database_open(msifile, LIBMSI_DB_OPEN_CREATE, &hdb);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
@@ -5579,7 +5592,7 @@ static void test_quotes(void)
     r = libmsi_query_fetch(hquery, &hrec);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
-    size = MAX_PATH;
+    size = sizeof(buf);
     r = libmsi_record_get_string(hrec, 1, buf, &size);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     ok(!strcmp(buf, "This is a \"string\" ok"),
@@ -5598,7 +5611,7 @@ static void test_quotes(void)
     r = libmsi_database_import(hdb, CURR_DIR, "import.idt");
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
-    DeleteFileA("import.idt");
+    unlink("import.idt");
 
     sql = "SELECT * FROM `Table`";
     r = libmsi_database_open_query(hdb, sql, &hquery);
@@ -5610,7 +5623,7 @@ static void test_quotes(void)
     r = libmsi_query_fetch(hquery, &hrec);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
-    size = MAX_PATH;
+    size = sizeof(buf);
     r = libmsi_record_get_string(hrec, 1, buf, &size);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     ok(!strcmp(buf, "This is a new 'string' ok"),
@@ -5624,7 +5637,7 @@ static void test_quotes(void)
     libmsi_query_close(hquery);
     libmsi_unref(hquery);
     libmsi_unref(hdb);
-    DeleteFileA(msifile);
+    unlink(msifile);
 }
 
 static void test_carriagereturn(void)
@@ -5633,11 +5646,11 @@ static void test_carriagereturn(void)
     LibmsiQuery *hquery;
     LibmsiRecord *hrec;
     const char *sql;
-    char buf[MAX_PATH];
+    char buf[256];
     unsigned r;
     unsigned size;
 
-    DeleteFile(msifile);
+    unlink(msifile);
 
     r = libmsi_database_open(msifile, LIBMSI_DB_OPEN_CREATE, &hdb);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
@@ -5778,7 +5791,7 @@ static void test_carriagereturn(void)
     r = libmsi_query_fetch(hquery, &hrec);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
-    size = MAX_PATH;
+    size = sizeof(buf);
     r = libmsi_record_get_string(hrec, 1, buf, &size);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     ok(!strcmp(buf, "\rOne"), "Expected \"\\rOne\", got \"%s\"\n", buf);
@@ -5788,7 +5801,7 @@ static void test_carriagereturn(void)
     r = libmsi_query_fetch(hquery, &hrec);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
-    size = MAX_PATH;
+    size = sizeof(buf);
     r = libmsi_record_get_string(hrec, 1, buf, &size);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     ok(!strcmp(buf, "Tw\ro"), "Expected \"Tw\\ro\", got \"%s\"\n", buf);
@@ -5798,7 +5811,7 @@ static void test_carriagereturn(void)
     r = libmsi_query_fetch(hquery, &hrec);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
-    size = MAX_PATH;
+    size = sizeof(buf);
     r = libmsi_record_get_string(hrec, 1, buf, &size);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     ok(!strcmp(buf, "Three\r"), "Expected \"Three\r\", got \"%s\"\n", buf);
@@ -5812,7 +5825,7 @@ static void test_carriagereturn(void)
     libmsi_unref(hquery);
 
     libmsi_unref(hdb);
-    DeleteFileA(msifile);
+    unlink(msifile);
 }
 
 static void test_noquotes(void)
@@ -5821,11 +5834,11 @@ static void test_noquotes(void)
     LibmsiQuery *hquery;
     LibmsiRecord *hrec;
     const char *sql;
-    char buf[MAX_PATH];
+    char buf[256];
     unsigned r;
     unsigned size;
 
-    DeleteFile(msifile);
+    unlink(msifile);
 
     r = libmsi_database_open(msifile, LIBMSI_DB_OPEN_CREATE, &hdb);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
@@ -5855,7 +5868,7 @@ static void test_noquotes(void)
     r = libmsi_query_fetch(hquery, &hrec);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
-    size = MAX_PATH;
+    size = sizeof(buf);
     r = libmsi_record_get_string(hrec, 1, buf, &size);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     ok(!strcmp(buf, "Table"), "Expected \"Table\", got \"%s\"\n", buf);
@@ -5865,7 +5878,7 @@ static void test_noquotes(void)
     r = libmsi_query_fetch(hquery, &hrec);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
-    size = MAX_PATH;
+    size = sizeof(buf);
     r = libmsi_record_get_string(hrec, 1, buf, &size);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     ok(!strcmp(buf, "Table2"), "Expected \"Table2\", got \"%s\"\n", buf);
@@ -5875,7 +5888,7 @@ static void test_noquotes(void)
     r = libmsi_query_fetch(hquery, &hrec);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
-    size = MAX_PATH;
+    size = sizeof(buf);
     r = libmsi_record_get_string(hrec, 1, buf, &size);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     ok(!strcmp(buf, "Table3"), "Expected \"Table3\", got \"%s\"\n", buf);
@@ -5897,7 +5910,7 @@ static void test_noquotes(void)
     r = libmsi_query_fetch(hquery, &hrec);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
-    size = MAX_PATH;
+    size = sizeof(buf);
     r = libmsi_record_get_string(hrec, 1, buf, &size);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     ok(!strcmp(buf, "Table"), "Expected \"Table\", got \"%s\"\n", buf);
@@ -5905,7 +5918,7 @@ static void test_noquotes(void)
     r = libmsi_record_get_integer(hrec, 2);
     ok(r == 1, "Expected 1, got %d\n", r);
 
-    size = MAX_PATH;
+    size = sizeof(buf);
     r = libmsi_record_get_string(hrec, 3, buf, &size);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     ok(!strcmp(buf, "A"), "Expected \"A\", got \"%s\"\n", buf);
@@ -5915,7 +5928,7 @@ static void test_noquotes(void)
     r = libmsi_query_fetch(hquery, &hrec);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
-    size = MAX_PATH;
+    size = sizeof(buf);
     r = libmsi_record_get_string(hrec, 1, buf, &size);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     ok(!strcmp(buf, "Table2"), "Expected \"Table2\", got \"%s\"\n", buf);
@@ -5923,7 +5936,7 @@ static void test_noquotes(void)
     r = libmsi_record_get_integer(hrec, 2);
     ok(r == 1, "Expected 1, got %d\n", r);
 
-    size = MAX_PATH;
+    size = sizeof(buf);
     r = libmsi_record_get_string(hrec, 3, buf, &size);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     ok(!strcmp(buf, "A"), "Expected \"A\", got \"%s\"\n", buf);
@@ -5933,7 +5946,7 @@ static void test_noquotes(void)
     r = libmsi_query_fetch(hquery, &hrec);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
-    size = MAX_PATH;
+    size = sizeof(buf);
     r = libmsi_record_get_string(hrec, 1, buf, &size);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     ok(!strcmp(buf, "Table3"), "Expected \"Table3\", got \"%s\"\n", buf);
@@ -5941,7 +5954,7 @@ static void test_noquotes(void)
     r = libmsi_record_get_integer(hrec, 2);
     ok(r == 1, "Expected 1, got %d\n", r);
 
-    size = MAX_PATH;
+    size = sizeof(buf);
     r = libmsi_record_get_string(hrec, 3, buf, &size);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     ok(!strcmp(buf, "A"), "Expected \"A\", got \"%s\"\n", buf);
@@ -6000,7 +6013,7 @@ static void test_noquotes(void)
     r = libmsi_query_fetch(hquery, &hrec);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
-    size = MAX_PATH;
+    size = sizeof(buf);
     r = libmsi_record_get_string(hrec, 1, buf, &size);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     ok(!strcmp(buf, "hi"), "Expected \"hi\", got \"%s\"\n", buf);
@@ -6013,30 +6026,28 @@ static void test_noquotes(void)
     libmsi_query_close(hquery);
     libmsi_unref(hquery);
     libmsi_unref(hdb);
-    DeleteFileA(msifile);
+    unlink(msifile);
 }
 
 static void read_file_data(const char *filename, char *buffer)
 {
-    HANDLE file;
-    unsigned read;
+    int fd;
 
-    file = CreateFileA( filename, GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, 0, NULL );
-    ZeroMemory(buffer, MAX_PATH);
-    ReadFile(file, buffer, MAX_PATH, &read, NULL);
-    CloseHandle(file);
+    fd = open( filename, O_RDONLY | O_BINARY );
+    memset(buffer, 0, 512);
+    read(fd, buffer, 512);
+    close(fd);
 }
 
 static void test_forcecodepage(void)
 {
     LibmsiDatabase *hdb;
     const char *sql;
-    char buffer[MAX_PATH];
+    char buffer[512];
     unsigned r;
     int fd;
 
-    DeleteFile(msifile);
-    GetCurrentDirectoryA(MAX_PATH, CURR_DIR);
+    unlink(msifile);
 
     r = libmsi_database_open(msifile, LIBMSI_DB_OPEN_CREATE, &hdb);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
@@ -6102,12 +6113,13 @@ static void test_forcecodepage(void)
     ok(r == LIBMSI_RESULT_FUNCTION_FAILED, "Expected LIBMSI_RESULT_FUNCTION_FAILED, got %d\n", r);
 
     libmsi_unref(hdb);
-    DeleteFileA(msifile);
-    DeleteFileA("forcecodepage.idt");
+    unlink(msifile);
+    unlink("forcecodepage.idt");
 }
 
 static bool create_storage(const char *name)
 {
+#ifdef _WIN32
     WCHAR nameW[MAX_PATH];
     IStorage *stg;
     IStream *stm;
@@ -6135,10 +6147,12 @@ done:
     IStorage_Release(stg);
 
     return res;
+#endif
 }
 
 static void test_storages_table(void)
 {
+#ifdef _WIN32
     LibmsiDatabase *hdb;
     LibmsiQuery *hquery;
     LibmsiRecord *hrec;
@@ -6187,7 +6201,7 @@ static void test_storages_table(void)
     r = libmsi_record_load_stream(hrec, 2, "storage.bin");
     ok(r == LIBMSI_RESULT_SUCCESS, "Failed to add stream data to the hrecord: %d\n", r);
 
-    DeleteFileA("storage.bin");
+    unlink("storage.bin");
 
     sql = "INSERT INTO `_Storages` (`Name`, `Data`) VALUES (?, ?)";
     r = libmsi_database_open_query(hdb, sql, &hquery);
@@ -6210,12 +6224,12 @@ static void test_storages_table(void)
     r = libmsi_query_fetch(hquery, &hrec);
     ok(r == LIBMSI_RESULT_SUCCESS, "Failed to fetch hrecord: %d\n", r);
 
-    size = MAX_PATH;
+    size = sizeof(file);
     r = libmsi_record_get_string(hrec, 1, file, &size);
     ok(r == LIBMSI_RESULT_SUCCESS, "Failed to get string: %d\n", r);
     ok(!strcmp(file, "stgname"), "Expected \"stgname\", got \"%s\"\n", file);
 
-    size = MAX_PATH;
+    size = sizeof(buf);
     strcpy(buf, "apple");
     r = libmsi_record_save_stream(hrec, 2, buf, &size);
     ok(r == LIBMSI_RESULT_INVALID_DATA, "Expected ERROR_INVALID_DATA, got %d\n", r);
@@ -6259,7 +6273,8 @@ static void test_storages_table(void)
     IStorage_Release(inner);
 
     IStorage_Release(stg);
-    DeleteFileA(msifile);
+    unlink(msifile);
+#endif
 }
 
 static void test_droptable(void)
@@ -6267,7 +6282,7 @@ static void test_droptable(void)
     LibmsiDatabase *hdb;
     LibmsiQuery *hquery;
     LibmsiRecord *hrec;
-    char buf[MAX_PATH];
+    char buf[200];
     const char *sql;
     unsigned size;
     unsigned r;
@@ -6292,7 +6307,7 @@ static void test_droptable(void)
     r = libmsi_query_fetch(hquery, &hrec);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
-    size = MAX_PATH;
+    size = sizeof(buf);
     r = libmsi_record_get_string(hrec, 1, buf, &size);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     ok(!strcmp(buf, "One"), "Expected \"One\", got \"%s\"\n", buf);
@@ -6310,7 +6325,7 @@ static void test_droptable(void)
     r = libmsi_query_fetch(hquery, &hrec);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
-    size = MAX_PATH;
+    size = sizeof(buf);
     r = libmsi_record_get_string(hrec, 1, buf, &size);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     ok(!strcmp(buf, "One"), "Expected \"One\", got \"%s\"\n", buf);
@@ -6318,7 +6333,7 @@ static void test_droptable(void)
     r = libmsi_record_get_integer(hrec, 2);
     ok(r == 1, "Expected 1, got %d\n", r);
 
-    size = MAX_PATH;
+    size = sizeof(buf);
     r = libmsi_record_get_string(hrec, 3, buf, &size);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     ok(!strcmp(buf, "A"), "Expected \"A\", got \"%s\"\n", buf);
@@ -6404,7 +6419,7 @@ static void test_droptable(void)
     r = libmsi_query_fetch(hquery, &hrec);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
-    size = MAX_PATH;
+    size = sizeof(buf);
     r = libmsi_record_get_string(hrec, 1, buf, &size);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     ok(!strcmp(buf, "One"), "Expected \"One\", got \"%s\"\n", buf);
@@ -6422,7 +6437,7 @@ static void test_droptable(void)
     r = libmsi_query_fetch(hquery, &hrec);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
-    size = MAX_PATH;
+    size = sizeof(buf);
     r = libmsi_record_get_string(hrec, 1, buf, &size);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     ok(!strcmp(buf, "One"), "Expected \"One\", got \"%s\"\n", buf);
@@ -6430,7 +6445,7 @@ static void test_droptable(void)
     r = libmsi_record_get_integer(hrec, 2);
     ok(r == 1, "Expected 1, got %d\n", r);
 
-    size = MAX_PATH;
+    size = sizeof(buf);
     r = libmsi_record_get_string(hrec, 3, buf, &size);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     ok(!strcmp(buf, "B"), "Expected \"B\", got \"%s\"\n", buf);
@@ -6440,7 +6455,7 @@ static void test_droptable(void)
     r = libmsi_query_fetch(hquery, &hrec);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
-    size = MAX_PATH;
+    size = sizeof(buf);
     r = libmsi_record_get_string(hrec, 1, buf, &size);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     ok(!strcmp(buf, "One"), "Expected \"One\", got \"%s\"\n", buf);
@@ -6448,7 +6463,7 @@ static void test_droptable(void)
     r = libmsi_record_get_integer(hrec, 2);
     ok(r == 2, "Expected 2, got %d\n", r);
 
-    size = MAX_PATH;
+    size = sizeof(buf);
     r = libmsi_record_get_string(hrec, 3, buf, &size);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     ok(!strcmp(buf, "C"), "Expected \"C\", got \"%s\"\n", buf);
@@ -6480,7 +6495,7 @@ static void test_droptable(void)
     ok(r == LIBMSI_RESULT_NO_MORE_ITEMS, "Expected LIBMSI_RESULT_NO_MORE_ITEMS, got %d\n", r);
 
     libmsi_unref(hdb);
-    DeleteFileA(msifile);
+    unlink(msifile);
 }
 
 static void test_dbmerge(void)
@@ -6489,7 +6504,7 @@ static void test_dbmerge(void)
     LibmsiDatabase *href;
     LibmsiQuery *hquery;
     LibmsiRecord *hrec;
-    char buf[MAX_PATH];
+    char buf[100];
     const char *sql;
     unsigned size;
     unsigned r;
@@ -6799,7 +6814,7 @@ static void test_dbmerge(void)
     r = do_query(hdb, sql, &hrec);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
-    size = MAX_PATH;
+    size = sizeof(buf);
     r = libmsi_record_get_string(hrec, 1, buf, &size);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     ok(!strcmp(buf, "One"), "Expected \"One\", got \"%s\"\n", buf);
@@ -6816,12 +6831,12 @@ static void test_dbmerge(void)
     r = libmsi_query_get_column_info(hquery, LIBMSI_COL_INFO_NAMES, &hrec);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
-    size = MAX_PATH;
+    size = sizeof(buf);
     r = libmsi_record_get_string(hrec, 1, buf, &size);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     ok(!strcmp(buf, "Table"), "Expected \"Table\", got \"%s\"\n", buf);
 
-    size = MAX_PATH;
+    size = sizeof(buf);
     r = libmsi_record_get_string(hrec, 2, buf, &size);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     ok(!strcmp(buf, "NumRowMergeConflicts"),
@@ -6833,12 +6848,12 @@ static void test_dbmerge(void)
     r = libmsi_query_get_column_info(hquery, LIBMSI_COL_INFO_TYPES, &hrec);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
-    size = MAX_PATH;
+    size = sizeof(buf);
     r = libmsi_record_get_string(hrec, 1, buf, &size);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     ok(!strcmp(buf, "s255"), "Expected \"s255\", got \"%s\"\n", buf);
 
-    size = MAX_PATH;
+    size = sizeof(buf);
     r = libmsi_record_get_string(hrec, 2, buf, &size);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     ok(!strcmp(buf, "i2"), "Expected \"i2\", got \"%s\"\n", buf);
@@ -6878,7 +6893,7 @@ static void test_dbmerge(void)
     r = libmsi_record_get_integer(hrec, 1);
     ok(r == 1, "Expected 1, got %d\n", r);
 
-    size = MAX_PATH;
+    size = sizeof(buf);
     r = libmsi_record_get_string(hrec, 2, buf, &size);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     ok(!strcmp(buf, "hi"), "Expected \"hi\", got \"%s\"\n", buf);
@@ -6921,7 +6936,7 @@ static void test_dbmerge(void)
     r = do_query(hdb, sql, &hrec);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
-    size = MAX_PATH;
+    size = sizeof(buf);
     r = libmsi_record_get_string(hrec, 1, buf, &size);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     ok(!strcmp(buf, "hi"), "Expected \"hi\", got \"%s\"\n", buf);
@@ -6939,8 +6954,7 @@ static void test_dbmerge(void)
 
     create_file_data("codepage.idt", "\r\n\r\n850\t_ForceCodepage\r\n", 0);
 
-    GetCurrentDirectoryA(MAX_PATH, buf);
-    r = libmsi_database_import(hdb, buf, "codepage.idt");
+    r = libmsi_database_import(hdb, CURR_DIR, "codepage.idt");
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     sql = "DROP TABLE `One`";
@@ -6976,7 +6990,7 @@ static void test_dbmerge(void)
     r = libmsi_record_get_integer(hrec, 1);
     ok(r == 1, "Expected 1, got %d\n", r);
 
-    size = MAX_PATH;
+    size = sizeof(buf);
     r = libmsi_record_get_string(hrec, 2, buf, &size);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     ok(!strcmp(buf, "hi"), "Expected \"hi\", got \"%s\"\n", buf);
@@ -7026,8 +7040,8 @@ static void test_dbmerge(void)
     r = libmsi_record_get_integer(hrec, 1);
     ok(r == 1, "Expected 1, got %d\n", r);
 
-    size = MAX_PATH;
-    ZeroMemory(buf, MAX_PATH);
+    size = sizeof(buf);
+    memset(buf, 0, sizeof(buf));
     r = libmsi_record_save_stream(hrec, 2, buf, &size);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     ok(!strcmp(buf, "binary.dat\n"),
@@ -7078,7 +7092,7 @@ static void test_dbmerge(void)
     r = libmsi_record_get_integer(hrec, 1);
     ok(r == 1, "Expected 1, got %d\n", r);
 
-    size = MAX_PATH;
+    size = sizeof(buf);
     r = libmsi_record_get_string(hrec, 2, buf, &size);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     ok(!strcmp(buf, "foo"), "Expected \"foo\", got \"%s\"\n", buf);
@@ -7091,7 +7105,7 @@ static void test_dbmerge(void)
     r = libmsi_record_get_integer(hrec, 1);
     ok(r == 2, "Expected 2, got %d\n", r);
 
-    size = MAX_PATH;
+    size = sizeof(buf);
     r = libmsi_record_get_string(hrec, 2, buf, &size);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     ok(!strcmp(buf, "bar"), "Expected \"bar\", got \"%s\"\n", buf);
@@ -7107,10 +7121,10 @@ static void test_dbmerge(void)
 
     libmsi_unref(hdb);
     libmsi_unref(href);
-    DeleteFileA(msifile);
-    DeleteFileA("refdb.msi");
-    DeleteFileA("codepage.idt");
-    DeleteFileA("binary.dat");
+    unlink(msifile);
+    unlink("refdb.msi");
+    unlink("codepage.idt");
+    unlink("binary.dat");
 }
 
 static void test_select_with_tablenames(void)
@@ -7187,7 +7201,7 @@ static void test_select_with_tablenames(void)
     libmsi_query_close(query);
     libmsi_unref(query);
     libmsi_unref(hdb);
-    DeleteFileA(msifile);
+    unlink(msifile);
 }
 
 static const unsigned ordervals[6][3] =
@@ -7337,7 +7351,7 @@ static void test_insertorder(void)
     libmsi_query_close(query);
     libmsi_unref(query);
     libmsi_unref(hdb);
-    DeleteFileA(msifile);
+    unlink(msifile);
 }
 
 static void test_columnorder(void)
@@ -7345,7 +7359,7 @@ static void test_columnorder(void)
     LibmsiDatabase *hdb;
     LibmsiQuery *query;
     LibmsiRecord *rec;
-    char buf[MAX_PATH];
+    char buf[100];
     const char *sql;
     unsigned sz;
     unsigned r;
@@ -7388,31 +7402,31 @@ static void test_columnorder(void)
     r = libmsi_query_get_column_info(query, LIBMSI_COL_INFO_TYPES, &rec);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
-    sz = MAX_PATH;
+    sz = sizeof(buf);
     strcpy(buf, "kiwi");
     r = libmsi_record_get_string(rec, 1, buf, &sz);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     ok(!strcmp("s255", buf), "Expected \"s255\", got \"%s\"\n", buf);
 
-    sz = MAX_PATH;
+    sz = sizeof(buf);
     strcpy(buf, "kiwi");
     r = libmsi_record_get_string(rec, 2, buf, &sz);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     ok(!strcmp("I2", buf), "Expected \"I2\", got \"%s\"\n", buf);
 
-    sz = MAX_PATH;
+    sz = sizeof(buf);
     strcpy(buf, "kiwi");
     r = libmsi_record_get_string(rec, 3, buf, &sz);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     ok(!strcmp("S255", buf), "Expected \"S255\", got \"%s\"\n", buf);
 
-    sz = MAX_PATH;
+    sz = sizeof(buf);
     strcpy(buf, "kiwi");
     r = libmsi_record_get_string(rec, 4, buf, &sz);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     ok(!strcmp("i2", buf), "Expected \"i2\", got \"%s\"\n", buf);
 
-    sz = MAX_PATH;
+    sz = sizeof(buf);
     strcpy(buf, "kiwi");
     r = libmsi_record_get_string(rec, 5, buf, &sz);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
@@ -7424,31 +7438,31 @@ static void test_columnorder(void)
     r = libmsi_query_get_column_info(query, LIBMSI_COL_INFO_NAMES, &rec);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
-    sz = MAX_PATH;
+    sz = sizeof(buf);
     strcpy(buf, "kiwi");
     r = libmsi_record_get_string(rec, 1, buf, &sz);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     ok(!strcmp("D", buf), "Expected \"D\", got \"%s\"\n", buf);
 
-    sz = MAX_PATH;
+    sz = sizeof(buf);
     strcpy(buf, "kiwi");
     r = libmsi_record_get_string(rec, 2, buf, &sz);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     ok(!strcmp("E", buf), "Expected \"E\", got \"%s\"\n", buf);
 
-    sz = MAX_PATH;
+    sz = sizeof(buf);
     strcpy(buf, "kiwi");
     r = libmsi_record_get_string(rec, 3, buf, &sz);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     ok(!strcmp("A", buf), "Expected \"A\", got \"%s\"\n", buf);
 
-    sz = MAX_PATH;
+    sz = sizeof(buf);
     strcpy(buf, "kiwi");
     r = libmsi_record_get_string(rec, 4, buf, &sz);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     ok(!strcmp("C", buf), "Expected \"C\", got \"%s\"\n", buf);
 
-    sz = MAX_PATH;
+    sz = sizeof(buf);
     strcpy(buf, "kiwi");
     r = libmsi_record_get_string(rec, 5, buf, &sz);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
@@ -7467,7 +7481,7 @@ static void test_columnorder(void)
     r = do_query(hdb, sql, &rec);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
-    sz = MAX_PATH;
+    sz = sizeof(buf);
     strcpy(buf, "kiwi");
     r = libmsi_record_get_string(rec, 1, buf, &sz);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
@@ -7476,7 +7490,7 @@ static void test_columnorder(void)
     r = libmsi_record_get_integer(rec, 2);
     ok(r == 3, "Expected 3, got %d\n", r);
 
-    sz = MAX_PATH;
+    sz = sizeof(buf);
     strcpy(buf, "kiwi");
     r = libmsi_record_get_string(rec, 3, buf, &sz);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
@@ -7500,7 +7514,7 @@ static void test_columnorder(void)
     r = libmsi_query_fetch(query, &rec);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
-    sz = MAX_PATH;
+    sz = sizeof(buf);
     strcpy(buf, "kiwi");
     r = libmsi_record_get_string(rec, 1, buf, &sz);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
@@ -7509,7 +7523,7 @@ static void test_columnorder(void)
     r = libmsi_record_get_integer(rec, 2);
     ok(r == 1, "Expected 1, got %d\n", r);
 
-    sz = MAX_PATH;
+    sz = sizeof(buf);
     strcpy(buf, "kiwi");
     r = libmsi_record_get_string(rec, 3, buf, &sz);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
@@ -7520,7 +7534,7 @@ static void test_columnorder(void)
     r = libmsi_query_fetch(query, &rec);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
-    sz = MAX_PATH;
+    sz = sizeof(buf);
     strcpy(buf, "kiwi");
     r = libmsi_record_get_string(rec, 1, buf, &sz);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
@@ -7529,7 +7543,7 @@ static void test_columnorder(void)
     r = libmsi_record_get_integer(rec, 2);
     ok(r == 2, "Expected 2, got %d\n", r);
 
-    sz = MAX_PATH;
+    sz = sizeof(buf);
     strcpy(buf, "kiwi");
     r = libmsi_record_get_string(rec, 3, buf, &sz);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
@@ -7540,7 +7554,7 @@ static void test_columnorder(void)
     r = libmsi_query_fetch(query, &rec);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
-    sz = MAX_PATH;
+    sz = sizeof(buf);
     strcpy(buf, "kiwi");
     r = libmsi_record_get_string(rec, 1, buf, &sz);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
@@ -7549,7 +7563,7 @@ static void test_columnorder(void)
     r = libmsi_record_get_integer(rec, 2);
     ok(r == 3, "Expected 3, got %d\n", r);
 
-    sz = MAX_PATH;
+    sz = sizeof(buf);
     strcpy(buf, "kiwi");
     r = libmsi_record_get_string(rec, 3, buf, &sz);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
@@ -7560,7 +7574,7 @@ static void test_columnorder(void)
     r = libmsi_query_fetch(query, &rec);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
-    sz = MAX_PATH;
+    sz = sizeof(buf);
     strcpy(buf, "kiwi");
     r = libmsi_record_get_string(rec, 1, buf, &sz);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
@@ -7569,7 +7583,7 @@ static void test_columnorder(void)
     r = libmsi_record_get_integer(rec, 2);
     ok(r == 4, "Expected 4, got %d\n", r);
 
-    sz = MAX_PATH;
+    sz = sizeof(buf);
     strcpy(buf, "kiwi");
     r = libmsi_record_get_string(rec, 3, buf, &sz);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
@@ -7580,7 +7594,7 @@ static void test_columnorder(void)
     r = libmsi_query_fetch(query, &rec);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
-    sz = MAX_PATH;
+    sz = sizeof(buf);
     strcpy(buf, "kiwi");
     r = libmsi_record_get_string(rec, 1, buf, &sz);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
@@ -7589,7 +7603,7 @@ static void test_columnorder(void)
     r = libmsi_record_get_integer(rec, 2);
     ok(r == 5, "Expected 5, got %d\n", r);
 
-    sz = MAX_PATH;
+    sz = sizeof(buf);
     strcpy(buf, "kiwi");
     r = libmsi_record_get_string(rec, 3, buf, &sz);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
@@ -7618,31 +7632,31 @@ static void test_columnorder(void)
     r = libmsi_query_get_column_info(query, LIBMSI_COL_INFO_TYPES, &rec);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
-    sz = MAX_PATH;
+    sz = sizeof(buf);
     strcpy(buf, "kiwi");
     r = libmsi_record_get_string(rec, 1, buf, &sz);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     ok(!strcmp("i2", buf), "Expected \"i2\", got \"%s\"\n", buf);
 
-    sz = MAX_PATH;
+    sz = sizeof(buf);
     strcpy(buf, "kiwi");
     r = libmsi_record_get_string(rec, 2, buf, &sz);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     ok(!strcmp("S255", buf), "Expected \"S255\", got \"%s\"\n", buf);
 
-    sz = MAX_PATH;
+    sz = sizeof(buf);
     strcpy(buf, "kiwi");
     r = libmsi_record_get_string(rec, 3, buf, &sz);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     ok(!strcmp("s255", buf), "Expected \"s255\", got \"%s\"\n", buf);
 
-    sz = MAX_PATH;
+    sz = sizeof(buf);
     strcpy(buf, "kiwi");
     r = libmsi_record_get_string(rec, 4, buf, &sz);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     ok(!strcmp("I2", buf), "Expected \"I2\", got \"%s\"\n", buf);
 
-    sz = MAX_PATH;
+    sz = sizeof(buf);
     strcpy(buf, "kiwi");
     r = libmsi_record_get_string(rec, 5, buf, &sz);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
@@ -7654,31 +7668,31 @@ static void test_columnorder(void)
     r = libmsi_query_get_column_info(query, LIBMSI_COL_INFO_NAMES, &rec);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
-    sz = MAX_PATH;
+    sz = sizeof(buf);
     strcpy(buf, "kiwi");
     r = libmsi_record_get_string(rec, 1, buf, &sz);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     ok(!strcmp("C", buf), "Expected \"C\", got \"%s\"\n", buf);
 
-    sz = MAX_PATH;
+    sz = sizeof(buf);
     strcpy(buf, "kiwi");
     r = libmsi_record_get_string(rec, 2, buf, &sz);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     ok(!strcmp("A", buf), "Expected \"A\", got \"%s\"\n", buf);
 
-    sz = MAX_PATH;
+    sz = sizeof(buf);
     strcpy(buf, "kiwi");
     r = libmsi_record_get_string(rec, 3, buf, &sz);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     ok(!strcmp("D", buf), "Expected \"D\", got \"%s\"\n", buf);
 
-    sz = MAX_PATH;
+    sz = sizeof(buf);
     strcpy(buf, "kiwi");
     r = libmsi_record_get_string(rec, 4, buf, &sz);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     ok(!strcmp("E", buf), "Expected \"E\", got \"%s\"\n", buf);
 
-    sz = MAX_PATH;
+    sz = sizeof(buf);
     strcpy(buf, "kiwi");
     r = libmsi_record_get_string(rec, 5, buf, &sz);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
@@ -7700,13 +7714,13 @@ static void test_columnorder(void)
     r = libmsi_record_get_integer(rec, 1);
     ok(r == 2, "Expected 2, got %d\n", r);
 
-    sz = MAX_PATH;
+    sz = sizeof(buf);
     strcpy(buf, "kiwi");
     r = libmsi_record_get_string(rec, 2, buf, &sz);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     ok(!strcmp("a", buf), "Expected \"a\", got \"%s\"\n", buf);
 
-    sz = MAX_PATH;
+    sz = sizeof(buf);
     strcpy(buf, "kiwi");
     r = libmsi_record_get_string(rec, 3, buf, &sz);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
@@ -7730,7 +7744,7 @@ static void test_columnorder(void)
     r = libmsi_query_fetch(query, &rec);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
-    sz = MAX_PATH;
+    sz = sizeof(buf);
     strcpy(buf, "kiwi");
     r = libmsi_record_get_string(rec, 1, buf, &sz);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
@@ -7739,7 +7753,7 @@ static void test_columnorder(void)
     r = libmsi_record_get_integer(rec, 2);
     ok(r == 1, "Expected 1, got %d\n", r);
 
-    sz = MAX_PATH;
+    sz = sizeof(buf);
     strcpy(buf, "kiwi");
     r = libmsi_record_get_string(rec, 3, buf, &sz);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
@@ -7750,7 +7764,7 @@ static void test_columnorder(void)
     r = libmsi_query_fetch(query, &rec);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
-    sz = MAX_PATH;
+    sz = sizeof(buf);
     strcpy(buf, "kiwi");
     r = libmsi_record_get_string(rec, 1, buf, &sz);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
@@ -7759,7 +7773,7 @@ static void test_columnorder(void)
     r = libmsi_record_get_integer(rec, 2);
     ok(r == 2, "Expected 2, got %d\n", r);
 
-    sz = MAX_PATH;
+    sz = sizeof(buf);
     strcpy(buf, "kiwi");
     r = libmsi_record_get_string(rec, 3, buf, &sz);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
@@ -7770,7 +7784,7 @@ static void test_columnorder(void)
     r = libmsi_query_fetch(query, &rec);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
-    sz = MAX_PATH;
+    sz = sizeof(buf);
     strcpy(buf, "kiwi");
     r = libmsi_record_get_string(rec, 1, buf, &sz);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
@@ -7779,7 +7793,7 @@ static void test_columnorder(void)
     r = libmsi_record_get_integer(rec, 2);
     ok(r == 3, "Expected 3, got %d\n", r);
 
-    sz = MAX_PATH;
+    sz = sizeof(buf);
     strcpy(buf, "kiwi");
     r = libmsi_record_get_string(rec, 3, buf, &sz);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
@@ -7790,7 +7804,7 @@ static void test_columnorder(void)
     r = libmsi_query_fetch(query, &rec);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
-    sz = MAX_PATH;
+    sz = sizeof(buf);
     strcpy(buf, "kiwi");
     r = libmsi_record_get_string(rec, 1, buf, &sz);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
@@ -7799,7 +7813,7 @@ static void test_columnorder(void)
     r = libmsi_record_get_integer(rec, 2);
     ok(r == 4, "Expected 4, got %d\n", r);
 
-    sz = MAX_PATH;
+    sz = sizeof(buf);
     strcpy(buf, "kiwi");
     r = libmsi_record_get_string(rec, 3, buf, &sz);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
@@ -7810,7 +7824,7 @@ static void test_columnorder(void)
     r = libmsi_query_fetch(query, &rec);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
-    sz = MAX_PATH;
+    sz = sizeof(buf);
     strcpy(buf, "kiwi");
     r = libmsi_record_get_string(rec, 1, buf, &sz);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
@@ -7819,7 +7833,7 @@ static void test_columnorder(void)
     r = libmsi_record_get_integer(rec, 2);
     ok(r == 5, "Expected 5, got %d\n", r);
 
-    sz = MAX_PATH;
+    sz = sizeof(buf);
     strcpy(buf, "kiwi");
     r = libmsi_record_get_string(rec, 3, buf, &sz);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
@@ -7834,7 +7848,7 @@ static void test_columnorder(void)
     libmsi_unref(query);
 
     libmsi_unref(hdb);
-    DeleteFileA(msifile);
+    unlink(msifile);
 }
 
 static void test_createtable(void)
@@ -7948,7 +7962,7 @@ static void test_createtable(void)
     res = libmsi_unref(hdb);
     ok(res == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", res);
 
-    DeleteFileA(msifile);
+    unlink(msifile);
 }
 
 static void test_embedded_nulls(void)
@@ -7966,11 +7980,10 @@ static void test_embedded_nulls(void)
     r = libmsi_database_open( msifile, LIBMSI_DB_OPEN_CREATE, &hdb );
     ok( r == LIBMSI_RESULT_SUCCESS, "failed to open database %u\n", r );
 
-    GetCurrentDirectoryA( MAX_PATH, CURR_DIR );
     write_file( "temp_file", control_table, sizeof(control_table) );
     r = libmsi_database_import( hdb, CURR_DIR, "temp_file" );
     ok( r == LIBMSI_RESULT_SUCCESS, "failed to import table %u\n", r );
-    DeleteFileA( "temp_file" );
+    unlink( "temp_file" );
 
     r = do_query( hdb, "SELECT `Text` FROM `Control` WHERE `Dialog` = 'LicenseAgreementDlg'", &hrec );
     ok( r == LIBMSI_RESULT_SUCCESS, "query failed %u\n", r );
@@ -7983,7 +7996,7 @@ static void test_embedded_nulls(void)
 
     libmsi_unref( hrec );
     libmsi_unref( hdb );
-    DeleteFileA( msifile );
+    unlink( msifile );
 }
 
 static void test_select_column_names(void)
@@ -7995,7 +8008,7 @@ static void test_select_column_names(void)
     char buffer[32];
     unsigned r, size;
 
-    DeleteFile(msifile);
+    unlink(msifile);
 
     r = libmsi_database_open( msifile, LIBMSI_DB_OPEN_CREATE, &hdb );
     ok( r == LIBMSI_RESULT_SUCCESS , "failed to open database: %u\n", r );
@@ -8248,6 +8261,8 @@ static void test_select_column_names(void)
 
 void main()
 {
+    getcwd(CURR_DIR, sizeof(CURR_DIR));
+
     test_msidatabase();
     test_msiinsert();
     test_msibadqueries();
