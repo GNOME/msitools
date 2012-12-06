@@ -275,7 +275,7 @@ static void print_suminfo(LibmsiSummaryInfo *si, int prop, const char *name)
         break;
 
     case LIBMSI_PROPERTY_TYPE_STRING:
-        buf = malloc(++sz);
+        buf = g_malloc(++sz);
         r = libmsi_summary_info_get_property(si, prop, NULL, NULL, NULL, buf, &sz);
         if (r) {
             print_libmsi_error(r);
@@ -396,11 +396,7 @@ static int cmd_extract(struct Command *cmd, int argc, char **argv)
     }
 
     bufsize = (size > 1048576 ? 1048576 : size);
-    buf = malloc(bufsize);
-    if (!buf) {
-        perror("malloc");
-        exit(1);
-    }
+    buf = g_malloc(bufsize);
 
 #if O_BINARY
     _setmode(STDOUT_FILENO, O_BINARY);
