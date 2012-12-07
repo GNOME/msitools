@@ -635,40 +635,6 @@ unsigned _libmsi_record_get_gsf_input( const LibmsiRecord *rec, unsigned iField,
     return LIBMSI_RESULT_SUCCESS;
 }
 
-static unsigned msi_dump_stream_to_file( GsfInput *stm, const char *name )
-{
-    GsfOutput *out;
-    bool ok;
-
-    out = gsf_output_stdio_new( name, NULL );
-    if( !out )
-        return LIBMSI_RESULT_FUNCTION_FAILED;
-
-    gsf_input_seek( stm, 0, G_SEEK_SET );
-    ok = gsf_input_copy( stm, out );
-    g_object_unref(G_OBJECT(out));
-    if( !ok )
-        return LIBMSI_RESULT_FUNCTION_FAILED;
-    return LIBMSI_RESULT_SUCCESS;
-}
-
-unsigned _libmsi_record_save_stream_to_file( const LibmsiRecord *rec, unsigned iField, const char *name )
-{
-    GsfInput *stm = NULL;
-    unsigned r;
-
-    TRACE("%p %u %s\n", rec, iField, debugstr_a(name));
-
-    r = _libmsi_record_get_gsf_input( rec, iField, &stm );
-    if( r == LIBMSI_RESULT_SUCCESS )
-    {
-        r = msi_dump_stream_to_file( stm, name );
-        g_object_unref(G_OBJECT(stm));
-    }
-
-    return r;
-}
-
 LibmsiRecord *_libmsi_record_clone(LibmsiRecord *rec)
 {
     LibmsiRecord *clone;
