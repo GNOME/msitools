@@ -667,6 +667,9 @@ static int cmd_export(struct Command *cmd, int argc, char **argv)
     if (sql) {
         r = export_sql(db, argv[2]);
     } else {
+#if O_BINARY
+        _setmode(STDOUT_FILENO, O_BINARY);
+#endif
         r = libmsi_database_export(db, argv[2], STDOUT_FILENO);
     }
 
