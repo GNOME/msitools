@@ -528,6 +528,10 @@ static unsigned export_insert(const char *table,
     printf("INSERT INTO `%s` (", table);
     for (i = 1; i <= num_columns; i++)
     {
+        if (libmsi_record_is_null(vals, i)) {
+            continue;
+        }
+
         sz = sizeof(name);
         r = libmsi_record_get_string(names, i, name, &sz);
         if (r) {
@@ -543,13 +547,12 @@ static unsigned export_insert(const char *table,
     printf(") VALUES (");
     for (i = 1; i <= num_columns; i++)
     {
-        if (i > 1) {
-            printf(", ");
+        if (libmsi_record_is_null(vals, i)) {
+            continue;
         }
 
-        if (libmsi_record_is_null(vals, i)) {
-            printf("NULL");
-            continue;
+        if (i > 1) {
+            printf(", ");
         }
 
         sz = sizeof(type);
