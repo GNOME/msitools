@@ -1,0 +1,21 @@
+msitools is a set of programs to inspect and build Windows Installer
+(.MSI) files.  It is based on libmsi, a portable library to read and
+write .MSI files.  libmsi in turn is a port of (and a subset of) Wine's
+implementation of the Windows Installer.
+
+msitools plans to be a solution for packaging and deployment of
+cross-compiled Windows applications.
+
+While in a very early stage, it is already usable.  Two tools are
+provided, msiinfo and msibuild, respectively to inspect and create
+MSI files.  They are very low-level, but it should already be possible
+to use these tools to take an existing .MSI file, and update it with
+new build products (for example after a cross-compilation).
+
+msitools uses libgsf in order to read OLE Structured Storage files
+(which are the underlying format of .MSI files).  As of December 7th,
+2012 you need to build libgsf from git because a required bugfix is not
+found in any release.  Fedora packages for a fixed libgsf can be found
+at http://bonzini.fedorapeople.org/.
+
+For more information, contact me at pbonzini@redhat.com.

@@ -1,0 +1,13 @@
+msitools are maintained by Paolo Bonzini. <pbonzini@redhat.com>
+
+libmsi is mostly based on Wine's implementation of Windows Installer,
+with the following copyright:
+
+* Copyright 1999 Patrik Stridvall
+* Copyright 2002 Alexandre Julliard
+* Copyright 2002-2010 Mike McCormack, Aric Stewart, Robert Shearman, Hans Leidekker
+  for CodeWeavers
+* Copyright 2006 Mike McCormack
+* Copyright 2007-2008 James Hawkins
+* Copyright 2008 James Hawkins
+* Copyright 2011 Bernhard Loos
