@@ -426,6 +426,12 @@ static unsigned export_create_table(const char *table,
     char type[30], name[100], size[20], extra[30];
     unsigned sz;
 
+    if (!strcmp(table, "_Tables") ||
+        !strcmp(table, "_Columns") ||
+        !strcmp(table, "_Streams") ||
+        !strcmp(table, "_Storages")) {
+        return 0;
+    }
 
     printf("CREATE TABLE `%s` (", table);
     for (i = 1; i <= num_columns; i++)
