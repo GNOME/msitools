@@ -20,4 +20,28 @@
 m4_include([package.m4])
 
 AT_INIT
+
 # Cannot use AT_TESTED because of $EXEEXT (Autotest bug)
+
+AT_BANNER([libmsi tests])
+
+AT_SETUP([testdatabase])
+AT_KEYWORDS([testdatabase])
+AT_SKIP_IF([! test -f $abs_builddir/tests/testdatabase$EXEEXT])
+AT_CHECK([tests/testdatabase$EXEEXT], [ignore], [stdout], [ignore])
+AT_CHECK([grep ^FAIL stdout], [1], [], [])
+AT_CLEANUP
+
+AT_SETUP([testrecord])
+AT_KEYWORDS([testrecord])
+AT_SKIP_IF([! test -f $abs_builddir/tests/testrecord$EXEEXT])
+AT_CHECK([tests/testrecord$EXEEXT], [ignore], [stdout], [ignore])
+AT_CHECK([grep ^FAIL stdout], [1], [], [])
+AT_CLEANUP
+
+AT_SETUP([testsuminfo])
+AT_KEYWORDS([testsuminfo])
+AT_SKIP_IF([! test -f $abs_builddir/tests/testsuminfo$EXEEXT])
+AT_CHECK([tests/testsuminfo$EXEEXT], [ignore], [stdout], [ignore])
+AT_CHECK([grep ^FAIL stdout], [1], [], [])
+AT_CLEANUP

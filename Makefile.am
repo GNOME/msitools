@@ -1,5 +1,5 @@
 ACLOCAL_AMFLAGS = -I m4
-SUBDIRS = libmsi . tests
+SUBDIRS = libmsi tests .
 
 noinst_HEADERS = include/debug.h
 dist_include_HEADERS = include/libmsi.h
@@ -21,22 +21,19 @@ msiinfo_DEPENDENCIES = libmsi/libmsi.la
 # Autotest support
 
 dist_noinst_DATA = tests/testsuite.at tests/package.m4 tests/testsuite
-DISTCLEANFILES = atconfig
+DISTCLEANFILES = atconfig atlocal
 CLEANFILES = testsuite.log
 
-check-local: tests/testsuite atconfig
-	builddir=`pwd` && \
-		 cd $(srcdir)/tests && \
-		 $(SHELL) testsuite AUTOTEST_PATH=$$builddir $(TESTSUITEFLAGS)
+check-local: $(srcdir)/tests/testsuite atconfig atlocal
+	 $(SHELL) $(srcdir)/tests/testsuite AUTOTEST_PATH=. $(TESTSUITEFLAGS)
 
-installcheck-local: tests/testsuite atconfig
-	cd $(srcdir)/tests && \
-		$(SHELL) testsuite AUTOTEST_PATH=$(bindir) $(TESTSUITEFLAGS)
+installcheck-local: $(srcdir)/tests/testsuite atconfig atlocal
+	$(SHELL) $(srcdir)/tests/testsuite AUTOTEST_PATH=$(bindir) $(TESTSUITEFLAGS)
 
 clean-local:
 	-$(SHELL) tests/testsuite --clean
 
-tests/testsuite: tests/testsuite.at tests/package.m4
+$(srcdir)/tests/testsuite: tests/testsuite.at tests/package.m4
 	cd $(srcdir)/tests && \
 		$(AUTOM4TE) --language=autotest -o testsuite.tmp testsuite.at && \
 		mv testsuite.tmp testsuite
