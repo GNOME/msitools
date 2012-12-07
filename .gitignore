@@ -3,4 +3,8 @@
 /config.h.in
 /config.h.in~
 /configure
+/tests/package.m4
+/tests/testsuite
+/tests/testsuite.dir
+/tests/testsuite.log
 Makefile.in

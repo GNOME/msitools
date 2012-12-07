@@ -1,0 +1,209 @@
+## Autotest testsuite for msitools.
+
+# Copyright (C) 2012 Red Hat, Inc.
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2, or (at your option)
+# any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+# 02111-1307, USA.
+
+m4_include([package.m4])
+
+AT_INIT
+
+# AT_MSIDATA - copy data file from source tree
+
+m4_define([AT_MSIDATA], [
+dir=`dirname $1`
+AS_MKDIR_P([$dir])
+AT_CHECK([cp $abs_srcdir/tests/data/$1 $1])])
+
+# AT_DATA_UNQUOTED - define data file while allowing shell variables
+
+m4_define([AT_DATA_UNQUOTED],
+[cat >$1 <<_ATEOF
+$2[]_ATEOF
+])
+
+# AT_CR - literal carriage return
+
+m4_define([AT_CR], [`echo X | tr X '\015'`])
+
+# AT_CHECK_MSIBUILD/AT_CHECK_MSIINFO - add exeext automatically
+m4_define([AT_CHECK_MSIBUILD], [
+AT_CHECK([_msibuild ]$@)])
+
+m4_define([AT_CHECK_MSIINFO], [
+AT_CHECK([_msiinfo ]$@)])
+
+# Cannot use AT_TESTED because of $EXEEXT (Autotest bug)
+
+AT_BANNER([libmsi tests])
+
+AT_SETUP([testdatabase])
+AT_KEYWORDS([testdatabase])
+AT_SKIP_IF([! test -f $abs_builddir/tests/testdatabase$EXEEXT])
+AT_CHECK([tests/testdatabase$EXEEXT], [ignore], [stdout], [ignore])
+AT_CHECK([grep ^FAIL stdout], [1], [], [])
+AT_CLEANUP
+
+AT_SETUP([testrecord])
+AT_KEYWORDS([testrecord])
+AT_SKIP_IF([! test -f $abs_builddir/tests/testrecord$EXEEXT])
+AT_CHECK([tests/testrecord$EXEEXT], [ignore], [stdout], [ignore])
+AT_CHECK([grep ^FAIL stdout], [1], [], [])
+AT_CLEANUP
+
+AT_SETUP([testsuminfo])
+AT_KEYWORDS([testsuminfo])
+AT_SKIP_IF([! test -f $abs_builddir/tests/testsuminfo$EXEEXT])
+AT_CHECK([tests/testsuminfo$EXEEXT], [ignore], [stdout], [ignore])
+AT_CHECK([grep ^FAIL stdout], [1], [], [])
+AT_CLEANUP
+
+AT_BANNER([msibuild])
+
+AT_SETUP([Invalid command line])
+AT_CHECK_MSIBUILD([], [1], [ignore], [ignore])
+AT_CHECK_MSIBUILD([out.msi], [1], [ignore], [ignore])
+AT_CHECK([test -f out.msi], [1])
+AT_CLEANUP
+
+AT_SETUP([Empty MSI])
+AT_CHECK_MSIBUILD([out.msi -s 'Project name'])
+AT_CHECK_MSIINFO([suminfo out.msi], [ignore], [stdout])
+AT_CHECK([grep ^Subject stdout], [0],
+[Subject: Project name
+])
+AT_CHECK([grep ^Template stdout], [0],
+[Template: ;1033
+])
+AT_CHECK([grep ^Version stdout], [0],
+[Version: 200 (c8)
+])
+AT_CLEANUP
+
+AT_SETUP([Valid UUID])
+AT_SKIP_IF([test $have_uuid = no])
+AT_CHECK_MSIBUILD([out.msi -s 'Project name'])
+AT_CHECK_MSIINFO([suminfo out.msi], [ignore], [stdout])
+AT_CHECK([[
+   UUID='\{[0-9A-F]{8}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{12}\}'
+   grep -E "^Revision number: $UUID\$" stdout]], [0],
+[ignore])
+AT_CLEANUP
+
+AT_SETUP([UUID does not change])
+AT_SKIP_IF([test $have_uuid = no])
+AT_CHECK_MSIBUILD([out.msi -s 'Project name'])
+AT_CHECK_MSIINFO([suminfo out.msi | grep ^Revision > expout], [0])
+AT_CHECK_MSIBUILD([out.msi -s 'Project name2'])
+AT_CHECK_MSIINFO([suminfo out.msi], [ignore], [stdout])
+AT_CHECK([grep ^Subject stdout], [0],
+[Subject: Project name2
+])
+AT_CHECK_MSIINFO([suminfo out.msi | grep ^Revision], [0], [expout])
+AT_CLEANUP
+
+AT_SETUP([Add stream])
+AT_DATA([test.txt], [This is test.txt
+])
+AT_CHECK_MSIBUILD([out.msi -a Binary.testtxt test.txt])
+AT_CHECK_MSIINFO([streams out.msi | grep -v SummaryInformation], [0],
+[Binary.testtxt
+])
+cp test.txt expout
+AT_CHECK_MSIINFO([extract out.msi Binary.testtxt], [0], [expout])
+AT_CLEANUP
+
+dnl AT_SETUP([Invalid import table])
+dnl AT_XFAIL_IF(:)
+dnl AT_DATA([tables.txt],
+dnl [Name
+dnl s64
+dnl Binary
+dnl ])
+dnl AT_CHECK_MSIBUILD([out.msi -i tables.txt])
+dnl AT_CLEANUP
+
+AT_SETUP([Add tables])
+AT_DATA([tables.txt],
+[Name
+s64
+_Tables
+Binary
+])
+AT_CHECK_MSIBUILD([out.msi -i tables.txt])
+AT_CHECK_MSIINFO([tables out.msi], [0],
+[Binary
+])
+AT_CLEANUP
+
+AT_SETUP([Add tables and definitions])
+AT_MSIDATA([tables.txt])
+AT_MSIDATA([columns.txt])
+AT_CHECK_MSIBUILD([out.msi -i tables.txt columns.txt])
+AT_DATA_UNQUOTED([expout],
+[Name	Data[]AT_CR
+s72	v0[]AT_CR
+Icon	Name[]AT_CR
+])
+AT_CHECK_MSIINFO([export out.msi Icon], [0], [expout])
+AT_CLEANUP
+
+AT_SETUP([Separate invocations])
+AT_MSIDATA([tables.txt])
+AT_MSIDATA([columns.txt])
+AT_CHECK_MSIBUILD([out.msi -i tables.txt])
+AT_CHECK_MSIINFO([tables out.msi > expout])
+AT_CHECK_MSIBUILD([out.msi -i columns.txt])
+AT_CHECK_MSIINFO([tables out.msi], [0], [expout])
+AT_CLEANUP
+
+AT_SETUP([Add table with data])
+AT_MSIDATA([tables.txt])
+AT_MSIDATA([columns.txt])
+AT_MSIDATA([button.txt])
+AT_CHECK_MSIBUILD([out.msi -i tables.txt columns.txt button.txt])
+cp button.txt expout
+AT_CHECK_MSIINFO([export out.msi RadioButton], [0], [expout])
+AT_CLEANUP
+
+AT_SETUP([Add table with streams])
+AT_MSIDATA([tables.txt])
+AT_MSIDATA([columns.txt])
+AT_MSIDATA([icon.txt])
+AT_MSIDATA([icon/firefox.16.0.2.0.ico.exe])
+AT_CHECK_MSIBUILD([out.msi -i tables.txt columns.txt icon.txt])
+cp icon.txt expout
+AT_CHECK_MSIINFO([streams out.msi | grep -v SummaryInformation], [0],
+[Icon.firefox.16.0.2.0.ico.exe
+])
+cp icon/firefox.16.0.2.0.ico.exe expout
+AT_CHECK_MSIINFO([extract out.msi Icon.firefox.16.0.2.0.ico.exe > stdout], [0])
+AT_CHECK([cmp stdout expout])
+AT_CLEANUP
+
+AT_SETUP([Add tables])
+AT_DATA([tables.txt],
+[Name
+s64
+_Tables
+Binary
+])
+AT_CHECK_MSIBUILD([-i out.msi tables.txt])
+AT_CHECK_MSIINFO([tables out.msi], [0],
+[Binary
+])
+AT_CLEANUP
+
