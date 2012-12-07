@@ -183,7 +183,7 @@ static int add_stream(const char *stream, const char *file)
     libmsi_unref(rec);
     libmsi_query_close(query);
     libmsi_unref(query);
-    return 0;
+    return r;
 }
 
 static void show_usage(void)
@@ -244,6 +244,9 @@ int main(int argc, char *argv[])
         case 'i':
             do {
                 ret = import_table(argv[1]);
+                if (ret) {
+                    break;
+                }
                 argc--, argv++;
             } while (argv[1] && argv[1][0] != '-');
             argc--, argv++;
