@@ -1,0 +1,7 @@
+Property	Order	Value	X	Y	Width	Height	Text	Help
+s72	i2	s64	i2	i2	i2	i2	L0	L50
+RadioButton	Property	Order
+IAgree	1	Yes	5	0	250	15	{\DlgFont8}I &accept the terms in the License Agreement	
+IAgree	2	No	5	20	250	15	{\DlgFont8}I &do not accept the terms in the License Agreement	
+AppsShutdownOption	1	All	5	5	320	15	Automatically &close applications and attempt to restart them after setup is complete.	
+AppsShutdownOption	2	None	5	25	320	15	Do &not close applications. (A Reboot will be required.)	

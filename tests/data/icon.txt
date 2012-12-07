@@ -1,0 +1,4 @@
+Name	Data
+s72	v0
+Icon	Name
+firefox.16.0.2.0.ico.exe	firefox.16.0.2.0.ico.exe
