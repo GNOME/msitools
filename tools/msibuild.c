@@ -235,8 +235,8 @@ int main(int argc, char *argv[])
         case 's':
             n = 2;
             if (argv[2] && argv[2][0] != '-') n++;
-            if (argv[3] && argv[3][0] != '-') n++;
-            if (argv[4] && argv[4][0] != '-') n++;
+            if (n > 2 && argv[3] && argv[3][0] != '-') n++;
+            if (n > 3 && argv[4] && argv[4][0] != '-') n++;
             ret = add_summary_info(argv[1],
                                    n > 2 ? argv[2] : NULL,
                                    n > 3 ? argv[3] : NULL,
