@@ -5,7 +5,7 @@ AC_CONFIG_HEADERS([config.h])
 AC_CONFIG_AUX_DIR([build-aux])
 AC_CONFIG_MACRO_DIR([m4])
 AC_CONFIG_SRCDIR([libmsi/sql-parser.y])
-AM_INIT_AUTOMAKE([foreign])
+AM_INIT_AUTOMAKE([foreign -Wno-portability])
 
 AC_CANONICAL_HOST
 AS_CASE([$host], [*-*-mingw*|*-*-cygwin*], [win32=yes], [win32=no])
@@ -25,6 +25,8 @@ AS_IF([test "$uuid" = yes],
       [AC_MSG_WARN([libuuid not found, msibuild will generate packages without a GUID])])
 
 LT_INIT([win32-dll disable-fast-install])
+GOBJECT_INTROSPECTION_CHECK([0.9.4])
+
 m4_ifdef([AM_SILENT_RULES],[AM_SILENT_RULES([yes])])
 
 AM_MISSING_PROG([AUTOM4TE], [autom4te])
