@@ -24,6 +24,7 @@ AS_IF([test "$uuid" = yes],
       [AC_MSG_WARN([libuuid not found, msibuild will generate packages without a GUID])])
 
 LT_INIT([win32-dll disable-fast-install])
+m4_ifdef([AM_SILENT_RULES],[AM_SILENT_RULES([yes])])
 
 AM_MISSING_PROG([AUTOM4TE], [autom4te])
 AC_CONFIG_TESTDIR([.])
