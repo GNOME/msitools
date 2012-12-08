@@ -42,12 +42,6 @@
 #include "libmsi.h"
 #include "list.h"
 
-#ifdef _WIN32
-#define DIRSEP "\\"
-#else
-#define DIRSEP "/"
-#endif
-
 #pragma GCC visibility push(hidden)
 
 #ifndef MAX_PATH
