@@ -426,31 +426,25 @@ static const WCHAR szData[] = {'D','a','t','a',0};
 
 /* memory allocation macro functions */
 
-#if defined(__GNUC__) && ((__GNUC__ > 4) || ((__GNUC__ == 4) && (__GNUC_MINOR__ >= 3)))
-#define __WINE_ALLOC_SIZE(x) __attribute__((__alloc_size__(x)))
-#else
-#define __WINE_ALLOC_SIZE(x)
-#endif
-
-static void *msi_alloc( size_t len ) __WINE_ALLOC_SIZE(1);
+static void *msi_alloc( size_t len ) G_GNUC_ALLOC_SIZE(1);
 static inline void *msi_alloc( size_t len )
 {
     return malloc(len);
 }
 
-static void *msi_alloc_zero( size_t len ) __WINE_ALLOC_SIZE(1);
+static void *msi_alloc_zero( size_t len ) G_GNUC_ALLOC_SIZE(1);
 static inline void *msi_alloc_zero( size_t len )
 {
     return calloc(len, 1);
 }
 
-static void *msi_realloc( void *mem, size_t len ) __WINE_ALLOC_SIZE(2);
+static void *msi_realloc( void *mem, size_t len ) G_GNUC_ALLOC_SIZE(2);
 static inline void *msi_realloc( void *mem, size_t len )
 {
     return realloc(mem, len);
 }
 
-static void *msi_realloc_zero( void *mem, size_t oldlen, size_t len ) __WINE_ALLOC_SIZE(3);
+static void *msi_realloc_zero( void *mem, size_t oldlen, size_t len ) G_GNUC_ALLOC_SIZE(3);
 static inline void *msi_realloc_zero( void *mem, size_t oldlen, size_t len )
 {
     mem = realloc( mem, len );
