@@ -110,7 +110,6 @@ typedef struct LibmsiField
     union
     {
         int iVal;
-        intptr_t pVal;
         WCHAR *szwVal;
         IStream *stream;
     } u;
@@ -364,10 +363,8 @@ extern void _libmsi_record_destroy( LibmsiObject * );
 extern unsigned _libmsi_record_set_IStream( LibmsiRecord *, unsigned, IStream *);
 extern unsigned _libmsi_record_get_IStream( const LibmsiRecord *, unsigned, IStream **);
 extern const WCHAR *_libmsi_record_get_string_raw( const LibmsiRecord *, unsigned );
-extern unsigned _libmsi_record_set_int_ptr( LibmsiRecord *, unsigned, intptr_t );
 extern unsigned _libmsi_record_set_stringW( LibmsiRecord *, unsigned, const WCHAR *);
 extern unsigned _libmsi_record_get_stringW( const LibmsiRecord *, unsigned, WCHAR *, unsigned *);
-extern intptr_t _libmsi_record_get_int_ptr( const LibmsiRecord *, unsigned );
 extern unsigned _libmsi_record_save_stream( const LibmsiRecord *, unsigned, char *, unsigned *);
 extern unsigned _libmsi_record_load_stream(LibmsiRecord *, unsigned, IStream *);
 extern unsigned _libmsi_record_load_stream_from_file( LibmsiRecord *, unsigned, const char *);

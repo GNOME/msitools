@@ -42,7 +42,6 @@
 #define LIBMSI_FIELD_TYPE_INT    1
 #define LIBMSI_FIELD_TYPE_WSTR   3
 #define LIBMSI_FIELD_TYPE_STREAM 4
-#define LIBMSI_FIELD_TYPE_INTPTR 5
 
 static void _libmsi_free_field( LibmsiField *field )
 {
@@ -50,7 +49,6 @@ static void _libmsi_free_field( LibmsiField *field )
     {
     case LIBMSI_FIELD_TYPE_NULL:
     case LIBMSI_FIELD_TYPE_INT:
-    case LIBMSI_FIELD_TYPE_INTPTR:
         break;
     case LIBMSI_FIELD_TYPE_WSTR:
         msi_free( field->u.szwVal);
@@ -142,9 +140,6 @@ unsigned _libmsi_record_copy_field( LibmsiRecord *in_rec, unsigned in_n,
         case LIBMSI_FIELD_TYPE_INT:
             out->u.iVal = in->u.iVal;
             break;
-        case LIBMSI_FIELD_TYPE_INTPTR:
-            out->u.pVal = in->u.pVal;
-            break;
         case LIBMSI_FIELD_TYPE_WSTR:
             str = strdupW( in->u.szwVal );
             if ( !str )
@@ -166,32 +161,6 @@ unsigned _libmsi_record_copy_field( LibmsiRecord *in_rec, unsigned in_n,
     return r;
 }
 
-intptr_t _libmsi_record_get_int_ptr( const LibmsiRecord *rec, unsigned iField )
-{
-    int ret;
-
-    TRACE( "%p %d\n", rec, iField );
-
-    if( iField > rec->count )
-        return INTPTR_MIN;
-
-    switch( rec->fields[iField].type )
-    {
-    case LIBMSI_FIELD_TYPE_INT:
-        return rec->fields[iField].u.iVal;
-    case LIBMSI_FIELD_TYPE_INTPTR:
-        return rec->fields[iField].u.pVal;
-    case LIBMSI_FIELD_TYPE_WSTR:
-        if( expr_int_from_string( rec->fields[iField].u.szwVal, &ret ) )
-            return ret;
-        return INTPTR_MIN;
-    default:
-        break;
-    }
-
-    return INTPTR_MIN;
-}
-
 int libmsi_record_get_integer( const LibmsiRecord *rec, unsigned iField)
 {
     int ret = 0;
@@ -208,8 +177,6 @@ int libmsi_record_get_integer( const LibmsiRecord *rec, unsigned iField)
     {
     case LIBMSI_FIELD_TYPE_INT:
         return rec->fields[iField].u.iVal;
-    case LIBMSI_FIELD_TYPE_INTPTR:
-        return rec->fields[iField].u.pVal;
     case LIBMSI_FIELD_TYPE_WSTR:
         if( expr_int_from_string( rec->fields[iField].u.szwVal, &ret ) )
             return ret;
@@ -238,20 +205,6 @@ LibmsiResult libmsi_record_clear_data( LibmsiRecord *rec )
         rec->fields[i].u.iVal = 0;
     }
     msiobj_release( &rec->hdr );
-
-    return LIBMSI_RESULT_SUCCESS;
-}
-
-unsigned _libmsi_record_set_int_ptr( LibmsiRecord *rec, unsigned iField, intptr_t pVal )
-{
-    TRACE("%p %u %ld\n", rec, iField, pVal);
-
-    if( iField > rec->count )
-        return LIBMSI_RESULT_INVALID_PARAMETER;
-
-    _libmsi_free_field( &rec->fields[iField] );
-    rec->fields[iField].type = LIBMSI_FIELD_TYPE_INTPTR;
-    rec->fields[iField].u.pVal = pVal;
 
     return LIBMSI_RESULT_SUCCESS;
 }

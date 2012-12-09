@@ -329,10 +329,7 @@ LibmsiResult _libmsi_query_fetch(LibmsiQuery *query, LibmsiRecord **prec)
 
     r = msi_view_get_row(query->db, view, query->row, prec);
     if (r == LIBMSI_RESULT_SUCCESS)
-    {
         query->row ++;
-        _libmsi_record_set_int_ptr(*prec, 0, (intptr_t)query);
-    }
 
     return r;
 }
