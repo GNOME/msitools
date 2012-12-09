@@ -217,6 +217,8 @@ static int cmd_streams(struct Command *cmd, int argc, char **argv)
 
     libmsi_unref(query);
     libmsi_unref(db);
+
+    return 0;
 }
 
 static int cmd_tables(struct Command *cmd, int argc, char **argv)
@@ -251,6 +253,8 @@ static int cmd_tables(struct Command *cmd, int argc, char **argv)
 
     libmsi_unref(query);
     libmsi_unref(db);
+
+    return 0;
 }
 
 static void print_suminfo(LibmsiSummaryInfo *si, int prop, const char *name)
@@ -339,6 +343,8 @@ static int cmd_suminfo(struct Command *cmd, int argc, char **argv)
 
     libmsi_unref(db);
     libmsi_unref(si);
+
+    return 0;
 }
 
 static void full_write(int fd, char *buf, size_t sz)
@@ -412,6 +418,8 @@ static int cmd_extract(struct Command *cmd, int argc, char **argv)
     libmsi_unref(rec);
     libmsi_unref(query);
     libmsi_unref(db);
+
+    return 0;
 }
 
 static unsigned export_create_table(const char *table, 
@@ -687,6 +695,8 @@ static int cmd_export(struct Command *cmd, int argc, char **argv)
     }
 
     libmsi_unref(db);
+
+    return 0;
 }
 
 static int cmd_version(struct Command *cmd, int argc, char **argv)
@@ -705,6 +715,8 @@ static int cmd_help(struct Command *cmd, int argc, char **argv)
     }
 
     usage(stdout);
+
+    return 0;
 }
 
 static struct Command cmds[] = {
