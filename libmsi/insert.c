@@ -98,7 +98,7 @@ LibmsiRecord *msi_query_merge_record( unsigned fields, const column_info *vl, Li
 
     return merged;
 err:
-    msiobj_release( &merged->hdr );
+    g_object_unref(merged);
     return NULL;
 }
 
@@ -168,12 +168,12 @@ static unsigned msi_arrange_record(LibmsiInsertView *iv, LibmsiRecord **values)
             }
         }
     }
-    msiobj_release(&(*values)->hdr);
+    g_object_unref(*values);
     *values = padded;
     return LIBMSI_RESULT_SUCCESS;
 
 err:
-    msiobj_release(&padded->hdr);
+    g_object_unref(padded);
     return r;
 }
 
@@ -244,7 +244,7 @@ static unsigned insert_view_execute( LibmsiView *view, LibmsiRecord *record )
 
 err:
     if( values )
-        msiobj_release( &values->hdr );
+        g_object_unref(values);
 
     return r;
 }
@@ -303,7 +303,7 @@ static unsigned insert_view_delete( LibmsiView *view )
     sv = iv->sv;
     if( sv )
         sv->ops->delete( sv );
-    msiobj_release( &iv->db->hdr );
+    g_object_unref(iv->db);
     msi_free( iv );
 
     return LIBMSI_RESULT_SUCCESS;
@@ -379,9 +379,9 @@ unsigned insert_view_create( LibmsiDatabase *db, LibmsiView **view, const WCHAR 
 
     /* fill the structure */
     iv->view.ops = &insert_ops;
-    msiobj_addref( &db->hdr );
+
     iv->table = tv;
-    iv->db = db;
+    iv->db = g_object_ref(db);
     iv->vals = values;
     iv->bIsTemp = temp;
     iv->sv = sv;

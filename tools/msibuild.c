@@ -94,7 +94,7 @@ static LibmsiResult open_database(const char *msifile, LibmsiDatabase **db,
         if (r != LIBMSI_RESULT_SUCCESS)
         {
             fprintf(stderr, "failed to commit database (%u)\n", r);
-            libmsi_unref(*db);
+            g_object_unref(*db);
             return r;
         }
     }
@@ -182,9 +182,9 @@ static int add_stream(const char *stream, const char *file)
     if (r != LIBMSI_RESULT_SUCCESS)
         fprintf(stderr, "failed to execute query (%u)\n", r);
 
-    libmsi_unref(rec);
+    g_object_unref(rec);
     libmsi_query_close(query);
-    libmsi_unref(query);
+    g_object_unref(query);
     return r;
 }
 
@@ -204,7 +204,7 @@ static int do_query(const char *sql, void *opaque)
         fprintf(stderr, "failed to execute query (%u)\n", r);
 
     libmsi_query_close(query);
-    libmsi_unref(query);
+    g_object_unref(query);
     return r;
 }
 
@@ -227,6 +227,7 @@ int main(int argc, char *argv[])
     int r;
     int n;
 
+    g_type_init();
     if (argc <= 2 )
     {
         show_usage();
@@ -316,7 +317,7 @@ int main(int argc, char *argv[])
             exit(1);
         }
     }
-    libmsi_unref(si);
-    libmsi_unref(db);
+    g_object_unref(si);
+    g_object_unref(db);
     return r != LIBMSI_RESULT_SUCCESS;
 }

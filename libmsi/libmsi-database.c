@@ -30,6 +30,9 @@
 #include "windef.h"
 #include "winbase.h"
 #include "winnls.h"
+
+#include "libmsi-database.h"
+
 #include "debug.h"
 #include "unicode.h"
 #include "libmsi.h"
@@ -37,6 +40,18 @@
 #include "objidl.h"
 #include "objbase.h"
 #include "query.h"
+
+enum
+{
+    PROP_0,
+
+    PROP_PATH,
+    PROP_MODE,
+    PROP_OUTPATH,
+    PROP_PATCH,
+};
+
+G_DEFINE_TYPE (LibmsiDatabase, libmsi_database, G_TYPE_OBJECT);
 
 const char clsid_msi_transform[16] = { 0x82, 0x10, 0x0c, 0x00, 0x00, 0x00, 0x00, 0x00, 0xc0,0x00, 0x00,0x00,0x00,0x00,0x00,0x46 };
 const char clsid_msi_database[16] = { 0x84, 0x10, 0x0c, 0x00, 0x00, 0x00, 0x00, 0x00, 0xc0,0x00, 0x00,0x00,0x00,0x00,0x00,0x46 };
@@ -72,26 +87,130 @@ typedef struct _LibmsiStream {
     IStream *stm;
 } LibmsiStream;
 
-static void free_transforms( LibmsiDatabase *db )
+static void
+libmsi_database_init (LibmsiDatabase *p)
 {
-    while( !list_empty( &db->transforms ) )
-    {
-        LibmsiTransform *t = LIST_ENTRY( list_head( &db->transforms ),
-                                      LibmsiTransform, entry );
-        list_remove( &t->entry );
-        IStorage_Release( t->stg );
-        msi_free( t );
+    list_init (&p->tables);
+    list_init (&p->transforms);
+    list_init (&p->streams);
+    list_init (&p->storages);
+}
+
+static void
+libmsi_database_constructed (GObject *object)
+{
+    G_OBJECT_CLASS (libmsi_database_parent_class)->constructed (object);
+}
+
+static void
+free_transforms (LibmsiDatabase *db)
+{
+    while (!list_empty(&db->transforms)) {
+        LibmsiTransform *t = LIST_ENTRY(list_head(&db->transforms),
+                                        LibmsiTransform, entry);
+        list_remove(&t->entry);
+        g_object_unref(G_OBJECT(t->stg));
+        msi_free(t);
     }
 }
 
-static VOID _libmsi_database_destroy( LibmsiObject *arg )
+static void
+libmsi_database_finalize (GObject *object)
 {
-    LibmsiDatabase *db = (LibmsiDatabase *) arg;
+    LibmsiDatabase *self = LIBMSI_DATABASE (object);
+    LibmsiDatabase *p = self;
 
-    _libmsi_database_close( db, false );
-    free_cached_tables( db );
-    free_transforms( db );
-    msi_free(db->path);
+    _libmsi_database_close (self, false);
+    free_cached_tables (self);
+    free_transforms (self);
+
+    g_free (p->path);
+
+    G_OBJECT_CLASS (libmsi_database_parent_class)->finalize (object);
+}
+
+static void
+libmsi_database_set_property (GObject *object, guint prop_id, const GValue *value, GParamSpec *pspec)
+{
+    g_return_if_fail (LIBMSI_IS_DATABASE (object));
+    LibmsiDatabase *p = LIBMSI_DATABASE (object);
+
+    switch (prop_id) {
+    case PROP_PATH:
+        g_return_if_fail (p->path == NULL);
+        p->path = g_value_dup_string (value);
+        break;
+    case PROP_MODE:
+        g_return_if_fail (p->mode == NULL);
+        p->mode = (const char*)g_value_get_int (value);
+        break;
+    case PROP_OUTPATH:
+        g_return_if_fail (p->outpath == NULL);
+        p->outpath = (const char*)g_value_dup_string (value);
+        break;
+    case PROP_PATCH:
+        p->patch = g_value_get_boolean (value);
+        break;
+    default:
+        G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
+        break;
+    }
+}
+
+static void
+libmsi_database_get_property (GObject *object, guint prop_id, GValue *value, GParamSpec *pspec)
+{
+    g_return_if_fail (LIBMSI_IS_DATABASE (object));
+    LibmsiDatabase *p = LIBMSI_DATABASE (object);
+
+    switch (prop_id) {
+    case PROP_PATH:
+        g_value_set_string (value, p->path);
+        break;
+    case PROP_MODE:
+        g_value_set_int (value, (int)p->mode);
+        break;
+    case PROP_OUTPATH:
+        g_value_set_string (value, p->outpath);
+        break;
+    case PROP_PATCH:
+        g_value_set_boolean (value, p->patch);
+        break;
+    default:
+        G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
+        break;
+    }
+}
+
+static void
+libmsi_database_class_init (LibmsiDatabaseClass *klass)
+{
+    GObjectClass* object_class = G_OBJECT_CLASS (klass);
+
+    object_class->finalize = libmsi_database_finalize;
+    object_class->set_property = libmsi_database_set_property;
+    object_class->get_property = libmsi_database_get_property;
+    object_class->constructed = libmsi_database_constructed;
+
+    g_object_class_install_property (G_OBJECT_CLASS (klass), PROP_PATH,
+        g_param_spec_string ("path", "path", "path", NULL,
+                             G_PARAM_CONSTRUCT_ONLY | G_PARAM_READWRITE |
+                             G_PARAM_STATIC_STRINGS));
+
+    g_object_class_install_property (G_OBJECT_CLASS (klass), PROP_MODE,
+        g_param_spec_int ("mode", "mode", "mode", 0, G_MAXINT, 0,
+                          G_PARAM_CONSTRUCT_ONLY | G_PARAM_READWRITE |
+                          G_PARAM_STATIC_STRINGS));
+
+    g_object_class_install_property (G_OBJECT_CLASS (klass), PROP_OUTPATH,
+        g_param_spec_string ("outpath", "outpath", "outpath", NULL,
+                             G_PARAM_CONSTRUCT_ONLY | G_PARAM_READWRITE |
+                             G_PARAM_STATIC_STRINGS));
+
+    g_object_class_install_property (G_OBJECT_CLASS (klass), PROP_PATCH,
+        g_param_spec_boolean ("patch", "patch", "patch", FALSE,
+                              G_PARAM_CONSTRUCT_ONLY | G_PARAM_READWRITE |
+                              G_PARAM_STATIC_STRINGS));
 }
 
 static HRESULT stream_to_storage(IStream *stm, IStorage **stg)
@@ -576,7 +695,7 @@ LibmsiResult _libmsi_database_close(LibmsiDatabase *db, bool committed)
     db->outpath = NULL;
 }
 
-LibmsiResult _libmsi_database_start_transaction(LibmsiDatabase *db, const char *szPersist)
+LibmsiResult _libmsi_database_start_transaction(LibmsiDatabase *db)
 {
     unsigned ret = LIBMSI_RESULT_SUCCESS;
     IStorage *stg = NULL;
@@ -588,22 +707,21 @@ LibmsiResult _libmsi_database_start_transaction(LibmsiDatabase *db, const char *
     if( db->mode == LIBMSI_DB_OPEN_READONLY )
         return LIBMSI_RESULT_SUCCESS;
 
-    if( szPersist == LIBMSI_DB_OPEN_TRANSACT )
+    db->rename_outpath = false;
+    if( !db->outpath )
     {
         strcpy( path, db->path );
-        strcat( path, ".tmp" );
-        tmpfile = strdup(path);
-        szPersist = tmpfile;
-    }
-    else if( IS_INTMSIDBOPEN(szPersist) )
-    {
-        ERR("unknown flag %p\n",szPersist);
-        return LIBMSI_RESULT_INVALID_PARAMETER;
+        if( db->mode == LIBMSI_DB_OPEN_TRANSACT )
+	{
+            strcat( path, ".tmp" );
+            db->rename_outpath = true;
+	}
+        db->outpath = strdup(path);
     }
 
     TRACE("%p %s\n", db, szPersist);
 
-    szwPersist = strdupAtoW(szPersist);
+    szwPersist = strdupAtoW(db->outpath);
     hr = StgCreateDocfile( szwPersist,
           STGM_CREATE|STGM_TRANSACTED|STGM_READWRITE|STGM_SHARE_EXCLUSIVE, 0, &stg );
 
@@ -614,25 +732,13 @@ LibmsiResult _libmsi_database_start_transaction(LibmsiDatabase *db, const char *
 
     if( FAILED( hr ) )
     {
-        WARN("open failed hr = %08x for %s\n", hr, debugstr_a(szPersist));
+        WARN("open failed hr = %08x for %s\n", hr, debugstr_a(db->outpath));
         ret = LIBMSI_RESULT_FUNCTION_FAILED;
         goto end;
     }
 
     db->outfile = stg;
     IStorage_AddRef( db->outfile );
-
-    if (!strchr( szPersist, '\\' ))
-    {
-        getcwd( path, MAX_PATH );
-        strcat( path, "\\" );
-        strcat( path, szPersist );
-    }
-    else
-        strcpy( path, szPersist );
-
-    db->outpath = strdup( path );
-    db->rename_outpath = (tmpfile != NULL);
 
 end:
     if (ret) {
@@ -642,8 +748,30 @@ end:
     }
     if (stg)
         IStorage_Release( stg );
-    msi_free(tmpfile);
     return ret;
+}
+
+LibmsiResult libmsi_database_open(const char *szDBPath, const char *szPersist, LibmsiDatabase **pdb)
+{
+    char path[MAX_PATH];
+
+    TRACE("%s %p\n",debugstr_a(szDBPath),szPersist );
+
+    if( !pdb )
+        return LIBMSI_RESULT_INVALID_PARAMETER;
+
+    if (!strchr( szDBPath, '\\' ))
+    {
+        getcwd( path, MAX_PATH );
+        strcat( path, "\\" );
+        strcat( path, szDBPath );
+    }
+    else
+        strcpy( path, szDBPath );
+
+    *pdb = libmsi_database_new (path, szPersist, NULL);
+
+    return *pdb ? LIBMSI_RESULT_SUCCESS : LIBMSI_RESULT_OPEN_FAILED;
 }
 
 static WCHAR *msi_read_text_archive(const char *path, unsigned *len)
@@ -933,7 +1061,7 @@ static unsigned msi_add_table_to_db(LibmsiDatabase *db, WCHAR **columns, WCHAR *
 
     r = _libmsi_query_execute(view, NULL);
     libmsi_query_close(view);
-    msiobj_release(&view->hdr);
+    g_object_unref(view);
 
 done:
     msi_free(prelude);
@@ -1006,7 +1134,7 @@ static unsigned construct_record(unsigned num_columns, WCHAR **types,
                 break;
             default:
                 ERR("Unhandled column type: %c\n", types[i][0]);
-                msiobj_release(&(*rec)->hdr);
+                g_object_unref(*rec);
                 return LIBMSI_RESULT_FUNCTION_FAILED;
         }
     }
@@ -1048,11 +1176,11 @@ static unsigned msi_add_records_to_table(LibmsiDatabase *db, WCHAR **columns, WC
         r = view->ops->insert_row(view, rec, -1, false);
         if (r != LIBMSI_RESULT_SUCCESS)
         {
-            msiobj_release(&rec->hdr);
+            g_object_unref(rec);
             goto done;
         }
 
-        msiobj_release(&rec->hdr);
+        g_object_unref(rec);
     }
 
 done:
@@ -1188,9 +1316,9 @@ LibmsiResult libmsi_database_import(LibmsiDatabase *db, const char *szFolder, co
     if( !db )
         return LIBMSI_RESULT_INVALID_HANDLE;
 
-    msiobj_addref( &db->hdr );
+    g_object_ref(db);
     r = _libmsi_database_import( db, szFolder, szFilename );
-    msiobj_release( &db->hdr );
+    g_object_unref(db);
     return r;
 }
 
@@ -1290,7 +1418,7 @@ static unsigned _libmsi_database_export( LibmsiDatabase *db, const WCHAR *table,
         if (r == LIBMSI_RESULT_SUCCESS)
         {
             msi_export_record( fd, rec, 1 );
-            msiobj_release( &rec->hdr );
+            g_object_unref(rec);
         }
 
         /* write out row 2, the column types */
@@ -1298,7 +1426,7 @@ static unsigned _libmsi_database_export( LibmsiDatabase *db, const WCHAR *table,
         if (r == LIBMSI_RESULT_SUCCESS)
         {
             msi_export_record( fd, rec, 1 );
-            msiobj_release( &rec->hdr );
+            g_object_unref(rec);
         }
 
         /* write out row 3, the table name + keys */
@@ -1307,12 +1435,12 @@ static unsigned _libmsi_database_export( LibmsiDatabase *db, const WCHAR *table,
         {
             _libmsi_record_set_stringW( rec, 0, table );
             msi_export_record( fd, rec, 0 );
-            msiobj_release( &rec->hdr );
+            g_object_unref(rec);
         }
 
         /* write out row 4 onwards, the data */
         r = _libmsi_query_iterate_records( view, 0, msi_export_row, (void *)(intptr_t) fd );
-        msiobj_release( &view->hdr );
+        g_object_unref(view);
     }
 
 done:
@@ -1337,8 +1465,6 @@ done:
 LibmsiResult libmsi_database_export( LibmsiDatabase *db, const char *szTable,
                int fd )
 {
-    WCHAR *path = NULL;
-    WCHAR *file = NULL;
     WCHAR *table = NULL;
     unsigned r = LIBMSI_RESULT_OUTOFMEMORY;
 
@@ -1354,15 +1480,12 @@ LibmsiResult libmsi_database_export( LibmsiDatabase *db, const char *szTable,
     if( !db )
         return LIBMSI_RESULT_INVALID_HANDLE;
 
-    msiobj_addref ( &db->hdr );
+    g_object_ref(db);
     r = _libmsi_database_export( db, table, fd );
-    msiobj_release( &db->hdr );
+    g_object_unref(db);
 
 end:
-    msi_free( table );
-    msi_free( path );
-    msi_free( file );
-
+    msi_free(table);
     return r;
 }
 
@@ -1434,8 +1557,8 @@ static unsigned merge_verify_colnames(LibmsiQuery *dbview, LibmsiQuery *mergevie
         }
     }
 
-    msiobj_release(&dbrec->hdr);
-    msiobj_release(&mergerec->hdr);
+    g_object_unref(dbrec);
+    g_object_unref(mergerec);
     dbrec = mergerec = NULL;
 
     r = _libmsi_query_get_column_info(dbview, LIBMSI_COL_INFO_TYPES, &dbrec);
@@ -1461,8 +1584,8 @@ static unsigned merge_verify_colnames(LibmsiQuery *dbview, LibmsiQuery *mergevie
     }
 
 done:
-    msiobj_release(&dbrec->hdr);
-    msiobj_release(&mergerec->hdr);
+    g_object_unref(dbrec);
+    g_object_unref(mergerec);
 
     return r;
 }
@@ -1498,8 +1621,8 @@ static unsigned merge_verify_primary_keys(LibmsiDatabase *db, LibmsiDatabase *me
     }
 
 done:
-    msiobj_release(&dbrec->hdr);
-    msiobj_release(&mergerec->hdr);
+    g_object_unref(dbrec);
+    g_object_unref(mergerec);
 
     return r;
 }
@@ -1523,7 +1646,7 @@ static WCHAR *get_key_value(LibmsiQuery *view, const WCHAR *key, LibmsiRecord *r
         msi_free(str);
     } while (cmp);
 
-    msiobj_release(&colnames->hdr);
+    g_object_unref(colnames);
 
     r = _libmsi_record_get_stringW(rec, i, NULL, &sz);
     if (r != LIBMSI_RESULT_SUCCESS)
@@ -1625,7 +1748,7 @@ static WCHAR *create_diff_row_query(LibmsiDatabase *merge, LibmsiQuery *view,
 
 done:
     msi_free(clause);
-    msiobj_release(&keys->hdr);
+    g_object_unref(keys);
     return query;
 }
 
@@ -1684,8 +1807,8 @@ static unsigned merge_diff_row(LibmsiRecord *rec, void *param)
 
 done:
     msi_free(query);
-    msiobj_release(&row->hdr);
-    msiobj_release(&dbview->hdr);
+    g_object_unref(row);
+    g_object_unref(dbview);
     return r;
 }
 
@@ -1714,7 +1837,7 @@ static unsigned msi_get_table_labels(LibmsiDatabase *db, const WCHAR *table, WCH
     }
 
 end:
-    msiobj_release( &prec->hdr );
+    g_object_unref(prec);
     return r;
 }
 
@@ -1743,7 +1866,7 @@ static unsigned msi_get_query_columns(LibmsiQuery *query, WCHAR ***columns, unsi
     *numcolumns = count;
 
 end:
-    msiobj_release( &prec->hdr );
+    g_object_unref(prec);
     return r;
 }
 
@@ -1771,7 +1894,7 @@ static unsigned msi_get_query_types(LibmsiQuery *query, WCHAR ***types, unsigned
     }
 
 end:
-    msiobj_release( &prec->hdr );
+    g_object_unref(prec);
     return r;
 }
 
@@ -1784,7 +1907,7 @@ static void merge_free_rows(MERGETABLE *table)
         MERGEROW *row = LIST_ENTRY(item, MERGEROW, entry);
 
         list_remove(&row->entry);
-        msiobj_release(&row->data->hdr);
+        g_object_unref(row);
         msi_free(row);
     }
 }
@@ -1860,12 +1983,12 @@ static unsigned msi_get_merge_table (LibmsiDatabase *db, const WCHAR *name, MERG
     table->name = strdupW(name);
     table->numconflicts = 0;
 
-    msiobj_release(&mergeview->hdr);
+    g_object_unref(mergeview);
     *ptable = table;
     return LIBMSI_RESULT_SUCCESS;
 
 err:
-    msiobj_release(&mergeview->hdr);
+    g_object_unref(mergeview);
     free_merge_table(table);
     *ptable = NULL;
     return r;
@@ -1920,8 +2043,8 @@ static unsigned merge_diff_tables(LibmsiRecord *rec, void *param)
     list_add_tail(data->tabledata, &table->entry);
 
 done:
-    msiobj_release(&dbview->hdr);
-    msiobj_release(&mergeview->hdr);
+    g_object_unref(dbview);
+    g_object_unref(mergeview);
     return r;
 }
 
@@ -1943,7 +2066,7 @@ static unsigned gather_merge_data(LibmsiDatabase *db, LibmsiDatabase *merge,
     data.merge = merge;
     data.tabledata = tabledata;
     r = _libmsi_query_iterate_records(view, NULL, merge_diff_tables, &data);
-    msiobj_release(&view->hdr);
+    g_object_unref(view);
     return r;
 }
 
@@ -2005,7 +2128,7 @@ static unsigned update_merge_errors(LibmsiDatabase *db, const WCHAR *error,
             return r;
 
         r = _libmsi_query_execute(view, NULL);
-        msiobj_release(&view->hdr);
+        g_object_unref(view);
         if (r != LIBMSI_RESULT_SUCCESS)
             return r;
     }
@@ -2015,7 +2138,7 @@ static unsigned update_merge_errors(LibmsiDatabase *db, const WCHAR *error,
         return r;
 
     r = _libmsi_query_execute(view, NULL);
-    msiobj_release(&view->hdr);
+    g_object_unref(view);
     return r;
 }
 
@@ -2039,8 +2162,8 @@ LibmsiResult libmsi_database_merge(LibmsiDatabase *db, LibmsiDatabase *merge,
         return LIBMSI_RESULT_INVALID_HANDLE;
 
     szwTableName = strdupAtoW(szTableName);
-    msiobj_addref( &db->hdr );
-    msiobj_addref( &merge->hdr );
+    g_object_ref(db);
+    g_object_ref(merge);
     r = gather_merge_data(db, merge, &tabledata);
     if (r != LIBMSI_RESULT_SUCCESS)
         goto done;
@@ -2076,8 +2199,8 @@ LibmsiResult libmsi_database_merge(LibmsiDatabase *db, LibmsiDatabase *merge,
         r = LIBMSI_RESULT_FUNCTION_FAILED;
 
 done:
-    msiobj_release(&db->hdr);
-    msiobj_release(&merge->hdr);
+    g_object_unref(db);
+    g_object_unref(merge);
     return r;
 }
 
@@ -2090,10 +2213,10 @@ LibmsiDBState libmsi_database_get_state( LibmsiDatabase *db )
     if( !db )
         return LIBMSI_RESULT_INVALID_HANDLE;
 
-    msiobj_addref( &db->hdr );
+    g_object_ref(db);
     if (db->mode != LIBMSI_DB_OPEN_READONLY )
         ret = LIBMSI_DB_STATE_WRITE;
-    msiobj_release( &db->hdr );
+    g_object_unref(db);
 
     return ret;
 }
@@ -2262,11 +2385,11 @@ LibmsiResult libmsi_database_apply_transform( LibmsiDatabase *db,
 {
     unsigned r;
 
-    msiobj_addref( &db->hdr );
+    g_object_ref(db);
     if( !db )
         return LIBMSI_RESULT_INVALID_HANDLE;
     r = _libmsi_database_apply_transform( db, szTransformFile, iErrorCond );
-    msiobj_release( &db->hdr );
+    g_object_unref(db);
     return r;
 }
 
@@ -2343,7 +2466,7 @@ LibmsiResult libmsi_database_commit( LibmsiDatabase *db )
     if( !db )
         return LIBMSI_RESULT_INVALID_HANDLE;
 
-    msiobj_addref( &db->hdr );
+    g_object_ref(db);
     if (db->mode == LIBMSI_DB_OPEN_READONLY)
         goto end;
 
@@ -2390,11 +2513,12 @@ LibmsiResult libmsi_database_commit( LibmsiDatabase *db )
     }
 
     _libmsi_database_close(db, true);
+    db->mode = LIBMSI_DB_OPEN_TRANSACT;
     _libmsi_database_open(db);
-    _libmsi_database_start_transaction(db, LIBMSI_DB_OPEN_TRANSACT);
+    _libmsi_database_start_transaction(db);
 
 end:
-    msiobj_release( &db->hdr );
+    g_object_unref(db);
 
     return r;
 }
@@ -2466,9 +2590,9 @@ unsigned _libmsi_database_get_primary_keys( LibmsiDatabase *db,
         if( r == LIBMSI_RESULT_SUCCESS )
             *prec = info.rec;
         else
-            msiobj_release( &info.rec->hdr );
+            g_object_unref(info.rec);
     }
-    msiobj_release( &query->hdr );
+    g_object_unref(query);
 
     return r;
 }
@@ -2491,9 +2615,9 @@ LibmsiResult libmsi_database_get_primary_keys(LibmsiDatabase *db,
     if( !db )
         return LIBMSI_RESULT_INVALID_HANDLE;
 
-    msiobj_addref( &db->hdr );
+    g_object_ref(db);
     r = _libmsi_database_get_primary_keys( db, szwTable, prec );
-    msiobj_release( &db->hdr );
+    g_object_unref(db);
     msi_free( szwTable );
 
     return r;
@@ -2514,95 +2638,68 @@ LibmsiCondition libmsi_database_is_table_persistent(
             return LIBMSI_CONDITION_ERROR;
     }
 
-    msiobj_addref( &db->hdr );
+    g_object_ref(db);
     if( !db )
         return LIBMSI_CONDITION_ERROR;
 
     r = _libmsi_database_is_table_persistent( db, szwTableName );
 
-    msiobj_release( &db->hdr );
+    g_object_unref(db);
     msi_free( szwTableName );
 
     return r;
 }
 
-LibmsiResult libmsi_database_open(const char *szDBPath, const char *szPersist, LibmsiDatabase **pdb)
+/* TODO: use GInitable */
+static gboolean
+init (LibmsiDatabase *self, GError **error)
 {
-    LibmsiDatabase *db = NULL;
-    unsigned ret = LIBMSI_RESULT_SUCCESS;
-    const char *szMode;
-    bool patch = false;
-    char path[MAX_PATH];
+    LibmsiDatabase *p = LIBMSI_DATABASE (self);
+    LibmsiResult ret;
 
-    TRACE("%s %p\n",debugstr_a(szDBPath),szPersist );
+    if (p->mode == LIBMSI_DB_OPEN_CREATE) {
+        p->strings = msi_init_string_table (&p->bytes_per_strref);
+    } else {
+        if (_libmsi_database_open(self))
+            return FALSE;
+    }
 
-    if( !pdb )
-        return LIBMSI_RESULT_INVALID_PARAMETER;
+    p->media_transform_offset = MSI_INITIAL_MEDIA_TRANSFORM_OFFSET;
+    p->media_transform_disk_id = MSI_INITIAL_MEDIA_TRANSFORM_DISKID;
 
-    if (IS_INTMSIDBOPEN(szPersist - LIBMSI_DB_OPEN_PATCHFILE))
-    {
+    if (TRACE_ON(msi))
+        enum_stream_names (p->infile);
+
+    ret = _libmsi_database_start_transaction (self);
+
+    return !ret;
+}
+
+LibmsiDatabase *
+libmsi_database_new (const gchar *path, const char *persist, GError **error)
+{
+    LibmsiDatabase *self;
+    gboolean patch = false;
+
+    g_return_val_if_fail (path != NULL, NULL);
+
+    if (IS_INTMSIDBOPEN (persist - LIBMSI_DB_OPEN_PATCHFILE)) {
         TRACE("Database is a patch\n");
-        szPersist -= LIBMSI_DB_OPEN_PATCHFILE;
+        persist -= LIBMSI_DB_OPEN_PATCHFILE;
         patch = true;
     }
 
-    szMode = szPersist;
-    db = alloc_msiobject( sizeof (LibmsiDatabase), _libmsi_database_destroy );
-    if( !db )
-    {
-        FIXME("Failed to allocate a handle\n");
-        goto end;
+    self = g_object_new (LIBMSI_TYPE_DATABASE,
+                         "path", path,
+                         "patch", patch,
+                         "outpath", IS_INTMSIDBOPEN(persist) ? NULL : persist,
+                         "mode", (int)(intptr_t)(IS_INTMSIDBOPEN(persist) ? persist : LIBMSI_DB_OPEN_TRANSACT),
+                         NULL);
+
+    if (!init (self, error)) {
+        g_object_unref (self);
+        return NULL;
     }
 
-    if (!strchr( szDBPath, '\\' ))
-    {
-        getcwd( path, MAX_PATH );
-        strcat( path, "\\" );
-        strcat( path, szDBPath );
-    }
-    else
-        strcpy( path, szDBPath );
-
-    db->patch = patch;
-    db->mode = szMode;
-    list_init( &db->tables );
-    list_init( &db->transforms );
-    list_init( &db->streams );
-    list_init( &db->storages );
-
-    if( szPersist != LIBMSI_DB_OPEN_CREATE )
-    {
-        db->path = strdup( path );
-        ret = _libmsi_database_open(db);
-        if (ret)
-            goto end;
-    } else {
-        szPersist = szDBPath;
-        db->strings = msi_init_string_table( &db->bytes_per_strref );
-    }
-
-    db->media_transform_offset = MSI_INITIAL_MEDIA_TRANSFORM_OFFSET;
-    db->media_transform_disk_id = MSI_INITIAL_MEDIA_TRANSFORM_DISKID;
-
-    if( TRACE_ON( msi ) )
-        enum_stream_names( db->infile );
-
-    if( szPersist == LIBMSI_DB_OPEN_CREATE )
-        ret = _libmsi_database_start_transaction(db, szDBPath);
-    else
-        ret = _libmsi_database_start_transaction(db, szPersist);
-    if (ret)
-        goto end;
-
-    ret = LIBMSI_RESULT_SUCCESS;
-
-    msiobj_addref( &db->hdr );
-    *pdb = db;
-
-end:
-    if( db )
-        msiobj_release( &db->hdr );
-
-    return ret;
+    return self;
 }
-

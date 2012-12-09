@@ -16,6 +16,7 @@ AC_PROG_CC
 AC_PROG_YACC
 
 AM_PATH_GLIB_2_0([2.12.0])
+PKG_CHECK_MODULES([GOBJECT], [gobject-2.0])
 PKG_CHECK_MODULES([GSF], [libgsf-1])
 PKG_CHECK_MODULES([UUID], [uuid], [uuid=yes], [uuid=no])
 AS_IF([test "$uuid" = yes],

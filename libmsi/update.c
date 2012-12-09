@@ -117,8 +117,8 @@ static unsigned update_view_execute( LibmsiView *view, LibmsiRecord *record )
     }
 
 done:
-    if ( where ) msiobj_release( &where->hdr );
-    if ( values ) msiobj_release( &values->hdr );
+    if ( where ) g_object_unref(where);
+    if ( values ) g_object_unref(values);
 
     return r;
 }
@@ -177,7 +177,7 @@ static unsigned update_view_delete( LibmsiView *view )
     wv = uv->wv;
     if( wv )
         wv->ops->delete( wv );
-    msiobj_release( &uv->db->hdr );
+    g_object_unref(uv->db);
     msi_free( uv );
 
     return LIBMSI_RESULT_SUCCESS;
@@ -246,8 +246,7 @@ unsigned update_view_create( LibmsiDatabase *db, LibmsiView **view, WCHAR *table
 
     /* fill the structure */
     uv->view.ops = &update_ops;
-    msiobj_addref( &db->hdr );
-    uv->db = db;
+    uv->db = g_object_ref(db);
     uv->vals = columns;
     uv->wv = sv;
     *view = (LibmsiView*) uv;

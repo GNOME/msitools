@@ -19,12 +19,37 @@
 #ifndef _LIBMSI_QUERY_H
 #define _LIBMSI_QUERY_H
 
+#include <glib-object.h>
+
 #include "libmsi-types.h"
+
+G_BEGIN_DECLS
+
+#define LIBMSI_TYPE_QUERY             (libmsi_query_get_type ())
+#define LIBMSI_QUERY(obj)             (G_TYPE_CHECK_INSTANCE_CAST ((obj), LIBMSI_TYPE_QUERY, LibmsiQuery))
+#define LIBMSI_QUERY_CLASS(klass)     (G_TYPE_CHECK_CLASS_CAST ((klass), LIBMSI_TYPE_QUERY, LibmsiQueryClass))
+#define LIBMSI_IS_QUERY(obj)          (G_TYPE_CHECK_INSTANCE_TYPE ((obj), LIBMSI_TYPE_QUERY))
+#define LIBMSI_IS_QUERY_CLASS(klass)  (G_TYPE_CHECK_CLASS_TYPE ((klass), LIBMSI_TYPE_QUERY))
+#define LIBMSI_QUERY_GET_CLASS(obj)   (G_TYPE_INSTANCE_GET_CLASS ((obj), LIBMSI_TYPE_QUERY, LibmsiQueryClass))
+
+typedef struct _LibmsiQueryClass LibmsiQueryClass;
+
+struct _LibmsiQueryClass
+{
+    GObjectClass parent_class;
+};
+
+GType libmsi_query_get_type (void) G_GNUC_CONST;
+
+
+LibmsiQuery *     libmsi_query_new (LibmsiDatabase *database, const char *query, GError **error);
 
 LibmsiResult      libmsi_query_fetch (LibmsiQuery *,LibmsiRecord **);
 LibmsiResult      libmsi_query_execute (LibmsiQuery *,LibmsiRecord *);
 LibmsiResult      libmsi_query_close (LibmsiQuery *);
 LibmsiDBError     libmsi_query_get_error (LibmsiQuery *,char *,unsigned *);
 LibmsiResult      libmsi_query_get_column_info (LibmsiQuery *, LibmsiColInfo, LibmsiRecord **);
+
+G_END_DECLS
 
 #endif /* _LIBMSI_QUERY_H */

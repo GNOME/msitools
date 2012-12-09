@@ -19,12 +19,35 @@
 #ifndef _LIBMSI_SUMMARY_INFO_H
 #define _LIBMSI_SUMMARY_INFO_H
 
+#include <glib-object.h>
+
 #include "libmsi-types.h"
+
+G_BEGIN_DECLS
+
+#define LIBMSI_TYPE_SUMMARY_INFO             (libmsi_summary_info_get_type ())
+#define LIBMSI_SUMMARY_INFO(obj)             (G_TYPE_CHECK_INSTANCE_CAST ((obj), LIBMSI_TYPE_SUMMARY_INFO, LibmsiSummaryInfo))
+#define LIBMSI_SUMMARY_INFO_CLASS(klass)     (G_TYPE_CHECK_CLASS_CAST ((klass), LIBMSI_TYPE_SUMMARY_INFO, LibmsiSummaryInfoClass))
+#define LIBMSI_IS_SUMMARY_INFO(obj)          (G_TYPE_CHECK_INSTANCE_TYPE ((obj), LIBMSI_TYPE_SUMMARY_INFO))
+#define LIBMSI_IS_SUMMARY_INFO_CLASS(klass)  (G_TYPE_CHECK_CLASS_TYPE ((klass), LIBMSI_TYPE_SUMMARY_INFO))
+#define LIBMSI_SUMMARY_INFO_GET_CLASS(obj)   (G_TYPE_INSTANCE_GET_CLASS ((obj), LIBMSI_TYPE_SUMMARY_INFO, LibmsiSummaryInfoClass))
+
+typedef struct _LibmsiSummaryInfoClass LibmsiSummaryInfoClass;
+
+struct _LibmsiSummaryInfoClass
+{
+    GObjectClass parent_class;
+};
+
+GType libmsi_summary_info_get_type (void) G_GNUC_CONST;
 
 LibmsiSummaryInfo *   libmsi_summary_info_new (LibmsiDatabase *database, unsigned update_count, GError **error);
 LibmsiResult          libmsi_summary_info_get_property (LibmsiSummaryInfo *, LibmsiPropertyType,unsigned *,int *,guint64*,char *,unsigned *);
 LibmsiResult          libmsi_summary_info_set_property (LibmsiSummaryInfo *, LibmsiPropertyType, unsigned, int, guint64*, const char *);
 LibmsiResult          libmsi_summary_info_persist (LibmsiSummaryInfo *);
 LibmsiResult          libmsi_summary_info_get_property_count (LibmsiSummaryInfo *,unsigned *);
+
+
+G_END_DECLS
 
 #endif /* _LIBMSI_SUMMARY_INFO_H */

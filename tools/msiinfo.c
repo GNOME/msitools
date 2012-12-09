@@ -178,7 +178,7 @@ static LibmsiResult print_strings_from_query(LibmsiQuery *query)
         }
 
         puts(name);
-        libmsi_unref(rec);
+        g_object_unref(rec);
     }
 
     if (r == LIBMSI_RESULT_NO_MORE_ITEMS) {
@@ -217,8 +217,8 @@ static int cmd_streams(struct Command *cmd, int argc, char **argv)
         print_libmsi_error(r);
     }
 
-    libmsi_unref(query);
-    libmsi_unref(db);
+    g_object_unref(query);
+    g_object_unref(db);
 
     return 0;
 }
@@ -253,8 +253,8 @@ static int cmd_tables(struct Command *cmd, int argc, char **argv)
         print_libmsi_error(r);
     }
 
-    libmsi_unref(query);
-    libmsi_unref(db);
+    g_object_unref(query);
+    g_object_unref(db);
 
     return 0;
 }
@@ -343,8 +343,8 @@ static int cmd_suminfo(struct Command *cmd, int argc, char **argv)
     print_suminfo(si, MSI_PID_APPNAME, "Application");
     print_suminfo(si, MSI_PID_SECURITY, "Security");
 
-    libmsi_unref(db);
-    libmsi_unref(si);
+    g_object_unref(db);
+    g_object_unref(si);
 
     return 0;
 }
@@ -388,7 +388,7 @@ static int cmd_extract(struct Command *cmd, int argc, char **argv)
     rec = libmsi_record_new(1);
     libmsi_record_set_string(rec, 1, argv[2]);
     r = libmsi_query_execute(query, rec);
-    libmsi_unref(rec);
+    g_object_unref(rec);
     if (r) {
         print_libmsi_error(r);
     }
@@ -417,9 +417,9 @@ static int cmd_extract(struct Command *cmd, int argc, char **argv)
         size -= bufsize;
     }
 
-    libmsi_unref(rec);
-    libmsi_unref(query);
-    libmsi_unref(db);
+    g_object_unref(rec);
+    g_object_unref(query);
+    g_object_unref(db);
 
     return 0;
 }
@@ -644,7 +644,7 @@ static unsigned export_sql( LibmsiDatabase *db, const char *table)
     while ((r = libmsi_query_fetch(query, &rec)) == LIBMSI_RESULT_SUCCESS) {
         unsigned size = PATH_MAX;
         r = export_insert(table, name, type, rec);
-        libmsi_unref(rec);
+        g_object_unref(rec);
         if (r) {
             break;
         }
@@ -655,10 +655,10 @@ static unsigned export_sql( LibmsiDatabase *db, const char *table)
     }
 
 done:
-    libmsi_unref(name);
-    libmsi_unref(type);
-    libmsi_unref(keys);
-    libmsi_unref(query);
+    g_object_unref(name);
+    g_object_unref(type);
+    g_object_unref(keys);
+    g_object_unref(query);
     return r;
 }
 
@@ -666,10 +666,10 @@ static int cmd_export(struct Command *cmd, int argc, char **argv)
 {
     LibmsiDatabase *db = NULL;
     LibmsiResult r;
-    bool sql = false;
+    gboolean sql = FALSE;
 
     if (!strcmp(argv[1], "-s")) {
-        sql = true;
+        sql = TRUE;
         argc--;
         argv++;
     }
@@ -696,7 +696,7 @@ static int cmd_export(struct Command *cmd, int argc, char **argv)
         print_libmsi_error(r);
     }
 
-    libmsi_unref(db);
+    g_object_unref(db);
 
     return 0;
 }
@@ -782,6 +782,7 @@ int main(int argc, char **argv)
 {
     struct Command *cmd = NULL;
 
+    g_type_init();
     program_name = get_basename(argv[0]);
 
     if (argc == 1) {

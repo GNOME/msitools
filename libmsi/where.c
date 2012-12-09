@@ -339,7 +339,7 @@ static unsigned where_view_set_row( LibmsiView *view, unsigned row, LibmsiRecord
         if (r == LIBMSI_RESULT_SUCCESS)
             r = table->view->ops->set_row(table->view, rows[table->table_index], reduced, reduced_mask);
 
-        msiobj_release(&reduced->hdr);
+        g_object_unref(reduced);
     }
     while ((table = table->next));
     return r;
@@ -901,7 +901,7 @@ static unsigned where_view_delete( LibmsiView *view )
     msi_free(wv->order_info);
     wv->order_info = NULL;
 
-    msiobj_release( &wv->db->hdr );
+    g_object_unref(wv->db);
     msi_free( wv );
 
     return LIBMSI_RESULT_SUCCESS;
@@ -1112,8 +1112,7 @@ unsigned where_view_create( LibmsiDatabase *db, LibmsiView **view, WCHAR *tables
     
     /* fill the structure */
     wv->view.ops = &where_ops;
-    msiobj_addref( &db->hdr );
-    wv->db = db;
+    wv->db = g_object_ref(db);
     wv->cond = cond;
 
     while (*tables)
