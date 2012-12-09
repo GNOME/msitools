@@ -254,7 +254,7 @@ unsigned msi_view_get_row(LibmsiDatabase *db, LibmsiView *view, unsigned row, Li
     if (row >= row_count)
         return LIBMSI_RESULT_NO_MORE_ITEMS;
 
-    *rec = libmsi_record_create(col_count);
+    *rec = libmsi_record_new(col_count);
     if (!*rec)
         return LIBMSI_RESULT_FUNCTION_FAILED;
 
@@ -469,7 +469,7 @@ unsigned _libmsi_query_get_column_info( LibmsiQuery *query, LibmsiColInfo info, 
     if( !count )
         return LIBMSI_RESULT_INVALID_PARAMETER;
 
-    rec = libmsi_record_create( count );
+    rec = libmsi_record_new( count );
     if( !rec )
         return LIBMSI_RESULT_FUNCTION_FAILED;
 

@@ -854,7 +854,7 @@ unsigned msi_create_table( LibmsiDatabase *db, const WCHAR *name, column_info *c
     if( r )
         goto err;
 
-    rec = libmsi_record_create( 1 );
+    rec = libmsi_record_new( 1 );
     if( !rec )
         goto err;
 
@@ -885,7 +885,7 @@ unsigned msi_create_table( LibmsiDatabase *db, const WCHAR *name, column_info *c
         if( r )
             goto err;
 
-        rec = libmsi_record_create( 4 );
+        rec = libmsi_record_new( 4 );
         if( !rec )
             goto err;
 
@@ -1307,7 +1307,7 @@ static unsigned _libmsi_add_stream( LibmsiDatabase *db, const WCHAR *name, IStre
 
     TRACE("%p %s %p\n", db, debugstr_w(name), data);
 
-    rec = libmsi_record_create( 2 );
+    rec = libmsi_record_new( 2 );
     if ( !rec )
         return LIBMSI_RESULT_OUTOFMEMORY;
 
@@ -1881,7 +1881,7 @@ static unsigned table_view_remove_column(LibmsiView *view, const WCHAR *table, u
     LibmsiView *columns = NULL;
     unsigned row, r;
 
-    rec = libmsi_record_create(2);
+    rec = libmsi_record_new(2);
     if (!rec)
         return LIBMSI_RESULT_OUTOFMEMORY;
 
@@ -1953,7 +1953,7 @@ static unsigned table_view_add_column(LibmsiView *view, const WCHAR *table, unsi
     LibmsiRecord *rec;
     unsigned r, i;
 
-    rec = libmsi_record_create(4);
+    rec = libmsi_record_new(4);
     if (!rec)
         return LIBMSI_RESULT_OUTOFMEMORY;
 
@@ -2004,7 +2004,7 @@ static unsigned table_view_drop(LibmsiView *view)
             return r;
     }
 
-    rec = libmsi_record_create(1);
+    rec = libmsi_record_new(1);
     if (!rec)
         return LIBMSI_RESULT_OUTOFMEMORY;
 
@@ -2229,7 +2229,7 @@ static LibmsiRecord *msi_get_transform_record( const LibmsiTableView *tv, const 
     mask = rawdata[0] | (rawdata[1] << 8);
     rawdata += 2;
 
-    rec = libmsi_record_create( tv->num_cols );
+    rec = libmsi_record_new( tv->num_cols );
     if( !rec )
         return rec;
 

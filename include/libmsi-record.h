@@ -21,7 +21,7 @@
 
 #include "libmsi-types.h"
 
-LibmsiRecord *    libmsi_record_create (guint count);
+LibmsiRecord *    libmsi_record_new (guint count);
 LibmsiResult      libmsi_record_clear_data (LibmsiRecord *);
 LibmsiResult      libmsi_record_set_int (LibmsiRecord *,unsigned,int);
 LibmsiResult      libmsi_record_set_string (LibmsiRecord *,unsigned,const char *);

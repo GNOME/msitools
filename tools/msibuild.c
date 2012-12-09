@@ -167,7 +167,7 @@ static int add_stream(const char *stream, const char *file)
     LibmsiRecord *rec;
     LibmsiQuery *query;
 
-    rec = libmsi_record_create(2);
+    rec = libmsi_record_new(2);
     libmsi_record_set_string(rec, 1, stream);
     r = libmsi_record_load_stream(rec, 2, file);
     if (r != LIBMSI_RESULT_SUCCESS)

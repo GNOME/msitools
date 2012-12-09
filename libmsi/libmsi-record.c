@@ -70,7 +70,7 @@ void _libmsi_record_destroy( LibmsiObject *arg )
         _libmsi_free_field( &rec->fields[i] );
 }
 
-LibmsiRecord *libmsi_record_create( unsigned cParams )
+LibmsiRecord *libmsi_record_new( unsigned cParams )
 {
     LibmsiRecord *rec;
     unsigned len;
@@ -657,7 +657,7 @@ LibmsiRecord *_libmsi_record_clone(LibmsiRecord *rec)
     unsigned r, i, count;
 
     count = libmsi_record_get_field_count(rec);
-    clone = libmsi_record_create(count);
+    clone = libmsi_record_new(count);
     if (!clone)
         return NULL;
 

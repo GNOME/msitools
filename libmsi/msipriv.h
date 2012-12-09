@@ -120,7 +120,7 @@ typedef struct _LibmsiField
 typedef struct _LibmsiRecord
 {
     LibmsiObject hdr;
-    unsigned count;       /* as passed to libmsi_record_create */
+    unsigned count;       /* as passed to libmsi_record_new */
     LibmsiField fields[1]; /* nb. array size is count+1 */
 } LibmsiRecord;
 

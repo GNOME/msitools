@@ -1174,7 +1174,7 @@ static unsigned construct_record(unsigned num_columns, WCHAR **types,
 {
     unsigned i;
 
-    *rec = libmsi_record_create(num_columns);
+    *rec = libmsi_record_new(num_columns);
     if (!*rec)
         return LIBMSI_RESULT_OUTOFMEMORY;
 
@@ -2540,7 +2540,7 @@ unsigned _libmsi_database_get_primary_keys( LibmsiDatabase *db,
         TRACE("Found %d primary keys\n", info.n );
 
         /* allocate a record and fill in the names of the tables */
-        info.rec = libmsi_record_create( info.n );
+        info.rec = libmsi_record_new( info.n );
         info.n = 0;
         r = _libmsi_query_iterate_records( query, 0, msi_primary_key_iterator, &info );
         if( r == LIBMSI_RESULT_SUCCESS )

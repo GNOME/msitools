@@ -406,7 +406,7 @@ static void test_msiinsert(void)
     ok(r == LIBMSI_RESULT_BAD_QUERY_SYNTAX, "libmsi_database_open_query failed\n");
 
     /* construct a record to insert */
-    hrec = libmsi_record_create(4);
+    hrec = libmsi_record_new(4);
     r = libmsi_record_set_int(hrec, 1, 2);
     ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_record_set_int failed\n");
     r = libmsi_record_set_string(hrec, 2, "Adam");
@@ -480,7 +480,7 @@ static unsigned try_insert_query( LibmsiDatabase *hdb, const char *szQuery )
     LibmsiRecord *hrec = 0;
     unsigned r;
 
-    hrec = libmsi_record_create( 1 );
+    hrec = libmsi_record_new( 1 );
     libmsi_record_set_string( hrec, 1, "Hello");
 
     r = try_query_param( hdb, szQuery, hrec );
@@ -1208,7 +1208,7 @@ static void test_streamtable(void)
     /* insert a file into the _Streams table */
     create_file( "test.txt" );
 
-    rec = libmsi_record_create( 2 );
+    rec = libmsi_record_new( 2 );
     libmsi_record_set_string( rec, 1, "data" );
 
     r = libmsi_record_load_stream( rec, 2, "test.txt" );
@@ -1231,7 +1231,7 @@ static void test_streamtable(void)
     /* insert another one */
     create_file( "test1.txt" );
 
-    rec = libmsi_record_create( 2 );
+    rec = libmsi_record_new( 2 );
     libmsi_record_set_string( rec, 1, "data1" );
 
     r = libmsi_record_load_stream( rec, 2, "test1.txt" );
@@ -1305,7 +1305,7 @@ static void test_streamtable(void)
 
     /* perform an update */
     create_file( "test2.txt" );
-    rec = libmsi_record_create( 1 );
+    rec = libmsi_record_new( 1 );
 
     r = libmsi_record_load_stream( rec, 1, "test2.txt" );
     ok( r == LIBMSI_RESULT_SUCCESS, "Failed to add stream data to the record: %d\n", r);
@@ -1389,7 +1389,7 @@ static void test_binary(void)
     ok( r == LIBMSI_RESULT_SUCCESS, "Cannot create Binary table: %d\n", r );
 
     create_file( "test.txt" );
-    rec = libmsi_record_create( 1 );
+    rec = libmsi_record_new( 1 );
     r = libmsi_record_load_stream( rec, 1, "test.txt" );
     ok( r == LIBMSI_RESULT_SUCCESS, "Failed to add stream data to the record: %d\n", r);
     unlink( "test.txt" );
@@ -1679,7 +1679,7 @@ static void test_where(void)
     ok( r == LIBMSI_RESULT_NO_MORE_ITEMS, "query failed: %d\n", r );
     libmsi_unref( rec );
 
-    rec = libmsi_record_create(1);
+    rec = libmsi_record_new(1);
     libmsi_record_set_string(rec, 1, "");
 
     sql = "SELECT * FROM `Media` WHERE `DiskPrompt` = ?";
@@ -2170,7 +2170,7 @@ static void test_markers(void)
     hdb = create_db();
     ok( hdb, "failed to create db\n");
 
-    rec = libmsi_record_create(3);
+    rec = libmsi_record_new(3);
     libmsi_record_set_string(rec, 1, "Table");
     libmsi_record_set_string(rec, 2, "Apples");
     libmsi_record_set_string(rec, 3, "Oranges");
@@ -2182,7 +2182,7 @@ static void test_markers(void)
     libmsi_unref(rec);
 
     /* try table name as marker */
-    rec = libmsi_record_create(1);
+    rec = libmsi_record_new(1);
     libmsi_record_set_string(rec, 1, "Fable");
     sql = "CREATE TABLE `?` ( `One` SHORT NOT NULL, `Two` CHAR(255) PRIMARY KEY `One`)";
     r = run_query(hdb, rec, sql);
@@ -2209,7 +2209,7 @@ static void test_markers(void)
     libmsi_unref(rec);
 
     /* try column names as markers */
-    rec = libmsi_record_create(2);
+    rec = libmsi_record_new(2);
     libmsi_record_set_string(rec, 1, "One");
     libmsi_record_set_string(rec, 2, "Two");
     sql = "CREATE TABLE `Mable` ( `?` SHORT NOT NULL, `?` CHAR(255) PRIMARY KEY `One`)";
@@ -2218,7 +2218,7 @@ static void test_markers(void)
     libmsi_unref(rec);
 
     /* try names with backticks */
-    rec = libmsi_record_create(3);
+    rec = libmsi_record_new(3);
     libmsi_record_set_string(rec, 1, "One");
     libmsi_record_set_string(rec, 2, "Two");
     libmsi_record_set_string(rec, 3, "One");
@@ -2238,7 +2238,7 @@ static void test_markers(void)
     libmsi_unref(rec);
 
     /* try one long marker */
-    rec = libmsi_record_create(1);
+    rec = libmsi_record_new(1);
     libmsi_record_set_string(rec, 1, "`One` SHORT NOT NULL, `Two` CHAR(255) PRIMARY KEY `One`");
     sql = "CREATE TABLE `Mable` ( ? )";
     r = run_query(hdb, rec, sql);
@@ -2246,7 +2246,7 @@ static void test_markers(void)
     libmsi_unref(rec);
 
     /* try all names as markers */
-    rec = libmsi_record_create(4);
+    rec = libmsi_record_new(4);
     libmsi_record_set_string(rec, 1, "Mable");
     libmsi_record_set_string(rec, 2, "One");
     libmsi_record_set_string(rec, 3, "Two");
@@ -2265,7 +2265,7 @@ static void test_markers(void)
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     /* try values as markers */
-    rec = libmsi_record_create(2);
+    rec = libmsi_record_new(2);
     libmsi_record_set_int(rec, 1, 4);
     libmsi_record_set_string(rec, 2, "hi");
     sql = "INSERT INTO `Table` ( `One`, `Two` ) VALUES ( ?, '?' )";
@@ -2274,7 +2274,7 @@ static void test_markers(void)
     libmsi_unref(rec);
 
     /* try column names and values as markers */
-    rec = libmsi_record_create(4);
+    rec = libmsi_record_new(4);
     libmsi_record_set_string(rec, 1, "One");
     libmsi_record_set_string(rec, 2, "Two");
     libmsi_record_set_int(rec, 3, 5);
@@ -2285,7 +2285,7 @@ static void test_markers(void)
     libmsi_unref(rec);
 
     /* try column names as markers */
-    rec = libmsi_record_create(2);
+    rec = libmsi_record_new(2);
     libmsi_record_set_string(rec, 1, "One");
     libmsi_record_set_string(rec, 2, "Two");
     sql = "INSERT INTO `Table` ( `?`, `?` ) VALUES ( 3, 'yellow' )";
@@ -2294,7 +2294,7 @@ static void test_markers(void)
     libmsi_unref(rec);
 
     /* try table name as a marker */
-    rec = libmsi_record_create(1);
+    rec = libmsi_record_new(1);
     libmsi_record_set_string(rec, 1, "Table");
     sql = "INSERT INTO `?` ( `One`, `Two` ) VALUES ( 2, 'green' )";
     r = run_query(hdb, rec, sql);
@@ -2302,7 +2302,7 @@ static void test_markers(void)
     libmsi_unref(rec);
 
     /* try table name and values as markers */
-    rec = libmsi_record_create(3);
+    rec = libmsi_record_new(3);
     libmsi_record_set_string(rec, 1, "Table");
     libmsi_record_set_int(rec, 2, 10);
     libmsi_record_set_string(rec, 3, "haha");
@@ -2312,7 +2312,7 @@ static void test_markers(void)
     libmsi_unref(rec);
 
     /* try all markers */
-    rec = libmsi_record_create(5);
+    rec = libmsi_record_new(5);
     libmsi_record_set_string(rec, 1, "Table");
     libmsi_record_set_string(rec, 1, "One");
     libmsi_record_set_string(rec, 1, "Two");
@@ -2324,7 +2324,7 @@ static void test_markers(void)
     libmsi_unref(rec);
 
     /* insert an integer as a string */
-    rec = libmsi_record_create(2);
+    rec = libmsi_record_new(2);
     libmsi_record_set_string(rec, 1, "11");
     libmsi_record_set_string(rec, 2, "hi");
     sql = "INSERT INTO `Table` ( `One`, `Two` ) VALUES ( ?, '?' )";
@@ -2333,7 +2333,7 @@ static void test_markers(void)
     libmsi_unref(rec);
 
     /* leave off the '' for the string */
-    rec = libmsi_record_create(2);
+    rec = libmsi_record_new(2);
     libmsi_record_set_int(rec, 1, 12);
     libmsi_record_set_string(rec, 2, "hi");
     sql = "INSERT INTO `Table` ( `One`, `Two` ) VALUES ( ?, ? )";
@@ -2620,7 +2620,7 @@ static void test_try_transform(void)
     r = run_query(hdb, 0, sql);
     ok(r == LIBMSI_RESULT_SUCCESS, "failed to add table\n");
 
-    hrec = libmsi_record_create(2);
+    hrec = libmsi_record_new(2);
     r = libmsi_record_set_int(hrec, 1, 2);
     ok(r == LIBMSI_RESULT_SUCCESS, "failed to set integer\n");
 
@@ -4157,7 +4157,7 @@ static void test_update(void)
     r = run_query(hdb, 0, sql);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
-    rec = libmsi_record_create(2);
+    rec = libmsi_record_new(2);
     libmsi_record_set_int(rec, 1, 8);
     libmsi_record_set_string(rec, 2, "two");
 
@@ -4731,7 +4731,7 @@ static void test_select_markers(void)
             "( `One`, `Two`, `Three` ) VALUES ( 'banana', 'three', 3 )");
     ok(r == LIBMSI_RESULT_SUCCESS, "cannot add file to the Media table: %d\n", r);
 
-    rec = libmsi_record_create(2);
+    rec = libmsi_record_new(2);
     libmsi_record_set_string(rec, 1, "apple");
     libmsi_record_set_string(rec, 2, "two");
 
@@ -4786,7 +4786,7 @@ static void test_select_markers(void)
     libmsi_query_close(query);
     libmsi_unref(query);
 
-    rec = libmsi_record_create(2);
+    rec = libmsi_record_new(2);
     libmsi_record_set_string(rec, 1, "one");
     libmsi_record_set_int(rec, 2, 1);
 
@@ -6195,7 +6195,7 @@ static void test_storages_table(void)
 
     create_storage("storage.bin");
 
-    hrec = libmsi_record_create(2);
+    hrec = libmsi_record_new(2);
     libmsi_record_set_string(hrec, 1, "stgname");
 
     r = libmsi_record_load_stream(hrec, 2, "storage.bin");
@@ -7020,7 +7020,7 @@ static void test_dbmerge(void)
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     create_file("binary.dat");
-    hrec = libmsi_record_create(1);
+    hrec = libmsi_record_new(1);
     libmsi_record_load_stream(hrec, 1, "binary.dat");
 
     sql = "INSERT INTO `One` ( `A`, `B` ) VALUES ( 1, ? )";
