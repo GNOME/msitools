@@ -226,7 +226,7 @@ LibmsiResult libmsi_record_set_int( LibmsiRecord *rec, unsigned iField, int iVal
     return LIBMSI_RESULT_SUCCESS;
 }
 
-bool libmsi_record_is_null( const LibmsiRecord *rec, unsigned iField )
+gboolean libmsi_record_is_null( const LibmsiRecord *rec, unsigned iField )
 {
     bool r = true;
 

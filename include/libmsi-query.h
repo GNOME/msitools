@@ -16,13 +16,15 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA
  */
 
-#ifndef _LIBMSI_H
-#define _LIBMSI_H
+#ifndef _LIBMSI_QUERY_H
+#define _LIBMSI_QUERY_H
 
-#include <libmsi-types.h>
-#include <libmsi-database.h>
-#include <libmsi-query.h>
-#include <libmsi-record.h>
-#include <libmsi-summary-info.h>
+#include "libmsi-types.h"
 
-#endif /* _LIBMSI_H */
+LibmsiResult      libmsi_query_fetch (LibmsiQuery *,LibmsiRecord **);
+LibmsiResult      libmsi_query_execute (LibmsiQuery *,LibmsiRecord *);
+LibmsiResult      libmsi_query_close (LibmsiQuery *);
+LibmsiDBError     libmsi_query_get_error (LibmsiQuery *,char *,unsigned *);
+LibmsiResult      libmsi_query_get_column_info (LibmsiQuery *, LibmsiColInfo, LibmsiRecord **);
+
+#endif /* _LIBMSI_QUERY_H */

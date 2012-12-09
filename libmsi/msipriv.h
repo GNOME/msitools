@@ -23,6 +23,8 @@
 #define __WINE_MSI_PRIVATE__
 
 #include <stdarg.h>
+#include <stdint.h>
+#include <stdbool.h>
 #include <glib.h>
 #include <gsf/gsf.h>
 
@@ -51,18 +53,18 @@
 
 #define MSITYPE_IS_BINARY(type) (((type) & ~MSITYPE_NULLABLE) == (MSITYPE_STRING|MSITYPE_VALID))
 
-struct LibmsiTable;
-typedef struct LibmsiTable LibmsiTable;
+struct _LibmsiTable;
+typedef struct _LibmsiTable LibmsiTable;
 
 struct string_table;
 typedef struct string_table string_table;
 
-struct LibmsiObject;
-typedef struct LibmsiObject LibmsiObject;
+struct _LibmsiObject;
+typedef struct _LibmsiObject LibmsiObject;
 
 typedef VOID (*msihandledestructor)( LibmsiObject * );
 
-struct LibmsiObject
+struct _LibmsiObject
 {
     unsigned magic;
     LONG refcount;
@@ -72,7 +74,7 @@ struct LibmsiObject
 #define MSI_INITIAL_MEDIA_TRANSFORM_OFFSET 10000
 #define MSI_INITIAL_MEDIA_TRANSFORM_DISKID 30000
 
-typedef struct LibmsiDatabase
+typedef struct _LibmsiDatabase
 {
     LibmsiObject hdr;
     IStorage *infile;
@@ -92,9 +94,9 @@ typedef struct LibmsiDatabase
     struct list storages;
 } LibmsiDatabase;
 
-typedef struct LibmsiView LibmsiView;
+typedef struct _LibmsiView LibmsiView;
 
-typedef struct LibmsiQuery
+typedef struct _LibmsiQuery
 {
     LibmsiObject hdr;
     LibmsiView *view;
@@ -104,7 +106,7 @@ typedef struct LibmsiQuery
 } LibmsiQuery;
 
 /* maybe we can use a Variant instead of doing it ourselves? */
-typedef struct LibmsiField
+typedef struct _LibmsiField
 {
     unsigned type;
     union
@@ -115,7 +117,7 @@ typedef struct LibmsiField
     } u;
 } LibmsiField;
 
-typedef struct LibmsiRecord
+typedef struct _LibmsiRecord
 {
     LibmsiObject hdr;
     unsigned count;       /* as passed to libmsi_record_create */
@@ -132,9 +134,9 @@ typedef struct _column_info
     struct _column_info *next;
 } column_info;
 
-typedef const struct LibmsiColumnHashEntry *MSIITERHANDLE;
+typedef const struct _LibmsiColumnHashEntry *MSIITERHANDLE;
 
-typedef struct LibmsiViewOps
+typedef struct _LibmsiViewOps
 {
     /*
      * fetch_int - reads one integer from {row,col} in the table
@@ -253,7 +255,7 @@ typedef struct LibmsiViewOps
     unsigned (*drop)( LibmsiView *view );
 } LibmsiViewOps;
 
-struct LibmsiView
+struct _LibmsiView
 {
     const LibmsiViewOps *ops;
     LibmsiDBError error;
@@ -272,7 +274,7 @@ enum LibmsiOLEVariantType
     OLEVT_FILETIME = 64,
 };
 
-typedef struct LibmsiOLEVariant
+typedef struct _LibmsiOLEVariant
 {
     enum LibmsiOLEVariantType vt;
     union {
@@ -282,7 +284,7 @@ typedef struct LibmsiOLEVariant
     };
 } LibmsiOLEVariant;
 
-typedef struct LibmsiSummaryInfo
+typedef struct _LibmsiSummaryInfo
 {
     LibmsiObject hdr;
     LibmsiDatabase *database;

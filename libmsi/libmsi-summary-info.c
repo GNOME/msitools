@@ -115,7 +115,7 @@ static unsigned read_dword( uint8_t *data, unsigned *ofs )
     return val;
 }
 
-static void parse_filetime( const WCHAR *str, uint64_t *ft )
+static void parse_filetime( const WCHAR *str, guint64 *ft )
 {
     struct tm tm;
     time_t t;
@@ -219,7 +219,7 @@ static void read_properties_from_data( LibmsiOLEVariant *prop, uint8_t *data, un
                 break;
             }
             property->filetime = read_dword(data, &dwOffset);
-            property->filetime |= (uint64_t)read_dword(data, &dwOffset) << 32;
+            property->filetime |= (guint64)read_dword(data, &dwOffset) << 32;
             break;
         case OLEVT_LPSTR:
             len = read_dword(data, &dwOffset);
@@ -345,7 +345,7 @@ static unsigned write_dword( uint8_t *data, unsigned ofs, unsigned val )
     return 4;
 }
 
-static unsigned write_filetime( uint8_t *data, unsigned ofs, const uint64_t *ft )
+static unsigned write_filetime( uint8_t *data, unsigned ofs, const guint64 *ft )
 {
     write_dword( data, ofs, (*ft) & 0xFFFFFFFFUL );
     write_dword( data, ofs + 4, (*ft) >> 32 );
@@ -522,7 +522,7 @@ LibmsiResult libmsi_summary_info_get_property_count(LibmsiSummaryInfo *si, unsig
 
 LibmsiResult libmsi_summary_info_get_property(
       LibmsiSummaryInfo *si, unsigned uiProperty, unsigned *puiDataType, int *pintvalue,
-      uint64_t *pftValue, char *szValueBuf, unsigned *pcchValueBuf)
+      guint64 *pftValue, char *szValueBuf, unsigned *pcchValueBuf)
 {
     LibmsiOLEVariant *prop;
     unsigned ret = LIBMSI_RESULT_SUCCESS;
@@ -589,7 +589,7 @@ LibmsiResult libmsi_summary_info_get_property(
 }
 
 static LibmsiResult _libmsi_summary_info_set_property( LibmsiSummaryInfo *si, unsigned uiProperty,
-               unsigned type, int intvalue, uint64_t* pftValue, const char *szValue )
+               unsigned type, int intvalue, guint64* pftValue, const char *szValue )
 {
     LibmsiOLEVariant *prop;
     unsigned len;
@@ -644,7 +644,7 @@ end:
 }
 
 LibmsiResult libmsi_summary_info_set_property( LibmsiSummaryInfo *si, unsigned uiProperty,
-               unsigned uiDataType, int intvalue, uint64_t* pftValue, const char *szValue )
+               unsigned uiDataType, int intvalue, guint64* pftValue, const char *szValue )
 {
     int type;
 
@@ -680,7 +680,7 @@ LibmsiResult libmsi_summary_info_set_property( LibmsiSummaryInfo *si, unsigned u
 }
 
 static unsigned parse_prop( const WCHAR *prop, const WCHAR *value, unsigned *pid, int *int_value,
-                        uint64_t *ft_value, char **str_value )
+                        guint64 *ft_value, char **str_value )
 {
     *pid = atoiW( prop );
     switch (*pid)
@@ -738,7 +738,7 @@ unsigned msi_add_suminfo( LibmsiDatabase *db, WCHAR ***records, int num_records,
         {
             unsigned pid;
             int int_value = 0;
-            uint64_t ft_value;
+            guint64 ft_value;
             char *str_value = NULL;
 
             r = parse_prop( records[i][j], records[i][j + 1], &pid, &int_value, &ft_value, &str_value );

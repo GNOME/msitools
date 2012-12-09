@@ -1,4 +1,4 @@
-AM_CPPFLAGS = -I$(top_srcdir)/include -I$(srcdir) -I.
+AM_CPPFLAGS = -I$(top_srcdir)/include -I$(srcdir) -I. $(GLIB_CFLAGS)
 
 noinst_PROGRAMS = testrecord testdatabase
 

@@ -14,10 +14,10 @@ noinst_HEADERS = \
 	query.h \
 	unicode.h
 
-libmsi_la_SOURCES = alter.c create.c database.c delete.c distinct.c \
-	drop.c handle.c insert.c msiquery.c record.c select.c storages.c \
-	streams.c string.c suminfo.c table.c tokenize.c update.c where.c \
-	sql-parser.y \
+libmsi_la_SOURCES = libmsi-database.c libmsi-query.c libmsi-record.c \
+	libmsi-summary-info.c alter.c create.c delete.c distinct.c \
+	drop.c handle.c insert.c select.c storages.c streams.c \
+	string.c table.c tokenize.c update.c where.c sql-parser.y \
 	utf16/snprintfW.c utf16/sprintfW.c utf16/strtolW.c
 
 libmsi_la_LDFLAGS = -no-undefined -rpath $(libdir) \

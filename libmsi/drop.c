@@ -32,7 +32,7 @@
 #include "query.h"
 
 
-typedef struct LibmsiDropView
+typedef struct _LibmsiDropView
 {
     LibmsiView view;
     LibmsiDatabase *db;

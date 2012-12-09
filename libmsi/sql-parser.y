@@ -40,7 +40,7 @@
 static int sql_error(void *info, const char *str);
 
 
-typedef struct LibmsiSQLInput
+typedef struct _LibmsiSQLInput
 {
     LibmsiDatabase *db;
     const WCHAR *command;

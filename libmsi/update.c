@@ -36,7 +36,7 @@
 
 /* below is the query interface to a table */
 
-typedef struct LibmsiUpdateView
+typedef struct _LibmsiUpdateView
 {
     LibmsiView          view;
     LibmsiDatabase     *db;

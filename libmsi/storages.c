@@ -42,7 +42,7 @@ typedef struct tabSTORAGE
     unsigned str_index;
 } STORAGE;
 
-typedef struct LibmsiStorageView
+typedef struct _LibmsiStorageView
 {
     LibmsiView view;
     LibmsiDatabase *db;

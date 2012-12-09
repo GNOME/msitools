@@ -55,18 +55,18 @@ const char clsid_msi_patch[16] = { 0x86, 0x10, 0x0c, 0x00, 0x00, 0x00, 0x00, 0x0
 #define IS_INTMSIDBOPEN(x)      \
       ((x) >= LIBMSI_DB_OPEN_READONLY && (x) <= LIBMSI_DB_OPEN_CREATE)
 
-typedef struct LibmsiTransform {
+typedef struct _LibmsiTransform {
     struct list entry;
     IStorage *stg;
 } LibmsiTransform;
 
-typedef struct LibmsiStorage {
+typedef struct _LibmsiStorage {
     struct list entry;
     WCHAR *name;
     IStorage *stg;
 } LibmsiStorage;
 
-typedef struct LibmsiStream {
+typedef struct _LibmsiStream {
     struct list entry;
     WCHAR *name;
     IStream *stm;

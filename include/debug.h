@@ -22,15 +22,11 @@
 #define __WINE_WINE_DEBUG_H
 
 #include <stdarg.h>
+#include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
-#include <windef.h>
-#include <winbase.h>
-#include <winnls.h>
-#ifndef GUID_DEFINED
-#include <guiddef.h>
-#endif
+#include <glib.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -62,23 +58,6 @@ static inline const char *wine_dbgstr_an( const char * s, int n )
     if (!s) return "";
     return s;
 }
-static inline const char *wine_dbgstr_wn( const WCHAR *s, int n )
-{
-    static char *p_ret[10];
-    static int i;
-
-    char *ret;
-    unsigned len;
-
-    if (!s) return "";
-    i = (i + 1) % 10;
-    ret = p_ret[i];
-    len = WideCharToMultiByte( CP_ACP, 0, s, -1, NULL, 0, NULL, NULL);
-    ret = realloc( ret, len );
-    if (ret)
-        WideCharToMultiByte( CP_ACP, 0, s, -1, ret, len, NULL, NULL );
-    return ret;
-}
 
 static inline const char *wine_dbg_sprintf( const char *format, ...)
 {
@@ -90,17 +69,15 @@ static inline const char *wine_dbg_sprintf( const char *format, ...)
     va_list ap;
 
     va_start(ap, format);
-    len = _vscprintf(format, ap);
+    ret = g_strdup_vprintf(format, ap);
+    len = strlen(ret);
     va_end(ap);
 
     i = (i + 1) % 10;
-    ret = p_ret[i];
-    ret = realloc(ret, len + 1);
-
-    va_start(ap, format);
-    vsprintf(ret, format, ap);
-    va_end(ap);
-    return ret;
+    p_ret[i] = realloc(p_ret[i], len + 1);
+    strcpy(p_ret[i], ret);
+    g_free(ret);
+    return p_ret[i];
 }
 
 #define wine_dbg_printf(format,...) (printf(format, ## __VA_ARGS__), fflush(stdout))
@@ -112,38 +89,11 @@ static inline const char *wine_dbgstr_a( const char *s )
     return wine_dbgstr_an( s, -1 );
 }
 
-static inline const char *wine_dbgstr_w( const WCHAR *s )
+static inline const char *wine_dbgstr_guid( const uint8_t *id )
 {
-    return wine_dbgstr_wn( s, -1 );
-}
-
-static inline const char *wine_dbgstr_guid( const GUID *id )
-{
-    if (!id) return "(null)";
-    if (!((uintptr_t)id >> 16)) return wine_dbg_sprintf( "<guid-0x%04hx>", (WORD)(uintptr_t)id );
-    return wine_dbg_sprintf( "{%08x-%04x-%04x-%02x%02x-%02x%02x%02x%02x%02x%02x}",
-                             id->Data1, id->Data2, id->Data3,
-                             id->Data4[0], id->Data4[1], id->Data4[2], id->Data4[3],
-                             id->Data4[4], id->Data4[5], id->Data4[6], id->Data4[7] );
-}
-
-static inline const char *wine_dbgstr_point( const POINT *pt )
-{
-    if (!pt) return "(null)";
-    return wine_dbg_sprintf( "(%d,%d)", pt->x, pt->y );
-}
-
-static inline const char *wine_dbgstr_size( const SIZE *size )
-{
-    if (!size) return "(null)";
-    return wine_dbg_sprintf( "(%d,%d)", size->cx, size->cy );
-}
-
-static inline const char *wine_dbgstr_rect( const RECT *rect )
-{
-    if (!rect) return "(null)";
-    return wine_dbg_sprintf( "(%d,%d)-(%d,%d)", rect->left, rect->top,
-                             rect->right, rect->bottom );
+    return wine_dbg_sprintf( "{%02x%02x%02x%02x-%02x%02x-%02x%02x-%02x%02x-%02x%02x%02x%02x%02x%02x}",
+             id[0], id[1], id[2], id[3], id[4], id[5], id[6], id[7],
+             id[8], id[9], id[10], id[11], id[12], id[13], id[14], id[15]);
 }
 
 static inline const char *wine_dbgstr_longlong( unsigned long long ll )
@@ -156,10 +106,8 @@ static inline const char *wine_dbgstr_longlong( unsigned long long ll )
 /* Wine uses shorter names that are very likely to conflict with other software */
 
 static inline const char *debugstr_an( const char * s, int n ) { return wine_dbgstr_an( s, n ); }
-static inline const char *debugstr_wn( const WCHAR *s, int n ) { return wine_dbgstr_wn( s, n ); }
-static inline const char *debugstr_guid( const GUID *id )  { return wine_dbgstr_guid( id ); }
+static inline const char *debugstr_guid( const uint8_t *id )  { return wine_dbgstr_guid( id ); }
 static inline const char *debugstr_a( const char *s )  { return wine_dbgstr_an( s, -1 ); }
-static inline const char *debugstr_w( const WCHAR *s ) { return wine_dbgstr_wn( s, -1 ); }
 
 #undef ERR  /* Solaris got an 'ERR' define in <sys/reg.h> */
 #define TRACE(fmt, ...)     (void)0 // WINE_DPRINTF(TRACE, __func__, fmt, ## __VA_ARGS__)

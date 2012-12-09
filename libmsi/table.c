@@ -43,14 +43,14 @@
 
 static const WCHAR szDot[] = {'.',0};
 
-typedef struct LibmsiColumnHashEntry
+typedef struct _LibmsiColumnHashEntry
 {
-    struct LibmsiColumnHashEntry *next;
+    struct _LibmsiColumnHashEntry *next;
     unsigned value;
     unsigned row;
 } LibmsiColumnHashEntry;
 
-typedef struct LibmsiColumnInfo
+typedef struct _LibmsiColumnInfo
 {
     const WCHAR *tablename;
     unsigned    number;
@@ -62,7 +62,7 @@ typedef struct LibmsiColumnInfo
     LibmsiColumnHashEntry **hash_table;
 } LibmsiColumnInfo;
 
-struct LibmsiTable
+struct _LibmsiTable
 {
     uint8_t **data;
     bool *data_persistent;
@@ -1080,7 +1080,7 @@ bool table_view_exists( LibmsiDatabase *db, const WCHAR *name )
 
 /* below is the query interface to a table */
 
-typedef struct LibmsiTableView
+typedef struct _LibmsiTableView
 {
     LibmsiView        view;
     LibmsiDatabase   *db;
