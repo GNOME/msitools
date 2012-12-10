@@ -30,6 +30,8 @@
 #include <uuid.h>
 #endif
 
+#include "sqldelim.h"
+
 static void init_suminfo(LibmsiSummaryInfo *si)
 {
     libmsi_summary_info_set_property(si, MSI_PID_TITLE,
@@ -184,7 +186,27 @@ static int add_stream(const char *stream, const char *file)
     libmsi_unref(rec);
     libmsi_query_close(query);
     libmsi_unref(query);
-    return 0;
+    return r;
+}
+
+static int do_query(const char *sql, void *opaque)
+{
+    LibmsiResult r;
+    LibmsiQuery *query;
+
+    r = libmsi_database_open_query(db, sql, &query);
+    if (r != LIBMSI_RESULT_SUCCESS) {
+        fprintf(stderr, "failed to open query (%u)\n", r);
+        return r;
+    }
+
+    r = libmsi_query_execute(query, NULL);
+    if (r != LIBMSI_RESULT_SUCCESS)
+        fprintf(stderr, "failed to execute query (%u)\n", r);
+
+    libmsi_query_close(query);
+    libmsi_unref(query);
+    return r;
 }
 
 static void show_usage(void)
@@ -193,6 +215,7 @@ static void show_usage(void)
         "Usage: msibuild MSIFILE [OPTION]...\n"
         "Options:\n"
         "  -s name [author] [template] [uuid] Set summary information.\n"
+        "  -q query         Execute SQL query/queries.\n"
         "  -i table1.idt    Import one table into the database.\n"
         "  -a stream file   Add 'stream' to storage with contents of 'file'.\n"
         "\nExisting tables or streams will be overwritten. If package.msi does not exist a new file\n"
@@ -246,6 +269,22 @@ int main(int argc, char *argv[])
         case 'i':
             do {
                 ret = import_table(argv[1]);
+                if (ret) {
+                    break;
+                }
+                argc--, argv++;
+            } while (argv[1] && argv[1][0] != '-');
+            argc--, argv++;
+            break;
+        case 'q':
+            do {
+                ret = sql_get_statement(argv[1], do_query, NULL);
+                if (ret == 0) {
+                    ret = sql_get_statement("", do_query, NULL);
+                }
+                if (ret) {
+                    break;
+                }
                 argc--, argv++;
             } while (argv[1] && argv[1][0] != '-');
             argc--, argv++;

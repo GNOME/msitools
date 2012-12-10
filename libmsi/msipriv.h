@@ -127,7 +127,6 @@ typedef struct LibmsiField
     union
     {
         int iVal;
-        intptr_t pVal;
         char *szVal;
         GsfInput *stream;
     } u;
@@ -381,9 +380,7 @@ extern void _libmsi_record_destroy( LibmsiObject * );
 extern unsigned _libmsi_record_set_gsf_input( LibmsiRecord *, unsigned, GsfInput *);
 extern unsigned _libmsi_record_get_gsf_input( const LibmsiRecord *, unsigned, GsfInput **);
 extern const char *_libmsi_record_get_string_raw( const LibmsiRecord *, unsigned );
-extern unsigned _libmsi_record_set_int_ptr( LibmsiRecord *, unsigned, intptr_t );
 extern unsigned _libmsi_record_get_string( const LibmsiRecord *, unsigned, char *, unsigned *);
-extern intptr_t _libmsi_record_get_int_ptr( const LibmsiRecord *, unsigned );
 extern unsigned _libmsi_record_save_stream( const LibmsiRecord *, unsigned, char *, unsigned *);
 extern unsigned _libmsi_record_load_stream(LibmsiRecord *, unsigned, GsfInput *);
 extern unsigned _libmsi_record_load_stream_from_file( LibmsiRecord *, unsigned, const char *);
@@ -444,31 +441,25 @@ static const char szData[] = "Data";
 
 /* memory allocation macro functions */
 
-#if defined(__GNUC__) && ((__GNUC__ > 4) || ((__GNUC__ == 4) && (__GNUC_MINOR__ >= 3)))
-#define __WINE_ALLOC_SIZE(x) __attribute__((__alloc_size__(x)))
-#else
-#define __WINE_ALLOC_SIZE(x)
-#endif
-
-static void *msi_alloc( size_t len ) __WINE_ALLOC_SIZE(1);
+static void *msi_alloc( size_t len ) G_GNUC_ALLOC_SIZE(1);
 static inline void *msi_alloc( size_t len )
 {
     return malloc(len);
 }
 
-static void *msi_alloc_zero( size_t len ) __WINE_ALLOC_SIZE(1);
+static void *msi_alloc_zero( size_t len ) G_GNUC_ALLOC_SIZE(1);
 static inline void *msi_alloc_zero( size_t len )
 {
     return calloc(len, 1);
 }
 
-static void *msi_realloc( void *mem, size_t len ) __WINE_ALLOC_SIZE(2);
+static void *msi_realloc( void *mem, size_t len ) G_GNUC_ALLOC_SIZE(2);
 static inline void *msi_realloc( void *mem, size_t len )
 {
     return realloc(mem, len);
 }
 
-static void *msi_realloc_zero( void *mem, size_t oldlen, size_t len ) __WINE_ALLOC_SIZE(3);
+static void *msi_realloc_zero( void *mem, size_t oldlen, size_t len ) G_GNUC_ALLOC_SIZE(3);
 static inline void *msi_realloc_zero( void *mem, size_t oldlen, size_t len )
 {
     mem = realloc( mem, len );

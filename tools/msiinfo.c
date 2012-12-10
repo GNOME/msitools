@@ -217,6 +217,8 @@ static int cmd_streams(struct Command *cmd, int argc, char **argv)
 
     libmsi_unref(query);
     libmsi_unref(db);
+
+    return 0;
 }
 
 static int cmd_tables(struct Command *cmd, int argc, char **argv)
@@ -251,6 +253,8 @@ static int cmd_tables(struct Command *cmd, int argc, char **argv)
 
     libmsi_unref(query);
     libmsi_unref(db);
+
+    return 0;
 }
 
 static void print_suminfo(LibmsiSummaryInfo *si, int prop, const char *name)
@@ -339,6 +343,8 @@ static int cmd_suminfo(struct Command *cmd, int argc, char **argv)
 
     libmsi_unref(db);
     libmsi_unref(si);
+
+    return 0;
 }
 
 static void full_write(int fd, char *buf, size_t sz)
@@ -412,6 +418,8 @@ static int cmd_extract(struct Command *cmd, int argc, char **argv)
     libmsi_unref(rec);
     libmsi_unref(query);
     libmsi_unref(db);
+
+    return 0;
 }
 
 static unsigned export_create_table(const char *table, 
@@ -426,6 +434,12 @@ static unsigned export_create_table(const char *table,
     char type[30], name[100], size[20], extra[30];
     unsigned sz;
 
+    if (!strcmp(table, "_Tables") ||
+        !strcmp(table, "_Columns") ||
+        !strcmp(table, "_Streams") ||
+        !strcmp(table, "_Storages")) {
+        return 0;
+    }
 
     printf("CREATE TABLE `%s` (", table);
     for (i = 1; i <= num_columns; i++)
@@ -522,6 +536,10 @@ static unsigned export_insert(const char *table,
     printf("INSERT INTO `%s` (", table);
     for (i = 1; i <= num_columns; i++)
     {
+        if (libmsi_record_is_null(vals, i)) {
+            continue;
+        }
+
         sz = sizeof(name);
         r = libmsi_record_get_string(names, i, name, &sz);
         if (r) {
@@ -537,13 +555,12 @@ static unsigned export_insert(const char *table,
     printf(") VALUES (");
     for (i = 1; i <= num_columns; i++)
     {
-        if (i > 1) {
-            printf(", ");
+        if (libmsi_record_is_null(vals, i)) {
+            continue;
         }
 
-        if (libmsi_record_is_null(vals, i)) {
-            printf("NULL");
-            continue;
+        if (i > 1) {
+            printf(", ");
         }
 
         sz = sizeof(type);
@@ -678,6 +695,8 @@ static int cmd_export(struct Command *cmd, int argc, char **argv)
     }
 
     libmsi_unref(db);
+
+    return 0;
 }
 
 static int cmd_version(struct Command *cmd, int argc, char **argv)
@@ -696,6 +715,8 @@ static int cmd_help(struct Command *cmd, int argc, char **argv)
     }
 
     usage(stdout);
+
+    return 0;
 }
 
 static struct Command cmds[] = {
