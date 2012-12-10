@@ -35,7 +35,7 @@ typedef struct tabSTREAM
     GsfInput *stream;
 } STREAM;
 
-typedef struct LibmsiStreamsView
+typedef struct _LibmsiStreamsView
 {
     LibmsiView view;
     LibmsiDatabase *db;

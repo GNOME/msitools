@@ -40,7 +40,7 @@
  * that's a bug in the way I'm running the query, or a just a bug.
  */
 
-typedef struct LibmsiDeleteView
+typedef struct _LibmsiDeleteView
 {
     LibmsiView        view;
     LibmsiDatabase   *db;

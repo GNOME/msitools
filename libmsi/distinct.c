@@ -27,16 +27,16 @@
 #include "query.h"
 
 
-typedef struct LibmsiDistinctSet
+typedef struct _LibmsiDistinctSet
 {
     unsigned val;
     unsigned count;
     unsigned row;
-    struct LibmsiDistinctSet *nextrow;
-    struct LibmsiDistinctSet *nextcol;
+    struct _LibmsiDistinctSet *nextrow;
+    struct _LibmsiDistinctSet *nextcol;
 } LibmsiDistinctSet;
 
-typedef struct LibmsiDistinctView
+typedef struct _LibmsiDistinctView
 {
     LibmsiView        view;
     LibmsiDatabase   *db;

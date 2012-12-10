@@ -30,9 +30,9 @@
 
 
 /* below is the query interface to a table */
-typedef struct LibmsiRowEntry
+typedef struct _LibmsiRowEntry
 {
-    struct LibmsiWhereView *wv; /* used during sorting */
+    struct _LibmsiWhereView *wv; /* used during sorting */
     unsigned values[1];
 } LibmsiRowEntry;
 
@@ -45,14 +45,14 @@ typedef struct tagJOINTABLE
     unsigned table_index;
 } JOINTABLE;
 
-typedef struct LibmsiOrderInfo
+typedef struct _LibmsiOrderInfo
 {
     unsigned col_count;
     unsigned error;
     union ext_column columns[1];
 } LibmsiOrderInfo;
 
-typedef struct LibmsiWhereView
+typedef struct _LibmsiWhereView
 {
     LibmsiView        view;
     LibmsiDatabase   *db;

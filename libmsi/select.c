@@ -30,7 +30,7 @@
 
 /* below is the query interface to a table */
 
-typedef struct LibmsiSelectView
+typedef struct _LibmsiSelectView
 {
     LibmsiView        view;
     LibmsiDatabase   *db;

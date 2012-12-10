@@ -16,13 +16,15 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA
  */
 
-#ifndef _LIBMSI_H
-#define _LIBMSI_H
+#ifndef _LIBMSI_SUMMARY_INFO_H
+#define _LIBMSI_SUMMARY_INFO_H
 
-#include <libmsi-types.h>
-#include <libmsi-database.h>
-#include <libmsi-query.h>
-#include <libmsi-record.h>
-#include <libmsi-summary-info.h>
+#include "libmsi-types.h"
 
-#endif /* _LIBMSI_H */
+LibmsiSummaryInfo *   libmsi_summary_info_new (LibmsiDatabase *database, unsigned update_count, GError **error);
+LibmsiResult          libmsi_summary_info_get_property (LibmsiSummaryInfo *, LibmsiPropertyType,unsigned *,int *,guint64*,char *,unsigned *);
+LibmsiResult          libmsi_summary_info_set_property (LibmsiSummaryInfo *, LibmsiPropertyType, unsigned, int, guint64*, const char *);
+LibmsiResult          libmsi_summary_info_persist (LibmsiSummaryInfo *);
+LibmsiResult          libmsi_summary_info_get_property_count (LibmsiSummaryInfo *,unsigned *);
+
+#endif /* _LIBMSI_SUMMARY_INFO_H */
