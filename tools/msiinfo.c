@@ -385,7 +385,7 @@ static int cmd_extract(struct Command *cmd, int argc, char **argv)
         print_libmsi_error(r);
     }
 
-    rec = libmsi_record_create(1);
+    rec = libmsi_record_new(1);
     libmsi_record_set_string(rec, 1, argv[2]);
     r = libmsi_query_execute(query, rec);
     libmsi_unref(rec);

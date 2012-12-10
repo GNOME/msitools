@@ -115,7 +115,7 @@ static unsigned select_view_set_row( LibmsiView *view, unsigned row, LibmsiRecor
         return r;
 
     /* expand the record to the right size for the underlying table */
-    expanded = libmsi_record_create( col_count );
+    expanded = libmsi_record_new( col_count );
     if ( !expanded )
         return LIBMSI_RESULT_FUNCTION_FAILED;
 
@@ -152,7 +152,7 @@ static unsigned select_view_insert_row( LibmsiView *view, LibmsiRecord *record, 
     if (r != LIBMSI_RESULT_SUCCESS)
         return r;
 
-    outrec = libmsi_record_create( table_cols + 1 );
+    outrec = libmsi_record_new( table_cols + 1 );
 
     for (i=0; i<sv->num_cols; i++)
     {

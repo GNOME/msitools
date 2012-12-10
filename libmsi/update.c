@@ -72,7 +72,7 @@ static unsigned update_view_execute( LibmsiView *view, LibmsiRecord *record )
 
         if (where_count > 0)
         {
-            where = libmsi_record_create(where_count);
+            where = libmsi_record_new(where_count);
 
             if (where)
                 for (i = 1; i <= where_count; i++)

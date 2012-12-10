@@ -77,9 +77,9 @@ static void test_msirecord(void)
     ok(r == LIBMSI_RESULT_INVALID_HANDLE, "libmsi_record_set_int returned wrong error\n");
     r = libmsi_record_set_int(0,-1,0);
     ok(r == LIBMSI_RESULT_INVALID_HANDLE, "libmsi_record_set_int returned wrong error\n");
-    h = libmsi_record_create(-1);
+    h = libmsi_record_new(-1);
     ok(h==0, "created record with -1 elements\n");
-    h = libmsi_record_create(0x10000);
+    h = libmsi_record_new(0x10000);
     ok(h==0, "created record with 0x10000 elements\n");
     r = libmsi_record_clear_data(0);
     ok(r == LIBMSI_RESULT_INVALID_HANDLE, "libmsi_record_clear_data returned wrong error\n");
@@ -88,7 +88,7 @@ static void test_msirecord(void)
 
 
     /* check behaviour of a record with 0 elements */
-    h = libmsi_record_create(0);
+    h = libmsi_record_new(0);
     ok(h!=0, "couldn't create record with zero elements\n");
     r = libmsi_record_get_field_count(h);
     ok(r==0, "field count should be zero\n");
@@ -303,7 +303,7 @@ static void test_msirecord(void)
         return;
 
     /* streams can't be inserted in field 0 for some reason */
-    h = libmsi_record_create(2);
+    h = libmsi_record_new(2);
     ok(h, "couldn't create a two field record\n");
     r = libmsi_record_load_stream(h, 0, filename);
     ok(r == LIBMSI_RESULT_INVALID_PARAMETER, "added stream to field 0\n");
@@ -366,7 +366,7 @@ static void test_MsiRecordGetString(void)
     unsigned sz;
     unsigned r;
 
-    rec = libmsi_record_create(2);
+    rec = libmsi_record_new(2);
     ok(rec != 0, "Expected a valid handle\n");
 
     sz = sizeof(buf);
@@ -390,7 +390,7 @@ static void test_MsiRecordGetString(void)
 
     libmsi_unref(rec);
 
-    rec = libmsi_record_create(1);
+    rec = libmsi_record_new(1);
     ok(rec != 0, "Expected a valid handle\n");
 
     r = libmsi_record_set_int(rec, 1, 5);
@@ -427,7 +427,7 @@ static void test_MsiRecordGetInteger(void)
     int val;
     unsigned r;
 
-    rec = libmsi_record_create(1);
+    rec = libmsi_record_new(1);
     ok(rec != 0, "Expected a valid handle\n");
 
     r = libmsi_record_set_string(rec, 1, "5");
@@ -461,7 +461,7 @@ static void test_fieldzero(void)
     unsigned sz;
     unsigned r;
 
-    rec = libmsi_record_create(1);
+    rec = libmsi_record_new(1);
     ok(rec != 0, "Expected a valid handle\n");
 
     r = libmsi_record_get_integer(rec, 0);

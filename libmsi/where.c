@@ -316,7 +316,7 @@ static unsigned where_view_set_row( LibmsiView *view, unsigned row, LibmsiRecord
             continue;
         }
 
-        reduced = libmsi_record_create(col_count);
+        reduced = libmsi_record_new(col_count);
         if (!reduced)
             return LIBMSI_RESULT_FUNCTION_FAILED;
 

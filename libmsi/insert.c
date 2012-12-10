@@ -60,7 +60,7 @@ LibmsiRecord *msi_query_merge_record( unsigned fields, const column_info *vl, Li
     LibmsiRecord *merged;
     unsigned wildcard_count = 1, i;
 
-    merged = libmsi_record_create( fields );
+    merged = libmsi_record_new( fields );
     for( i=1; i <= fields; i++ )
     {
         if( !vl )
@@ -137,7 +137,7 @@ static unsigned msi_arrange_record(LibmsiInsertView *iv, LibmsiRecord **values)
     if (col_count == val_count && msi_columns_in_order(iv, col_count))
         return LIBMSI_RESULT_SUCCESS;
 
-    padded = libmsi_record_create(col_count);
+    padded = libmsi_record_new(col_count);
     if (!padded)
         return LIBMSI_RESULT_OUTOFMEMORY;
 
