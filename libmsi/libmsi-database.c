@@ -1263,14 +1263,16 @@ static unsigned _libmsi_database_import(LibmsiDatabase *db, const char *folder, 
 {
     unsigned r = LIBMSI_RESULT_OUTOFMEMORY;
     unsigned len, i;
-    unsigned num_labels, num_types;
-    unsigned num_columns, num_records = 0;
-    char *path;
-    WCHAR **columns;
-    WCHAR **types;
-    WCHAR **labels;
+    unsigned num_labels = 0;
+    unsigned num_types = 0;
+    unsigned num_columns = 0;
+    unsigned num_records = 0;
+    char *path = NULL;
+    WCHAR **columns = NULL;
+    WCHAR **types = NULL;
+    WCHAR **labels = NULL;
     WCHAR *ptr;
-    WCHAR *data;
+    WCHAR *data = NULL;
     WCHAR ***records = NULL;
     WCHAR ***temp_records;
 
