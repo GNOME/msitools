@@ -324,24 +324,24 @@ static int cmd_suminfo(struct Command *cmd, int argc, char **argv)
         print_libmsi_error(r);
     }
 
-    print_suminfo(si, MSI_PID_TITLE, "Title");
-    print_suminfo(si, MSI_PID_SUBJECT, "Subject");
-    print_suminfo(si, MSI_PID_AUTHOR, "Author");
-    print_suminfo(si, MSI_PID_KEYWORDS, "Keywords");
-    print_suminfo(si, MSI_PID_COMMENTS, "Comments");
-    print_suminfo(si, MSI_PID_TEMPLATE, "Template");
-    print_suminfo(si, MSI_PID_LASTAUTHOR, "Last author");
-    print_suminfo(si, MSI_PID_REVNUMBER, "Revision number");
-    print_suminfo(si, MSI_PID_EDITTIME, "Edittime");
-    print_suminfo(si, MSI_PID_LASTPRINTED, "Last printed");
-    print_suminfo(si, MSI_PID_CREATE_DTM, "Created");
-    print_suminfo(si, MSI_PID_LASTSAVE_DTM, "Last saved");
-    print_suminfo(si, MSI_PID_MSIVERSION, "Version");
-    print_suminfo(si, MSI_PID_MSISOURCE, "Source");
-    print_suminfo(si, MSI_PID_MSIRESTRICT, "Restrict");
-    print_suminfo(si, MSI_PID_THUMBNAIL, "Thumbnail");
-    print_suminfo(si, MSI_PID_APPNAME, "Application");
-    print_suminfo(si, MSI_PID_SECURITY, "Security");
+    print_suminfo(si, LIBMSI_PROPERTY_TITLE, "Title");
+    print_suminfo(si, LIBMSI_PROPERTY_SUBJECT, "Subject");
+    print_suminfo(si, LIBMSI_PROPERTY_AUTHOR, "Author");
+    print_suminfo(si, LIBMSI_PROPERTY_KEYWORDS, "Keywords");
+    print_suminfo(si, LIBMSI_PROPERTY_COMMENTS, "Comments");
+    print_suminfo(si, LIBMSI_PROPERTY_TEMPLATE, "Template");
+    print_suminfo(si, LIBMSI_PROPERTY_LASTAUTHOR, "Last author");
+    print_suminfo(si, LIBMSI_PROPERTY_UUID, "Revision number (UUID)");
+    print_suminfo(si, LIBMSI_PROPERTY_EDITTIME, "Edittime");
+    print_suminfo(si, LIBMSI_PROPERTY_LASTPRINTED, "Last printed");
+    print_suminfo(si, LIBMSI_PROPERTY_CREATED_TM, "Created");
+    print_suminfo(si, LIBMSI_PROPERTY_LASTSAVED_TM, "Last saved");
+    print_suminfo(si, LIBMSI_PROPERTY_VERSION, "Version");
+    print_suminfo(si, LIBMSI_PROPERTY_SOURCE, "Source");
+    print_suminfo(si, LIBMSI_PROPERTY_RESTRICT, "Restrict");
+    print_suminfo(si, LIBMSI_PROPERTY_THUMBNAIL, "Thumbnail");
+    print_suminfo(si, LIBMSI_PROPERTY_APPNAME, "Application");
+    print_suminfo(si, LIBMSI_PROPERTY_SECURITY, "Security");
 
     g_object_unref(db);
     g_object_unref(si);

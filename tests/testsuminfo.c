@@ -75,7 +75,7 @@ static void test_suminfo(void)
     r = libmsi_summary_info_get_property(hsuminfo, -1, NULL, NULL, NULL, 0, NULL);
     ok(r == LIBMSI_RESULT_UNKNOWN_PROPERTY, "libmsi_summary_info_get_property wrong error\n");
 
-    r = libmsi_summary_info_get_property(hsuminfo, MSI_PID_SECURITY+1, NULL, NULL, NULL, 0, NULL);
+    r = libmsi_summary_info_get_property(hsuminfo, LIBMSI_PROPERTY_SECURITY+1, NULL, NULL, NULL, 0, NULL);
     ok(r == LIBMSI_RESULT_UNKNOWN_PROPERTY, "libmsi_summary_info_get_property wrong error\n");
 
     type = -1;
@@ -93,22 +93,22 @@ static void test_suminfo(void)
     buf[0]='x';
     buf[1]=0;
     sz = 0x10;
-    r = libmsi_summary_info_get_property(hsuminfo, MSI_PID_REVNUMBER, &type, &val, NULL, buf, &sz);
+    r = libmsi_summary_info_get_property(hsuminfo, LIBMSI_PROPERTY_UUID, &type, &val, NULL, buf, &sz);
     ok(r == LIBMSI_RESULT_SUCCESS, "getpropcount failed\n");
     ok(buf[0]=='x', "cleared buffer\n");
     ok(sz == 0x10, "count wasn't zero\n");
     ok(type == LIBMSI_PROPERTY_TYPE_EMPTY, "should be empty\n");
 
-    r = libmsi_summary_info_set_property(hsuminfo, MSI_PID_TITLE, LIBMSI_PROPERTY_TYPE_STRING, 0, NULL, "Mike");
+    r = libmsi_summary_info_set_property(hsuminfo, LIBMSI_PROPERTY_TITLE, LIBMSI_PROPERTY_TYPE_STRING, 0, NULL, "Mike");
     ok(r == LIBMSI_RESULT_FUNCTION_FAILED, "libmsi_summary_info_set_property wrong error\n");
 
-    r = libmsi_summary_info_set_property(hsuminfo, MSI_PID_TITLE, LIBMSI_PROPERTY_TYPE_STRING, 1, NULL, "JungAh");
+    r = libmsi_summary_info_set_property(hsuminfo, LIBMSI_PROPERTY_TITLE, LIBMSI_PROPERTY_TYPE_STRING, 1, NULL, "JungAh");
     ok(r == LIBMSI_RESULT_FUNCTION_FAILED, "libmsi_summary_info_set_property wrong error\n");
 
-    r = libmsi_summary_info_set_property(hsuminfo, MSI_PID_TITLE, LIBMSI_PROPERTY_TYPE_STRING, 1, &ft, "Mike");
+    r = libmsi_summary_info_set_property(hsuminfo, LIBMSI_PROPERTY_TITLE, LIBMSI_PROPERTY_TYPE_STRING, 1, &ft, "Mike");
     ok(r == LIBMSI_RESULT_FUNCTION_FAILED, "libmsi_summary_info_set_property wrong error\n");
 
-    r = libmsi_summary_info_set_property(hsuminfo, MSI_PID_CODEPAGE, LIBMSI_PROPERTY_TYPE_INT, 1, &ft, "JungAh");
+    r = libmsi_summary_info_set_property(hsuminfo, LIBMSI_PROPERTY_CODEPAGE, LIBMSI_PROPERTY_TYPE_INT, 1, &ft, "JungAh");
     ok(r == LIBMSI_RESULT_FUNCTION_FAILED, "libmsi_summary_info_set_property wrong error\n");
 
     g_object_unref(hsuminfo);
@@ -120,45 +120,45 @@ static void test_suminfo(void)
     r = libmsi_summary_info_set_property(hsuminfo, 0, LIBMSI_PROPERTY_TYPE_STRING, 1, NULL, NULL);
     ok(r == LIBMSI_RESULT_DATATYPE_MISMATCH, "libmsi_summary_info_set_property wrong error\n");
 
-    r = libmsi_summary_info_set_property(hsuminfo, MSI_PID_CODEPAGE, LIBMSI_PROPERTY_TYPE_STRING, 1, NULL, NULL);
+    r = libmsi_summary_info_set_property(hsuminfo, LIBMSI_PROPERTY_CODEPAGE, LIBMSI_PROPERTY_TYPE_STRING, 1, NULL, NULL);
     ok(r == LIBMSI_RESULT_DATATYPE_MISMATCH, "libmsi_summary_info_set_property wrong error\n");
 
-    r = libmsi_summary_info_set_property(hsuminfo, MSI_PID_TITLE, LIBMSI_PROPERTY_TYPE_INT, 0, NULL, "Mike");
+    r = libmsi_summary_info_set_property(hsuminfo, LIBMSI_PROPERTY_TITLE, LIBMSI_PROPERTY_TYPE_INT, 0, NULL, "Mike");
     ok(r == LIBMSI_RESULT_DATATYPE_MISMATCH, "libmsi_summary_info_set_property wrong error\n");
 
-    r = libmsi_summary_info_set_property(hsuminfo, MSI_PID_AUTHOR, LIBMSI_PROPERTY_TYPE_INT, 0, NULL, "JungAh");
+    r = libmsi_summary_info_set_property(hsuminfo, LIBMSI_PROPERTY_AUTHOR, LIBMSI_PROPERTY_TYPE_INT, 0, NULL, "JungAh");
     ok(r == LIBMSI_RESULT_DATATYPE_MISMATCH, "libmsi_summary_info_set_property wrong error\n");
 
-    r = libmsi_summary_info_set_property(hsuminfo, MSI_PID_KEYWORDS, LIBMSI_PROPERTY_TYPE_INT, 0, NULL, "Mike");
+    r = libmsi_summary_info_set_property(hsuminfo, LIBMSI_PROPERTY_KEYWORDS, LIBMSI_PROPERTY_TYPE_INT, 0, NULL, "Mike");
     ok(r == LIBMSI_RESULT_DATATYPE_MISMATCH, "libmsi_summary_info_set_property wrong error\n");
 
-    r = libmsi_summary_info_set_property(hsuminfo, MSI_PID_COMMENTS, LIBMSI_PROPERTY_TYPE_FILETIME, 0, NULL, "JungAh");
+    r = libmsi_summary_info_set_property(hsuminfo, LIBMSI_PROPERTY_COMMENTS, LIBMSI_PROPERTY_TYPE_FILETIME, 0, NULL, "JungAh");
     ok(r == LIBMSI_RESULT_DATATYPE_MISMATCH, "libmsi_summary_info_set_property wrong error\n");
 
-    r = libmsi_summary_info_set_property(hsuminfo, MSI_PID_TEMPLATE, LIBMSI_PROPERTY_TYPE_INT, 0, NULL, "Mike");
+    r = libmsi_summary_info_set_property(hsuminfo, LIBMSI_PROPERTY_TEMPLATE, LIBMSI_PROPERTY_TYPE_INT, 0, NULL, "Mike");
     ok(r == LIBMSI_RESULT_DATATYPE_MISMATCH, "libmsi_summary_info_set_property wrong error\n");
 
-    r = libmsi_summary_info_set_property(hsuminfo, MSI_PID_LASTAUTHOR, LIBMSI_PROPERTY_TYPE_STRING, 0, NULL, NULL);
+    r = libmsi_summary_info_set_property(hsuminfo, LIBMSI_PROPERTY_LASTAUTHOR, LIBMSI_PROPERTY_TYPE_STRING, 0, NULL, NULL);
     ok(r == LIBMSI_RESULT_INVALID_PARAMETER, "libmsi_summary_info_set_property wrong error\n");
 
-    r = libmsi_summary_info_set_property(hsuminfo, MSI_PID_LASTSAVE_DTM, LIBMSI_PROPERTY_TYPE_FILETIME, 0, NULL, NULL);
+    r = libmsi_summary_info_set_property(hsuminfo, LIBMSI_PROPERTY_LASTSAVED_TM, LIBMSI_PROPERTY_TYPE_FILETIME, 0, NULL, NULL);
     ok(r == LIBMSI_RESULT_INVALID_PARAMETER, "libmsi_summary_info_set_property wrong error\n");
 
-    r = libmsi_summary_info_set_property(hsuminfo, MSI_PID_LASTAUTHOR, VT_LPWSTR, 0, NULL, "h\0i\0\0");
+    r = libmsi_summary_info_set_property(hsuminfo, LIBMSI_PROPERTY_LASTAUTHOR, VT_LPWSTR, 0, NULL, "h\0i\0\0");
     ok(r == LIBMSI_RESULT_DATATYPE_MISMATCH, "libmsi_summary_info_set_property wrong error\n");
 
-    r = libmsi_summary_info_set_property(hsuminfo, MSI_PID_REVNUMBER, LIBMSI_PROPERTY_TYPE_INT, 0, NULL, "Jungah");
+    r = libmsi_summary_info_set_property(hsuminfo, LIBMSI_PROPERTY_UUID, LIBMSI_PROPERTY_TYPE_INT, 0, NULL, "Jungah");
     ok(r == LIBMSI_RESULT_DATATYPE_MISMATCH, "libmsi_summary_info_set_property wrong error\n");
 
-    r = libmsi_summary_info_set_property(hsuminfo, MSI_PID_PAGECOUNT, LIBMSI_PROPERTY_TYPE_STRING, 1, NULL, NULL);
+    r = libmsi_summary_info_set_property(hsuminfo, LIBMSI_PROPERTY_VERSION, LIBMSI_PROPERTY_TYPE_STRING, 1, NULL, NULL);
     ok(r == LIBMSI_RESULT_DATATYPE_MISMATCH, "libmsi_summary_info_set_property wrong error\n");
 
-    r = libmsi_summary_info_set_property(hsuminfo, MSI_PID_TITLE, LIBMSI_PROPERTY_TYPE_STRING, 0, NULL, "Mike");
+    r = libmsi_summary_info_set_property(hsuminfo, LIBMSI_PROPERTY_TITLE, LIBMSI_PROPERTY_TYPE_STRING, 0, NULL, "Mike");
     ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_summary_info_set_property failed\n");
 
     sz = 2;
     strcpy(buf,"x");
-    r = libmsi_summary_info_get_property(hsuminfo, MSI_PID_TITLE, &type, NULL, NULL, buf, &sz );
+    r = libmsi_summary_info_get_property(hsuminfo, LIBMSI_PROPERTY_TITLE, &type, NULL, NULL, buf, &sz );
     ok(r == LIBMSI_RESULT_MORE_DATA, "libmsi_summary_info_set_property failed\n");
     ok(sz == 4, "count was wrong\n");
     ok(type == LIBMSI_PROPERTY_TYPE_STRING, "type was wrong\n");
@@ -166,16 +166,16 @@ static void test_suminfo(void)
 
     sz = 4;
     strcpy(buf,"x");
-    r = libmsi_summary_info_get_property(hsuminfo, MSI_PID_TITLE, &type, NULL, NULL, buf, &sz );
+    r = libmsi_summary_info_get_property(hsuminfo, LIBMSI_PROPERTY_TITLE, &type, NULL, NULL, buf, &sz );
     ok(r == LIBMSI_RESULT_MORE_DATA, "libmsi_summary_info_set_property failed\n");
     ok(sz == 4, "count was wrong\n");
     ok(type == LIBMSI_PROPERTY_TYPE_STRING, "type was wrong\n");
     ok(!strcmp(buf,"Mik"), "buffer was wrong\n");
 
-    r = libmsi_summary_info_set_property(hsuminfo, MSI_PID_TITLE, LIBMSI_PROPERTY_TYPE_STRING, 0, NULL, "JungAh");
+    r = libmsi_summary_info_set_property(hsuminfo, LIBMSI_PROPERTY_TITLE, LIBMSI_PROPERTY_TYPE_STRING, 0, NULL, "JungAh");
     ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_summary_info_set_property failed\n");
 
-    r = libmsi_summary_info_set_property(hsuminfo, MSI_PID_CODEPAGE, LIBMSI_PROPERTY_TYPE_INT, 1, &ft, "Mike");
+    r = libmsi_summary_info_set_property(hsuminfo, LIBMSI_PROPERTY_CODEPAGE, LIBMSI_PROPERTY_TYPE_INT, 1, &ft, "Mike");
     ok(r == LIBMSI_RESULT_FUNCTION_FAILED, "libmsi_summary_info_set_property wrong error\n");
 
     g_object_unref(hsuminfo);
@@ -184,19 +184,19 @@ static void test_suminfo(void)
     r = libmsi_database_get_summary_info(hdb, 10, &hsuminfo);
     ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_database_get_summary_info failed\n");
 
-    r = libmsi_summary_info_set_property(hsuminfo, MSI_PID_TITLE, LIBMSI_PROPERTY_TYPE_STRING, 0, NULL, "JungAh");
+    r = libmsi_summary_info_set_property(hsuminfo, LIBMSI_PROPERTY_TITLE, LIBMSI_PROPERTY_TYPE_STRING, 0, NULL, "JungAh");
     ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_summary_info_set_property failed\n");
 
-    r = libmsi_summary_info_set_property(hsuminfo, MSI_PID_CODEPAGE, LIBMSI_PROPERTY_TYPE_STRING, 1, NULL, NULL);
+    r = libmsi_summary_info_set_property(hsuminfo, LIBMSI_PROPERTY_CODEPAGE, LIBMSI_PROPERTY_TYPE_STRING, 1, NULL, NULL);
     ok(r == LIBMSI_RESULT_DATATYPE_MISMATCH, "libmsi_summary_info_set_property wrong error\n");
 
-    r = libmsi_summary_info_set_property(hsuminfo, MSI_PID_CODEPAGE, LIBMSI_PROPERTY_TYPE_INT, 1, NULL, NULL);
+    r = libmsi_summary_info_set_property(hsuminfo, LIBMSI_PROPERTY_CODEPAGE, LIBMSI_PROPERTY_TYPE_INT, 1, NULL, NULL);
     ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_summary_info_set_property wrong error\n");
 
-    r = libmsi_summary_info_set_property(hsuminfo, MSI_PID_CODEPAGE, LIBMSI_PROPERTY_TYPE_INT, 1, &ft, "Mike");
+    r = libmsi_summary_info_set_property(hsuminfo, LIBMSI_PROPERTY_CODEPAGE, LIBMSI_PROPERTY_TYPE_INT, 1, &ft, "Mike");
     ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_summary_info_set_property wrong error\n");
 
-    r = libmsi_summary_info_set_property(hsuminfo, MSI_PID_AUTHOR, LIBMSI_PROPERTY_TYPE_STRING, 1, &ft, "Mike");
+    r = libmsi_summary_info_set_property(hsuminfo, LIBMSI_PROPERTY_AUTHOR, LIBMSI_PROPERTY_TYPE_STRING, 1, &ft, "Mike");
     ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_summary_info_set_property wrong error\n");
 
     r = libmsi_summary_info_persist(hsuminfo);
@@ -215,7 +215,7 @@ static void test_suminfo(void)
     r = libmsi_database_get_summary_info(hdb, 1, &hsuminfo);
     ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_database_get_summary_info failed\n");
 
-    r = libmsi_summary_info_set_property(hsuminfo, MSI_PID_AUTHOR, LIBMSI_PROPERTY_TYPE_STRING, 1, &ft, "Mike");
+    r = libmsi_summary_info_set_property(hsuminfo, LIBMSI_PROPERTY_AUTHOR, LIBMSI_PROPERTY_TYPE_STRING, 1, &ft, "Mike");
     ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_summary_info_set_property wrong error\n");
 
     r = libmsi_summary_info_persist(hsuminfo);
@@ -232,7 +232,7 @@ static void test_suminfo(void)
     r = libmsi_database_get_summary_info(hdb, 0, &hsuminfo);
     ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_database_get_summary_info failed %u\n", r);
 
-    r = libmsi_summary_info_set_property(hsuminfo, MSI_PID_AUTHOR, LIBMSI_PROPERTY_TYPE_STRING, 1, &ft, "Mike");
+    r = libmsi_summary_info_set_property(hsuminfo, LIBMSI_PROPERTY_AUTHOR, LIBMSI_PROPERTY_TYPE_STRING, 1, &ft, "Mike");
     todo_wine ok(r == LIBMSI_RESULT_FUNCTION_FAILED, "libmsi_summary_info_set_property wrong error, %u\n", r);
 
     r = libmsi_summary_info_persist(hsuminfo);
@@ -307,47 +307,47 @@ static void test_create_database_binary(void)
     ok( r == S_OK, "failed to set class\n");
 
     propspec[0].ulKind = PRSPEC_PROPID;
-    propspec[0].propid = MSI_PID_TITLE;
+    propspec[0].propid = LIBMSI_PROPERTY_TITLE;
     propvar[0].vt = LIBMSI_PROPERTY_TYPE_STRING;
     propvar[0].pszVal = LOSE_CONST("test title");
 
     propspec[1].ulKind = PRSPEC_PROPID;
-    propspec[1].propid = MSI_PID_SUBJECT;
+    propspec[1].propid = LIBMSI_PROPERTY_SUBJECT;
     propvar[1].vt = LIBMSI_PROPERTY_TYPE_STRING;
     propvar[1].pszVal = LOSE_CONST("msi suminfo / property storage test");
 
     propspec[2].ulKind = PRSPEC_PROPID;
-    propspec[2].propid = MSI_PID_AUTHOR;
+    propspec[2].propid = LIBMSI_PROPERTY_AUTHOR;
     propvar[2].vt = LIBMSI_PROPERTY_TYPE_STRING;
     propvar[2].pszVal = LOSE_CONST("mike_m");
 
     propspec[3].ulKind = PRSPEC_PROPID;
-    propspec[3].propid = MSI_PID_TEMPLATE;
+    propspec[3].propid = LIBMSI_PROPERTY_TEMPLATE;
     propvar[3].vt = LIBMSI_PROPERTY_TYPE_STRING;
     propvar[3].pszVal = LOSE_CONST(";1033");  /* actually the string table's codepage */
 
     propspec[4].ulKind = PRSPEC_PROPID;
-    propspec[4].propid = MSI_PID_REVNUMBER;
+    propspec[4].propid = LIBMSI_PROPERTY_UUID;
     propvar[4].vt = LIBMSI_PROPERTY_TYPE_STRING;
     propvar[4].pszVal = LOSE_CONST("{913B8D18-FBB6-4CAC-A239-C74C11E3FA74}");
 
     propspec[5].ulKind = PRSPEC_PROPID;
-    propspec[5].propid = MSI_PID_PAGECOUNT;
+    propspec[5].propid = LIBMSI_PROPERTY_VERSION;
     propvar[5].vt = LIBMSI_PROPERTY_TYPE_INT;
     propvar[5].lVal = 100;
 
     propspec[6].ulKind = PRSPEC_PROPID;
-    propspec[6].propid = MSI_PID_WORDCOUNT;
+    propspec[6].propid = LIBMSI_PROPERTY_SOURCE;
     propvar[6].vt = LIBMSI_PROPERTY_TYPE_INT;
     propvar[6].lVal = 0;
 
-    /* MSDN says that MSI_PID_LASTPRINTED should be a VT_FILETIME... */
+    /* MSDN says that LIBMSI_PROPERTY_LASTPRINTED should be a VT_FILETIME... */
     propspec[7].ulKind = PRSPEC_PROPID;
-    propspec[7].propid = MSI_PID_LASTPRINTED;
+    propspec[7].propid = LIBMSI_PROPERTY_LASTPRINTED;
     propvar[7].vt = LIBMSI_PROPERTY_TYPE_STRING;
     propvar[7].pszVal = LOSE_CONST("7/1/1999 5:17");
 
-    r = IPropertyStorage_WriteMultiple( ps, 8, propspec, propvar, MSI_PID_FIRST_USABLE );
+    r = IPropertyStorage_WriteMultiple( ps, 8, propspec, propvar, PID_FIRST_USABLE );
     ok( r == S_OK, "failed to write properties\n");
 
     IPropertyStorage_Commit( ps, STGC_DEFAULT );
@@ -382,7 +382,7 @@ static void test_summary_binary(void)
     ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_database_get_summary_info failed\n");
 
     /*
-     * Check what reading MSI_PID_LASTPRINTED does...
+     * Check what reading LIBMSI_PROPERTY_LASTPRINTED does...
      * The string value is written to the msi file
      * but it appears that we're not allowed to read it back again.
      * We can still read its type though...?
@@ -390,7 +390,7 @@ static void test_summary_binary(void)
     sz = sizeof sval;
     sval[0] = 0;
     type = 0;
-    r = libmsi_summary_info_get_property(hsuminfo, MSI_PID_LASTPRINTED, &type, NULL, NULL, sval, &sz);
+    r = libmsi_summary_info_get_property(hsuminfo, LIBMSI_PROPERTY_LASTPRINTED, &type, NULL, NULL, sval, &sz);
     ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_summary_info_get_property failed\n");
     ok(!strcmp(sval, "") || !strcmp(sval, "7"),
         "Expected empty string or \"7\", got \"%s\"\n", sval);
@@ -400,7 +400,7 @@ static void test_summary_binary(void)
     }
 
     ival = -1;
-    r = libmsi_summary_info_get_property(hsuminfo, MSI_PID_WORDCOUNT, &type, &ival, NULL, NULL, NULL);
+    r = libmsi_summary_info_get_property(hsuminfo, LIBMSI_PROPERTY_SOURCE, &type, &ival, NULL, NULL, NULL);
     ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_summary_info_get_property failed\n");
     todo_wine ok( ival == 0, "value incorrect\n");
 
@@ -410,7 +410,7 @@ static void test_summary_binary(void)
     ok(r == LIBMSI_RESULT_SUCCESS, "getpropcount failed\n");
     todo_wine ok(count == 10, "prop count incorrect\n");
 
-    r = libmsi_summary_info_set_property( hsuminfo, MSI_PID_TITLE, LIBMSI_PROPERTY_TYPE_STRING, 0, NULL, "Mike" );
+    r = libmsi_summary_info_set_property( hsuminfo, LIBMSI_PROPERTY_TITLE, LIBMSI_PROPERTY_TYPE_STRING, 0, NULL, "Mike" );
     ok(r == LIBMSI_RESULT_FUNCTION_FAILED, "libmsi_summary_info_set_property failed %u\n", r);
 
     r = libmsi_summary_info_persist( hsuminfo );

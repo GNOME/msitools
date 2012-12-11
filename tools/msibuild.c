@@ -33,23 +33,23 @@
 
 static void init_suminfo(LibmsiSummaryInfo *si)
 {
-    libmsi_summary_info_set_property(si, MSI_PID_TITLE,
+    libmsi_summary_info_set_property(si, LIBMSI_PROPERTY_TITLE,
                                      LIBMSI_PROPERTY_TYPE_STRING, 0, NULL,
                                      "Installation Database");
-    libmsi_summary_info_set_property(si, MSI_PID_KEYWORDS,
+    libmsi_summary_info_set_property(si, LIBMSI_PROPERTY_KEYWORDS,
                                      LIBMSI_PROPERTY_TYPE_STRING, 0, NULL,
                                      "Installer, MSI");
-    libmsi_summary_info_set_property(si, MSI_PID_TEMPLATE,
+    libmsi_summary_info_set_property(si, LIBMSI_PROPERTY_TEMPLATE,
                                      LIBMSI_PROPERTY_TYPE_STRING, 0, NULL,
                                      ";1033");
-    libmsi_summary_info_set_property(si, MSI_PID_APPNAME,
+    libmsi_summary_info_set_property(si, LIBMSI_PROPERTY_APPNAME,
                                      LIBMSI_PROPERTY_TYPE_STRING, 0, NULL,
                                      "libmsi msibuild");
-    libmsi_summary_info_set_property(si, MSI_PID_MSIVERSION,
+    libmsi_summary_info_set_property(si, LIBMSI_PROPERTY_VERSION,
                                      LIBMSI_PROPERTY_TYPE_INT, 200, NULL, NULL);
-    libmsi_summary_info_set_property(si, MSI_PID_MSISOURCE,
+    libmsi_summary_info_set_property(si, LIBMSI_PROPERTY_SOURCE,
                                      LIBMSI_PROPERTY_TYPE_INT, 0, NULL, NULL);
-    libmsi_summary_info_set_property(si, MSI_PID_MSIRESTRICT,
+    libmsi_summary_info_set_property(si, LIBMSI_PROPERTY_RESTRICT,
                                      LIBMSI_PROPERTY_TYPE_INT, 0, NULL, NULL);
 
 #ifdef HAVE_LIBUUID
@@ -60,7 +60,7 @@ static void init_suminfo(LibmsiSummaryInfo *si)
         uustr[0] = '{';
         uuid_unparse_upper(uu, uustr + 1);
         strcat(uustr, "}");
-        libmsi_summary_info_set_property(si, MSI_PID_REVNUMBER,
+        libmsi_summary_info_set_property(si, LIBMSI_PROPERTY_UUID,
                                          LIBMSI_PROPERTY_TYPE_STRING, 0, NULL, uustr);
     }
 #endif
@@ -141,21 +141,21 @@ static int import_table(char *table)
 static int add_summary_info(const char *name, const char *author,
                             const char *template, const char *uuid)
 {
-    libmsi_summary_info_set_property(si, MSI_PID_SUBJECT,
+    libmsi_summary_info_set_property(si, LIBMSI_PROPERTY_SUBJECT,
                                      LIBMSI_PROPERTY_TYPE_STRING,
                                      0, NULL, name);
     if (author) {
-        libmsi_summary_info_set_property(si, MSI_PID_AUTHOR,
+        libmsi_summary_info_set_property(si, LIBMSI_PROPERTY_AUTHOR,
                                          LIBMSI_PROPERTY_TYPE_STRING,
                                          0, NULL, author);
     }
     if (template) {
-        libmsi_summary_info_set_property(si, MSI_PID_TEMPLATE,
+        libmsi_summary_info_set_property(si, LIBMSI_PROPERTY_TEMPLATE,
                                          LIBMSI_PROPERTY_TYPE_STRING,
                                          0, NULL, template);
     }
     if (uuid) {
-        libmsi_summary_info_set_property(si, MSI_PID_REVNUMBER,
+        libmsi_summary_info_set_property(si, LIBMSI_PROPERTY_UUID,
                                          LIBMSI_PROPERTY_TYPE_STRING,
                                          0, NULL, uuid);
     }
