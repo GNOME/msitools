@@ -164,15 +164,15 @@ static struct Command *find_cmd(const char *s)
     return NULL;
 }
 
-static LibmsiResult print_strings_from_query(LibmsiQuery *query, GError **error)
+static void print_strings_from_query(LibmsiQuery *query, GError **error)
 {
+    GError *err = NULL;
     LibmsiRecord *rec = NULL;
-    LibmsiResult r;
     gchar *name;
 
-    while ((r = libmsi_query_fetch(query, &rec)) == LIBMSI_RESULT_SUCCESS) {
+    while ((rec = libmsi_query_fetch(query, &err))) {
         name = libmsi_record_get_string(rec, 1);
-        g_return_val_if_fail(name != NULL, LIBMSI_RESULT_FUNCTION_FAILED);
+        g_return_if_fail(name != NULL);
 
         puts(name);
 
@@ -180,10 +180,10 @@ static LibmsiResult print_strings_from_query(LibmsiQuery *query, GError **error)
         g_object_unref(rec);
     }
 
-    if (r == LIBMSI_RESULT_NO_MORE_ITEMS) {
-        r = LIBMSI_RESULT_SUCCESS;
-    }
-    return r;
+    if (!g_error_matches(err, LIBMSI_RESULT_ERROR, LIBMSI_RESULT_NO_MORE_ITEMS))
+        g_propagate_error(error, err);
+
+    g_clear_error(&err);
 }
 
 static int cmd_streams(struct Command *cmd, int argc, char **argv, GError **error)
@@ -395,10 +395,9 @@ static int cmd_extract(struct Command *cmd, int argc, char **argv, GError **erro
         print_libmsi_error(r);
     }
 
-    r = libmsi_query_fetch(query, &rec);
-    if (r) {
-        print_libmsi_error(r);
-    }
+    rec = libmsi_query_fetch(query, error);
+    if (*error)
+        goto end;
 
     if (!libmsi_record_save_stream(rec, 1, NULL, &size))
         exit(1);
@@ -417,9 +416,13 @@ static int cmd_extract(struct Command *cmd, int argc, char **argv, GError **erro
         size -= bufsize;
     }
 
-    g_object_unref(rec);
-    g_object_unref(query);
-    g_object_unref(db);
+end:
+    if (rec)
+        g_object_unref(rec);
+    if (query)
+        g_object_unref(query);
+    if (db)
+        g_object_unref(db);
 
     return 0;
 }
@@ -591,6 +594,7 @@ static unsigned export_insert(const char *table,
 
 static unsigned export_sql( LibmsiDatabase *db, const char *table, GError **error)
 {
+    GError *err = NULL;
     LibmsiRecord *name = NULL;
     LibmsiRecord *type = NULL;
     LibmsiRecord *keys = NULL;
@@ -629,7 +633,7 @@ static unsigned export_sql( LibmsiDatabase *db, const char *table, GError **erro
     }
 
     /* write out row 4 onwards, the data */
-    while ((r = libmsi_query_fetch(query, &rec)) == LIBMSI_RESULT_SUCCESS) {
+    while ((rec = libmsi_query_fetch(query, &err))) {
         unsigned size = PATH_MAX;
         r = export_insert(table, name, type, rec);
         g_object_unref(rec);
@@ -638,9 +642,10 @@ static unsigned export_sql( LibmsiDatabase *db, const char *table, GError **erro
         }
     }
 
-    if (*error)
-        goto done;
+    if (!g_error_matches(err, LIBMSI_RESULT_ERROR, LIBMSI_RESULT_NO_MORE_ITEMS))
+        g_propagate_error(error, err);
 
+    g_clear_error(&err);
     if (r == LIBMSI_RESULT_NO_MORE_ITEMS) {
         r = LIBMSI_RESULT_SUCCESS;
     }

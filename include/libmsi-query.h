@@ -45,8 +45,8 @@ GType libmsi_query_get_type (void) G_GNUC_CONST;
 LibmsiQuery *     libmsi_query_new               (LibmsiDatabase *database,
                                                   const gchar *query,
                                                   GError **error);
-LibmsiResult      libmsi_query_fetch             (LibmsiQuery *query,
-                                                  LibmsiRecord **rec);
+LibmsiRecord *    libmsi_query_fetch             (LibmsiQuery *query,
+                                                  GError **error);
 LibmsiResult      libmsi_query_execute           (LibmsiQuery *query,
                                                   LibmsiRecord *rec);
 gboolean          libmsi_query_close             (LibmsiQuery *query,

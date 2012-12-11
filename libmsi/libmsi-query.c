@@ -403,22 +403,25 @@ LibmsiResult _libmsi_query_fetch(LibmsiQuery *query, LibmsiRecord **prec)
     return r;
 }
 
-LibmsiResult libmsi_query_fetch(LibmsiQuery *query, LibmsiRecord **record)
+LibmsiRecord *
+libmsi_query_fetch (LibmsiQuery *query, GError **error)
 {
+    LibmsiRecord *record = NULL;
     unsigned ret;
 
-    TRACE("%d %p\n", query, record);
-
-    if( !record )
-        return LIBMSI_RESULT_INVALID_PARAMETER;
-    *record = 0;
+    TRACE("%p\n", query);
 
     if( !query )
-        return LIBMSI_RESULT_INVALID_HANDLE;
+        return NULL;
     g_object_ref(query);
-    ret = _libmsi_query_fetch( query, record );
+    ret = _libmsi_query_fetch( query, &record );
     g_object_unref(query);
-    return ret;
+
+    /* FIXME: raise error when it happens */
+    if (ret != LIBMSI_RESULT_SUCCESS)
+        g_set_error_literal (error, LIBMSI_RESULT_ERROR, ret, G_STRFUNC);
+
+    return record;
 }
 
 gboolean
@@ -468,7 +471,7 @@ LibmsiResult _libmsi_query_execute(LibmsiQuery *query, LibmsiRecord *rec )
 LibmsiResult libmsi_query_execute(LibmsiQuery *query, LibmsiRecord *rec)
 {
     LibmsiResult ret;
-    
+
     TRACE("%d %d\n", query, rec);
 
     if( !query )

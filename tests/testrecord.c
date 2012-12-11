@@ -412,7 +412,7 @@ static void test_fieldzero (void)
     ok (r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     r = libmsi_query_execute (hview, 0);
     ok (r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
-    r = libmsi_query_fetch (hview, &rec);
+    rec = libmsi_query_fetch (hview, NULL);
     ok (r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     r = libmsi_record_get_int (rec, 0);
