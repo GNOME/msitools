@@ -77,10 +77,6 @@ static void test_msirecord(void)
     ok(r == LIBMSI_RESULT_INVALID_HANDLE, "libmsi_record_set_int returned wrong error\n");
     r = libmsi_record_set_int(0,-1,0);
     ok(r == LIBMSI_RESULT_INVALID_HANDLE, "libmsi_record_set_int returned wrong error\n");
-    h = libmsi_record_new(-1);
-    ok(h==0, "created record with -1 elements\n");
-    h = libmsi_record_new(0x10000);
-    ok(h==0, "created record with 0x10000 elements\n");
     r = libmsi_record_clear_data(0);
     ok(r == LIBMSI_RESULT_INVALID_HANDLE, "libmsi_record_clear_data returned wrong error\n");
     r = libmsi_record_get_field_size(0,0);
