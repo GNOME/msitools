@@ -141,6 +141,12 @@ libmsi_record_class_init (LibmsiRecordClass *klass)
                            G_PARAM_STATIC_STRINGS));
 }
 
+/**
+ * libmsi_record_get_field_count:
+ * @record: a %LibmsiRecord
+ *
+ * Returns: the number of record fields.
+ **/
 guint
 libmsi_record_get_field_count (const LibmsiRecord *self)
 {
@@ -215,6 +221,18 @@ unsigned _libmsi_record_copy_field( LibmsiRecord *in_rec, unsigned in_n,
     return r;
 }
 
+/**
+ * libmsi_record_get_int:
+ * @record: a %LibmsiRecord
+ * @field: a field identifier
+ *
+ * Get the integer value of %field. If the field is a string
+ * representing an integer, it will be converted to an integer value.
+ * Other values and types will return %LIBMSI_NULL_INT.
+ *
+ * Returns: The integer value, or %LIBMSI_NULL_INT if the field is
+ * not an integer.
+ **/
 gint
 libmsi_record_get_int (const LibmsiRecord *rec, guint field)
 {
@@ -236,14 +254,21 @@ libmsi_record_get_int (const LibmsiRecord *rec, guint field)
         if( expr_int_from_string( rec->fields[field].u.szVal, &ret ) )
             return ret;
         return LIBMSI_NULL_INT;
-    default:
-        break;
     }
 
     return LIBMSI_NULL_INT;
 }
 
-gboolean libmsi_record_clear( LibmsiRecord *rec )
+/**
+ * libmsi_record_clear:
+ * @record: a %LibmsiRecord
+ *
+ * Clear record fields.
+ *
+ * Returns: %TRUE on success.
+ **/
+gboolean
+libmsi_record_clear( LibmsiRecord *rec )
 {
     unsigned i;
 
@@ -263,7 +288,18 @@ gboolean libmsi_record_clear( LibmsiRecord *rec )
     return TRUE;
 }
 
-gboolean libmsi_record_set_int( LibmsiRecord *rec, unsigned field, int iVal )
+/**
+ * libmsi_record_set_int:
+ * @record: a %LibmsiRecord
+ * @field: a field identifier
+ * @val: value to set field to
+ *
+ * Set the %field to the integer value %val.
+ *
+ * Returns: %TRUE on success.
+ **/
+gboolean
+libmsi_record_set_int( LibmsiRecord *rec, unsigned field, int iVal )
 {
     TRACE("%p %u %d\n", rec, field, iVal);
 
@@ -279,7 +315,15 @@ gboolean libmsi_record_set_int( LibmsiRecord *rec, unsigned field, int iVal )
     return TRUE;
 }
 
-gboolean libmsi_record_is_null( const LibmsiRecord *rec, unsigned field )
+/**
+ * libmsi_record_is_null:
+ * @record: a %LibmsiRecord
+ * @field: a field identifier
+ *
+ * Returns: %TRUE if the field is null (or %field > record field count)
+ **/
+gboolean
+libmsi_record_is_null( const LibmsiRecord *rec, unsigned field )
 {
     bool r = true;
 
@@ -293,7 +337,17 @@ gboolean libmsi_record_is_null( const LibmsiRecord *rec, unsigned field )
     return r;
 }
 
-gchar* libmsi_record_get_string(const LibmsiRecord *self, unsigned field)
+/**
+ * libmsi_record_get_string:
+ * @record: a %LibmsiRecord
+ * @field: a field identifier
+ *
+ * Get a string representation of %field.
+ *
+ * Returns: a string, or %NULL on error.
+ **/
+gchar *
+libmsi_record_get_string (const LibmsiRecord *self, guint field)
 {
     g_return_val_if_fail (LIBMSI_IS_RECORD (self), NULL);
 
@@ -372,7 +426,18 @@ unsigned _libmsi_record_get_string(const LibmsiRecord *rec, unsigned field,
     return ret;
 }
 
-gboolean libmsi_record_set_string( LibmsiRecord *rec, unsigned field, const char *szValue )
+/**
+ * libmsi_record_set_string:
+ * @record: a %LibmsiRecord
+ * @field: a field identifier
+ * @val: a string or %NULL
+ *
+ * Set the %field value to %val string.
+ *
+ * Returns: %TRUE on success.
+ **/
+gboolean
+libmsi_record_set_string (LibmsiRecord *rec, unsigned field, const char *szValue)
 {
     char *str;
 
@@ -486,7 +551,18 @@ unsigned _libmsi_record_load_stream_from_file(LibmsiRecord *rec, unsigned field,
     return LIBMSI_RESULT_SUCCESS;
 }
 
-gboolean libmsi_record_load_stream(LibmsiRecord *rec, unsigned field, const char *szFilename)
+/**
+ * libmsi_record_load_stream:
+ * @record: a %LibmsiRecord
+ * @field: a field identifier
+ * @filename: a filename or %NULL
+ *
+ * Load the file content as a stream in %field.
+ *
+ * Returns: %TRUE on success.
+ **/
+gboolean
+libmsi_record_load_stream(LibmsiRecord *rec, unsigned field, const char *szFilename)
 {
     unsigned ret;
 
@@ -550,7 +626,19 @@ unsigned _libmsi_record_save_stream(const LibmsiRecord *rec, unsigned field, cha
     return LIBMSI_RESULT_SUCCESS;
 }
 
-gboolean libmsi_record_save_stream(LibmsiRecord *rec, unsigned field, char *buf, unsigned *sz)
+/**
+ * libmsi_record_save_stream:
+ * @record: a %LibmsiRecord
+ * @field: a field identifier
+ * @buf: a buffer of size specified by %sz, or %NULL to return size
+ * @sz: a pointer to %buf size
+ *
+ * Read the stream data into %buf from record %field.
+ *
+ * Returns: %TRUE on success.
+ **/
+gboolean
+libmsi_record_save_stream(LibmsiRecord *rec, unsigned field, char *buf, unsigned *sz)
 {
     unsigned ret;
 
