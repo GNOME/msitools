@@ -10,6 +10,7 @@ AM_YFLAGS = -d
 BUILT_SOURCES = sql-parser.c sql-parser.h
 
 noinst_HEADERS =				\
+	debug.h					\
 	list.h					\
 	msipriv.h				\
 	query.h

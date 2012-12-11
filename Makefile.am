@@ -1,7 +1,7 @@
 ACLOCAL_AMFLAGS = -I m4
 SUBDIRS = libmsi tests .
 
-noinst_HEADERS = include/debug.h tools/sqldelim.h
+noinst_HEADERS = tools/sqldelim.h
 dist_include_HEADERS = \
 	include/libmsi.h \
 	include/libmsi-database.h \

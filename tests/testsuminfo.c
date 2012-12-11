@@ -21,6 +21,7 @@
 #define COBJMACROS
 
 #include <stdio.h>
+#include <stdint.h>
 #include <windows.h>
 #include <libmsi.h>
 #include <objidl.h>
