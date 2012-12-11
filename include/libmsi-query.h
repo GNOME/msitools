@@ -42,13 +42,20 @@ struct _LibmsiQueryClass
 GType libmsi_query_get_type (void) G_GNUC_CONST;
 
 
-LibmsiQuery *     libmsi_query_new (LibmsiDatabase *database, const char *query, GError **error);
-
-LibmsiResult      libmsi_query_fetch (LibmsiQuery *,LibmsiRecord **);
-LibmsiResult      libmsi_query_execute (LibmsiQuery *,LibmsiRecord *);
-LibmsiResult      libmsi_query_close (LibmsiQuery *);
-LibmsiDBError     libmsi_query_get_error (LibmsiQuery *,char *,unsigned *);
-LibmsiResult      libmsi_query_get_column_info (LibmsiQuery *, LibmsiColInfo, LibmsiRecord **);
+LibmsiQuery *     libmsi_query_new               (LibmsiDatabase *database,
+                                                  const gchar *query,
+                                                  GError **error);
+LibmsiResult      libmsi_query_fetch             (LibmsiQuery *query,
+                                                  LibmsiRecord **rec);
+LibmsiResult      libmsi_query_execute           (LibmsiQuery *query,
+                                                  LibmsiRecord *rec);
+LibmsiResult      libmsi_query_close             (LibmsiQuery *query);
+LibmsiDBError     libmsi_query_get_error         (LibmsiQuery *query,
+                                                  char *buffer,
+                                                  unsigned *buflen);
+LibmsiResult      libmsi_query_get_column_info   (LibmsiQuery *query,
+                                                  LibmsiColInfo info,
+                                                  LibmsiRecord **rec);
 
 G_END_DECLS
 
