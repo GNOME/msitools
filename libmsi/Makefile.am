@@ -9,15 +9,10 @@ AM_CFLAGS = -Wunused -Wimplicit
 AM_YFLAGS = -d
 BUILT_SOURCES = sql-parser.c sql-parser.h
 
-noinst_HEADERS =				\
-	debug.h					\
-	list.h					\
-	msipriv.h				\
-	query.h
-
 libmsi_la_SOURCES =				\
 	alter.c					\
 	create.c				\
+	debug.h					\
 	delete.c				\
 	distinct.c				\
 	drop.c					\
@@ -26,6 +21,9 @@ libmsi_la_SOURCES =				\
 	libmsi-query.c				\
 	libmsi-record.c				\
 	libmsi-summary-info.c			\
+	list.h					\
+	msipriv.h				\
+	query.h					\
 	select.c				\
 	sql-parser.y				\
 	storages.c				\
