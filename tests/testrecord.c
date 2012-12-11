@@ -581,10 +581,9 @@ static void test_fieldzero(void)
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     r = libmsi_record_get_integer(rec, 0);
-    ok(r != MSI_NULL_INTEGER && r != 0, "Expected non-NULL value, got %d\n", r);
-
+    ok(r == MSI_NULL_INTEGER, "Expected NULL value, got %d\n", r);
     r = libmsi_record_is_null(rec, 0);
-    ok(r == false, "Expected false, got %d\n", r);
+    ok(r == true, "Expected true, got %d\n", r);
 
     r = libmsi_unref(hview);
     ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_unref failed\n");
