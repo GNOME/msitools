@@ -357,7 +357,7 @@ static void test_msiinsert(void)
     ok(r == 3, "record count wrong\n");
 
     r = libmsi_record_is_null(hrec, 0);
-    ok(r == false, "field 0 not null\n");
+    ok(r == true, "Expected true, got %d\n", r);
 
     r = libmsi_record_get_integer(hrec, 1);
     ok(r == 1, "field 1 contents wrong\n");
