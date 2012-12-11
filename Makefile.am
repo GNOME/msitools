@@ -37,7 +37,7 @@ installcheck-local: $(srcdir)/tests/testsuite atconfig atlocal
 	$(SHELL) $(srcdir)/tests/testsuite AUTOTEST_PATH=$(bindir) $(TESTSUITEFLAGS)
 
 clean-local:
-	-$(SHELL) tests/testsuite --clean
+	-$(SHELL) $(srcdir)/tests/testsuite --clean
 
 $(srcdir)/tests/testsuite: tests/testsuite.at tests/package.m4
 	cd $(srcdir)/tests && \
