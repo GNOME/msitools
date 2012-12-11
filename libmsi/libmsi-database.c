@@ -2623,6 +2623,8 @@ LibmsiCondition libmsi_database_is_table_persistent(
 
     TRACE("%x %s\n", db, debugstr_a(szTableName));
 
+    g_return_val_if_fail(LIBMSI_IS_DATABASE(db), LIBMSI_CONDITION_ERROR);
+
     if( szTableName )
     {
         szwTableName = strdupAtoW( szTableName );
@@ -2631,11 +2633,7 @@ LibmsiCondition libmsi_database_is_table_persistent(
     }
 
     g_object_ref(db);
-    if( !db )
-        return LIBMSI_CONDITION_ERROR;
-
     r = _libmsi_database_is_table_persistent( db, szwTableName );
-
     g_object_unref(db);
     msi_free( szwTableName );
 

@@ -361,9 +361,7 @@ static void test_msiinsert(void)
     sql = "SELECT * FROM `phone` WHERE `id` >= 10";
     r = do_query(hdb, sql, &hrec);
     ok(r == LIBMSI_RESULT_NO_MORE_ITEMS, "libmsi_query_fetch failed\n");
-    ok(hrec == 0, "hrec should be null\n");
-
-    g_object_unref(hrec);
+    ok(hrec == NULL, "hrec should be null\n");
 
     sql = "SELECT * FROM `phone` WHERE `id` < 0";
     r = do_query(hdb, sql, &hrec);
@@ -1136,8 +1134,8 @@ static void test_streamtable(void)
 
     r = libmsi_query_fetch( query, &rec );
     ok( r == LIBMSI_RESULT_NO_MORE_ITEMS, "Unexpected result: %u\n", r );
+    ok(rec == NULL, "Must be null");
 
-    g_object_unref( rec );
     libmsi_query_close( query );
     g_object_unref( query );
 
@@ -1541,6 +1539,7 @@ static void test_where(void)
     ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_query_fetch failed: %d\n", r);
     ok( check_record( rec, 4, "zero.cab"), "wrong cabinet\n");
     g_object_unref( rec );
+    rec = NULL;
 
     sql = "SELECT * FROM `Media` WHERE `LastSequence` >= 1";
     r = do_query(hdb, sql, &rec);
@@ -1552,6 +1551,7 @@ static void test_where(void)
     r = libmsi_record_get_int(rec, 2);
     ok( 1 == r, "field wrong\n");
     g_object_unref( rec );
+    rec = NULL;
 
     sql = "SELECT `DiskId` FROM `Media` WHERE `LastSequence` >= 1 AND DiskId >= 0";
     query = NULL;
@@ -1580,13 +1580,11 @@ static void test_where(void)
 
     r = libmsi_query_fetch(query, &rec);
     ok( r == LIBMSI_RESULT_NO_MORE_ITEMS, "expected no more items: %d\n", r );
+    ok(rec == NULL, "Must be null");
 
     libmsi_query_close(query);
     g_object_unref(query);
 
-    g_object_unref( rec );
-
-    rec = 0;
     sql = "SELECT * FROM `Media` WHERE `DiskPrompt` IS NULL";
     r = do_query(hdb, sql, &rec);
     ok( r == LIBMSI_RESULT_SUCCESS, "query failed: %d\n", r );
@@ -1596,25 +1594,23 @@ static void test_where(void)
     sql = "SELECT * FROM `Media` WHERE `DiskPrompt` < 'Cabinet'";
     r = do_query(hdb, sql, &rec);
     ok( r == LIBMSI_RESULT_BAD_QUERY_SYNTAX, "query failed: %d\n", r );
-    g_object_unref( rec );
+    ok(rec == NULL, "Must be null");
 
-    rec = 0;
     sql = "SELECT * FROM `Media` WHERE `DiskPrompt` > 'Cabinet'";
     r = do_query(hdb, sql, &rec);
     ok( r == LIBMSI_RESULT_BAD_QUERY_SYNTAX, "query failed: %d\n", r );
-    g_object_unref( rec );
+    ok(rec == NULL, "Must be null");
 
-    rec = 0;
     sql = "SELECT * FROM `Media` WHERE `DiskPrompt` <> 'Cabinet'";
     r = do_query(hdb, sql, &rec);
     ok( r == LIBMSI_RESULT_SUCCESS, "query failed: %d\n", r );
     g_object_unref( rec );
+    rec = NULL;
 
-    rec = 0;
     sql = "SELECT * FROM `Media` WHERE `DiskPrompt` = 'Cabinet'";
     r = do_query(hdb, sql, &rec);
     ok( r == LIBMSI_RESULT_NO_MORE_ITEMS, "query failed: %d\n", r );
-    g_object_unref( rec );
+    ok(rec == NULL, "Must be null");
 
     rec = libmsi_record_new(1);
     libmsi_record_set_string(rec, 1, "");
@@ -1727,7 +1723,7 @@ static void test_suminfo_import(void)
     sql = "SELECT * FROM `_SummaryInformation`";
     r = libmsi_database_open_query(hdb, sql, &query);
     ok(r == LIBMSI_RESULT_BAD_QUERY_SYNTAX, "Expected LIBMSI_RESULT_BAD_QUERY_SYNTAX, got %u\n", r);
-    g_object_unref(query);
+    ok(query == NULL, "Must be null");
 
     /* ...its data is added to the special summary information stream */
 
@@ -3378,9 +3374,6 @@ static void test_temporary_table(void)
     char buf[0x10];
     unsigned sz;
 
-    cond = libmsi_database_is_table_persistent(0, NULL);
-    ok( cond == LIBMSI_CONDITION_ERROR, "wrong return condition\n");
-
     hdb = create_db();
     ok( hdb, "failed to create db\n");
 
@@ -3747,8 +3740,7 @@ static void test_integers(void)
 
     r = libmsi_record_get_field_count(rec);
     ok(r == -1, "record count wrong: %d\n", r);
-
-    g_object_unref(rec);
+    ok(rec == NULL, "Must be null");
 
     /* insert legitimate values into it */
     query = NULL;
@@ -7458,7 +7450,7 @@ static void test_select_column_names(void)
 
     r = libmsi_query_fetch( query, &rec );
     ok( r == LIBMSI_RESULT_NO_MORE_ITEMS, "unexpected result: %u\n", r );
-    g_object_unref( rec );
+    ok(rec == NULL, "Must be null");
 
     libmsi_query_close( query );
     g_object_unref( query );
@@ -7484,7 +7476,7 @@ static void test_select_column_names(void)
 
     r = libmsi_query_fetch( query, &rec );
     ok( r == LIBMSI_RESULT_NO_MORE_ITEMS, "unexpected result: %u\n", r );
-    g_object_unref( rec );
+    ok(rec == NULL, "Must be null");
 
     libmsi_query_close( query );
     g_object_unref( query );
@@ -7512,7 +7504,7 @@ static void test_select_column_names(void)
 
     r = libmsi_query_fetch( query, &rec );
     ok( r == LIBMSI_RESULT_NO_MORE_ITEMS, "unexpected result: %u\n", r );
-    g_object_unref( rec );
+    ok(rec == NULL, "Must be null");
 
     libmsi_query_close( query );
     g_object_unref( query );
@@ -7542,7 +7534,7 @@ static void test_select_column_names(void)
 
     r = libmsi_query_fetch( query, &rec );
     ok( r == LIBMSI_RESULT_NO_MORE_ITEMS, "unexpected result: %u\n", r );
-    g_object_unref( rec );
+    ok(rec == NULL, "Must be null");
 
     libmsi_query_close( query );
     g_object_unref( query );
