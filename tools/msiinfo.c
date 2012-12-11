@@ -42,7 +42,7 @@ struct Command {
     const char *usage;
     const char *opts;
     const char *help;
-    int (*func)(struct Command *cmd, int argc, char **argv);
+    int (*func)(struct Command *cmd, int argc, char **argv, GError **error);
 };
 
 static struct Command cmds[];
@@ -164,7 +164,7 @@ static struct Command *find_cmd(const char *s)
     return NULL;
 }
 
-static LibmsiResult print_strings_from_query(LibmsiQuery *query)
+static LibmsiResult print_strings_from_query(LibmsiQuery *query, GError **error)
 {
     LibmsiRecord *rec = NULL;
     LibmsiResult r;
@@ -186,7 +186,7 @@ static LibmsiResult print_strings_from_query(LibmsiQuery *query)
     return r;
 }
 
-static int cmd_streams(struct Command *cmd, int argc, char **argv)
+static int cmd_streams(struct Command *cmd, int argc, char **argv, GError **error)
 {
     LibmsiDatabase *db = NULL;
     LibmsiQuery *query = NULL;
@@ -211,10 +211,7 @@ static int cmd_streams(struct Command *cmd, int argc, char **argv)
         print_libmsi_error(r);
     }
 
-    r = print_strings_from_query(query);
-    if (r) {
-        print_libmsi_error(r);
-    }
+    print_strings_from_query(query, error);
 
     g_object_unref(query);
     g_object_unref(db);
@@ -222,7 +219,7 @@ static int cmd_streams(struct Command *cmd, int argc, char **argv)
     return 0;
 }
 
-static int cmd_tables(struct Command *cmd, int argc, char **argv)
+static int cmd_tables(struct Command *cmd, int argc, char **argv, GError **error)
 {
     LibmsiDatabase *db = NULL;
     LibmsiQuery *query = NULL;
@@ -247,10 +244,7 @@ static int cmd_tables(struct Command *cmd, int argc, char **argv)
         print_libmsi_error(r);
     }
 
-    r = print_strings_from_query(query);
-    if (r) {
-        print_libmsi_error(r);
-    }
+    print_strings_from_query(query, error);
 
     g_object_unref(query);
     g_object_unref(db);
@@ -312,7 +306,7 @@ end:
     g_clear_error(&error);
 }
 
-static int cmd_suminfo(struct Command *cmd, int argc, char **argv)
+static int cmd_suminfo(struct Command *cmd, int argc, char **argv, GError **error)
 {
     LibmsiDatabase *db = NULL;
     LibmsiSummaryInfo *si = NULL;
@@ -370,7 +364,7 @@ static void full_write(int fd, char *buf, size_t sz)
     }
 }
 
-static int cmd_extract(struct Command *cmd, int argc, char **argv)
+static int cmd_extract(struct Command *cmd, int argc, char **argv, GError **error)
 {
     LibmsiDatabase *db = NULL;
     LibmsiQuery *query = NULL;
@@ -595,7 +589,7 @@ static unsigned export_insert(const char *table,
     return r;
 }
 
-static unsigned export_sql( LibmsiDatabase *db, const char *table)
+static unsigned export_sql( LibmsiDatabase *db, const char *table, GError **error)
 {
     LibmsiRecord *name = NULL;
     LibmsiRecord *type = NULL;
@@ -644,6 +638,9 @@ static unsigned export_sql( LibmsiDatabase *db, const char *table)
         }
     }
 
+    if (*error)
+        goto done;
+
     if (r == LIBMSI_RESULT_NO_MORE_ITEMS) {
         r = LIBMSI_RESULT_SUCCESS;
     }
@@ -656,7 +653,7 @@ done:
     return r;
 }
 
-static int cmd_export(struct Command *cmd, int argc, char **argv)
+static int cmd_export(struct Command *cmd, int argc, char **argv, GError **error)
 {
     LibmsiDatabase *db = NULL;
     LibmsiResult r;
@@ -678,7 +675,7 @@ static int cmd_export(struct Command *cmd, int argc, char **argv)
     }
 
     if (sql) {
-        r = export_sql(db, argv[2]);
+        r = export_sql(db, argv[2], error);
     } else {
 #if O_BINARY
         _setmode(STDOUT_FILENO, O_BINARY);
@@ -695,13 +692,13 @@ static int cmd_export(struct Command *cmd, int argc, char **argv)
     return 0;
 }
 
-static int cmd_version(struct Command *cmd, int argc, char **argv)
+static int cmd_version(struct Command *cmd, int argc, char **argv, GError **error)
 {
     printf("%s (%s) version %s\n", program_name, PACKAGE, VERSION);
     return 0;
 }
 
-static int cmd_help(struct Command *cmd, int argc, char **argv)
+static int cmd_help(struct Command *cmd, int argc, char **argv, GError **error)
 {
     if (argc > 1) {
         cmd = find_cmd(argv[1]);
@@ -774,6 +771,7 @@ static struct Command cmds[] = {
 
 int main(int argc, char **argv)
 {
+    GError *error = NULL;
     struct Command *cmd = NULL;
 
     g_type_init();
@@ -789,5 +787,11 @@ int main(int argc, char **argv)
         usage(stderr);
     }
 
-    return cmd->func(cmd, argc - 1, argv + 1);
+    int result = cmd->func(cmd, argc - 1, argv + 1, &error);
+    if (error != NULL) {
+        g_printerr("error: %s\n", error->message);
+        g_clear_error(&error);
+    }
+
+    return result;
 }
