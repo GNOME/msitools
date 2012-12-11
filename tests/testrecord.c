@@ -59,17 +59,17 @@ static void test_msirecord (void)
 
     /* check behaviour with an invalid record */
     r = libmsi_record_get_field_count (0);
-    ok (r == -1, "field count for invalid record not -1\n");
+    ok (r == 0, "field count for invalid record not -1\n");
     r = libmsi_record_is_null (0, 0);
-    ok (r == 0, "invalid handle not considered to be non-null...\n");
+    ok (r == true, "invalid handle not considered to be null...\n");
     r = libmsi_record_get_int (0, 0);
     ok (r == LIBMSI_NULL_INT, "got integer from invalid record\n");
     r = libmsi_record_set_int (0, 0, 0);
-    ok (r == LIBMSI_RESULT_INVALID_HANDLE, "libmsi_record_set_int returned wrong error\n");
+    ok (!r, "libmsi_record_set_int returned wrong error\n");
     r = libmsi_record_set_int (0, -1, 0);
-    ok (r == LIBMSI_RESULT_INVALID_HANDLE, "libmsi_record_set_int returned wrong error\n");
+    ok (!r, "libmsi_record_set_int returned wrong error\n");
     r = libmsi_record_clear (0);
-    ok (r == LIBMSI_RESULT_INVALID_HANDLE, "libmsi_record_clear returned wrong error\n");
+    ok (!r, "libmsi_record_clear returned wrong error\n");
 
 
     /* check behaviour of a record with 0 elements */
@@ -86,115 +86,115 @@ static void test_msirecord (void)
     check_record_string (h, 0, "");
     /* same record, but add an integer to it */
     r = libmsi_record_set_int (h, 0, 0);
-    ok (r == LIBMSI_RESULT_SUCCESS, "Failed to set integer at 0 to 0\n");
+    ok (r, "Failed to set integer at 0 to 0\n");
     r = libmsi_record_is_null (h, 0);
-    ok (r == 0, "new record is null after setting an integer\n");
+    ok (r == false, "new record is null after setting an integer\n");
     r = libmsi_record_set_int (h, 0, 1);
-    ok (r == LIBMSI_RESULT_SUCCESS, "Failed to set integer at 0 to 1\n");
+    ok (r, "Failed to set integer at 0 to 1\n");
     r = libmsi_record_set_int (h, 1, 1);
-    ok (r == LIBMSI_RESULT_INVALID_PARAMETER, "set integer at 1\n");
+    ok (!r, "set integer at 1\n");
     r = libmsi_record_set_int (h, -1, 0);
-    ok (r == LIBMSI_RESULT_INVALID_PARAMETER, "set integer at -1\n");
+    ok (!r, "set integer at -1\n");
     r = libmsi_record_is_null (h, 0);
-    ok (r == 0, "new record is null after setting an integer\n");
+    ok (r == false, "new record is null after setting an integer\n");
     r = libmsi_record_get_int (h, 0);
-    ok (r == 1, "failed to get integer\n");
+    ok (r, "failed to get integer\n");
 
     /* same record, but add a null or empty string to it */
     r = libmsi_record_set_string (h, 0, NULL);
-    ok (r == LIBMSI_RESULT_SUCCESS, "Failed to set null string at 0\n");
+    ok (r, "Failed to set null string at 0\n");
     r = libmsi_record_is_null (h, 0);
     ok (r == true, "null string not null field\n");
     check_record_string (h, 0, "");
     r = libmsi_record_set_string (h, 0, "");
-    ok (r == LIBMSI_RESULT_SUCCESS, "Failed to set empty string at 0\n");
+    ok (r, "Failed to set empty string at 0\n");
     r = libmsi_record_is_null (h, 0);
     ok (r == true, "null string not null field\n");
     check_record_string (h, 0, "");
 
     /* same record, but add a string to it */
     r = libmsi_record_set_string (h, 0, str);
-    ok (r == LIBMSI_RESULT_SUCCESS, "Failed to set string at 0\n");
+    ok (r, "Failed to set string at 0\n");
     r = libmsi_record_get_int (h, 0);
     ok (r == LIBMSI_NULL_INT, "should get invalid integer\n");
     check_record_string (h, 0, str);
 
     /* same record, check we can wipe all the data */
     r = libmsi_record_clear (h);
-    ok (r == LIBMSI_RESULT_SUCCESS, "Failed to clear record\n");
+    ok (r, "Failed to clear record\n");
     r = libmsi_record_clear (h);
-    ok (r == LIBMSI_RESULT_SUCCESS, "Failed to clear record again\n");
+    ok (r, "Failed to clear record again\n");
     r = libmsi_record_is_null (h, 0);
     ok (r, "cleared record wasn't null\n");
 
     /* same record, try converting strings to integers */
     i = libmsi_record_set_string (h, 0, "42");
-    ok (i == LIBMSI_RESULT_SUCCESS, "Failed to set string at 0\n");
+    ok (i, "Failed to set string at 0\n");
     i = libmsi_record_get_int (h, 0);
     ok (i == 42, "should get invalid integer\n");
     i = libmsi_record_set_string (h, 0, "-42");
-    ok (i == LIBMSI_RESULT_SUCCESS, "Failed to set string at 0\n");
+    ok (i, "Failed to set string at 0\n");
     i = libmsi_record_get_int (h, 0);
     ok (i == -42, "should get invalid integer\n");
     i = libmsi_record_set_string (h, 0, " 42");
-    ok (i == LIBMSI_RESULT_SUCCESS, "Failed to set string at 0\n");
+    ok (i, "Failed to set string at 0\n");
     i = libmsi_record_get_int (h, 0);
     ok (i == LIBMSI_NULL_INT, "should get invalid integer\n");
     i = libmsi_record_set_string (h, 0, "42 ");
-    ok (i == LIBMSI_RESULT_SUCCESS, "Failed to set string at 0\n");
+    ok (i, "Failed to set string at 0\n");
     i = libmsi_record_get_int (h, 0);
     ok (i == LIBMSI_NULL_INT, "should get invalid integer\n");
     i = libmsi_record_set_string (h, 0, "42.0");
-    ok (i == LIBMSI_RESULT_SUCCESS, "Failed to set string at 0\n");
+    ok (i, "Failed to set string at 0\n");
     i = libmsi_record_get_int (h, 0);
     ok (i == LIBMSI_NULL_INT, "should get invalid integer\n");
     i = libmsi_record_set_string (h, 0, "0x42");
-    ok (i == LIBMSI_RESULT_SUCCESS, "Failed to set string at 0\n");
+    ok (i, "Failed to set string at 0\n");
     i = libmsi_record_get_int (h, 0);
     ok (i == LIBMSI_NULL_INT, "should get invalid integer\n");
     i = libmsi_record_set_string (h, 0, "1000000000000000");
-    ok (i == LIBMSI_RESULT_SUCCESS, "Failed to set string at 0\n");
+    ok (i, "Failed to set string at 0\n");
     i = libmsi_record_get_int (h, 0);
     ok (i == -1530494976, "should get truncated integer\n");
     i = libmsi_record_set_string (h, 0, "2147483647");
-    ok (i == LIBMSI_RESULT_SUCCESS, "Failed to set string at 0\n");
+    ok (i, "Failed to set string at 0\n");
     i = libmsi_record_get_int (h, 0);
     ok (i == 2147483647, "should get maxint\n");
     i = libmsi_record_set_string (h, 0, "-2147483647");
-    ok (i == LIBMSI_RESULT_SUCCESS, "Failed to set string at 0\n");
+    ok (i, "Failed to set string at 0\n");
     i = libmsi_record_get_int (h, 0);
     ok (i == -2147483647, "should get -maxint-1\n");
     i = libmsi_record_set_string (h, 0, "4294967297");
-    ok (i == LIBMSI_RESULT_SUCCESS, "Failed to set string at 0\n");
+    ok (i, "Failed to set string at 0\n");
     i = libmsi_record_get_int (h, 0);
     ok (i == 1, "should get one\n");
     i = libmsi_record_set_string (h, 0, "foo");
-    ok (i == LIBMSI_RESULT_SUCCESS, "Failed to set string at 0\n");
+    ok (i, "Failed to set string at 0\n");
     i = libmsi_record_get_int (h, 0);
     ok (i == LIBMSI_NULL_INT, "should get zero\n");
     i = libmsi_record_set_string (h, 0, "");
-    ok (i == LIBMSI_RESULT_SUCCESS, "Failed to set string at 0\n");
+    ok (i, "Failed to set string at 0\n");
     i = libmsi_record_get_int (h, 0);
     ok (i == LIBMSI_NULL_INT, "should get zero\n");
     i = libmsi_record_set_string (h, 0, "+1");
-    ok (i == LIBMSI_RESULT_SUCCESS, "Failed to set string at 0\n");
+    ok (i, "Failed to set string at 0\n");
     i = libmsi_record_get_int (h, 0);
     ok (i == LIBMSI_NULL_INT, "should get zero\n");
 
     /* same record, try converting integers to strings */
     r = libmsi_record_set_int (h, 0, 32);
-    ok (r == LIBMSI_RESULT_SUCCESS, "Failed to set integer at 0 to 32\n");
+    ok (r, "Failed to set integer at 0 to 32\n");
     check_record_string (h, 0, "32");
     r = libmsi_record_set_int (h, 0, -32);
-    ok (r == LIBMSI_RESULT_SUCCESS, "Failed to set integer at 0 to 32\n");
+    ok (r, "Failed to set integer at 0 to 32\n");
     check_record_string (h, 0, "-32");
 
     /* same record, now try streams */
     r = libmsi_record_load_stream (h, 0, NULL);
-    ok (r == LIBMSI_RESULT_INVALID_PARAMETER, "set NULL stream\n");
+    ok (!r, "set NULL stream\n");
     sz = sizeof buf;
     r = libmsi_record_save_stream (h, 0, buf, &sz);
-    ok (r == LIBMSI_RESULT_INVALID_DATATYPE, "read non-stream type\n");
+    ok (!r, "read non-stream type\n");
     ok (sz == sizeof buf, "set sz\n");
 
     /* same record, now close it */
@@ -207,49 +207,49 @@ static void test_msirecord (void)
     h = libmsi_record_new (2);
     ok (h, "couldn't create a two field record\n");
     r = libmsi_record_load_stream (h, 0, filename);
-    ok (r == LIBMSI_RESULT_INVALID_PARAMETER, "added stream to field 0\n");
+    ok (!r, "added stream to field 0\n");
     r = libmsi_record_load_stream (h, 1, filename);
-    ok (r == LIBMSI_RESULT_SUCCESS, "failed to add stream to record\n");
+    ok (r, "failed to add stream to record\n");
     r = libmsi_record_save_stream (h, 1, buf, NULL);
-    ok (r == LIBMSI_RESULT_INVALID_PARAMETER, "should return error\n");
+    ok (!r, "should return error\n");
     unlink (filename); /* Windows 98 doesn't like this at all, so don't check return. */
     r = libmsi_record_save_stream (h, 1, NULL, NULL);
-    ok (r == LIBMSI_RESULT_INVALID_PARAMETER, "should return error\n");
+    ok (!r, "should return error\n");
     sz = sizeof buf;
     r = libmsi_record_save_stream (h, 1, NULL, &sz);
-    ok (r == LIBMSI_RESULT_SUCCESS, "failed to read stream\n");
+    ok (r, "failed to read stream\n");
     ok (sz == 26, "couldn't get size of stream\n");
     sz = 0;
     r = libmsi_record_save_stream (h, 1, buf, &sz);
-    ok (r == LIBMSI_RESULT_SUCCESS, "failed to read stream\n");
+    ok (r, "failed to read stream\n");
     ok (sz == 0, "short read\n");
     sz = sizeof buf;
     r = libmsi_record_save_stream (h, 1, buf, &sz);
-    ok (r == LIBMSI_RESULT_SUCCESS, "failed to read stream\n");
+    ok (r, "failed to read stream\n");
     ok (sz == sizeof buf, "short read\n");
     ok (!strncmp (buf, "abcdefghij", 10), "read the wrong thing\n");
     sz = sizeof buf;
     r = libmsi_record_save_stream (h, 1, buf, &sz);
-    ok (r == LIBMSI_RESULT_SUCCESS, "failed to read stream\n");
+    ok (r, "failed to read stream\n");
     ok (sz == sizeof buf, "short read\n");
     ok (!strncmp (buf, "klmnopqrst", 10), "read the wrong thing\n");
     memset (buf, 0, sizeof buf);
     sz = sizeof buf;
     r = libmsi_record_save_stream (h, 1, buf, &sz);
-    ok (r == LIBMSI_RESULT_SUCCESS, "failed to read stream\n");
+    ok (r, "failed to read stream\n");
     ok (sz == 6, "short read\n");
     ok (!strcmp (buf, "uvwxyz"), "read the wrong thing\n");
     memset (buf, 0, sizeof buf);
     sz = sizeof buf;
     r = libmsi_record_save_stream (h, 1, buf, &sz);
-    ok (r == LIBMSI_RESULT_SUCCESS, "failed to read stream\n");
+    ok (r, "failed to read stream\n");
     ok (sz == 0, "size non-zero at end of stream\n");
     ok (buf[0] == 0, "read something at end of the stream\n");
     r = libmsi_record_load_stream (h, 1, NULL);
-    ok (r == LIBMSI_RESULT_SUCCESS, "failed to reset stream\n");
+    ok (r, "failed to reset stream\n");
     sz = 0;
     r = libmsi_record_save_stream (h, 1, NULL, &sz);
-    ok (r == LIBMSI_RESULT_SUCCESS, "bytes left wrong after reset\n");
+    ok (r, "bytes left wrong after reset\n");
     ok (sz == 26, "couldn't get size of stream\n");
 
     /* now close the stream record */
@@ -273,11 +273,11 @@ static void test_MsiRecordGetString (void)
     ok (rec != 0, "Expected a valid handle\n");
 
     r = libmsi_record_set_int (rec, 1, 5);
-    ok (r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
+    ok (r, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     check_record_string (rec, 1, "5");
 
     r = libmsi_record_set_int (rec, 1, -5);
-    ok (r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
+    ok (r, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     check_record_string (rec, 1, "-5");
 
     g_object_unref (rec);
@@ -293,19 +293,19 @@ static void test_MsiRecordGetInteger (void)
     ok (rec != 0, "Expected a valid handle\n");
 
     r = libmsi_record_set_string (rec, 1, "5");
-    ok (r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
+    ok (r, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     val = libmsi_record_get_int (rec, 1);
     ok (val == 5, "Expected 5, got %d\n", val);
 
     r = libmsi_record_set_string (rec, 1, "-5");
-    ok (r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
+    ok (r, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     val = libmsi_record_get_int (rec, 1);
     ok (val == -5, "Expected -5, got %d\n", val);
 
     r = libmsi_record_set_string (rec, 1, "5apple");
-    ok (r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
+    ok (r, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     val = libmsi_record_get_int (rec, 1);
     ok (val == LIBMSI_NULL_INT, "Expected LIBMSI_NULL_INT, got %d\n", val);
@@ -338,7 +338,7 @@ static void test_fieldzero (void)
     ok (r == LIBMSI_NULL_INT, "Expected LIBMSI_NULL_INT, got %d\n", r);
 
     r = libmsi_record_set_int (rec, 1, 42);
-    ok (r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
+    ok (r, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     r = libmsi_record_get_int (rec, 0);
     ok (r == LIBMSI_NULL_INT, "Expected LIBMSI_NULL_INT, got %d\n", r);
@@ -352,7 +352,7 @@ static void test_fieldzero (void)
     ok (r == 42, "Expected 42, got %d\n", r);
 
     r = libmsi_record_set_string (rec, 1, "bologna");
-    ok (r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
+    ok (r, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     r = libmsi_record_get_int (rec, 0);
     ok (r == LIBMSI_NULL_INT, "Expected LIBMSI_NULL_INT, got %d\n", r);

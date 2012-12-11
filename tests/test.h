@@ -28,7 +28,7 @@ static inline void check_record_string(LibmsiRecord *rec, unsigned field, const 
     if (val == NULL) {
         ok (!str, "Should return null\n");
     } else {
-        ok (str, "expected string", str);
+        ok (str, "expected string\n", str);
         if (str)
             ok (g_str_equal (str, val), "got %s != %s expected\n", str, val);
     }

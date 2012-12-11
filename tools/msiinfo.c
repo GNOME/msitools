@@ -406,10 +406,8 @@ static int cmd_extract(struct Command *cmd, int argc, char **argv)
         print_libmsi_error(r);
     }
 
-    r = libmsi_record_save_stream(rec, 1, NULL, &size);
-    if (r) {
-        print_libmsi_error(r);
-    }
+    if (!libmsi_record_save_stream(rec, 1, NULL, &size))
+        exit(1);
 
     bufsize = (size > 1048576 ? 1048576 : size);
     buf = g_malloc(bufsize);
@@ -437,9 +435,9 @@ static unsigned export_create_table(const char *table,
                                     LibmsiRecord *types,
                                     LibmsiRecord *keys)
 {
-    int num_columns = libmsi_record_get_field_count(names);
-    int num_keys = libmsi_record_get_field_count(keys);
-    int i, len;
+    guint num_columns = libmsi_record_get_field_count(names);
+    guint num_keys = libmsi_record_get_field_count(keys);
+    guint i, len;
     unsigned r;
     char size[20], extra[30];
     gchar *name, *type;
@@ -532,9 +530,9 @@ static unsigned export_insert(const char *table,
                               LibmsiRecord *types,
                               LibmsiRecord *vals)
 {
-    int num_columns = libmsi_record_get_field_count(names);
+    guint num_columns = libmsi_record_get_field_count(names);
     gchar *name, *type;
-    int i;
+    guint i;
     unsigned r;
     unsigned sz;
     char *s;

@@ -41,17 +41,28 @@ struct _LibmsiRecordClass
 
 GType libmsi_record_get_type (void) G_GNUC_CONST;
 
-LibmsiRecord *    libmsi_record_new (guint count);
-LibmsiResult      libmsi_record_clear (LibmsiRecord *);
-LibmsiResult      libmsi_record_set_int (LibmsiRecord *,unsigned,int);
-LibmsiResult      libmsi_record_set_string (LibmsiRecord *,unsigned,const char *);
-gchar *           libmsi_record_get_string (const LibmsiRecord *,unsigned);
-unsigned          libmsi_record_get_field_count (const LibmsiRecord *);
-int               libmsi_record_get_int (const LibmsiRecord *,unsigned);
-gboolean          libmsi_record_is_null (const LibmsiRecord *,unsigned);
-
-LibmsiResult      libmsi_record_load_stream (LibmsiRecord *,unsigned,const char *);
-LibmsiResult      libmsi_record_save_stream (LibmsiRecord *,unsigned,char*,unsigned *);
+LibmsiRecord *    libmsi_record_new                (guint count);
+gboolean          libmsi_record_clear              (LibmsiRecord *record);
+guint             libmsi_record_get_field_count    (const LibmsiRecord *record);
+gboolean          libmsi_record_is_null            (const LibmsiRecord *record,
+                                                    guint field);
+gboolean          libmsi_record_set_int            (LibmsiRecord *record,
+                                                    guint field,
+                                                    gint val);
+gint              libmsi_record_get_int            (const LibmsiRecord *record,
+                                                    guint field);
+gboolean          libmsi_record_set_string         (LibmsiRecord *record,
+                                                    guint field,
+                                                    const gchar *val);
+gchar *           libmsi_record_get_string         (const LibmsiRecord *record,
+                                                    guint field);
+gboolean          libmsi_record_load_stream        (LibmsiRecord *record,
+                                                    guint field,
+                                                    const gchar *filename);
+gboolean          libmsi_record_save_stream        (LibmsiRecord *rec,
+                                                    guint field,
+                                                    gchar *buf,
+                                                    guint *sz);
 
 G_END_DECLS
 

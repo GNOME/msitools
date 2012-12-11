@@ -182,8 +182,7 @@ static int add_stream(const char *stream, const char *file)
 
     rec = libmsi_record_new(2);
     libmsi_record_set_string(rec, 1, stream);
-    r = libmsi_record_load_stream(rec, 2, file);
-    if (r != LIBMSI_RESULT_SUCCESS)
+    if (!libmsi_record_load_stream(rec, 2, file))
         fprintf(stderr, "failed to load stream (%u)\n", r);
 
     r = libmsi_database_open_query(db,

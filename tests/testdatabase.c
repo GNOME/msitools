@@ -388,11 +388,11 @@ static void test_msiinsert(void)
     /* construct a record to insert */
     hrec = libmsi_record_new(4);
     r = libmsi_record_set_int(hrec, 1, 2);
-    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_record_set_int failed\n");
+    ok(r, "libmsi_record_set_int failed\n");
     r = libmsi_record_set_string(hrec, 2, "Adam");
-    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_record_set_string failed\n");
+    ok(r, "libmsi_record_set_string failed\n");
     r = libmsi_record_set_string(hrec, 3, "96905305");
-    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_record_set_string failed\n");
+    ok(r, "libmsi_record_set_string failed\n");
 
     /* insert another value, using a record and wildcards */
     sql = "INSERT INTO `phone` ( `id`, `name`, `number` )"
@@ -1174,7 +1174,7 @@ static void test_streamtable(void)
     libmsi_record_set_string( rec, 1, "data" );
 
     r = libmsi_record_load_stream( rec, 2, "test.txt" );
-    ok( r == LIBMSI_RESULT_SUCCESS, "Failed to add stream data to the record: %d\n", r);
+    ok(r, "Failed to add stream data to the record: %d\n", r);
 
     unlink("test.txt");
 
@@ -1197,7 +1197,7 @@ static void test_streamtable(void)
     libmsi_record_set_string( rec, 1, "data1" );
 
     r = libmsi_record_load_stream( rec, 2, "test1.txt" );
-    ok( r == LIBMSI_RESULT_SUCCESS, "Failed to add stream data to the record: %d\n", r);
+    ok(r, "Failed to add stream data to the record: %d\n", r);
 
     unlink("test1.txt");
 
@@ -1229,7 +1229,7 @@ static void test_streamtable(void)
     size = sizeof(buf);
     memset(buf, 0, sizeof(buf));
     r = libmsi_record_save_stream( rec, 2, buf, &size );
-    ok( r == LIBMSI_RESULT_SUCCESS, "Failed to get stream: %d\n", r);
+    ok(r, "Failed to get stream: %d\n", r);
     ok( g_str_equal(buf, "test.txt\n"), "Expected 'test.txt\\n', got %s\n", buf);
 
     g_object_unref( rec );
@@ -1252,7 +1252,7 @@ static void test_streamtable(void)
     size = sizeof(buf);
     memset(buf, 0, sizeof(buf));
     r = libmsi_record_save_stream( rec, 2, buf, &size );
-    ok( r == LIBMSI_RESULT_SUCCESS, "Failed to get stream: %d\n", r);
+    ok( r, "Failed to get stream: %d\n", r);
     ok( g_str_equal(buf, "test1.txt\n"), "Expected 'test1.txt\\n', got %s\n", buf);
 
     g_object_unref( rec );
@@ -1264,7 +1264,7 @@ static void test_streamtable(void)
     rec = libmsi_record_new( 1 );
 
     r = libmsi_record_load_stream( rec, 1, "test2.txt" );
-    ok( r == LIBMSI_RESULT_SUCCESS, "Failed to add stream data to the record: %d\n", r);
+    ok(r, "Failed to add stream data to the record: %d\n", r);
 
     unlink("test2.txt");
 
@@ -1296,7 +1296,7 @@ static void test_streamtable(void)
     size = sizeof(buf);
     memset(buf, 0, sizeof(buf));
     r = libmsi_record_save_stream( rec, 2, buf, &size );
-    ok( r == LIBMSI_RESULT_SUCCESS, "Failed to get stream: %d\n", r);
+    ok(r, "Failed to get stream: %d\n", r);
     todo_wine ok( g_str_equal(buf, "test2.txt\n"), "Expected 'test2.txt\\n', got %s\n", buf);
 
     g_object_unref( rec );
@@ -1344,7 +1344,7 @@ static void test_binary(void)
     create_file( "test.txt" );
     rec = libmsi_record_new( 1 );
     r = libmsi_record_load_stream( rec, 1, "test.txt" );
-    ok( r == LIBMSI_RESULT_SUCCESS, "Failed to add stream data to the record: %d\n", r);
+    ok(r, "Failed to add stream data to the record: %d\n", r);
     unlink( "test.txt" );
 
     sql = "INSERT INTO `Binary` ( `Name`, `ID`, `Data` ) VALUES ( 'filename1', 1, ? )";
@@ -1371,7 +1371,7 @@ static void test_binary(void)
     size = sizeof(buf);
     memset( buf, 0, sizeof(buf) );
     r = libmsi_record_save_stream( rec, 2, buf, &size );
-    ok( r == LIBMSI_RESULT_SUCCESS, "Failed to get stream: %d\n", r );
+    ok(r, "Failed to get stream: %d\n", r );
     ok( g_str_equal(buf, "test.txt\n"), "Expected 'test.txt\\n', got %s\n", buf );
 
     g_object_unref( rec );
@@ -1386,7 +1386,7 @@ static void test_binary(void)
     size = sizeof(buf);
     memset( buf, 0, sizeof(buf) );
     r = libmsi_record_save_stream( rec, 3, buf, &size );
-    ok( r == LIBMSI_RESULT_SUCCESS, "Failed to get stream: %d\n", r );
+    ok(r, "Failed to get stream: %d\n", r );
     ok( g_str_equal(buf, "test.txt\n"), "Expected 'test.txt\\n', got %s\n", buf );
 
     g_object_unref( rec );
@@ -2047,7 +2047,7 @@ static void test_binary_import(void)
     size = sizeof(buf);
     memset(buf, 0, size);
     r = libmsi_record_save_stream(rec, 2, buf, &size);
-    ok(r == LIBMSI_RESULT_SUCCESS, "Failed to get stream: %d\n", r);
+    ok(r, "Failed to get stream: %d\n", r);
     ok(g_str_equal(buf, "just some words"),
         "Expected 'just some words', got %s\n", buf);
 
@@ -2514,11 +2514,11 @@ static void test_try_transform(void)
 
     hrec = libmsi_record_new(2);
     r = libmsi_record_set_int(hrec, 1, 2);
-    ok(r == LIBMSI_RESULT_SUCCESS, "failed to set integer\n");
+    ok(r, "failed to set integer\n");
 
     write_file("testdata.bin", "lamyon", 6);
     r = libmsi_record_load_stream(hrec, 2, "testdata.bin");
-    ok(r == LIBMSI_RESULT_SUCCESS, "failed to set stream\n");
+    ok(r, "failed to set stream\n");
 
     sql = "INSERT INTO `BINARY` ( `ID`, `BLOB` ) VALUES ( ?, ? )";
     r = run_query(hdb, hrec, sql);
@@ -2585,7 +2585,7 @@ static void test_try_transform(void)
     /* check the contents of the stream */
     sz = sizeof buffer;
     r = libmsi_record_save_stream( hrec, 1, buffer, &sz );
-    ok(r == LIBMSI_RESULT_SUCCESS, "read stream failed\n");
+    ok(r, "read stream failed\n");
     ok(!memcmp(buffer, "naengmyon", 9), "stream data was wrong\n");
     ok(sz == 9, "stream data was wrong size\n");
     if (hrec) g_object_unref(hrec);
@@ -3707,7 +3707,7 @@ static void test_integers(void)
     ok(r == LIBMSI_RESULT_NO_MORE_ITEMS, "Expected LIBMSI_RESULT_NO_MORE_ITEMS, got %d\n", r);
 
     r = libmsi_record_get_field_count(rec);
-    ok(r == -1, "record count wrong: %d\n", r);
+    ok(r == 0, "record count wrong: %d\n", r);
     ok(rec == NULL, "Must be null");
 
     /* insert legitimate values into it */
@@ -5814,7 +5814,7 @@ static void test_storages_table(void)
     libmsi_record_set_string(hrec, 1, "stgname");
 
     r = libmsi_record_load_stream(hrec, 2, "storage.bin");
-    ok(r == LIBMSI_RESULT_SUCCESS, "Failed to add stream data to the hrecord: %d\n", r);
+    ok(r, "Failed to add stream data to the hrecord: %d\n", r);
 
     unlink("storage.bin");
 
@@ -5844,7 +5844,7 @@ static void test_storages_table(void)
     size = sizeof(buf);
     strcpy(buf, "apple");
     r = libmsi_record_save_stream(hrec, 2, buf, &size);
-    ok(r == LIBMSI_RESULT_INVALID_DATA, "Expected ERROR_INVALID_DATA, got %d\n", r);
+    ok(!r, "Expected ERROR_INVALID_DATA, got %d\n", r);
     ok(g_str_equal(buf, "apple"), "Expected buf to be unchanged, got %s\n", buf);
     ok(size == 0, "Expected 0, got %d\n", size);
 
@@ -6598,7 +6598,7 @@ static void test_dbmerge(void)
     size = sizeof(buf);
     memset(buf, 0, sizeof(buf));
     r = libmsi_record_save_stream(hrec, 2, buf, &size);
-    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
+    ok(r, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     ok(g_str_equal(buf, "binary.dat\n"),
        "Expected \"binary.dat\\n\", got \"%s\"\n", buf);
 

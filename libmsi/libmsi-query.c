@@ -471,7 +471,7 @@ LibmsiResult libmsi_query_execute(LibmsiQuery *query, LibmsiRecord *rec)
     return ret;
 }
 
-static unsigned msi_set_record_type_string( LibmsiRecord *rec, unsigned field,
+static void msi_set_record_type_string( LibmsiRecord *rec, unsigned field,
                                         unsigned type, bool temporary )
 {
     static const char fmt[] = "%d";
@@ -505,7 +505,7 @@ static unsigned msi_set_record_type_string( LibmsiRecord *rec, unsigned field,
 
     TRACE("type %04x -> %s\n", type, debugstr_a(szType) );
 
-    return libmsi_record_set_string( rec, field, szType );
+    libmsi_record_set_string( rec, field, szType );
 }
 
 unsigned _libmsi_query_get_column_info( LibmsiQuery *query, LibmsiColInfo info, LibmsiRecord **prec )

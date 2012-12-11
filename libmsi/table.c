@@ -788,7 +788,7 @@ unsigned msi_create_table( LibmsiDatabase *db, const char *name, column_info *co
         goto err;
 
     r = libmsi_record_set_string( rec, 1, name );
-    if( r )
+    if (!r)
         goto err;
 
     r = tv->ops->insert_row( tv, rec, -1, persistent == LIBMSI_CONDITION_FALSE );
@@ -818,8 +818,7 @@ unsigned msi_create_table( LibmsiDatabase *db, const char *name, column_info *co
         if( !rec )
             goto err;
 
-        r = libmsi_record_set_string( rec, 1, name );
-        if( r )
+        if (!libmsi_record_set_string( rec, 1, name ))
             goto err;
 
         /*
@@ -829,16 +828,9 @@ unsigned msi_create_table( LibmsiDatabase *db, const char *name, column_info *co
         nField = 1;
         for( col = col_info; col; col = col->next )
         {
-            r = libmsi_record_set_int( rec, 2, nField );
-            if( r )
-                goto err;
-
-            r = libmsi_record_set_string( rec, 3, col->column );
-            if( r )
-                goto err;
-
-            r = libmsi_record_set_int( rec, 4, col->type );
-            if( r )
+            if (!libmsi_record_set_int (rec, 2, nField) ||
+                !libmsi_record_set_string (rec, 3, col->column) ||
+                !libmsi_record_set_int(rec, 4, col->type))
                 goto err;
 
             r = tv->ops->insert_row( tv, rec, -1, false );
@@ -1237,9 +1229,8 @@ static unsigned _libmsi_add_stream( LibmsiDatabase *db, const char *name, GsfInp
     if ( !rec )
         return LIBMSI_RESULT_OUTOFMEMORY;
 
-    r = libmsi_record_set_string( rec, 1, name );
-    if ( r != LIBMSI_RESULT_SUCCESS )
-       goto err;
+    if (!libmsi_record_set_string(rec, 1, name))
+        goto err;
 
     r = _libmsi_record_set_gsf_input( rec, 2, data );
     if ( r != LIBMSI_RESULT_SUCCESS )
