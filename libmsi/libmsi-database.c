@@ -87,6 +87,18 @@ typedef struct _LibmsiStream {
     IStream *stm;
 } LibmsiStream;
 
+GQuark
+libmsi_result_error_quark (void)
+{
+  return g_quark_from_static_string ("libmsi-result-error-quark");
+}
+
+GQuark
+libmsi_db_error_quark (void)
+{
+  return g_quark_from_static_string ("libmsi-db-error-quark");
+}
+
 static void
 libmsi_database_init (LibmsiDatabase *p)
 {

@@ -23,6 +23,12 @@
 
 G_BEGIN_DECLS
 
+#define LIBMSI_RESULT_ERROR libmsi_result_error_quark ()
+GQuark libmsi_result_error_quark (void);
+
+#define LIBMSI_DB_ERROR libmsi_db_error_quark ()
+GQuark libmsi_db_error_quark (void);
+
 typedef struct _LibmsiDatabase LibmsiDatabase;
 typedef struct _LibmsiQuery LibmsiQuery;
 typedef struct _LibmsiRecord LibmsiRecord;
@@ -36,9 +42,9 @@ typedef enum LibmsiCondition
     LIBMSI_CONDITION_ERROR = 3,
 } LibmsiCondition;
 
-typedef enum LibmsiResult
+typedef enum LibmsiResultError
 {
-    LIBMSI_RESULT_SUCCESS,
+    LIBMSI_RESULT_SUCCESS, // FIXME: remove me
     LIBMSI_RESULT_ACCESS_DENIED,
     LIBMSI_RESULT_INVALID_HANDLE,
     LIBMSI_RESULT_NOT_ENOUGH_MEMORY,
@@ -58,7 +64,9 @@ typedef enum LibmsiResult
     LIBMSI_RESULT_INVALID_TABLE,
     LIBMSI_RESULT_DATATYPE_MISMATCH,
     LIBMSI_RESULT_INVALID_DATATYPE
-} LibmsiResult;
+} LibmsiResultError;
+
+typedef LibmsiResultError LibmsiResult; // FIXME: remove me
 
 typedef enum LibmsiPropertyType
 {
@@ -84,7 +92,7 @@ typedef enum LibmsiColInfo
 
 typedef enum LibmsiDBError
 {
-    LIBMSI_DB_ERROR_SUCCESS,
+    LIBMSI_DB_ERROR_SUCCESS, // FIXME: remove me
     LIBMSI_DB_ERROR_INVALIDARG,
     LIBMSI_DB_ERROR_MOREDATA,
     LIBMSI_DB_ERROR_FUNCTIONERROR,
