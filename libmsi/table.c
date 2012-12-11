@@ -1546,7 +1546,7 @@ static unsigned table_validate_new( LibmsiTableView *tv, LibmsiRecord *rec, unsi
             unsigned n;
 
             n = libmsi_record_get_integer( rec, i+1 );
-            if (n == MSI_NULL_INTEGER)
+            if (n == LIBMSI_NULL_INT)
             {
                 if (column) *column = i;
                 return LIBMSI_RESULT_INVALID_DATA;
@@ -2294,7 +2294,7 @@ static unsigned* msi_record_to_row( const LibmsiTableView *tv, LibmsiRecord *rec
         {
             data[i] = libmsi_record_get_integer( rec, i+1 );
 
-            if (data[i] == MSI_NULL_INTEGER)
+            if (data[i] == LIBMSI_NULL_INT)
                 data[i] = 0;
             else if ((tv->columns[i].type&0xff) == 2)
                 data[i] += 0x8000;
@@ -2458,7 +2458,7 @@ static unsigned msi_table_load_transform( LibmsiDatabase *db, GsfInfile *stg,
         {
             char table[32];
             unsigned sz = 32;
-            unsigned number = MSI_NULL_INTEGER;
+            unsigned number = LIBMSI_NULL_INT;
             unsigned row = 0;
 
             if (!strcmp( name, szColumns ))
@@ -2470,7 +2470,7 @@ static unsigned msi_table_load_transform( LibmsiDatabase *db, GsfInfile *stg,
                  * Native msi seems writes nul into the Number (2nd) column of
                  * the _Columns table, only when the columns are from a new table
                  */
-                if ( number == MSI_NULL_INTEGER )
+                if ( number == LIBMSI_NULL_INT )
                 {
                     /* reset the column number on a new table */
                     if (strcmp( coltable, table ))
@@ -2519,7 +2519,7 @@ static unsigned msi_table_load_transform( LibmsiDatabase *db, GsfInfile *stg,
                     WARN("failed to insert row %u\n", r);
             }
 
-            if (number != MSI_NULL_INTEGER && !strcmp( name, szColumns ))
+            if (number != LIBMSI_NULL_INT && !strcmp( name, szColumns ))
                 msi_update_table_columns( db, table );
 
             g_object_unref(rec);

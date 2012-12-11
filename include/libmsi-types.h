@@ -68,7 +68,7 @@ typedef enum LibmsiPropertyType
    LIBMSI_PROPERTY_TYPE_FILETIME = 3,
 } LibmsiPropertyType;
 
-#define MSI_NULL_INTEGER 0x80000000
+#define LIBMSI_NULL_INT 0x80000000
 
 typedef enum LibmsiColInfo
 {
