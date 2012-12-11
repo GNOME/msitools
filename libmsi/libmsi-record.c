@@ -229,24 +229,24 @@ unsigned _libmsi_record_copy_field( LibmsiRecord *in_rec, unsigned in_n,
     return r;
 }
 
-int libmsi_record_get_int( const LibmsiRecord *rec, unsigned iField)
+int libmsi_record_get_int( const LibmsiRecord *rec, unsigned field)
 {
     int ret = 0;
 
-    TRACE("%p %d\n", rec, iField );
+    TRACE("%p %d\n", rec, field );
 
     if( !rec )
         return LIBMSI_NULL_INT;
 
-    if( iField > rec->count )
+    if( field > rec->count )
         return LIBMSI_NULL_INT;
 
-    switch( rec->fields[iField].type )
+    switch( rec->fields[field].type )
     {
     case LIBMSI_FIELD_TYPE_INT:
-        return rec->fields[iField].u.iVal;
+        return rec->fields[field].u.iVal;
     case LIBMSI_FIELD_TYPE_WSTR:
-        if( expr_int_from_string( rec->fields[iField].u.szwVal, &ret ) )
+        if( expr_int_from_string( rec->fields[field].u.szwVal, &ret ) )
             return ret;
         return LIBMSI_NULL_INT;
     default:
@@ -277,34 +277,34 @@ LibmsiResult libmsi_record_clear( LibmsiRecord *rec )
     return LIBMSI_RESULT_SUCCESS;
 }
 
-LibmsiResult libmsi_record_set_int( LibmsiRecord *rec, unsigned iField, int iVal )
+LibmsiResult libmsi_record_set_int( LibmsiRecord *rec, unsigned field, int iVal )
 {
-    TRACE("%p %u %d\n", rec, iField, iVal);
+    TRACE("%p %u %d\n", rec, field, iVal);
 
     if( !rec )
         return LIBMSI_RESULT_INVALID_HANDLE;
 
-    if( iField > rec->count )
+    if( field > rec->count )
         return LIBMSI_RESULT_INVALID_PARAMETER;
 
-    _libmsi_free_field( &rec->fields[iField] );
-    rec->fields[iField].type = LIBMSI_FIELD_TYPE_INT;
-    rec->fields[iField].u.iVal = iVal;
+    _libmsi_free_field( &rec->fields[field] );
+    rec->fields[field].type = LIBMSI_FIELD_TYPE_INT;
+    rec->fields[field].u.iVal = iVal;
 
     return LIBMSI_RESULT_SUCCESS;
 }
 
-gboolean libmsi_record_is_null( const LibmsiRecord *rec, unsigned iField )
+gboolean libmsi_record_is_null( const LibmsiRecord *rec, unsigned field )
 {
     bool r = true;
 
-    TRACE("%p %d\n", rec, iField );
+    TRACE("%p %d\n", rec, field );
 
     if( !rec )
         return 0;
 
-    r = ( iField > rec->count ) ||
-        ( rec->fields[iField].type == LIBMSI_FIELD_TYPE_NULL );
+    r = ( field > rec->count ) ||
+        ( rec->fields[field].type == LIBMSI_FIELD_TYPE_NULL );
 
     return r;
 }
@@ -330,27 +330,27 @@ gchar* libmsi_record_get_string(const LibmsiRecord *self, unsigned field)
     return NULL;
 }
 
-const WCHAR *_libmsi_record_get_string_raw( const LibmsiRecord *rec, unsigned iField )
+const WCHAR *_libmsi_record_get_string_raw( const LibmsiRecord *rec, unsigned field )
 {
-    if( iField > rec->count )
+    if( field > rec->count )
         return NULL;
 
-    if( rec->fields[iField].type != LIBMSI_FIELD_TYPE_WSTR )
+    if( rec->fields[field].type != LIBMSI_FIELD_TYPE_WSTR )
         return NULL;
 
-    return rec->fields[iField].u.szwVal;
+    return rec->fields[field].u.szwVal;
 }
 
-unsigned _libmsi_record_get_stringW(const LibmsiRecord *rec, unsigned iField,
+unsigned _libmsi_record_get_stringW(const LibmsiRecord *rec, unsigned field,
                WCHAR *szValue, unsigned *pcchValue)
 {
     unsigned len=0, ret;
     WCHAR buffer[16];
     static const WCHAR szFormat[] = { '%','d',0 };
 
-    TRACE("%p %d %p %p\n", rec, iField, szValue, pcchValue);
+    TRACE("%p %d %p %p\n", rec, field, szValue, pcchValue);
 
-    if( iField > rec->count )
+    if( field > rec->count )
     {
         if ( szValue && *pcchValue > 0 )
             szValue[0] = 0;
@@ -360,18 +360,18 @@ unsigned _libmsi_record_get_stringW(const LibmsiRecord *rec, unsigned iField,
     }
 
     ret = LIBMSI_RESULT_SUCCESS;
-    switch( rec->fields[iField].type )
+    switch( rec->fields[field].type )
     {
     case LIBMSI_FIELD_TYPE_INT:
-        wsprintfW(buffer, szFormat, rec->fields[iField].u.iVal);
+        wsprintfW(buffer, szFormat, rec->fields[field].u.iVal);
         len = strlenW( buffer );
         if (szValue)
             strcpynW(szValue, buffer, *pcchValue);
         break;
     case LIBMSI_FIELD_TYPE_WSTR:
-        len = strlenW( rec->fields[iField].u.szwVal );
+        len = strlenW( rec->fields[field].u.szwVal );
         if (szValue)
-            strcpynW(szValue, rec->fields[iField].u.szwVal, *pcchValue);
+            strcpynW(szValue, rec->fields[field].u.szwVal, *pcchValue);
         break;
     case LIBMSI_FIELD_TYPE_NULL:
         if( szValue && *pcchValue > 0 )
@@ -388,40 +388,40 @@ unsigned _libmsi_record_get_stringW(const LibmsiRecord *rec, unsigned iField,
     return ret;
 }
 
-LibmsiResult libmsi_record_set_string( LibmsiRecord *rec, unsigned iField, const char *szValue )
+LibmsiResult libmsi_record_set_string( LibmsiRecord *rec, unsigned field, const char *szValue )
 {
     WCHAR *str;
 
-    TRACE("%d %d %s\n", rec, iField, debugstr_a(szValue));
+    TRACE("%d %d %s\n", rec, field, debugstr_a(szValue));
 
     if( !rec )
         return LIBMSI_RESULT_INVALID_HANDLE;
 
     str = strdupAtoW( szValue );
-    return _libmsi_record_set_stringW( rec, iField, str );
+    return _libmsi_record_set_stringW( rec, field, str );
 }
 
-unsigned _libmsi_record_set_stringW( LibmsiRecord *rec, unsigned iField, const WCHAR *szValue )
+unsigned _libmsi_record_set_stringW( LibmsiRecord *rec, unsigned field, const WCHAR *szValue )
 {
     WCHAR *str;
 
-    TRACE("%p %d %s\n", rec, iField, debugstr_w(szValue));
+    TRACE("%p %d %s\n", rec, field, debugstr_w(szValue));
 
-    if( iField > rec->count )
+    if( field > rec->count )
         return LIBMSI_RESULT_INVALID_FIELD;
 
-    _libmsi_free_field( &rec->fields[iField] );
+    _libmsi_free_field( &rec->fields[field] );
 
     if( szValue && szValue[0] )
     {
         str = strdupW( szValue );
-        rec->fields[iField].type = LIBMSI_FIELD_TYPE_WSTR;
-        rec->fields[iField].u.szwVal = str;
+        rec->fields[field].type = LIBMSI_FIELD_TYPE_WSTR;
+        rec->fields[field].u.szwVal = str;
     }
     else
     {
-        rec->fields[iField].type = LIBMSI_FIELD_TYPE_NULL;
-        rec->fields[iField].u.szwVal = NULL;
+        rec->fields[field].type = LIBMSI_FIELD_TYPE_NULL;
+        rec->fields[field].u.szwVal = NULL;
     }
 
     return 0;
@@ -477,24 +477,24 @@ static unsigned _libmsi_addstream_from_file(const char *szFile, IStream **pstm)
     return LIBMSI_RESULT_SUCCESS;
 }
 
-unsigned _libmsi_record_load_stream(LibmsiRecord *rec, unsigned iField, IStream *stream)
+unsigned _libmsi_record_load_stream(LibmsiRecord *rec, unsigned field, IStream *stream)
 {
-    if ( (iField == 0) || (iField > rec->count) )
+    if ( (field == 0) || (field > rec->count) )
         return LIBMSI_RESULT_INVALID_PARAMETER;
 
-    _libmsi_free_field( &rec->fields[iField] );
-    rec->fields[iField].type = LIBMSI_FIELD_TYPE_STREAM;
-    rec->fields[iField].u.stream = stream;
+    _libmsi_free_field( &rec->fields[field] );
+    rec->fields[field].type = LIBMSI_FIELD_TYPE_STREAM;
+    rec->fields[field].u.stream = stream;
 
     return LIBMSI_RESULT_SUCCESS;
 }
 
-unsigned _libmsi_record_load_stream_from_file(LibmsiRecord *rec, unsigned iField, const char *szFilename)
+unsigned _libmsi_record_load_stream_from_file(LibmsiRecord *rec, unsigned field, const char *szFilename)
 {
     IStream *stm = NULL;
     HRESULT r;
 
-    if( (iField == 0) || (iField > rec->count) )
+    if( (field == 0) || (field > rec->count) )
         return LIBMSI_RESULT_INVALID_PARAMETER;
 
     /* no filename means we should seek back to the start of the stream */
@@ -503,10 +503,10 @@ unsigned _libmsi_record_load_stream_from_file(LibmsiRecord *rec, unsigned iField
         LARGE_INTEGER ofs;
         ULARGE_INTEGER cur;
 
-        if( rec->fields[iField].type != LIBMSI_FIELD_TYPE_STREAM )
+        if( rec->fields[field].type != LIBMSI_FIELD_TYPE_STREAM )
             return LIBMSI_RESULT_INVALID_FIELD;
 
-        stm = rec->fields[iField].u.stream;
+        stm = rec->fields[field].u.stream;
         if( !stm )
             return LIBMSI_RESULT_INVALID_FIELD;
 
@@ -523,52 +523,52 @@ unsigned _libmsi_record_load_stream_from_file(LibmsiRecord *rec, unsigned iField
             return r;
 
         /* if all's good, store it in the record */
-        _libmsi_record_load_stream(rec, iField, stm);
+        _libmsi_record_load_stream(rec, field, stm);
     }
 
     return LIBMSI_RESULT_SUCCESS;
 }
 
-LibmsiResult libmsi_record_load_stream(LibmsiRecord *rec, unsigned iField, const char *szFilename)
+LibmsiResult libmsi_record_load_stream(LibmsiRecord *rec, unsigned field, const char *szFilename)
 {
     unsigned ret;
 
-    TRACE("%d %d %s\n", rec, iField, debugstr_a(szFilename));
+    TRACE("%d %d %s\n", rec, field, debugstr_a(szFilename));
 
     if( !rec )
         return LIBMSI_RESULT_INVALID_HANDLE;
 
     g_object_ref(rec);
-    ret = _libmsi_record_load_stream_from_file( rec, iField, szFilename );
+    ret = _libmsi_record_load_stream_from_file( rec, field, szFilename );
     g_object_unref(rec);
 
     return ret;
 }
 
-unsigned _libmsi_record_save_stream(const LibmsiRecord *rec, unsigned iField, char *buf, unsigned *sz)
+unsigned _libmsi_record_save_stream(const LibmsiRecord *rec, unsigned field, char *buf, unsigned *sz)
 {
     unsigned count;
     HRESULT r;
     IStream *stm;
 
-    TRACE("%p %d %p %p\n", rec, iField, buf, sz);
+    TRACE("%p %d %p %p\n", rec, field, buf, sz);
 
     if( !sz )
         return LIBMSI_RESULT_INVALID_PARAMETER;
 
-    if( iField > rec->count)
+    if( field > rec->count)
         return LIBMSI_RESULT_INVALID_PARAMETER;
 
-    if ( rec->fields[iField].type == LIBMSI_FIELD_TYPE_NULL )
+    if ( rec->fields[field].type == LIBMSI_FIELD_TYPE_NULL )
     {
         *sz = 0;
         return LIBMSI_RESULT_INVALID_DATA;
     }
 
-    if( rec->fields[iField].type != LIBMSI_FIELD_TYPE_STREAM )
+    if( rec->fields[field].type != LIBMSI_FIELD_TYPE_STREAM )
         return LIBMSI_RESULT_INVALID_DATATYPE;
 
-    stm = rec->fields[iField].u.stream;
+    stm = rec->fields[field].u.stream;
     if( !stm )
         return LIBMSI_RESULT_INVALID_PARAMETER;
 
@@ -603,49 +603,49 @@ unsigned _libmsi_record_save_stream(const LibmsiRecord *rec, unsigned iField, ch
     return LIBMSI_RESULT_SUCCESS;
 }
 
-LibmsiResult libmsi_record_save_stream(LibmsiRecord *rec, unsigned iField, char *buf, unsigned *sz)
+LibmsiResult libmsi_record_save_stream(LibmsiRecord *rec, unsigned field, char *buf, unsigned *sz)
 {
     unsigned ret;
 
-    TRACE("%d %d %p %p\n", rec, iField, buf, sz);
+    TRACE("%d %d %p %p\n", rec, field, buf, sz);
 
     if( !rec )
         return LIBMSI_RESULT_INVALID_HANDLE;
 
     g_object_ref(rec);
-    ret = _libmsi_record_save_stream( rec, iField, buf, sz );
+    ret = _libmsi_record_save_stream( rec, field, buf, sz );
     g_object_unref(rec);
 
     return ret;
 }
 
-unsigned _libmsi_record_set_IStream( LibmsiRecord *rec, unsigned iField, IStream *stm )
+unsigned _libmsi_record_set_IStream( LibmsiRecord *rec, unsigned field, IStream *stm )
 {
-    TRACE("%p %d %p\n", rec, iField, stm);
+    TRACE("%p %d %p\n", rec, field, stm);
 
-    if( iField > rec->count )
+    if( field > rec->count )
         return LIBMSI_RESULT_INVALID_FIELD;
 
-    _libmsi_free_field( &rec->fields[iField] );
+    _libmsi_free_field( &rec->fields[field] );
 
-    rec->fields[iField].type = LIBMSI_FIELD_TYPE_STREAM;
-    rec->fields[iField].u.stream = stm;
+    rec->fields[field].type = LIBMSI_FIELD_TYPE_STREAM;
+    rec->fields[field].u.stream = stm;
     IStream_AddRef( stm );
 
     return LIBMSI_RESULT_SUCCESS;
 }
 
-unsigned _libmsi_record_get_IStream( const LibmsiRecord *rec, unsigned iField, IStream **pstm)
+unsigned _libmsi_record_get_IStream( const LibmsiRecord *rec, unsigned field, IStream **pstm)
 {
-    TRACE("%p %d %p\n", rec, iField, pstm);
+    TRACE("%p %d %p\n", rec, field, pstm);
 
-    if( iField > rec->count )
+    if( field > rec->count )
         return LIBMSI_RESULT_INVALID_FIELD;
 
-    if( rec->fields[iField].type != LIBMSI_FIELD_TYPE_STREAM )
+    if( rec->fields[field].type != LIBMSI_FIELD_TYPE_STREAM )
         return LIBMSI_RESULT_INVALID_FIELD;
 
-    *pstm = rec->fields[iField].u.stream;
+    *pstm = rec->fields[field].u.stream;
     IStream_AddRef( *pstm );
 
     return LIBMSI_RESULT_SUCCESS;
