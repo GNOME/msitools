@@ -63,6 +63,28 @@ typedef struct _LibmsiStream {
     GsfInput *stm;
 } LibmsiStream;
 
+static void free_transforms( LibmsiDatabase *db )
+{
+    while( !list_empty( &db->transforms ) )
+    {
+        LibmsiTransform *t = LIST_ENTRY( list_head( &db->transforms ),
+                                      LibmsiTransform, entry );
+        list_remove( &t->entry );
+        g_object_unref(G_OBJECT(t->stg));
+        msi_free( t );
+    }
+}
+
+static void _libmsi_database_destroy( LibmsiObject *arg )
+{
+    LibmsiDatabase *db = (LibmsiDatabase *) arg;
+
+    _libmsi_database_close( db, false );
+    free_cached_tables( db );
+    free_transforms( db );
+    msi_free(db->path);
+}
+
 unsigned msi_open_storage( LibmsiDatabase *db, const char *stname )
 {
     unsigned r = LIBMSI_RESULT_NOT_ENOUGH_MEMORY;
@@ -278,45 +300,6 @@ unsigned msi_create_stream( LibmsiDatabase *db, const char *stname, GsfInput *st
     return r;
 }
 
-static void cache_infile_structure( LibmsiDatabase *db )
-{
-    int i, n;
-    char decname[0x40];
-    unsigned r;
-
-    n = gsf_infile_num_children(db->infile);
-
-    /* TODO: error handling */
-
-    for (i = 0; i < n; i++)
-    {
-        GsfInput *in = gsf_infile_child_by_index(db->infile, i);
-        const uint8_t *name = (const uint8_t *) gsf_input_name(in);
-
-        /* table streams are not in the _Streams table */
-        if (!GSF_IS_INFILE(in) || gsf_infile_num_children(GSF_INFILE(in)) == -1) {
-            /* UTF-8 encoding of 0x4840.  */
-            if (name[0] == 0xe4 && name[1] == 0xa1 && name[2] == 0x80)
-            {
-                decode_streamname( name + 3, decname );
-                if ( !strcmp( decname, szStringPool ) ||
-                     !strcmp( decname, szStringData ) )
-                    continue;
-
-                r = _libmsi_open_table( db, decname, false );
-            }
-            else
-            {
-                r = msi_alloc_stream(db, name, GSF_INPUT(in));
-                g_object_unref(G_OBJECT(in));
-            }
-        } else {
-            msi_open_storage(db, name);
-        }
-
-    }
-}
-
 unsigned msi_enum_db_streams(LibmsiDatabase *db,
                              unsigned (*fn)(const char *, GsfInput *, void *),
                              void *opaque)
@@ -411,18 +394,6 @@ unsigned msi_get_raw_stream( LibmsiDatabase *db, const char *stname, GsfInput **
     return ret;
 }
 
-static void free_transforms( LibmsiDatabase *db )
-{
-    while( !list_empty( &db->transforms ) )
-    {
-        LibmsiTransform *t = LIST_ENTRY( list_head( &db->transforms ),
-                                      LibmsiTransform, entry );
-        list_remove( &t->entry );
-        g_object_unref(G_OBJECT(t->stg));
-        msi_free( t );
-    }
-}
-
 void msi_destroy_stream( LibmsiDatabase *db, const char *stname )
 {
     LibmsiStream *stream, *stream2;
@@ -483,16 +454,6 @@ void append_storage_to_db( LibmsiDatabase *db, GsfInfile *stg )
 #endif
 }
 
-static void _libmsi_database_destroy( LibmsiObject *arg )
-{
-    LibmsiDatabase *db = (LibmsiDatabase *) arg;
-
-    _libmsi_database_close( db, false );
-    free_cached_tables( db );
-    free_transforms( db );
-    msi_free(db->path);
-}
-
 LibmsiResult _libmsi_database_close(LibmsiDatabase *db, bool committed)
 {
     TRACE("%p %d\n", db, committed);
@@ -532,71 +493,6 @@ LibmsiResult _libmsi_database_close(LibmsiDatabase *db, bool committed)
         }
     }
     db->outpath = NULL;
-}
-
-LibmsiResult _libmsi_database_open(LibmsiDatabase *db)
-{
-    GsfInput *in;
-    GsfInfile *stg;
-    uint8_t uuid[16];
-    unsigned ret = LIBMSI_RESULT_OPEN_FAILED;
-
-    TRACE("%p %s\n", db, db->path);
-
-    in = gsf_input_stdio_new(db->path, NULL);
-    if (!in)
-    {
-        WARN("open file failed for %s\n", debugstr_a(db->path));
-        return LIBMSI_RESULT_OPEN_FAILED;
-    }
-    stg = gsf_infile_msole_new( in, NULL );
-    g_object_unref(G_OBJECT(in));
-    if( !stg )
-    {
-        WARN("open failed for %s\n", debugstr_a(db->path));
-        return LIBMSI_RESULT_OPEN_FAILED;
-    }
-
-    if( !gsf_infile_msole_get_class_id (GSF_INFILE_MSOLE(stg), uuid))
-    {
-        FIXME("Failed to stat storage\n");
-        goto end;
-    }
-
-    if ( memcmp( uuid, clsid_msi_database, 16 ) != 0 &&
-         memcmp( uuid, clsid_msi_patch, 16 ) != 0 &&
-         memcmp( uuid, clsid_msi_transform, 16 ) != 0 )
-    {
-        ERR("storage GUID is not a MSI database GUID %s\n",
-             debugstr_guid(uuid) );
-        goto end;
-    }
-
-    if ( db->patch && memcmp( uuid, clsid_msi_patch, 16 ) != 0 )
-    {
-        ERR("storage GUID is not the MSI patch GUID %s\n",
-             debugstr_guid(uuid) );
-        goto end;
-    }
-
-    db->infile = stg;
-    g_object_ref(G_OBJECT(db->infile));
-
-    cache_infile_structure( db );
-
-    db->strings = msi_load_string_table( db->infile, &db->bytes_per_strref );
-    if( !db->strings )
-        goto end;
-
-    ret = LIBMSI_RESULT_SUCCESS;
-end:
-    if (ret) {
-        if (db->infile)
-            g_object_unref(G_OBJECT(db->infile));
-        db->infile = NULL;
-    }
-    g_object_unref(G_OBJECT(stg));
-    return ret;
 }
 
 LibmsiResult _libmsi_database_start_transaction(LibmsiDatabase *db, const char *szPersist)
@@ -671,86 +567,6 @@ end:
     if (stg)
         g_object_unref(G_OBJECT(stg));
     msi_free(tmpfile);
-    return ret;
-}
-
-LibmsiResult libmsi_database_open(const char *szDBPath, const char *szPersist, LibmsiDatabase **pdb)
-{
-    LibmsiDatabase *db = NULL;
-    unsigned ret = LIBMSI_RESULT_SUCCESS;
-    const char *szMode;
-    bool patch = false;
-    char path[MAX_PATH];
-
-    TRACE("%s %p\n",debugstr_a(szDBPath),szPersist );
-
-    if( !pdb )
-        return LIBMSI_RESULT_INVALID_PARAMETER;
-
-    if (IS_INTMSIDBOPEN(szPersist - LIBMSI_DB_OPEN_PATCHFILE))
-    {
-        TRACE("Database is a patch\n");
-        szPersist -= LIBMSI_DB_OPEN_PATCHFILE;
-        patch = true;
-    }
-
-    szMode = szPersist;
-    db = alloc_msiobject( sizeof (LibmsiDatabase), _libmsi_database_destroy );
-    if( !db )
-    {
-        FIXME("Failed to allocate a handle\n");
-        goto end;
-    }
-
-    if (!strstr( szDBPath, G_DIR_SEPARATOR_S ))
-    {
-        getcwd( path, MAX_PATH );
-        strcat( path, G_DIR_SEPARATOR_S );
-        strcat( path, szDBPath );
-    }
-    else
-        strcpy( path, szDBPath );
-
-    db->patch = patch;
-    db->mode = szMode;
-    list_init( &db->tables );
-    list_init( &db->transforms );
-    list_init( &db->streams );
-    list_init( &db->storages );
-
-    if( szPersist != LIBMSI_DB_OPEN_CREATE )
-    {
-        db->path = strdup( path );
-        ret = _libmsi_database_open(db);
-        if (ret)
-            goto end;
-    } else {
-        szPersist = szDBPath;
-        db->strings = msi_init_string_table( &db->bytes_per_strref );
-    }
-
-    db->media_transform_offset = MSI_INITIAL_MEDIA_TRANSFORM_OFFSET;
-    db->media_transform_disk_id = MSI_INITIAL_MEDIA_TRANSFORM_DISKID;
-
-    if( TRACE_ON( msi ) )
-        enum_stream_names( db->infile );
-
-    if( szPersist == LIBMSI_DB_OPEN_CREATE )
-        ret = _libmsi_database_start_transaction(db, szDBPath);
-    else
-        ret = _libmsi_database_start_transaction(db, szPersist);
-    if (ret)
-        goto end;
-
-    ret = LIBMSI_RESULT_SUCCESS;
-
-    msiobj_addref( &db->hdr );
-    *pdb = db;
-
-end:
-    if( db )
-        msiobj_release( &db->hdr );
-
     return ret;
 }
 
@@ -2145,6 +1961,110 @@ LibmsiDBState libmsi_database_get_state( LibmsiDatabase *db )
     return ret;
 }
 
+static void cache_infile_structure( LibmsiDatabase *db )
+{
+    int i, n;
+    char decname[0x40];
+    unsigned r;
+
+    n = gsf_infile_num_children(db->infile);
+
+    /* TODO: error handling */
+
+    for (i = 0; i < n; i++)
+    {
+        GsfInput *in = gsf_infile_child_by_index(db->infile, i);
+        const uint8_t *name = (const uint8_t *) gsf_input_name(in);
+
+        /* table streams are not in the _Streams table */
+        if (!GSF_IS_INFILE(in) || gsf_infile_num_children(GSF_INFILE(in)) == -1) {
+            /* UTF-8 encoding of 0x4840.  */
+            if (name[0] == 0xe4 && name[1] == 0xa1 && name[2] == 0x80)
+            {
+                decode_streamname( name + 3, decname );
+                if ( !strcmp( decname, szStringPool ) ||
+                     !strcmp( decname, szStringData ) )
+                    continue;
+
+                r = _libmsi_open_table( db, decname, false );
+            }
+            else
+            {
+                r = msi_alloc_stream(db, name, GSF_INPUT(in));
+                g_object_unref(G_OBJECT(in));
+            }
+        } else {
+            msi_open_storage(db, name);
+        }
+
+    }
+}
+
+LibmsiResult _libmsi_database_open(LibmsiDatabase *db)
+{
+    GsfInput *in;
+    GsfInfile *stg;
+    uint8_t uuid[16];
+    unsigned ret = LIBMSI_RESULT_OPEN_FAILED;
+
+    TRACE("%p %s\n", db, db->path);
+
+    in = gsf_input_stdio_new(db->path, NULL);
+    if (!in)
+    {
+        WARN("open file failed for %s\n", debugstr_a(db->path));
+        return LIBMSI_RESULT_OPEN_FAILED;
+    }
+    stg = gsf_infile_msole_new( in, NULL );
+    g_object_unref(G_OBJECT(in));
+    if( !stg )
+    {
+        WARN("open failed for %s\n", debugstr_a(db->path));
+        return LIBMSI_RESULT_OPEN_FAILED;
+    }
+
+    if( !gsf_infile_msole_get_class_id (GSF_INFILE_MSOLE(stg), uuid))
+    {
+        FIXME("Failed to stat storage\n");
+        goto end;
+    }
+
+    if ( memcmp( uuid, clsid_msi_database, 16 ) != 0 &&
+         memcmp( uuid, clsid_msi_patch, 16 ) != 0 &&
+         memcmp( uuid, clsid_msi_transform, 16 ) != 0 )
+    {
+        ERR("storage GUID is not a MSI database GUID %s\n",
+             debugstr_guid(uuid) );
+        goto end;
+    }
+
+    if ( db->patch && memcmp( uuid, clsid_msi_patch, 16 ) != 0 )
+    {
+        ERR("storage GUID is not the MSI patch GUID %s\n",
+             debugstr_guid(uuid) );
+        goto end;
+    }
+
+    db->infile = stg;
+    g_object_ref(G_OBJECT(db->infile));
+
+    cache_infile_structure( db );
+
+    db->strings = msi_load_string_table( db->infile, &db->bytes_per_strref );
+    if( !db->strings )
+        goto end;
+
+    ret = LIBMSI_RESULT_SUCCESS;
+end:
+    if (ret) {
+        if (db->infile)
+            g_object_unref(G_OBJECT(db->infile));
+        db->infile = NULL;
+    }
+    g_object_unref(G_OBJECT(stg));
+    return ret;
+}
+
 unsigned _libmsi_database_apply_transform( LibmsiDatabase *db,
                  const char *szTransformFile, int iErrorCond )
 {
@@ -2433,4 +2353,84 @@ LibmsiCondition libmsi_database_is_table_persistent(
     msiobj_release( &db->hdr );
 
     return r;
+}
+
+LibmsiResult libmsi_database_open(const char *szDBPath, const char *szPersist, LibmsiDatabase **pdb)
+{
+    LibmsiDatabase *db = NULL;
+    unsigned ret = LIBMSI_RESULT_SUCCESS;
+    const char *szMode;
+    bool patch = false;
+    char path[MAX_PATH];
+
+    TRACE("%s %p\n",debugstr_a(szDBPath),szPersist );
+
+    if( !pdb )
+        return LIBMSI_RESULT_INVALID_PARAMETER;
+
+    if (IS_INTMSIDBOPEN(szPersist - LIBMSI_DB_OPEN_PATCHFILE))
+    {
+        TRACE("Database is a patch\n");
+        szPersist -= LIBMSI_DB_OPEN_PATCHFILE;
+        patch = true;
+    }
+
+    szMode = szPersist;
+    db = alloc_msiobject( sizeof (LibmsiDatabase), _libmsi_database_destroy );
+    if( !db )
+    {
+        FIXME("Failed to allocate a handle\n");
+        goto end;
+    }
+
+    if (!strstr( szDBPath, G_DIR_SEPARATOR_S ))
+    {
+        getcwd( path, MAX_PATH );
+        strcat( path, G_DIR_SEPARATOR_S );
+        strcat( path, szDBPath );
+    }
+    else
+        strcpy( path, szDBPath );
+
+    db->patch = patch;
+    db->mode = szMode;
+    list_init( &db->tables );
+    list_init( &db->transforms );
+    list_init( &db->streams );
+    list_init( &db->storages );
+
+    if( szPersist != LIBMSI_DB_OPEN_CREATE )
+    {
+        db->path = strdup( path );
+        ret = _libmsi_database_open(db);
+        if (ret)
+            goto end;
+    } else {
+        szPersist = szDBPath;
+        db->strings = msi_init_string_table( &db->bytes_per_strref );
+    }
+
+    db->media_transform_offset = MSI_INITIAL_MEDIA_TRANSFORM_OFFSET;
+    db->media_transform_disk_id = MSI_INITIAL_MEDIA_TRANSFORM_DISKID;
+
+    if( TRACE_ON( msi ) )
+        enum_stream_names( db->infile );
+
+    if( szPersist == LIBMSI_DB_OPEN_CREATE )
+        ret = _libmsi_database_start_transaction(db, szDBPath);
+    else
+        ret = _libmsi_database_start_transaction(db, szPersist);
+    if (ret)
+        goto end;
+
+    ret = LIBMSI_RESULT_SUCCESS;
+
+    msiobj_addref( &db->hdr );
+    *pdb = db;
+
+end:
+    if( db )
+        msiobj_release( &db->hdr );
+
+    return ret;
 }

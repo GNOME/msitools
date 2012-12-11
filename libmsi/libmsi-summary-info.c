@@ -30,6 +30,8 @@ static const char szSumInfo[] = "\5SummaryInformation";
 static const uint8_t fmtid_SummaryInformation[16] =
         { 0xe0, 0x85, 0x9f, 0xf2, 0xf9, 0x4f, 0x68, 0x10, 0xab, 0x91, 0x08, 0x00, 0x2b, 0x27, 0xb3, 0xd9};
 
+static unsigned load_summary_info( LibmsiSummaryInfo *si, GsfInput *stm );
+
 static void free_prop( LibmsiOLEVariant *prop )
 {
     if (prop->vt == OLEVT_LPSTR)
@@ -45,6 +47,33 @@ static void _libmsi_summary_info_destroy( LibmsiObject *arg )
     for( i = 0; i < MSI_MAX_PROPS; i++ )
         free_prop( &si->property[i] );
     msiobj_release( &si->database->hdr );
+}
+
+LibmsiSummaryInfo *_libmsi_get_summary_information( LibmsiDatabase *db, unsigned uiUpdateCount )
+{
+    GsfInput *stm = NULL;
+    LibmsiSummaryInfo *si;
+    unsigned r;
+
+    TRACE("%p %d\n", db, uiUpdateCount );
+
+    si = alloc_msiobject( sizeof (LibmsiSummaryInfo), _libmsi_summary_info_destroy );
+    if( !si )
+        return si;
+
+    si->update_count = uiUpdateCount;
+    msiobj_addref( &db->hdr );
+    si->database = db;
+
+    /* read the stream... if we fail, we'll start with an empty property set */
+    r = msi_get_raw_stream( db, szSumInfo, &stm );
+    if( r == 0 )
+    {
+        load_summary_info( si, stm );
+        g_object_unref(G_OBJECT(stm));
+    }
+
+    return si;
 }
 
 static unsigned get_type( unsigned uiProperty )
@@ -435,33 +464,6 @@ static unsigned suminfo_persist( LibmsiSummaryInfo *si )
     }
     msi_free( data );
     return r;
-}
-
-LibmsiSummaryInfo *_libmsi_get_summary_information( LibmsiDatabase *db, unsigned uiUpdateCount )
-{
-    GsfInput *stm = NULL;
-    LibmsiSummaryInfo *si;
-    unsigned r;
-
-    TRACE("%p %d\n", db, uiUpdateCount );
-
-    si = alloc_msiobject( sizeof (LibmsiSummaryInfo), _libmsi_summary_info_destroy );
-    if( !si )
-        return si;
-
-    si->update_count = uiUpdateCount;
-    msiobj_addref( &db->hdr );
-    si->database = db;
-
-    /* read the stream... if we fail, we'll start with an empty property set */
-    r = msi_get_raw_stream( db, szSumInfo, &stm );
-    if( r == 0 )
-    {
-        load_summary_info( si, stm );
-        g_object_unref(G_OBJECT(stm));
-    }
-
-    return si;
 }
 
 LibmsiResult libmsi_database_get_summary_info( LibmsiDatabase *db, 
