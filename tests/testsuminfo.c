@@ -20,6 +20,7 @@
 
 #define COBJMACROS
 
+#include <stdint.h>
 #include <stdio.h>
 #include <windows.h>
 #include <libmsi.h>
@@ -53,8 +54,7 @@ static void test_suminfo(void)
     r = libmsi_database_get_summary_info(hdb, 0, &hsuminfo);
     ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_database_get_summary_info failed %u\n", r);
 
-    r = libmsi_unref(hsuminfo);
-    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_unref failed\n");
+    g_object_unref(hsuminfo);
 
     r = libmsi_database_get_summary_info(hdb, 0, &hsuminfo);
     ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_database_get_summary_info failed %u\n", r);
@@ -112,8 +112,7 @@ static void test_suminfo(void)
     r = libmsi_summary_info_set_property(hsuminfo, MSI_PID_CODEPAGE, LIBMSI_PROPERTY_TYPE_INT, 1, &ft, "JungAh");
     ok(r == LIBMSI_RESULT_FUNCTION_FAILED, "libmsi_summary_info_set_property wrong error\n");
 
-    r = libmsi_unref(hsuminfo);
-    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_unref failed\n");
+    g_object_unref(hsuminfo);
 
     /* try again with the update count set */
     r = libmsi_database_get_summary_info(hdb, 1, &hsuminfo);
@@ -180,8 +179,7 @@ static void test_suminfo(void)
     r = libmsi_summary_info_set_property(hsuminfo, MSI_PID_CODEPAGE, LIBMSI_PROPERTY_TYPE_INT, 1, &ft, "Mike");
     ok(r == LIBMSI_RESULT_FUNCTION_FAILED, "libmsi_summary_info_set_property wrong error\n");
 
-    r = libmsi_unref(hsuminfo);
-    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_unref failed\n");
+    g_object_unref(hsuminfo);
 
     /* try again with a higher update count */
     r = libmsi_database_get_summary_info(hdb, 10, &hsuminfo);
@@ -207,11 +205,9 @@ static void test_suminfo(void)
 
     libmsi_database_commit(hdb);
 
-    r = libmsi_unref(hsuminfo);
-    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_unref failed\n");
+    g_object_unref(hsuminfo);
 
-    r = libmsi_unref(hdb);
-    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_unref failed\n");
+    g_object_unref(hdb);
 
     /* reread, non-zero update count */
     r = libmsi_database_open(msifile, LIBMSI_DB_OPEN_TRANSACT, &hdb);
@@ -226,12 +222,10 @@ static void test_suminfo(void)
     r = libmsi_summary_info_persist(hsuminfo);
     ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_summary_info_persist failed %u\n", r);
 
-    r = libmsi_unref(hsuminfo);
-    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_unref failed %u\n", r);
+    g_object_unref(hsuminfo);
 
     /* now with zero update count */
-    r = libmsi_unref(hdb);
-    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_unref failed %u\n", r);
+    g_object_unref(hdb);
 
     r = libmsi_database_open(msifile, LIBMSI_DB_OPEN_READONLY, &hdb);
     ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_database_open failed\n");
@@ -245,11 +239,9 @@ static void test_suminfo(void)
     r = libmsi_summary_info_persist(hsuminfo);
     ok(r == LIBMSI_RESULT_FUNCTION_FAILED, "libmsi_summary_info_persist wrong error %u\n", r);
 
-    r = libmsi_unref(hsuminfo);
-    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_unref failed\n");
+    g_object_unref(hsuminfo);
 
-    r = libmsi_unref(hdb);
-    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_unref failed %u\n", r);
+    g_object_unref(hdb);
 
     r = DeleteFile(msifile);
     ok(r, "DeleteFile failed\n");
@@ -425,8 +417,8 @@ static void test_summary_binary(void)
     r = libmsi_summary_info_persist( hsuminfo );
     ok(r == LIBMSI_RESULT_FUNCTION_FAILED, "libmsi_summary_info_persist failed %u\n", r);
 
-    libmsi_unref( hsuminfo );
-    libmsi_unref( hdb );
+    g_object_unref( hsuminfo );
+    g_object_unref( hdb );
 
     DeleteFile( msifile );
 }

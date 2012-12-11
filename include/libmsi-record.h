@@ -19,7 +19,27 @@
 #ifndef _LIBMSI_RECORD_H
 #define _LIBMSI_RECORD_H
 
+#include <glib-object.h>
+
 #include "libmsi-types.h"
+
+G_BEGIN_DECLS
+
+#define LIBMSI_TYPE_RECORD             (libmsi_record_get_type ())
+#define LIBMSI_RECORD(obj)             (G_TYPE_CHECK_INSTANCE_CAST ((obj), LIBMSI_TYPE_RECORD, LibmsiRecord))
+#define LIBMSI_RECORD_CLASS(klass)     (G_TYPE_CHECK_CLASS_CAST ((klass), LIBMSI_TYPE_RECORD, LibmsiRecordClass))
+#define LIBMSI_IS_RECORD(obj)          (G_TYPE_CHECK_INSTANCE_TYPE ((obj), LIBMSI_TYPE_RECORD))
+#define LIBMSI_IS_RECORD_CLASS(klass)  (G_TYPE_CHECK_CLASS_TYPE ((klass), LIBMSI_TYPE_RECORD))
+#define LIBMSI_RECORD_GET_CLASS(obj)   (G_TYPE_INSTANCE_GET_CLASS ((obj), LIBMSI_TYPE_RECORD, LibmsiRecordClass))
+
+typedef struct _LibmsiRecordClass LibmsiRecordClass;
+
+struct _LibmsiRecordClass
+{
+    GObjectClass parent_class;
+};
+
+GType libmsi_record_get_type (void) G_GNUC_CONST;
 
 LibmsiRecord *    libmsi_record_new (guint count);
 LibmsiResult      libmsi_record_clear_data (LibmsiRecord *);
@@ -33,5 +53,7 @@ gboolean          libmsi_record_is_null (const LibmsiRecord *,unsigned);
 
 LibmsiResult      libmsi_record_load_stream (LibmsiRecord *,unsigned,const char *);
 LibmsiResult      libmsi_record_save_stream (LibmsiRecord *,unsigned,char*,unsigned *);
+
+G_END_DECLS
 
 #endif /* _LIBMSI_RECORD_H */

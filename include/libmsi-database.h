@@ -19,8 +19,30 @@
 #ifndef _LIBMSI_DATABASE_H
 #define _LIBMSI_DATABASE_H
 
+#include <glib-object.h>
+
 #include "libmsi-types.h"
 
+G_BEGIN_DECLS
+
+#define LIBMSI_TYPE_DATABASE             (libmsi_database_get_type ())
+#define LIBMSI_DATABASE(obj)             (G_TYPE_CHECK_INSTANCE_CAST ((obj), LIBMSI_TYPE_DATABASE, LibmsiDatabase))
+#define LIBMSI_DATABASE_CLASS(klass)     (G_TYPE_CHECK_CLASS_CAST ((klass), LIBMSI_TYPE_DATABASE, LibmsiDatabaseClass))
+#define LIBMSI_IS_DATABASE(obj)          (G_TYPE_CHECK_INSTANCE_TYPE ((obj), LIBMSI_TYPE_DATABASE))
+#define LIBMSI_IS_DATABASE_CLASS(klass)  (G_TYPE_CHECK_CLASS_TYPE ((klass), LIBMSI_TYPE_DATABASE))
+#define LIBMSI_DATABASE_GET_CLASS(obj)   (G_TYPE_INSTANCE_GET_CLASS ((obj), LIBMSI_TYPE_DATABASE, LibmsiDatabaseClass))
+
+typedef struct _LibmsiDatabaseClass LibmsiDatabaseClass;
+
+struct _LibmsiDatabaseClass
+{
+    GObjectClass parent_class;
+};
+
+GType libmsi_database_get_type (void) G_GNUC_CONST;
+
+
+LibmsiDatabase *    libmsi_database_new (const gchar *path, const char *persist, GError **error);
 LibmsiResult        libmsi_database_open (const char *, const char *, LibmsiDatabase **);
 LibmsiResult        libmsi_database_open_query (LibmsiDatabase *,const char *,LibmsiQuery **);
 LibmsiDBState       libmsi_database_get_state (LibmsiDatabase *);
@@ -32,5 +54,8 @@ LibmsiCondition     libmsi_database_is_table_persistent (LibmsiDatabase *, const
 LibmsiResult        libmsi_database_merge (LibmsiDatabase *, LibmsiDatabase *, const char *);
 LibmsiResult        libmsi_database_get_summary_info (LibmsiDatabase *, unsigned, LibmsiSummaryInfo **);
 LibmsiResult        libmsi_database_commit (LibmsiDatabase *);
+
+
+G_END_DECLS
 
 #endif /* _LIBMSI_DATABASE_H */

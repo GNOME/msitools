@@ -70,24 +70,13 @@ typedef struct _LibmsiTable LibmsiTable;
 struct string_table;
 typedef struct string_table string_table;
 
-struct _LibmsiObject;
-typedef struct _LibmsiObject LibmsiObject;
-
-typedef void (*msihandledestructor)( LibmsiObject * );
-
-struct _LibmsiObject
-{
-    unsigned magic;
-    int refcount;
-    msihandledestructor destructor;
-};
-
 #define MSI_INITIAL_MEDIA_TRANSFORM_OFFSET 10000
 #define MSI_INITIAL_MEDIA_TRANSFORM_DISKID 30000
 
-typedef struct _LibmsiDatabase
+struct _LibmsiDatabase
 {
-    LibmsiObject hdr;
+    GObject parent;
+
     GsfInfile *infile;
     GsfOutfile *outfile;
     string_table *strings;
@@ -96,25 +85,27 @@ typedef struct _LibmsiDatabase
     char *outpath;
     bool rename_outpath;
     bool patch;
-    const char *mode;
+    const char *mode; /* FIXME: turn this into an enum */
     unsigned media_transform_offset;
     unsigned media_transform_disk_id;
     struct list tables;
     struct list transforms;
     struct list streams;
     struct list storages;
-} LibmsiDatabase;
+};
 
 typedef struct _LibmsiView LibmsiView;
 
-typedef struct _LibmsiQuery
+struct _LibmsiQuery
 {
-    LibmsiObject hdr;
+    GObject parent;
+
     LibmsiView *view;
     unsigned row;
-    LibmsiDatabase *db;
+    LibmsiDatabase *database;
+    gchar *query;
     struct list mem;
-} LibmsiQuery;
+};
 
 /* maybe we can use a Variant instead of doing it ourselves? */
 typedef struct _LibmsiField
@@ -128,12 +119,13 @@ typedef struct _LibmsiField
     } u;
 } LibmsiField;
 
-typedef struct _LibmsiRecord
+struct _LibmsiRecord
 {
-    LibmsiObject hdr;
+    GObject parent;
+
     unsigned count;       /* as passed to libmsi_record_new */
-    LibmsiField fields[1]; /* nb. array size is count+1 */
-} LibmsiRecord;
+    LibmsiField *fields;  /* nb. array size is count+1 */
+};
 
 typedef struct _column_info
 {
@@ -295,17 +287,18 @@ typedef struct _LibmsiOLEVariant
     };
 } LibmsiOLEVariant;
 
-typedef struct _LibmsiSummaryInfo
+struct _LibmsiSummaryInfo
 {
-    LibmsiObject hdr;
+    GObject parent;
+
     LibmsiDatabase *database;
     unsigned update_count;
     LibmsiOLEVariant property[MSI_MAX_PROPS];
-} LibmsiSummaryInfo;
+};
 
-extern const guint8 clsid_msi_transform[16];
-extern const guint8 clsid_msi_database[16];
-extern const guint8 clsid_msi_patch[16];
+extern const char clsid_msi_transform[16];
+extern const char clsid_msi_database[16];
+extern const char clsid_msi_patch[16];
 
 /* handle unicode/ascii output in the Msi* API functions */
 typedef struct {
@@ -325,11 +318,6 @@ typedef struct {
 } awcstring;
 
 unsigned msi_strcpy_to_awstring( const char *str, awstring *awbuf, unsigned *sz );
-
-/* handle functions */
-extern void *alloc_msiobject(unsigned size, msihandledestructor destroy );
-extern void msiobj_addref(LibmsiObject *);
-extern int msiobj_release(LibmsiObject *);
 
 extern void free_cached_tables( LibmsiDatabase *db );
 extern unsigned _libmsi_database_commit_tables( LibmsiDatabase *db, unsigned bytes_per_strref );
@@ -372,7 +360,7 @@ extern void append_storage_to_db( LibmsiDatabase *db, GsfInfile *stg );
 extern unsigned _libmsi_database_commit_storages( LibmsiDatabase *db );
 
 /* record internals */
-extern void _libmsi_record_destroy( LibmsiObject * );
+extern void _libmsi_record_destroy( LibmsiRecord * );
 extern unsigned _libmsi_record_set_gsf_input( LibmsiRecord *, unsigned, GsfInput *);
 extern unsigned _libmsi_record_get_gsf_input( const LibmsiRecord *, unsigned, GsfInput **);
 extern const char *_libmsi_record_get_string_raw( const LibmsiRecord *, unsigned );
@@ -391,7 +379,7 @@ extern char *encode_streamname(bool bTable, const char *in);
 extern void decode_streamname(const char *in, char *out);
 
 /* database internals */
-extern LibmsiResult _libmsi_database_start_transaction(LibmsiDatabase *db, const char *szPersist);
+extern LibmsiResult _libmsi_database_start_transaction(LibmsiDatabase *db);
 extern LibmsiResult _libmsi_database_open(LibmsiDatabase *db);
 extern LibmsiResult _libmsi_database_close(LibmsiDatabase *db, bool committed);
 unsigned msi_create_stream( LibmsiDatabase *db, const char *stname, GsfInput *stm );

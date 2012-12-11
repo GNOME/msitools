@@ -97,7 +97,7 @@ static unsigned create_view_delete( LibmsiView *view )
 
     TRACE("%p\n", cv );
 
-    msiobj_release( &cv->db->hdr );
+    g_object_unref(cv->db);
     msi_free( cv );
 
     return LIBMSI_RESULT_SUCCESS;
@@ -176,8 +176,7 @@ unsigned create_view_create( LibmsiDatabase *db, LibmsiView **view, const char *
 
     /* fill the structure */
     cv->view.ops = &create_ops;
-    msiobj_addref( &db->hdr );
-    cv->db = db;
+    cv->db = g_object_ref(db);
     cv->name = table;
     cv->col_info = col_info;
     cv->bIsTemp = temp;

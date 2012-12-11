@@ -290,8 +290,7 @@ static void test_msirecord(void)
     ok(r == 4,"libmsi_record_get_field_size returned wrong size\n");
 
     /* same record, now close it */
-    r = libmsi_unref(h);
-    ok(r == LIBMSI_RESULT_SUCCESS, "Failed to close handle\n");
+    g_object_unref(h);
 
     /* now try streams in a new record - need to create a file to play with */
     r = create_temp_file(filename); 
@@ -350,8 +349,7 @@ static void test_msirecord(void)
     ok(r == 26,"libmsi_record_get_field_size returned wrong size\n");
 
     /* now close the stream record */
-    r = libmsi_unref(h);
-    ok(r == LIBMSI_RESULT_SUCCESS, "Failed to close handle\n");
+    g_object_unref(h);
     unlink(filename); /* Delete it for sure, when everything else is closed. */
 }
 
@@ -384,7 +382,7 @@ static void test_MsiRecordGetString(void)
     ok(!strcmp(buf, ""), "Expected \"\", got \"%s\"\n", buf);
     ok(sz == 0, "Expected 0, got %d\n", sz);
 
-    libmsi_unref(rec);
+    g_object_unref(rec);
 
     rec = libmsi_record_new(1);
     ok(rec != 0, "Expected a valid handle\n");
@@ -414,7 +412,7 @@ static void test_MsiRecordGetString(void)
     ok(!strcmp(buf, "-5"), "Expected \"-5\", got \"%s\"\n", buf);
     ok(sz == 2, "Expectd 2, got %d\n", sz);
 
-    libmsi_unref(rec);
+    g_object_unref(rec);
 }
 
 static void test_MsiRecordGetInteger(void)
@@ -444,7 +442,7 @@ static void test_MsiRecordGetInteger(void)
     val = libmsi_record_get_integer(rec, 1);
     ok(val == MSI_NULL_INTEGER, "Expected MSI_NULL_INTEGER, got %d\n", val);
 
-    libmsi_unref(rec);
+    g_object_unref(rec);
 }
 
 static void test_fieldzero(void)
@@ -518,7 +516,7 @@ static void test_fieldzero(void)
     ok(!strcmp(buf, "bologna"), "Expected \"bologna\", got \"%s\"\n", buf);
     ok(sz == 7, "Expectd 7, got %d\n", sz);
 
-    libmsi_unref(rec);
+    g_object_unref(rec);
 
     r = libmsi_database_open(msifile, LIBMSI_DB_OPEN_CREATE, &hdb);
     ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_database_open failed\n");
@@ -532,8 +530,7 @@ static void test_fieldzero(void)
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     r = libmsi_query_close(hview);
     ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_query_close failed\n");
-    r = libmsi_unref(hview);
-    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_unref failed\n");
+    g_object_unref(hview);
 
     query = "INSERT INTO `drone` ( `id`, `name`, `number` )"
            "VALUES('1', 'Abe', '8675309')";
@@ -543,8 +540,7 @@ static void test_fieldzero(void)
     ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_query_execute failed\n");
     r = libmsi_query_close(hview);
     ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_query_close failed\n");
-    r = libmsi_unref(hview);
-    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_unref failed\n");
+    g_object_unref(hview);
 
     rec = NULL;
     r = libmsi_database_get_primary_keys(hdb, "drone", &rec);
@@ -563,7 +559,7 @@ static void test_fieldzero(void)
     r = libmsi_record_is_null(rec, 0);
     ok(r == false, "Expected false, got %d\n", r);
 
-    libmsi_unref(rec);
+    g_object_unref(rec);
 
     r = libmsi_database_get_primary_keys(hdb, "nosuchtable", &rec);
     ok(r == LIBMSI_RESULT_INVALID_TABLE, "Expected LIBMSI_RESULT_INVALID_TABLE, got %d\n", r);
@@ -581,10 +577,9 @@ static void test_fieldzero(void)
     r = libmsi_record_is_null(rec, 0);
     ok(r == true, "Expected true, got %d\n", r);
 
-    r = libmsi_unref(hview);
-    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_unref failed\n");
-    libmsi_unref(rec);
-    libmsi_unref(hdb);
+    g_object_unref(hview);
+    g_object_unref(rec);
+    g_object_unref(hdb);
     unlink(msifile);
 }
 

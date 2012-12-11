@@ -1,5 +1,4 @@
 - verify gsf conversion, some tests fail on Windows but not POSIX?
-- add GObject/GIR support
 - make a SummaryInformation API that does not suck (including converting
   FILETIME usage to GDateTime)
 - add an API to open a query and return a pointer to the next SQL
@@ -18,3 +17,6 @@
 Missing functionality:
 
 - generating transforms
+
+Use GLIB 2.22?
+- GInitable, GAsync

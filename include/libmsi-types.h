@@ -21,6 +21,8 @@
 
 #include <glib.h>
 
+G_BEGIN_DECLS
+
 typedef struct _LibmsiDatabase LibmsiDatabase;
 typedef struct _LibmsiQuery LibmsiQuery;
 typedef struct _LibmsiRecord LibmsiRecord;
@@ -149,5 +151,7 @@ typedef enum LibmsiDBState
 #define MSI_PID_MSIVERSION MSI_PID_PAGECOUNT
 #define MSI_PID_MSISOURCE MSI_PID_WORDCOUNT
 #define MSI_PID_MSIRESTRICT MSI_PID_CHARCOUNT
+
+G_END_DECLS
 
 #endif /* _LIBMSI_TYPES_H */

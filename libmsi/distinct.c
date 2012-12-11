@@ -220,7 +220,7 @@ static unsigned distinct_view_delete( LibmsiView *view )
         dv->table->ops->delete( dv->table );
 
     msi_free( dv->translation );
-    msiobj_release( &dv->db->hdr );
+    g_object_unref(dv->db);
     msi_free( dv );
 
     return LIBMSI_RESULT_SUCCESS;
@@ -289,8 +289,7 @@ unsigned distinct_view_create( LibmsiDatabase *db, LibmsiView **view, LibmsiView
     
     /* fill the structure */
     dv->view.ops = &distinct_ops;
-    msiobj_addref( &db->hdr );
-    dv->db = db;
+    dv->db = g_object_ref(db);
     dv->table = table;
     dv->translation = NULL;
     dv->row_count = 0;

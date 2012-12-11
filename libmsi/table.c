@@ -799,7 +799,7 @@ unsigned msi_create_table( LibmsiDatabase *db, const char *name, column_info *co
     tv->ops->delete( tv );
     tv = NULL;
 
-    msiobj_release( &rec->hdr );
+    g_object_unref(rec);
     rec = NULL;
 
     if( persistent != LIBMSI_CONDITION_FALSE )
@@ -853,7 +853,7 @@ unsigned msi_create_table( LibmsiDatabase *db, const char *name, column_info *co
 
 err:
     if (rec)
-        msiobj_release( &rec->hdr );
+        g_object_unref(rec);
     /* FIXME: remove values from the string table on error */
     if( tv )
         tv->ops->delete( tv );
@@ -1252,8 +1252,8 @@ static unsigned _libmsi_add_stream( LibmsiDatabase *db, const char *name, GsfInp
     r = _libmsi_query_execute( query, rec );
 
 err:
-    msiobj_release( &query->hdr );
-    msiobj_release( &rec->hdr );
+    g_object_unref(query);
+    g_object_unref(rec);
     return r;
 }
 
@@ -1829,7 +1829,7 @@ static unsigned table_view_remove_column(LibmsiView *view, const char *table, un
     msi_update_table_columns(tv->db, table);
 
 done:
-    msiobj_release(&rec->hdr);
+    g_object_unref(rec);
     columns->ops->delete(columns);
     return r;
 }
@@ -1908,7 +1908,7 @@ static unsigned table_view_add_column(LibmsiView *view, const char *table, unsig
     }
 
 done:
-    msiobj_release(&rec->hdr);
+    g_object_unref(rec);
     return r;
 }
 
@@ -1952,7 +1952,7 @@ static unsigned table_view_drop(LibmsiView *view)
     free_table(tv->table);
 
 done:
-    msiobj_release(&rec->hdr);
+    g_object_unref(rec);
     tables->ops->delete(tables);
 
     return r;
@@ -2522,7 +2522,7 @@ static unsigned msi_table_load_transform( LibmsiDatabase *db, GsfInfile *stg,
             if (number != MSI_NULL_INTEGER && !strcmp( name, szColumns ))
                 msi_update_table_columns( db, table );
 
-            msiobj_release( &rec->hdr );
+            g_object_unref(rec);
         }
 
         n += sz;

@@ -132,7 +132,7 @@ static unsigned select_view_set_row( LibmsiView *view, unsigned row, LibmsiRecor
     if (r == LIBMSI_RESULT_SUCCESS)
         r = sv->table->ops->set_row( sv->table, row, expanded, expanded_mask );
 
-    msiobj_release( &expanded->hdr );
+    g_object_unref(expanded);
     return r;
 }
 
@@ -164,7 +164,7 @@ static unsigned select_view_insert_row( LibmsiView *view, LibmsiRecord *record, 
     r = sv->table->ops->insert_row( sv->table, outrec, row, temporary );
 
 fail:
-    msiobj_release( &outrec->hdr );
+    g_object_unref(outrec);
 
     return r;
 }

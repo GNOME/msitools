@@ -88,10 +88,10 @@ static bool check_column_exists(LibmsiDatabase *db, const char *table, const cha
 
     r = _libmsi_query_fetch(view, &rec);
     if (r == LIBMSI_RESULT_SUCCESS)
-        msiobj_release(&rec->hdr);
+        g_object_unref(rec);
 
 done:
-    msiobj_release(&view->hdr);
+    g_object_unref(view);
     return (r == LIBMSI_RESULT_SUCCESS);
 }
 
@@ -119,7 +119,7 @@ static unsigned alter_add_column(LibmsiAlterView *av)
     if (r == LIBMSI_RESULT_SUCCESS)
     {
         r = _libmsi_query_iterate_records(view, NULL, count_iter, &colnum);
-        msiobj_release(&view->hdr);
+        g_object_unref(view);
         if (r != LIBMSI_RESULT_SUCCESS)
         {
             columns->ops->delete(columns);

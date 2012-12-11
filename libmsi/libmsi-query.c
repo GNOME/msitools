@@ -20,26 +20,128 @@
 
 #include <stdarg.h>
 
+#include "libmsi-query.h"
+
 #include "debug.h"
 #include "libmsi.h"
 #include "msipriv.h"
-
 #include "query.h"
 
-
-static void _libmsi_query_destroy( LibmsiObject *arg )
+enum
 {
-    LibmsiQuery *query = (LibmsiQuery*) arg;
+    PROP_0,
+
+    PROP_DATABASE,
+    PROP_QUERY,
+};
+
+G_DEFINE_TYPE (LibmsiQuery, libmsi_query, G_TYPE_OBJECT);
+
+static void
+libmsi_query_init (LibmsiQuery *p)
+{
+    list_init (&p->mem);
+}
+
+static void
+libmsi_query_finalize (GObject *object)
+{
+    LibmsiQuery *self = LIBMSI_QUERY (object);
+    LibmsiQuery *p = self;
     struct list *ptr, *t;
 
-    if( query->view && query->view->ops->delete )
-        query->view->ops->delete( query->view );
-    msiobj_release( &query->db->hdr );
+    if (p->view && p->view->ops->delete)
+        p->view->ops->delete (p->view);
 
-    LIST_FOR_EACH_SAFE( ptr, t, &query->mem )
-    {
-        msi_free( ptr );
+    if (p->database)
+        g_object_unref (p->database);
+
+    LIST_FOR_EACH_SAFE (ptr, t, &p->mem) {
+        msi_free (ptr);
     }
+
+    g_free (p->query);
+
+    G_OBJECT_CLASS (libmsi_query_parent_class)->finalize (object);
+}
+
+static void
+libmsi_query_set_property (GObject *object, guint prop_id, const GValue *value, GParamSpec *pspec)
+{
+    LibmsiQuery *p = LIBMSI_QUERY (object);
+    g_return_if_fail (LIBMSI_IS_QUERY (object));
+
+    switch (prop_id) {
+    case PROP_DATABASE:
+        g_return_if_fail (p->database == NULL);
+        p->database = g_value_dup_object (value);
+        break;
+    case PROP_QUERY:
+        g_return_if_fail (p->query == NULL);
+        p->query = g_value_dup_string (value);
+        break;
+    default:
+        G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
+        break;
+    }
+}
+
+static void
+libmsi_query_get_property (GObject *object, guint prop_id, GValue *value, GParamSpec *pspec)
+{
+    LibmsiQuery *p = LIBMSI_QUERY (object);
+    g_return_if_fail (LIBMSI_IS_QUERY (object));
+
+    switch (prop_id) {
+    case PROP_DATABASE:
+        g_value_set_object (value, p->database);
+        break;
+    case PROP_QUERY:
+        g_value_set_string (value, p->query);
+        break;
+    default:
+        G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
+        break;
+    }
+}
+
+static void
+libmsi_query_constructed (GObject *object)
+{
+    G_OBJECT_CLASS (libmsi_query_parent_class)->constructed (object);
+}
+
+static void
+libmsi_query_class_init (LibmsiQueryClass *klass)
+{
+    GObjectClass* object_class = G_OBJECT_CLASS (klass);
+
+    object_class->finalize = libmsi_query_finalize;
+    object_class->set_property = libmsi_query_set_property;
+    object_class->get_property = libmsi_query_get_property;
+    object_class->constructed = libmsi_query_constructed;
+
+    g_object_class_install_property (G_OBJECT_CLASS (klass), PROP_DATABASE,
+        g_param_spec_object ("database", "database", "database", LIBMSI_TYPE_DATABASE,
+                             G_PARAM_CONSTRUCT_ONLY | G_PARAM_READWRITE |
+                             G_PARAM_STATIC_STRINGS));
+
+    g_object_class_install_property (G_OBJECT_CLASS (klass), PROP_QUERY,
+        g_param_spec_string ("query", "query", "query", NULL,
+                             G_PARAM_CONSTRUCT_ONLY | G_PARAM_READWRITE |
+                             G_PARAM_STATIC_STRINGS));
+}
+
+/* TODO: use GInitable */
+static gboolean
+init (LibmsiQuery *self, GError **error)
+{
+    LibmsiQuery *p = self;
+    unsigned r;
+
+    r = _libmsi_parse_sql (p->database, p->query, &p->view, &p->mem);
+
+    return r == LIBMSI_RESULT_SUCCESS;
 }
 
 unsigned _libmsi_view_find_column( LibmsiView *table, const char *name, const char *table_name, unsigned *n )
@@ -81,10 +183,10 @@ LibmsiResult libmsi_database_open_query(LibmsiDatabase *db,
 
     if( !db )
         return LIBMSI_RESULT_INVALID_HANDLE;
-    msiobj_addref( &db->hdr);
 
+    g_object_ref(db);
     r = _libmsi_database_open_query( db, szQuery, pQuery );
-    msiobj_release( &db->hdr );
+    g_object_unref(db);
 
     return r;
 }
@@ -92,32 +194,11 @@ LibmsiResult libmsi_database_open_query(LibmsiDatabase *db,
 unsigned _libmsi_database_open_query(LibmsiDatabase *db,
               const char *szQuery, LibmsiQuery **pView)
 {
-    LibmsiQuery *query;
-    unsigned r;
-
     TRACE("%s %p\n", debugstr_a(szQuery), pView);
 
-    if( !szQuery)
-        return LIBMSI_RESULT_INVALID_PARAMETER;
+    *pView = libmsi_query_new (db, szQuery, NULL);
 
-    /* pre allocate a handle to hold a pointer to the view */
-    query = alloc_msiobject( sizeof (LibmsiQuery), _libmsi_query_destroy );
-    if( !query )
-        return LIBMSI_RESULT_FUNCTION_FAILED;
-
-    msiobj_addref( &db->hdr );
-    query->db = db;
-    list_init( &query->mem );
-
-    r = _libmsi_parse_sql( db, szQuery, &query->view, &query->mem );
-    if( r == LIBMSI_RESULT_SUCCESS )
-    {
-        msiobj_addref( &query->hdr );
-        *pView = query;
-    }
-
-    msiobj_release( &query->hdr );
-    return r;
+    return *pView ? LIBMSI_RESULT_SUCCESS : LIBMSI_RESULT_BAD_QUERY_SYNTAX;
 }
 
 unsigned _libmsi_query_open( LibmsiDatabase *db, LibmsiQuery **view, const char *fmt, ... )
@@ -166,7 +247,7 @@ unsigned _libmsi_query_iterate_records( LibmsiQuery *view, unsigned *count,
             break;
         if (func)
             r = func( rec, param );
-        msiobj_release( &rec->hdr );
+        g_object_unref(rec);
         if( r != LIBMSI_RESULT_SUCCESS )
             break;
     }
@@ -213,7 +294,7 @@ LibmsiRecord *_libmsi_query_get_record( LibmsiDatabase *db, const char *fmt, ...
         _libmsi_query_execute( view, NULL );
         _libmsi_query_fetch( view, &rec );
         libmsi_query_close( view );
-        msiobj_release( &view->hdr );
+        g_object_unref(view);
     }
     return rec;
 }
@@ -234,7 +315,7 @@ unsigned msi_view_get_row(LibmsiDatabase *db, LibmsiView *view, unsigned row, Li
     if (row >= row_count)
         return LIBMSI_RESULT_NO_MORE_ITEMS;
 
-    *rec = libmsi_record_new(col_count);
+    *rec = libmsi_record_new (col_count);
     if (!*rec)
         return LIBMSI_RESULT_FUNCTION_FAILED;
 
@@ -307,7 +388,7 @@ LibmsiResult _libmsi_query_fetch(LibmsiQuery *query, LibmsiRecord **prec)
     if( !view )
         return LIBMSI_RESULT_FUNCTION_FAILED;
 
-    r = msi_view_get_row(query->db, view, query->row, prec);
+    r = msi_view_get_row(query->database, view, query->row, prec);
     if (r == LIBMSI_RESULT_SUCCESS)
         query->row ++;
 
@@ -326,9 +407,9 @@ LibmsiResult libmsi_query_fetch(LibmsiQuery *query, LibmsiRecord **record)
 
     if( !query )
         return LIBMSI_RESULT_INVALID_HANDLE;
-    msiobj_addref( &query->hdr);
+    g_object_ref(query);
     ret = _libmsi_query_fetch( query, record );
-    msiobj_release( &query->hdr );
+    g_object_unref(query);
     return ret;
 }
 
@@ -342,7 +423,7 @@ LibmsiResult libmsi_query_close(LibmsiQuery *query)
     if( !query )
         return LIBMSI_RESULT_INVALID_HANDLE;
 
-    msiobj_addref( &query->hdr );
+    g_object_ref(query);
     view = query->view;
     if( !view )
         return LIBMSI_RESULT_FUNCTION_FAILED;
@@ -350,7 +431,7 @@ LibmsiResult libmsi_query_close(LibmsiQuery *query)
         return LIBMSI_RESULT_FUNCTION_FAILED;
 
     ret = view->ops->close( view );
-    msiobj_release( &query->hdr );
+    g_object_unref(query);
     return ret;
 }
 
@@ -378,16 +459,16 @@ LibmsiResult libmsi_query_execute(LibmsiQuery *query, LibmsiRecord *rec)
 
     if( !query )
         return LIBMSI_RESULT_INVALID_HANDLE;
-    msiobj_addref( &query->hdr );
+    g_object_ref(query);
 
     if( rec )
-        msiobj_addref( &rec->hdr );
+        g_object_ref(rec);
 
     ret = _libmsi_query_execute( query, rec );
 
-    msiobj_release( &query->hdr );
+    g_object_unref(query);
     if( rec )
-        msiobj_release( &rec->hdr );
+        g_object_unref(rec);
 
     return ret;
 }
@@ -449,7 +530,7 @@ unsigned _libmsi_query_get_column_info( LibmsiQuery *query, LibmsiColInfo info, 
     if( !count )
         return LIBMSI_RESULT_INVALID_PARAMETER;
 
-    rec = libmsi_record_new( count );
+    rec = libmsi_record_new (count);
     if( !rec )
         return LIBMSI_RESULT_FUNCTION_FAILED;
 
@@ -483,9 +564,9 @@ LibmsiResult libmsi_query_get_column_info(LibmsiQuery *query, LibmsiColInfo info
     if( !query )
         return LIBMSI_RESULT_INVALID_HANDLE;
 
-    msiobj_addref ( &query->hdr );
+    g_object_ref(query);
     r = _libmsi_query_get_column_info( query, info, prec );
-    msiobj_release( &query->hdr );
+    g_object_unref(query);
 
     return r;
 }
@@ -504,7 +585,7 @@ LibmsiDBError libmsi_query_get_error( LibmsiQuery *query, char *buffer, unsigned
     if (!query)
         return LIBMSI_DB_ERROR_INVALIDARG;
 
-    msiobj_addref( &query->hdr);
+    g_object_ref(query);
     if ((r = query->view->error)) column = query->view->error_column;
     else column = szEmpty;
 
@@ -518,6 +599,27 @@ LibmsiDBError libmsi_query_get_error( LibmsiQuery *query, char *buffer, unsigned
     }
 
     *buflen = len;
-    msiobj_release( &query->hdr );
+    g_object_unref(query);
     return r;
+}
+
+LibmsiQuery*
+libmsi_query_new (LibmsiDatabase *database, const char *query, GError **error)
+{
+    LibmsiQuery *self;
+
+    g_return_val_if_fail (LIBMSI_IS_DATABASE (database), NULL);
+    g_return_val_if_fail (query != NULL, NULL);
+
+    self = g_object_new (LIBMSI_TYPE_QUERY,
+                         "database", database,
+                         "query", query,
+                         NULL);
+
+    if (!init (self, error)) {
+        g_object_unref (self);
+        return NULL;
+    }
+
+    return self;
 }

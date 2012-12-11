@@ -22,9 +22,22 @@
 #include <time.h>
 #include <assert.h>
 
+#include "libmsi-summary-info.h"
+
 #include "debug.h"
 #include "libmsi.h"
 #include "msipriv.h"
+
+
+enum
+{
+    PROP_0,
+
+    PROP_DATABASE,
+    PROP_UPDATE_COUNT,
+};
+
+G_DEFINE_TYPE (LibmsiSummaryInfo, libmsi_summary_info, G_TYPE_OBJECT);
 
 static const char szSumInfo[] = "\5SummaryInformation";
 static const uint8_t fmtid_SummaryInformation[16] =
@@ -32,48 +45,110 @@ static const uint8_t fmtid_SummaryInformation[16] =
 
 static unsigned load_summary_info( LibmsiSummaryInfo *si, GsfInput *stm );
 
-static void free_prop( LibmsiOLEVariant *prop )
+static void
+libmsi_summary_info_init (LibmsiSummaryInfo *p)
+{
+}
+
+static void
+free_prop (LibmsiOLEVariant *prop)
 {
     if (prop->vt == OLEVT_LPSTR)
-        msi_free( prop->strval );
+        msi_free (prop->strval);
     prop->vt = OLEVT_EMPTY;
 }
 
-static void _libmsi_summary_info_destroy( LibmsiObject *arg )
+static void
+libmsi_summary_info_finalize (GObject *object)
 {
-    LibmsiSummaryInfo *si = (LibmsiSummaryInfo *) arg;
+    LibmsiSummaryInfo *p = LIBMSI_SUMMARY_INFO (object);
     unsigned i;
 
-    for( i = 0; i < MSI_MAX_PROPS; i++ )
-        free_prop( &si->property[i] );
-    msiobj_release( &si->database->hdr );
+    for (i = 0; i < MSI_MAX_PROPS; i++)
+        free_prop (&p->property[i]);
+
+    if (p->database)
+        g_object_unref (p->database);
+
+    G_OBJECT_CLASS (libmsi_summary_info_parent_class)->finalize (object);
 }
 
-LibmsiSummaryInfo *_libmsi_get_summary_information( LibmsiDatabase *db, unsigned uiUpdateCount )
+static void
+summary_info_set_property (GObject *object, guint prop_id, const GValue *value, GParamSpec *pspec)
 {
+    g_return_if_fail (LIBMSI_IS_SUMMARY_INFO (object));
+    LibmsiSummaryInfo *p = LIBMSI_SUMMARY_INFO (object);
+
+    switch (prop_id) {
+    case PROP_DATABASE:
+        g_return_if_fail (p->database == NULL);
+        p->database = g_value_dup_object (value);
+        break;
+    case PROP_UPDATE_COUNT:
+        p->update_count = g_value_get_uint (value);
+        break;
+    default:
+        G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
+        break;
+    }
+}
+
+static void
+summary_info_get_property (GObject *object, guint prop_id, GValue *value, GParamSpec *pspec)
+{
+    g_return_if_fail (LIBMSI_IS_SUMMARY_INFO (object));
+    LibmsiSummaryInfo *p = LIBMSI_SUMMARY_INFO (object);
+
+    switch (prop_id) {
+    case PROP_DATABASE:
+        g_value_set_object (value, p->database);
+        break;
+    case PROP_UPDATE_COUNT:
+        g_value_set_uint (value, p->update_count);
+        break;
+    default:
+        G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
+        break;
+    }
+}
+
+static void
+libmsi_summary_info_constructed (GObject *object)
+{
+    LibmsiSummaryInfo *self = LIBMSI_SUMMARY_INFO (object);
+    LibmsiSummaryInfo *p = self;
     GsfInput *stm = NULL;
-    LibmsiSummaryInfo *si;
     unsigned r;
 
-    TRACE("%p %d\n", db, uiUpdateCount );
-
-    si = alloc_msiobject( sizeof (LibmsiSummaryInfo), _libmsi_summary_info_destroy );
-    if( !si )
-        return si;
-
-    si->update_count = uiUpdateCount;
-    msiobj_addref( &db->hdr );
-    si->database = db;
-
     /* read the stream... if we fail, we'll start with an empty property set */
-    r = msi_get_raw_stream( db, szSumInfo, &stm );
-    if( r == 0 )
-    {
-        load_summary_info( si, stm );
-        g_object_unref(G_OBJECT(stm));
+    r = msi_get_raw_stream (p->database, szSumInfo, &stm);
+    if (r == 0) {
+        load_summary_info (self, stm);
+        g_object_unref (G_OBJECT (stm));
     }
 
-    return si;
+    G_OBJECT_CLASS (libmsi_summary_info_parent_class)->constructed (object);
+}
+
+static void
+libmsi_summary_info_class_init (LibmsiSummaryInfoClass *klass)
+{
+    GObjectClass* object_class = G_OBJECT_CLASS (klass);
+
+    object_class->finalize = libmsi_summary_info_finalize;
+    object_class->set_property = summary_info_set_property;
+    object_class->get_property = summary_info_get_property;
+    object_class->constructed = libmsi_summary_info_constructed;
+
+    g_object_class_install_property (G_OBJECT_CLASS (klass), PROP_DATABASE,
+        g_param_spec_object ("database", "database", "database", LIBMSI_TYPE_DATABASE,
+                             G_PARAM_CONSTRUCT_ONLY | G_PARAM_READWRITE |
+                             G_PARAM_STATIC_STRINGS));
+
+    g_object_class_install_property (G_OBJECT_CLASS (klass), PROP_UPDATE_COUNT,
+        g_param_spec_uint ("update-count", "update-count", "update-count", 0, G_MAXUINT, 0,
+                          G_PARAM_CONSTRUCT_ONLY | G_PARAM_READWRITE |
+                          G_PARAM_STATIC_STRINGS));
 }
 
 static unsigned get_type( unsigned uiProperty )
@@ -466,7 +541,20 @@ static unsigned suminfo_persist( LibmsiSummaryInfo *si )
     return r;
 }
 
-LibmsiResult libmsi_database_get_summary_info( LibmsiDatabase *db, 
+LibmsiSummaryInfo *_libmsi_get_summary_information( LibmsiDatabase *db, unsigned uiUpdateCount )
+{
+    GsfInput *stm = NULL;
+    LibmsiSummaryInfo *si;
+    unsigned r;
+
+    TRACE("%p %d\n", db, uiUpdateCount );
+
+    si = libmsi_summary_info_new (db, uiUpdateCount, NULL);
+
+    return si;
+}
+
+LibmsiResult libmsi_database_get_summary_info( LibmsiDatabase *db,
               unsigned uiUpdateCount, LibmsiSummaryInfo **psi )
 {
     LibmsiSummaryInfo *si;
@@ -480,7 +568,7 @@ LibmsiResult libmsi_database_get_summary_info( LibmsiDatabase *db,
     if( !db )
         return LIBMSI_RESULT_INVALID_HANDLE;
 
-    msiobj_addref( &db->hdr);
+    g_object_ref(db);
     si = _libmsi_get_summary_information( db, uiUpdateCount );
     if (si)
     {
@@ -488,7 +576,7 @@ LibmsiResult libmsi_database_get_summary_info( LibmsiDatabase *db,
         ret = LIBMSI_RESULT_SUCCESS;
     }
 
-    msiobj_release( &db->hdr );
+    g_object_unref(db);
     return ret;
 }
 
@@ -499,10 +587,10 @@ LibmsiResult libmsi_summary_info_get_property_count(LibmsiSummaryInfo *si, unsig
     if( !si )
         return LIBMSI_RESULT_INVALID_HANDLE;
 
-    msiobj_addref( &si->hdr );
+    g_object_ref(si);
     if( pCount )
         *pCount = get_property_count( si->property );
-    msiobj_release( &si->hdr );
+    g_object_unref(si);
 
     return LIBMSI_RESULT_SUCCESS;
 }
@@ -526,7 +614,7 @@ LibmsiResult libmsi_summary_info_get_property(
     if( !si )
         return LIBMSI_RESULT_INVALID_HANDLE;
 
-    msiobj_addref( &si->hdr );
+    g_object_ref(si);
     prop = &si->property[uiProperty];
 
     switch( prop->vt )
@@ -571,7 +659,7 @@ LibmsiResult libmsi_summary_info_get_property(
         FIXME("Unknown property variant type\n");
         break;
     }
-    msiobj_release( &si->hdr );
+    g_object_unref(si);
     return ret;
 }
 
@@ -588,7 +676,7 @@ static LibmsiResult _libmsi_summary_info_set_property( LibmsiSummaryInfo *si, un
     if( type == OLEVT_FILETIME && !pftValue )
         return LIBMSI_RESULT_INVALID_PARAMETER;
 
-    msiobj_addref( &si->hdr);
+    g_object_ref(si);
 
     prop = &si->property[uiProperty];
 
@@ -626,7 +714,7 @@ static LibmsiResult _libmsi_summary_info_set_property( LibmsiSummaryInfo *si, un
 
     ret = LIBMSI_RESULT_SUCCESS;
 end:
-    msiobj_release( &si->hdr );
+    g_object_unref(si);
     return ret;
 }
 
@@ -745,7 +833,7 @@ end:
     if (r == LIBMSI_RESULT_SUCCESS)
         r = suminfo_persist( si );
 
-    msiobj_release( &si->hdr );
+    g_object_unref(si);
     return r;
 }
 
@@ -758,8 +846,22 @@ LibmsiResult libmsi_summary_info_persist( LibmsiSummaryInfo *si )
     if( !si )
         return LIBMSI_RESULT_INVALID_HANDLE;
 
-    msiobj_addref( &si->hdr);
+    g_object_ref(si);
     ret = suminfo_persist( si );
-    msiobj_release( &si->hdr );
+    g_object_unref(si);
+
     return ret;
+}
+
+LibmsiSummaryInfo*
+libmsi_summary_info_new (LibmsiDatabase *database, unsigned update_count, GError **error)
+{
+    LibmsiSummaryInfo *self;
+
+    self = g_object_new (LIBMSI_TYPE_SUMMARY_INFO,
+                         "database", database,
+                         "update-count", update_count,
+                         NULL);
+
+    return self;
 }
