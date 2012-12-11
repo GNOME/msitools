@@ -225,7 +225,7 @@ unsigned _libmsi_record_copy_field( LibmsiRecord *in_rec, unsigned in_n,
     return r;
 }
 
-int libmsi_record_get_integer( const LibmsiRecord *rec, unsigned iField)
+int libmsi_record_get_int( const LibmsiRecord *rec, unsigned iField)
 {
     int ret = 0;
 
@@ -252,7 +252,7 @@ int libmsi_record_get_integer( const LibmsiRecord *rec, unsigned iField)
     return LIBMSI_NULL_INT;
 }
 
-LibmsiResult libmsi_record_clear_data( LibmsiRecord *rec )
+LibmsiResult libmsi_record_clear( LibmsiRecord *rec )
 {
     unsigned i;
 

@@ -347,7 +347,7 @@ static void test_msiinsert(void)
     r = libmsi_record_is_null(hrec, 0);
     ok(r == true, "Expected true, got %d\n", r);
 
-    r = libmsi_record_get_integer(hrec, 1);
+    r = libmsi_record_get_int(hrec, 1);
     ok(r == 1, "field 1 contents wrong\n");
     sz = sizeof buf;
     r = libmsi_record_get_string(hrec, 2, buf, &sz);
@@ -804,9 +804,9 @@ static unsigned get_columns_table_type(LibmsiDatabase *hdb, const char *table, u
             r = libmsi_query_fetch( hquery, &rec );
             if( r != LIBMSI_RESULT_SUCCESS)
                 break;
-            r = libmsi_record_get_integer( rec, 2 );
+            r = libmsi_record_get_int( rec, 2 );
             if (r == field)
-                type = libmsi_record_get_integer( rec, 4 );
+                type = libmsi_record_get_int( rec, 4 );
             g_object_unref( rec );
         }
     }
@@ -1571,9 +1571,9 @@ static void test_where(void)
     ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_query_fetch failed: %d\n", r);
     ok( check_record( rec, 4, "one.cab"), "wrong cabinet\n");
 
-    r = libmsi_record_get_integer(rec, 1);
+    r = libmsi_record_get_int(rec, 1);
     ok( 2 == r, "field wrong\n");
-    r = libmsi_record_get_integer(rec, 2);
+    r = libmsi_record_get_int(rec, 2);
     ok( 1 == r, "field wrong\n");
     g_object_unref( rec );
 
@@ -1926,19 +1926,19 @@ static void test_msiimport(void)
     ok(check_record(rec, 8, "localizable"), "Expected 'localizable'\n");
     ok(check_record(rec, 9, "duh"), "Expected 'duh'\n");
 
-    i = libmsi_record_get_integer(rec, 2);
+    i = libmsi_record_get_int(rec, 2);
     ok(i == 5, "Expected 5, got %d\n", i);
 
-    i = libmsi_record_get_integer(rec, 3);
+    i = libmsi_record_get_int(rec, 3);
     ok(i == 2, "Expected 2, got %d\n", i);
 
-    i = libmsi_record_get_integer(rec, 4);
+    i = libmsi_record_get_int(rec, 4);
     ok(i == LIBMSI_NULL_INT, "Expected LIBMSI_NULL_INT, got %d\n", i);
 
-    i = libmsi_record_get_integer(rec, 5);
+    i = libmsi_record_get_int(rec, 5);
     ok(i == 2147483640, "Expected 2147483640, got %d\n", i);
 
-    i = libmsi_record_get_integer(rec, 6);
+    i = libmsi_record_get_int(rec, 6);
     ok(i == -2147483640, "Expected -2147483640, got %d\n", i);
 
     g_object_unref(rec);
@@ -2671,7 +2671,7 @@ static void test_try_transform(void)
     r = libmsi_query_fetch(hquery, &hrec);
     ok(r == LIBMSI_RESULT_SUCCESS, "query fetch failed\n");
 
-    r = libmsi_record_get_integer(hrec, 1);
+    r = libmsi_record_get_int(hrec, 1);
     ok(r == 1, "Expected 1, got %d\n", r);
 
     sz = sizeof buffer;
@@ -2679,10 +2679,10 @@ static void test_try_transform(void)
     ok(r == LIBMSI_RESULT_SUCCESS, "record get string failed\n");
     ok(!strcmp(buffer, "c"), "Expected c, got %s\n", buffer);
 
-    r = libmsi_record_get_integer(hrec, 3);
+    r = libmsi_record_get_int(hrec, 3);
     ok(r == 0x80000000, "Expected 0x80000000, got %d\n", r);
 
-    r = libmsi_record_get_integer(hrec, 4);
+    r = libmsi_record_get_int(hrec, 4);
     ok(r == 5, "Expected 5, got %d\n", r);
 
     g_object_unref(hrec);
@@ -2690,7 +2690,7 @@ static void test_try_transform(void)
     r = libmsi_query_fetch(hquery, &hrec);
     ok(r == LIBMSI_RESULT_SUCCESS, "query fetch failed\n");
 
-    r = libmsi_record_get_integer(hrec, 1);
+    r = libmsi_record_get_int(hrec, 1);
     ok(r == 2, "Expected 2, got %d\n", r);
 
     sz = sizeof buffer;
@@ -2698,10 +2698,10 @@ static void test_try_transform(void)
     ok(r == LIBMSI_RESULT_SUCCESS, "record get string failed\n");
     ok(!strcmp(buffer, "b"), "Expected b, got %s\n", buffer);
 
-    r = libmsi_record_get_integer(hrec, 3);
+    r = libmsi_record_get_int(hrec, 3);
     ok(r == 0x80000000, "Expected 0x80000000, got %d\n", r);
 
-    r = libmsi_record_get_integer(hrec, 4);
+    r = libmsi_record_get_int(hrec, 4);
     ok(r == 0x80000000, "Expected 0x80000000, got %d\n", r);
 
     g_object_unref(hrec);
@@ -3357,27 +3357,27 @@ static void test_join(void)
         count = libmsi_record_get_field_count( hrec );
         ok( count == 6, "Expected 6 record fields, got %d\n", count );
 
-        r = libmsi_record_get_integer( hrec, 1 );
+        r = libmsi_record_get_int( hrec, 1 );
         if( r != join_res_ninth[i].one )
             data_correct = false;
 
-        r = libmsi_record_get_integer( hrec, 2 );
+        r = libmsi_record_get_int( hrec, 2 );
         if( r != join_res_ninth[i].two )
             data_correct = false;
 
-        r = libmsi_record_get_integer( hrec, 3 );
+        r = libmsi_record_get_int( hrec, 3 );
         if( r != join_res_ninth[i].three )
             data_correct = false;
 
-        r = libmsi_record_get_integer( hrec, 4 );
+        r = libmsi_record_get_int( hrec, 4 );
         if( r != join_res_ninth[i].four )
             data_correct = false;
 
-        r = libmsi_record_get_integer( hrec, 5 );
+        r = libmsi_record_get_int( hrec, 5 );
         if( r != join_res_ninth[i].five )
             data_correct = false;
 
-        r = libmsi_record_get_integer( hrec, 6);
+        r = libmsi_record_get_int( hrec, 6);
         if( r != join_res_ninth[i].six )
             data_correct = false;
 
@@ -3820,21 +3820,21 @@ static void test_integers(void)
     r = libmsi_record_get_field_count(rec);
     ok(r == 8, "record count wrong: %d\n", r);
 
-    i = libmsi_record_get_integer(rec, 1);
+    i = libmsi_record_get_int(rec, 1);
     ok(i == LIBMSI_NULL_INT, "Expected LIBMSI_NULL_INT, got %d\n", i);
-    i = libmsi_record_get_integer(rec, 3);
+    i = libmsi_record_get_int(rec, 3);
     ok(i == LIBMSI_NULL_INT, "Expected LIBMSI_NULL_INT, got %d\n", i);
-    i = libmsi_record_get_integer(rec, 2);
+    i = libmsi_record_get_int(rec, 2);
     ok(i == 2, "Expected 2, got %d\n", i);
-    i = libmsi_record_get_integer(rec, 4);
+    i = libmsi_record_get_int(rec, 4);
     ok(i == 4, "Expected 4, got %d\n", i);
-    i = libmsi_record_get_integer(rec, 5);
+    i = libmsi_record_get_int(rec, 5);
     ok(i == 5, "Expected 5, got %d\n", i);
-    i = libmsi_record_get_integer(rec, 6);
+    i = libmsi_record_get_int(rec, 6);
     ok(i == 6, "Expected 6, got %d\n", i);
-    i = libmsi_record_get_integer(rec, 7);
+    i = libmsi_record_get_int(rec, 7);
     ok(i == 7, "Expected 7, got %d\n", i);
-    i = libmsi_record_get_integer(rec, 8);
+    i = libmsi_record_get_int(rec, 8);
     ok(i == 8, "Expected 8, got %d\n", i);
 
     g_object_unref(rec);
@@ -4126,7 +4126,7 @@ static void test_update(void)
     r = libmsi_query_fetch(query, &rec);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
-    r = libmsi_record_get_integer(rec, 1);
+    r = libmsi_record_get_int(rec, 1);
     ok(r == 8, "Expected 8, got %d\n", r);
 
     g_object_unref(rec);
@@ -4134,7 +4134,7 @@ static void test_update(void)
     r = libmsi_query_fetch(query, &rec);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
-    r = libmsi_record_get_integer(rec, 1);
+    r = libmsi_record_get_int(rec, 1);
     ok(r == 8, "Expected 8, got %d\n", r);
 
     g_object_unref(rec);
@@ -4142,7 +4142,7 @@ static void test_update(void)
     r = libmsi_query_fetch(query, &rec);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
-    r = libmsi_record_get_integer(rec, 1);
+    r = libmsi_record_get_int(rec, 1);
     ok(r == 5, "Expected 5, got %d\n", r);
 
     g_object_unref(rec);
@@ -4683,7 +4683,7 @@ static void test_select_markers(void)
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     ok(!strcmp(buf, "two"), "Expected two, got %s\n", buf);
 
-    r = libmsi_record_get_integer(res, 3);
+    r = libmsi_record_get_int(res, 3);
     ok(r == 1, "Expected 1, got %d\n", r);
 
     g_object_unref(res);
@@ -4701,7 +4701,7 @@ static void test_select_markers(void)
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     ok(!strcmp(buf, "two"), "Expected two, got %s\n", buf);
 
-    r = libmsi_record_get_integer(res, 3);
+    r = libmsi_record_get_int(res, 3);
     ok(r == 2, "Expected 2, got %d\n", r);
 
     g_object_unref(res);
@@ -4737,7 +4737,7 @@ static void test_select_markers(void)
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     ok(!strcmp(buf, "two"), "Expected two, got %s\n", buf);
 
-    r = libmsi_record_get_integer(res, 3);
+    r = libmsi_record_get_int(res, 3);
     ok(r == 2, "Expected 2, got %d\n", r);
 
     g_object_unref(res);
@@ -4755,7 +4755,7 @@ static void test_select_markers(void)
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     ok(!strcmp(buf, "three"), "Expected three, got %s\n", buf);
 
-    r = libmsi_record_get_integer(res, 3);
+    r = libmsi_record_get_int(res, 3);
     ok(r == 3, "Expected 3, got %d\n", r);
 
     g_object_unref(res);
@@ -4880,7 +4880,7 @@ static void test_stringtable(void)
     r = libmsi_record_get_field_count(hrec);
     ok(r == 2, "Expected 2, got %d\n", r);
 
-    r = libmsi_record_get_integer(hrec, 1);
+    r = libmsi_record_get_int(hrec, 1);
     ok(r == 1, "Expected 1, got %d\n", r);
 
     sz = sizeof(buffer);
@@ -4911,7 +4911,7 @@ static void test_stringtable(void)
     r = libmsi_record_get_field_count(hrec);
     ok(r == 2, "Expected 2, got %d\n", r);
 
-    r = libmsi_record_get_integer(hrec, 1);
+    r = libmsi_record_get_int(hrec, 1);
     ok(r == 2, "Expected 2, got %d\n", r);
 
     sz = sizeof(buffer);
@@ -4927,7 +4927,7 @@ static void test_stringtable(void)
     r = libmsi_record_get_field_count(hrec);
     ok(r == 2, "Expected 2, got %d\n", r);
 
-    r = libmsi_record_get_integer(hrec, 1);
+    r = libmsi_record_get_int(hrec, 1);
     ok(r == 5, "Expected 5, got %d\n", r);
 
     sz = sizeof(buffer);
@@ -5179,10 +5179,10 @@ static void test_order(void)
     r = libmsi_query_fetch(hquery, &hrec);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
-    val = libmsi_record_get_integer(hrec, 1);
+    val = libmsi_record_get_int(hrec, 1);
     ok(val == 3, "Expected 3, got %d\n", val);
 
-    val = libmsi_record_get_integer(hrec, 2);
+    val = libmsi_record_get_int(hrec, 2);
     ok(val == 4, "Expected 3, got %d\n", val);
 
     g_object_unref(hrec);
@@ -5190,10 +5190,10 @@ static void test_order(void)
     r = libmsi_query_fetch(hquery, &hrec);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
-    val = libmsi_record_get_integer(hrec, 1);
+    val = libmsi_record_get_int(hrec, 1);
     ok(val == 5, "Expected 5, got %d\n", val);
 
-    val = libmsi_record_get_integer(hrec, 2);
+    val = libmsi_record_get_int(hrec, 2);
     ok(val == 6, "Expected 6, got %d\n", val);
 
     g_object_unref(hrec);
@@ -5201,10 +5201,10 @@ static void test_order(void)
     r = libmsi_query_fetch(hquery, &hrec);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
-    val = libmsi_record_get_integer(hrec, 1);
+    val = libmsi_record_get_int(hrec, 1);
     ok(val == 1, "Expected 1, got %d\n", val);
 
-    val = libmsi_record_get_integer(hrec, 2);
+    val = libmsi_record_get_int(hrec, 2);
     ok(val == 2, "Expected 2, got %d\n", val);
 
     g_object_unref(hrec);
@@ -5224,10 +5224,10 @@ static void test_order(void)
     r = libmsi_query_fetch(hquery, &hrec);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
-    val = libmsi_record_get_integer(hrec, 1);
+    val = libmsi_record_get_int(hrec, 1);
     ok(val == 1, "Expected 1, got %d\n", val);
 
-    val = libmsi_record_get_integer(hrec, 2);
+    val = libmsi_record_get_int(hrec, 2);
     ok(val == 12, "Expected 12, got %d\n", val);
 
     g_object_unref(hrec);
@@ -5235,10 +5235,10 @@ static void test_order(void)
     r = libmsi_query_fetch(hquery, &hrec);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
-    val = libmsi_record_get_integer(hrec, 1);
+    val = libmsi_record_get_int(hrec, 1);
     ok(val == 3, "Expected 3, got %d\n", val);
 
-    val = libmsi_record_get_integer(hrec, 2);
+    val = libmsi_record_get_int(hrec, 2);
     ok(val == 12, "Expected 12, got %d\n", val);
 
     g_object_unref(hrec);
@@ -5246,10 +5246,10 @@ static void test_order(void)
     r = libmsi_query_fetch(hquery, &hrec);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
-    val = libmsi_record_get_integer(hrec, 1);
+    val = libmsi_record_get_int(hrec, 1);
     ok(val == 5, "Expected 5, got %d\n", val);
 
-    val = libmsi_record_get_integer(hrec, 2);
+    val = libmsi_record_get_int(hrec, 2);
     ok(val == 12, "Expected 12, got %d\n", val);
 
     g_object_unref(hrec);
@@ -5257,10 +5257,10 @@ static void test_order(void)
     r = libmsi_query_fetch(hquery, &hrec);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
-    val = libmsi_record_get_integer(hrec, 1);
+    val = libmsi_record_get_int(hrec, 1);
     ok(val == 1, "Expected 1, got %d\n", val);
 
-    val = libmsi_record_get_integer(hrec, 2);
+    val = libmsi_record_get_int(hrec, 2);
     ok(val == 14, "Expected 14, got %d\n", val);
 
     g_object_unref(hrec);
@@ -5268,10 +5268,10 @@ static void test_order(void)
     r = libmsi_query_fetch(hquery, &hrec);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
-    val = libmsi_record_get_integer(hrec, 1);
+    val = libmsi_record_get_int(hrec, 1);
     ok(val == 3, "Expected 3, got %d\n", val);
 
-    val = libmsi_record_get_integer(hrec, 2);
+    val = libmsi_record_get_int(hrec, 2);
     ok(val == 14, "Expected 14, got %d\n", val);
 
     g_object_unref(hrec);
@@ -5279,10 +5279,10 @@ static void test_order(void)
     r = libmsi_query_fetch(hquery, &hrec);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
-    val = libmsi_record_get_integer(hrec, 1);
+    val = libmsi_record_get_int(hrec, 1);
     ok(val == 5, "Expected 5, got %d\n", val);
 
-    val = libmsi_record_get_integer(hrec, 2);
+    val = libmsi_record_get_int(hrec, 2);
     ok(val == 14, "Expected 14, got %d\n", val);
 
     g_object_unref(hrec);
@@ -5290,10 +5290,10 @@ static void test_order(void)
     r = libmsi_query_fetch(hquery, &hrec);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
-    val = libmsi_record_get_integer(hrec, 1);
+    val = libmsi_record_get_int(hrec, 1);
     ok(val == 1, "Expected 1, got %d\n", val);
 
-    val = libmsi_record_get_integer(hrec, 2);
+    val = libmsi_record_get_int(hrec, 2);
     ok(val == 10, "Expected 10, got %d\n", val);
 
     g_object_unref(hrec);
@@ -5301,10 +5301,10 @@ static void test_order(void)
     r = libmsi_query_fetch(hquery, &hrec);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
-    val = libmsi_record_get_integer(hrec, 1);
+    val = libmsi_record_get_int(hrec, 1);
     ok(val == 3, "Expected 3, got %d\n", val);
 
-    val = libmsi_record_get_integer(hrec, 2);
+    val = libmsi_record_get_int(hrec, 2);
     ok(val == 10, "Expected 10, got %d\n", val);
 
     g_object_unref(hrec);
@@ -5312,10 +5312,10 @@ static void test_order(void)
     r = libmsi_query_fetch(hquery, &hrec);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
-    val = libmsi_record_get_integer(hrec, 1);
+    val = libmsi_record_get_int(hrec, 1);
     ok(val == 5, "Expected 5, got %d\n", val);
 
-    val = libmsi_record_get_integer(hrec, 2);
+    val = libmsi_record_get_int(hrec, 2);
     ok(val == 10, "Expected 10, got %d\n", val);
 
     g_object_unref(hrec);
@@ -5368,7 +5368,7 @@ static void test_order(void)
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     ok(!strcmp(buffer, "dos"), "Expected \"dos\", got \"%s\"\n", buffer);
 
-    r = libmsi_record_get_integer(hrec, 2);
+    r = libmsi_record_get_int(hrec, 2);
     ok(r == 3, "Expected 3, got %d\n", r);
 
     g_object_unref(hrec);
@@ -5833,7 +5833,7 @@ static void test_noquotes(void)
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     ok(!strcmp(buf, "Table"), "Expected \"Table\", got \"%s\"\n", buf);
 
-    r = libmsi_record_get_integer(hrec, 2);
+    r = libmsi_record_get_int(hrec, 2);
     ok(r == 1, "Expected 1, got %d\n", r);
 
     size = sizeof(buf);
@@ -5851,7 +5851,7 @@ static void test_noquotes(void)
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     ok(!strcmp(buf, "Table2"), "Expected \"Table2\", got \"%s\"\n", buf);
 
-    r = libmsi_record_get_integer(hrec, 2);
+    r = libmsi_record_get_int(hrec, 2);
     ok(r == 1, "Expected 1, got %d\n", r);
 
     size = sizeof(buf);
@@ -5869,7 +5869,7 @@ static void test_noquotes(void)
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     ok(!strcmp(buf, "Table3"), "Expected \"Table3\", got \"%s\"\n", buf);
 
-    r = libmsi_record_get_integer(hrec, 2);
+    r = libmsi_record_get_int(hrec, 2);
     ok(r == 1, "Expected 1, got %d\n", r);
 
     size = sizeof(buf);
@@ -6248,7 +6248,7 @@ static void test_droptable(void)
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     ok(!strcmp(buf, "One"), "Expected \"One\", got \"%s\"\n", buf);
 
-    r = libmsi_record_get_integer(hrec, 2);
+    r = libmsi_record_get_int(hrec, 2);
     ok(r == 1, "Expected 1, got %d\n", r);
 
     size = sizeof(buf);
@@ -6360,7 +6360,7 @@ static void test_droptable(void)
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     ok(!strcmp(buf, "One"), "Expected \"One\", got \"%s\"\n", buf);
 
-    r = libmsi_record_get_integer(hrec, 2);
+    r = libmsi_record_get_int(hrec, 2);
     ok(r == 1, "Expected 1, got %d\n", r);
 
     size = sizeof(buf);
@@ -6378,7 +6378,7 @@ static void test_droptable(void)
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     ok(!strcmp(buf, "One"), "Expected \"One\", got \"%s\"\n", buf);
 
-    r = libmsi_record_get_integer(hrec, 2);
+    r = libmsi_record_get_int(hrec, 2);
     ok(r == 2, "Expected 2, got %d\n", r);
 
     size = sizeof(buf);
@@ -6628,13 +6628,13 @@ static void test_dbmerge(void)
     r = do_query(hdb, sql, &hrec);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
-    r = libmsi_record_get_integer(hrec, 1);
+    r = libmsi_record_get_int(hrec, 1);
     ok(r == 1, "Expected 1, got %d\n", r);
 
-    r = libmsi_record_get_integer(hrec, 2);
+    r = libmsi_record_get_int(hrec, 2);
     ok(r == 2, "Expected 2, got %d\n", r);
 
-    r = libmsi_record_get_integer(hrec, 3);
+    r = libmsi_record_get_int(hrec, 3);
     ok(r == LIBMSI_NULL_INT, "Expected LIBMSI_NULL_INT, got %d\n", r);
 
     g_object_unref(hrec);
@@ -6673,13 +6673,13 @@ static void test_dbmerge(void)
     r = do_query(hdb, sql, &hrec);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
-    r = libmsi_record_get_integer(hrec, 1);
+    r = libmsi_record_get_int(hrec, 1);
     ok(r == 1, "Expected 1, got %d\n", r);
 
-    r = libmsi_record_get_integer(hrec, 2);
+    r = libmsi_record_get_int(hrec, 2);
     ok(r == 2, "Expected 2, got %d\n", r);
 
-    r = libmsi_record_get_integer(hrec, 3);
+    r = libmsi_record_get_int(hrec, 3);
     ok(r == LIBMSI_NULL_INT, "Expected LIBMSI_NULL_INT, got %d\n", r);
 
     g_object_unref(hrec);
@@ -6737,7 +6737,7 @@ static void test_dbmerge(void)
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     ok(!strcmp(buf, "One"), "Expected \"One\", got \"%s\"\n", buf);
 
-    r = libmsi_record_get_integer(hrec, 2);
+    r = libmsi_record_get_int(hrec, 2);
     ok(r == 2, "Expected 2, got %d\n", r);
 
     g_object_unref(hrec);
@@ -6808,7 +6808,7 @@ static void test_dbmerge(void)
     r = do_query(hdb, sql, &hrec);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
-    r = libmsi_record_get_integer(hrec, 1);
+    r = libmsi_record_get_int(hrec, 1);
     ok(r == 1, "Expected 1, got %d\n", r);
 
     size = sizeof(buf);
@@ -6859,7 +6859,7 @@ static void test_dbmerge(void)
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     ok(!strcmp(buf, "hi"), "Expected \"hi\", got \"%s\"\n", buf);
 
-    r = libmsi_record_get_integer(hrec, 2);
+    r = libmsi_record_get_int(hrec, 2);
     ok(r == 1, "Expected 1, got %d\n", r);
 
     g_object_unref(hrec);
@@ -6905,7 +6905,7 @@ static void test_dbmerge(void)
     r = do_query(hdb, sql, &hrec);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
-    r = libmsi_record_get_integer(hrec, 1);
+    r = libmsi_record_get_int(hrec, 1);
     ok(r == 1, "Expected 1, got %d\n", r);
 
     size = sizeof(buf);
@@ -6955,7 +6955,7 @@ static void test_dbmerge(void)
     r = do_query(hdb, sql, &hrec);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
-    r = libmsi_record_get_integer(hrec, 1);
+    r = libmsi_record_get_int(hrec, 1);
     ok(r == 1, "Expected 1, got %d\n", r);
 
     size = sizeof(buf);
@@ -7007,7 +7007,7 @@ static void test_dbmerge(void)
     r = libmsi_query_fetch(hquery, &hrec);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
-    r = libmsi_record_get_integer(hrec, 1);
+    r = libmsi_record_get_int(hrec, 1);
     ok(r == 1, "Expected 1, got %d\n", r);
 
     size = sizeof(buf);
@@ -7020,7 +7020,7 @@ static void test_dbmerge(void)
     r = libmsi_query_fetch(hquery, &hrec);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
-    r = libmsi_record_get_integer(hrec, 1);
+    r = libmsi_record_get_int(hrec, 1);
     ok(r == 2, "Expected 2, got %d\n", r);
 
     size = sizeof(buf);
@@ -7104,10 +7104,10 @@ static void test_select_with_tablenames(void)
         r = libmsi_query_fetch(query, &rec);
         ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
-        r = libmsi_record_get_integer(rec, 1);
+        r = libmsi_record_get_int(rec, 1);
         ok(r == vals[i][0], "Expected %d, got %d\n", vals[i][0], r);
 
-        r = libmsi_record_get_integer(rec, 2);
+        r = libmsi_record_get_int(rec, 2);
         ok(r == vals[i][1], "Expected %d, got %d\n", vals[i][1], r);
 
         g_object_unref(rec);
@@ -7213,13 +7213,13 @@ static void test_insertorder(void)
         r = libmsi_query_fetch(query, &rec);
         ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
-        r = libmsi_record_get_integer(rec, 1);
+        r = libmsi_record_get_int(rec, 1);
         ok(r == ordervals[i][0], "Expected %d, got %d\n", ordervals[i][0], r);
 
-        r = libmsi_record_get_integer(rec, 2);
+        r = libmsi_record_get_int(rec, 2);
         ok(r == ordervals[i][1], "Expected %d, got %d\n", ordervals[i][1], r);
 
-        r = libmsi_record_get_integer(rec, 3);
+        r = libmsi_record_get_int(rec, 3);
         ok(r == ordervals[i][2], "Expected %d, got %d\n", ordervals[i][2], r);
 
         g_object_unref(rec);
@@ -7251,13 +7251,13 @@ static void test_insertorder(void)
         r = libmsi_query_fetch(query, &rec);
         ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
-        r = libmsi_record_get_integer(rec, 1);
+        r = libmsi_record_get_int(rec, 1);
         ok(r == ordervals[i][0], "Expected %d, got %d\n", ordervals[i][0], r);
 
-        r = libmsi_record_get_integer(rec, 2);
+        r = libmsi_record_get_int(rec, 2);
         ok(r == ordervals[i][1], "Expected %d, got %d\n", ordervals[i][1], r);
 
-        r = libmsi_record_get_integer(rec, 3);
+        r = libmsi_record_get_int(rec, 3);
         ok(r == ordervals[i][2], "Expected %d, got %d\n", ordervals[i][2], r);
 
         g_object_unref(rec);
@@ -7405,7 +7405,7 @@ static void test_columnorder(void)
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     ok(!strcmp("bc", buf), "Expected \"bc\", got \"%s\"\n", buf);
 
-    r = libmsi_record_get_integer(rec, 2);
+    r = libmsi_record_get_int(rec, 2);
     ok(r == 3, "Expected 3, got %d\n", r);
 
     sz = sizeof(buf);
@@ -7414,10 +7414,10 @@ static void test_columnorder(void)
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     ok(!strcmp("a", buf), "Expected \"a\", got \"%s\"\n", buf);
 
-    r = libmsi_record_get_integer(rec, 4);
+    r = libmsi_record_get_int(rec, 4);
     ok(r == 2, "Expected 2, got %d\n", r);
 
-    r = libmsi_record_get_integer(rec, 5);
+    r = libmsi_record_get_int(rec, 5);
     ok(r == 1, "Expected 1, got %d\n", r);
 
     g_object_unref(rec);
@@ -7438,7 +7438,7 @@ static void test_columnorder(void)
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     ok(!strcmp("T", buf), "Expected \"T\", got \"%s\"\n", buf);
 
-    r = libmsi_record_get_integer(rec, 2);
+    r = libmsi_record_get_int(rec, 2);
     ok(r == 1, "Expected 1, got %d\n", r);
 
     sz = sizeof(buf);
@@ -7458,7 +7458,7 @@ static void test_columnorder(void)
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     ok(!strcmp("T", buf), "Expected \"T\", got \"%s\"\n", buf);
 
-    r = libmsi_record_get_integer(rec, 2);
+    r = libmsi_record_get_int(rec, 2);
     ok(r == 2, "Expected 2, got %d\n", r);
 
     sz = sizeof(buf);
@@ -7478,7 +7478,7 @@ static void test_columnorder(void)
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     ok(!strcmp("T", buf), "Expected \"T\", got \"%s\"\n", buf);
 
-    r = libmsi_record_get_integer(rec, 2);
+    r = libmsi_record_get_int(rec, 2);
     ok(r == 3, "Expected 3, got %d\n", r);
 
     sz = sizeof(buf);
@@ -7498,7 +7498,7 @@ static void test_columnorder(void)
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     ok(!strcmp("T", buf), "Expected \"T\", got \"%s\"\n", buf);
 
-    r = libmsi_record_get_integer(rec, 2);
+    r = libmsi_record_get_int(rec, 2);
     ok(r == 4, "Expected 4, got %d\n", r);
 
     sz = sizeof(buf);
@@ -7518,7 +7518,7 @@ static void test_columnorder(void)
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     ok(!strcmp("T", buf), "Expected \"T\", got \"%s\"\n", buf);
 
-    r = libmsi_record_get_integer(rec, 2);
+    r = libmsi_record_get_int(rec, 2);
     ok(r == 5, "Expected 5, got %d\n", r);
 
     sz = sizeof(buf);
@@ -7629,7 +7629,7 @@ static void test_columnorder(void)
     r = do_query(hdb, sql, &rec);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
-    r = libmsi_record_get_integer(rec, 1);
+    r = libmsi_record_get_int(rec, 1);
     ok(r == 2, "Expected 2, got %d\n", r);
 
     sz = sizeof(buf);
@@ -7644,10 +7644,10 @@ static void test_columnorder(void)
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     ok(!strcmp("bc", buf), "Expected \"bc\", got \"%s\"\n", buf);
 
-    r = libmsi_record_get_integer(rec, 4);
+    r = libmsi_record_get_int(rec, 4);
     ok(r == 3, "Expected 3, got %d\n", r);
 
-    r = libmsi_record_get_integer(rec, 5);
+    r = libmsi_record_get_int(rec, 5);
     ok(r == 1, "Expected 1, got %d\n", r);
 
     g_object_unref(rec);
@@ -7668,7 +7668,7 @@ static void test_columnorder(void)
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     ok(!strcmp("T", buf), "Expected \"T\", got \"%s\"\n", buf);
 
-    r = libmsi_record_get_integer(rec, 2);
+    r = libmsi_record_get_int(rec, 2);
     ok(r == 1, "Expected 1, got %d\n", r);
 
     sz = sizeof(buf);
@@ -7688,7 +7688,7 @@ static void test_columnorder(void)
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     ok(!strcmp("T", buf), "Expected \"T\", got \"%s\"\n", buf);
 
-    r = libmsi_record_get_integer(rec, 2);
+    r = libmsi_record_get_int(rec, 2);
     ok(r == 2, "Expected 2, got %d\n", r);
 
     sz = sizeof(buf);
@@ -7708,7 +7708,7 @@ static void test_columnorder(void)
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     ok(!strcmp("T", buf), "Expected \"T\", got \"%s\"\n", buf);
 
-    r = libmsi_record_get_integer(rec, 2);
+    r = libmsi_record_get_int(rec, 2);
     ok(r == 3, "Expected 3, got %d\n", r);
 
     sz = sizeof(buf);
@@ -7728,7 +7728,7 @@ static void test_columnorder(void)
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     ok(!strcmp("T", buf), "Expected \"T\", got \"%s\"\n", buf);
 
-    r = libmsi_record_get_integer(rec, 2);
+    r = libmsi_record_get_int(rec, 2);
     ok(r == 4, "Expected 4, got %d\n", r);
 
     sz = sizeof(buf);
@@ -7748,7 +7748,7 @@ static void test_columnorder(void)
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     ok(!strcmp("T", buf), "Expected \"T\", got \"%s\"\n", buf);
 
-    r = libmsi_record_get_integer(rec, 2);
+    r = libmsi_record_get_int(rec, 2);
     ok(r == 5, "Expected 5, got %d\n", r);
 
     sz = sizeof(buf);

@@ -2548,7 +2548,7 @@ static unsigned msi_primary_key_iterator( LibmsiRecord *rec, void *param )
     const WCHAR *table;
     unsigned type;
 
-    type = libmsi_record_get_integer( rec, 4 );
+    type = libmsi_record_get_int( rec, 4 );
     if( type & MSITYPE_KEY )
     {
         info->n++;
