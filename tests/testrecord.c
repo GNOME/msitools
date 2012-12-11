@@ -31,30 +31,21 @@
 
 static const char *msifile = "winetest-record.msi";
 
-static bool create_temp_file(char *name)
+static bool create_temp_file (char *name)
 {
-    unsigned r;
     unsigned char buffer[26], i;
-    unsigned sz;
     int fd;
     
-#ifdef _WIN32
-    r = GetTempFileName(".", "msitest",0,name);
-    if(!r)
-        return r;
-    fd = open(name, O_WRONLY);
-#else
-    strcpy(name, "msitext-XXXXXX.tmp");
-    fd = mkstemp(name);
-#endif
+    strcpy (name, "msitext-XXXXXX.tmp");
+    fd = g_mkstemp (name);
+    g_return_val_if_fail (fd != -1, FALSE);
 
-    if(fd == -1)
-        return false;
-    for(i=0; i<26; i++)
-        buffer[i]=i+'a';
-    write(fd, buffer, sizeof(buffer));
-    close(fd);
-    return true;
+    for (i = 0; i < 26; i++)
+        buffer[i] = i + 'a';
+    write (fd, buffer, sizeof (buffer));
+    close (fd);
+
+    return TRUE;
 }
 
 static void test_msirecord(void)
@@ -277,9 +268,7 @@ static void test_msirecord(void)
     g_object_unref(h);
 
     /* now try streams in a new record - need to create a file to play with */
-    r = create_temp_file(filename); 
-    if(!r)
-        return;
+    g_assert (create_temp_file(filename));
 
     /* streams can't be inserted in field 0 for some reason */
     h = libmsi_record_new(2);
