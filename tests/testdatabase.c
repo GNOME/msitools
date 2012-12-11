@@ -282,6 +282,7 @@ static void test_msiinsert(void)
     LibmsiQuery *hquery = 0;
     LibmsiQuery *hquery2 = 0;
     LibmsiRecord *hrec = 0;
+    gchar *str;
     unsigned r;
     const char *sql;
     char buf[80];
@@ -349,14 +350,9 @@ static void test_msiinsert(void)
 
     r = libmsi_record_get_int(hrec, 1);
     ok(r == 1, "field 1 contents wrong\n");
-    sz = sizeof buf;
-    r = libmsi_record_get_string(hrec, 2, buf, &sz);
-    ok(r == LIBMSI_RESULT_SUCCESS, "field 2 content fetch failed\n");
-    ok(!strcmp(buf,"Abe"), "field 2 content incorrect\n");
-    sz = sizeof buf;
-    r = libmsi_record_get_string(hrec, 3, buf, &sz);
-    ok(r == LIBMSI_RESULT_SUCCESS, "field 3 content fetch failed\n");
-    ok(!strcmp(buf,"8675309"), "field 3 content incorrect\n");
+
+    check_record_string (hrec, 2, "Abe");
+    check_record_string (hrec, 3, "8675309");
 
     g_object_unref(hrec);
 
@@ -729,20 +725,16 @@ static void test_getcolinfo(void)
     rec = 0;
     r = libmsi_query_get_column_info( hquery, LIBMSI_COL_INFO_NAMES, &rec );
     ok( r == LIBMSI_RESULT_SUCCESS, "failed to get names\n");
-    sz = sizeof buffer;
-    r = libmsi_record_get_string(rec, 1, buffer, &sz );
-    ok( r == LIBMSI_RESULT_SUCCESS, "failed to get string\n");
-    ok( !strcmp(buffer,"Name"), "_Tables has wrong column name\n");
+
+    check_record_string (rec, 1, "Name");
     g_object_unref( rec );
 
     /* check that TYPES works */
     rec = 0;
     r = libmsi_query_get_column_info( hquery, LIBMSI_COL_INFO_TYPES, &rec );
     ok( r == LIBMSI_RESULT_SUCCESS, "failed to get names\n");
-    sz = sizeof buffer;
-    r = libmsi_record_get_string(rec, 1, buffer, &sz );
-    ok( r == LIBMSI_RESULT_SUCCESS, "failed to get string\n");
-    ok( !strcmp(buffer,"s64"), "_Tables has wrong column type\n");
+
+    check_record_string (rec, 1, "s64");
     g_object_unref( rec );
 
     /* check that invalid values fail */
@@ -817,13 +809,14 @@ static unsigned get_columns_table_type(LibmsiDatabase *hdb, const char *table, u
 
 static bool check_record( LibmsiRecord *rec, unsigned field, const char *val )
 {
-    char buffer[0x20];
-    unsigned r;
-    unsigned sz;
+    bool result;
+    gchar *str;
 
-    sz = sizeof buffer;
-    r = libmsi_record_get_string( rec, field, buffer, &sz );
-    return (r == LIBMSI_RESULT_SUCCESS ) && !strcmp(val, buffer);
+    str = libmsi_record_get_string(rec, field);
+    result = g_strcmp0(val, str) == 0;
+    g_free(str);
+
+    return result;
 }
 
 static void test_querygetcolumninfo(void)
@@ -1002,13 +995,13 @@ static void test_msiexport(void)
         ok(0, "failed to open file %s\n", file);
 
     ok( length == strlen(expected), "length of data wrong\n");
-    ok( !strcmp(buffer, expected), "data doesn't match\n");
+    ok( g_str_equal(buffer, expected), "data doesn't match\n");
     unlink(msifile);
 }
 
 static void test_longstrings(void)
 {
-    const char insert_query[] = 
+    const char insert_query[] =
         "INSERT INTO `strings` ( `id`, `val` ) VALUES('1', 'Z')";
     char *str;
     LibmsiDatabase *hdb = 0;
@@ -1024,7 +1017,7 @@ static void test_longstrings(void)
     ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_database_open failed\n");
 
     /* create a table */
-    r = try_query( hdb, 
+    r = try_query( hdb,
         "CREATE TABLE `strings` ( `id` INT, `val` CHAR(0) PRIMARY KEY `id`)");
     ok(r == LIBMSI_RESULT_SUCCESS, "query failed\n");
 
@@ -1036,8 +1029,6 @@ static void test_longstrings(void)
     strcpy(str+len+STRING_LENGTH, insert_query+len+1);
     r = try_query( hdb, str );
     ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_database_open_query failed\n");
-
-    free(str);
 
     r = libmsi_database_commit(hdb);
     ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_database_commit failed\n");
@@ -1058,10 +1049,10 @@ static void test_longstrings(void)
     libmsi_query_close(hquery);
     g_object_unref(hquery);
 
-    r = libmsi_record_get_string(hrec, 2, NULL, &len);
-    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_query_fetch failed\n");
-    ok(len == STRING_LENGTH, "string length wrong\n");
+    str[len+STRING_LENGTH] = '\0';
+    check_record_string (hrec, 2, str+len);
 
+    g_free(str);
     g_object_unref(hrec);
     g_object_unref(hdb);
     unlink(msifile);
@@ -1084,7 +1075,7 @@ static void create_file_data(const char *name, const char *data, unsigned size)
 }
 
 #define create_file(name) create_file_data(name, name, 0)
- 
+
 static void test_streamtable(void)
 {
     LibmsiDatabase *hdb = 0;
@@ -1234,16 +1225,13 @@ static void test_streamtable(void)
     r = libmsi_query_fetch( query, &rec );
     ok( r == LIBMSI_RESULT_SUCCESS, "Failed to fetch record: %d\n", r);
 
-    size = sizeof(file);
-    r = libmsi_record_get_string( rec, 1, file, &size );
-    ok( r == LIBMSI_RESULT_SUCCESS, "Failed to get string: %d\n", r);
-    ok( !strcmp(file, "data"), "Expected 'data', got %s\n", file);
+    check_record_string (rec, 1, "data");
 
     size = sizeof(buf);
     memset(buf, 0, sizeof(buf));
     r = libmsi_record_save_stream( rec, 2, buf, &size );
     ok( r == LIBMSI_RESULT_SUCCESS, "Failed to get stream: %d\n", r);
-    ok( !strcmp(buf, "test.txt\n"), "Expected 'test.txt\\n', got %s\n", buf);
+    ok( g_str_equal(buf, "test.txt\n"), "Expected 'test.txt\\n', got %s\n", buf);
 
     g_object_unref( rec );
     libmsi_query_close( query );
@@ -1260,16 +1248,13 @@ static void test_streamtable(void)
     r = libmsi_query_fetch( query, &rec );
     ok( r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
-    size = sizeof(file);
-    r = libmsi_record_get_string( rec, 1, file, &size );
-    ok( r == LIBMSI_RESULT_SUCCESS, "Failed to get string: %d\n", r);
-    ok( !strcmp(file, "data1"), "Expected 'data1', got %s\n", file);
+    check_record_string (rec, 1, "data1");
 
     size = sizeof(buf);
     memset(buf, 0, sizeof(buf));
     r = libmsi_record_save_stream( rec, 2, buf, &size );
     ok( r == LIBMSI_RESULT_SUCCESS, "Failed to get stream: %d\n", r);
-    ok( !strcmp(buf, "test1.txt\n"), "Expected 'test1.txt\\n', got %s\n", buf);
+    ok( g_str_equal(buf, "test1.txt\n"), "Expected 'test1.txt\\n', got %s\n", buf);
 
     g_object_unref( rec );
     libmsi_query_close( query );
@@ -1307,16 +1292,13 @@ static void test_streamtable(void)
     r = libmsi_query_fetch( query, &rec );
     ok( r == LIBMSI_RESULT_SUCCESS, "Failed to fetch record: %d\n", r);
 
-    size = sizeof(file);
-    r = libmsi_record_get_string( rec, 1, file, &size );
-    ok( r == LIBMSI_RESULT_SUCCESS, "Failed to get string: %d\n", r);
-    ok( !strcmp(file, "data1"), "Expected 'data1', got %s\n", file);
+    check_record_string (rec, 1, "data1");
 
     size = sizeof(buf);
     memset(buf, 0, sizeof(buf));
     r = libmsi_record_save_stream( rec, 2, buf, &size );
     ok( r == LIBMSI_RESULT_SUCCESS, "Failed to get stream: %d\n", r);
-    todo_wine ok( !strcmp(buf, "test2.txt\n"), "Expected 'test2.txt\\n', got %s\n", buf);
+    todo_wine ok( g_str_equal(buf, "test2.txt\n"), "Expected 'test2.txt\\n', got %s\n", buf);
 
     g_object_unref( rec );
     libmsi_query_close( query );
@@ -1385,16 +1367,13 @@ static void test_binary(void)
     r = do_query( hdb, sql, &rec );
     ok( r == LIBMSI_RESULT_SUCCESS, "SELECT query failed: %d\n", r );
 
-    size = sizeof(file);
-    r = libmsi_record_get_string( rec, 1, file, &size );
-    ok( r == LIBMSI_RESULT_SUCCESS, "Failed to get string: %d\n", r );
-    ok( !strcmp(file, "Binary.filename1.1"), "Expected 'Binary.filename1.1', got %s\n", file );
+    check_record_string (rec, 1, "Binary.filename1.1");
 
     size = sizeof(buf);
     memset( buf, 0, sizeof(buf) );
     r = libmsi_record_save_stream( rec, 2, buf, &size );
     ok( r == LIBMSI_RESULT_SUCCESS, "Failed to get stream: %d\n", r );
-    ok( !strcmp(buf, "test.txt\n"), "Expected 'test.txt\\n', got %s\n", buf );
+    ok( g_str_equal(buf, "test.txt\n"), "Expected 'test.txt\\n', got %s\n", buf );
 
     g_object_unref( rec );
 
@@ -1403,16 +1382,13 @@ static void test_binary(void)
     r = do_query( hdb, sql, &rec );
     ok( r == LIBMSI_RESULT_SUCCESS, "SELECT query failed: %d\n", r );
 
-    size = sizeof(file);
-    r = libmsi_record_get_string( rec, 1, file, &size );
-    ok( r == LIBMSI_RESULT_SUCCESS, "Failed to get string: %d\n", r );
-    ok( !strcmp(file, "filename1"), "Expected 'filename1', got %s\n", file );
+    check_record_string (rec, 1, "filename1");
 
     size = sizeof(buf);
     memset( buf, 0, sizeof(buf) );
     r = libmsi_record_save_stream( rec, 3, buf, &size );
     ok( r == LIBMSI_RESULT_SUCCESS, "Failed to get stream: %d\n", r );
-    ok( !strcmp(buf, "test.txt\n"), "Expected 'test.txt\\n', got %s\n", buf );
+    ok( g_str_equal(buf, "test.txt\n"), "Expected 'test.txt\\n', got %s\n", buf );
 
     g_object_unref( rec );
 
@@ -1591,22 +1567,16 @@ static void test_where(void)
     count = libmsi_record_get_field_count( rec );
     ok( count == 1, "Expected 1 record fields, got %d\n", count );
 
-    size = sizeof(buf);
-    r = libmsi_record_get_string( rec, 1, buf, &size );
-    ok( r == LIBMSI_RESULT_SUCCESS, "failed to get record string: %d\n", r );
-    ok( !strcmp( buf, "2" ),
-        "For (row %d, column 1) expected '%d', got %s\n", 0, 2, buf );
-    g_object_unref( rec );
+    check_record_string(rec, 1, "2");
+    g_object_unref(rec);
+    rec = NULL;
 
     r = libmsi_query_fetch(query, &rec);
     ok( r == LIBMSI_RESULT_SUCCESS, "failed to fetch query: %d\n", r );
 
-    size = sizeof(buf);
-    r = libmsi_record_get_string( rec, 1, buf, &size );
-    ok( r == LIBMSI_RESULT_SUCCESS, "failed to get record string: %d\n", r );
-    ok( !strcmp( buf, "3" ),
-        "For (row %d, column 1) expected '%d', got %s\n", 1, 3, buf );
-    g_object_unref( rec );
+    check_record_string(rec, 1, "3");
+    g_object_unref(rec);
+    rec = NULL;
 
     r = libmsi_query_fetch(query, &rec);
     ok( r == LIBMSI_RESULT_NO_MORE_ITEMS, "expected no more items: %d\n", r );
@@ -2104,16 +2074,13 @@ static void test_binary_import(void)
     r = do_query(hdb, sql, &rec);
     ok(r == LIBMSI_RESULT_SUCCESS, "SELECT query failed: %d\n", r);
 
-    size = sizeof(file);
-    r = libmsi_record_get_string(rec, 1, file, &size);
-    ok(r == LIBMSI_RESULT_SUCCESS, "Failed to get string: %d\n", r);
-    ok(!strcmp(file, "filename1"), "Expected 'filename1', got %s\n", file);
+    check_record_string(rec, 1, "filename1");
 
     size = sizeof(buf);
     memset(buf, 0, size);
     r = libmsi_record_save_stream(rec, 2, buf, &size);
     ok(r == LIBMSI_RESULT_SUCCESS, "Failed to get stream: %d\n", r);
-    ok(!strcmp(buf, "just some words"),
+    ok(g_str_equal(buf, "just some words"),
         "Expected 'just some words', got %s\n", buf);
 
     g_object_unref(rec);
@@ -2328,7 +2295,7 @@ static void test_handle_limit(void)
         static char szQueryBuf[256] = "SELECT * from `_Tables`";
         hqueries[i] = (void*)0xdeadbeeb;
         r = libmsi_database_open_query(hdb, szQueryBuf, &hqueries[i]);
-        if( r != LIBMSI_RESULT_SUCCESS || hqueries[i] == (void*)0xdeadbeeb || 
+        if( r != LIBMSI_RESULT_SUCCESS || hqueries[i] == (void*)0xdeadbeeb ||
             hqueries[i] == 0 || (i && (hqueries[i] == hqueries[i-1])))
             break;
     }
@@ -2674,10 +2641,7 @@ static void test_try_transform(void)
     r = libmsi_record_get_int(hrec, 1);
     ok(r == 1, "Expected 1, got %d\n", r);
 
-    sz = sizeof buffer;
-    r = libmsi_record_get_string(hrec, 2, buffer, &sz);
-    ok(r == LIBMSI_RESULT_SUCCESS, "record get string failed\n");
-    ok(!strcmp(buffer, "c"), "Expected c, got %s\n", buffer);
+    check_record_string(hrec, 2, "c");
 
     r = libmsi_record_get_int(hrec, 3);
     ok(r == 0x80000000, "Expected 0x80000000, got %d\n", r);
@@ -2693,10 +2657,7 @@ static void test_try_transform(void)
     r = libmsi_record_get_int(hrec, 1);
     ok(r == 2, "Expected 2, got %d\n", r);
 
-    sz = sizeof buffer;
-    r = libmsi_record_get_string(hrec, 2, buffer, &sz);
-    ok(r == LIBMSI_RESULT_SUCCESS, "record get string failed\n");
-    ok(!strcmp(buffer, "b"), "Expected b, got %s\n", buffer);
+    check_record_string(hrec, 2, "b");
 
     r = libmsi_record_get_int(hrec, 3);
     ok(r == 0x80000000, "Expected 0x80000000, got %d\n", r);
@@ -2728,7 +2689,7 @@ static void test_try_transform(void)
     sz = MAX_PATH;
     r = MsiGetProperty(hpkg, "prop", buffer, &sz);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
-    ok(!strcmp(buffer, "val"), "Expected val, got %s\n", buffer);
+    ok(g_str_equal(buffer, "val"), "Expected val, got %s\n", buffer);
 
     g_object_unref(hpkg);
 #endif
@@ -2842,6 +2803,7 @@ static void test_join(void)
     unsigned r, count;
     unsigned size, i;
     bool data_correct;
+    gchar *str;
 
     hdb = create_db();
     ok( hdb, "failed to create db\n");
@@ -2971,17 +2933,8 @@ static void test_join(void)
         count = libmsi_record_get_field_count( hrec );
         ok( count == 2, "Expected 2 record fields, got %d\n", count );
 
-        size = sizeof(buf);
-        r = libmsi_record_get_string( hrec, 1, buf, &size );
-        ok( r == LIBMSI_RESULT_SUCCESS, "failed to get record string: %d\n", r );
-        ok( !strcmp( buf, join_res_first[i].one ),
-            "For (row %d, column 1) expected '%s', got %s\n", i, join_res_first[i].one, buf );
-
-        size = sizeof(buf);
-        r = libmsi_record_get_string( hrec, 2, buf, &size );
-        ok( r == LIBMSI_RESULT_SUCCESS, "failed to get record string: %d\n", r );
-        ok( !strcmp( buf, join_res_first[i].two ),
-            "For (row %d, column 2) expected '%s', got %s\n", i, join_res_first[i].two, buf );
+        check_record_string(hrec, 1, join_res_first[i].one);
+        check_record_string(hrec, 2, join_res_first[i].two);
 
         i++;
         g_object_unref(hrec);
@@ -3029,17 +2982,17 @@ static void test_join(void)
         count = libmsi_record_get_field_count( hrec );
         ok( count == 2, "Expected 2 record fields, got %d\n", count );
 
-        size = sizeof(buf);
-        r = libmsi_record_get_string( hrec, 1, buf, &size );
-        ok( r == LIBMSI_RESULT_SUCCESS, "failed to get record string: %d\n", r );
-        if( strcmp( buf, join_res_second[i].one ))
+        str = libmsi_record_get_string(hrec, 1);
+        ok(str, "failed to get record string\n");
+        if( strcmp(str, join_res_second[i].one))
             data_correct = false;
+        g_free(str);
 
-        size = sizeof(buf);
-        r = libmsi_record_get_string( hrec, 2, buf, &size );
-        ok( r == LIBMSI_RESULT_SUCCESS, "failed to get record string: %d\n", r );
-        if( strcmp( buf, join_res_second[i].two ))
+        str = libmsi_record_get_string(hrec, 2);
+        ok(str, "failed to get record string\n");
+        if( strcmp(str, join_res_second[i].two))
             data_correct = false;
+        g_free(str);
 
         i++;
         g_object_unref(hrec);
@@ -3070,17 +3023,17 @@ static void test_join(void)
         count = libmsi_record_get_field_count( hrec );
         ok( count == 2, "Expected 2 record fields, got %d\n", count );
 
-        size = sizeof(buf);
-        r = libmsi_record_get_string( hrec, 1, buf, &size );
-        ok( r == LIBMSI_RESULT_SUCCESS, "failed to get record string: %d\n", r );
-        if( strcmp( buf, join_res_third[i].one ) )
+        str = libmsi_record_get_string(hrec, 1);
+        ok(str, "failed to get record string\n", str);
+        if (strcmp(str, join_res_third[i].one))
             data_correct = false;
+        g_free(str);
 
-        size = sizeof(buf);
-        r = libmsi_record_get_string( hrec, 2, buf, &size );
-        ok( r == LIBMSI_RESULT_SUCCESS, "failed to get record string: %d\n", r );
-        if( strcmp( buf, join_res_third[i].two ) )
+        str = libmsi_record_get_string(hrec, 2);
+        ok(str, "failed to get record string\n");
+        if (strcmp(str, join_res_third[i].two))
             data_correct = false;
+        g_free(str);
 
         i++;
         g_object_unref(hrec);
@@ -3111,17 +3064,17 @@ static void test_join(void)
         count = libmsi_record_get_field_count( hrec );
         ok( count == 2, "Expected 2 record fields, got %d\n", count );
 
-        size = sizeof(buf);
-        r = libmsi_record_get_string( hrec, 1, buf, &size );
-        ok( r == LIBMSI_RESULT_SUCCESS, "failed to get record string: %d\n", r );
-        if( strcmp( buf, join_res_fourth[i].one ))
+        str = libmsi_record_get_string(hrec, 1);
+        ok(str, "failed to get record string\n");
+        if (strcmp(str, join_res_fourth[i].one))
             data_correct = false;
+        g_free(str);
 
-        size = sizeof(buf);
-        r = libmsi_record_get_string( hrec, 2, buf, &size );
-        ok( r == LIBMSI_RESULT_SUCCESS, "failed to get record string: %d\n", r );
-        if( strcmp( buf, join_res_fourth[i].two ))
+        str = libmsi_record_get_string( hrec, 2);
+        ok(str, "failed to get record string\n");
+        if (strcmp(str, join_res_fourth[i].two))
             data_correct = false;
+        g_free(str);
 
         i++;
         g_object_unref(hrec);
@@ -3152,17 +3105,17 @@ static void test_join(void)
         count = libmsi_record_get_field_count( hrec );
         ok( count == 2, "Expected 2 record fields, got %d\n", count );
 
-        size = sizeof(buf);
-        r = libmsi_record_get_string( hrec, 1, buf, &size );
-        ok( r == LIBMSI_RESULT_SUCCESS, "failed to get record string: %d\n", r );
-        if( strcmp( buf, join_res_fifth[i].one ))
+        str = libmsi_record_get_string(hrec, 1);
+        ok(str, "failed to get record string: %d\n", r );
+        if (strcmp(str, join_res_fifth[i].one))
             data_correct = false;
+        g_free(str);
 
-        size = sizeof(buf);
-        r = libmsi_record_get_string( hrec, 2, buf, &size );
-        ok( r == LIBMSI_RESULT_SUCCESS, "failed to get record string: %d\n", r );
-        if( strcmp( buf, join_res_fifth[i].two ))
+        str = libmsi_record_get_string(hrec, 2);
+        ok(str, "failed to get record string\n");
+        if(strcmp(str, join_res_fifth[i].two))
             data_correct = false;
+        g_free(str);
 
         i++;
         g_object_unref(hrec);
@@ -3192,17 +3145,17 @@ static void test_join(void)
         count = libmsi_record_get_field_count( hrec );
         ok( count == 2, "Expected 2 record fields, got %d\n", count );
 
-        size = sizeof(buf);
-        r = libmsi_record_get_string( hrec, 1, buf, &size );
-        ok( r == LIBMSI_RESULT_SUCCESS, "failed to get record string: %d\n", r );
-        if( strcmp( buf, join_res_sixth[i].one ))
+        str = libmsi_record_get_string(hrec, 1);
+        ok(str, "failed to get record string\n");
+        if (strcmp(str, join_res_sixth[i].one))
             data_correct = false;
+        g_free(str);
 
-        size = sizeof(buf);
-        r = libmsi_record_get_string( hrec, 2, buf, &size );
-        ok( r == LIBMSI_RESULT_SUCCESS, "failed to get record string: %d\n", r );
-        if( strcmp( buf, join_res_sixth[i].two ))
+        str = libmsi_record_get_string( hrec, 2);
+        ok(str, "failed to get record string\n");
+        if (strcmp(str, join_res_sixth[i].two))
             data_correct = false;
+        g_free(str);
 
         i++;
         g_object_unref(hrec);
@@ -3233,17 +3186,17 @@ static void test_join(void)
         count = libmsi_record_get_field_count( hrec );
         ok( count == 2, "Expected 2 record fields, got %d\n", count );
 
-        size = sizeof(buf);
-        r = libmsi_record_get_string( hrec, 1, buf, &size );
-        ok( r == LIBMSI_RESULT_SUCCESS, "failed to get record string: %d\n", r );
-        if( strcmp( buf, join_res_seventh[i].one ))
+        str = libmsi_record_get_string( hrec, 1);
+        ok(str, "failed to get record string\n");
+        if (strcmp(str, join_res_seventh[i].one))
             data_correct = false;
+        g_free(str);
 
-        size = sizeof(buf);
-        r = libmsi_record_get_string( hrec, 2, buf, &size );
-        ok( r == LIBMSI_RESULT_SUCCESS, "failed to get record string: %d\n", r );
-        if( strcmp( buf, join_res_seventh[i].two ))
+        str = libmsi_record_get_string(hrec, 2);
+        ok(str, "failed to get record string\n");
+        if (strcmp(str, join_res_seventh[i].two))
             data_correct = false;
+        g_free(str);
 
         i++;
         g_object_unref(hrec);
@@ -3271,17 +3224,17 @@ static void test_join(void)
         count = libmsi_record_get_field_count( hrec );
         ok( count == 2, "Expected 2 record fields, got %d\n", count );
 
-        size = sizeof(buf);
-        r = libmsi_record_get_string( hrec, 1, buf, &size );
-        ok( r == LIBMSI_RESULT_SUCCESS, "failed to get record string: %d\n", r );
-        if( strcmp( buf, join_res_eighth[i].one ))
+        str = libmsi_record_get_string(hrec, 1);
+        ok(str, "failed to get record string\n");
+        if (strcmp(str, join_res_eighth[i].one))
             data_correct = false;
+        g_free(str);
 
-        size = sizeof(buf);
-        r = libmsi_record_get_string( hrec, 2, buf, &size );
-        ok( r == LIBMSI_RESULT_SUCCESS, "failed to get record string: %d\n", r );
-        if( strcmp( buf, join_res_eighth[i].four ))
+        str = libmsi_record_get_string(hrec, 2);
+        ok(str, "failed to get record string\n");
+        if (strcmp(str, join_res_eighth[i].four))
             data_correct = false;
+        g_free(str);
 
         i++;
         g_object_unref(hrec);
@@ -3308,29 +3261,29 @@ static void test_join(void)
         count = libmsi_record_get_field_count( hrec );
         ok( count == 4, "Expected 4 record fields, got %d\n", count );
 
-        size = sizeof(buf);
-        r = libmsi_record_get_string( hrec, 1, buf, &size );
-        ok( r == LIBMSI_RESULT_SUCCESS, "failed to get record string: %d\n", r );
-        if( strcmp( buf, join_res_eighth[i].one ))
+        str = libmsi_record_get_string(hrec, 1);
+        ok(str, "failed to get record string\n");
+        if (strcmp(str, join_res_eighth[i].one))
             data_correct = false;
+        g_free(str);
 
-        size = sizeof(buf);
-        r = libmsi_record_get_string( hrec, 2, buf, &size );
-        ok( r == LIBMSI_RESULT_SUCCESS, "failed to get record string: %d\n", r );
-        if( strcmp( buf, join_res_eighth[i].two ))
+        str = libmsi_record_get_string(hrec, 2);
+        ok(str, "failed to get record string\n");
+        if (strcmp(str, join_res_eighth[i].two))
             data_correct = false;
+        g_free(str);
 
-        size = sizeof(buf);
-        r = libmsi_record_get_string( hrec, 3, buf, &size );
-        ok( r == LIBMSI_RESULT_SUCCESS, "failed to get record string: %d\n", r );
-        if( strcmp( buf, join_res_eighth[i].three ))
+        str = libmsi_record_get_string(hrec, 3);
+        ok(str, "failed to get record string\n");
+        if (strcmp(str, join_res_eighth[i].three))
             data_correct = false;
+        g_free(str);
 
-        size = sizeof(buf);
-        r = libmsi_record_get_string( hrec, 4, buf, &size );
-        ok( r == LIBMSI_RESULT_SUCCESS, "failed to get record string: %d\n", r );
-        if( strcmp( buf, join_res_eighth[i].four ))
+        str = libmsi_record_get_string(hrec, 4);
+        ok(str, "failed to get record string\n");
+        if (strcmp(str, join_res_eighth[i].four))
             data_correct = false;
+        g_free(str);
 
         i++;
         g_object_unref(hrec);
@@ -3507,15 +3460,8 @@ static void test_temporary_table(void)
     r = libmsi_query_get_column_info(query, LIBMSI_COL_INFO_TYPES, &rec);
     ok(r == LIBMSI_RESULT_SUCCESS, "failed to get column info\n");
 
-    sz = sizeof buf;
-    r = libmsi_record_get_string(rec, 1, buf, &sz);
-    ok(r == LIBMSI_RESULT_SUCCESS, "failed to get string\n");
-    ok( 0 == strcmp("G255", buf), "wrong column type\n");
-
-    sz = sizeof buf;
-    r = libmsi_record_get_string(rec, 2, buf, &sz);
-    ok(r == LIBMSI_RESULT_SUCCESS, "failed to get string\n");
-    ok( 0 == strcmp("j2", buf), "wrong column type\n");
+    check_record_string(rec, 1, "G255");
+    check_record_string(rec, 2, "j2");
 
     g_object_unref( rec );
     libmsi_query_close( query );
@@ -3960,21 +3906,13 @@ static void test_update(void)
     r = libmsi_query_fetch(query, &rec);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
-    size = sizeof(result);
-    r = libmsi_record_get_string(rec, 1, result, &size);
-    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
-    ok(!strcmp(result, "this is text"), "Expected `this is text`, got %s\n", result);
-
+    check_record_string(rec, 1, "this is text");
     g_object_unref(rec);
 
     r = libmsi_query_fetch(query, &rec);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
-    size = sizeof(result);
-    r = libmsi_record_get_string(rec, 1, result, &size);
-    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
-    ok(!strlen(result), "Expected an empty string, got %s\n", result);
-
+    check_record_string(rec, 1, "");
     g_object_unref(rec);
 
     r = libmsi_query_fetch(query, &rec);
@@ -4006,21 +3944,13 @@ static void test_update(void)
     r = libmsi_query_fetch(query, &rec);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
-    size = sizeof(result);
-    r = libmsi_record_get_string(rec, 1, result, &size);
-    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
-    ok(!strcmp(result, "this is text"), "Expected `this is text`, got %s\n", result);
-
+    check_record_string(rec, 1, "this is text");
     g_object_unref(rec);
 
     r = libmsi_query_fetch(query, &rec);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
-    size = sizeof(result);
-    r = libmsi_record_get_string(rec, 1, result, &size);
-    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
-    ok(!strlen(result), "Expected an empty string, got %s\n", result);
-
+    check_record_string(rec, 1, "");
     g_object_unref(rec);
 
     r = libmsi_query_fetch(query, &rec);
@@ -4052,31 +3982,19 @@ static void test_update(void)
     r = libmsi_query_fetch(query, &rec);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
-    size = sizeof(result);
-    r = libmsi_record_get_string(rec, 1, result, &size);
-    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
-    ok(!strcmp(result, "this is text"), "Expected `this is text`, got %s\n", result);
-
+    check_record_string(rec, 1, "this is text");
     g_object_unref(rec);
 
     r = libmsi_query_fetch(query, &rec);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
-    size = sizeof(result);
-    r = libmsi_record_get_string(rec, 1, result, &size);
-    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
-    ok(!strcmp(result, "this is text"), "Expected `this is text`, got %s\n", result);
-
+    check_record_string(rec, 1, "this is text");
     g_object_unref(rec);
 
     r = libmsi_query_fetch(query, &rec);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
-    size = sizeof(result);
-    r = libmsi_record_get_string(rec, 1, result, &size);
-    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
-    ok(!strcmp(result, "this is text"), "Expected `this is text`, got %s\n", result);
-
+    check_record_string(rec, 1, "this is text");
     g_object_unref(rec);
 
     r = libmsi_query_fetch(query, &rec);
@@ -4203,6 +4121,7 @@ static void test_tables_order(void)
     LibmsiDatabase *hdb = 0;
     LibmsiQuery *hquery = 0;
     LibmsiRecord *hrec = 0;
+    gchar *str;
     unsigned r;
     char buffer[100];
     unsigned sz;
@@ -4238,26 +4157,18 @@ static void test_tables_order(void)
 
     r = libmsi_query_fetch(hquery, &hrec);
     ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_query_fetch failed\n");
-    sz = sizeof(buffer);
-    r = libmsi_record_get_string(hrec, 1, buffer, &sz);
-    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
-    ok(!strcmp(buffer, "foo"), "Expected foo, got %s\n", buffer);
+    check_record_string(hrec, 1, "foo");
+    g_object_unref(hrec);
+
+    r = libmsi_query_fetch(hquery, &hrec);
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_query_fetch failed\n");
+    check_record_string(hrec, 1, "baz");
     g_object_unref(hrec);
 
     r = libmsi_query_fetch(hquery, &hrec);
     ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_query_fetch failed\n");
     sz = sizeof(buffer);
-    r = libmsi_record_get_string(hrec, 1, buffer, &sz);
-    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
-    ok(!strcmp(buffer, "baz"), "Expected baz, got %s\n", buffer);
-    g_object_unref(hrec);
-
-    r = libmsi_query_fetch(hquery, &hrec);
-    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_query_fetch failed\n");
-    sz = sizeof(buffer);
-    r = libmsi_record_get_string(hrec, 1, buffer, &sz);
-    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
-    ok(!strcmp(buffer, "bar"), "Expected bar, got %s\n", buffer);
+    check_record_string(hrec, 1, "bar");
     g_object_unref(hrec);
 
     r = libmsi_query_close(hquery);
@@ -4275,62 +4186,32 @@ static void test_tables_order(void)
 
     r = libmsi_query_fetch(hquery, &hrec);
     ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_query_fetch failed\n");
-    sz = sizeof(buffer);
-    r = libmsi_record_get_string(hrec, 1, buffer, &sz);
-    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
-    ok(!strcmp(buffer, "foo"), "Expected foo, got %s\n", buffer);
-    sz = sizeof(buffer);
-    r = libmsi_record_get_string(hrec, 3, buffer, &sz);
-    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
-    ok(!strcmp(buffer, "baz"), "Expected baz, got %s\n", buffer);
+    check_record_string(hrec, 1, "foo");
+    check_record_string(hrec, 3, "baz");
     g_object_unref(hrec);
 
     r = libmsi_query_fetch(hquery, &hrec);
     ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_query_fetch failed\n");
-    sz = sizeof(buffer);
-    r = libmsi_record_get_string(hrec, 1, buffer, &sz);
-    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
-    ok(!strcmp(buffer, "baz"), "Expected baz, got %s\n", buffer);
-    sz = sizeof(buffer);
-    r = libmsi_record_get_string(hrec, 3, buffer, &sz);
-    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
-    ok(!strcmp(buffer, "bar"), "Expected bar, got %s\n", buffer);
+    check_record_string(hrec, 1, "baz");
+    check_record_string(hrec, 3, "bar");
     g_object_unref(hrec);
 
     r = libmsi_query_fetch(hquery, &hrec);
     ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_query_fetch failed\n");
-    sz = sizeof(buffer);
-    r = libmsi_record_get_string(hrec, 1, buffer, &sz);
-    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
-    ok(!strcmp(buffer, "baz"), "Expected baz, got %s\n", buffer);
-    sz = sizeof(buffer);
-    r = libmsi_record_get_string(hrec, 3, buffer, &sz);
-    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
-    ok(!strcmp(buffer, "baz"), "Expected baz, got %s\n", buffer);
+    check_record_string(hrec, 1, "baz");
+    check_record_string(hrec, 3, "baz");
     g_object_unref(hrec);
 
     r = libmsi_query_fetch(hquery, &hrec);
     ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_query_fetch failed\n");
-    sz = sizeof(buffer);
-    r = libmsi_record_get_string(hrec, 1, buffer, &sz);
-    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
-    ok(!strcmp(buffer, "baz"), "Expected baz, got %s\n", buffer);
-    sz = sizeof(buffer);
-    r = libmsi_record_get_string(hrec, 3, buffer, &sz);
-    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
-    ok(!strcmp(buffer, "foo"), "Expected foo, got %s\n", buffer);
+    check_record_string(hrec, 1, "baz");
+    check_record_string(hrec, 3, "foo");
     g_object_unref(hrec);
 
     r = libmsi_query_fetch(hquery, &hrec);
     ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_query_fetch failed\n");
-    sz = sizeof(buffer);
-    r = libmsi_record_get_string(hrec, 1, buffer, &sz);
-    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
-    ok(!strcmp(buffer, "bar"), "Expected bar, got %s\n", buffer);
-    sz = sizeof(buffer);
-    r = libmsi_record_get_string(hrec, 3, buffer, &sz);
-    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
-    ok(!strcmp(buffer, "foo"), "Expected foo, got %s\n", buffer);
+    check_record_string(hrec, 1, "bar");
+    check_record_string(hrec, 3, "foo");
     g_object_unref(hrec);
 
     r = libmsi_query_close(hquery);
@@ -4419,50 +4300,26 @@ static void test_rows_order(void)
 
     r = libmsi_query_fetch(hquery, &hrec);
     ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_query_fetch failed\n");
-    sz = sizeof(buffer);
-    r = libmsi_record_get_string(hrec, 1, buffer, &sz);
-    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
-    ok(!strcmp(buffer, "A"), "Expected A, got %s\n", buffer);
-    sz = sizeof(buffer);
-    r = libmsi_record_get_string(hrec, 2, buffer, &sz);
-    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
-    ok(!strcmp(buffer, "B"), "Expected B, got %s\n", buffer);
+    check_record_string(hrec, 1, "A");
+    check_record_string(hrec, 2, "B");
     g_object_unref(hrec);
 
     r = libmsi_query_fetch(hquery, &hrec);
     ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_query_fetch failed\n");
-    sz = sizeof(buffer);
-    r = libmsi_record_get_string(hrec, 1, buffer, &sz);
-    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
-    ok(!strcmp(buffer, "C"), "Expected E, got %s\n", buffer);
-    sz = sizeof(buffer);
-    r = libmsi_record_get_string(hrec, 2, buffer, &sz);
-    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
-    ok(!strcmp(buffer, "E"), "Expected E, got %s\n", buffer);
+    check_record_string(hrec, 1, "C");
+    check_record_string(hrec, 2, "E");
     g_object_unref(hrec);
 
     r = libmsi_query_fetch(hquery, &hrec);
     ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_query_fetch failed\n");
-    sz = sizeof(buffer);
-    r = libmsi_record_get_string(hrec, 1, buffer, &sz);
-    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
-    ok(!strcmp(buffer, "D"), "Expected D, got %s\n", buffer);
-    sz = sizeof(buffer);
-    r = libmsi_record_get_string(hrec, 2, buffer, &sz);
-    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
-    ok(!strcmp(buffer, "E"), "Expected E, got %s\n", buffer);
+    check_record_string(hrec, 1, "D");
+    check_record_string(hrec, 2, "E");
     g_object_unref(hrec);
 
     r = libmsi_query_fetch(hquery, &hrec);
     ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_query_fetch failed\n");
-    sz = sizeof(buffer);
-    r = libmsi_record_get_string(hrec, 1, buffer, &sz);
-    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
-    ok(!strcmp(buffer, "F"), "Expected F, got %s\n", buffer);
-    sz = sizeof(buffer);
-    r = libmsi_record_get_string(hrec, 2, buffer, &sz);
-    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
-    ok(!strcmp(buffer, "A"), "Expected A, got %s\n", buffer);
+    check_record_string(hrec, 1, "F");
+    check_record_string(hrec, 2, "A");
     g_object_unref(hrec);
 
     r = libmsi_query_close(hquery);
@@ -4497,6 +4354,7 @@ static void test_collation(void)
     unsigned r;
     char buffer[100];
     unsigned sz;
+    gchar *str;
 
     r = libmsi_database_open(msifile, LIBMSI_DB_OPEN_CREATE, &hdb);
     ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_database_open failed\n");
@@ -4542,52 +4400,33 @@ static void test_collation(void)
 
     r = libmsi_query_fetch(hquery, &hrec);
     ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_query_fetch failed\n");
-    sz = sizeof(buffer);
-    r = libmsi_record_get_string(hrec, 1, buffer, &sz);
-    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
-    ok(!strcmp(buffer, "\2"), "Expected \\2, got '%s'\n", buffer);
-    sz = sizeof(buffer);
-    r = libmsi_record_get_string(hrec, 2, buffer, &sz);
-    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
-    ok(!strcmp(buffer, "A"), "Expected A, got '%s'\n", buffer);
+    check_record_string(hrec, 1, "\2");
+    check_record_string(hrec, 2, "A");
     g_object_unref(hrec);
 
     r = libmsi_query_fetch(hquery, &hrec);
     ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_query_fetch failed\n");
-    sz = sizeof(buffer);
-    r = libmsi_record_get_string(hrec, 1, buffer, &sz);
-    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
-    ok(!strcmp(buffer, "\1"), "Expected \\1, got '%s'\n", buffer);
-    sz = sizeof(buffer);
-    r = libmsi_record_get_string(hrec, 2, buffer, &sz);
-    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
-    ok(!strcmp(buffer, "B"), "Expected B, got '%s'\n", buffer);
+    check_record_string(hrec, 1, "\1");
+    check_record_string(hrec, 2, "B");
     g_object_unref(hrec);
 
     r = libmsi_query_fetch(hquery, &hrec);
     ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_query_fetch failed\n");
-    sz = sizeof(buffer);
-    r = libmsi_record_get_string(hrec, 1, buffer, &sz);
-    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
-    ok(!memcmp(buffer, letter_a_ring, sizeof(letter_a_ring)),
-       "Expected %s, got %s\n", letter_a_ring, buffer);
-    sz = sizeof(buffer);
-    r = libmsi_record_get_string(hrec, 2, buffer, &sz);
-    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
-    ok(!strcmp(buffer, "C"), "Expected C, got %s\n", buffer);
+    str = libmsi_record_get_string(hrec, 1);
+    ok(str, "Expected string\n");
+    ok(!memcmp(str, letter_a_ring, sizeof(letter_a_ring)),
+       "Expected %s, got %s\n", letter_a_ring, str);
+    check_record_string(hrec, 2, "C");
     g_object_unref(hrec);
 
     r = libmsi_query_fetch(hquery, &hrec);
     ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_query_fetch failed\n");
-    sz = sizeof(buffer);
-    r = libmsi_record_get_string(hrec, 1, buffer, &sz);
-    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
-    ok(!memcmp(buffer, letter_a_with_ring, sizeof(letter_a_with_ring)),
-       "Expected %s, got %s\n", letter_a_with_ring, buffer);
-    sz = sizeof(buffer);
-    r = libmsi_record_get_string(hrec, 2, buffer, &sz);
-    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
-    ok(!strcmp(buffer, "D"), "Expected D, got %s\n", buffer);
+    str = libmsi_record_get_string(hrec, 1);
+    ok(str, "Expected string\n");
+    ok(!memcmp(str, letter_a_with_ring, sizeof(letter_a_with_ring)),
+       "Expected %s, got %s\n", letter_a_with_ring, str);
+    g_free(str);
+    check_record_string(hrec, 2, "D");
     g_object_unref(hrec);
 
     r = libmsi_query_close(hquery);
@@ -4602,14 +4441,11 @@ static void test_collation(void)
     r = libmsi_query_fetch(hquery, &hrec);
     ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_query_fetch failed\n");
     sz = sizeof(buffer);
-    r = libmsi_record_get_string(hrec, 1, buffer, &sz);
-    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
-    ok(!memcmp(buffer, letter_a_with_ring, sizeof(letter_a_with_ring)),
-       "Expected %s, got %s\n", letter_a_with_ring, buffer);
-    sz = sizeof(buffer);
-    r = libmsi_record_get_string(hrec, 2, buffer, &sz);
-    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
-    ok(!strcmp(buffer, "D"), "Expected D, got %s\n", buffer);
+    str = libmsi_record_get_string(hrec, 1);
+    ok(str, "Expected string\n");
+    ok(!memcmp(str, letter_a_with_ring, sizeof(letter_a_with_ring)),
+       "Expected %s, got %s\n", letter_a_with_ring, str);
+    check_record_string(hrec, 2, "D");
     g_object_unref(hrec);
 
     r = libmsi_query_fetch(hquery, &hrec);
@@ -4673,15 +4509,8 @@ static void test_select_markers(void)
     r = libmsi_query_fetch(query, &res);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
-    size = sizeof(buf);
-    r = libmsi_record_get_string(res, 1, buf, &size);
-    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
-    ok(!strcmp(buf, "apple"), "Expected apple, got %s\n", buf);
-
-    size = sizeof(buf);
-    r = libmsi_record_get_string(res, 2, buf, &size);
-    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
-    ok(!strcmp(buf, "two"), "Expected two, got %s\n", buf);
+    check_record_string(res, 1, "apple");
+    check_record_string(res, 2, "two");
 
     r = libmsi_record_get_int(res, 3);
     ok(r == 1, "Expected 1, got %d\n", r);
@@ -4691,15 +4520,9 @@ static void test_select_markers(void)
     r = libmsi_query_fetch(query, &res);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
-    size = sizeof(buf);
-    r = libmsi_record_get_string(res, 1, buf, &size);
-    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
-    ok(!strcmp(buf, "apple"), "Expected apple, got %s\n", buf);
+    check_record_string(res, 1, "apple");
 
-    size = sizeof(buf);
-    r = libmsi_record_get_string(res, 2, buf, &size);
-    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
-    ok(!strcmp(buf, "two"), "Expected two, got %s\n", buf);
+    check_record_string(res, 2, "two");
 
     r = libmsi_record_get_int(res, 3);
     ok(r == 2, "Expected 2, got %d\n", r);
@@ -4727,15 +4550,8 @@ static void test_select_markers(void)
     r = libmsi_query_fetch(query, &res);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
-    size = sizeof(buf);
-    r = libmsi_record_get_string(res, 1, buf, &size);
-    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
-    ok(!strcmp(buf, "apple"), "Expected apple, got %s\n", buf);
-
-    size = sizeof(buf);
-    r = libmsi_record_get_string(res, 2, buf, &size);
-    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
-    ok(!strcmp(buf, "two"), "Expected two, got %s\n", buf);
+    check_record_string(res, 1, "apple");
+    check_record_string(res, 2, "two");
 
     r = libmsi_record_get_int(res, 3);
     ok(r == 2, "Expected 2, got %d\n", r);
@@ -4745,15 +4561,8 @@ static void test_select_markers(void)
     r = libmsi_query_fetch(query, &res);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
-    size = sizeof(buf);
-    r = libmsi_record_get_string(res, 1, buf, &size);
-    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
-    ok(!strcmp(buf, "banana"), "Expected banana, got %s\n", buf);
-
-    size = sizeof(buf);
-    r = libmsi_record_get_string(res, 2, buf, &size);
-    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
-    ok(!strcmp(buf, "three"), "Expected three, got %s\n", buf);
+    check_record_string(res, 1, "banana");
+    check_record_string(res, 2, "three");
 
     r = libmsi_record_get_int(res, 3);
     ok(r == 3, "Expected 3, got %d\n", r);
@@ -4883,10 +4692,7 @@ static void test_stringtable(void)
     r = libmsi_record_get_int(hrec, 1);
     ok(r == 1, "Expected 1, got %d\n", r);
 
-    sz = sizeof(buffer);
-    r = libmsi_record_get_string(hrec, 2, buffer, &sz);
-    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
-    ok(!strcmp(buffer, "one"), "Expected one, got '%s'\n", buffer);
+    check_record_string(hrec, 2, "one");
 
     g_object_unref(hrec);
 
@@ -4914,10 +4720,7 @@ static void test_stringtable(void)
     r = libmsi_record_get_int(hrec, 1);
     ok(r == 2, "Expected 2, got %d\n", r);
 
-    sz = sizeof(buffer);
-    r = libmsi_record_get_string(hrec, 2, buffer, &sz);
-    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
-    ok(!strcmp(buffer, "two"), "Expected two, got '%s'\n", buffer);
+    check_record_string(hrec, 2, "two");
 
     g_object_unref(hrec);
 
@@ -4930,10 +4733,7 @@ static void test_stringtable(void)
     r = libmsi_record_get_int(hrec, 1);
     ok(r == 5, "Expected 5, got %d\n", r);
 
-    sz = sizeof(buffer);
-    r = libmsi_record_get_string(hrec, 2, buffer, &sz);
-    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
-    ok(!strcmp(buffer, "five"), "Expected five, got '%s'\n", buffer);
+    check_record_string(hrec, 2, "five");
 
     g_object_unref(hrec);
 
@@ -5363,10 +5163,7 @@ static void test_order(void)
     r = libmsi_query_fetch(hquery, &hrec);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
-    sz = sizeof(buffer);
-    r = libmsi_record_get_string(hrec, 1, buffer, &sz);
-    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
-    ok(!strcmp(buffer, "dos"), "Expected \"dos\", got \"%s\"\n", buffer);
+    check_record_string(hrec, 1, "dos");
 
     r = libmsi_record_get_int(hrec, 2);
     ok(r == 3, "Expected 3, got %d\n", r);
@@ -5429,10 +5226,7 @@ static void test_deleterow(void)
     r = libmsi_query_fetch(hquery, &hrec);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
-    size = sizeof(buf);
-    r = libmsi_record_get_string(hrec, 1, buf, &size);
-    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
-    ok(!strcmp(buf, "two"), "Expected two, got %s\n", buf);
+    check_record_string(hrec, 1, "two");
 
     g_object_unref(hrec);
 
@@ -5510,11 +5304,7 @@ static void test_quotes(void)
     r = libmsi_query_fetch(hquery, &hrec);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
-    size = sizeof(buf);
-    r = libmsi_record_get_string(hrec, 1, buf, &size);
-    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
-    ok(!strcmp(buf, "This is a \"string\" ok"),
-       "Expected \"This is a \"string\" ok\", got %s\n", buf);
+    check_record_string(hrec, 1, "This is a \"string\" ok");
 
     g_object_unref(hrec);
 
@@ -5541,11 +5331,7 @@ static void test_quotes(void)
     r = libmsi_query_fetch(hquery, &hrec);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
-    size = sizeof(buf);
-    r = libmsi_record_get_string(hrec, 1, buf, &size);
-    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
-    ok(!strcmp(buf, "This is a new 'string' ok"),
-       "Expected \"This is a new 'string' ok\", got %s\n", buf);
+    check_record_string(hrec, 1, "This is a new 'string' ok");
 
     g_object_unref(hrec);
 
@@ -5709,31 +5495,19 @@ static void test_carriagereturn(void)
     r = libmsi_query_fetch(hquery, &hrec);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
-    size = sizeof(buf);
-    r = libmsi_record_get_string(hrec, 1, buf, &size);
-    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
-    ok(!strcmp(buf, "\rOne"), "Expected \"\\rOne\", got \"%s\"\n", buf);
-
+    check_record_string(hrec, 1, "\rOne");
     g_object_unref(hrec);
 
     r = libmsi_query_fetch(hquery, &hrec);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
-    size = sizeof(buf);
-    r = libmsi_record_get_string(hrec, 1, buf, &size);
-    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
-    ok(!strcmp(buf, "Tw\ro"), "Expected \"Tw\\ro\", got \"%s\"\n", buf);
-
+    check_record_string(hrec, 1, "Tw\ro");
     g_object_unref(hrec);
 
     r = libmsi_query_fetch(hquery, &hrec);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
-    size = sizeof(buf);
-    r = libmsi_record_get_string(hrec, 1, buf, &size);
-    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
-    ok(!strcmp(buf, "Three\r"), "Expected \"Three\r\", got \"%s\"\n", buf);
-
+    check_record_string(hrec, 1, "Three\r");
     g_object_unref(hrec);
 
     r = libmsi_query_fetch(hquery, &hrec);
@@ -5786,31 +5560,19 @@ static void test_noquotes(void)
     r = libmsi_query_fetch(hquery, &hrec);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
-    size = sizeof(buf);
-    r = libmsi_record_get_string(hrec, 1, buf, &size);
-    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
-    ok(!strcmp(buf, "Table"), "Expected \"Table\", got \"%s\"\n", buf);
-
+    check_record_string(hrec, 1, "Table");
     g_object_unref(hrec);
 
     r = libmsi_query_fetch(hquery, &hrec);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
-    size = sizeof(buf);
-    r = libmsi_record_get_string(hrec, 1, buf, &size);
-    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
-    ok(!strcmp(buf, "Table2"), "Expected \"Table2\", got \"%s\"\n", buf);
-
+    check_record_string(hrec, 1, "Table2");
     g_object_unref(hrec);
 
     r = libmsi_query_fetch(hquery, &hrec);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
-    size = sizeof(buf);
-    r = libmsi_record_get_string(hrec, 1, buf, &size);
-    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
-    ok(!strcmp(buf, "Table3"), "Expected \"Table3\", got \"%s\"\n", buf);
-
+    check_record_string(hrec, 1, "Table3");
     g_object_unref(hrec);
 
     r = libmsi_query_fetch(hquery, &hrec);
@@ -5828,55 +5590,34 @@ static void test_noquotes(void)
     r = libmsi_query_fetch(hquery, &hrec);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
-    size = sizeof(buf);
-    r = libmsi_record_get_string(hrec, 1, buf, &size);
-    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
-    ok(!strcmp(buf, "Table"), "Expected \"Table\", got \"%s\"\n", buf);
+    check_record_string(hrec, 1, "Table");
 
     r = libmsi_record_get_int(hrec, 2);
     ok(r == 1, "Expected 1, got %d\n", r);
 
-    size = sizeof(buf);
-    r = libmsi_record_get_string(hrec, 3, buf, &size);
-    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
-    ok(!strcmp(buf, "A"), "Expected \"A\", got \"%s\"\n", buf);
-
+    check_record_string(hrec, 3, "A");
     g_object_unref(hrec);
 
     r = libmsi_query_fetch(hquery, &hrec);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
-    size = sizeof(buf);
-    r = libmsi_record_get_string(hrec, 1, buf, &size);
-    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
-    ok(!strcmp(buf, "Table2"), "Expected \"Table2\", got \"%s\"\n", buf);
+    check_record_string(hrec, 1, "Table2");
 
     r = libmsi_record_get_int(hrec, 2);
     ok(r == 1, "Expected 1, got %d\n", r);
 
-    size = sizeof(buf);
-    r = libmsi_record_get_string(hrec, 3, buf, &size);
-    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
-    ok(!strcmp(buf, "A"), "Expected \"A\", got \"%s\"\n", buf);
-
+    check_record_string(hrec, 3, "A");
     g_object_unref(hrec);
 
     r = libmsi_query_fetch(hquery, &hrec);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
-    size = sizeof(buf);
-    r = libmsi_record_get_string(hrec, 1, buf, &size);
-    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
-    ok(!strcmp(buf, "Table3"), "Expected \"Table3\", got \"%s\"\n", buf);
+    check_record_string(hrec, 1, "Table3");
 
     r = libmsi_record_get_int(hrec, 2);
     ok(r == 1, "Expected 1, got %d\n", r);
 
-    size = sizeof(buf);
-    r = libmsi_record_get_string(hrec, 3, buf, &size);
-    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
-    ok(!strcmp(buf, "A"), "Expected \"A\", got \"%s\"\n", buf);
-
+    check_record_string(hrec, 3, "A");
     g_object_unref(hrec);
 
     r = libmsi_query_fetch(hquery, &hrec);
@@ -5931,11 +5672,7 @@ static void test_noquotes(void)
     r = libmsi_query_fetch(hquery, &hrec);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
-    size = sizeof(buf);
-    r = libmsi_record_get_string(hrec, 1, buf, &size);
-    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
-    ok(!strcmp(buf, "hi"), "Expected \"hi\", got \"%s\"\n", buf);
-
+    check_record_string(hrec, 1, "hi");
     g_object_unref(hrec);
 
     r = libmsi_query_fetch(hquery, &hrec);
@@ -6006,7 +5743,7 @@ static void test_forcecodepage(void)
     close(fd);
 
     read_file_data("forcecodepage.idt", buffer);
-    ok(!strcmp(buffer, "\r\n\r\n0\t_ForceCodepage\r\n"),
+    ok(g_str_equal(buffer, "\r\n\r\n0\t_ForceCodepage\r\n"),
        "Expected \"\r\n\r\n0\t_ForceCodepage\r\n\", got \"%s\"\n", buffer);
 
     create_file_data("forcecodepage.idt", "\r\n\r\n850\t_ForceCodepage\r\n", 0);
@@ -6022,7 +5759,7 @@ static void test_forcecodepage(void)
     close(fd);
 
     read_file_data("forcecodepage.idt", buffer);
-    ok(!strcmp(buffer, "\r\n\r\n850\t_ForceCodepage\r\n"),
+    ok(g_str_equal(buffer, "\r\n\r\n850\t_ForceCodepage\r\n"),
        "Expected \"\r\n\r\n850\t_ForceCodepage\r\n\", got \"%s\"\n", buffer);
 
     create_file_data("forcecodepage.idt", "\r\n\r\n9999\t_ForceCodepage\r\n", 0);
@@ -6142,16 +5879,13 @@ static void test_storages_table(void)
     r = libmsi_query_fetch(hquery, &hrec);
     ok(r == LIBMSI_RESULT_SUCCESS, "Failed to fetch hrecord: %d\n", r);
 
-    size = sizeof(file);
-    r = libmsi_record_get_string(hrec, 1, file, &size);
-    ok(r == LIBMSI_RESULT_SUCCESS, "Failed to get string: %d\n", r);
-    ok(!strcmp(file, "stgname"), "Expected \"stgname\", got \"%s\"\n", file);
+    check_record_string(hrec, 1, "stgname");
 
     size = sizeof(buf);
     strcpy(buf, "apple");
     r = libmsi_record_save_stream(hrec, 2, buf, &size);
     ok(r == LIBMSI_RESULT_INVALID_DATA, "Expected ERROR_INVALID_DATA, got %d\n", r);
-    ok(!strcmp(buf, "apple"), "Expected buf to be unchanged, got %s\n", buf);
+    ok(g_str_equal(buf, "apple"), "Expected buf to be unchanged, got %s\n", buf);
     ok(size == 0, "Expected 0, got %d\n", size);
 
     g_object_unref(hrec);
@@ -6185,7 +5919,7 @@ static void test_storages_table(void)
     hr = IStream_Read(stm, buf, MAX_PATH, &size);
     ok(hr == S_OK, "Expected S_OK, got %d\n", hr);
     ok(size == 8, "Expected 8, got %d\n", size);
-    ok(!strcmp(buf, "stgdata"), "Expected \"stgdata\", got \"%s\"\n", buf);
+    ok(g_str_equal(buf, "stgdata"), "Expected \"stgdata\", got \"%s\"\n", buf);
 
     IStream_Release(stm);
     IStorage_Release(inner);
@@ -6225,10 +5959,7 @@ static void test_droptable(void)
     r = libmsi_query_fetch(hquery, &hrec);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
-    size = sizeof(buf);
-    r = libmsi_record_get_string(hrec, 1, buf, &size);
-    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
-    ok(!strcmp(buf, "One"), "Expected \"One\", got \"%s\"\n", buf);
+    check_record_string(hrec, 1, "One");
 
     g_object_unref(hrec);
     libmsi_query_close(hquery);
@@ -6243,19 +5974,12 @@ static void test_droptable(void)
     r = libmsi_query_fetch(hquery, &hrec);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
-    size = sizeof(buf);
-    r = libmsi_record_get_string(hrec, 1, buf, &size);
-    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
-    ok(!strcmp(buf, "One"), "Expected \"One\", got \"%s\"\n", buf);
+    check_record_string(hrec, 1, "One");
 
     r = libmsi_record_get_int(hrec, 2);
     ok(r == 1, "Expected 1, got %d\n", r);
 
-    size = sizeof(buf);
-    r = libmsi_record_get_string(hrec, 3, buf, &size);
-    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
-    ok(!strcmp(buf, "A"), "Expected \"A\", got \"%s\"\n", buf);
-
+    check_record_string(hrec, 3, "A");
     g_object_unref(hrec);
 
     r = libmsi_query_fetch(hquery, &hrec);
@@ -6337,10 +6061,7 @@ static void test_droptable(void)
     r = libmsi_query_fetch(hquery, &hrec);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
-    size = sizeof(buf);
-    r = libmsi_record_get_string(hrec, 1, buf, &size);
-    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
-    ok(!strcmp(buf, "One"), "Expected \"One\", got \"%s\"\n", buf);
+    check_record_string(hrec, 1, "One");
 
     g_object_unref(hrec);
     libmsi_query_close(hquery);
@@ -6355,37 +6076,23 @@ static void test_droptable(void)
     r = libmsi_query_fetch(hquery, &hrec);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
-    size = sizeof(buf);
-    r = libmsi_record_get_string(hrec, 1, buf, &size);
-    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
-    ok(!strcmp(buf, "One"), "Expected \"One\", got \"%s\"\n", buf);
+    check_record_string(hrec, 1, "One");
 
     r = libmsi_record_get_int(hrec, 2);
     ok(r == 1, "Expected 1, got %d\n", r);
 
-    size = sizeof(buf);
-    r = libmsi_record_get_string(hrec, 3, buf, &size);
-    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
-    ok(!strcmp(buf, "B"), "Expected \"B\", got \"%s\"\n", buf);
-
+    check_record_string(hrec, 3, "B");
     g_object_unref(hrec);
 
     r = libmsi_query_fetch(hquery, &hrec);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
-    size = sizeof(buf);
-    r = libmsi_record_get_string(hrec, 1, buf, &size);
-    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
-    ok(!strcmp(buf, "One"), "Expected \"One\", got \"%s\"\n", buf);
+    check_record_string(hrec, 1, "One");
 
     r = libmsi_record_get_int(hrec, 2);
     ok(r == 2, "Expected 2, got %d\n", r);
 
-    size = sizeof(buf);
-    r = libmsi_record_get_string(hrec, 3, buf, &size);
-    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
-    ok(!strcmp(buf, "C"), "Expected \"C\", got \"%s\"\n", buf);
-
+    check_record_string(hrec, 3, "C");
     g_object_unref(hrec);
 
     r = libmsi_query_fetch(hquery, &hrec);
@@ -6732,10 +6439,7 @@ static void test_dbmerge(void)
     r = do_query(hdb, sql, &hrec);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
-    size = sizeof(buf);
-    r = libmsi_record_get_string(hrec, 1, buf, &size);
-    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
-    ok(!strcmp(buf, "One"), "Expected \"One\", got \"%s\"\n", buf);
+    check_record_string(hrec, 1, "One");
 
     r = libmsi_record_get_int(hrec, 2);
     ok(r == 2, "Expected 2, got %d\n", r);
@@ -6749,32 +6453,16 @@ static void test_dbmerge(void)
     r = libmsi_query_get_column_info(hquery, LIBMSI_COL_INFO_NAMES, &hrec);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
-    size = sizeof(buf);
-    r = libmsi_record_get_string(hrec, 1, buf, &size);
-    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
-    ok(!strcmp(buf, "Table"), "Expected \"Table\", got \"%s\"\n", buf);
-
-    size = sizeof(buf);
-    r = libmsi_record_get_string(hrec, 2, buf, &size);
-    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
-    ok(!strcmp(buf, "NumRowMergeConflicts"),
-       "Expected \"NumRowMergeConflicts\", got \"%s\"\n", buf);
-
+    check_record_string(hrec, 1, "Table");
+    check_record_string(hrec, 2, "NumRowMergeConflicts");
     g_object_unref(hrec);
 
     hrec = NULL;
     r = libmsi_query_get_column_info(hquery, LIBMSI_COL_INFO_TYPES, &hrec);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
-    size = sizeof(buf);
-    r = libmsi_record_get_string(hrec, 1, buf, &size);
-    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
-    ok(!strcmp(buf, "s255"), "Expected \"s255\", got \"%s\"\n", buf);
-
-    size = sizeof(buf);
-    r = libmsi_record_get_string(hrec, 2, buf, &size);
-    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
-    ok(!strcmp(buf, "i2"), "Expected \"i2\", got \"%s\"\n", buf);
+    check_record_string(hrec, 1, "s255");
+    check_record_string(hrec, 2, "i2");
 
     g_object_unref(hrec);
     libmsi_query_close(hquery);
@@ -6811,11 +6499,7 @@ static void test_dbmerge(void)
     r = libmsi_record_get_int(hrec, 1);
     ok(r == 1, "Expected 1, got %d\n", r);
 
-    size = sizeof(buf);
-    r = libmsi_record_get_string(hrec, 2, buf, &size);
-    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
-    ok(!strcmp(buf, "hi"), "Expected \"hi\", got \"%s\"\n", buf);
-
+    check_record_string(hrec, 2, "hi");
     g_object_unref(hrec);
 
     /* nothing in MergeErrors */
@@ -6854,10 +6538,7 @@ static void test_dbmerge(void)
     r = do_query(hdb, sql, &hrec);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
-    size = sizeof(buf);
-    r = libmsi_record_get_string(hrec, 1, buf, &size);
-    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
-    ok(!strcmp(buf, "hi"), "Expected \"hi\", got \"%s\"\n", buf);
+    check_record_string(hrec, 1, "hi");
 
     r = libmsi_record_get_int(hrec, 2);
     ok(r == 1, "Expected 1, got %d\n", r);
@@ -6908,11 +6589,7 @@ static void test_dbmerge(void)
     r = libmsi_record_get_int(hrec, 1);
     ok(r == 1, "Expected 1, got %d\n", r);
 
-    size = sizeof(buf);
-    r = libmsi_record_get_string(hrec, 2, buf, &size);
-    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
-    ok(!strcmp(buf, "hi"), "Expected \"hi\", got \"%s\"\n", buf);
-
+    check_record_string(hrec, 2, "hi");
     g_object_unref(hrec);
 
     /* nothing in MergeErrors */
@@ -6962,7 +6639,7 @@ static void test_dbmerge(void)
     memset(buf, 0, sizeof(buf));
     r = libmsi_record_save_stream(hrec, 2, buf, &size);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
-    ok(!strcmp(buf, "binary.dat\n"),
+    ok(g_str_equal(buf, "binary.dat\n"),
        "Expected \"binary.dat\\n\", got \"%s\"\n", buf);
 
     g_object_unref(hrec);
@@ -7010,11 +6687,7 @@ static void test_dbmerge(void)
     r = libmsi_record_get_int(hrec, 1);
     ok(r == 1, "Expected 1, got %d\n", r);
 
-    size = sizeof(buf);
-    r = libmsi_record_get_string(hrec, 2, buf, &size);
-    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
-    ok(!strcmp(buf, "foo"), "Expected \"foo\", got \"%s\"\n", buf);
-
+    check_record_string(hrec, 2, "foo");
     g_object_unref(hrec);
 
     r = libmsi_query_fetch(hquery, &hrec);
@@ -7023,11 +6696,7 @@ static void test_dbmerge(void)
     r = libmsi_record_get_int(hrec, 1);
     ok(r == 2, "Expected 2, got %d\n", r);
 
-    size = sizeof(buf);
-    r = libmsi_record_get_string(hrec, 2, buf, &size);
-    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
-    ok(!strcmp(buf, "bar"), "Expected \"bar\", got \"%s\"\n", buf);
-
+    check_record_string(hrec, 2, "bar");
     g_object_unref(hrec);
 
     r = libmsi_query_fetch(hquery, &hrec);
@@ -7322,71 +6991,24 @@ static void test_columnorder(void)
 
     sz = sizeof(buf);
     strcpy(buf, "kiwi");
-    r = libmsi_record_get_string(rec, 1, buf, &sz);
-    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
-    ok(!strcmp("s255", buf), "Expected \"s255\", got \"%s\"\n", buf);
-
-    sz = sizeof(buf);
-    strcpy(buf, "kiwi");
-    r = libmsi_record_get_string(rec, 2, buf, &sz);
-    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
-    ok(!strcmp("I2", buf), "Expected \"I2\", got \"%s\"\n", buf);
-
-    sz = sizeof(buf);
-    strcpy(buf, "kiwi");
-    r = libmsi_record_get_string(rec, 3, buf, &sz);
-    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
-    ok(!strcmp("S255", buf), "Expected \"S255\", got \"%s\"\n", buf);
-
-    sz = sizeof(buf);
-    strcpy(buf, "kiwi");
-    r = libmsi_record_get_string(rec, 4, buf, &sz);
-    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
-    ok(!strcmp("i2", buf), "Expected \"i2\", got \"%s\"\n", buf);
-
-    sz = sizeof(buf);
-    strcpy(buf, "kiwi");
-    r = libmsi_record_get_string(rec, 5, buf, &sz);
-    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
-    ok(!strcmp("i2", buf), "Expected \"i2\", got \"%s\"\n", buf);
-
+    check_record_string(rec, 1, "s255");
+    check_record_string(rec, 2, "I2");
+    check_record_string(rec, 3, "S255");
+    check_record_string(rec, 4, "i2");
+    check_record_string(rec, 5, "i2");
     g_object_unref(rec);
 
     rec = NULL;
     r = libmsi_query_get_column_info(query, LIBMSI_COL_INFO_NAMES, &rec);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
-    sz = sizeof(buf);
-    strcpy(buf, "kiwi");
-    r = libmsi_record_get_string(rec, 1, buf, &sz);
-    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
-    ok(!strcmp("D", buf), "Expected \"D\", got \"%s\"\n", buf);
-
-    sz = sizeof(buf);
-    strcpy(buf, "kiwi");
-    r = libmsi_record_get_string(rec, 2, buf, &sz);
-    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
-    ok(!strcmp("E", buf), "Expected \"E\", got \"%s\"\n", buf);
-
-    sz = sizeof(buf);
-    strcpy(buf, "kiwi");
-    r = libmsi_record_get_string(rec, 3, buf, &sz);
-    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
-    ok(!strcmp("A", buf), "Expected \"A\", got \"%s\"\n", buf);
-
-    sz = sizeof(buf);
-    strcpy(buf, "kiwi");
-    r = libmsi_record_get_string(rec, 4, buf, &sz);
-    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
-    ok(!strcmp("C", buf), "Expected \"C\", got \"%s\"\n", buf);
-
-    sz = sizeof(buf);
-    strcpy(buf, "kiwi");
-    r = libmsi_record_get_string(rec, 5, buf, &sz);
-    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
-    ok(!strcmp("B", buf), "Expected \"B\", got \"%s\"\n", buf);
-
+    check_record_string(rec, 1, "D");
+    check_record_string(rec, 2, "E");
+    check_record_string(rec, 3, "A");
+    check_record_string(rec, 4, "C");
+    check_record_string(rec, 5, "B");
     g_object_unref(rec);
+
     libmsi_query_close(query);
     g_object_unref(query);
 
@@ -7399,20 +7021,12 @@ static void test_columnorder(void)
     r = do_query(hdb, sql, &rec);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
-    sz = sizeof(buf);
-    strcpy(buf, "kiwi");
-    r = libmsi_record_get_string(rec, 1, buf, &sz);
-    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
-    ok(!strcmp("bc", buf), "Expected \"bc\", got \"%s\"\n", buf);
+    check_record_string(rec, 1, "bc");
 
     r = libmsi_record_get_int(rec, 2);
     ok(r == 3, "Expected 3, got %d\n", r);
 
-    sz = sizeof(buf);
-    strcpy(buf, "kiwi");
-    r = libmsi_record_get_string(rec, 3, buf, &sz);
-    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
-    ok(!strcmp("a", buf), "Expected \"a\", got \"%s\"\n", buf);
+    check_record_string(rec, 3, "a");
 
     r = libmsi_record_get_int(rec, 4);
     ok(r == 2, "Expected 2, got %d\n", r);
@@ -7432,101 +7046,56 @@ static void test_columnorder(void)
     r = libmsi_query_fetch(query, &rec);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
-    sz = sizeof(buf);
-    strcpy(buf, "kiwi");
-    r = libmsi_record_get_string(rec, 1, buf, &sz);
-    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
-    ok(!strcmp("T", buf), "Expected \"T\", got \"%s\"\n", buf);
+    check_record_string(rec, 1, "T");
 
     r = libmsi_record_get_int(rec, 2);
     ok(r == 1, "Expected 1, got %d\n", r);
 
-    sz = sizeof(buf);
-    strcpy(buf, "kiwi");
-    r = libmsi_record_get_string(rec, 3, buf, &sz);
-    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
-    ok(!strcmp("D", buf), "Expected \"D\", got \"%s\"\n", buf);
-
+    check_record_string(rec, 3, "D");
     g_object_unref(rec);
 
     r = libmsi_query_fetch(query, &rec);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
-    sz = sizeof(buf);
-    strcpy(buf, "kiwi");
-    r = libmsi_record_get_string(rec, 1, buf, &sz);
-    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
-    ok(!strcmp("T", buf), "Expected \"T\", got \"%s\"\n", buf);
+    check_record_string(rec, 1, "T");
 
     r = libmsi_record_get_int(rec, 2);
     ok(r == 2, "Expected 2, got %d\n", r);
 
-    sz = sizeof(buf);
-    strcpy(buf, "kiwi");
-    r = libmsi_record_get_string(rec, 3, buf, &sz);
-    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
-    ok(!strcmp("E", buf), "Expected \"E\", got \"%s\"\n", buf);
-
+    check_record_string(rec, 3, "E");
     g_object_unref(rec);
 
     r = libmsi_query_fetch(query, &rec);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
-    sz = sizeof(buf);
-    strcpy(buf, "kiwi");
-    r = libmsi_record_get_string(rec, 1, buf, &sz);
-    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
-    ok(!strcmp("T", buf), "Expected \"T\", got \"%s\"\n", buf);
+    check_record_string(rec, 1, "T");
 
     r = libmsi_record_get_int(rec, 2);
     ok(r == 3, "Expected 3, got %d\n", r);
 
-    sz = sizeof(buf);
-    strcpy(buf, "kiwi");
-    r = libmsi_record_get_string(rec, 3, buf, &sz);
-    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
-    ok(!strcmp("A", buf), "Expected \"A\", got \"%s\"\n", buf);
-
+    check_record_string(rec, 3, "A");
     g_object_unref(rec);
 
     r = libmsi_query_fetch(query, &rec);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
-    sz = sizeof(buf);
-    strcpy(buf, "kiwi");
-    r = libmsi_record_get_string(rec, 1, buf, &sz);
-    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
-    ok(!strcmp("T", buf), "Expected \"T\", got \"%s\"\n", buf);
+    check_record_string(rec, 1, "T");
 
     r = libmsi_record_get_int(rec, 2);
     ok(r == 4, "Expected 4, got %d\n", r);
 
-    sz = sizeof(buf);
-    strcpy(buf, "kiwi");
-    r = libmsi_record_get_string(rec, 3, buf, &sz);
-    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
-    ok(!strcmp("C", buf), "Expected \"C\", got \"%s\"\n", buf);
-
+    check_record_string(rec, 3, "C");
     g_object_unref(rec);
 
     r = libmsi_query_fetch(query, &rec);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
-    sz = sizeof(buf);
-    strcpy(buf, "kiwi");
-    r = libmsi_record_get_string(rec, 1, buf, &sz);
-    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
-    ok(!strcmp("T", buf), "Expected \"T\", got \"%s\"\n", buf);
+    check_record_string(rec, 1, "T");
 
     r = libmsi_record_get_int(rec, 2);
     ok(r == 5, "Expected 5, got %d\n", r);
 
-    sz = sizeof(buf);
-    strcpy(buf, "kiwi");
-    r = libmsi_record_get_string(rec, 3, buf, &sz);
-    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
-    ok(!strcmp("B", buf), "Expected \"B\", got \"%s\"\n", buf);
-
+    check_record_string(rec, 3, "B");
     g_object_unref(rec);
 
     r = libmsi_query_fetch(query, &rec);
@@ -7550,71 +7119,22 @@ static void test_columnorder(void)
     r = libmsi_query_get_column_info(query, LIBMSI_COL_INFO_TYPES, &rec);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
-    sz = sizeof(buf);
-    strcpy(buf, "kiwi");
-    r = libmsi_record_get_string(rec, 1, buf, &sz);
-    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
-    ok(!strcmp("i2", buf), "Expected \"i2\", got \"%s\"\n", buf);
-
-    sz = sizeof(buf);
-    strcpy(buf, "kiwi");
-    r = libmsi_record_get_string(rec, 2, buf, &sz);
-    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
-    ok(!strcmp("S255", buf), "Expected \"S255\", got \"%s\"\n", buf);
-
-    sz = sizeof(buf);
-    strcpy(buf, "kiwi");
-    r = libmsi_record_get_string(rec, 3, buf, &sz);
-    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
-    ok(!strcmp("s255", buf), "Expected \"s255\", got \"%s\"\n", buf);
-
-    sz = sizeof(buf);
-    strcpy(buf, "kiwi");
-    r = libmsi_record_get_string(rec, 4, buf, &sz);
-    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
-    ok(!strcmp("I2", buf), "Expected \"I2\", got \"%s\"\n", buf);
-
-    sz = sizeof(buf);
-    strcpy(buf, "kiwi");
-    r = libmsi_record_get_string(rec, 5, buf, &sz);
-    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
-    ok(!strcmp("i2", buf), "Expected \"i2\", got \"%s\"\n", buf);
-
+    check_record_string(rec, 1, "i2");
+    check_record_string(rec, 2, "S255");
+    check_record_string(rec, 3, "s255");
+    check_record_string(rec, 4, "I2");
+    check_record_string(rec, 5, "i2");
     g_object_unref(rec);
 
     rec = NULL;
     r = libmsi_query_get_column_info(query, LIBMSI_COL_INFO_NAMES, &rec);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
-    sz = sizeof(buf);
-    strcpy(buf, "kiwi");
-    r = libmsi_record_get_string(rec, 1, buf, &sz);
-    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
-    ok(!strcmp("C", buf), "Expected \"C\", got \"%s\"\n", buf);
-
-    sz = sizeof(buf);
-    strcpy(buf, "kiwi");
-    r = libmsi_record_get_string(rec, 2, buf, &sz);
-    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
-    ok(!strcmp("A", buf), "Expected \"A\", got \"%s\"\n", buf);
-
-    sz = sizeof(buf);
-    strcpy(buf, "kiwi");
-    r = libmsi_record_get_string(rec, 3, buf, &sz);
-    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
-    ok(!strcmp("D", buf), "Expected \"D\", got \"%s\"\n", buf);
-
-    sz = sizeof(buf);
-    strcpy(buf, "kiwi");
-    r = libmsi_record_get_string(rec, 4, buf, &sz);
-    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
-    ok(!strcmp("E", buf), "Expected \"E\", got \"%s\"\n", buf);
-
-    sz = sizeof(buf);
-    strcpy(buf, "kiwi");
-    r = libmsi_record_get_string(rec, 5, buf, &sz);
-    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
-    ok(!strcmp("B", buf), "Expected \"B\", got \"%s\"\n", buf);
+    check_record_string(rec, 1, "C");
+    check_record_string(rec, 2, "A");
+    check_record_string(rec, 3, "D");
+    check_record_string(rec, 4, "E");
+    check_record_string(rec, 5, "B");
 
     g_object_unref(rec);
     libmsi_query_close(query);
@@ -7632,17 +7152,8 @@ static void test_columnorder(void)
     r = libmsi_record_get_int(rec, 1);
     ok(r == 2, "Expected 2, got %d\n", r);
 
-    sz = sizeof(buf);
-    strcpy(buf, "kiwi");
-    r = libmsi_record_get_string(rec, 2, buf, &sz);
-    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
-    ok(!strcmp("a", buf), "Expected \"a\", got \"%s\"\n", buf);
-
-    sz = sizeof(buf);
-    strcpy(buf, "kiwi");
-    r = libmsi_record_get_string(rec, 3, buf, &sz);
-    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
-    ok(!strcmp("bc", buf), "Expected \"bc\", got \"%s\"\n", buf);
+    check_record_string(rec, 2, "a");
+    check_record_string(rec, 3, "bc");
 
     r = libmsi_record_get_int(rec, 4);
     ok(r == 3, "Expected 3, got %d\n", r);
@@ -7662,101 +7173,56 @@ static void test_columnorder(void)
     r = libmsi_query_fetch(query, &rec);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
-    sz = sizeof(buf);
-    strcpy(buf, "kiwi");
-    r = libmsi_record_get_string(rec, 1, buf, &sz);
-    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
-    ok(!strcmp("T", buf), "Expected \"T\", got \"%s\"\n", buf);
+    check_record_string(rec, 1, "T");
 
     r = libmsi_record_get_int(rec, 2);
     ok(r == 1, "Expected 1, got %d\n", r);
 
-    sz = sizeof(buf);
-    strcpy(buf, "kiwi");
-    r = libmsi_record_get_string(rec, 3, buf, &sz);
-    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
-    ok(!strcmp("D", buf), "Expected \"D\", got \"%s\"\n", buf);
-
+    check_record_string(rec, 3, "D");
     g_object_unref(rec);
 
     r = libmsi_query_fetch(query, &rec);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
-    sz = sizeof(buf);
-    strcpy(buf, "kiwi");
-    r = libmsi_record_get_string(rec, 1, buf, &sz);
-    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
-    ok(!strcmp("T", buf), "Expected \"T\", got \"%s\"\n", buf);
+    check_record_string(rec, 1, "T");
 
     r = libmsi_record_get_int(rec, 2);
     ok(r == 2, "Expected 2, got %d\n", r);
 
-    sz = sizeof(buf);
-    strcpy(buf, "kiwi");
-    r = libmsi_record_get_string(rec, 3, buf, &sz);
-    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
-    ok(!strcmp("E", buf), "Expected \"E\", got \"%s\"\n", buf);
-
+    check_record_string(rec, 3, "E");
     g_object_unref(rec);
 
     r = libmsi_query_fetch(query, &rec);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
-    sz = sizeof(buf);
-    strcpy(buf, "kiwi");
-    r = libmsi_record_get_string(rec, 1, buf, &sz);
-    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
-    ok(!strcmp("T", buf), "Expected \"T\", got \"%s\"\n", buf);
+    check_record_string(rec, 1, "T");
 
     r = libmsi_record_get_int(rec, 2);
     ok(r == 3, "Expected 3, got %d\n", r);
 
-    sz = sizeof(buf);
-    strcpy(buf, "kiwi");
-    r = libmsi_record_get_string(rec, 3, buf, &sz);
-    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
-    ok(!strcmp("A", buf), "Expected \"A\", got \"%s\"\n", buf);
-
+    check_record_string(rec, 3, "A");
     g_object_unref(rec);
 
     r = libmsi_query_fetch(query, &rec);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
-    sz = sizeof(buf);
-    strcpy(buf, "kiwi");
-    r = libmsi_record_get_string(rec, 1, buf, &sz);
-    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
-    ok(!strcmp("T", buf), "Expected \"T\", got \"%s\"\n", buf);
+    check_record_string(rec, 1, "T");
 
     r = libmsi_record_get_int(rec, 2);
     ok(r == 4, "Expected 4, got %d\n", r);
 
-    sz = sizeof(buf);
-    strcpy(buf, "kiwi");
-    r = libmsi_record_get_string(rec, 3, buf, &sz);
-    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
-    ok(!strcmp("C", buf), "Expected \"C\", got \"%s\"\n", buf);
-
+    check_record_string(rec, 3, "C");
     g_object_unref(rec);
 
     r = libmsi_query_fetch(query, &rec);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
-    sz = sizeof(buf);
-    strcpy(buf, "kiwi");
-    r = libmsi_record_get_string(rec, 1, buf, &sz);
-    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
-    ok(!strcmp("T", buf), "Expected \"T\", got \"%s\"\n", buf);
+    check_record_string(rec, 1, "T");
 
     r = libmsi_record_get_int(rec, 2);
     ok(r == 5, "Expected 5, got %d\n", r);
 
-    sz = sizeof(buf);
-    strcpy(buf, "kiwi");
-    r = libmsi_record_get_string(rec, 3, buf, &sz);
-    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
-    ok(!strcmp("B", buf), "Expected \"B\", got \"%s\"\n", buf);
-
+    check_record_string(rec, 3, "B");
     g_object_unref(rec);
 
     r = libmsi_query_fetch(query, &rec);
@@ -7778,6 +7244,7 @@ static void test_createtable(void)
     unsigned res;
     unsigned size;
     char buffer[0x20];
+    gchar *str;
 
     hdb = create_db();
     ok(hdb, "failed to create db\n");
@@ -7794,9 +7261,9 @@ static void test_createtable(void)
         res = libmsi_query_get_column_info( htab, LIBMSI_COL_INFO_NAMES, &hrec );
         todo_wine ok(res == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", res);
 
-        size = sizeof(buffer);
-        res = libmsi_record_get_string(hrec, 1, buffer, &size );
-        todo_wine ok(res == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", res);
+        str = libmsi_record_get_string(hrec, 1);
+        todo_wine ok(str, "Expected string\n");
+        g_free(str);
         g_object_unref( hrec );
 
         res = libmsi_query_close( htab );
@@ -7826,11 +7293,7 @@ static void test_createtable(void)
         res = libmsi_query_get_column_info( htab, LIBMSI_COL_INFO_NAMES, &hrec );
         ok(res == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", res);
 
-        buffer[0] = 0;
-        size = sizeof(buffer);
-        res = libmsi_record_get_string(hrec, 1, buffer, &size );
-        ok(res == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", res);
-        ok(!strcmp(buffer,"b"), "b != %s\n", buffer);
+        check_record_string(hrec, 1, "b");
         g_object_unref( hrec );
 
         res = libmsi_query_close( htab );
@@ -7854,12 +7317,7 @@ static void test_createtable(void)
         res = libmsi_query_get_column_info( htab, LIBMSI_COL_INFO_NAMES, &hrec );
         ok(res == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", res);
 
-        buffer[0] = 0;
-        size = sizeof(buffer);
-        res = libmsi_record_get_string(hrec, 1, buffer, &size );
-        ok(res == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", res);
-        ok(!strcmp(buffer,"b"), "b != %s\n", buffer);
-
+        check_record_string(hrec, 1, "b");
         g_object_unref( hrec );
 
         res = libmsi_query_close( htab );
@@ -7887,6 +7345,7 @@ static void test_embedded_nulls(void)
     LibmsiDatabase *hdb;
     LibmsiRecord *hrec;
     char buffer[32];
+    gchar *str;
 
     r = libmsi_database_open( msifile, LIBMSI_DB_OPEN_CREATE, &hdb );
     ok( r == LIBMSI_RESULT_SUCCESS, "failed to open database %u\n", r );
@@ -7899,11 +7358,10 @@ static void test_embedded_nulls(void)
     r = do_query( hdb, "SELECT `Text` FROM `Control` WHERE `Dialog` = 'LicenseAgreementDlg'", &hrec );
     ok( r == LIBMSI_RESULT_SUCCESS, "query failed %u\n", r );
 
-    buffer[0] = 0;
-    sz = sizeof(buffer);
-    r = libmsi_record_get_string( hrec, 1, buffer, &sz );
-    ok( r == LIBMSI_RESULT_SUCCESS, "failed to get string %u\n", r );
-    ok( !memcmp( "text\r\ntext\ntext", buffer, sizeof("text\r\ntext\ntext") - 1 ), "wrong buffer contents \"%s\"\n", buffer );
+    str = libmsi_record_get_string( hrec, 1);
+    ok(str, "failed to get string\n" );
+    ok( !memcmp( "text\r\ntext\ntext", str, sizeof("text\r\ntext\ntext") - 1 ), "wrong buffer contents \"%s\"\n", str );
+    g_free(str);
 
     g_object_unref( hrec );
     g_object_unref( hdb );
@@ -7977,11 +7435,8 @@ static void test_select_column_names(void)
     ok( r == LIBMSI_RESULT_SUCCESS, "unexpected result: %u\n", r );
     r = libmsi_record_get_field_count( rec2 );
     ok( r == 1, "got %u\n",  r );
-    size = sizeof(buffer);
-    memset( buffer, 0x55, sizeof(buffer) );
-    r = libmsi_record_get_string( rec2, 1, buffer, &size );
-    ok( r == LIBMSI_RESULT_SUCCESS, "unexpected result: %u\n", r );
-    ok( !buffer[0], "got \"%s\"\n", buffer );
+
+    check_record_string(rec2, 1, "");
     g_object_unref( rec2 );
 
     rec2 = NULL;
@@ -7989,27 +7444,16 @@ static void test_select_column_names(void)
     ok( r == LIBMSI_RESULT_SUCCESS, "unexpected result: %u\n", r );
     r = libmsi_record_get_field_count( rec2 );
     ok( r == 1, "got %u\n",  r );
-    size = sizeof(buffer);
-    memset( buffer, 0x55, sizeof(buffer) );
-    r = libmsi_record_get_string( rec2, 1, buffer, &size );
-    ok( r == LIBMSI_RESULT_SUCCESS, "unexpected result: %u\n", r );
-    ok( !strcmp( buffer, "f0" ), "got \"%s\"\n", buffer );
+
+    check_record_string( rec2, 1, "f0");
     g_object_unref( rec2 );
 
-    size = sizeof(buffer);
-    memset( buffer, 0x55, sizeof(buffer) );
-    r = libmsi_record_get_string( rec, 1, buffer, &size );
-    ok( r == LIBMSI_RESULT_SUCCESS, "unexpected result: %u\n", r );
-    ok( !buffer[0], "got \"%s\"\n", buffer );
+    check_record_string( rec, 1, "");
     g_object_unref( rec );
 
     r = libmsi_query_fetch( query, &rec );
     ok( r == LIBMSI_RESULT_SUCCESS, "unexpected result: %u\n", r );
-    size = sizeof(buffer);
-    memset( buffer, 0x55, sizeof(buffer) );
-    r = libmsi_record_get_string( rec, 1, buffer, &size );
-    ok( r == LIBMSI_RESULT_SUCCESS, "unexpected result: %u\n", r );
-    ok( !buffer[0], "got \"%s\"\n", buffer );
+    check_record_string(rec, 1, "");
     g_object_unref( rec );
 
     r = libmsi_query_fetch( query, &rec );
@@ -8030,20 +7474,12 @@ static void test_select_column_names(void)
     ok( r == LIBMSI_RESULT_SUCCESS, "unexpected result: %u\n", r );
     r = libmsi_record_get_field_count( rec );
     ok( r == 2, "got %u\n",  r );
-    size = sizeof(buffer);
-    memset( buffer, 0x55, sizeof(buffer) );
-    r = libmsi_record_get_string( rec, 1, buffer, &size );
-    ok( r == LIBMSI_RESULT_SUCCESS, "unexpected result: %u\n", r );
-    ok( !strcmp( buffer, "1" ), "got \"%s\"\n", buffer );
+    check_record_string(rec, 1, "1");
     g_object_unref( rec );
 
     r = libmsi_query_fetch( query, &rec );
     ok( r == LIBMSI_RESULT_SUCCESS, "unexpected result: %u\n", r );
-    size = sizeof(buffer);
-    memset( buffer, 0x55, sizeof(buffer) );
-    r = libmsi_record_get_string( rec, 2, buffer, &size );
-    ok( r == LIBMSI_RESULT_SUCCESS, "unexpected result: %u\n", r );
-    ok( !buffer[0], "got \"%s\"\n", buffer );
+    check_record_string( rec, 2, "");
     g_object_unref( rec );
 
     r = libmsi_query_fetch( query, &rec );
@@ -8064,30 +7500,14 @@ static void test_select_column_names(void)
     ok( r == LIBMSI_RESULT_SUCCESS, "unexpected result: %u\n", r );
     r = libmsi_record_get_field_count( rec );
     ok( r == 2, "got %u\n",  r );
-    size = sizeof(buffer);
-    memset( buffer, 0x55, sizeof(buffer) );
-    r = libmsi_record_get_string( rec, 1, buffer, &size );
-    ok( r == LIBMSI_RESULT_SUCCESS, "unexpected result: %u\n", r );
-    ok( !buffer[0], "got \"%s\"\n", buffer );
-    size = sizeof(buffer);
-    memset( buffer, 0x55, sizeof(buffer) );
-    r = libmsi_record_get_string( rec, 2, buffer, &size );
-    ok( r == LIBMSI_RESULT_SUCCESS, "unexpected result: %u\n", r );
-    ok( !strcmp( buffer, "1" ), "got \"%s\"\n", buffer );
+    check_record_string( rec, 1, "");
+    check_record_string( rec, 2, "1");
     g_object_unref( rec );
 
     r = libmsi_query_fetch( query, &rec );
     ok( r == LIBMSI_RESULT_SUCCESS, "unexpected result: %u\n", r );
-    size = sizeof(buffer);
-    memset( buffer, 0x55, sizeof(buffer) );
-    r = libmsi_record_get_string( rec, 1, buffer, &size );
-    ok( r == LIBMSI_RESULT_SUCCESS, "unexpected result: %u\n", r );
-    ok( !buffer[0], "got \"%s\"\n", buffer );
-    size = sizeof(buffer);
-    memset( buffer, 0x55, sizeof(buffer) );
-    r = libmsi_record_get_string( rec, 2, buffer, &size );
-    ok( r == LIBMSI_RESULT_SUCCESS, "unexpected result: %u\n", r );
-    ok( !strcmp( buffer, "3" ), "got \"%s\"\n", buffer );
+    check_record_string( rec, 1, "");
+    check_record_string(rec, 2, "3");
     g_object_unref( rec );
 
     r = libmsi_query_fetch( query, &rec );
@@ -8108,40 +7528,16 @@ static void test_select_column_names(void)
     ok( r == LIBMSI_RESULT_SUCCESS, "unexpected result: %u\n", r );
     r = libmsi_record_get_field_count( rec );
     ok( r == 3, "got %u\n",  r );
-    size = sizeof(buffer);
-    memset( buffer, 0x55, sizeof(buffer) );
-    r = libmsi_record_get_string( rec, 1, buffer, &size );
-    ok( r == LIBMSI_RESULT_SUCCESS, "unexpected result: %u\n", r );
-    ok( !strcmp( buffer, "1" ), "got \"%s\"\n", buffer );
-    size = sizeof(buffer);
-    memset( buffer, 0x55, sizeof(buffer) );
-    r = libmsi_record_get_string( rec, 2, buffer, &size );
-    ok( r == LIBMSI_RESULT_SUCCESS, "unexpected result: %u\n", r );
-    ok( !buffer[0], "got \"%s\"\n", buffer );
-    size = sizeof(buffer);
-    memset( buffer, 0x55, sizeof(buffer) );
-    r = libmsi_record_get_string( rec, 3, buffer, &size );
-    ok( r == LIBMSI_RESULT_SUCCESS, "unexpected result: %u\n", r );
-    ok( !strcmp( buffer, "2" ), "got \"%s\"\n", buffer );
+    check_record_string(rec, 1, "1");
+    check_record_string(rec, 2, "");
+    check_record_string(rec, 3, "2");
     g_object_unref( rec );
 
     r = libmsi_query_fetch( query, &rec );
     ok( r == LIBMSI_RESULT_SUCCESS, "unexpected result: %u\n", r );
-    size = sizeof(buffer);
-    memset( buffer, 0x55, sizeof(buffer) );
-    r = libmsi_record_get_string( rec, 1, buffer, &size );
-    ok( r == LIBMSI_RESULT_SUCCESS, "unexpected result: %u\n", r );
-    ok( !strcmp( buffer, "3" ), "got \"%s\"\n", buffer );
-    size = sizeof(buffer);
-    memset( buffer, 0x55, sizeof(buffer) );
-    r = libmsi_record_get_string( rec, 2, buffer, &size );
-    ok( r == LIBMSI_RESULT_SUCCESS, "unexpected result: %u\n", r );
-    ok( !buffer[0], "got \"%s\"\n", buffer );
-    size = sizeof(buffer);
-    memset( buffer, 0x55, sizeof(buffer) );
-    r = libmsi_record_get_string( rec, 3, buffer, &size );
-    ok( r == LIBMSI_RESULT_SUCCESS, "unexpected result: %u\n", r );
-    ok( !strcmp( buffer, "4" ), "got \"%s\"\n", buffer );
+    check_record_string(rec, 1, "3");
+    check_record_string(rec, 2, "");
+    check_record_string(rec, 3, "4");
     g_object_unref( rec );
 
     r = libmsi_query_fetch( query, &rec );

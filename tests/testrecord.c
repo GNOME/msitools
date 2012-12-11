@@ -83,13 +83,7 @@ static void test_msirecord (void)
     ok (r, "out of range record wasn't null\n");
     r = libmsi_record_is_null (h, -1);
     ok (r, "out of range record wasn't null\n");
-    sz = sizeof buf;
-    strcpy (buf, "x");
-    r = libmsi_record_get_string (h, 0, buf, &sz);
-    ok (r == LIBMSI_RESULT_SUCCESS, "failed to get null string\n");
-    ok (sz == 0, "null string too long\n");
-    ok (buf[0] == 0, "null string not set\n");
-
+    check_record_string (h, 0, "");
     /* same record, but add an integer to it */
     r = libmsi_record_set_int (h, 0, 0);
     ok (r == LIBMSI_RESULT_SUCCESS, "Failed to set integer at 0 to 0\n");
@@ -111,63 +105,19 @@ static void test_msirecord (void)
     ok (r == LIBMSI_RESULT_SUCCESS, "Failed to set null string at 0\n");
     r = libmsi_record_is_null (h, 0);
     ok (r == true, "null string not null field\n");
-    buf[0] = 0;
-    sz = sizeof buf;
-    r = libmsi_record_get_string (h, 0, buf, &sz);
-    ok (r == LIBMSI_RESULT_SUCCESS, "Failed to get string at 0\n");
-    ok (buf[0] == 0, "libmsi_record_get_string returned the wrong string\n");
-    ok (sz == 0, "libmsi_record_get_string returned the wrong length\n");
+    check_record_string (h, 0, "");
     r = libmsi_record_set_string (h, 0, "");
     ok (r == LIBMSI_RESULT_SUCCESS, "Failed to set empty string at 0\n");
     r = libmsi_record_is_null (h, 0);
     ok (r == true, "null string not null field\n");
-    buf[0] = 0;
-    sz = sizeof buf;
-    r = libmsi_record_get_string (h, 0, buf, &sz);
-    ok (r == LIBMSI_RESULT_SUCCESS, "Failed to get string at 0\n");
-    ok (buf[0] == 0, "libmsi_record_get_string returned the wrong string\n");
-    ok (sz == 0, "libmsi_record_get_string returned the wrong length\n");
+    check_record_string (h, 0, "");
 
     /* same record, but add a string to it */
     r = libmsi_record_set_string (h, 0, str);
     ok (r == LIBMSI_RESULT_SUCCESS, "Failed to set string at 0\n");
     r = libmsi_record_get_int (h, 0);
     ok (r == LIBMSI_NULL_INT, "should get invalid integer\n");
-    buf[0]=0;
-    sz = sizeof buf;
-    r = libmsi_record_get_string (h, 0, buf, &sz);
-    ok (r == LIBMSI_RESULT_SUCCESS, "Failed to get string at 0\n");
-    ok (0 == strcmp (buf, str), "libmsi_record_get_string returned the wrong string\n");
-    ok (sz == sizeof str-1, "libmsi_record_get_string returned the wrong length\n");
-    buf[0]=0;
-    sz = sizeof str - 2;
-    r = libmsi_record_get_string (h, 0, buf, &sz);
-    ok (r == LIBMSI_RESULT_MORE_DATA, "small buffer should yield LIBMSI_RESULT_MORE_DATA\n");
-    ok (sz == sizeof str-1, "libmsi_record_get_string returned the wrong length\n");
-    ok (0 == strncmp (buf, str, sizeof str-3), "libmsi_record_get_string returned the wrong string\n");
-    ok (buf[sizeof str - 3] == 0, "string wasn't nul terminated\n");
-
-    buf[0]=0;
-    sz = sizeof str;
-    r = libmsi_record_get_string (h, 0, buf, &sz);
-    ok (r == LIBMSI_RESULT_SUCCESS, "wrong error\n");
-    ok (sz == sizeof str-1, "libmsi_record_get_string returned the wrong length\n");
-    ok (0 == strcmp (buf, str), "libmsi_record_get_string returned the wrong string\n");
-
-
-    memset (buf, 0, sizeof buf);
-    sz = 5;
-    r = libmsi_record_get_string (h, 0, buf, &sz);
-    ok (r == LIBMSI_RESULT_MORE_DATA, "wrong error\n");
-    ok (sz == 5, "libmsi_record_get_string returned the wrong length\n");
-    ok (0 == memcmp (buf, str, 4), "libmsi_record_get_string returned the wrong string\n");
-
-    sz = 0;
-    buf[0] = 'x';
-    r = libmsi_record_get_string (h, 0, buf, &sz);
-    ok (r == LIBMSI_RESULT_MORE_DATA, "wrong error\n");
-    ok (sz == 5, "libmsi_record_get_string returned the wrong length\n");
-    ok ('x' == buf[0], "libmsi_record_get_string returned the wrong string\n");
+    check_record_string (h, 0, str);
 
     /* same record, check we can wipe all the data */
     r = libmsi_record_clear (h);
@@ -234,27 +184,10 @@ static void test_msirecord (void)
     /* same record, try converting integers to strings */
     r = libmsi_record_set_int (h, 0, 32);
     ok (r == LIBMSI_RESULT_SUCCESS, "Failed to set integer at 0 to 32\n");
-    sz = 1;
-    r = libmsi_record_get_string (h, 0, NULL, &sz);
-    ok (r == LIBMSI_RESULT_SUCCESS, "failed to get string from integer\n");
-    ok (sz == 2, "length wrong\n");
-    buf[0]=0;
-    sz = sizeof buf;
-    r = libmsi_record_get_string (h, 0, buf, &sz);
-    ok (r == LIBMSI_RESULT_SUCCESS, "failed to get string from integer\n");
-    ok (0 == strcmp (buf, "32"), "failed to get string from integer\n");
+    check_record_string (h, 0, "32");
     r = libmsi_record_set_int (h, 0, -32);
     ok (r == LIBMSI_RESULT_SUCCESS, "Failed to set integer at 0 to 32\n");
-    buf[0]=0;
-    sz = 1;
-    r = libmsi_record_get_string (h, 0, NULL, &sz);
-    ok (r == LIBMSI_RESULT_SUCCESS, "failed to get string from integer\n");
-    ok (sz == 3, "length wrong\n");
-    sz = sizeof buf;
-    r = libmsi_record_get_string (h, 0, buf, &sz);
-    ok (r == LIBMSI_RESULT_SUCCESS, "failed to get string from integer\n");
-    ok (0 == strcmp (buf, "-32"), "failed to get string from integer\n");
-    buf[0]=0;
+    check_record_string (h, 0, "-32");
 
     /* same record, now try streams */
     r = libmsi_record_load_stream (h, 0, NULL);
@@ -333,26 +266,7 @@ static void test_MsiRecordGetString (void)
 
     rec = libmsi_record_new (2);
     ok (rec != 0, "Expected a valid handle\n");
-
-    sz = sizeof (buf);
-    r = libmsi_record_get_string (rec, 1, NULL, &sz);
-    ok (r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
-    ok (sz == 0, "Expected 0, got %d\n", sz);
-
-    sz = sizeof (buf);
-    strcpy (buf, "apple");
-    r = libmsi_record_get_string (rec, 1, buf, &sz);
-    ok (r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
-    ok (!strcmp (buf, ""), "Expected \"\", got \"%s\"\n", buf);
-    ok (sz == 0, "Expected 0, got %d\n", sz);
-
-    sz = sizeof (buf);
-    strcpy (buf, "apple");
-    r = libmsi_record_get_string (rec, 10, buf, &sz);
-    ok (r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
-    ok (!strcmp (buf, ""), "Expected \"\", got \"%s\"\n", buf);
-    ok (sz == 0, "Expected 0, got %d\n", sz);
-
+    check_record_string(rec, 1, "");
     g_object_unref (rec);
 
     rec = libmsi_record_new (1);
@@ -360,28 +274,11 @@ static void test_MsiRecordGetString (void)
 
     r = libmsi_record_set_int (rec, 1, 5);
     ok (r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
-
-    sz = sizeof (buf);
-    r = libmsi_record_get_string (rec, 1, NULL, &sz);
-    ok (r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
-    ok (sz == 1, "Expected 1, got %d\n", sz);
-
-    sz = sizeof (buf);
-    strcpy (buf, "apple");
-    r = libmsi_record_get_string (rec, 1, buf, &sz);
-    ok (r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
-    ok (!strcmp (buf, "5"), "Expected \"5\", got \"%s\"\n", buf);
-    ok (sz == 1, "Expectd 1, got %d\n", sz);
+    check_record_string (rec, 1, "5");
 
     r = libmsi_record_set_int (rec, 1, -5);
     ok (r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
-
-    sz = sizeof (buf);
-    strcpy (buf, "apple");
-    r = libmsi_record_get_string (rec, 1, buf, &sz);
-    ok (r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
-    ok (!strcmp (buf, "-5"), "Expected \"-5\", got \"%s\"\n", buf);
-    ok (sz == 2, "Expectd 2, got %d\n", sz);
+    check_record_string (rec, 1, "-5");
 
     g_object_unref (rec);
 }
@@ -432,12 +329,7 @@ static void test_fieldzero (void)
     r = libmsi_record_get_int (rec, 0);
     ok (r == LIBMSI_NULL_INT, "Expected LIBMSI_NULL_INT, got %d\n", r);
 
-    sz = sizeof (buf);
-    strcpy (buf, "apple");
-    r = libmsi_record_get_string (rec, 0, buf, &sz);
-    ok (r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
-    ok (!strcmp (buf, ""), "Expected \"\", got \"%s\"\n", buf);
-    ok (sz == 0, "Expectd 0, got %d\n", sz);
+    check_record_string (rec, 0, "");
 
     r = libmsi_record_is_null (rec, 0);
     ok (r == true, "Expected true, got %d\n", r);
@@ -451,12 +343,7 @@ static void test_fieldzero (void)
     r = libmsi_record_get_int (rec, 0);
     ok (r == LIBMSI_NULL_INT, "Expected LIBMSI_NULL_INT, got %d\n", r);
 
-    sz = sizeof (buf);
-    strcpy (buf, "apple");
-    r = libmsi_record_get_string (rec, 0, buf, &sz);
-    ok (r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
-    ok (!strcmp (buf, ""), "Expected \"\", got \"%s\"\n", buf);
-    ok (sz == 0, "Expectd 0, got %d\n", sz);
+    check_record_string (rec, 0, "");
 
     r = libmsi_record_is_null (rec, 0);
     ok (r == true, "Expected true, got %d\n", r);
@@ -470,22 +357,12 @@ static void test_fieldzero (void)
     r = libmsi_record_get_int (rec, 0);
     ok (r == LIBMSI_NULL_INT, "Expected LIBMSI_NULL_INT, got %d\n", r);
 
-    sz = sizeof (buf);
-    strcpy (buf, "apple");
-    r = libmsi_record_get_string (rec, 0, buf, &sz);
-    ok (r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
-    ok (!strcmp (buf, ""), "Expected \"\", got \"%s\"\n", buf);
-    ok (sz == 0, "Expectd 0, got %d\n", sz);
+    check_record_string (rec, 0, "");
 
     r = libmsi_record_is_null (rec, 0);
     ok (r == true, "Expected true, got %d\n", r);
 
-    sz = sizeof (buf);
-    strcpy (buf, "apple");
-    r = libmsi_record_get_string (rec, 1, buf, &sz);
-    ok (r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
-    ok (!strcmp (buf, "bologna"), "Expected \"bologna\", got \"%s\"\n", buf);
-    ok (sz == 7, "Expectd 7, got %d\n", sz);
+    check_record_string (rec, 1, "bologna");
 
     g_object_unref (rec);
 
@@ -520,12 +397,7 @@ static void test_fieldzero (void)
     r = libmsi_record_get_int (rec, 0);
     ok (r == LIBMSI_NULL_INT, "Expected LIBMSI_NULL_INT, got %d\n", r);
 
-    sz = sizeof (buf);
-    strcpy (buf, "apple");
-    r = libmsi_record_get_string (rec, 0, buf, &sz);
-    ok (r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
-    ok (!strcmp (buf, "drone"), "Expected \"drone\", got \"%s\"\n", buf);
-    ok (sz == 5, "Expectd 5, got %d\n", sz);
+    check_record_string (rec, 0, "drone");
 
     r = libmsi_record_is_null (rec, 0);
     ok (r == false, "Expected false, got %d\n", r);

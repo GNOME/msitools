@@ -305,60 +305,25 @@ gboolean libmsi_record_is_null( const LibmsiRecord *rec, unsigned iField )
     return r;
 }
 
-LibmsiResult libmsi_record_get_string(const LibmsiRecord *rec, unsigned iField,
-               char *szValue, unsigned *pcchValue)
+gchar* libmsi_record_get_string(const LibmsiRecord *self, unsigned field)
 {
-    unsigned len=0, ret;
-    char buffer[16];
+    g_return_val_if_fail (LIBMSI_IS_RECORD (self), NULL);
 
-    TRACE("%p %d %p %p\n", rec, iField, szValue, pcchValue);
+    TRACE ("%p %d\n", self, field);
 
-    if( !rec )
-        return LIBMSI_RESULT_INVALID_HANDLE;
+    if (field > self->count)
+        return g_strdup (""); // FIXME: really?
 
-    if( iField > rec->count )
-    {
-        if ( szValue && *pcchValue > 0 )
-            szValue[0] = 0;
-
-        *pcchValue = 0;
-        return LIBMSI_RESULT_SUCCESS;
-    }
-
-    ret = LIBMSI_RESULT_SUCCESS;
-    switch( rec->fields[iField].type )
-    {
+    switch (self->fields[field].type) {
     case LIBMSI_FIELD_TYPE_INT:
-        wsprintfA(buffer, "%d", rec->fields[iField].u.iVal);
-        len = strlen( buffer );
-        if (szValue)
-            strcpynA(szValue, buffer, *pcchValue);
-        break;
+        return g_strdup_printf ("%d", self->fields[field].u.iVal);
     case LIBMSI_FIELD_TYPE_WSTR:
-        len = WideCharToMultiByte( CP_ACP, 0, rec->fields[iField].u.szwVal, -1,
-                             NULL, 0 , NULL, NULL);
-        if (szValue)
-            WideCharToMultiByte( CP_ACP, 0, rec->fields[iField].u.szwVal, -1,
-                                 szValue, *pcchValue, NULL, NULL);
-        if( szValue && *pcchValue && len>*pcchValue )
-            szValue[*pcchValue-1] = 0;
-        if( len )
-            len--;
-        break;
+        return strdupWtoA (self->fields[field].u.szwVal);
     case LIBMSI_FIELD_TYPE_NULL:
-        if( szValue && *pcchValue > 0 )
-            szValue[0] = 0;
-        break;
-    default:
-        ret = LIBMSI_RESULT_INVALID_PARAMETER;
-        break;
+        return g_strdup ("");
     }
 
-    if( szValue && *pcchValue <= len )
-        ret = LIBMSI_RESULT_MORE_DATA;
-    *pcchValue = len;
-
-    return ret;
+    return NULL;
 }
 
 const WCHAR *_libmsi_record_get_string_raw( const LibmsiRecord *rec, unsigned iField )
