@@ -67,10 +67,14 @@ _libmsi_free_field (LibmsiField *field )
     case LIBMSI_FIELD_TYPE_INT:
         break;
     case LIBMSI_FIELD_TYPE_WSTR:
-        msi_free( field->u.szwVal);
+        g_free (field->u.szwVal);
+        field->u.szwVal = NULL;
         break;
     case LIBMSI_FIELD_TYPE_STREAM:
-        IStream_Release( field->u.stream );
+        if (field->u.stream) {
+            IStream_Release( field->u.stream );
+            field->u.stream = NULL;
+        }
         break;
     default:
         ERR ("Invalid field type %d\n", field->type);
