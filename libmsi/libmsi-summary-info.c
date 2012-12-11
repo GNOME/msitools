@@ -155,29 +155,29 @@ static unsigned get_type( unsigned uiProperty )
 {
     switch( uiProperty )
     {
-    case MSI_PID_CODEPAGE:
+    case LIBMSI_PROPERTY_CODEPAGE:
          return OLEVT_I2;
 
-    case MSI_PID_SUBJECT:
-    case MSI_PID_AUTHOR:
-    case MSI_PID_KEYWORDS:
-    case MSI_PID_COMMENTS:
-    case MSI_PID_TEMPLATE:
-    case MSI_PID_LASTAUTHOR:
-    case MSI_PID_REVNUMBER:
-    case MSI_PID_APPNAME:
-    case MSI_PID_TITLE:
+    case LIBMSI_PROPERTY_SUBJECT:
+    case LIBMSI_PROPERTY_AUTHOR:
+    case LIBMSI_PROPERTY_KEYWORDS:
+    case LIBMSI_PROPERTY_COMMENTS:
+    case LIBMSI_PROPERTY_TEMPLATE:
+    case LIBMSI_PROPERTY_LASTAUTHOR:
+    case LIBMSI_PROPERTY_UUID:
+    case LIBMSI_PROPERTY_APPNAME:
+    case LIBMSI_PROPERTY_TITLE:
          return OLEVT_LPSTR;
 
-    case MSI_PID_LASTPRINTED:
-    case MSI_PID_CREATE_DTM:
-    case MSI_PID_LASTSAVE_DTM:
+    case LIBMSI_PROPERTY_LASTPRINTED:
+    case LIBMSI_PROPERTY_CREATED_TM:
+    case LIBMSI_PROPERTY_LASTSAVED_TM:
          return OLEVT_FILETIME;
 
-    case MSI_PID_WORDCOUNT:
-    case MSI_PID_CHARCOUNT:
-    case MSI_PID_SECURITY:
-    case MSI_PID_PAGECOUNT:
+    case LIBMSI_PROPERTY_SOURCE:
+    case LIBMSI_PROPERTY_RESTRICT:
+    case LIBMSI_PROPERTY_SECURITY:
+    case LIBMSI_PROPERTY_VERSION:
          return OLEVT_I4;
     }
     return OLEVT_EMPTY;
@@ -760,29 +760,29 @@ static unsigned parse_prop( const char *prop, const char *value, unsigned *pid, 
     *pid = atoi( prop );
     switch (*pid)
     {
-    case MSI_PID_CODEPAGE:
-    case MSI_PID_WORDCOUNT:
-    case MSI_PID_CHARCOUNT:
-    case MSI_PID_SECURITY:
-    case MSI_PID_PAGECOUNT:
+    case LIBMSI_PROPERTY_CODEPAGE:
+    case LIBMSI_PROPERTY_SOURCE:
+    case LIBMSI_PROPERTY_RESTRICT:
+    case LIBMSI_PROPERTY_SECURITY:
+    case LIBMSI_PROPERTY_VERSION:
         *int_value = atoi( value );
         break;
 
-    case MSI_PID_LASTPRINTED:
-    case MSI_PID_CREATE_DTM:
-    case MSI_PID_LASTSAVE_DTM:
+    case LIBMSI_PROPERTY_LASTPRINTED:
+    case LIBMSI_PROPERTY_CREATED_TM:
+    case LIBMSI_PROPERTY_LASTSAVED_TM:
         parse_filetime( value, ft_value );
         break;
 
-    case MSI_PID_SUBJECT:
-    case MSI_PID_AUTHOR:
-    case MSI_PID_KEYWORDS:
-    case MSI_PID_COMMENTS:
-    case MSI_PID_TEMPLATE:
-    case MSI_PID_LASTAUTHOR:
-    case MSI_PID_REVNUMBER:
-    case MSI_PID_APPNAME:
-    case MSI_PID_TITLE:
+    case LIBMSI_PROPERTY_SUBJECT:
+    case LIBMSI_PROPERTY_AUTHOR:
+    case LIBMSI_PROPERTY_KEYWORDS:
+    case LIBMSI_PROPERTY_COMMENTS:
+    case LIBMSI_PROPERTY_TEMPLATE:
+    case LIBMSI_PROPERTY_LASTAUTHOR:
+    case LIBMSI_PROPERTY_UUID:
+    case LIBMSI_PROPERTY_APPNAME:
+    case LIBMSI_PROPERTY_TITLE:
         *str_value = strdup(value);
         break;
 

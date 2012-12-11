@@ -99,7 +99,7 @@ AT_CHECK_MSIBUILD([out.msi -s 'Project name'])
 AT_CHECK_MSIINFO([suminfo out.msi], [ignore], [stdout])
 AT_CHECK([[
    UUID='\{[0-9A-F]{8}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{12}\}'
-   grep -E "^Revision number: $UUID\$" stdout]], [0],
+   grep -E "^Revision number \\(UUID\\): $UUID\$" stdout]], [0],
 [ignore])
 AT_CLEANUP
 
