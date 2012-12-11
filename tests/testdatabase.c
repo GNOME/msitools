@@ -1933,7 +1933,7 @@ static void test_msiimport(void)
     ok(i == 2, "Expected 2, got %d\n", i);
 
     i = libmsi_record_get_integer(rec, 4);
-    ok(i == MSI_NULL_INTEGER, "Expected MSI_NULL_INTEGER, got %d\n", i);
+    ok(i == LIBMSI_NULL_INT, "Expected LIBMSI_NULL_INT, got %d\n", i);
 
     i = libmsi_record_get_integer(rec, 5);
     ok(i == 2147483640, "Expected 2147483640, got %d\n", i);
@@ -3821,9 +3821,9 @@ static void test_integers(void)
     ok(r == 8, "record count wrong: %d\n", r);
 
     i = libmsi_record_get_integer(rec, 1);
-    ok(i == MSI_NULL_INTEGER, "Expected MSI_NULL_INTEGER, got %d\n", i);
+    ok(i == LIBMSI_NULL_INT, "Expected LIBMSI_NULL_INT, got %d\n", i);
     i = libmsi_record_get_integer(rec, 3);
-    ok(i == MSI_NULL_INTEGER, "Expected MSI_NULL_INTEGER, got %d\n", i);
+    ok(i == LIBMSI_NULL_INT, "Expected LIBMSI_NULL_INT, got %d\n", i);
     i = libmsi_record_get_integer(rec, 2);
     ok(i == 2, "Expected 2, got %d\n", i);
     i = libmsi_record_get_integer(rec, 4);
@@ -6635,7 +6635,7 @@ static void test_dbmerge(void)
     ok(r == 2, "Expected 2, got %d\n", r);
 
     r = libmsi_record_get_integer(hrec, 3);
-    ok(r == MSI_NULL_INTEGER, "Expected MSI_NULL_INTEGER, got %d\n", r);
+    ok(r == LIBMSI_NULL_INT, "Expected LIBMSI_NULL_INT, got %d\n", r);
 
     g_object_unref(hrec);
 
@@ -6680,7 +6680,7 @@ static void test_dbmerge(void)
     ok(r == 2, "Expected 2, got %d\n", r);
 
     r = libmsi_record_get_integer(hrec, 3);
-    ok(r == MSI_NULL_INTEGER, "Expected MSI_NULL_INTEGER, got %d\n", r);
+    ok(r == LIBMSI_NULL_INT, "Expected LIBMSI_NULL_INT, got %d\n", r);
 
     g_object_unref(hrec);
 
@@ -7124,12 +7124,12 @@ static void test_select_with_tablenames(void)
 
 static const unsigned ordervals[6][3] =
 {
-    { MSI_NULL_INTEGER, 12, 13 },
+    { LIBMSI_NULL_INT, 12, 13 },
     { 1, 2, 3 },
     { 6, 4, 5 },
     { 8, 9, 7 },
-    { 10, 11, MSI_NULL_INTEGER },
-    { 14, MSI_NULL_INTEGER, 15 }
+    { 10, 11, LIBMSI_NULL_INT },
+    { 14, LIBMSI_NULL_INT, 15 }
 };
 
 static void test_insertorder(void)
@@ -7169,7 +7169,7 @@ static void test_insertorder(void)
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     /* fails because the primary key already
-     * has an MSI_NULL_INTEGER value set above
+     * has an LIBMSI_NULL_INT value set above
      */
     sql = "INSERT INTO `T` ( `C` ) VALUES ( 14 )";
     r = run_query(hdb, 0, sql);

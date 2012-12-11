@@ -232,10 +232,10 @@ int libmsi_record_get_integer( const LibmsiRecord *rec, unsigned iField)
     TRACE("%p %d\n", rec, iField );
 
     if( !rec )
-        return MSI_NULL_INTEGER;
+        return LIBMSI_NULL_INT;
 
     if( iField > rec->count )
-        return MSI_NULL_INTEGER;
+        return LIBMSI_NULL_INT;
 
     switch( rec->fields[iField].type )
     {
@@ -244,12 +244,12 @@ int libmsi_record_get_integer( const LibmsiRecord *rec, unsigned iField)
     case LIBMSI_FIELD_TYPE_WSTR:
         if( expr_int_from_string( rec->fields[iField].u.szwVal, &ret ) )
             return ret;
-        return MSI_NULL_INTEGER;
+        return LIBMSI_NULL_INT;
     default:
         break;
     }
 
-    return MSI_NULL_INTEGER;
+    return LIBMSI_NULL_INT;
 }
 
 LibmsiResult libmsi_record_clear_data( LibmsiRecord *rec )
