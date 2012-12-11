@@ -2,7 +2,13 @@ ACLOCAL_AMFLAGS = -I m4
 SUBDIRS = libmsi tests .
 
 noinst_HEADERS = include/debug.h tools/sqldelim.h
-dist_include_HEADERS = include/libmsi.h
+dist_include_HEADERS = \
+	include/libmsi.h \
+	include/libmsi-database.h \
+	include/libmsi-query.h \
+	include/libmsi-record.h \
+	include/libmsi-summary-info.h \
+	include/libmsi-types.h
 
 AM_CPPFLAGS = -Iinclude -I$(srcdir)/include $(GLIB_CFLAGS) $(GSF_CFLAGS) $(UUID_CFLAGS)
 
