@@ -419,41 +419,6 @@ unsigned _libmsi_record_get_stringW(const LibmsiRecord *rec, unsigned iField,
     return ret;
 }
 
-static unsigned msi_get_stream_size( IStream *stm )
-{
-    STATSTG stat;
-    HRESULT r;
-
-    r = IStream_Stat( stm, &stat, STATFLAG_NONAME );
-    if( FAILED(r) )
-        return 0;
-    return stat.cbSize.QuadPart;
-}
-
-unsigned libmsi_record_get_field_size(const LibmsiRecord *rec, unsigned iField)
-{
-    TRACE("%p %d\n", rec, iField);
-
-    if( !rec )
-        return 0;
-
-    if( iField > rec->count )
-        return 0;
-
-    switch( rec->fields[iField].type )
-    {
-    case LIBMSI_FIELD_TYPE_INT:
-        return sizeof (int);
-    case LIBMSI_FIELD_TYPE_WSTR:
-        return strlenW( rec->fields[iField].u.szwVal );
-    case LIBMSI_FIELD_TYPE_NULL:
-        break;
-    case LIBMSI_FIELD_TYPE_STREAM:
-        return msi_get_stream_size( rec->fields[iField].u.stream );
-    }
-    return 0;
-}
-
 LibmsiResult libmsi_record_set_string( LibmsiRecord *rec, unsigned iField, const char *szValue )
 {
     WCHAR *str;
