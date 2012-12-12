@@ -174,7 +174,7 @@ static gboolean add_summary_info(const char *name, const char *author,
     return TRUE;
 }
 
-static int add_stream(const char *stream, const char *file)
+static int add_stream(const char *stream, const char *file, GError **error)
 {
     LibmsiResult r;
     LibmsiRecord *rec;
@@ -202,6 +202,7 @@ static int add_stream(const char *stream, const char *file)
 
 static int do_query(const char *sql, void *opaque)
 {
+    GError **error = opaque;
     LibmsiResult r;
     LibmsiQuery *query;
 
@@ -236,6 +237,7 @@ static void show_usage(void)
 
 int main(int argc, char *argv[])
 {
+    GError *error = NULL;
     int r;
     int n;
 
@@ -290,9 +292,9 @@ int main(int argc, char *argv[])
             break;
         case 'q':
             do {
-                ret = sql_get_statement(argv[1], do_query, NULL);
+                ret = sql_get_statement(argv[1], do_query, &error);
                 if (ret == 0) {
-                    ret = sql_get_statement("", do_query, NULL);
+                    ret = sql_get_statement("", do_query, &error);
                 }
                 if (ret) {
                     break;
@@ -303,7 +305,7 @@ int main(int argc, char *argv[])
             break;
         case 'a':
             if (argc < 3) break;
-            ret = add_stream(argv[1], argv[2]);
+            ret = add_stream(argv[1], argv[2], &error);
             argc -= 3, argv += 3;
             break;
         default:
@@ -332,5 +334,12 @@ int main(int argc, char *argv[])
 end:
     g_object_unref(si);
     g_object_unref(db);
+
+    if (error != NULL) {
+        g_printerr("error: %s\n", error->message);
+        g_clear_error(&error);
+        exit(1);
+    }
+
     return r != LIBMSI_RESULT_SUCCESS;
 }
