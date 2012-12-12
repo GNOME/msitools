@@ -229,6 +229,7 @@ unsigned _libmsi_query_iterate_records( LibmsiQuery *view, unsigned *count,
 {
     LibmsiRecord *rec = NULL;
     unsigned r, n = 0, max = 0;
+    GError *error = NULL; // FIXME: move error handling to caller
 
     r = _libmsi_query_execute( view, NULL );
     if( r != LIBMSI_RESULT_SUCCESS )
@@ -250,7 +251,11 @@ unsigned _libmsi_query_iterate_records( LibmsiQuery *view, unsigned *count,
             break;
     }
 
-    libmsi_query_close( view );
+    libmsi_query_close( view, &error );
+    if (error) {
+        g_critical ("%s", error->message);
+        g_clear_error (&error);
+    }
 
     if( count )
         *count = n;
@@ -269,6 +274,7 @@ LibmsiRecord *_libmsi_query_get_record( LibmsiDatabase *db, const char *fmt, ...
     unsigned r;
     int size = 100, res;
     char *query;
+    GError *error = NULL; // FIXME: move error to caller
 
     /* construct the string */
     for (;;)
@@ -291,7 +297,11 @@ LibmsiRecord *_libmsi_query_get_record( LibmsiDatabase *db, const char *fmt, ...
     {
         _libmsi_query_execute( view, NULL );
         _libmsi_query_fetch( view, &rec );
-        libmsi_query_close( view );
+        libmsi_query_close( view, &error );
+        if (error) {
+            g_critical ("%s", error->message);
+            g_clear_error (&error);
+        }
         g_object_unref(view);
     }
     return rec;
@@ -411,7 +421,8 @@ LibmsiResult libmsi_query_fetch(LibmsiQuery *query, LibmsiRecord **record)
     return ret;
 }
 
-LibmsiResult libmsi_query_close(LibmsiQuery *query)
+gboolean
+libmsi_query_close (LibmsiQuery *query, GError **error)
 {
     LibmsiView *view;
     unsigned ret;
@@ -430,7 +441,12 @@ LibmsiResult libmsi_query_close(LibmsiQuery *query)
 
     ret = view->ops->close( view );
     g_object_unref(query);
-    return ret;
+
+    /* FIXME: raise error when it happens */
+    if (ret != LIBMSI_RESULT_SUCCESS)
+        g_set_error_literal (error, LIBMSI_RESULT_ERROR, ret, G_STRFUNC);
+
+    return ret == LIBMSI_RESULT_SUCCESS;
 }
 
 LibmsiResult _libmsi_query_execute(LibmsiQuery *query, LibmsiRecord *rec )

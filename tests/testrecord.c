@@ -376,8 +376,8 @@ static void test_fieldzero (void)
     ok (r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     r = libmsi_query_execute (hview, 0);
     ok (r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
-    r = libmsi_query_close (hview);
-    ok (r == LIBMSI_RESULT_SUCCESS, "libmsi_query_close failed\n");
+    r = libmsi_query_close (hview, NULL);
+    ok (r, "libmsi_query_close failed\n");
     g_object_unref (hview);
 
     query = "INSERT INTO `drone` ( `id`, `name`, `number` )"
@@ -386,8 +386,8 @@ static void test_fieldzero (void)
     ok (r == LIBMSI_RESULT_SUCCESS, "libmsi_database_open_query failed\n");
     r = libmsi_query_execute (hview, 0);
     ok (r == LIBMSI_RESULT_SUCCESS, "libmsi_query_execute failed\n");
-    r = libmsi_query_close (hview);
-    ok (r == LIBMSI_RESULT_SUCCESS, "libmsi_query_close failed\n");
+    r = libmsi_query_close (hview, NULL);
+    ok (r, "libmsi_query_close failed\n");
     g_object_unref (hview);
 
     rec = NULL;

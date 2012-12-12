@@ -953,6 +953,7 @@ static unsigned msi_add_table_to_db(LibmsiDatabase *db, char **columns, char **t
     char *prelude;
     char *columns_sql;
     char *postlude;
+    GError *error = NULL; // FIXME: move error handling to caller
 
     prelude = msi_build_createsql_prelude(labels[0]);
     columns_sql = msi_build_createsql_columns(columns, types, num_columns);
@@ -975,10 +976,14 @@ static unsigned msi_add_table_to_db(LibmsiDatabase *db, char **columns, char **t
         goto done;
 
     r = _libmsi_query_execute(view, NULL);
-    libmsi_query_close(view);
-    g_object_unref(view);
+    libmsi_query_close(view, &error);
+    if (error) {
+        g_critical ("%s", error->message);
+        g_clear_error (&error);
+    }
 
 done:
+    g_object_unref(view);
     msi_free(prelude);
     msi_free(columns_sql);
     msi_free(postlude);

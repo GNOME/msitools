@@ -49,7 +49,8 @@ LibmsiResult      libmsi_query_fetch             (LibmsiQuery *query,
                                                   LibmsiRecord **rec);
 LibmsiResult      libmsi_query_execute           (LibmsiQuery *query,
                                                   LibmsiRecord *rec);
-LibmsiResult      libmsi_query_close             (LibmsiQuery *query);
+gboolean          libmsi_query_close             (LibmsiQuery *query,
+                                                  GError **error);
 LibmsiDBError     libmsi_query_get_error         (LibmsiQuery *query,
                                                   char *buffer,
                                                   unsigned *buflen);
