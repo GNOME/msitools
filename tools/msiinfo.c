@@ -168,16 +168,15 @@ static LibmsiResult print_strings_from_query(LibmsiQuery *query)
 {
     LibmsiRecord *rec = NULL;
     LibmsiResult r;
-    char name[PATH_MAX];
+    gchar *name;
 
     while ((r = libmsi_query_fetch(query, &rec)) == LIBMSI_RESULT_SUCCESS) {
-        unsigned size = PATH_MAX;
-        r = libmsi_record_get_string(rec, 1, name, &size);
-        if (r) {
-            print_libmsi_error(r);
-        }
+        name = libmsi_record_get_string(rec, 1);
+        g_return_val_if_fail(name != NULL, LIBMSI_RESULT_FUNCTION_FAILED);
 
         puts(name);
+
+        g_free(name);
         g_object_unref(rec);
     }
 
@@ -433,7 +432,8 @@ static unsigned export_create_table(const char *table,
     int num_keys = libmsi_record_get_field_count(keys);
     int i, len;
     unsigned r;
-    char type[30], name[100], size[20], extra[30];
+    char size[20], extra[30];
+    gchar *name, *type;
     unsigned sz;
 
     if (!strcmp(table, "_Tables") ||
@@ -446,17 +446,11 @@ static unsigned export_create_table(const char *table,
     printf("CREATE TABLE `%s` (", table);
     for (i = 1; i <= num_columns; i++)
     {
-        sz = sizeof(name);
-        r = libmsi_record_get_string(names, i, name, &sz);
-        if (r) {
-            return r;
-        }
+        name = libmsi_record_get_string(names, i);
+        g_return_val_if_fail(name != NULL, LIBMSI_RESULT_FUNCTION_FAILED);
 
-        sz = sizeof(type);
-        r = libmsi_record_get_string(types, i, type, &sz);
-        if (r) {
-            return r;
-        }
+        type = libmsi_record_get_string(types, i);
+        g_return_val_if_fail(type != NULL, LIBMSI_RESULT_FUNCTION_FAILED);
 
         if (i > 1) {
             printf(", ");
@@ -493,16 +487,17 @@ static unsigned export_create_table(const char *table,
         }
 
         printf("`%s` %s%s", name, type, extra);
+        g_free(name);
+        g_free(type);
     }
+
     for (i = 1; i <= num_keys; i++)
     {
-        sz = sizeof(name);
-        r = libmsi_record_get_string(names, i, name, &sz);
-        if (r) {
-            return r;
-        }
+        name = libmsi_record_get_string(names, i);
+        g_return_val_if_fail(name != NULL, LIBMSI_RESULT_FUNCTION_FAILED);
 
         printf("%s `%s`", (i > 1 ? "," : " PRIMARY KEY"), name);
+        g_free(name);
     }
     printf(")\n");
     return r;
@@ -529,9 +524,9 @@ static unsigned export_insert(const char *table,
                               LibmsiRecord *vals)
 {
     int num_columns = libmsi_record_get_field_count(names);
+    gchar *name, *type;
     int i;
     unsigned r;
-    char type[30], name[100];
     unsigned sz;
     char *s;
 
@@ -543,16 +538,15 @@ static unsigned export_insert(const char *table,
         }
 
         sz = sizeof(name);
-        r = libmsi_record_get_string(names, i, name, &sz);
-        if (r) {
-            return r;
-        }
+        name = libmsi_record_get_string(names, i);
+        g_return_val_if_fail(name != NULL, LIBMSI_RESULT_FUNCTION_FAILED);
 
         if (i > 1) {
             printf(", ");
         }
 
         printf("`%s`", name);
+        g_free(name);
     }
     printf(") VALUES (");
     for (i = 1; i <= num_columns; i++)
@@ -566,23 +560,14 @@ static unsigned export_insert(const char *table,
         }
 
         sz = sizeof(type);
-        r = libmsi_record_get_string(types, i, type, &sz);
-        if (r) {
-            return r;
-        }
+        type = libmsi_record_get_string(types, i);
+        g_return_val_if_fail(type != NULL, LIBMSI_RESULT_FUNCTION_FAILED);
 
         switch (type[0])
         {
             case 'l': case 'L':
             case 's': case 'S':
-                sz = INT_MAX;
-                r = libmsi_record_get_string(vals, i, NULL, &sz);
-                if (r) {
-                    return r;
-                }
-
-                s = g_malloc(++sz);
-                libmsi_record_get_string(vals, i, s, &sz);
+                s = libmsi_record_get_string(vals, i);
                 print_quoted_string(s);
                 g_free(s);
                 break;
@@ -596,6 +581,8 @@ static unsigned export_insert(const char *table,
             default:
                 abort();
         }
+
+        g_free(type);
     }
     printf(")\n");
     return r;

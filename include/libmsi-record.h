@@ -45,7 +45,7 @@ LibmsiRecord *    libmsi_record_new (guint count);
 LibmsiResult      libmsi_record_clear (LibmsiRecord *);
 LibmsiResult      libmsi_record_set_int (LibmsiRecord *,unsigned,int);
 LibmsiResult      libmsi_record_set_string (LibmsiRecord *,unsigned,const char *);
-LibmsiResult      libmsi_record_get_string (const LibmsiRecord *,unsigned,char *,unsigned *);
+gchar *           libmsi_record_get_string (const LibmsiRecord *,unsigned);
 unsigned          libmsi_record_get_field_count (const LibmsiRecord *);
 int               libmsi_record_get_int (const LibmsiRecord *,unsigned);
 gboolean          libmsi_record_is_null (const LibmsiRecord *,unsigned);

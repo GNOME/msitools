@@ -1236,50 +1236,30 @@ LibmsiResult libmsi_database_import(LibmsiDatabase *db, const char *szFolder, co
 
 static unsigned msi_export_record( int fd, LibmsiRecord *row, unsigned start )
 {
-    unsigned i, count, len, r = LIBMSI_RESULT_SUCCESS;
-    const char *sep;
-    char *buffer;
-    unsigned sz;
+    unsigned i, count;
 
-    len = 0x100;
-    buffer = msi_alloc( len );
-    if ( !buffer )
-        return LIBMSI_RESULT_OUTOFMEMORY;
+    count = libmsi_record_get_field_count (row);
+    for (i = start; i <= count; i++) {
+        char *str;
 
-    count = libmsi_record_get_field_count( row );
-    for ( i=start; i<=count; i++ )
-    {
-        sz = len;
-        r = libmsi_record_get_string( row, i, buffer, &sz );
-        if (r == LIBMSI_RESULT_MORE_DATA)
-        {
-            char *p = msi_realloc( buffer, sz + 1 );
-            if (!p)
-                break;
-            len = sz + 1;
-            buffer = p;
-        }
-        sz = len;
-        r = libmsi_record_get_string( row, i, buffer, &sz );
-        if (r != LIBMSI_RESULT_SUCCESS)
-            break;
+        str = libmsi_record_get_string (row, i);
+        if (!str)
+            return LIBMSI_RESULT_FUNCTION_FAILED;
 
         /* TODO full_write */
-        if (write( fd, buffer, sz ) != sz)
-        {
-            r = LIBMSI_RESULT_FUNCTION_FAILED;
-            break;
+        if (write (fd, str, strlen (str)) != strlen (str)) {
+            g_free (str);
+            return LIBMSI_RESULT_FUNCTION_FAILED;
         }
 
-        sep = (i < count) ? "\t" : "\r\n";
-        if (write( fd, sep, strlen(sep) ) != strlen(sep))
-        {
-            r = LIBMSI_RESULT_FUNCTION_FAILED;
-            break;
-        }
+        g_free (str);
+
+        const char *sep = (i < count) ? "\t" : "\r\n";
+        if (write (fd, sep, strlen (sep)) != strlen (sep))
+            return LIBMSI_RESULT_FUNCTION_FAILED;
     }
-    msi_free( buffer );
-    return r;
+
+    return LIBMSI_RESULT_SUCCESS;
 }
 
 static unsigned msi_export_row( LibmsiRecord *row, void *arg )
@@ -1530,8 +1510,7 @@ static char *get_key_value(LibmsiQuery *view, const char *key, LibmsiRecord *rec
 {
     LibmsiRecord *colnames;
     char *str;
-    char *val;
-    unsigned r, i = 0, sz = 0;
+    unsigned r, i = 0;
     int cmp;
 
     r = _libmsi_query_get_column_info(view, LIBMSI_COL_INFO_NAMES, &colnames);
@@ -1547,42 +1526,13 @@ static char *get_key_value(LibmsiQuery *view, const char *key, LibmsiRecord *rec
 
     g_object_unref(colnames);
 
-    r = _libmsi_record_get_string(rec, i, NULL, &sz);
-    if (r != LIBMSI_RESULT_SUCCESS)
-        return NULL;
-    sz++;
-
     if (_libmsi_record_get_string_raw(rec, i))  /* check record field is a string */
-    {
         /* quote string record fields */
-        const char szQuote[] = "'";
-        sz += 2;
-        val = msi_alloc(sz*sizeof(char));
-        if (!val)
-            return NULL;
-
-        strcpy(val, szQuote);
-        r = _libmsi_record_get_string(rec, i, val+1, &sz);
-        strcpy(val+1+sz, szQuote);
-    }
+        str = g_strdup_printf ("'%s'", _libmsi_record_get_string_raw (rec, i));
     else
-    {
-        /* do not quote integer record fields */
-        val = msi_alloc(sz*sizeof(char));
-        if (!val)
-            return NULL;
+        str = libmsi_record_get_string (rec, i);
 
-        r = _libmsi_record_get_string(rec, i, val, &sz);
-    }
-
-    if (r != LIBMSI_RESULT_SUCCESS)
-    {
-        ERR("failed to get string!\n");
-        msi_free(val);
-        return NULL;
-    }
-
-    return val;
+    return str;
 }
 
 static char *create_diff_row_query(LibmsiDatabase *merge, LibmsiQuery *view,
