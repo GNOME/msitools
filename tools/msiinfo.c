@@ -588,7 +588,7 @@ static unsigned export_insert(const char *table,
                 break;
 
             case 'i': case 'I':
-                printf("%d", libmsi_record_get_integer(vals, i));
+                printf("%d", libmsi_record_get_int(vals, i));
                 break;
             case 'v': case 'V':
                 printf("''", s);

@@ -1286,7 +1286,7 @@ static unsigned get_table_value_from_record( LibmsiTableView *tv, LibmsiRecord *
     }
     else if ( bytes_per_column( tv->db, &columninfo, LONG_STR_BYTES ) == 2 )
     {
-        *pvalue = 0x8000 + libmsi_record_get_integer( rec, iField );
+        *pvalue = 0x8000 + libmsi_record_get_int( rec, iField );
         if ( *pvalue & 0xffff0000 )
         {
             ERR("field %u value %d out of range\n", iField, *pvalue - 0x8000);
@@ -1295,7 +1295,7 @@ static unsigned get_table_value_from_record( LibmsiTableView *tv, LibmsiRecord *
     }
     else
     {
-        int ival = libmsi_record_get_integer( rec, iField );
+        int ival = libmsi_record_get_int( rec, iField );
         *pvalue = ival ^ 0x80000000;
     }
 
@@ -1545,7 +1545,7 @@ static unsigned table_validate_new( LibmsiTableView *tv, LibmsiRecord *rec, unsi
         {
             unsigned n;
 
-            n = libmsi_record_get_integer( rec, i+1 );
+            n = libmsi_record_get_int( rec, i+1 );
             if (n == LIBMSI_NULL_INT)
             {
                 if (column) *column = i;
@@ -2242,7 +2242,7 @@ static void dump_record( LibmsiRecord *rec )
         else if( (sval = _libmsi_record_get_string_raw( rec, i )) )
             TRACE("row -> [%s]\n", debugstr_a(sval));
         else
-            TRACE("row -> [0x%08x]\n", libmsi_record_get_integer( rec, i ) );
+            TRACE("row -> [0x%08x]\n", libmsi_record_get_int( rec, i ) );
     }
 }
 
@@ -2292,7 +2292,7 @@ static unsigned* msi_record_to_row( const LibmsiTableView *tv, LibmsiRecord *rec
         }
         else
         {
-            data[i] = libmsi_record_get_integer( rec, i+1 );
+            data[i] = libmsi_record_get_int( rec, i+1 );
 
             if (data[i] == LIBMSI_NULL_INT)
                 data[i] = 0;
@@ -2464,7 +2464,7 @@ static unsigned msi_table_load_transform( LibmsiDatabase *db, GsfInfile *stg,
             if (!strcmp( name, szColumns ))
             {
                 _libmsi_record_get_string( rec, 1, table, &sz );
-                number = libmsi_record_get_integer( rec, 2 );
+                number = libmsi_record_get_int( rec, 2 );
 
                 /*
                  * Native msi seems writes nul into the Number (2nd) column of

@@ -580,7 +580,7 @@ static unsigned where_view_evaluate( LibmsiWhereView *wv, const unsigned rows[],
         return expr_eval_strcmp( wv, rows, &cond->u.expr, val, record );
 
     case EXPR_WILDCARD:
-        *val = libmsi_record_get_integer( record, ++wv->rec_index );
+        *val = libmsi_record_get_int( record, ++wv->rec_index );
         return LIBMSI_RESULT_SUCCESS;
 
     default:
