@@ -26,6 +26,7 @@ AS_IF([test "$uuid" = yes],
 
 LT_INIT([win32-dll disable-fast-install])
 GOBJECT_INTROSPECTION_CHECK([0.9.4])
+AM_CONDITIONAL([GIR], [test "x$INTROSPECTION_MAKEFILE" != x])
 
 m4_ifdef([AM_SILENT_RULES],[AM_SILENT_RULES([yes])])
 

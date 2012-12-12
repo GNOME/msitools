@@ -41,6 +41,7 @@ libmsi_la_LIBADD = $(GLIB_LIBS) $(GSF_LIBS) $(GOBJECT_LIBS)
 
 INTROSPECTION_SCANNER_ARGS = --warn-all
 
+if GIR
 -include $(INTROSPECTION_MAKEFILE)
 INTROSPECTION_GIRS = Libmsi-1.0.gir
 
@@ -67,3 +68,4 @@ typelibdir = $(libdir)/girepository-1.0
 typelib_DATA = $(INTROSPECTION_GIRS:.gir=.typelib)
 
 CLEANFILES = $(gir_DATA) $(typelib_DATA)
+endif
