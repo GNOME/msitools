@@ -1,7 +1,6 @@
 ACLOCAL_AMFLAGS = -I m4
 SUBDIRS = libmsi tests .
 
-noinst_HEADERS = include/debug.h tools/sqldelim.h
 dist_include_HEADERS = \
 	include/libmsi.h \
 	include/libmsi-database.h \
@@ -16,7 +15,7 @@ AM_LDFLAGS = -Llibmsi
 
 bin_PROGRAMS = msibuild msiinfo
 
-msibuild_SOURCES = tools/msibuild.c tools/sqldelim.c
+msibuild_SOURCES = tools/msibuild.c tools/sqldelim.c tools/sqldelim.h
 msibuild_LDADD = -lmsi $(GLIB_LIBS) $(GSF_LIBS) $(UUID_LIBS)
 msibuild_DEPENDENCIES = libmsi/libmsi.la
 
@@ -37,7 +36,7 @@ installcheck-local: $(srcdir)/tests/testsuite atconfig atlocal
 	$(SHELL) $(srcdir)/tests/testsuite AUTOTEST_PATH=$(bindir) $(TESTSUITEFLAGS)
 
 clean-local:
-	-$(SHELL) tests/testsuite --clean
+	-$(SHELL) $(srcdir)/tests/testsuite --clean
 
 $(srcdir)/tests/testsuite: tests/testsuite.at tests/package.m4
 	cd $(srcdir)/tests && \

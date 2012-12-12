@@ -48,7 +48,6 @@ LibmsiResult      libmsi_record_set_string (LibmsiRecord *,unsigned,const char *
 LibmsiResult      libmsi_record_get_string (const LibmsiRecord *,unsigned,char *,unsigned *);
 unsigned          libmsi_record_get_field_count (const LibmsiRecord *);
 int               libmsi_record_get_integer (const LibmsiRecord *,unsigned);
-unsigned          libmsi_record_get_field_size (const LibmsiRecord *,unsigned);
 gboolean          libmsi_record_is_null (const LibmsiRecord *,unsigned);
 
 LibmsiResult      libmsi_record_load_stream (LibmsiRecord *,unsigned,const char *);

@@ -79,8 +79,6 @@ static void test_msirecord(void)
     ok(r == LIBMSI_RESULT_INVALID_HANDLE, "libmsi_record_set_int returned wrong error\n");
     r = libmsi_record_clear_data(0);
     ok(r == LIBMSI_RESULT_INVALID_HANDLE, "libmsi_record_clear_data returned wrong error\n");
-    r = libmsi_record_get_field_size(0,0);
-    ok(r == 0, "libmsi_record_get_field_size returned wrong error\n");
 
 
     /* check behaviour of a record with 0 elements */
@@ -94,8 +92,6 @@ static void test_msirecord(void)
     ok(r, "out of range record wasn't null\n");
     r = libmsi_record_is_null(h,-1);
     ok(r, "out of range record wasn't null\n");
-    r = libmsi_record_get_field_size(h,0);
-    ok(r==0, "size of null record is 0\n");
     sz = sizeof buf;
     strcpy(buf,"x");
     r = libmsi_record_get_string(h, 0, buf, &sz);
@@ -108,8 +104,6 @@ static void test_msirecord(void)
     ok(r == LIBMSI_RESULT_SUCCESS, "Failed to set integer at 0 to 0\n");
     r = libmsi_record_is_null(h,0);
     ok(r==0, "new record is null after setting an integer\n");
-    r = libmsi_record_get_field_size(h,0);
-    ok(r==sizeof(unsigned), "size of integer record is 4\n");
     r = libmsi_record_set_int(h, 0, 1);
     ok(r == LIBMSI_RESULT_SUCCESS, "Failed to set integer at 0 to 1\n");
     r = libmsi_record_set_int(h, 1, 1);
@@ -126,8 +120,6 @@ static void test_msirecord(void)
     ok(r == LIBMSI_RESULT_SUCCESS, "Failed to set null string at 0\n");
     r = libmsi_record_is_null(h, 0);
     ok(r == true, "null string not null field\n");
-    r = libmsi_record_get_field_size(h, 0);
-    ok(r == 0, "size of string record is strlen\n");
     buf[0] = 0;
     sz = sizeof buf;
     r = libmsi_record_get_string(h, 0, buf, &sz);
@@ -138,8 +130,6 @@ static void test_msirecord(void)
     ok(r == LIBMSI_RESULT_SUCCESS, "Failed to set empty string at 0\n");
     r = libmsi_record_is_null(h, 0);
     ok(r == true, "null string not null field\n");
-    r = libmsi_record_get_field_size(h, 0);
-    ok(r == 0, "size of string record is strlen\n");
     buf[0] = 0;
     sz = sizeof buf;
     r = libmsi_record_get_string(h, 0, buf, &sz);
@@ -152,8 +142,6 @@ static void test_msirecord(void)
     ok(r == LIBMSI_RESULT_SUCCESS, "Failed to set string at 0\n");
     r = libmsi_record_get_integer(h, 0);
     ok(r == LIBMSI_NULL_INT, "should get invalid integer\n");
-    r = libmsi_record_get_field_size(h,0);
-    ok(r==sizeof str-1, "size of string record is strlen\n");
     buf[0]=0;
     sz = sizeof buf;
     r = libmsi_record_get_string(h,0,buf,&sz);
@@ -284,10 +272,6 @@ static void test_msirecord(void)
     r = libmsi_record_save_stream(h, 0, buf, &sz);
     ok(r == LIBMSI_RESULT_INVALID_DATATYPE, "read non-stream type\n");
     ok(sz == sizeof buf, "set sz\n");
-    r = libmsi_record_get_field_size( h, -1);
-    ok(r == 0,"libmsi_record_get_field_size returned wrong size\n");
-    r = libmsi_record_get_field_size( h, 0);
-    ok(r == 4,"libmsi_record_get_field_size returned wrong size\n");
 
     /* same record, now close it */
     g_object_unref(h);
@@ -345,8 +329,6 @@ static void test_msirecord(void)
     r = libmsi_record_save_stream(h, 1, NULL, &sz);
     ok(r == LIBMSI_RESULT_SUCCESS, "bytes left wrong after reset\n");
     ok(sz==26,"couldn't get size of stream\n");
-    r = libmsi_record_get_field_size(h,1);
-    ok(r == 26,"libmsi_record_get_field_size returned wrong size\n");
 
     /* now close the stream record */
     g_object_unref(h);

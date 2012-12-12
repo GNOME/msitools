@@ -400,30 +400,6 @@ unsigned _libmsi_record_get_string(const LibmsiRecord *rec, unsigned iField,
     return ret;
 }
 
-unsigned libmsi_record_get_field_size(const LibmsiRecord *rec, unsigned iField)
-{
-    TRACE("%p %d\n", rec, iField);
-
-    if( !rec )
-        return 0;
-
-    if( iField > rec->count )
-        return 0;
-
-    switch( rec->fields[iField].type )
-    {
-    case LIBMSI_FIELD_TYPE_INT:
-        return sizeof (int);
-    case LIBMSI_FIELD_TYPE_STR:
-        return strlen( rec->fields[iField].u.szVal );
-    case LIBMSI_FIELD_TYPE_NULL:
-        break;
-    case LIBMSI_FIELD_TYPE_STREAM:
-        return gsf_input_size( rec->fields[iField].u.stream );
-    }
-    return 0;
-}
-
 LibmsiResult libmsi_record_set_string( LibmsiRecord *rec, unsigned iField, const char *szValue )
 {
     char *str;
