@@ -52,9 +52,9 @@ gboolean          libmsi_query_execute           (LibmsiQuery *query,
                                                   GError **error);
 gboolean          libmsi_query_close             (LibmsiQuery *query,
                                                   GError **error);
-LibmsiDBError     libmsi_query_get_error         (LibmsiQuery *query,
-                                                  char *buffer,
-                                                  unsigned *buflen);
+void              libmsi_query_get_error         (LibmsiQuery *query,
+                                                  gchar **column,
+                                                  GError **error);
 LibmsiResult      libmsi_query_get_column_info   (LibmsiQuery *query,
                                                   LibmsiColInfo info,
                                                   LibmsiRecord **rec);

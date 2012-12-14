@@ -593,36 +593,21 @@ LibmsiResult libmsi_query_get_column_info(LibmsiQuery *query, LibmsiColInfo info
     return r;
 }
 
-LibmsiDBError libmsi_query_get_error( LibmsiQuery *query, char *buffer, unsigned *buflen )
+void
+libmsi_query_get_error (LibmsiQuery *query, gchar **column, GError **error)
 {
-    const char *column;
-    LibmsiDBError r;
-    unsigned len;
+    LibmsiView *v;
 
-    TRACE("%u %p %p\n", query, buffer, buflen);
+    g_return_if_fail (LIBMSI_IS_QUERY (query));
+    g_return_if_fail (!error || *error == NULL);
 
-    if (!buflen)
-        return LIBMSI_DB_ERROR_INVALIDARG;
-
-    if (!query)
-        return LIBMSI_DB_ERROR_INVALIDARG;
-
-    g_object_ref(query);
-    if ((r = query->view->error)) column = query->view->error_column;
-    else column = szEmpty;
-
-    len = strlen(column);
-    if (buffer)
-    {
-        if (*buflen >= len)
-            strcpy(buffer, column);
-        else
-            r = LIBMSI_DB_ERROR_MOREDATA;
+    v = query->view;
+    if (v->error != LIBMSI_DB_ERROR_SUCCESS) {
+        /* FIXME: view could have a GError with message? */
+        g_set_error (error, LIBMSI_DB_ERROR, v->error, G_STRFUNC);
+        if (column)
+            *column = g_strdup (v->error_column);
     }
-
-    *buflen = len;
-    g_object_unref(query);
-    return r;
 }
 
 LibmsiQuery*
