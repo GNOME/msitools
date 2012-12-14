@@ -374,8 +374,8 @@ static void test_fieldzero (void)
            "PRIMARY KEY `id`)";
     r = libmsi_database_open_query (hdb, query, &hview);
     ok (r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
-    r = libmsi_query_execute (hview, 0);
-    ok (r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
+    r = libmsi_query_execute (hview, 0, NULL);
+    ok (r, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     r = libmsi_query_close (hview, NULL);
     ok (r, "libmsi_query_close failed\n");
     g_object_unref (hview);
@@ -384,8 +384,8 @@ static void test_fieldzero (void)
            "VALUES ('1', 'Abe', '8675309')";
     r = libmsi_database_open_query (hdb, query, &hview);
     ok (r == LIBMSI_RESULT_SUCCESS, "libmsi_database_open_query failed\n");
-    r = libmsi_query_execute (hview, 0);
-    ok (r == LIBMSI_RESULT_SUCCESS, "libmsi_query_execute failed\n");
+    r = libmsi_query_execute (hview, 0, NULL);
+    ok (r, "libmsi_query_execute failed\n");
     r = libmsi_query_close (hview, NULL);
     ok (r, "libmsi_query_close failed\n");
     g_object_unref (hview);
@@ -410,10 +410,10 @@ static void test_fieldzero (void)
     query = "SELECT * FROM `drone` WHERE `id` = 1";
     r = libmsi_database_open_query (hdb, query, &hview);
     ok (r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
-    r = libmsi_query_execute (hview, 0);
-    ok (r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
+    r = libmsi_query_execute (hview, 0, NULL);
+    ok (r, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     rec = libmsi_query_fetch (hview, NULL);
-    ok (r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
+    ok (r, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     r = libmsi_record_get_int (rec, 0);
     ok (r == LIBMSI_NULL_INT, "Expected NULL value, got %d\n", r);

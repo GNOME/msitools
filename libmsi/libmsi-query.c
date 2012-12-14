@@ -468,7 +468,8 @@ LibmsiResult _libmsi_query_execute(LibmsiQuery *query, LibmsiRecord *rec )
     return view->ops->execute( view, rec );
 }
 
-LibmsiResult libmsi_query_execute(LibmsiQuery *query, LibmsiRecord *rec)
+gboolean
+libmsi_query_execute (LibmsiQuery *query, LibmsiRecord *rec, GError **error)
 {
     LibmsiResult ret;
 
@@ -487,7 +488,11 @@ LibmsiResult libmsi_query_execute(LibmsiQuery *query, LibmsiRecord *rec)
     if( rec )
         g_object_unref(rec);
 
-    return ret;
+    /* FIXME: raise error when it happens */
+    if (ret != LIBMSI_RESULT_SUCCESS)
+        g_set_error_literal (error, LIBMSI_RESULT_ERROR, ret, G_STRFUNC);
+
+    return ret == LIBMSI_RESULT_SUCCESS;
 }
 
 static void msi_set_record_type_string( LibmsiRecord *rec, unsigned field,

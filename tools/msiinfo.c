@@ -206,13 +206,13 @@ static int cmd_streams(struct Command *cmd, int argc, char **argv, GError **erro
         print_libmsi_error(r);
     }
 
-    r = libmsi_query_execute(query, NULL);
-    if (r) {
-        print_libmsi_error(r);
-    }
+    r = libmsi_query_execute(query, NULL, error);
+    if (*error)
+        goto end;
 
     print_strings_from_query(query, error);
 
+end:
     g_object_unref(query);
     g_object_unref(db);
 
@@ -239,13 +239,13 @@ static int cmd_tables(struct Command *cmd, int argc, char **argv, GError **error
         print_libmsi_error(r);
     }
 
-    r = libmsi_query_execute(query, NULL);
-    if (r) {
-        print_libmsi_error(r);
-    }
+    r = libmsi_query_execute(query, NULL, error);
+    if (*error)
+        goto end;
 
     print_strings_from_query(query, error);
 
+end:
     g_object_unref(query);
     g_object_unref(db);
 
@@ -389,11 +389,10 @@ static int cmd_extract(struct Command *cmd, int argc, char **argv, GError **erro
 
     rec = libmsi_record_new(1);
     libmsi_record_set_string(rec, 1, argv[2]);
-    r = libmsi_query_execute(query, rec);
+    r = libmsi_query_execute(query, rec, error);
+    if (*error)
+        goto end;
     g_object_unref(rec);
-    if (r) {
-        print_libmsi_error(r);
-    }
 
     rec = libmsi_query_fetch(query, error);
     if (*error)
