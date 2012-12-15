@@ -47,7 +47,7 @@ LibmsiResult        libmsi_database_open (const char *, const char *, LibmsiData
 LibmsiResult        libmsi_database_open_query (LibmsiDatabase *,const char *,LibmsiQuery **);
 LibmsiDBState       libmsi_database_get_state (LibmsiDatabase *);
 LibmsiResult        libmsi_database_get_primary_keys (LibmsiDatabase *,const char *,LibmsiRecord **);
-LibmsiResult        libmsi_database_apply_transform (LibmsiDatabase *,const char *,int);
+LibmsiResult        libmsi_database_apply_transform (LibmsiDatabase *,const char *);
 LibmsiResult        libmsi_database_export (LibmsiDatabase *, const char *, int fd);
 LibmsiResult        libmsi_database_import (LibmsiDatabase *, const char *, const char *);
 LibmsiCondition     libmsi_database_is_table_persistent (LibmsiDatabase *, const char *);

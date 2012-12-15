@@ -2160,7 +2160,7 @@ end:
 }
 
 unsigned _libmsi_database_apply_transform( LibmsiDatabase *db,
-                 const char *szTransformFile, int iErrorCond )
+                 const char *szTransformFile )
 {
     unsigned ret = LIBMSI_RESULT_FUNCTION_FAILED;
     GsfInput *in;
@@ -2198,14 +2198,14 @@ end:
 }
 
 LibmsiResult libmsi_database_apply_transform( LibmsiDatabase *db,
-                 const char *szTransformFile, int iErrorCond)
+                 const char *szTransformFile)
 {
     unsigned r;
 
     g_object_ref(db);
     if( !db )
         return LIBMSI_RESULT_INVALID_HANDLE;
-    r = _libmsi_database_apply_transform( db, szTransformFile, iErrorCond );
+    r = _libmsi_database_apply_transform( db, szTransformFile );
     g_object_unref(db);
     return r;
 }

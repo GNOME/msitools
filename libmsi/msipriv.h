@@ -355,7 +355,7 @@ extern unsigned _libmsi_database_commit_streams( LibmsiDatabase *db );
 /* transform functions */
 extern unsigned msi_table_apply_transform( LibmsiDatabase *db, GsfInfile *stg );
 extern unsigned _libmsi_database_apply_transform( LibmsiDatabase *db,
-                 const char *szTransformFile, int iErrorCond );
+                 const char *szTransformFile);
 extern void append_storage_to_db( LibmsiDatabase *db, GsfInfile *stg );
 extern unsigned _libmsi_database_commit_storages( LibmsiDatabase *db );
 
