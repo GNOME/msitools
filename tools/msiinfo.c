@@ -260,10 +260,11 @@ static int cmd_tables(struct Command *cmd, int argc, char **argv)
 
 static void print_suminfo(LibmsiSummaryInfo *si, int prop, const char *name)
 {
+    GError *error = NULL;
     unsigned type;
+    const gchar* str;
     int val;
     uint64_t valtime;
-    char *buf;
     unsigned sz;
     unsigned r;
     time_t t;
@@ -276,20 +277,23 @@ static void print_suminfo(LibmsiSummaryInfo *si, int prop, const char *name)
 
     switch (type) {
     case LIBMSI_PROPERTY_TYPE_INT:
+        val = libmsi_summary_info_get_int(si, prop, &error);
+        if (error)
+            goto end;
         printf ("%s: %d (%x)\n", name, val, val);
         break;
 
     case LIBMSI_PROPERTY_TYPE_STRING:
-        buf = g_malloc(++sz);
-        r = libmsi_summary_info_get_property(si, prop, NULL, NULL, NULL, buf, &sz);
-        if (r) {
-            print_libmsi_error(r);
-        }
-        printf ("%s: %s\n", name, buf);
-	free(buf);
+        str = libmsi_summary_info_get_string(si, prop, &error);
+        if (error)
+            goto end;
+        printf ("%s: %s\n", name, str);
         break;
 
     case LIBMSI_PROPERTY_TYPE_FILETIME:
+        valtime = libmsi_summary_info_get_filetime(si, prop, &error);
+        if (error)
+            goto end;
         /* Convert nanoseconds since 1601 to seconds since Unix epoch.  */
         t = (valtime / 10000000) - (uint64_t) 134774 * 86400;
         printf ("%s: %s", name, ctime(&t));
@@ -301,6 +305,11 @@ static void print_suminfo(LibmsiSummaryInfo *si, int prop, const char *name)
     default:
 	abort();
     }
+
+end:
+    if (error)
+        g_warning("Can't print summary info: %s", error->message);
+    g_clear_error(&error);
 }
 
 static int cmd_suminfo(struct Command *cmd, int argc, char **argv)

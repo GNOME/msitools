@@ -32,26 +32,35 @@
 
 #include "sqldelim.h"
 
-static void init_suminfo(LibmsiSummaryInfo *si)
+static gboolean init_suminfo(LibmsiSummaryInfo *si, GError **error)
 {
-    libmsi_summary_info_set_property(si, LIBMSI_PROPERTY_TITLE,
-                                     LIBMSI_PROPERTY_TYPE_STRING, 0, NULL,
-                                     "Installation Database");
-    libmsi_summary_info_set_property(si, LIBMSI_PROPERTY_KEYWORDS,
-                                     LIBMSI_PROPERTY_TYPE_STRING, 0, NULL,
-                                     "Installer, MSI");
-    libmsi_summary_info_set_property(si, LIBMSI_PROPERTY_TEMPLATE,
-                                     LIBMSI_PROPERTY_TYPE_STRING, 0, NULL,
-                                     ";1033");
-    libmsi_summary_info_set_property(si, LIBMSI_PROPERTY_APPNAME,
-                                     LIBMSI_PROPERTY_TYPE_STRING, 0, NULL,
-                                     "libmsi msibuild");
-    libmsi_summary_info_set_property(si, LIBMSI_PROPERTY_VERSION,
-                                     LIBMSI_PROPERTY_TYPE_INT, 200, NULL, NULL);
-    libmsi_summary_info_set_property(si, LIBMSI_PROPERTY_SOURCE,
-                                     LIBMSI_PROPERTY_TYPE_INT, 0, NULL, NULL);
-    libmsi_summary_info_set_property(si, LIBMSI_PROPERTY_RESTRICT,
-                                     LIBMSI_PROPERTY_TYPE_INT, 0, NULL, NULL);
+    if (!libmsi_summary_info_set_string(si, LIBMSI_PROPERTY_TITLE,
+                                        "Installation Database", error))
+        return FALSE;
+
+    if (!libmsi_summary_info_set_string(si, LIBMSI_PROPERTY_KEYWORDS,
+                                        "Installer, MSI", error))
+        return FALSE;
+
+    if (!libmsi_summary_info_set_string(si, LIBMSI_PROPERTY_TEMPLATE,
+                                        ";1033", error))
+        return FALSE;
+
+    if (!libmsi_summary_info_set_string(si, LIBMSI_PROPERTY_APPNAME,
+                                        "libmsi msibuild", error))
+        return FALSE;
+
+    if (!libmsi_summary_info_set_int(si, LIBMSI_PROPERTY_VERSION,
+                                     200, error))
+        return FALSE;
+
+    if (!libmsi_summary_info_set_int(si, LIBMSI_PROPERTY_SOURCE,
+                                     0, error))
+        return FALSE;
+
+    if (!libmsi_summary_info_set_int(si, LIBMSI_PROPERTY_RESTRICT,
+                                     0, error))
+        return FALSE;
 
 #ifdef HAVE_LIBUUID
     {
@@ -61,14 +70,17 @@ static void init_suminfo(LibmsiSummaryInfo *si)
         uustr[0] = '{';
         uuid_unparse_upper(uu, uustr + 1);
         strcat(uustr, "}");
-        libmsi_summary_info_set_property(si, LIBMSI_PROPERTY_UUID,
-                                         LIBMSI_PROPERTY_TYPE_STRING, 0, NULL, uustr);
+        if (!libmsi_summary_info_set_string(si, LIBMSI_PROPERTY_UUID,
+                                            uustr, error))
+            return FALSE;
     }
 #endif
+
+    return TRUE;
 }
 
 static LibmsiResult open_database(const char *msifile, LibmsiDatabase **db,
-                                  LibmsiSummaryInfo **si)
+                                  LibmsiSummaryInfo **si, GError **error)
 {
     LibmsiResult r;
     struct stat st;
@@ -89,7 +101,8 @@ static LibmsiResult open_database(const char *msifile, LibmsiDatabase **db,
             return r;
         }
 
-        init_suminfo(*si);
+        if (!init_suminfo(*si, error))
+            return LIBMSI_RESULT_FUNCTION_FAILED;
 
         r = libmsi_database_commit(*db);
         if (r != LIBMSI_RESULT_SUCCESS)
@@ -139,27 +152,26 @@ static int import_table(char *table)
     return (r != LIBMSI_RESULT_SUCCESS);
 }
 
-static int add_summary_info(const char *name, const char *author,
-                            const char *template, const char *uuid)
+static gboolean add_summary_info(const char *name, const char *author,
+                                 const char *template, const char *uuid,
+                                 GError **error)
 {
-    libmsi_summary_info_set_property(si, LIBMSI_PROPERTY_SUBJECT,
-                                     LIBMSI_PROPERTY_TYPE_STRING,
-                                     0, NULL, name);
-    if (author) {
-        libmsi_summary_info_set_property(si, LIBMSI_PROPERTY_AUTHOR,
-                                         LIBMSI_PROPERTY_TYPE_STRING,
-                                         0, NULL, author);
-    }
-    if (template) {
-        libmsi_summary_info_set_property(si, LIBMSI_PROPERTY_TEMPLATE,
-                                         LIBMSI_PROPERTY_TYPE_STRING,
-                                         0, NULL, template);
-    }
-    if (uuid) {
-        libmsi_summary_info_set_property(si, LIBMSI_PROPERTY_UUID,
-                                         LIBMSI_PROPERTY_TYPE_STRING,
-                                         0, NULL, uuid);
-    }
+    if (!libmsi_summary_info_set_string(si, LIBMSI_PROPERTY_SUBJECT, name, error))
+        return FALSE;
+
+    if (author &&
+        !libmsi_summary_info_set_string(si, LIBMSI_PROPERTY_AUTHOR, author, error))
+        return FALSE;
+
+    if (template &&
+        !libmsi_summary_info_set_string(si, LIBMSI_PROPERTY_TEMPLATE, template, error))
+        return FALSE;
+
+    if (uuid &&
+        !libmsi_summary_info_set_string(si, LIBMSI_PROPERTY_UUID, uuid, error))
+        return FALSE;
+
+    return TRUE;
 }
 
 static int add_stream(const char *stream, const char *file)
@@ -237,10 +249,10 @@ int main(int argc, char *argv[])
 
     /* Accept package after first option for winemsibuilder compatibility.  */
     if (argc >= 3 && argv[1][0] == '-') {
-        r = open_database(argv[2], &db, &si);
+        r = open_database(argv[2], &db, &si, &error);
         argv[2] = argv[1];
     } else {
-        r = open_database(argv[1], &db, &si);
+        r = open_database(argv[1], &db, &si, &error);
     }
     if (r != LIBMSI_RESULT_SUCCESS) return 1;
 
@@ -260,10 +272,11 @@ int main(int argc, char *argv[])
             if (argv[2] && argv[2][0] != '-') n++;
             if (n > 2 && argv[3] && argv[3][0] != '-') n++;
             if (n > 3 && argv[4] && argv[4][0] != '-') n++;
-            ret = add_summary_info(argv[1],
-                                   n > 2 ? argv[2] : NULL,
-                                   n > 3 ? argv[3] : NULL,
-                                   n > 4 ? argv[4] : NULL);
+            if (!add_summary_info(argv[1],
+                                  n > 2 ? argv[2] : NULL,
+                                  n > 3 ? argv[3] : NULL,
+                                  n > 4 ? argv[4] : NULL, &error))
+                goto end;
             argc -= 3, argv += 3;
             break;
         case 'i':
@@ -305,12 +318,10 @@ int main(int argc, char *argv[])
     }
 
     if (r == LIBMSI_RESULT_SUCCESS) {
-        r = libmsi_summary_info_persist(si);
-        if (r != LIBMSI_RESULT_SUCCESS)
-        {
-            fprintf(stderr, "failed to commit summary info (%u)\n", r);
-            exit(1);
-        }
+        libmsi_summary_info_persist(si, &error);
+        if (error)
+            goto end;
+
         r = libmsi_database_commit(db);
         if (r != LIBMSI_RESULT_SUCCESS)
         {
@@ -318,6 +329,8 @@ int main(int argc, char *argv[])
             exit(1);
         }
     }
+
+end:
     g_object_unref(si);
     g_object_unref(db);
     return r != LIBMSI_RESULT_SUCCESS;

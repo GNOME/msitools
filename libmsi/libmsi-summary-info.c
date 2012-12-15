@@ -580,7 +580,7 @@ LibmsiResult libmsi_database_get_summary_info( LibmsiDatabase *db,
     return ret;
 }
 
-LibmsiResult libmsi_summary_info_get_property_count(LibmsiSummaryInfo *si, unsigned *pCount)
+LibmsiResult libmsi_summary_info_get_property_count (LibmsiSummaryInfo *si, unsigned *pCount)
 {
     TRACE("%d %p\n", si, pCount);
 
@@ -595,72 +595,116 @@ LibmsiResult libmsi_summary_info_get_property_count(LibmsiSummaryInfo *si, unsig
     return LIBMSI_RESULT_SUCCESS;
 }
 
-LibmsiResult libmsi_summary_info_get_property(
-      LibmsiSummaryInfo *si, unsigned uiProperty, unsigned *puiDataType, int *pintvalue,
-      guint64 *pftValue, char *szValueBuf, unsigned *pcchValueBuf)
+static void _summary_info_get_property (LibmsiSummaryInfo *si, unsigned uiProperty,
+                                        unsigned *puiDataType, int *pintvalue,
+                                        guint64 *pftValue, char *szValueBuf,
+                                        unsigned *pcchValueBuf, const gchar **str,
+                                        GError **error)
 {
     LibmsiOLEVariant *prop;
-    unsigned ret = LIBMSI_RESULT_SUCCESS;
+    LibmsiPropertyType type;
 
-    TRACE("%d %d %p %p %p %p %p\n", si, uiProperty, puiDataType,
-          pintvalue, pftValue, szValueBuf, pcchValueBuf);
-
-    if ( uiProperty >= MSI_MAX_PROPS )
-    {
-        if (puiDataType) *puiDataType = LIBMSI_PROPERTY_TYPE_EMPTY;
-        return LIBMSI_RESULT_UNKNOWN_PROPERTY;
+    if (uiProperty >= MSI_MAX_PROPS) {
+        g_set_error (error, LIBMSI_RESULT_ERROR, LIBMSI_RESULT_UNKNOWN_PROPERTY,
+                     "Unknown property");
+        return;
     }
 
-    if( !si )
-        return LIBMSI_RESULT_INVALID_HANDLE;
-
-    g_object_ref(si);
+    g_object_ref (si);
     prop = &si->property[uiProperty];
 
-    switch( prop->vt )
-    {
+    switch (prop->vt) {
     case OLEVT_I2:
     case OLEVT_I4:
-        if( puiDataType )
-            *puiDataType = LIBMSI_PROPERTY_TYPE_INT;
-
-        if( pintvalue )
+        type = LIBMSI_PROPERTY_TYPE_INT;
+        if (pintvalue)
             *pintvalue = prop->intval;
         break;
     case OLEVT_LPSTR:
-        if( puiDataType )
-            *puiDataType = LIBMSI_PROPERTY_TYPE_STRING;
-
-        if( pcchValueBuf )
-        {
+        type = LIBMSI_PROPERTY_TYPE_STRING;
+        if (str)
+            *str = prop->strval;
+        if (pcchValueBuf) {
             unsigned len = 0;
 
-            len = strlen( prop->strval );
-            if( szValueBuf )
-                strcpyn(szValueBuf, prop->strval, *pcchValueBuf );
+            len = strlen (prop->strval);
+            if (szValueBuf)
+                strcpyn (szValueBuf, prop->strval, *pcchValueBuf);
             if (len >= *pcchValueBuf)
-                ret = LIBMSI_RESULT_MORE_DATA;
+                g_set_error (error, LIBMSI_RESULT_ERROR, LIBMSI_RESULT_MORE_DATA, "");
             *pcchValueBuf = len;
         }
         break;
     case OLEVT_FILETIME:
-        if( puiDataType )
-            *puiDataType = LIBMSI_PROPERTY_TYPE_FILETIME;
-
-        if( pftValue )
+        type = LIBMSI_PROPERTY_TYPE_FILETIME;
+        if (pftValue)
             *pftValue = prop->filetime;
         break;
     case OLEVT_EMPTY:
-        if( puiDataType )
-            *puiDataType = LIBMSI_PROPERTY_TYPE_EMPTY;
-
+        // FIXME: should be replaced by a has_property() instead?
+        g_set_error (error, LIBMSI_RESULT_ERROR, LIBMSI_RESULT_SUCCESS, "Empty property");
+        type = LIBMSI_PROPERTY_TYPE_EMPTY;
         break;
     default:
-        FIXME("Unknown property variant type\n");
+        g_warn_if_reached ();
         break;
     }
-    g_object_unref(si);
-    return ret;
+
+    if (puiDataType)
+        *puiDataType = type;
+
+    g_object_unref (si);
+}
+
+gint
+libmsi_summary_info_get_int (LibmsiSummaryInfo *self, LibmsiProperty prop,
+                             GError **error)
+{
+    LibmsiPropertyType type;
+    gint val;
+
+    g_return_val_if_fail (LIBMSI_SUMMARY_INFO (self), FALSE);
+    g_return_val_if_fail (!error || *error == NULL, FALSE);
+
+    type = LIBMSI_PROPERTY_TYPE_INT;
+    _summary_info_get_property (self, prop, &type, &val,
+                                NULL, NULL, NULL, NULL, error);
+
+    return val;
+}
+
+guint64
+libmsi_summary_info_get_filetime (LibmsiSummaryInfo *self, LibmsiProperty prop,
+                                  GError **error)
+{
+    LibmsiPropertyType type;
+    guint64 val;
+
+    g_return_val_if_fail (LIBMSI_SUMMARY_INFO (self), FALSE);
+    g_return_val_if_fail (!error || *error == NULL, FALSE);
+
+    type = LIBMSI_PROPERTY_TYPE_FILETIME;
+    _summary_info_get_property (self, prop, &type, NULL,
+                                &val, NULL, NULL, NULL, error);
+
+    return val;
+}
+
+const gchar *
+libmsi_summary_info_get_string (LibmsiSummaryInfo *self, LibmsiProperty prop,
+                                GError **error)
+{
+    LibmsiPropertyType type;
+    const gchar *str;
+
+    g_return_val_if_fail (LIBMSI_SUMMARY_INFO (self), FALSE);
+    g_return_val_if_fail (!error || *error == NULL, FALSE);
+
+    type = LIBMSI_PROPERTY_TYPE_STRING;
+    _summary_info_get_property (self, prop, &type, NULL,
+                                NULL, NULL, NULL, &str, error);
+
+    return str;
 }
 
 static LibmsiResult _libmsi_summary_info_set_property( LibmsiSummaryInfo *si, unsigned uiProperty,
@@ -718,40 +762,77 @@ end:
     return ret;
 }
 
-LibmsiResult libmsi_summary_info_set_property( LibmsiSummaryInfo *si, unsigned uiProperty,
-               unsigned uiDataType, int intvalue, guint64* pftValue, const char *szValue )
+gboolean
+libmsi_summary_info_set_string (LibmsiSummaryInfo *self, LibmsiProperty prop,
+                                const gchar *value, GError **error)
 {
-    int type;
+    LibmsiResult ret;
 
-    TRACE("%p %u %u %i %p %p\n", si, uiProperty, type, intvalue,
-          pftValue, szValue );
+    g_return_val_if_fail (LIBMSI_IS_SUMMARY_INFO (self), FALSE);
+    g_return_val_if_fail (!error || *error == NULL, FALSE);
 
-    if( !si )
-        return LIBMSI_RESULT_INVALID_HANDLE;
-
-    type = get_type( uiProperty );
-    switch (type) {
-    case OLEVT_EMPTY:
-        return LIBMSI_RESULT_DATATYPE_MISMATCH;
-    case OLEVT_I2:
-    case OLEVT_I4:
-        if (uiDataType != LIBMSI_PROPERTY_TYPE_INT) {
-            return LIBMSI_RESULT_DATATYPE_MISMATCH;
-        }
-        break;
-    case OLEVT_LPSTR:
-        if (uiDataType != LIBMSI_PROPERTY_TYPE_STRING) {
-            return LIBMSI_RESULT_DATATYPE_MISMATCH;
-        }
-        break;
-    case OLEVT_FILETIME:
-        if (uiDataType != LIBMSI_PROPERTY_TYPE_FILETIME) {
-            return LIBMSI_RESULT_DATATYPE_MISMATCH;
-        }
-        break;
+    if (get_type (prop) != OLEVT_LPSTR) {
+        g_set_error (error, LIBMSI_RESULT_ERROR, LIBMSI_RESULT_DATATYPE_MISMATCH, G_STRFUNC);
+        return FALSE;
     }
 
-    return _libmsi_summary_info_set_property( si, uiProperty, type, intvalue, pftValue, szValue );
+    ret = _libmsi_summary_info_set_property (self, prop, OLEVT_LPSTR, 0, 0, value);
+    if (ret != LIBMSI_RESULT_SUCCESS) {
+        g_set_error (error, LIBMSI_RESULT_ERROR, ret, G_STRFUNC);
+        return FALSE;
+    }
+
+    return TRUE;
+}
+
+gboolean
+libmsi_summary_info_set_int (LibmsiSummaryInfo *self, LibmsiProperty prop,
+                             gint value, GError **error)
+{
+    LibmsiResult ret;
+    int type;
+
+    g_return_val_if_fail (LIBMSI_IS_SUMMARY_INFO (self), FALSE);
+    g_return_val_if_fail (!error || *error == NULL, FALSE);
+
+    type = get_type (prop);
+    if (type != OLEVT_I2 && type != OLEVT_I4) {
+        g_set_error (error, LIBMSI_RESULT_ERROR, LIBMSI_RESULT_DATATYPE_MISMATCH, G_STRFUNC);
+        return FALSE;
+    }
+
+    ret = _libmsi_summary_info_set_property (self, prop, type, value, 0, NULL);
+    if (ret != LIBMSI_RESULT_SUCCESS) {
+        g_set_error (error, LIBMSI_RESULT_ERROR, ret, G_STRFUNC);
+        return FALSE;
+    }
+
+    return TRUE;
+}
+
+gboolean
+libmsi_summary_info_set_filetime (LibmsiSummaryInfo *self, LibmsiProperty prop,
+                                  guint64 value, GError **error)
+{
+    LibmsiResult ret;
+    int type;
+
+    g_return_val_if_fail (LIBMSI_IS_SUMMARY_INFO (self), FALSE);
+    g_return_val_if_fail (!error || *error == NULL, FALSE);
+
+    type = get_type (prop);
+    if (type != OLEVT_FILETIME) {
+        g_set_error (error, LIBMSI_RESULT_ERROR, LIBMSI_RESULT_DATATYPE_MISMATCH, G_STRFUNC);
+        return FALSE;
+    }
+
+    ret = _libmsi_summary_info_set_property (self, prop, type, 0, &value, NULL);
+    if (ret != LIBMSI_RESULT_SUCCESS) {
+        g_set_error (error, LIBMSI_RESULT_ERROR, ret, G_STRFUNC);
+        return FALSE;
+    }
+
+    return TRUE;
 }
 
 static unsigned parse_prop( const char *prop, const char *value, unsigned *pid, int *int_value,
@@ -837,20 +918,25 @@ end:
     return r;
 }
 
-LibmsiResult libmsi_summary_info_persist( LibmsiSummaryInfo *si )
+gboolean libmsi_summary_info_persist (LibmsiSummaryInfo *si, GError **error)
 {
     unsigned ret;
 
-    TRACE("%d\n", si );
+    g_return_val_if_fail (!error || *error == NULL, FALSE);
 
-    if( !si )
-        return LIBMSI_RESULT_INVALID_HANDLE;
+    TRACE("%p\n", si);
 
-    g_object_ref(si);
-    ret = suminfo_persist( si );
-    g_object_unref(si);
+    if (!si)
+        return FALSE;
 
-    return ret;
+    g_object_ref (si);
+    ret = suminfo_persist (si);
+    g_object_unref (si);
+
+    if (ret != LIBMSI_RESULT_SUCCESS)
+        g_set_error_literal (error, LIBMSI_RESULT_ERROR, ret, G_STRFUNC);
+
+    return ret == LIBMSI_RESULT_SUCCESS;
 }
 
 LibmsiSummaryInfo*

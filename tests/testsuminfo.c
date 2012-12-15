@@ -35,13 +35,14 @@ static const WCHAR msifileW[] = {
 
 static void test_suminfo(void)
 {
+    GError *error = NULL;
     LibmsiDatabase *hdb = 0;
     LibmsiSummaryInfo *hsuminfo;
     unsigned r, count, type;
     unsigned sz;
     int val;
     uint64_t ft;
-    char buf[0x10];
+    const gchar *str;
 
     DeleteFile(msifile);
 
@@ -71,47 +72,17 @@ static void test_suminfo(void)
     ok(r == LIBMSI_RESULT_SUCCESS, "getpropcount failed\n");
     ok(count == 0, "count should be zero\n");
 
-    r = libmsi_summary_info_get_property(hsuminfo, 0, NULL, NULL, NULL, 0, NULL);
-    ok(r == LIBMSI_RESULT_SUCCESS, "getpropcount failed\n");
-
-    r = libmsi_summary_info_get_property(hsuminfo, -1, NULL, NULL, NULL, 0, NULL);
-    ok(r == LIBMSI_RESULT_UNKNOWN_PROPERTY, "libmsi_summary_info_get_property wrong error\n");
-
-    r = libmsi_summary_info_get_property(hsuminfo, LIBMSI_PROPERTY_SECURITY+1, NULL, NULL, NULL, 0, NULL);
-    ok(r == LIBMSI_RESULT_UNKNOWN_PROPERTY, "libmsi_summary_info_get_property wrong error\n");
-
-    type = -1;
-    r = libmsi_summary_info_get_property(hsuminfo, 0, &type, NULL, NULL, 0, NULL);
-    ok(r == LIBMSI_RESULT_SUCCESS, "getpropcount failed\n");
-    ok(type == 0, "wrong type\n");
-
-    type = -1;
-    val = 1234;
-    r = libmsi_summary_info_get_property(hsuminfo, 0, &type, &val, NULL, 0, NULL);
-    ok(r == LIBMSI_RESULT_SUCCESS, "getpropcount failed\n");
-    ok(type == 0, "wrong type\n");
-    ok(val == 1234, "wrong val\n");
-
-    buf[0]='x';
-    buf[1]=0;
-    sz = 0x10;
-    r = libmsi_summary_info_get_property(hsuminfo, LIBMSI_PROPERTY_UUID, &type, &val, NULL, buf, &sz);
-    ok(r == LIBMSI_RESULT_SUCCESS, "getpropcount failed\n");
-    ok(buf[0]=='x', "cleared buffer\n");
-    ok(sz == 0x10, "count wasn't zero\n");
+    type = libmsi_summary_info_get_property_type(hsuminfo, LIBMSI_PROPERTY_UUID, &error);
+    ok(!error, "returned error");
     ok(type == LIBMSI_PROPERTY_TYPE_EMPTY, "should be empty\n");
 
-    r = libmsi_summary_info_set_property(hsuminfo, LIBMSI_PROPERTY_TITLE, LIBMSI_PROPERTY_TYPE_STRING, 0, NULL, "Mike");
-    ok(r == LIBMSI_RESULT_FUNCTION_FAILED, "libmsi_summary_info_set_property wrong error\n");
+    libmsi_summary_info_set_string(hsuminfo, LIBMSI_PROPERTY_TITLE, "Mike", &error);
+    ok(error, "libmsi_summary_info_set_property wrong error\n");
+    g_clear_error(error);
 
-    r = libmsi_summary_info_set_property(hsuminfo, LIBMSI_PROPERTY_TITLE, LIBMSI_PROPERTY_TYPE_STRING, 1, NULL, "JungAh");
-    ok(r == LIBMSI_RESULT_FUNCTION_FAILED, "libmsi_summary_info_set_property wrong error\n");
-
-    r = libmsi_summary_info_set_property(hsuminfo, LIBMSI_PROPERTY_TITLE, LIBMSI_PROPERTY_TYPE_STRING, 1, &ft, "Mike");
-    ok(r == LIBMSI_RESULT_FUNCTION_FAILED, "libmsi_summary_info_set_property wrong error\n");
-
-    r = libmsi_summary_info_set_property(hsuminfo, LIBMSI_PROPERTY_CODEPAGE, LIBMSI_PROPERTY_TYPE_INT, 1, &ft, "JungAh");
-    ok(r == LIBMSI_RESULT_FUNCTION_FAILED, "libmsi_summary_info_set_property wrong error\n");
+    libmsi_summary_info_set_int(hsuminfo, LIBMSI_PROPERTY_CODEPAGE, 1, &error);
+    ok(error, "libmsi_summary_info_set_property wrong error\n");
+    g_clear_error(error);
 
     g_object_unref(hsuminfo);
 
@@ -119,66 +90,55 @@ static void test_suminfo(void)
     r = libmsi_database_get_summary_info(hdb, 1, &hsuminfo);
     ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_database_get_summary_info failed\n");
 
-    r = libmsi_summary_info_set_property(hsuminfo, 0, LIBMSI_PROPERTY_TYPE_STRING, 1, NULL, NULL);
-    ok(r == LIBMSI_RESULT_DATATYPE_MISMATCH, "libmsi_summary_info_set_property wrong error\n");
+    libmsi_summary_info_set_string(hsuminfo, 0, NULL, &error);
+    g_assert_error(error, LIBMSI_RESULT_ERROR, LIBMSI_RESULT_DATATYPE_MISMATCH);
+    g_clear_error(error);
 
-    r = libmsi_summary_info_set_property(hsuminfo, LIBMSI_PROPERTY_CODEPAGE, LIBMSI_PROPERTY_TYPE_STRING, 1, NULL, NULL);
-    ok(r == LIBMSI_RESULT_DATATYPE_MISMATCH, "libmsi_summary_info_set_property wrong error\n");
+    libmsi_summary_info_set_string(hsuminfo, LIBMSI_PROPERTY_CODEPAGE, NULL, &error);
+    g_assert_error(error, LIBMSI_RESULT_ERROR, LIBMSI_RESULT_DATATYPE_MISMATCH);
+    g_clear_error(error);
 
-    r = libmsi_summary_info_set_property(hsuminfo, LIBMSI_PROPERTY_TITLE, LIBMSI_PROPERTY_TYPE_INT, 0, NULL, "Mike");
-    ok(r == LIBMSI_RESULT_DATATYPE_MISMATCH, "libmsi_summary_info_set_property wrong error\n");
+    libmsi_summary_info_set_int(hsuminfo, LIBMSI_PROPERTY_TITLE, NULL, &error);
+    g_assert_error(error, LIBMSI_RESULT_ERROR, LIBMSI_RESULT_DATATYPE_MISMATCH);
+    g_clear_error(error);
 
-    r = libmsi_summary_info_set_property(hsuminfo, LIBMSI_PROPERTY_AUTHOR, LIBMSI_PROPERTY_TYPE_INT, 0, NULL, "JungAh");
-    ok(r == LIBMSI_RESULT_DATATYPE_MISMATCH, "libmsi_summary_info_set_property wrong error\n");
+    libmsi_summary_info_set_int(hsuminfo, LIBMSI_PROPERTY_AUTHOR, 0, &error);
+    g_assert_error(error, LIBMSI_RESULT_ERROR, LIBMSI_RESULT_DATATYPE_MISMATCH);
+    g_clear_error(error);
 
-    r = libmsi_summary_info_set_property(hsuminfo, LIBMSI_PROPERTY_KEYWORDS, LIBMSI_PROPERTY_TYPE_INT, 0, NULL, "Mike");
-    ok(r == LIBMSI_RESULT_DATATYPE_MISMATCH, "libmsi_summary_info_set_property wrong error\n");
+    libmsi_summary_info_set_int(hsuminfo, LIBMSI_PROPERTY_KEYWORDS, 0, &error);
+    g_assert_error(error, LIBMSI_RESULT_ERROR, LIBMSI_RESULT_DATATYPE_MISMATCH);
+    g_clear_error(error);
 
-    r = libmsi_summary_info_set_property(hsuminfo, LIBMSI_PROPERTY_COMMENTS, LIBMSI_PROPERTY_TYPE_FILETIME, 0, NULL, "JungAh");
-    ok(r == LIBMSI_RESULT_DATATYPE_MISMATCH, "libmsi_summary_info_set_property wrong error\n");
+    libmsi_summary_info_set_filetime(hsuminfo, LIBMSI_PROPERTY_COMMENTS, 0, &error);
+    g_assert_error(error, LIBMSI_RESULT_ERROR, LIBMSI_RESULT_DATATYPE_MISMATCH);
+    g_clear_error(error);
 
-    r = libmsi_summary_info_set_property(hsuminfo, LIBMSI_PROPERTY_TEMPLATE, LIBMSI_PROPERTY_TYPE_INT, 0, NULL, "Mike");
-    ok(r == LIBMSI_RESULT_DATATYPE_MISMATCH, "libmsi_summary_info_set_property wrong error\n");
+    libmsi_summary_info_set_int(hsuminfo, LIBMSI_PROPERTY_TEMPLATE, 0, &error);
+    g_assert_error(error, LIBMSI_RESULT_ERROR, LIBMSI_RESULT_DATATYPE_MISMATCH);
+    g_clear_error(error);
 
-    r = libmsi_summary_info_set_property(hsuminfo, LIBMSI_PROPERTY_LASTAUTHOR, LIBMSI_PROPERTY_TYPE_STRING, 0, NULL, NULL);
-    ok(r == LIBMSI_RESULT_INVALID_PARAMETER, "libmsi_summary_info_set_property wrong error\n");
+    libmsi_summary_info_set_string(hsuminfo, LIBMSI_PROPERTY_LASTAUTHOR, NULL, &error);
+    g_assert_error(error, LIBMSI_RESULT_ERROR, LIBMSI_RESULT_INVALID_PARAMETER);
+    g_clear_error(error);
 
-    r = libmsi_summary_info_set_property(hsuminfo, LIBMSI_PROPERTY_LASTSAVED_TM, LIBMSI_PROPERTY_TYPE_FILETIME, 0, NULL, NULL);
-    ok(r == LIBMSI_RESULT_INVALID_PARAMETER, "libmsi_summary_info_set_property wrong error\n");
+    libmsi_summary_info_set_int(hsuminfo, LIBMSI_PROPERTY_UUID, 0, &error);
+    g_assert_error(error, LIBMSI_RESULT_ERROR, LIBMSI_RESULT_DATATYPE_MISMATCH);
+    g_clear_error(error);
 
-    r = libmsi_summary_info_set_property(hsuminfo, LIBMSI_PROPERTY_LASTAUTHOR, VT_LPWSTR, 0, NULL, "h\0i\0\0");
-    ok(r == LIBMSI_RESULT_DATATYPE_MISMATCH, "libmsi_summary_info_set_property wrong error\n");
+    libmsi_summary_info_set_string(hsuminfo, LIBMSI_PROPERTY_VERSION, NULL, &error);
+    g_assert(error, LIBMSI_RESULT_ERROR, LIBMSI_RESULT_DATATYPE_MISMATCH);
+    g_clear_error(error);
 
-    r = libmsi_summary_info_set_property(hsuminfo, LIBMSI_PROPERTY_UUID, LIBMSI_PROPERTY_TYPE_INT, 0, NULL, "Jungah");
-    ok(r == LIBMSI_RESULT_DATATYPE_MISMATCH, "libmsi_summary_info_set_property wrong error\n");
+    libmsi_summary_info_set_string(hsuminfo, LIBMSI_PROPERTY_TITLE, "Mike", &error);
+    ok(!error, "libmsi_summary_info_set_property failed\n");
 
-    r = libmsi_summary_info_set_property(hsuminfo, LIBMSI_PROPERTY_VERSION, LIBMSI_PROPERTY_TYPE_STRING, 1, NULL, NULL);
-    ok(r == LIBMSI_RESULT_DATATYPE_MISMATCH, "libmsi_summary_info_set_property wrong error\n");
+    str = libmsi_summary_info_get_string(hsuminfo, LIBMSI_PROPERTY_TITLE, &error);
+    ok(!error, "got error");
+    ok(!strcpy(str, "Mike"));
 
-    r = libmsi_summary_info_set_property(hsuminfo, LIBMSI_PROPERTY_TITLE, LIBMSI_PROPERTY_TYPE_STRING, 0, NULL, "Mike");
-    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_summary_info_set_property failed\n");
-
-    sz = 2;
-    strcpy(buf,"x");
-    r = libmsi_summary_info_get_property(hsuminfo, LIBMSI_PROPERTY_TITLE, &type, NULL, NULL, buf, &sz );
-    ok(r == LIBMSI_RESULT_MORE_DATA, "libmsi_summary_info_set_property failed\n");
-    ok(sz == 4, "count was wrong\n");
-    ok(type == LIBMSI_PROPERTY_TYPE_STRING, "type was wrong\n");
-    ok(!strcmp(buf,"M"), "buffer was wrong\n");
-
-    sz = 4;
-    strcpy(buf,"x");
-    r = libmsi_summary_info_get_property(hsuminfo, LIBMSI_PROPERTY_TITLE, &type, NULL, NULL, buf, &sz );
-    ok(r == LIBMSI_RESULT_MORE_DATA, "libmsi_summary_info_set_property failed\n");
-    ok(sz == 4, "count was wrong\n");
-    ok(type == LIBMSI_PROPERTY_TYPE_STRING, "type was wrong\n");
-    ok(!strcmp(buf,"Mik"), "buffer was wrong\n");
-
-    r = libmsi_summary_info_set_property(hsuminfo, LIBMSI_PROPERTY_TITLE, LIBMSI_PROPERTY_TYPE_STRING, 0, NULL, "JungAh");
-    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_summary_info_set_property failed\n");
-
-    r = libmsi_summary_info_set_property(hsuminfo, LIBMSI_PROPERTY_CODEPAGE, LIBMSI_PROPERTY_TYPE_INT, 1, &ft, "Mike");
-    ok(r == LIBMSI_RESULT_FUNCTION_FAILED, "libmsi_summary_info_set_property wrong error\n");
+    libmsi_summary_info_set_string(hsuminfo, LIBMSI_PROPERTY_TITLE, "JungAh", &error);
+    ok(!error, "libmsi_summary_info_set_property failed\n");
 
     g_object_unref(hsuminfo);
 
@@ -186,23 +146,24 @@ static void test_suminfo(void)
     r = libmsi_database_get_summary_info(hdb, 10, &hsuminfo);
     ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_database_get_summary_info failed\n");
 
-    r = libmsi_summary_info_set_property(hsuminfo, LIBMSI_PROPERTY_TITLE, LIBMSI_PROPERTY_TYPE_STRING, 0, NULL, "JungAh");
-    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_summary_info_set_property failed\n");
+    libmsi_summary_info_set_string(hsuminfo, LIBMSI_PROPERTY_TITLE, "JungAh", &error);
+    ok(!error, "libmsi_summary_info_set_property failed\n");
 
-    r = libmsi_summary_info_set_property(hsuminfo, LIBMSI_PROPERTY_CODEPAGE, LIBMSI_PROPERTY_TYPE_STRING, 1, NULL, NULL);
-    ok(r == LIBMSI_RESULT_DATATYPE_MISMATCH, "libmsi_summary_info_set_property wrong error\n");
+    libmsi_summary_info_set_string(hsuminfo, LIBMSI_PROPERTY_CODEPAGE, "", &error);
+    g_assert(error, LIBMSI_RESULT_ERROR, LIBMSI_RESULT_DATATYPE_MISMATCH);
+    g_clear_error(&error);
 
-    r = libmsi_summary_info_set_property(hsuminfo, LIBMSI_PROPERTY_CODEPAGE, LIBMSI_PROPERTY_TYPE_INT, 1, NULL, NULL);
-    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_summary_info_set_property wrong error\n");
+    libmsi_summary_info_set_int(hsuminfo, LIBMSI_PROPERTY_CODEPAGE, 1, &error);
+    ok(!error, "libmsi_summary_info_set_property failed\n");
 
-    r = libmsi_summary_info_set_property(hsuminfo, LIBMSI_PROPERTY_CODEPAGE, LIBMSI_PROPERTY_TYPE_INT, 1, &ft, "Mike");
-    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_summary_info_set_property wrong error\n");
+    libmsi_summary_info_set_int(hsuminfo, LIBMSI_PROPERTY_CODEPAGE, 1, &error);
+    ok(!error, "libmsi_summary_info_set_property failed\n");
 
-    r = libmsi_summary_info_set_property(hsuminfo, LIBMSI_PROPERTY_AUTHOR, LIBMSI_PROPERTY_TYPE_STRING, 1, &ft, "Mike");
-    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_summary_info_set_property wrong error\n");
+    libmsi_summary_info_set_string(hsuminfo, LIBMSI_PROPERTY_AUTHOR, "Mike", &error);
+    ok(!error, "libmsi_summary_info_set_property failed\n");
 
     r = libmsi_summary_info_persist(hsuminfo);
-    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_summary_info_persist failed\n");
+    ok(r, "libmsi_summary_info_persist failed\n");
 
     libmsi_database_commit(hdb);
 
@@ -217,11 +178,11 @@ static void test_suminfo(void)
     r = libmsi_database_get_summary_info(hdb, 1, &hsuminfo);
     ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_database_get_summary_info failed\n");
 
-    r = libmsi_summary_info_set_property(hsuminfo, LIBMSI_PROPERTY_AUTHOR, LIBMSI_PROPERTY_TYPE_STRING, 1, &ft, "Mike");
+    r = libmsi_summary_info_set_string(hsuminfo, LIBMSI_PROPERTY_AUTHOR, "Mike", error);
     ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_summary_info_set_property wrong error\n");
 
     r = libmsi_summary_info_persist(hsuminfo);
-    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_summary_info_persist failed %u\n", r);
+    ok(r, "libmsi_summary_info_persist failed %u\n", r);
 
     g_object_unref(hsuminfo);
 
@@ -234,11 +195,12 @@ static void test_suminfo(void)
     r = libmsi_database_get_summary_info(hdb, 0, &hsuminfo);
     ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_database_get_summary_info failed %u\n", r);
 
-    r = libmsi_summary_info_set_property(hsuminfo, LIBMSI_PROPERTY_AUTHOR, LIBMSI_PROPERTY_TYPE_STRING, 1, &ft, "Mike");
-    todo_wine ok(r == LIBMSI_RESULT_FUNCTION_FAILED, "libmsi_summary_info_set_property wrong error, %u\n", r);
+    libmsi_summary_info_set_string(hsuminfo, LIBMSI_PROPERTY_AUTHOR, "Mike", &error);
+    todo_wine ok(error, "libmsi_summary_info_set_property wrong error\n");
+    g_clear_error(&error);
 
     r = libmsi_summary_info_persist(hsuminfo);
-    ok(r == LIBMSI_RESULT_FUNCTION_FAILED, "libmsi_summary_info_persist wrong error %u\n", r);
+    ok(!r, "libmsi_summary_info_persist wrong error %u\n", r);
 
     g_object_unref(hsuminfo);
 
@@ -363,12 +325,12 @@ static void test_create_database_binary(void)
 
 static void test_summary_binary(void)
 {
+    GError *error = NULL;
     LibmsiDatabase *hdb = 0;
     LibmsiSummaryInfo *hsuminfo = 0;
     unsigned r, type, count;
     int ival;
-    unsigned sz;
-    char sval[20];
+    const gchar *str;
 
     DeleteFile( msifile );
 
@@ -389,21 +351,13 @@ static void test_summary_binary(void)
      * but it appears that we're not allowed to read it back again.
      * We can still read its type though...?
      */
-    sz = sizeof sval;
-    sval[0] = 0;
-    type = 0;
-    r = libmsi_summary_info_get_property(hsuminfo, LIBMSI_PROPERTY_LASTPRINTED, &type, NULL, NULL, sval, &sz);
-    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_summary_info_get_property failed\n");
-    ok(!strcmp(sval, "") || !strcmp(sval, "7"),
-        "Expected empty string or \"7\", got \"%s\"\n", sval);
-    todo_wine {
-    ok(type == LIBMSI_PROPERTY_TYPE_STRING, "Expected VT_LPSTR, got %d\n", type);
-    ok(sz == 0 || sz == 1, "Expected 0 or 1, got %d\n", sz);
-    }
+    str = libmsi_summary_info_get_string(hsuminfo, LIBMSI_PROPERTY_LASTPRINTED, error);
+    ok(!error);
+    ok(!strcmp(str, "") || !strcmp(str, "7"),
+        "Expected empty string or \"7\", got \"%s\"\n", str);
 
-    ival = -1;
-    r = libmsi_summary_info_get_property(hsuminfo, LIBMSI_PROPERTY_SOURCE, &type, &ival, NULL, NULL, NULL);
-    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_summary_info_get_property failed\n");
+    ival = libmsi_summary_info_get_int(hsuminfo, LIBMSI_PROPERTY_SOURCE, &error);
+    ok(!error, "libmsi_summary_info_get_property failed\n");
     todo_wine ok( ival == 0, "value incorrect\n");
 
     /* looks like msi adds some of its own values in here */
@@ -412,11 +366,12 @@ static void test_summary_binary(void)
     ok(r == LIBMSI_RESULT_SUCCESS, "getpropcount failed\n");
     todo_wine ok(count == 10, "prop count incorrect\n");
 
-    r = libmsi_summary_info_set_property( hsuminfo, LIBMSI_PROPERTY_TITLE, LIBMSI_PROPERTY_TYPE_STRING, 0, NULL, "Mike" );
-    ok(r == LIBMSI_RESULT_FUNCTION_FAILED, "libmsi_summary_info_set_property failed %u\n", r);
+    libmsi_summary_info_set_string(hsuminfo, LIBMSI_PROPERTY_TITLE, "Mike", &error);
+    ok(error, "libmsi_summary_info_set_property failed\n");
+    g_clear_error(&error);
 
     r = libmsi_summary_info_persist( hsuminfo );
-    ok(r == LIBMSI_RESULT_FUNCTION_FAILED, "libmsi_summary_info_persist failed %u\n", r);
+    ok(!r, "libmsi_summary_info_persist failed %u\n", r);
 
     g_object_unref( hsuminfo );
     g_object_unref( hdb );

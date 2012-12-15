@@ -41,10 +41,33 @@ struct _LibmsiSummaryInfoClass
 
 GType libmsi_summary_info_get_type (void) G_GNUC_CONST;
 
-LibmsiSummaryInfo *   libmsi_summary_info_new (LibmsiDatabase *database, unsigned update_count, GError **error);
-LibmsiResult          libmsi_summary_info_get_property (LibmsiSummaryInfo *, LibmsiPropertyType,unsigned *,int *,guint64*,char *,unsigned *);
-LibmsiResult          libmsi_summary_info_set_property (LibmsiSummaryInfo *, LibmsiPropertyType, unsigned, int, guint64*, const char *);
-LibmsiResult          libmsi_summary_info_persist (LibmsiSummaryInfo *);
+LibmsiSummaryInfo *   libmsi_summary_info_new          (LibmsiDatabase *database,
+                                                        unsigned update_count,
+                                                        GError **error);
+const gchar *         libmsi_summary_info_get_string   (LibmsiSummaryInfo *si,
+                                                        LibmsiProperty prop,
+                                                        GError **error);
+gint                  libmsi_summary_info_get_int      (LibmsiSummaryInfo *si,
+                                                        LibmsiProperty prop,
+                                                        GError **error);
+guint64               libmsi_summary_info_get_filetime (LibmsiSummaryInfo *si,
+                                                        LibmsiProperty prop,
+                                                        GError **error);
+gboolean              libmsi_summary_info_set_string   (LibmsiSummaryInfo *si,
+                                                        LibmsiProperty prop,
+                                                        const gchar *value,
+                                                        GError **error);
+gboolean              libmsi_summary_info_set_int      (LibmsiSummaryInfo *si,
+                                                        LibmsiProperty prop,
+                                                        gint value,
+                                                        GError **error);
+gboolean              libmsi_summary_info_set_filetime (LibmsiSummaryInfo *si,
+                                                        LibmsiProperty prop,
+                                                        guint64 value,
+                                                        GError **error);
+gboolean              libmsi_summary_info_persist      (LibmsiSummaryInfo *si,
+                                                        GError **error);
+
 LibmsiResult          libmsi_summary_info_get_property_count (LibmsiSummaryInfo *,unsigned *);
 
 
