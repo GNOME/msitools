@@ -738,32 +738,25 @@ static void test_getcolinfo(void)
     ok( r, "failed to execute query\n");
 
     /* check that NAMES works */
-    rec = 0;
-    r = libmsi_query_get_column_info( hquery, LIBMSI_COL_INFO_NAMES, &rec );
-    ok( r == LIBMSI_RESULT_SUCCESS, "failed to get names\n");
+    rec = libmsi_query_get_column_info( hquery, LIBMSI_COL_INFO_NAMES, NULL );
+    ok(rec, "failed to get names\n");
 
     check_record_string (rec, 1, "Name");
     g_object_unref( rec );
 
     /* check that TYPES works */
-    rec = 0;
-    r = libmsi_query_get_column_info( hquery, LIBMSI_COL_INFO_TYPES, &rec );
-    ok( r == LIBMSI_RESULT_SUCCESS, "failed to get names\n");
+    rec = libmsi_query_get_column_info( hquery, LIBMSI_COL_INFO_TYPES, NULL );
+    ok(rec, "failed to get names\n");
 
     check_record_string (rec, 1, "s64");
     g_object_unref( rec );
 
     /* check that invalid values fail */
-    rec = 0;
-    r = libmsi_query_get_column_info( hquery, 100, &rec );
-    ok( r == LIBMSI_RESULT_INVALID_PARAMETER, "wrong error code\n");
-    ok( rec == 0, "returned a record\n");
+    rec = libmsi_query_get_column_info( hquery, 100, NULL);
+    ok(!rec, "returned a record\n");
 
-    r = libmsi_query_get_column_info( hquery, LIBMSI_COL_INFO_TYPES, NULL );
-    ok( r == LIBMSI_RESULT_INVALID_PARAMETER, "wrong error code\n");
-
-    r = libmsi_query_get_column_info( 0, LIBMSI_COL_INFO_TYPES, &rec );
-    ok( r == LIBMSI_RESULT_INVALID_HANDLE, "wrong error code\n");
+    rec = libmsi_query_get_column_info( 0, LIBMSI_COL_INFO_TYPES, NULL);
+    ok(!rec, "wrong return value\n");
 
     r = libmsi_query_close(hquery, NULL);
     ok(r, "failed to close query\n");
@@ -784,7 +777,7 @@ static LibmsiRecord *get_column_info(LibmsiDatabase *hdb, const char *sql, Libms
     r = libmsi_query_execute(hquery, 0, NULL);
     if( r )
     {
-        libmsi_query_get_column_info( hquery, type, &rec );
+        rec = libmsi_query_get_column_info( hquery, type, NULL );
     }
     libmsi_query_close(hquery, NULL);
     g_object_unref(hquery);
@@ -1838,8 +1831,8 @@ static void test_msiimport(void)
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     rec = NULL;
-    r = libmsi_query_get_column_info(query, LIBMSI_COL_INFO_NAMES, &rec);
-    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
+    rec = libmsi_query_get_column_info(query, LIBMSI_COL_INFO_NAMES, NULL);
+    ok(rec, "Expected result\n");
     count = libmsi_record_get_field_count(rec);
     ok(count == 9, "Expected 9, got %d\n", count);
     ok(check_record(rec, 1, "FirstPrimaryColumn"), "Expected FirstPrimaryColumn\n");
@@ -1854,8 +1847,8 @@ static void test_msiimport(void)
     g_object_unref(rec);
 
     rec = NULL;
-    r = libmsi_query_get_column_info(query, LIBMSI_COL_INFO_TYPES, &rec);
-    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
+    rec = libmsi_query_get_column_info(query, LIBMSI_COL_INFO_TYPES, NULL);
+    ok(rec, "Expected result\n");
     count = libmsi_record_get_field_count(rec);
     ok(count == 9, "Expected 9, got %d\n", count);
     ok(check_record(rec, 1, "s255"), "Expected s255\n");
@@ -1901,9 +1894,8 @@ static void test_msiimport(void)
     r = libmsi_database_open_query(hdb, sql, &query);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
-    rec = NULL;
-    r = libmsi_query_get_column_info(query, LIBMSI_COL_INFO_NAMES, &rec);
-    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
+    rec = libmsi_query_get_column_info(query, LIBMSI_COL_INFO_NAMES, NULL);
+    ok(rec, "Expected result\n");
     count = libmsi_record_get_field_count(rec);
     ok(count == 2, "Expected 2, got %d\n", count);
     ok(check_record(rec, 1, "PrimaryOne"), "Expected PrimaryOne\n");
@@ -1911,9 +1903,8 @@ static void test_msiimport(void)
 
     g_object_unref(rec);
 
-    rec = NULL;
-    r = libmsi_query_get_column_info(query, LIBMSI_COL_INFO_TYPES, &rec);
-    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
+    rec = libmsi_query_get_column_info(query, LIBMSI_COL_INFO_TYPES, NULL);
+    ok(rec, "Expected result\n");
     count = libmsi_record_get_field_count(rec);
     ok(count == 2, "Expected 2, got %d\n", count);
     ok(check_record(rec, 1, "s255"), "Expected s255\n");
@@ -1951,9 +1942,8 @@ static void test_msiimport(void)
     r = libmsi_database_open_query(hdb, sql, &query);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
-    rec = NULL;
-    r = libmsi_query_get_column_info(query, LIBMSI_COL_INFO_NAMES, &rec);
-    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
+    rec = libmsi_query_get_column_info(query, LIBMSI_COL_INFO_NAMES, NULL);
+    ok(rec, "Expected result\n");
     count = libmsi_record_get_field_count(rec);
     ok(count == 6, "Expected 6, got %d\n", count);
     ok(check_record(rec, 1, "A"), "Expected A\n");
@@ -1964,9 +1954,8 @@ static void test_msiimport(void)
     ok(check_record(rec, 6, "F"), "Expected F\n");
     g_object_unref(rec);
 
-    rec = NULL;
-    r = libmsi_query_get_column_info(query, LIBMSI_COL_INFO_TYPES, &rec);
-    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
+    rec = libmsi_query_get_column_info(query, LIBMSI_COL_INFO_TYPES, NULL);
+    ok(rec, "Expected result\n");
     count = libmsi_record_get_field_count(rec);
     ok(count == 6, "Expected 6, got %d\n", count);
     ok(check_record(rec, 1, "s72"), "Expected s72\n");
@@ -3434,9 +3423,8 @@ static void test_temporary_table(void)
     r = libmsi_database_open_query(hdb, sql, &query);
     ok(r == LIBMSI_RESULT_SUCCESS, "failed to query table\n");
 
-    rec = NULL;
-    r = libmsi_query_get_column_info(query, LIBMSI_COL_INFO_TYPES, &rec);
-    ok(r == LIBMSI_RESULT_SUCCESS, "failed to get column info\n");
+    rec = libmsi_query_get_column_info(query, LIBMSI_COL_INFO_TYPES, NULL);
+    ok(rec, "failed to get column info\n");
 
     check_record_string(rec, 1, "G255");
     check_record_string(rec, 2, "j2");
@@ -3674,9 +3662,8 @@ static void test_integers(void)
     r = libmsi_database_open_query(hdb, sql, &query);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
-    rec = NULL;
-    r = libmsi_query_get_column_info(query, LIBMSI_COL_INFO_NAMES, &rec);
-    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
+    rec = libmsi_query_get_column_info(query, LIBMSI_COL_INFO_NAMES, NULL);
+    ok(rec, "Expected result\n");
     count = libmsi_record_get_field_count(rec);
     ok(count == 8, "Expected 8, got %d\n", count);
     ok(check_record(rec, 1, "one"), "Expected one\n");
@@ -3689,9 +3676,8 @@ static void test_integers(void)
     ok(check_record(rec, 8, "eight"), "Expected eight\n");
     g_object_unref(rec);
 
-    rec = NULL;
-    r = libmsi_query_get_column_info(query, LIBMSI_COL_INFO_TYPES, &rec);
-    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
+    rec = libmsi_query_get_column_info(query, LIBMSI_COL_INFO_TYPES, NULL);
+    ok(rec, "Expected result\n");
     count = libmsi_record_get_field_count(rec);
     ok(count == 8, "Expected 8, got %d\n", count);
     ok(check_record(rec, 1, "I2"), "Expected I2\n");
@@ -6399,17 +6385,15 @@ static void test_dbmerge(void)
     r = libmsi_database_open_query(hdb, "SELECT * FROM `MergeErrors`", &hquery);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
-    hrec = NULL;
-    r = libmsi_query_get_column_info(hquery, LIBMSI_COL_INFO_NAMES, &hrec);
-    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
+    hrec = libmsi_query_get_column_info(hquery, LIBMSI_COL_INFO_NAMES, NULL);
+    ok(hrec, "Expected result\n");
 
     check_record_string(hrec, 1, "Table");
     check_record_string(hrec, 2, "NumRowMergeConflicts");
     g_object_unref(hrec);
 
-    hrec = NULL;
-    r = libmsi_query_get_column_info(hquery, LIBMSI_COL_INFO_TYPES, &hrec);
-    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
+    hrec = libmsi_query_get_column_info(hquery, LIBMSI_COL_INFO_TYPES, NULL);
+    ok(hrec, "Expected result\n");
 
     check_record_string(hrec, 1, "s255");
     check_record_string(hrec, 2, "i2");
@@ -6930,9 +6914,8 @@ static void test_columnorder(void)
     r = libmsi_database_open_query(hdb, sql, &query);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
-    rec = NULL;
-    r = libmsi_query_get_column_info(query, LIBMSI_COL_INFO_TYPES, &rec);
-    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
+    rec = libmsi_query_get_column_info(query, LIBMSI_COL_INFO_TYPES, NULL);
+    ok(rec, "Expected result\n");
 
     sz = sizeof(buf);
     strcpy(buf, "kiwi");
@@ -6943,9 +6926,8 @@ static void test_columnorder(void)
     check_record_string(rec, 5, "i2");
     g_object_unref(rec);
 
-    rec = NULL;
-    r = libmsi_query_get_column_info(query, LIBMSI_COL_INFO_NAMES, &rec);
-    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
+    rec = libmsi_query_get_column_info(query, LIBMSI_COL_INFO_NAMES, NULL);
+    ok(rec, "Expected result\n");
 
     check_record_string(rec, 1, "D");
     check_record_string(rec, 2, "E");
@@ -7059,9 +7041,8 @@ static void test_columnorder(void)
     r = libmsi_database_open_query(hdb, sql, &query);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
-    rec = NULL;
-    r = libmsi_query_get_column_info(query, LIBMSI_COL_INFO_TYPES, &rec);
-    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
+    rec = libmsi_query_get_column_info(query, LIBMSI_COL_INFO_TYPES, NULL);
+    ok(rec, "Expected result\n");
 
     check_record_string(rec, 1, "i2");
     check_record_string(rec, 2, "S255");
@@ -7070,9 +7051,8 @@ static void test_columnorder(void)
     check_record_string(rec, 5, "i2");
     g_object_unref(rec);
 
-    rec = NULL;
-    r = libmsi_query_get_column_info(query, LIBMSI_COL_INFO_NAMES, &rec);
-    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
+    rec = libmsi_query_get_column_info(query, LIBMSI_COL_INFO_NAMES, NULL);
+    ok(rec, "Expected result\n");
 
     check_record_string(rec, 1, "C");
     check_record_string(rec, 2, "A");
@@ -7200,9 +7180,8 @@ static void test_createtable(void)
         res = libmsi_query_execute( htab, hrec , NULL);
         ok(res, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", res);
 
-        hrec = NULL;
-        res = libmsi_query_get_column_info( htab, LIBMSI_COL_INFO_NAMES, &hrec );
-        todo_wine ok(res == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", res);
+        hrec = libmsi_query_get_column_info( htab, LIBMSI_COL_INFO_NAMES, NULL );
+        todo_wine ok(hrec, "Expected result\n");
 
         str = libmsi_record_get_string(hrec, 1);
         todo_wine ok(str, "Expected string\n");
@@ -7232,9 +7211,8 @@ static void test_createtable(void)
         res = libmsi_database_open_query( hdb, sql, &htab );
         ok(res == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", res);
 
-        hrec = NULL;
-        res = libmsi_query_get_column_info( htab, LIBMSI_COL_INFO_NAMES, &hrec );
-        ok(res == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", res);
+        hrec = libmsi_query_get_column_info( htab, LIBMSI_COL_INFO_NAMES, NULL );
+        ok(hrec, "Expected result\n");
 
         check_record_string(hrec, 1, "b");
         g_object_unref( hrec );
@@ -7256,9 +7234,8 @@ static void test_createtable(void)
         res = libmsi_database_open_query( hdb, sql, &htab );
         ok(res == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", res);
 
-        hrec = NULL;
-        res = libmsi_query_get_column_info( htab, LIBMSI_COL_INFO_NAMES, &hrec );
-        ok(res == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", res);
+        hrec = libmsi_query_get_column_info( htab, LIBMSI_COL_INFO_NAMES, NULL );
+        ok(hrec, "Expected result\n");
 
         check_record_string(hrec, 1, "b");
         g_object_unref( hrec );
@@ -7373,18 +7350,16 @@ static void test_select_column_names(void)
     r = libmsi_record_get_field_count( rec );
     ok( r == 1, "got %u\n",  r );
 
-    rec2 = NULL;
-    r = libmsi_query_get_column_info( query, LIBMSI_COL_INFO_NAMES, &rec2 );
-    ok( r == LIBMSI_RESULT_SUCCESS, "unexpected result: %u\n", r );
+    rec2 = libmsi_query_get_column_info( query, LIBMSI_COL_INFO_NAMES, NULL );
+    ok(rec2, "unexpected result\n");
     r = libmsi_record_get_field_count( rec2 );
     ok( r == 1, "got %u\n",  r );
 
     check_record_string(rec2, 1, "");
     g_object_unref( rec2 );
 
-    rec2 = NULL;
-    r = libmsi_query_get_column_info( query, LIBMSI_COL_INFO_TYPES, &rec2 );
-    ok( r == LIBMSI_RESULT_SUCCESS, "unexpected result: %u\n", r );
+    rec2 = libmsi_query_get_column_info( query, LIBMSI_COL_INFO_TYPES, NULL );
+    ok(rec2, "unexpected result\n");
     r = libmsi_record_get_field_count( rec2 );
     ok( r == 1, "got %u\n",  r );
 

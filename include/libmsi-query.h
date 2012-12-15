@@ -55,9 +55,9 @@ gboolean          libmsi_query_close             (LibmsiQuery *query,
 void              libmsi_query_get_error         (LibmsiQuery *query,
                                                   gchar **column,
                                                   GError **error);
-LibmsiResult      libmsi_query_get_column_info   (LibmsiQuery *query,
+LibmsiRecord *    libmsi_query_get_column_info   (LibmsiQuery *query,
                                                   LibmsiColInfo info,
-                                                  LibmsiRecord **rec);
+                                                  GError **error);
 
 G_END_DECLS
 

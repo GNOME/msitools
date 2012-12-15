@@ -532,7 +532,7 @@ static void msi_set_record_type_string( LibmsiRecord *rec, unsigned field,
     libmsi_record_set_string( rec, field, szType );
 }
 
-unsigned _libmsi_query_get_column_info( LibmsiQuery *query, LibmsiColInfo info, LibmsiRecord **prec )
+LibmsiResult _libmsi_query_get_column_info( LibmsiQuery *query, LibmsiColInfo info, LibmsiRecord **prec )
 {
     unsigned r = LIBMSI_RESULT_FUNCTION_FAILED, i, count = 0, type;
     LibmsiRecord *rec;
@@ -571,26 +571,28 @@ unsigned _libmsi_query_get_column_info( LibmsiQuery *query, LibmsiColInfo info, 
     return LIBMSI_RESULT_SUCCESS;
 }
 
-LibmsiResult libmsi_query_get_column_info(LibmsiQuery *query, LibmsiColInfo info, LibmsiRecord **prec)
+LibmsiRecord *
+libmsi_query_get_column_info (LibmsiQuery *query, LibmsiColInfo info, GError **error)
 {
+    LibmsiRecord *rec;
     unsigned r;
 
-    TRACE("%d %d %p\n", query, info, prec);
+    TRACE("%p %d\n", query, info);
 
-    if( !prec )
-        return LIBMSI_RESULT_INVALID_PARAMETER;
+    if (info != LIBMSI_COL_INFO_NAMES && info != LIBMSI_COL_INFO_TYPES)
+        return NULL;
 
-    if( info != LIBMSI_COL_INFO_NAMES && info != LIBMSI_COL_INFO_TYPES )
-        return LIBMSI_RESULT_INVALID_PARAMETER;
-
-    if( !query )
-        return LIBMSI_RESULT_INVALID_HANDLE;
+    if (!query)
+        return NULL;
 
     g_object_ref(query);
-    r = _libmsi_query_get_column_info( query, info, prec );
+    r = _libmsi_query_get_column_info( query, info, &rec);
     g_object_unref(query);
 
-    return r;
+    if (r != LIBMSI_RESULT_SUCCESS)
+        g_set_error_literal (error, LIBMSI_RESULT_ERROR, r, G_STRFUNC);
+
+    return rec;
 }
 
 void

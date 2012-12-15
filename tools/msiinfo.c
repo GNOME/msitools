@@ -426,7 +426,7 @@ end:
     return 0;
 }
 
-static unsigned export_create_table(const char *table, 
+static unsigned export_create_table(const char *table,
                                     LibmsiRecord *names,
                                     LibmsiRecord *types,
                                     LibmsiRecord *keys)
@@ -521,7 +521,7 @@ static void print_quoted_string(const char *s)
     putchar('\'');
 }
 
-static unsigned export_insert(const char *table, 
+static unsigned export_insert(const char *table,
                               LibmsiRecord *names,
                               LibmsiRecord *types,
                               LibmsiRecord *vals)
@@ -609,14 +609,14 @@ static unsigned export_sql( LibmsiDatabase *db, const char *table, GError **erro
     }
 
     /* write out row 1, the column names */
-    r = libmsi_query_get_column_info(query, LIBMSI_COL_INFO_NAMES, &name);
-    if (r) {
+    name = libmsi_query_get_column_info(query, LIBMSI_COL_INFO_NAMES, error);
+    if (error) {
         goto done;
     }
 
     /* write out row 2, the column types */
-    r = libmsi_query_get_column_info(query, LIBMSI_COL_INFO_TYPES, &type);
-    if (r) {
+    type = libmsi_query_get_column_info(query, LIBMSI_COL_INFO_TYPES, error);
+    if (error) {
         goto done;
     }
 
