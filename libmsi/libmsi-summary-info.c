@@ -595,6 +595,37 @@ LibmsiResult libmsi_summary_info_get_property_count (LibmsiSummaryInfo *si, unsi
     return LIBMSI_RESULT_SUCCESS;
 }
 
+LibmsiPropertyType
+libmsi_summary_info_get_property_type (LibmsiSummaryInfo *self,
+                                       LibmsiProperty prop,
+                                       GError **error)
+{
+    g_return_val_if_fail (LIBMSI_SUMMARY_INFO (self), FALSE);
+    g_return_val_if_fail (!error || *error == NULL, FALSE);
+
+    if (prop >= MSI_MAX_PROPS) {
+        g_set_error (error, LIBMSI_RESULT_ERROR, LIBMSI_RESULT_UNKNOWN_PROPERTY,
+                     "Unknown property");
+        return LIBMSI_PROPERTY_TYPE_EMPTY;
+    }
+
+    switch (self->property[prop].vt) {
+    case OLEVT_I2:
+    case OLEVT_I4:
+        return LIBMSI_PROPERTY_TYPE_INT;
+    case OLEVT_LPSTR:
+        return LIBMSI_PROPERTY_TYPE_STRING;
+    case OLEVT_FILETIME:
+        return LIBMSI_PROPERTY_TYPE_FILETIME;
+    case OLEVT_EMPTY:
+        return LIBMSI_PROPERTY_TYPE_EMPTY;
+    default:
+        g_set_error (error, LIBMSI_RESULT_ERROR, LIBMSI_RESULT_FUNCTION_FAILED,
+                     "Unknown type");
+        return LIBMSI_PROPERTY_TYPE_EMPTY;
+    }
+}
+
 static void _summary_info_get_property (LibmsiSummaryInfo *si, unsigned uiProperty,
                                         unsigned *puiDataType, int *pintvalue,
                                         guint64 *pftValue, char *szValueBuf,

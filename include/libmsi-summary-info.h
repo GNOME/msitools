@@ -44,6 +44,9 @@ GType libmsi_summary_info_get_type (void) G_GNUC_CONST;
 LibmsiSummaryInfo *   libmsi_summary_info_new          (LibmsiDatabase *database,
                                                         unsigned update_count,
                                                         GError **error);
+LibmsiPropertyType    libmsi_summary_info_get_property_type (LibmsiSummaryInfo *si,
+                                                        LibmsiProperty prop,
+                                                        GError **error);
 const gchar *         libmsi_summary_info_get_string   (LibmsiSummaryInfo *si,
                                                         LibmsiProperty prop,
                                                         GError **error);

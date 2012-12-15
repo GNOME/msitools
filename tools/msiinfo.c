@@ -264,10 +264,9 @@ static void print_suminfo(LibmsiSummaryInfo *si, int prop, const char *name)
     time_t t;
 
     sz = 0;
-    r = libmsi_summary_info_get_property(si, prop, &type, &val, &valtime, NULL, &sz);
-    if (r && r != LIBMSI_RESULT_MORE_DATA) {
-        print_libmsi_error(r);
-    }
+    type = libmsi_summary_info_get_property_type(si, prop, &error);
+    if (error)
+        goto end;
 
     switch (type) {
     case LIBMSI_PROPERTY_TYPE_INT:
