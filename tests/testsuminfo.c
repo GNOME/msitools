@@ -46,9 +46,9 @@ static void test_suminfo(void)
 
     DeleteFile(msifile);
 
-    /* just libmsi_database_open should not create a file */
-    r = libmsi_database_open(msifile, LIBMSI_DB_OPEN_CREATE, &hdb);
-    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_database_open failed\n");
+    /* just libmsi_database_new should not create a file */
+    hdb = libmsi_database_new(msifile, LIBMSI_DB_OPEN_CREATE, NULL);
+    ok(hdb, "libmsi_database_new failed\n");
 
     r = libmsi_database_get_summary_info(hdb, 0, NULL);
     ok(r == LIBMSI_RESULT_INVALID_PARAMETER, "libmsi_database_get_summary_info wrong error\n");
@@ -172,8 +172,8 @@ static void test_suminfo(void)
     g_object_unref(hdb);
 
     /* reread, non-zero update count */
-    r = libmsi_database_open(msifile, LIBMSI_DB_OPEN_TRANSACT, &hdb);
-    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_database_open failed\n");
+    hdb = libmsi_database_new(msifile, LIBMSI_DB_OPEN_TRANSACT, NULL);
+    ok(hdb, "libmsi_database_new failed\n");
 
     r = libmsi_database_get_summary_info(hdb, 1, &hsuminfo);
     ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_database_get_summary_info failed\n");
@@ -189,8 +189,8 @@ static void test_suminfo(void)
     /* now with zero update count */
     g_object_unref(hdb);
 
-    r = libmsi_database_open(msifile, LIBMSI_DB_OPEN_READONLY, &hdb);
-    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_database_open failed\n");
+    hdb = libmsi_database_new(msifile, LIBMSI_DB_OPEN_READONLY, NULL);
+    ok(hdb, "libmsi_database_new failed\n");
 
     r = libmsi_database_get_summary_info(hdb, 0, &hsuminfo);
     ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_database_get_summary_info failed %u\n", r);
@@ -338,9 +338,9 @@ static void test_summary_binary(void)
 
     ok( INVALID_FILE_ATTRIBUTES != GetFileAttributes(msifile), "file doesn't exist!\n");
 
-    /* just libmsi_database_open should not create a file */
-    r = libmsi_database_open(msifile, LIBMSI_DB_OPEN_READONLY, &hdb);
-    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_database_open failed\n");
+    /* just libmsi_database_new should not create a file */
+    hdb = libmsi_database_new(msifile, LIBMSI_DB_OPEN_READONLY, NULl);
+    ok(hdb, "libmsi_database_new failed\n");
 
     r = libmsi_database_get_summary_info(hdb, 0, &hsuminfo);
     ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_database_get_summary_info failed\n");

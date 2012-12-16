@@ -87,12 +87,9 @@ static LibmsiResult open_database(const char *msifile, LibmsiDatabase **db,
 
     if (stat(msifile, &st) == -1)
     {
-        r = libmsi_database_open(msifile, LIBMSI_DB_OPEN_CREATE, db);
-        if (r != LIBMSI_RESULT_SUCCESS)
-        {
-            fprintf(stderr, "failed to create package database %s (%u)\n", msifile, r);
-            return r;
-        }
+        *db = libmsi_database_new(msifile, LIBMSI_DB_OPEN_CREATE, error);
+        if (!*db)
+            return LIBMSI_RESULT_FUNCTION_FAILED;
 
         r = libmsi_database_get_summary_info(*db, INT_MAX, si);
         if (r != LIBMSI_RESULT_SUCCESS)
@@ -114,12 +111,9 @@ static LibmsiResult open_database(const char *msifile, LibmsiDatabase **db,
     }
     else
     {
-        r = libmsi_database_open(msifile, LIBMSI_DB_OPEN_TRANSACT, db);
-        if (r != LIBMSI_RESULT_SUCCESS)
-        {
-            fprintf(stderr, "failed to open package database %s (%u)\n", msifile, r);
-            return r;
-        }
+        *db = libmsi_database_new(msifile, LIBMSI_DB_OPEN_TRANSACT, error);
+        if (!*db)
+            return LIBMSI_RESULT_FUNCTION_FAILED;
 
         r = libmsi_database_get_summary_info(*db, INT_MAX, si);
         if (r != LIBMSI_RESULT_SUCCESS)

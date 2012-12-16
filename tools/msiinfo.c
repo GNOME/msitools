@@ -196,10 +196,9 @@ static int cmd_streams(struct Command *cmd, int argc, char **argv, GError **erro
         cmd_usage(stderr, cmd);
     }
 
-    r = libmsi_database_open(argv[1], LIBMSI_DB_OPEN_READONLY, &db);
-    if (r) {
-        print_libmsi_error(r);
-    }
+    db = libmsi_database_new(argv[1], LIBMSI_DB_OPEN_READONLY, error);
+    if (!db)
+        return 1;
 
     r = libmsi_database_open_query(db, "SELECT `Name` FROM `_Streams`", &query);
     if (r) {
@@ -229,10 +228,9 @@ static int cmd_tables(struct Command *cmd, int argc, char **argv, GError **error
         cmd_usage(stderr, cmd);
     }
 
-    r = libmsi_database_open(argv[1], LIBMSI_DB_OPEN_READONLY, &db);
-    if (r) {
-        print_libmsi_error(r);
-    }
+    db = libmsi_database_new(argv[1], LIBMSI_DB_OPEN_READONLY, error);
+    if (!db)
+        return 1;
 
     r = libmsi_database_open_query(db, "SELECT `Name` FROM `_Tables`", &query);
     if (r) {
@@ -315,10 +313,9 @@ static int cmd_suminfo(struct Command *cmd, int argc, char **argv, GError **erro
         cmd_usage(stderr, cmd);
     }
 
-    r = libmsi_database_open(argv[1], LIBMSI_DB_OPEN_READONLY, &db);
-    if (r) {
-        print_libmsi_error(r);
-    }
+    db = libmsi_database_new(argv[1], LIBMSI_DB_OPEN_READONLY, error);
+    if (!db)
+        return 1;
 
     r = libmsi_database_get_summary_info(db, 0, &si);
     if (r) {
@@ -376,10 +373,9 @@ static int cmd_extract(struct Command *cmd, int argc, char **argv, GError **erro
         cmd_usage(stderr, cmd);
     }
 
-    r = libmsi_database_open(argv[1], LIBMSI_DB_OPEN_READONLY, &db);
-    if (r) {
-        print_libmsi_error(r);
-    }
+    db = libmsi_database_new(argv[1], LIBMSI_DB_OPEN_READONLY, error);
+    if (!db)
+        return 1;
 
     r = libmsi_database_open_query(db, "SELECT `Data` FROM `_Streams` WHERE `Name` = ?", &query);
     if (r) {
@@ -672,10 +668,9 @@ static int cmd_export(struct Command *cmd, int argc, char **argv, GError **error
         cmd_usage(stderr, cmd);
     }
 
-    r = libmsi_database_open(argv[1], LIBMSI_DB_OPEN_READONLY, &db);
-    if (r) {
-        print_libmsi_error(r);
-    }
+    db = libmsi_database_new(argv[1], LIBMSI_DB_OPEN_READONLY, error);
+    if (!db)
+        return 1;
 
     if (sql) {
         r = export_sql(db, argv[2], error);

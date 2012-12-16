@@ -686,29 +686,6 @@ end:
     return ret;
 }
 
-LibmsiResult libmsi_database_open(const char *szDBPath, const char *szPersist, LibmsiDatabase **pdb)
-{
-    char path[MAX_PATH];
-
-    TRACE("%s %p\n",debugstr_a(szDBPath),szPersist );
-
-    if( !pdb )
-        return LIBMSI_RESULT_INVALID_PARAMETER;
-
-    if (!strstr( szDBPath, G_DIR_SEPARATOR_S ))
-    {
-        getcwd( path, MAX_PATH );
-        strcat( path, G_DIR_SEPARATOR_S );
-        strcat( path, szDBPath );
-    }
-    else
-        strcpy( path, szDBPath );
-
-    *pdb = libmsi_database_new (path, szPersist, NULL);
-
-    return *pdb ? LIBMSI_RESULT_SUCCESS : LIBMSI_RESULT_OPEN_FAILED;
-}
-
 static char *msi_read_text_archive(const char *path, unsigned *len)
 {
     char *data;
