@@ -1974,8 +1974,11 @@ static unsigned update_merge_errors(LibmsiDatabase *db, const char *error,
     return r;
 }
 
-LibmsiResult libmsi_database_merge(LibmsiDatabase *db, LibmsiDatabase *merge,
-                              const char *szTableName)
+gboolean
+libmsi_database_merge (LibmsiDatabase *db,
+                       LibmsiDatabase *merge,
+                       const char *tablename,
+                       GError **error)
 {
     struct list tabledata = LIST_INIT(tabledata);
     struct list *item, *cursor;
@@ -1984,13 +1987,11 @@ LibmsiResult libmsi_database_merge(LibmsiDatabase *db, LibmsiDatabase *merge,
     unsigned r;
 
     TRACE("(%d, %d, %s)\n", db, merge,
-          debugstr_a(szTableName));
+          debugstr_a(tablename));
 
-    if (szTableName && !*szTableName)
-        return LIBMSI_RESULT_INVALID_TABLE;
-
-    if (!db || !merge)
-        return LIBMSI_RESULT_INVALID_HANDLE;
+    g_return_val_if_fail (LIBMSI_IS_DATABASE (db), FALSE);
+    g_return_val_if_fail (LIBMSI_IS_DATABASE (merge), FALSE);
+    g_return_val_if_fail (!tablename || *tablename, FALSE);
 
     g_object_ref(db);
     g_object_ref(merge);
@@ -2005,7 +2006,7 @@ LibmsiResult libmsi_database_merge(LibmsiDatabase *db, LibmsiDatabase *merge,
         {
             conflicts = true;
 
-            r = update_merge_errors(db, szTableName, table->name,
+            r = update_merge_errors(db, tablename, table->name,
                                     table->numconflicts);
             if (r != LIBMSI_RESULT_SUCCESS)
                 break;
@@ -2029,9 +2030,11 @@ LibmsiResult libmsi_database_merge(LibmsiDatabase *db, LibmsiDatabase *merge,
         r = LIBMSI_RESULT_FUNCTION_FAILED;
 
 done:
+    if (r != LIBMSI_RESULT_SUCCESS)
+        g_set_error (error, LIBMSI_RESULT_ERROR, r, G_STRFUNC);
     g_object_unref(db);
     g_object_unref(merge);
-    return r;
+    return r == LIBMSI_RESULT_SUCCESS;
 }
 
 LibmsiDBState libmsi_database_get_state( LibmsiDatabase *db )

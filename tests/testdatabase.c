@@ -6055,6 +6055,7 @@ static void test_droptable(void)
 
 static void test_dbmerge(void)
 {
+    GError *error = NULL;
     LibmsiDatabase *hdb;
     LibmsiDatabase *href;
     LibmsiQuery *hquery;
@@ -6070,27 +6071,13 @@ static void test_dbmerge(void)
     href = libmsi_database_new("refdb.msi", LIBMSI_DB_OPEN_CREATE, NULL);
     ok(href, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
-    /* hDatabase is invalid */
-    r = libmsi_database_merge(0, href, "MergeErrors");
-    ok(r == LIBMSI_RESULT_INVALID_HANDLE,
-       "Expected LIBMSI_RESULT_INVALID_HANDLE, got %d\n", r);
-
-    /* hDatabaseMerge is invalid */
-    r = libmsi_database_merge(hdb, 0, "MergeErrors");
-    ok(r == LIBMSI_RESULT_INVALID_HANDLE,
-       "Expected LIBMSI_RESULT_INVALID_HANDLE, got %d\n", r);
-
     /* szTableName is NULL */
-    r = libmsi_database_merge(hdb, href, NULL);
-    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
-
-    /* szTableName is empty */
-    r = libmsi_database_merge(hdb, href, "");
-    ok(r == LIBMSI_RESULT_INVALID_TABLE, "Expected LIBMSI_RESULT_INVALID_TABLE, got %d\n", r);
+    r = libmsi_database_merge(hdb, href, NULL, &error);
+    ok(r, "libmsi_database_merge() failed");
 
     /* both DBs empty, szTableName is valid */
-    r = libmsi_database_merge(hdb, href, "MergeErrors");
-    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
+    r = libmsi_database_merge(hdb, href, "MergeErrors", &error);
+    ok(r, "libmsi_database_merge() failed");
 
     sql = "CREATE TABLE `One` ( `A` INT PRIMARY KEY `A` )";
     r = run_query(hdb, 0, sql);
@@ -6101,9 +6088,9 @@ static void test_dbmerge(void)
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     /* column types don't match */
-    r = libmsi_database_merge(hdb, href, "MergeErrors");
-    ok(r == LIBMSI_RESULT_DATATYPE_MISMATCH,
-       "Expected LIBMSI_RESULT_DATATYPE_MISMATCH, got %d\n", r);
+    r = libmsi_database_merge(hdb, href, "MergeErrors", &error);
+    g_assert_error(error, LIBMSI_RESULT_ERROR, LIBMSI_RESULT_DATATYPE_MISMATCH);
+    g_clear_error(&error);
 
     /* nothing in MergeErrors */
     sql = "SELECT * FROM `MergeErrors`";
@@ -6146,9 +6133,8 @@ static void test_dbmerge(void)
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     /* column sting types don't match exactly */
-    r = libmsi_database_merge(hdb, href, "MergeErrors");
-    ok(r == LIBMSI_RESULT_SUCCESS,
-       "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
+    r = libmsi_database_merge(hdb, href, "MergeErrors", &error);
+    ok(r, "libmsi_database_merge() failed");
 
     /* nothing in MergeErrors */
     sql = "SELECT * FROM `MergeErrors`";
@@ -6173,9 +6159,9 @@ static void test_dbmerge(void)
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     /* column names don't match */
-    r = libmsi_database_merge(hdb, href, "MergeErrors");
-    ok(r == LIBMSI_RESULT_DATATYPE_MISMATCH,
-       "Expected LIBMSI_RESULT_DATATYPE_MISMATCH, got %d\n", r);
+    r = libmsi_database_merge(hdb, href, "MergeErrors", &error);
+    g_assert_error(error, LIBMSI_RESULT_ERROR, LIBMSI_RESULT_DATATYPE_MISMATCH);
+    g_clear_error(&error);
 
     /* nothing in MergeErrors */
     sql = "SELECT * FROM `MergeErrors`";
@@ -6200,9 +6186,9 @@ static void test_dbmerge(void)
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     /* primary keys don't match */
-    r = libmsi_database_merge(hdb, href, "MergeErrors");
-    ok(r == LIBMSI_RESULT_DATATYPE_MISMATCH,
-       "Expected LIBMSI_RESULT_DATATYPE_MISMATCH, got %d\n", r);
+    r = libmsi_database_merge(hdb, href, "MergeErrors", &error);
+    g_assert_error(error, LIBMSI_RESULT_ERROR, LIBMSI_RESULT_DATATYPE_MISMATCH);
+    g_clear_error(&error);
 
     /* nothing in MergeErrors */
     sql = "SELECT * FROM `MergeErrors`";
@@ -6227,9 +6213,9 @@ static void test_dbmerge(void)
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     /* number of primary keys doesn't match */
-    r = libmsi_database_merge(hdb, href, "MergeErrors");
-    ok(r == LIBMSI_RESULT_DATATYPE_MISMATCH,
-       "Expected LIBMSI_RESULT_DATATYPE_MISMATCH, got %d\n", r);
+    r = libmsi_database_merge(hdb, href, "MergeErrors", &error);
+    g_assert_error(error, LIBMSI_RESULT_ERROR, LIBMSI_RESULT_DATATYPE_MISMATCH);
+    g_clear_error(&error);
 
     /* nothing in MergeErrors */
     sql = "SELECT * FROM `MergeErrors`";
@@ -6258,8 +6244,8 @@ static void test_dbmerge(void)
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     /* number of columns doesn't match */
-    r = libmsi_database_merge(hdb, href, "MergeErrors");
-    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
+    r = libmsi_database_merge(hdb, href, "MergeErrors", NULL);
+    ok(r, "libmsi_database_merge() failed");
 
     sql = "SELECT * FROM `One`";
     r = do_query(hdb, sql, &hrec);
@@ -6303,8 +6289,8 @@ static void test_dbmerge(void)
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     /* number of columns doesn't match */
-    r = libmsi_database_merge(hdb, href, "MergeErrors");
-    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
+    r = libmsi_database_merge(hdb, href, "MergeErrors", NULL);
+    ok(r, "libmsi_database_merge() failed");
 
     sql = "SELECT * FROM `One`";
     r = do_query(hdb, sql, &hrec);
@@ -6360,9 +6346,9 @@ static void test_dbmerge(void)
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     /* primary keys match, rows do not */
-    r = libmsi_database_merge(hdb, href, "MergeErrors");
-    ok(r == LIBMSI_RESULT_FUNCTION_FAILED,
-       "Expected LIBMSI_RESULT_FUNCTION_FAILED, got %d\n", r);
+    r = libmsi_database_merge(hdb, href, "MergeErrors", &error);
+    g_assert_error(error, LIBMSI_RESULT_ERROR, LIBMSI_RESULT_FUNCTION_FAILED);
+    g_clear_error(&error);
 
     /* nothing in MergeErrors */
     sql = "SELECT * FROM `MergeErrors`";
@@ -6417,8 +6403,8 @@ static void test_dbmerge(void)
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     /* table from merged database is not in target database */
-    r = libmsi_database_merge(hdb, href, "MergeErrors");
-    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
+    r = libmsi_database_merge(hdb, href, "MergeErrors", NULL);
+    ok(r, "libmsi_database_merge() failed\n");
 
     sql = "SELECT * FROM `One`";
     r = do_query(hdb, sql, &hrec);
@@ -6459,8 +6445,8 @@ static void test_dbmerge(void)
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     /* primary key is string */
-    r = libmsi_database_merge(hdb, href, "MergeErrors");
-    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
+    r = libmsi_database_merge(hdb, href, "MergeErrors", NULL);
+    ok(r, "libmsi_database_merge() failed\n");
 
     sql = "SELECT * FROM `One`";
     r = do_query(hdb, sql, &hrec);
@@ -6507,8 +6493,8 @@ static void test_dbmerge(void)
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     /* code page does not match */
-    r = libmsi_database_merge(hdb, href, "MergeErrors");
-    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
+    r = libmsi_database_merge(hdb, href, "MergeErrors", NULL);
+    ok(r, "libmsi_database_merge() failed\n");
 
     sql = "SELECT * FROM `One`";
     r = do_query(hdb, sql, &hrec);
@@ -6553,8 +6539,8 @@ static void test_dbmerge(void)
     g_object_unref(hrec);
 
     /* binary data to merge */
-    r = libmsi_database_merge(hdb, href, "MergeErrors");
-    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
+    r = libmsi_database_merge(hdb, href, "MergeErrors", NULL);
+    ok(r, "libmsi_database_merge() failed\n");
 
     sql = "SELECT * FROM `One`";
     r = do_query(hdb, sql, &hrec);
@@ -6600,8 +6586,8 @@ static void test_dbmerge(void)
     r = run_query(href, 0, sql);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
-    r = libmsi_database_merge(hdb, href, "MergeErrors");
-    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
+    r = libmsi_database_merge(hdb, href, "MergeErrors", NULL);
+    ok(r, "libmsi_database_merge() failed\n");
 
     sql = "SELECT * FROM `One`";
     hquery = libmsi_query_new(hdb, sql, NULL);
