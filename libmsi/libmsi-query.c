@@ -396,6 +396,17 @@ LibmsiResult _libmsi_query_fetch(LibmsiQuery *query, LibmsiRecord **prec)
     return r;
 }
 
+/**
+ * libmsi_query_fetch:
+ * @query: a #LibmsiQuery
+ * @error: (allow-none): return location for the error
+ *
+ * Return the next query result. A %LIBMSI_RESULT_NO_MORE_ITEMS error
+ * is returned when the query result set has reached the end.
+ *
+ * Returns: (transfer full): a newly allocated #LibmsiRecord
+ *     or %NULL when no results or failure.
+ **/
 LibmsiRecord *
 libmsi_query_fetch (LibmsiQuery *query, GError **error)
 {
@@ -417,6 +428,15 @@ libmsi_query_fetch (LibmsiQuery *query, GError **error)
     return record;
 }
 
+/**
+ * libmsi_query_close:
+ * @query: a #LibmsiQuery
+ * @error: (allow-none): return location for the error
+ *
+ * Release the current result set.
+ *
+ * Returns: %TRUE on success
+ **/
 gboolean
 libmsi_query_close (LibmsiQuery *query, GError **error)
 {
@@ -461,6 +481,17 @@ LibmsiResult _libmsi_query_execute(LibmsiQuery *query, LibmsiRecord *rec )
     return view->ops->execute( view, rec );
 }
 
+/**
+ * libmsi_query_execute:
+ * @query: a #LibmsiQuery
+ * @rec: (allow-none): a #LibmsiRecord containing query arguments, or
+ *     %NULL if no arguments needed
+ * @error: (allow-none): return location for the error
+ *
+ * Execute the @query with the arguments from @rec.
+ *
+ * Returns: %TRUE on success
+ **/
 gboolean
 libmsi_query_execute (LibmsiQuery *query, LibmsiRecord *rec, GError **error)
 {
@@ -564,6 +595,17 @@ LibmsiResult _libmsi_query_get_column_info( LibmsiQuery *query, LibmsiColInfo in
     return LIBMSI_RESULT_SUCCESS;
 }
 
+/**
+ * libmsi_query_get_column_info:
+ * @query: a #LibmsiQuery
+ * @info: a #LibmsiColInfo specifying the type of information to return
+ * @error: (allow-none): return location for the error
+ *
+ * Get column informations, returned as record string fields.
+ *
+ * Returns: (transfer full): a newly allocated #LibmsiRecord
+ * containing informations or %NULL on error.
+ **/
 LibmsiRecord *
 libmsi_query_get_column_info (LibmsiQuery *query, LibmsiColInfo info, GError **error)
 {
@@ -588,6 +630,14 @@ libmsi_query_get_column_info (LibmsiQuery *query, LibmsiColInfo info, GError **e
     return rec;
 }
 
+/**
+ * libmsi_query_get_error:
+ * @query: a #LibmsiQuery
+ * @column: (out) (allow-none): location to store the allocated column name
+ * @error: (allow-none): return location for the error
+ *
+ * Call this to get more information on the last query error.
+ **/
 void
 libmsi_query_get_error (LibmsiQuery *query, gchar **column, GError **error)
 {
@@ -605,7 +655,17 @@ libmsi_query_get_error (LibmsiQuery *query, gchar **column, GError **error)
     }
 }
 
-LibmsiQuery*
+/**
+ * libmsi_query_new:
+ * @database: a #LibmsiDatabase
+ * @query: a SQL query
+ * @error: (allow-none): #GError to set on error, or %NULL
+ *
+ * Create a SQL query for @database.
+ *
+ * Returns: a new %LibmsiQuery on success, %NULL on failure
+ **/
+LibmsiQuery *
 libmsi_query_new (LibmsiDatabase *database, const char *query, GError **error)
 {
     LibmsiQuery *self;

@@ -194,6 +194,12 @@ static unsigned get_property_count( const LibmsiOLEVariant *property )
     return n;
 }
 
+/**
+ * libmsi_summary_info_get_properties:
+ * @si: a #LibmsiSummaryInfo
+ *
+ * Returns: (array) (element-type LibmsiProperty) (transfer full): a new #GArray with the list of set properties
+ **/
 GArray *
 libmsi_summary_info_get_properties (LibmsiSummaryInfo *self)
 {
@@ -557,6 +563,14 @@ static unsigned suminfo_persist( LibmsiSummaryInfo *si )
     return r;
 }
 
+/**
+ * libmsi_summary_info_get_property_type:
+ * @si: a #LibmsiSummaryInfo
+ * @prop: a #LibmsiProperty to get
+ * @error: (allow-none): #GError to set on error, or %NULL
+ *
+ * Returns: the property type associated for @prop.
+ **/
 LibmsiPropertyType
 libmsi_summary_info_get_property_type (LibmsiSummaryInfo *self,
                                        LibmsiProperty prop,
@@ -649,6 +663,14 @@ static void _summary_info_get_property (LibmsiSummaryInfo *si, unsigned uiProper
     g_object_unref (si);
 }
 
+/**
+ * libmsi_summary_info_get_int:
+ * @si: a #LibmsiSummaryInfo
+ * @prop: a #LibmsiProperty to get
+ * @error: (allow-none): #GError to set on error, or %NULL
+ *
+ * Returns: the property value or -1 on failure
+ **/
 gint
 libmsi_summary_info_get_int (LibmsiSummaryInfo *self, LibmsiProperty prop,
                              GError **error)
@@ -666,6 +688,14 @@ libmsi_summary_info_get_int (LibmsiSummaryInfo *self, LibmsiProperty prop,
     return val;
 }
 
+/**
+ * libmsi_summary_info_get_filetime:
+ * @si: a #LibmsiSummaryInfo
+ * @prop: a #LibmsiProperty to get
+ * @error: (allow-none): #GError to set on error, or %NULL
+ *
+ * Returns: the property value or 0 on failure
+ **/
 guint64
 libmsi_summary_info_get_filetime (LibmsiSummaryInfo *self, LibmsiProperty prop,
                                   GError **error)
@@ -683,6 +713,14 @@ libmsi_summary_info_get_filetime (LibmsiSummaryInfo *self, LibmsiProperty prop,
     return val;
 }
 
+/**
+ * libmsi_summary_info_get_string:
+ * @si: a #LibmsiSummaryInfo
+ * @prop: a #LibmsiProperty to get
+ * @error: (allow-none): #GError to set on error, or %NULL
+ *
+ * Returns: the property value or %NULL on failure
+ **/
 const gchar *
 libmsi_summary_info_get_string (LibmsiSummaryInfo *self, LibmsiProperty prop,
                                 GError **error)
@@ -755,6 +793,17 @@ end:
     return ret;
 }
 
+/**
+ * libmsi_summary_info_set_string:
+ * @si: a #LibmsiSummaryInfo
+ * @prop: a #LibmsiProperty to set
+ * @value: a string value
+ * @error: (allow-none): #GError to set on error, or %NULL
+ *
+ * Set string property @prop.
+ *
+ * Returns: %TRUE on success
+ **/
 gboolean
 libmsi_summary_info_set_string (LibmsiSummaryInfo *self, LibmsiProperty prop,
                                 const gchar *value, GError **error)
@@ -778,6 +827,17 @@ libmsi_summary_info_set_string (LibmsiSummaryInfo *self, LibmsiProperty prop,
     return TRUE;
 }
 
+/**
+ * libmsi_summary_info_set_int:
+ * @si: a #LibmsiSummaryInfo
+ * @prop: a #LibmsiProperty to set
+ * @value: a value
+ * @error: (allow-none): #GError to set on error, or %NULL
+ *
+ * Set integer property @prop.
+ *
+ * Returns: %TRUE on success
+ **/
 gboolean
 libmsi_summary_info_set_int (LibmsiSummaryInfo *self, LibmsiProperty prop,
                              gint value, GError **error)
@@ -803,6 +863,17 @@ libmsi_summary_info_set_int (LibmsiSummaryInfo *self, LibmsiProperty prop,
     return TRUE;
 }
 
+/**
+ * libmsi_summary_info_set_filetime:
+ * @si: a #LibmsiSummaryInfo
+ * @prop: a #LibmsiProperty to set
+ * @value: a value
+ * @error: (allow-none): #GError to set on error, or %NULL
+ *
+ * Set file time property @prop.
+ *
+ * Returns: %TRUE on success
+ **/
 gboolean
 libmsi_summary_info_set_filetime (LibmsiSummaryInfo *self, LibmsiProperty prop,
                                   guint64 value, GError **error)
@@ -911,7 +982,17 @@ end:
     return r;
 }
 
-gboolean libmsi_summary_info_persist (LibmsiSummaryInfo *si, GError **error)
+/**
+ * libmsi_summary_info_persist:
+ * @si: a #LibmsiSummaryInfo
+ * @error: (allow-none): #GError to set on error, or %NULL
+ *
+ * Save summary informations.
+ *
+ * Returns: %TRUE on success
+ **/
+gboolean
+libmsi_summary_info_persist (LibmsiSummaryInfo *si, GError **error)
 {
     unsigned ret;
 
@@ -932,8 +1013,17 @@ gboolean libmsi_summary_info_persist (LibmsiSummaryInfo *si, GError **error)
     return ret == LIBMSI_RESULT_SUCCESS;
 }
 
-LibmsiSummaryInfo*
-libmsi_summary_info_new (LibmsiDatabase *database, unsigned update_count, GError **error)
+/**
+ * libmsi_summary_info_new:
+ * @database: a #LibmsiDatabase
+ * @update_count: number of changes allowed
+ * @error: (allow-none): #GError to set on error, or %NULL
+ *
+ * Returns: a #LibmsiSummaryInfo or %NULL on failure
+ **/
+LibmsiSummaryInfo *
+libmsi_summary_info_new (LibmsiDatabase *database, unsigned update_count,
+                         GError **error)
 {
     LibmsiSummaryInfo *self;
 

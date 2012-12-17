@@ -1186,6 +1186,16 @@ done:
     return r;
 }
 
+/**
+ * libmsi_database_import:
+ * @db: a %LibmsiDatabase
+ * @path: path to a table file
+ * @error: (allow-none): #GError to set on error, or %NULL
+ *
+ * Import a table to the database from file @path.
+ *
+ * Returns: %TRUE on success
+ **/
 gboolean
 libmsi_database_import (LibmsiDatabase *db,
                         const char *path,
@@ -1312,11 +1322,14 @@ done:
     return r;
 }
 
-/***********************************************************************
- * MsiExportDatabase        [MSI.@]
+/**
+ * libmsi_database_export:
+ * @db: a %LibmsiDatabase
+ * @table: a table name
+ * @fd: a file descriptor
+ * @error: (allow-none): #GError to set on error, or %NULL
  *
  * Writes a file containing the table data as tab separated ASCII.
- *
  * The format is as follows:
  *
  * row1 : colname1 <tab> colname2 <tab> .... colnameN <cr> <lf>
@@ -1326,7 +1339,9 @@ done:
  * Followed by the data, starting at row 1 with one row per line
  *
  * row4 : data <tab> data <tab> data <tab> ... data <cr> <lf>
- */
+ *
+ * Returns: %TRUE on success
+ **/
 gboolean
 libmsi_database_export (LibmsiDatabase *db,
                         const char *table,
@@ -1960,6 +1975,15 @@ static unsigned update_merge_errors(LibmsiDatabase *db, const char *error,
     return r;
 }
 
+/**
+ * libmsi_database_merge:
+ * @db: a %LibmsiDatabase to merge into
+ * @merge: a %LibmsiDatabase to merge
+ * @table: (allow-none): an optionnal table name
+ * @error: (allow-none): #GError to set on error, or %NULL
+ *
+ * Returns: %TRUE on success
+ **/
 gboolean
 libmsi_database_merge (LibmsiDatabase *db,
                        LibmsiDatabase *merge,
@@ -2023,6 +2047,12 @@ done:
     return r == LIBMSI_RESULT_SUCCESS;
 }
 
+/**
+ * libmsi_database_is_readonly:
+ * @db: a %LibmsiDatabase
+ *
+ * Returns: %TRUE if the database is read-only.
+ **/
 gboolean
 libmsi_database_is_readonly (LibmsiDatabase *db)
 {
@@ -2175,6 +2205,16 @@ end:
     return ret;
 }
 
+/**
+ * libmsi_database_apply_transform:
+ * @db: a %LibmsiDatabase
+ * @file: an MST transform file path
+ * @error: (allow-none): #GError to set on error, or %NULL
+ *
+ * FIXME
+ *
+ * Returns: %TRUE on success
+ **/
 gboolean
 libmsi_database_apply_transform (LibmsiDatabase *db,
                                  const char *szTransformFile,
@@ -2270,6 +2310,13 @@ end:
     return ret;
 }
 
+/**
+ * libmsi_database_commit:
+ * @db: a #LibmsiDatabase
+ * @error: (allow-none): #GError to set on error, or %NULL
+ *
+ * Returns: %TRUE on success.
+ **/
 gboolean
 libmsi_database_commit (LibmsiDatabase *db, GError **error)
 {
@@ -2399,6 +2446,15 @@ unsigned _libmsi_database_get_primary_keys( LibmsiDatabase *db,
     return r;
 }
 
+/**
+ * libmsi_database_get_primary_keys:
+ * @db: a %LibmsiDatabase
+ * @table: an exisiting table name
+ * @error: (allow-none): #GError to set on error, or %NULL
+ *
+ * Returns: (transfer full): a %LibmsiRecord containing the names of all the primary
+ * key columns.
+ **/
 LibmsiRecord *
 libmsi_database_get_primary_keys (LibmsiDatabase *db,
                                   const char *table,
@@ -2422,6 +2478,14 @@ libmsi_database_get_primary_keys (LibmsiDatabase *db,
     return rec;
 }
 
+/**
+ * libmsi_database_is_table_persistent:
+ * @db: a %LibmsiDatabase
+ * @table: an exisiting table name
+ * @error: (allow-none): #GError to set on error, or %NULL
+ *
+ * Returns: %TRUE if the @table is persistent, %FALSE if it's temporary
+ **/
 gboolean
 libmsi_database_is_table_persistent (LibmsiDatabase *db, const char *table,
                                      GError **error)
@@ -2471,6 +2535,16 @@ init (LibmsiDatabase *self, GError **error)
     return !ret;
 }
 
+/**
+ * libmsi_database_new:
+ * @path: path to a MSI file
+ * @persist: path to a MSI file or LIBMSI_DB_OPEN flag
+ * @error: (allow-none): #GError to set on error, or %NULL
+ *
+ * Create a MSI database or open from @path.
+ *
+ * Returns: a new #LibmsiDatabase on success, %NULL if fail.
+ **/
 LibmsiDatabase *
 libmsi_database_new (const gchar *path, const char *persist, GError **error)
 {

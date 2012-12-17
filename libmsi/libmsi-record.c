@@ -553,11 +553,11 @@ unsigned _libmsi_record_load_stream_from_file(LibmsiRecord *rec, unsigned field,
 
 /**
  * libmsi_record_load_stream:
- * @record: a %LibmsiRecord
+ * @record: a #LibmsiRecord
  * @field: a field identifier
  * @filename: a filename or %NULL
  *
- * Load the file content as a stream in %field.
+ * Load the file content as a stream in @field.
  *
  * Returns: %TRUE on success.
  **/
@@ -628,7 +628,7 @@ unsigned _libmsi_record_save_stream(const LibmsiRecord *rec, unsigned field, cha
 
 /**
  * libmsi_record_save_stream:
- * @record: a %LibmsiRecord
+ * @rec: a %LibmsiRecord
  * @field: a field identifier
  * @buf: a buffer of size specified by %sz, or %NULL to return size
  * @sz: a pointer to %buf size
