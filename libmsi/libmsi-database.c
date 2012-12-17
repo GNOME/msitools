@@ -1333,8 +1333,11 @@ done:
  *
  * row4 : data <tab> data <tab> data <tab> ... data <cr> <lf>
  */
-LibmsiResult libmsi_database_export( LibmsiDatabase *db, const char *szTable,
-               int fd )
+gboolean
+libmsi_database_export (LibmsiDatabase *db,
+                        const char *table,
+                        int fd,
+                        GError **error)
 {
     unsigned r = LIBMSI_RESULT_OUTOFMEMORY;
 
@@ -1344,9 +1347,13 @@ LibmsiResult libmsi_database_export( LibmsiDatabase *db, const char *szTable,
         return LIBMSI_RESULT_INVALID_HANDLE;
 
     g_object_ref(db);
-    r = _libmsi_database_export( db, szTable, fd );
+    r = _libmsi_database_export(db, table, fd);
     g_object_unref(db);
-    return r;
+
+    if (r != LIBMSI_RESULT_SUCCESS)
+        g_set_error (error, LIBMSI_RESULT_ERROR, r, G_STRFUNC);
+
+    return r == LIBMSI_RESULT_SUCCESS;
 }
 
 typedef struct _tagMERGETABLE

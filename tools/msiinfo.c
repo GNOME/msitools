@@ -434,7 +434,7 @@ static unsigned export_create_table(const char *table,
     guint num_columns = libmsi_record_get_field_count(names);
     guint num_keys = libmsi_record_get_field_count(keys);
     guint i, len;
-    unsigned r;
+    unsigned r = LIBMSI_RESULT_SUCCESS;
     char size[20], extra[30];
     gchar *name, *type;
     unsigned sz;
@@ -660,7 +660,7 @@ done:
 static int cmd_export(struct Command *cmd, int argc, char **argv, GError **error)
 {
     LibmsiDatabase *db = NULL;
-    LibmsiResult r;
+    LibmsiResult r = LIBMSI_RESULT_SUCCESS;
     gboolean sql = FALSE;
 
     if (argc > 1 && !strcmp(argv[1], "-s")) {
@@ -679,20 +679,24 @@ static int cmd_export(struct Command *cmd, int argc, char **argv, GError **error
 
     if (sql) {
         r = export_sql(db, argv[2], error);
-    } else {
-#if O_BINARY
-        _setmode(STDOUT_FILENO, O_BINARY);
-#endif
-        r = libmsi_database_export(db, argv[2], STDOUT_FILENO);
-    }
-
     if (r) {
         print_libmsi_error(r);
     }
 
-    g_object_unref(db);
 
-    return 0;
+    } else {
+#if O_BINARY
+        _setmode(STDOUT_FILENO, O_BINARY);
+#endif
+        if (!libmsi_database_export(db, argv[2], STDOUT_FILENO, error))
+            goto end;
+    }
+
+end:
+    if (db)
+        g_object_unref(db);
+
+    return *error ? 1 : 0;
 }
 
 static int cmd_version(struct Command *cmd, int argc, char **argv, GError **error)

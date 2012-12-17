@@ -984,8 +984,8 @@ static void test_msiexport(void)
     fd = open(file, O_WRONLY | O_BINARY | O_CREAT, 0644);
     ok(fd != -1, "open failed\n");
 
-    r = libmsi_database_export(hdb, "phone", fd);
-    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_database_export failed\n");
+    r = libmsi_database_export(hdb, "phone", fd, NULL);
+    ok(r, "libmsi_database_export failed\n");
 
     close(fd);
 
@@ -5669,8 +5669,8 @@ static void test_forcecodepage(void)
     fd = open("forcecodepage.idt", O_WRONLY | O_BINARY | O_CREAT, 0644);
     ok(fd != -1, "cannot open file\n");
 
-    r = libmsi_database_export(hdb, "_ForceCodepage", fd);
-    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
+    r = libmsi_database_export(hdb, "_ForceCodepage", fd, NULL);
+    ok(r, "Expected success\n");
     close(fd);
 
     read_file_data("forcecodepage.idt", buffer);
@@ -5685,8 +5685,8 @@ static void test_forcecodepage(void)
     fd = open("forcecodepage.idt", O_WRONLY | O_BINARY | O_CREAT, 0644);
     ok(fd != -1, "cannot open file\n");
 
-    r = libmsi_database_export(hdb, "_ForceCodepage", fd);
-    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
+    r = libmsi_database_export(hdb, "_ForceCodepage", fd, NULL);
+    ok(r, "Expected success\n");
     close(fd);
 
     read_file_data("forcecodepage.idt", buffer);

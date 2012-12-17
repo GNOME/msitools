@@ -53,7 +53,10 @@ LibmsiRecord *      libmsi_database_get_primary_keys    (LibmsiDatabase *db,
 gboolean            libmsi_database_apply_transform     (LibmsiDatabase *db,
                                                          const char *file,
                                                          GError **error);
-LibmsiResult        libmsi_database_export (LibmsiDatabase *, const char *, int fd);
+gboolean            libmsi_database_export              (LibmsiDatabase *db,
+                                                         const char *table,
+                                                         int fd,
+                                                         GError **error);
 LibmsiResult        libmsi_database_import (LibmsiDatabase *, const char *, const char *);
 LibmsiCondition     libmsi_database_is_table_persistent (LibmsiDatabase *, const char *);
 LibmsiResult        libmsi_database_merge (LibmsiDatabase *, LibmsiDatabase *, const char *);
