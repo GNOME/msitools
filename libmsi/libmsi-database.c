@@ -1083,7 +1083,7 @@ done:
     return r;
 }
 
-static unsigned _libmsi_database_import(LibmsiDatabase *db, const char *folder, const char *file)
+static unsigned _libmsi_database_import(LibmsiDatabase *db, const char *path)
 {
     unsigned r = LIBMSI_RESULT_OUTOFMEMORY;
     unsigned len, i;
@@ -1091,7 +1091,6 @@ static unsigned _libmsi_database_import(LibmsiDatabase *db, const char *folder, 
     unsigned num_types = 0;
     unsigned num_columns = 0;
     unsigned num_records = 0;
-    char *path = NULL;
     char **columns = NULL;
     char **types = NULL;
     char **labels = NULL;
@@ -1103,19 +1102,7 @@ static unsigned _libmsi_database_import(LibmsiDatabase *db, const char *folder, 
     static const char suminfo[] = "_SummaryInformation";
     static const char forcecodepage[] = "_ForceCodepage";
 
-    TRACE("%p %s %s\n", db, debugstr_a(folder), debugstr_a(file) );
-
-    if( folder == NULL || file == NULL )
-        return LIBMSI_RESULT_INVALID_PARAMETER;
-
-    len = strlen(folder) + 1 + strlen(file) + 1;
-    path = msi_alloc( len );
-    if (!path)
-        return LIBMSI_RESULT_OUTOFMEMORY;
-
-    strcpy( path, folder );
-    strcat( path, G_DIR_SEPARATOR_S );
-    strcat( path, file );
+    TRACE("%p %s\n", db, debugstr_a(path));
 
     data = msi_read_text_archive( path, &len );
     if (!data)
@@ -1186,7 +1173,6 @@ static unsigned _libmsi_database_import(LibmsiDatabase *db, const char *folder, 
     }
 
 done:
-    msi_free(path);
     msi_free(data);
     msi_free(columns);
     msi_free(types);
@@ -1202,19 +1188,19 @@ done:
 
 gboolean
 libmsi_database_import (LibmsiDatabase *db,
-                        const char *folder,
-                        const char *filename,
+                        const char *path,
                         GError **error)
 {
     unsigned r;
 
-    TRACE("%x %s %s\n",db,debugstr_a(folder), debugstr_a(filename));
+    TRACE("%p %s\n",db,debugstr_a(path));
 
-    if( !db )
-        return LIBMSI_RESULT_INVALID_HANDLE;
+    g_return_val_if_fail (LIBMSI_IS_DATABASE (db), FALSE);
+    g_return_val_if_fail (path, FALSE);
+    g_return_val_if_fail (!error || *error == NULL, FALSE);
 
     g_object_ref(db);
-    r = _libmsi_database_import(db, folder, filename);
+    r = _libmsi_database_import(db, path);
     g_object_unref(db);
 
     if (r != LIBMSI_RESULT_SUCCESS)

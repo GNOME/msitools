@@ -133,10 +133,7 @@ static gboolean import_table(char *table, GError **error)
     gboolean success = TRUE;
     char dir[PATH_MAX];
 
-    if (getcwd(dir, PATH_MAX) == NULL)
-        return 1;
-
-    if (!libmsi_database_import(db, dir, table, error))
+    if (!libmsi_database_import(db, table, error))
     {
         fprintf(stderr, "failed to import table %s\n", table);
         success = FALSE;
