@@ -194,6 +194,22 @@ static unsigned get_property_count( const LibmsiOLEVariant *property )
     return n;
 }
 
+GArray *
+libmsi_summary_info_get_properties (LibmsiSummaryInfo *self)
+{
+    GArray *props;
+    int i;
+
+    g_return_val_if_fail (LIBMSI_IS_SUMMARY_INFO (self), NULL);
+
+    props = g_array_new (FALSE, FALSE, sizeof(LibmsiProperty));
+    for (i = 0; i < MSI_MAX_PROPS; i++)
+        if (self->property[i].vt != OLEVT_EMPTY)
+            g_array_append_val (props, i);
+
+    return props;
+}
+
 static unsigned read_word( const uint8_t *data, unsigned *ofs )
 {
     unsigned val = 0;
@@ -539,21 +555,6 @@ static unsigned suminfo_persist( LibmsiSummaryInfo *si )
     }
     msi_free( data );
     return r;
-}
-
-LibmsiResult libmsi_summary_info_get_property_count (LibmsiSummaryInfo *si, unsigned *pCount)
-{
-    TRACE("%d %p\n", si, pCount);
-
-    if( !si )
-        return LIBMSI_RESULT_INVALID_HANDLE;
-
-    g_object_ref(si);
-    if( pCount )
-        *pCount = get_property_count( si->property );
-    g_object_unref(si);
-
-    return LIBMSI_RESULT_SUCCESS;
 }
 
 LibmsiPropertyType

@@ -1705,11 +1705,12 @@ static unsigned add_table_to_db(LibmsiDatabase *hdb, const char *table_data)
 static void test_suminfo_import(void)
 {
     GError *error = NULL;
+    GArray *props;
     LibmsiDatabase *hdb;
     LibmsiSummaryInfo *hsi;
     LibmsiQuery *query = 0;
     const char *sql;
-    unsigned r, count, type;
+    unsigned r, type;
     const char *str_value;
     int int_value;
     guint64 ft_value;
@@ -1734,9 +1735,9 @@ static void test_suminfo_import(void)
     hsi = libmsi_summary_info_new(hdb, 0, NULL);
     ok(hsi, "libmsi_summary_info_new() failed");
 
-    r = libmsi_summary_info_get_property_count(hsi, &count);
-    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %u\n", r);
-    ok(count == 14, "Expected 14, got %u\n", count);
+    props = libmsi_summary_info_get_properties (hsi);
+    ok(props->len == 14, "Expected 14, got %u\n", props->len);
+    g_array_unref (props);
 
     int_value = libmsi_summary_info_get_int (hsi, LIBMSI_PROPERTY_CODEPAGE, &error);
     ok(!error, "Expected success\n");

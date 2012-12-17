@@ -36,6 +36,7 @@ static const WCHAR msifileW[] = {
 static void test_suminfo(void)
 {
     GError *error = NULL;
+    GArray *props;
     LibmsiDatabase *hdb = 0;
     LibmsiSummaryInfo *hsuminfo;
     unsigned r, count, type;
@@ -58,16 +59,10 @@ static void test_suminfo(void)
     hsuminfo = libmsi_summary_info_new(hdb, 0, NULL);
     ok(hsuminfo, "libmsi_database_get_summary_info failed\n");
 
-    r = libmsi_summary_info_get_property_count(0, NULL);
-    ok(r == LIBMSI_RESULT_INVALID_HANDLE, "getpropcount failed\n");
-
-    r = libmsi_summary_info_get_property_count(hsuminfo, NULL);
-    ok(r == LIBMSI_RESULT_SUCCESS, "getpropcount failed\n");
-
-    count = -1;
-    r = libmsi_summary_info_get_property_count(hsuminfo, &count);
-    ok(r == LIBMSI_RESULT_SUCCESS, "getpropcount failed\n");
-    ok(count == 0, "count should be zero\n");
+    props = libmsi_summary_info_get_properties (hsuminfo);
+    ok(props, "getpropcount failed\n");
+    ok(props->len == 0, "count should be zero\n");
+    g_array_unref (props);
 
     type = libmsi_summary_info_get_property_type(hsuminfo, LIBMSI_PROPERTY_UUID, &error);
     ok(!error, "returned error");
@@ -358,10 +353,10 @@ static void test_summary_binary(void)
     todo_wine ok( ival == 0, "value incorrect\n");
 
     /* looks like msi adds some of its own values in here */
-    count = 0;
-    r = libmsi_summary_info_get_property_count( hsuminfo, &count );
-    ok(r == LIBMSI_RESULT_SUCCESS, "getpropcount failed\n");
-    todo_wine ok(count == 10, "prop count incorrect\n");
+    props = libmsi_summary_info_get_properties (hsuminfo);
+    ok(props, "getpropcount failed\n");
+    todo_wine ok(props->len == 10, "prop count incorrect\n");
+    g_array_unref (props);
 
     libmsi_summary_info_set_string(hsuminfo, LIBMSI_PROPERTY_TITLE, "Mike", &error);
     ok(error, "libmsi_summary_info_set_property failed\n");
