@@ -67,8 +67,8 @@ gboolean            libmsi_database_merge               (LibmsiDatabase *db,
                                                          LibmsiDatabase *merge,
                                                          const char *table,
                                                          GError **error);
-LibmsiResult        libmsi_database_commit (LibmsiDatabase *);
-
+gboolean            libmsi_database_commit              (LibmsiDatabase *db,
+                                                         GError **error);
 
 G_END_DECLS
 

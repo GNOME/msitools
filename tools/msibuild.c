@@ -101,12 +101,11 @@ static LibmsiResult open_database(const char *msifile, LibmsiDatabase **db,
         if (!init_suminfo(*si, error))
             return LIBMSI_RESULT_FUNCTION_FAILED;
 
-        r = libmsi_database_commit(*db);
-        if (r != LIBMSI_RESULT_SUCCESS)
+        if (!libmsi_database_commit(*db, error))
         {
-            fprintf(stderr, "failed to commit database (%u)\n", r);
+            fprintf(stderr, "failed to commit database\n");
             g_object_unref(*db);
-            return r;
+            return LIBMSI_RESULT_FUNCTION_FAILED;
         }
     }
     else
@@ -330,16 +329,11 @@ int main(int argc, char *argv[])
     }
 
     if (r == LIBMSI_RESULT_SUCCESS) {
-        libmsi_summary_info_persist(si, &error);
-        if (error)
+        if (!libmsi_summary_info_persist(si, &error))
             goto end;
 
-        r = libmsi_database_commit(db);
-        if (r != LIBMSI_RESULT_SUCCESS)
-        {
-            fprintf(stderr, "failed to commit database (%u)\n", r);
-            exit(1);
-        }
+        if (!libmsi_database_commit(db, &error))
+            goto end;
     }
 
 end:

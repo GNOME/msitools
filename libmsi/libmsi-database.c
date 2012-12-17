@@ -2291,15 +2291,15 @@ end:
     return ret;
 }
 
-LibmsiResult libmsi_database_commit( LibmsiDatabase *db )
+gboolean
+libmsi_database_commit (LibmsiDatabase *db, GError **error)
 {
     unsigned r = LIBMSI_RESULT_SUCCESS;
     unsigned bytes_per_strref;
 
-    TRACE("%d\n", db);
+    TRACE ("%p\n", db);
 
-    if( !db )
-        return LIBMSI_RESULT_INVALID_HANDLE;
+    g_return_val_if_fail (LIBMSI_IS_DATABASE (db), FALSE);
 
     g_object_ref(db);
     if (db->mode == LIBMSI_DB_OPEN_READONLY)
@@ -2307,31 +2307,31 @@ LibmsiResult libmsi_database_commit( LibmsiDatabase *db )
 
     /* FIXME: lock the database */
 
-    r = msi_save_string_table( db->strings, db, &bytes_per_strref );
-    if( r != LIBMSI_RESULT_SUCCESS )
-    {
-        WARN("failed to save string table r=%08x\n",r);
+    r = msi_save_string_table (db->strings, db, &bytes_per_strref);
+    if (r != LIBMSI_RESULT_SUCCESS) {
+        g_set_error (error, LIBMSI_RESULT_ERROR, r,
+                     "failed to save string table r=%08x\n", r);
         goto end;
     }
 
-    r = msi_enum_db_storages( db, commit_storage, db );
-    if (r != LIBMSI_RESULT_SUCCESS)
-    {
-        WARN("failed to save storages r=%08x\n",r);
+    r = msi_enum_db_storages (db, commit_storage, db);
+    if (r != LIBMSI_RESULT_SUCCESS) {
+        g_set_error (error, LIBMSI_RESULT_ERROR, r,
+                     "failed to save storages r=%08x\n", r);
         goto end;
     }
 
-    r = msi_enum_db_streams( db, commit_stream, db );
-    if (r != LIBMSI_RESULT_SUCCESS)
-    {
-        WARN("failed to save streams r=%08x\n",r);
+    r = msi_enum_db_streams (db, commit_stream, db);
+    if (r != LIBMSI_RESULT_SUCCESS) {
+        g_set_error (error, LIBMSI_RESULT_ERROR, r,
+                     "failed to save streams r=%08x\n", r);
         goto end;
     }
 
-    r = _libmsi_database_commit_tables( db, bytes_per_strref );
-    if (r != LIBMSI_RESULT_SUCCESS)
-    {
-        WARN("failed to save tables r=%08x\n",r);
+    r = _libmsi_database_commit_tables (db, bytes_per_strref);
+    if (r != LIBMSI_RESULT_SUCCESS) {
+        g_set_error (error, LIBMSI_RESULT_ERROR, r,
+                     "failed to save tables r=%08x\n", r);
         goto end;
     }
 
@@ -2347,7 +2347,7 @@ LibmsiResult libmsi_database_commit( LibmsiDatabase *db )
 end:
     g_object_unref(db);
 
-    return r;
+    return r == LIBMSI_RESULT_SUCCESS;
 }
 
 struct msi_primary_key_record_info

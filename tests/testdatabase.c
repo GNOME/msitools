@@ -67,8 +67,8 @@ static void test_msidatabase(void)
     hdb = libmsi_database_new(msifile, LIBMSI_DB_OPEN_CREATE, NULL );
     ok(hdb , "Failed to create database\n" );
 
-    res = libmsi_database_commit( hdb );
-    ok( res == LIBMSI_RESULT_SUCCESS , "Failed to commit database\n" );
+    res = libmsi_database_commit(hdb, NULL);
+    ok(res, "Failed to commit database\n");
 
     ok( -1 != access( msifile, F_OK ), "database should exist\n");
 
@@ -77,8 +77,8 @@ static void test_msidatabase(void)
     hdb2 = libmsi_database_new( msifile, msifile2, NULL );
     ok(hdb2 , "Failed to open database\n" );
 
-    res = libmsi_database_commit( hdb2 );
-    ok( res == LIBMSI_RESULT_SUCCESS , "Failed to commit database\n" );
+    res = libmsi_database_commit(hdb2, NULL);
+    ok(res , "Failed to commit database\n");
 
     ok( -1 != access( msifile2, F_OK ), "database should exist\n");
 
@@ -94,8 +94,8 @@ static void test_msidatabase(void)
     hdb2 = libmsi_database_new( msifile, msifile2, NULL );
     ok( hdb2 , "Failed to close database\n" );
 
-    res = libmsi_database_commit( hdb2 );
-    ok( res == LIBMSI_RESULT_SUCCESS , "Failed to commit database\n" );
+    res = libmsi_database_commit(hdb2, NULL);
+    ok(res, "Failed to commit database\n");
 
     g_object_unref( hdb2 );
 
@@ -104,8 +104,8 @@ static void test_msidatabase(void)
     hdb = libmsi_database_new( msifile, LIBMSI_DB_OPEN_READONLY, NULL );
     ok(hdb , "Failed to open database\n" );
 
-    res = libmsi_database_commit( hdb );
-    ok( res == LIBMSI_RESULT_SUCCESS , "Failed to commit database\n" );
+    res = libmsi_database_commit(hdb, NULL);
+    ok(res, "Failed to commit database\n");
 
     g_object_unref( hdb );
 
@@ -128,8 +128,8 @@ static void test_msidatabase(void)
     hdb = libmsi_database_new( msifile, LIBMSI_DB_OPEN_CREATE, NULL );
     ok(hdb , "Failed to open database\n" );
 
-    res = libmsi_database_commit( hdb );
-    ok( res == LIBMSI_RESULT_SUCCESS , "Failed to commit database\n" );
+    res = libmsi_database_commit(hdb, NULL);
+    ok(res, "Failed to commit database\n", res);
 
     ok( -1 != access( msifile, F_OK ), "database should exist\n");
 
@@ -431,8 +431,8 @@ static void test_msiinsert(void)
     hrec = libmsi_query_fetch(0, NULL);
     ok(!hrec, "libmsi_query_fetch must fail\n");
 
-    r = libmsi_database_commit(hdb);
-    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_database_commit failed\n");
+    r = libmsi_database_commit(hdb, NULL);
+    ok(r, "libmsi_database_commit failed\n");
 
     g_object_unref(hdb);
 
@@ -495,8 +495,8 @@ static void test_msibadqueries(void)
     hdb = libmsi_database_new(msifile, LIBMSI_DB_OPEN_CREATE, NULL);
     ok(hdb, "libmsi_database_open failed\n");
 
-    r = libmsi_database_commit( hdb );
-    ok(r == LIBMSI_RESULT_SUCCESS , "Failed to commit database\n");
+    r = libmsi_database_commit(hdb, NULL);
+    ok(r, "Failed to commit database\n");
 
     g_object_unref( hdb );
 
@@ -577,8 +577,8 @@ static void test_msibadqueries(void)
           "CHAR(72), `d` CHAR(255) NOT NULL LOCALIZABLE PRIMARY KEY `b`)");
     ok(r == LIBMSI_RESULT_SUCCESS , "query 4 failed\n");
 
-    r = libmsi_database_commit( hdb );
-    ok(r == LIBMSI_RESULT_SUCCESS , "Failed to commit database after write\n");
+    r = libmsi_database_commit(hdb, NULL);
+    ok(r, "Failed to commit database after write\n");
 
     r = try_query( hdb, "CREATE TABLE `blah` (`foo` CHAR(72) NOT NULL "
                           "PRIMARY KEY `foo`)");
@@ -587,8 +587,8 @@ static void test_msibadqueries(void)
     r = try_insert_query( hdb, "insert into a  ( `b` ) VALUES ( ? )");
     ok(r == LIBMSI_RESULT_SUCCESS , "failed to insert record in db\n");
 
-    r = libmsi_database_commit( hdb );
-    ok(r == LIBMSI_RESULT_SUCCESS , "Failed to commit database after write\n");
+    r = libmsi_database_commit(hdb, NULL);
+    ok(r, "Failed to commit database after write\n");
 
     r = try_query( hdb, "CREATE TABLE `boo` (`foo` CHAR(72) NOT NULL "
                           "PRIMARY KEY `ba`)");
@@ -711,8 +711,8 @@ static LibmsiDatabase *create_db(void)
     hdb = libmsi_database_new(msifile, LIBMSI_DB_OPEN_CREATE, NULL );
     ok(hdb , "Failed to create database\n" );
 
-    res = libmsi_database_commit( hdb );
-    ok( res == LIBMSI_RESULT_SUCCESS , "Failed to commit database\n" );
+    res = libmsi_database_commit(hdb, NULL);
+    ok(res, "Failed to commit database\n");
 
     return hdb;
 }
@@ -1040,8 +1040,8 @@ static void test_longstrings(void)
     r = try_query( hdb, str );
     ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_database_open_query failed\n");
 
-    r = libmsi_database_commit(hdb);
-    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_database_commit failed\n");
+    r = libmsi_database_commit(hdb, NULL);
+    ok(r, "libmsi_database_commit failed\n");
     g_object_unref(hdb);
 
     hdb = libmsi_database_new(msifile, LIBMSI_DB_OPEN_READONLY, NULL);
@@ -1111,8 +1111,8 @@ static void test_streamtable(void)
             "( `Value`, `Property` ) VALUES ( 'Prop', 'value' )" );
     ok( r == LIBMSI_RESULT_SUCCESS, "Failed to add to table\n" );
 
-    r = libmsi_database_commit( hdb );
-    ok( r == LIBMSI_RESULT_SUCCESS , "Failed to commit database\n" );
+    r = libmsi_database_commit(hdb, NULL);
+    ok(r, "Failed to commit database\n");
 
     g_object_unref( hdb );
 
@@ -1354,8 +1354,8 @@ static void test_binary(void)
 
     g_object_unref( rec );
 
-    r = libmsi_database_commit( hdb );
-    ok( r == LIBMSI_RESULT_SUCCESS , "Failed to commit database\n" );
+    r = libmsi_database_commit(hdb, NULL);
+    ok(r, "Failed to commit database\n" );
 
     g_object_unref( hdb );
 
@@ -2452,8 +2452,8 @@ static LibmsiDatabase *create_package_db(const char *filename)
     hdb = libmsi_database_new(filename, LIBMSI_DB_OPEN_CREATE, NULL );
     ok(hdb , "Failed to create database\n" );
 
-    res = libmsi_database_commit( hdb );
-    ok( res == LIBMSI_RESULT_SUCCESS , "Failed to commit database\n" );
+    res = libmsi_database_commit(hdb, NULL);
+    ok(res, "Failed to commit database\n");
 
     res = set_summary_info(hdb);
     ok( res == LIBMSI_RESULT_SUCCESS , "Failed to set summary info\n" );
@@ -2516,8 +2516,8 @@ static void test_try_transform(void)
 
     g_object_unref(hrec);
 
-    r = libmsi_database_commit( hdb );
-    ok( r == LIBMSI_RESULT_SUCCESS , "Failed to commit database\n" );
+    r = libmsi_database_commit(hdb, NULL);
+    ok(r, "Failed to commit database\n");
 
     g_object_unref( hdb );
     unlink("testdata.bin");
@@ -2530,7 +2530,7 @@ static void test_try_transform(void)
     r = libmsi_database_apply_transform(hdb, mstfile, NULL);
     ok(r, "libmsi_database_apply_transform() failed\n");
 
-    libmsi_database_commit( hdb );
+    libmsi_database_commit(hdb, NULL);
 
     /* check new values */
     hrec = 0;
@@ -3739,8 +3739,8 @@ static void test_integers(void)
     libmsi_query_close(query, NULL);
     g_object_unref(query);
 
-    r = libmsi_database_commit(hdb);
-    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_database_commit failed\n");
+    r = libmsi_database_commit(hdb, NULL);
+    ok(r, "libmsi_database_commit failed\n");
 
     g_object_unref(hdb);
 
@@ -4023,8 +4023,8 @@ static void test_update(void)
     libmsi_query_close(query, NULL);
     g_object_unref(query);
 
-    r = libmsi_database_commit(hdb);
-    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_database_commit failed\n");
+    r = libmsi_database_commit(hdb, NULL);
+    ok(r, "libmsi_database_commit failed\n");
     g_object_unref(hdb);
 
     unlink(msifile);
@@ -4617,8 +4617,8 @@ static void test_stringtable(void)
     r = run_query(hdb, 0, sql);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
-    r = libmsi_database_commit(hdb);
-    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
+    r = libmsi_database_commit(hdb, NULL);
+    ok(r, "Expected LIBMSI_RESULT_SUCCESS\n");
 
     g_object_unref(hdb);
 
@@ -5152,8 +5152,8 @@ static void test_deleterow(void)
     r = run_query(hdb, 0, sql);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
-    r = libmsi_database_commit(hdb);
-    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
+    r = libmsi_database_commit(hdb, NULL);
+    ok(r, "Expected LIBMSI_RESULT_SUCCESS\n");
 
     g_object_unref(hdb);
 
@@ -5654,8 +5654,8 @@ static void test_forcecodepage(void)
     r = run_query(hdb, 0, sql);
     ok(r == LIBMSI_RESULT_BAD_QUERY_SYNTAX, "Expected LIBMSI_RESULT_BAD_QUERY_SYNTAX, got %d\n", r);
 
-    r = libmsi_database_commit(hdb);
-    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
+    r = libmsi_database_commit(hdb, NULL);
+    ok(r, "Expected LIBMSI_RESULT_SUCCESS\n");
 
     sql = "SELECT * FROM `_ForceCodepage`";
     r = run_query(hdb, 0, sql);
@@ -5759,8 +5759,8 @@ static void test_storages_table(void)
     hdb = create_db();
     ok(hdb, "failed to create db\n");
 
-    r = libmsi_database_commit(hdb);
-    ok(r == LIBMSI_RESULT_SUCCESS , "Failed to commit database\n");
+    r = libmsi_database_commit(hdb, NULL);
+    ok(r, "Failed to commit database\n");
 
     g_object_unref(hdb);
 
@@ -5830,7 +5830,7 @@ static void test_storages_table(void)
     libmsi_query_close(hquery, NULL);
     g_object_unref(hquery);
 
-    libmsi_database_commit(hdb);
+    libmsi_database_commit(hdb, NULL);
     g_object_unref(hdb);
 
     MultiByteToWideChar(CP_ACP, 0, msifile, -1, name, MAX_PATH);
@@ -7202,8 +7202,8 @@ static void test_createtable(void)
 
         g_object_unref( htab );
 
-        res = libmsi_database_commit(hdb);
-        ok(res == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", res);
+        res = libmsi_database_commit(hdb, NULL);
+        ok(res, "Expected LIBMSI_RESULT_SUCCESS\n");
 
         g_object_unref(hdb);
 
@@ -7226,8 +7226,8 @@ static void test_createtable(void)
         g_object_unref( htab );
     }
 
-    res = libmsi_database_commit(hdb);
-    ok(res == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", res);
+    res = libmsi_database_commit(hdb, NULL);
+    ok(res, "Expected LIBMSI_RESULT_SUCCESS\n");
 
     g_object_unref(hdb);
 
