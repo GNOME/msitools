@@ -190,7 +190,7 @@ static int cmd_streams(struct Command *cmd, int argc, char **argv, GError **erro
 {
     LibmsiDatabase *db = NULL;
     LibmsiQuery *query = NULL;
-    LibmsiResult r;
+    int r = 1;
 
     if (argc != 2) {
         cmd_usage(stderr, cmd);
@@ -198,31 +198,33 @@ static int cmd_streams(struct Command *cmd, int argc, char **argv, GError **erro
 
     db = libmsi_database_new(argv[1], LIBMSI_DB_OPEN_READONLY, error);
     if (!db)
-        return 1;
+        goto end;
 
-    r = libmsi_database_open_query(db, "SELECT `Name` FROM `_Streams`", &query);
-    if (r) {
-        print_libmsi_error(r);
-    }
+    query = libmsi_query_new(db, "SELECT `Name` FROM `_Streams`", error);
+    if (!query)
+        goto end;
 
-    r = libmsi_query_execute(query, NULL, error);
+    libmsi_query_execute(query, NULL, error);
     if (*error)
         goto end;
 
     print_strings_from_query(query, error);
+    r = 0;
 
 end:
-    g_object_unref(query);
-    g_object_unref(db);
+    if (query)
+        g_object_unref(query);
+    if (db)
+        g_object_unref(db);
 
-    return 0;
+    return r;
 }
 
 static int cmd_tables(struct Command *cmd, int argc, char **argv, GError **error)
 {
     LibmsiDatabase *db = NULL;
     LibmsiQuery *query = NULL;
-    LibmsiResult r;
+    int r = 1;
 
     if (argc != 2) {
         cmd_usage(stderr, cmd);
@@ -230,24 +232,26 @@ static int cmd_tables(struct Command *cmd, int argc, char **argv, GError **error
 
     db = libmsi_database_new(argv[1], LIBMSI_DB_OPEN_READONLY, error);
     if (!db)
-        return 1;
+        goto end;
 
-    r = libmsi_database_open_query(db, "SELECT `Name` FROM `_Tables`", &query);
-    if (r) {
-        print_libmsi_error(r);
-    }
+    query = libmsi_query_new(db, "SELECT `Name` FROM `_Tables`", error);
+    if (!query)
+        goto end;
 
     r = libmsi_query_execute(query, NULL, error);
     if (*error)
         goto end;
 
     print_strings_from_query(query, error);
+    r = 0;
 
 end:
-    g_object_unref(query);
-    g_object_unref(db);
+    if (query)
+        g_object_unref(query);
+    if (db)
+        g_object_unref(db);
 
-    return 0;
+    return r;
 }
 
 static void print_suminfo(LibmsiSummaryInfo *si, int prop, const char *name)
@@ -365,7 +369,7 @@ static int cmd_extract(struct Command *cmd, int argc, char **argv, GError **erro
     LibmsiDatabase *db = NULL;
     LibmsiQuery *query = NULL;
     LibmsiRecord *rec = NULL;
-    LibmsiResult r;
+    int r = 1;
     char *buf;
     unsigned size, bufsize;
 
@@ -375,12 +379,11 @@ static int cmd_extract(struct Command *cmd, int argc, char **argv, GError **erro
 
     db = libmsi_database_new(argv[1], LIBMSI_DB_OPEN_READONLY, error);
     if (!db)
-        return 1;
+        goto end;
 
-    r = libmsi_database_open_query(db, "SELECT `Data` FROM `_Streams` WHERE `Name` = ?", &query);
-    if (r) {
-        print_libmsi_error(r);
-    }
+    query = libmsi_query_new(db, "SELECT `Data` FROM `_Streams` WHERE `Name` = ?", error);
+    if (*error)
+        goto end;
 
     rec = libmsi_record_new(1);
     libmsi_record_set_string(rec, 1, argv[2]);
@@ -410,6 +413,8 @@ static int cmd_extract(struct Command *cmd, int argc, char **argv, GError **erro
         size -= bufsize;
     }
 
+    r = 0;
+
 end:
     if (rec)
         g_object_unref(rec);
@@ -418,7 +423,7 @@ end:
     if (db)
         g_object_unref(db);
 
-    return 0;
+    return r;
 }
 
 static unsigned export_create_table(const char *table,
@@ -598,20 +603,20 @@ static unsigned export_sql( LibmsiDatabase *db, const char *table, GError **erro
     char *sql;
 
     sql = g_strdup_printf("select * from `%s`", table);
-    r = libmsi_database_open_query(db, sql, &query);
-    if (r) {
-        return r;
+    query = libmsi_query_new(db, sql, error);
+    if (*error) {
+        goto done;
     }
 
     /* write out row 1, the column names */
     name = libmsi_query_get_column_info(query, LIBMSI_COL_INFO_NAMES, error);
-    if (error) {
+    if (*error) {
         goto done;
     }
 
     /* write out row 2, the column types */
     type = libmsi_query_get_column_info(query, LIBMSI_COL_INFO_TYPES, error);
-    if (error) {
+    if (*error) {
         goto done;
     }
 

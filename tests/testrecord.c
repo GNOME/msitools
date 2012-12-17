@@ -372,8 +372,8 @@ static void test_fieldzero (void)
     query = "CREATE TABLE `drone` ( "
            "`id` INT, `name` CHAR (32), `number` CHAR (32) "
            "PRIMARY KEY `id`)";
-    r = libmsi_database_open_query (hdb, query, &hview);
-    ok (r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
+    hview = libmsi_query_new (hdb, query, NULL);
+    ok (hview, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     r = libmsi_query_execute (hview, 0, NULL);
     ok (r, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     r = libmsi_query_close (hview, NULL);
@@ -382,8 +382,8 @@ static void test_fieldzero (void)
 
     query = "INSERT INTO `drone` ( `id`, `name`, `number` )"
            "VALUES ('1', 'Abe', '8675309')";
-    r = libmsi_database_open_query (hdb, query, &hview);
-    ok (r == LIBMSI_RESULT_SUCCESS, "libmsi_database_open_query failed\n");
+    hview = libmsi_query_new (hdb, query, NULL);
+    ok (hview, "libmsi_query failed\n");
     r = libmsi_query_execute (hview, 0, NULL);
     ok (r, "libmsi_query_execute failed\n");
     r = libmsi_query_close (hview, NULL);
@@ -408,8 +408,8 @@ static void test_fieldzero (void)
     ok (r == LIBMSI_RESULT_INVALID_TABLE, "Expected LIBMSI_RESULT_INVALID_TABLE, got %d\n", r);
 
     query = "SELECT * FROM `drone` WHERE `id` = 1";
-    r = libmsi_database_open_query (hdb, query, &hview);
-    ok (r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
+    hview = libmsi_query_new (hdb, query, NULL);
+    ok (hview, "Expected LIBMSI_RESULT_SUCCESS\n");
     r = libmsi_query_execute (hview, 0, NULL);
     ok (r, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
     rec = libmsi_query_fetch (hview, NULL);

@@ -168,48 +168,67 @@ static gboolean add_summary_info(const char *name, const char *author,
     return TRUE;
 }
 
-static int add_stream(const char *stream, const char *file, GError **error)
+static gboolean add_stream(const char *stream, const char *file, GError **error)
 {
-    LibmsiResult r;
-    LibmsiRecord *rec;
-    LibmsiQuery *query;
+    gboolean r = FALSE;
+    LibmsiRecord *rec = NULL;
+    LibmsiQuery *query = NULL;
 
     rec = libmsi_record_new(2);
     libmsi_record_set_string(rec, 1, stream);
-    if (!libmsi_record_load_stream(rec, 2, file))
+    if (!libmsi_record_load_stream(rec, 2, file)) {
         fprintf(stderr, "failed to load stream (%u)\n", r);
+        goto end;
+    }
 
-    r = libmsi_database_open_query(db,
-            "INSERT INTO `_Streams` (`Name`, `Data`) VALUES (?, ?)", &query);
-    if (r != LIBMSI_RESULT_SUCCESS)
-        fprintf(stderr, "failed to open query (%u)\n", r);
+    query = libmsi_query_new(db,
+            "INSERT INTO `_Streams` (`Name`, `Data`) VALUES (?, ?)", error);
+    if (!query)
+        goto end;
 
-    if (!libmsi_query_execute(query, rec, error))
+    if (!libmsi_query_execute(query, rec, error)) {
         fprintf(stderr, "failed to execute query\n");
+        goto end;
+    }
 
-    g_object_unref(rec);
-    libmsi_query_close(query, error);
-    g_object_unref(query);
+    r = TRUE;
+
+end:
+    if (rec)
+        g_object_unref(rec);
+    if (query) {
+        libmsi_query_close(query, error);
+        g_object_unref(query);
+    }
+
     return r;
 }
 
 static int do_query(const char *sql, void *opaque)
 {
     GError **error = opaque;
-    LibmsiResult r;
+    LibmsiResult r = LIBMSI_RESULT_FUNCTION_FAILED;
     LibmsiQuery *query;
 
-    r = libmsi_database_open_query(db, sql, &query);
-    if (r != LIBMSI_RESULT_SUCCESS) {
-        fprintf(stderr, "failed to open query (%u)\n", r);
-        return r;
+    query = libmsi_query_new(db, sql, error);
+    if (!query) {
+        fprintf(stderr, "failed to open query\n");
+        goto end;
     }
 
-    if (!libmsi_query_execute(query, NULL, error))
+    if (!libmsi_query_execute(query, NULL, error)) {
         fprintf(stderr, "failed to execute query\n");
+        goto end;
+    }
 
-    libmsi_query_close(query, error);
-    g_object_unref(query);
+    r = LIBMSI_RESULT_SUCCESS;
+
+end:
+    if (query) {
+        libmsi_query_close(query, error);
+        g_object_unref(query);
+    }
+
     return r;
 }
 
@@ -297,7 +316,8 @@ int main(int argc, char *argv[])
             break;
         case 'a':
             if (argc < 3) break;
-            ret = add_stream(argv[1], argv[2], &error);
+            if (!add_stream(argv[1], argv[2], &error))
+                goto end;
             argc -= 3, argv += 3;
             break;
         default:

@@ -948,18 +948,18 @@ static unsigned msi_add_table_to_db(LibmsiDatabase *db, char **columns, char **t
     strcat(create_sql, columns_sql);
     strcat(create_sql, postlude);
 
-    r = _libmsi_database_open_query( db, create_sql, &view );
-    if (r != LIBMSI_RESULT_SUCCESS)
+    view = libmsi_query_new(db, create_sql, &error);
+    if (!view)
         goto done;
 
     r = _libmsi_query_execute(view, NULL);
     libmsi_query_close(view, &error);
-    if (error) {
-        g_critical ("%s", error->message);
-        g_clear_error (&error);
-    }
 
 done:
+    if (error)
+        g_critical ("%s", error->message);
+
+    g_clear_error (&error);
     g_object_unref(view);
     msi_free(prelude);
     msi_free(columns_sql);
@@ -1587,6 +1587,7 @@ static unsigned merge_diff_row(LibmsiRecord *rec, void *param)
     LibmsiRecord *row = NULL;
     char *query = NULL;
     unsigned r = LIBMSI_RESULT_SUCCESS;
+    GError *err = NULL;
 
     if (table_view_exists(data->db, table->name))
     {
@@ -1594,8 +1595,8 @@ static unsigned merge_diff_row(LibmsiRecord *rec, void *param)
         if (!query)
             return LIBMSI_RESULT_OUTOFMEMORY;
 
-        r = _libmsi_database_open_query(data->db, query, &dbview);
-        if (r != LIBMSI_RESULT_SUCCESS)
+        dbview = libmsi_query_new(data->db, query, &err);
+        if (err)
             goto done;
 
         r = _libmsi_query_execute(dbview, NULL);
@@ -1632,6 +1633,9 @@ static unsigned merge_diff_row(LibmsiRecord *rec, void *param)
     list_add_tail(&table->rows, &mergerow->entry);
 
 done:
+    if (err)
+        g_critical("%s", err->message);
+    g_clear_error(&err);
     msi_free(query);
     g_object_unref(row);
     g_object_unref(dbview);

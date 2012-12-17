@@ -1217,6 +1217,7 @@ static unsigned table_view_get_row( LibmsiView *view, unsigned row, LibmsiRecord
 
 static unsigned _libmsi_add_stream( LibmsiDatabase *db, const char *name, GsfInput *data )
 {
+    GError *err = NULL;
     static const char insert[] =
         "INSERT INTO `_Streams`(`Name`, `Data`) VALUES (?, ?)";
     LibmsiQuery *query = NULL;
@@ -1236,9 +1237,10 @@ static unsigned _libmsi_add_stream( LibmsiDatabase *db, const char *name, GsfInp
     if ( r != LIBMSI_RESULT_SUCCESS )
        goto err;
 
-    r = _libmsi_database_open_query( db, insert, &query );
-    if ( r != LIBMSI_RESULT_SUCCESS )
-       goto err;
+    query = libmsi_query_new (db, insert, &err);
+    if (err)
+        r = err->code;
+    g_clear_error (&err);
 
     r = _libmsi_query_execute( query, rec );
 

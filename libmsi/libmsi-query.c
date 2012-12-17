@@ -139,6 +139,9 @@ init (LibmsiQuery *self, GError **error)
 
     r = _libmsi_parse_sql (self->database, self->query, &self->view, &self->mem);
 
+    if (r != LIBMSI_RESULT_SUCCESS)
+        g_set_error_literal (error, LIBMSI_RESULT_ERROR, r, G_STRFUNC);
+
     return r == LIBMSI_RESULT_SUCCESS;
 }
 
@@ -172,23 +175,6 @@ unsigned _libmsi_view_find_column( LibmsiView *table, const char *name, const ch
     return LIBMSI_RESULT_INVALID_PARAMETER;
 }
 
-LibmsiResult libmsi_database_open_query(LibmsiDatabase *db,
-              const char *szQuery, LibmsiQuery **pQuery)
-{
-    unsigned r;
-
-    TRACE("%d %s %p\n", db, debugstr_a(szQuery), pQuery);
-
-    if( !db )
-        return LIBMSI_RESULT_INVALID_HANDLE;
-
-    g_object_ref(db);
-    r = _libmsi_database_open_query( db, szQuery, pQuery );
-    g_object_unref(db);
-
-    return r;
-}
-
 unsigned _libmsi_database_open_query(LibmsiDatabase *db,
               const char *szQuery, LibmsiQuery **pView)
 {
@@ -201,7 +187,8 @@ unsigned _libmsi_database_open_query(LibmsiDatabase *db,
 
 unsigned _libmsi_query_open( LibmsiDatabase *db, LibmsiQuery **view, const char *fmt, ... )
 {
-    unsigned r;
+    GError *err = NULL;
+    unsigned r = LIBMSI_RESULT_SUCCESS;
     int size = 100, res;
     char *query;
 
@@ -219,7 +206,10 @@ unsigned _libmsi_query_open( LibmsiDatabase *db, LibmsiQuery **view, const char 
         msi_free( query );
     }
     /* perform the query */
-    r = _libmsi_database_open_query(db, query, view);
+    *view = libmsi_query_new (db, query, &err);
+    if (err)
+        r = err->code;
+    g_clear_error (&err);
     msi_free(query);
     return r;
 }
@@ -290,7 +280,10 @@ LibmsiRecord *_libmsi_query_get_record( LibmsiDatabase *db, const char *fmt, ...
         msi_free( query );
     }
     /* perform the query */
-    r = _libmsi_database_open_query(db, query, &view);
+    view = libmsi_query_new (db, query, &error);
+    if (error)
+        r = error->code;
+    g_clear_error (&error);
     msi_free(query);
 
     if( r == LIBMSI_RESULT_SUCCESS )
@@ -619,6 +612,7 @@ libmsi_query_new (LibmsiDatabase *database, const char *query, GError **error)
 
     g_return_val_if_fail (LIBMSI_IS_DATABASE (database), NULL);
     g_return_val_if_fail (query != NULL, NULL);
+    g_return_val_if_fail (error == NULL || *error == NULL, NULL);
 
     self = g_object_new (LIBMSI_TYPE_QUERY,
                          "database", database,
