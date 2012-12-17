@@ -58,6 +58,10 @@ Libmsi_1_0_gir_FILES =					\
 	$(top_srcdir)/include/libmsi-query.h		\
 	$(top_srcdir)/include/libmsi-record.h		\
 	$(top_srcdir)/include/libmsi-summary-info.h	\
+	$(top_srcdir)/libmsi/libmsi-database.c		\
+	$(top_srcdir)/libmsi/libmsi-query.c		\
+	$(top_srcdir)/libmsi/libmsi-record.c		\
+	$(top_srcdir)/libmsi/libmsi-summary-info.c	\
 	$(NULL)
 Libmsi_1_0_gir_EXPORT_PACKAGES = libmsi-1.0
 Libmsi_1_0_gir_SCANNERFLAGS = --c-include="libmsi.h"
