@@ -2396,21 +2396,27 @@ unsigned _libmsi_database_get_primary_keys( LibmsiDatabase *db,
     return r;
 }
 
-LibmsiResult libmsi_database_get_primary_keys(LibmsiDatabase *db, 
-                    const char *table, LibmsiRecord **prec)
+LibmsiRecord *
+libmsi_database_get_primary_keys (LibmsiDatabase *db,
+                                  const char *table,
+                                  GError **error)
 {
+    LibmsiRecord *rec;
     unsigned r;
 
     TRACE("%d %s %p\n", db, debugstr_a(table), prec);
 
     if( !db )
-        return LIBMSI_RESULT_INVALID_HANDLE;
+        return NULL;
 
     g_object_ref(db);
-    r = _libmsi_database_get_primary_keys( db, table, prec );
+    r = _libmsi_database_get_primary_keys(db, table, &rec);
     g_object_unref(db);
 
-    return r;
+    if (r != LIBMSI_RESULT_SUCCESS)
+        g_set_error_literal (error, LIBMSI_RESULT_ERROR, r, G_STRFUNC);
+
+    return rec;
 }
 
 LibmsiCondition libmsi_database_is_table_persistent(

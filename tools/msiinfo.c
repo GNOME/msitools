@@ -621,8 +621,8 @@ static unsigned export_sql( LibmsiDatabase *db, const char *table, GError **erro
     }
 
     /* write out row 3, the table name + keys */
-    r = libmsi_database_get_primary_keys( db, table, &keys );
-    if (r) {
+    keys = libmsi_database_get_primary_keys(db, table, error);
+    if (!keys) {
         goto done;
     }
 

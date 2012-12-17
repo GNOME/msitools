@@ -315,6 +315,7 @@ static void test_MsiRecordGetInteger (void)
 
 static void test_fieldzero (void)
 {
+    GError *error = NULL;
     LibmsiDatabase *hdb;
     LibmsiQuery *hview;
     LibmsiRecord *rec;
@@ -390,9 +391,8 @@ static void test_fieldzero (void)
     ok (r, "libmsi_query_close failed\n");
     g_object_unref (hview);
 
-    rec = NULL;
-    r = libmsi_database_get_primary_keys (hdb, "drone", &rec);
-    ok (r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
+    rec = libmsi_database_get_primary_keys (hdb, "drone", &error);
+    ok (rec, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     r = libmsi_record_get_int (rec, 0);
     ok (r == LIBMSI_NULL_INT, "Expected LIBMSI_NULL_INT, got %d\n", r);
@@ -404,8 +404,8 @@ static void test_fieldzero (void)
 
     g_object_unref (rec);
 
-    r = libmsi_database_get_primary_keys (hdb, "nosuchtable", &rec);
-    ok (r == LIBMSI_RESULT_INVALID_TABLE, "Expected LIBMSI_RESULT_INVALID_TABLE, got %d\n", r);
+    rec = libmsi_database_get_primary_keys (hdb, "nosuchtable", &error);
+    g_error_matches(error, LIBMSI_RESULT_ERROR, LIBMSI_RESULT_INVALID_TABLE);
 
     query = "SELECT * FROM `drone` WHERE `id` = 1";
     hview = libmsi_query_new (hdb, query, NULL);
