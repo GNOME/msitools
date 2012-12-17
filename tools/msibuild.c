@@ -82,7 +82,7 @@ static gboolean init_suminfo(LibmsiSummaryInfo *si, GError **error)
 static LibmsiResult open_database(const char *msifile, LibmsiDatabase **db,
                                   LibmsiSummaryInfo **si, GError **error)
 {
-    LibmsiResult r;
+    LibmsiResult r = LIBMSI_RESULT_SUCCESS;
     struct stat st;
 
     if (stat(msifile, &st) == -1)
@@ -91,11 +91,11 @@ static LibmsiResult open_database(const char *msifile, LibmsiDatabase **db,
         if (!*db)
             return LIBMSI_RESULT_FUNCTION_FAILED;
 
-        r = libmsi_database_get_summary_info(*db, INT_MAX, si);
-        if (r != LIBMSI_RESULT_SUCCESS)
+        *si = libmsi_summary_info_new(*db, INT_MAX, error);
+        if (!*si)
         {
-            fprintf(stderr, "failed to open summary info (%u)\n", r);
-            return r;
+            fprintf(stderr, "failed to open summary info\n");
+            return LIBMSI_RESULT_FUNCTION_FAILED;
         }
 
         if (!init_suminfo(*si, error))
@@ -115,11 +115,11 @@ static LibmsiResult open_database(const char *msifile, LibmsiDatabase **db,
         if (!*db)
             return LIBMSI_RESULT_FUNCTION_FAILED;
 
-        r = libmsi_database_get_summary_info(*db, INT_MAX, si);
-        if (r != LIBMSI_RESULT_SUCCESS)
+        *si = libmsi_summary_info_new(*db, INT_MAX, error);
+        if (!*si)
         {
-            fprintf(stderr, "failed to open summary info (%u)\n", r);
-            return r;
+            fprintf(stderr, "failed to open summary info\n");
+            return LIBMSI_RESULT_FUNCTION_FAILED;
         }
     }
 

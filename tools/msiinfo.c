@@ -319,12 +319,11 @@ static int cmd_suminfo(struct Command *cmd, int argc, char **argv, GError **erro
 
     db = libmsi_database_new(argv[1], LIBMSI_DB_OPEN_READONLY, error);
     if (!db)
-        return 1;
+        goto end;
 
-    r = libmsi_database_get_summary_info(db, 0, &si);
-    if (r) {
-        print_libmsi_error(r);
-    }
+    si = libmsi_summary_info_new(db, 0, error);
+    if (!si)
+        goto end;
 
     print_suminfo(si, LIBMSI_PROPERTY_TITLE, "Title");
     print_suminfo(si, LIBMSI_PROPERTY_SUBJECT, "Subject");
@@ -345,10 +344,13 @@ static int cmd_suminfo(struct Command *cmd, int argc, char **argv, GError **erro
     print_suminfo(si, LIBMSI_PROPERTY_APPNAME, "Application");
     print_suminfo(si, LIBMSI_PROPERTY_SECURITY, "Security");
 
-    g_object_unref(db);
-    g_object_unref(si);
+ end:
+    if (db)
+        g_object_unref(db);
+    if (si)
+        g_object_unref(si);
 
-    return 0;
+    return *error ? 1 : 0;
 }
 
 static void full_write(int fd, char *buf, size_t sz)

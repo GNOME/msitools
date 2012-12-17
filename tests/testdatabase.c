@@ -1150,8 +1150,8 @@ static void test_streamtable(void)
     g_object_unref( query );
 
     /* create a summary information stream */
-    r = libmsi_database_get_summary_info( hdb, 1, &hsi );
-    ok( r == LIBMSI_RESULT_SUCCESS, "Failed to get summary information handle: %u\n", r );
+    hsi = libmsi_summary_info_new (hdb, 1, NULL);
+    ok(hsi, "Failed to get summary information handle: %u\n", r );
 
     libmsi_summary_info_set_int(hsi, LIBMSI_PROPERTY_SECURITY, 2, &error);
     ok(!error, "Failed to set property\n");
@@ -1731,8 +1731,8 @@ static void test_suminfo_import(void)
 
     /* ...its data is added to the special summary information stream */
 
-    r = libmsi_database_get_summary_info(hdb, 0, &hsi);
-    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %u\n", r);
+    hsi = libmsi_summary_info_new(hdb, 0, NULL);
+    ok(hsi, "libmsi_summary_info_new() failed");
 
     r = libmsi_summary_info_get_property_count(hsi, &count);
     ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %u\n", r);
@@ -2409,8 +2409,8 @@ static unsigned set_summary_info(LibmsiDatabase *hdb)
     LibmsiSummaryInfo *suminfo;
 
     /* build summary info */
-    res = libmsi_database_get_summary_info(hdb, 7, &suminfo);
-    ok( res == LIBMSI_RESULT_SUCCESS , "Failed to open summaryinfo\n" );
+    suminfo = libmsi_summary_info_new(hdb, 7, NULL);
+    ok(suminfo , "Failed to open summaryinfo\n" );
 
     libmsi_summary_info_set_string (suminfo, 2, "Installation Database", &error);
     ok(!error, "Failed to set summary info\n");

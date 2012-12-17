@@ -50,16 +50,13 @@ static void test_suminfo(void)
     hdb = libmsi_database_new(msifile, LIBMSI_DB_OPEN_CREATE, NULL);
     ok(hdb, "libmsi_database_new failed\n");
 
-    r = libmsi_database_get_summary_info(hdb, 0, NULL);
-    ok(r == LIBMSI_RESULT_INVALID_PARAMETER, "libmsi_database_get_summary_info wrong error\n");
-
-    r = libmsi_database_get_summary_info(hdb, 0, &hsuminfo);
-    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_database_get_summary_info failed %u\n", r);
+    hsuminfo = libmsi_summary_info_new(hdb, 0, NULL);
+    ok(hsuminfo, "libmsi_database_get_summary_info failed\n");
 
     g_object_unref(hsuminfo);
 
-    r = libmsi_database_get_summary_info(hdb, 0, &hsuminfo);
-    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_database_get_summary_info failed %u\n", r);
+    hsuminfo = libmsi_summary_info_new(hdb, 0, NULL);
+    ok(hsuminfo, "libmsi_database_get_summary_info failed\n");
 
     r = libmsi_summary_info_get_property_count(0, NULL);
     ok(r == LIBMSI_RESULT_INVALID_HANDLE, "getpropcount failed\n");
@@ -87,8 +84,8 @@ static void test_suminfo(void)
     g_object_unref(hsuminfo);
 
     /* try again with the update count set */
-    r = libmsi_database_get_summary_info(hdb, 1, &hsuminfo);
-    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_database_get_summary_info failed\n");
+    hsuminfo = libmsi_summary_info_new(hdb, 1, NULL);
+    ok(hsuminfo, "libmsi_database_get_summary_info failed\n");
 
     libmsi_summary_info_set_string(hsuminfo, 0, NULL, &error);
     g_assert_error(error, LIBMSI_RESULT_ERROR, LIBMSI_RESULT_DATATYPE_MISMATCH);
@@ -143,8 +140,8 @@ static void test_suminfo(void)
     g_object_unref(hsuminfo);
 
     /* try again with a higher update count */
-    r = libmsi_database_get_summary_info(hdb, 10, &hsuminfo);
-    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_database_get_summary_info failed\n");
+    hsuminfo = libmsi_summary_info_new(hdb, 10, NULl);
+    ok(hsuminfo, "libmsi_database_get_summary_info failed\n");
 
     libmsi_summary_info_set_string(hsuminfo, LIBMSI_PROPERTY_TITLE, "JungAh", &error);
     ok(!error, "libmsi_summary_info_set_property failed\n");
@@ -175,8 +172,8 @@ static void test_suminfo(void)
     hdb = libmsi_database_new(msifile, LIBMSI_DB_OPEN_TRANSACT, NULL);
     ok(hdb, "libmsi_database_new failed\n");
 
-    r = libmsi_database_get_summary_info(hdb, 1, &hsuminfo);
-    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_database_get_summary_info failed\n");
+    hsuminfo = libmsi_summary_info_new(hdb, 1, NULl);
+    ok(hsuminfo, "libmsi_database_get_summary_info failed\n");
 
     r = libmsi_summary_info_set_string(hsuminfo, LIBMSI_PROPERTY_AUTHOR, "Mike", error);
     ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_summary_info_set_property wrong error\n");
@@ -192,8 +189,8 @@ static void test_suminfo(void)
     hdb = libmsi_database_new(msifile, LIBMSI_DB_OPEN_READONLY, NULL);
     ok(hdb, "libmsi_database_new failed\n");
 
-    r = libmsi_database_get_summary_info(hdb, 0, &hsuminfo);
-    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_database_get_summary_info failed %u\n", r);
+    hsuminfo = libmsi_summary_info_new(hdb, 0, NULL);
+    ok(hsuminfo, "libmsi_database_get_summary_info failed\n");
 
     libmsi_summary_info_set_string(hsuminfo, LIBMSI_PROPERTY_AUTHOR, "Mike", &error);
     todo_wine ok(error, "libmsi_summary_info_set_property wrong error\n");
@@ -342,8 +339,8 @@ static void test_summary_binary(void)
     hdb = libmsi_database_new(msifile, LIBMSI_DB_OPEN_READONLY, NULl);
     ok(hdb, "libmsi_database_new failed\n");
 
-    r = libmsi_database_get_summary_info(hdb, 0, &hsuminfo);
-    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_database_get_summary_info failed\n");
+    hsuminfo = libmsi_summary_info_new(hdb, 0, NULL);
+    ok(hsuminfo, "libmsi_database_get_summary_info failed\n");
 
     /*
      * Check what reading LIBMSI_PROPERTY_LASTPRINTED does...

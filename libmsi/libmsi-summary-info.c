@@ -541,45 +541,6 @@ static unsigned suminfo_persist( LibmsiSummaryInfo *si )
     return r;
 }
 
-LibmsiSummaryInfo *_libmsi_get_summary_information( LibmsiDatabase *db, unsigned uiUpdateCount )
-{
-    GsfInput *stm = NULL;
-    LibmsiSummaryInfo *si;
-    unsigned r;
-
-    TRACE("%p %d\n", db, uiUpdateCount );
-
-    si = libmsi_summary_info_new (db, uiUpdateCount, NULL);
-
-    return si;
-}
-
-LibmsiResult libmsi_database_get_summary_info( LibmsiDatabase *db,
-              unsigned uiUpdateCount, LibmsiSummaryInfo **psi )
-{
-    LibmsiSummaryInfo *si;
-    unsigned ret = LIBMSI_RESULT_FUNCTION_FAILED;
-
-    TRACE("%d %d %p\n", db, uiUpdateCount, psi);
-
-    if( !psi )
-        return LIBMSI_RESULT_INVALID_PARAMETER;
-
-    if( !db )
-        return LIBMSI_RESULT_INVALID_HANDLE;
-
-    g_object_ref(db);
-    si = _libmsi_get_summary_information( db, uiUpdateCount );
-    if (si)
-    {
-        *psi = si;
-        ret = LIBMSI_RESULT_SUCCESS;
-    }
-
-    g_object_unref(db);
-    return ret;
-}
-
 LibmsiResult libmsi_summary_info_get_property_count (LibmsiSummaryInfo *si, unsigned *pCount)
 {
     TRACE("%d %p\n", si, pCount);
@@ -912,7 +873,7 @@ unsigned msi_add_suminfo( LibmsiDatabase *db, char ***records, int num_records, 
     unsigned i, j;
     LibmsiSummaryInfo *si;
 
-    si = _libmsi_get_summary_information( db, num_records * (num_columns / 2) );
+    si = libmsi_summary_info_new (db, num_records * (num_columns / 2), NULL);
     if (!si)
     {
         ERR("no summary information!\n");
