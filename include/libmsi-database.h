@@ -50,7 +50,9 @@ LibmsiDBState       libmsi_database_get_state           (LibmsiDatabase *db);
 LibmsiRecord *      libmsi_database_get_primary_keys    (LibmsiDatabase *db,
                                                          const char *table,
                                                          GError **error);
-LibmsiResult        libmsi_database_apply_transform (LibmsiDatabase *,const char *);
+gboolean            libmsi_database_apply_transform     (LibmsiDatabase *db,
+                                                         const char *file,
+                                                         GError **error);
 LibmsiResult        libmsi_database_export (LibmsiDatabase *, const char *, int fd);
 LibmsiResult        libmsi_database_import (LibmsiDatabase *, const char *, const char *);
 LibmsiCondition     libmsi_database_is_table_persistent (LibmsiDatabase *, const char *);

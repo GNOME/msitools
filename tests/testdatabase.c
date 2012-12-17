@@ -2523,8 +2523,8 @@ static void test_try_transform(void)
     hdb = libmsi_database_new(msifile, LIBMSI_DB_OPEN_TRANSACT, NULL );
     ok(hdb , "Failed to create database\n" );
 
-    r = libmsi_database_apply_transform( hdb, mstfile, 0 );
-    ok( r == LIBMSI_RESULT_SUCCESS, "return code %d, should be LIBMSI_RESULT_SUCCESS\n", r );
+    r = libmsi_database_apply_transform(hdb, mstfile, NULL);
+    ok(r, "libmsi_database_apply_transform() failed\n");
 
     libmsi_database_commit( hdb );
 

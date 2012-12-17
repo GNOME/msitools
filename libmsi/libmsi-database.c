@@ -2178,8 +2178,10 @@ end:
     return ret;
 }
 
-LibmsiResult libmsi_database_apply_transform( LibmsiDatabase *db,
-                 const char *szTransformFile)
+gboolean
+libmsi_database_apply_transform (LibmsiDatabase *db,
+                                 const char *szTransformFile,
+                                 GError **error)
 {
     unsigned r;
 
@@ -2188,7 +2190,11 @@ LibmsiResult libmsi_database_apply_transform( LibmsiDatabase *db,
         return LIBMSI_RESULT_INVALID_HANDLE;
     r = _libmsi_database_apply_transform( db, szTransformFile );
     g_object_unref(db);
-    return r;
+
+    if (r != LIBMSI_RESULT_SUCCESS)
+        g_set_error_literal (error, LIBMSI_RESULT_ERROR, r, G_STRFUNC);
+
+    return r == LIBMSI_RESULT_SUCCESS;
 }
 
 static int gsf_infile_copy(GsfInfile *inf, GsfOutfile *outf)
