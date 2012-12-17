@@ -1689,10 +1689,14 @@ static void write_file(const char *filename, const char *data, int data_size)
 
 static unsigned add_table_to_db(LibmsiDatabase *hdb, const char *table_data)
 {
-    unsigned r;
+    GError *err = NULL;
+    unsigned r = LIBMSI_RESULT_SUCCESS;
 
     write_file("temp_file", table_data, (strlen(table_data) - 1) * sizeof(char));
-    r = libmsi_database_import(hdb, CURR_DIR, "temp_file");
+    if (!libmsi_database_import(hdb, CURR_DIR, "temp_file", &err))
+        r = err->code;
+
+    g_clear_error(&err);
     unlink("temp_file");
 
     return r;
@@ -2024,8 +2028,8 @@ static void test_binary_import(void)
     hdb = libmsi_database_new(msifile, LIBMSI_DB_OPEN_CREATE, NULL);
     ok(hdb , "Failed to open database\n");
 
-    r = libmsi_database_import(hdb, CURR_DIR, "bin_import.idt");
-    ok(r == LIBMSI_RESULT_SUCCESS , "Failed to import Binary table\n");
+    r = libmsi_database_import(hdb, CURR_DIR, "bin_import.idt", NULL);
+    ok(r , "Failed to import Binary table\n");
 
     /* read file from the Binary table */
     sql = "SELECT * FROM `Binary`";
@@ -5253,8 +5257,8 @@ static void test_quotes(void)
 
     write_file("import.idt", import_dat, (sizeof(import_dat) - 1) * sizeof(char));
 
-    r = libmsi_database_import(hdb, CURR_DIR, "import.idt");
-    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
+    r = libmsi_database_import(hdb, CURR_DIR, "import.idt", NULL);
+    ok(r, "libmsi_database_import() failed\n");
 
     unlink("import.idt");
 
@@ -5679,8 +5683,8 @@ static void test_forcecodepage(void)
 
     create_file_data("forcecodepage.idt", "\r\n\r\n850\t_ForceCodepage\r\n", 0);
 
-    r = libmsi_database_import(hdb, CURR_DIR, "forcecodepage.idt");
-    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
+    r = libmsi_database_import(hdb, CURR_DIR, "forcecodepage.idt", NULL);
+    ok(r, "libmsi_database_import() failed\n");
 
     fd = open("forcecodepage.idt", O_WRONLY | O_BINARY | O_CREAT, 0644);
     ok(fd != -1, "cannot open file\n");
@@ -5695,8 +5699,8 @@ static void test_forcecodepage(void)
 
     create_file_data("forcecodepage.idt", "\r\n\r\n9999\t_ForceCodepage\r\n", 0);
 
-    r = libmsi_database_import(hdb, CURR_DIR, "forcecodepage.idt");
-    ok(r == LIBMSI_RESULT_FUNCTION_FAILED, "Expected LIBMSI_RESULT_FUNCTION_FAILED, got %d\n", r);
+    r = libmsi_database_import(hdb, CURR_DIR, "forcecodepage.idt", NULL);
+    ok(!r, "Expected failure\n");
 
     g_object_unref(hdb);
     unlink(msifile);
@@ -6477,8 +6481,8 @@ static void test_dbmerge(void)
 
     create_file_data("codepage.idt", "\r\n\r\n850\t_ForceCodepage\r\n", 0);
 
-    r = libmsi_database_import(hdb, CURR_DIR, "codepage.idt");
-    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
+    r = libmsi_database_import(hdb, CURR_DIR, "codepage.idt", NULL);
+    ok(r, "libmsi_database_import() failed\n");
 
     sql = "DROP TABLE `One`";
     r = run_query(hdb, 0, sql);
@@ -7261,8 +7265,8 @@ static void test_embedded_nulls(void)
     ok(hdb, "failed to open database %u\n", r );
 
     write_file( "temp_file", control_table, sizeof(control_table) );
-    r = libmsi_database_import( hdb, CURR_DIR, "temp_file" );
-    ok( r == LIBMSI_RESULT_SUCCESS, "failed to import table %u\n", r );
+    r = libmsi_database_import( hdb, CURR_DIR, "temp_file", NULL);
+    ok(r, "libmsi_database_import() failed\n");
     unlink( "temp_file" );
 
     r = do_query( hdb, "SELECT `Text` FROM `Control` WHERE `Dialog` = 'LicenseAgreementDlg'", &hrec );

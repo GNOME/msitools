@@ -1200,19 +1200,27 @@ done:
     return r;
 }
 
-LibmsiResult libmsi_database_import(LibmsiDatabase *db, const char *szFolder, const char *szFilename)
+gboolean
+libmsi_database_import (LibmsiDatabase *db,
+                        const char *folder,
+                        const char *filename,
+                        GError **error)
 {
     unsigned r;
 
-    TRACE("%x %s %s\n",db,debugstr_a(szFolder), debugstr_a(szFilename));
+    TRACE("%x %s %s\n",db,debugstr_a(folder), debugstr_a(filename));
 
     if( !db )
         return LIBMSI_RESULT_INVALID_HANDLE;
 
     g_object_ref(db);
-    r = _libmsi_database_import( db, szFolder, szFilename );
+    r = _libmsi_database_import(db, folder, filename);
     g_object_unref(db);
-    return r;
+
+    if (r != LIBMSI_RESULT_SUCCESS)
+        g_set_error (error, LIBMSI_RESULT_ERROR, r, G_STRFUNC);
+
+    return r == LIBMSI_RESULT_SUCCESS;
 }
 
 static unsigned msi_export_record( int fd, LibmsiRecord *row, unsigned start )

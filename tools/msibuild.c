@@ -129,21 +129,21 @@ static LibmsiResult open_database(const char *msifile, LibmsiDatabase **db,
 static LibmsiDatabase *db;
 static LibmsiSummaryInfo *si;
 
-static int import_table(char *table)
+static gboolean import_table(char *table, GError **error)
 {
-    LibmsiResult r;
+    gboolean success = TRUE;
     char dir[PATH_MAX];
 
     if (getcwd(dir, PATH_MAX) == NULL)
         return 1;
 
-    r = libmsi_database_import(db, dir, table);
-    if (r != LIBMSI_RESULT_SUCCESS)
+    if (!libmsi_database_import(db, dir, table, error))
     {
-        fprintf(stderr, "failed to import table %s (%u)\n", table, r);
+        fprintf(stderr, "failed to import table %s\n", table);
+        success = FALSE;
     }
 
-    return (r != LIBMSI_RESULT_SUCCESS);
+    return success;
 }
 
 static gboolean add_summary_info(const char *name, const char *author,
@@ -249,7 +249,7 @@ static void show_usage(void)
 int main(int argc, char *argv[])
 {
     GError *error = NULL;
-    int r;
+    int r = LIBMSI_RESULT_SUCCESS;
     int n;
 
     g_type_init();
@@ -293,10 +293,9 @@ int main(int argc, char *argv[])
             break;
         case 'i':
             do {
-                ret = import_table(argv[1]);
-                if (ret) {
+                if (!import_table(argv[1], &error))
                     break;
-                }
+
                 argc--, argv++;
             } while (argv[1] && argv[1][0] != '-');
             argc--, argv++;

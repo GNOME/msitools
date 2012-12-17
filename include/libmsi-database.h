@@ -57,7 +57,10 @@ gboolean            libmsi_database_export              (LibmsiDatabase *db,
                                                          const char *table,
                                                          int fd,
                                                          GError **error);
-LibmsiResult        libmsi_database_import (LibmsiDatabase *, const char *, const char *);
+gboolean            libmsi_database_import              (LibmsiDatabase *db,
+                                                         const char *folder,
+                                                         const char *filename,
+                                                         GError **error);
 LibmsiCondition     libmsi_database_is_table_persistent (LibmsiDatabase *, const char *);
 LibmsiResult        libmsi_database_merge (LibmsiDatabase *, LibmsiDatabase *, const char *);
 LibmsiResult        libmsi_database_get_summary_info (LibmsiDatabase *, unsigned, LibmsiSummaryInfo **);
