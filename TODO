@@ -6,8 +6,6 @@
 - add a SQL tool with readline
 - add API to import from a string
 - add API to write a stream field to a GIO stream or back
-- change Foo** APIs to use GError instead
-- change char* APIs to return a dynamically allocated string
 - split regression tests into many smaller harnesses, possibly using 
   gtester
 - add tests for msiinfo
