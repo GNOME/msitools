@@ -3332,7 +3332,7 @@ static void test_join(void)
 static void test_temporary_table(void)
 {
     GError *error = NULL;
-    LibmsiCondition cond;
+    gboolean cond;
     LibmsiDatabase *hdb = 0;
     LibmsiQuery *query = 0;
     LibmsiRecord *rec;
@@ -3344,41 +3344,42 @@ static void test_temporary_table(void)
     hdb = create_db();
     ok( hdb, "failed to create db\n");
 
-    cond = libmsi_database_is_table_persistent(hdb, NULL);
-    ok( cond == LIBMSI_CONDITION_ERROR, "wrong return condition\n");
+    cond = libmsi_database_is_table_persistent(hdb, "_Tables", &error);
+    g_assert_error(error, LIBMSI_RESULT_ERROR, LIBMSI_RESULT_INVALID_TABLE);
+    g_clear_error(&error);
 
-    cond = libmsi_database_is_table_persistent(hdb, "_Tables");
-    ok( cond == LIBMSI_CONDITION_NONE, "wrong return condition\n");
+    cond = libmsi_database_is_table_persistent(hdb, "_Columns", &error);
+    g_assert_error(error, LIBMSI_RESULT_ERROR, LIBMSI_RESULT_INVALID_TABLE);
+    g_clear_error(&error);
 
-    cond = libmsi_database_is_table_persistent(hdb, "_Columns");
-    ok( cond == LIBMSI_CONDITION_NONE, "wrong return condition\n");
+    cond = libmsi_database_is_table_persistent(hdb, "_Storages", &error);
+    g_assert_error(error, LIBMSI_RESULT_ERROR, LIBMSI_RESULT_INVALID_TABLE);
+    g_clear_error(&error);
 
-    cond = libmsi_database_is_table_persistent(hdb, "_Storages");
-    ok( cond == LIBMSI_CONDITION_NONE, "wrong return condition\n");
-
-    cond = libmsi_database_is_table_persistent(hdb, "_Streams");
-    ok( cond == LIBMSI_CONDITION_NONE, "wrong return condition\n");
+    cond = libmsi_database_is_table_persistent(hdb, "_Streams", &error);
+    g_assert_error(error, LIBMSI_RESULT_ERROR, LIBMSI_RESULT_INVALID_TABLE);
+    g_clear_error(&error);
 
     sql = "CREATE TABLE `P` ( `B` SHORT NOT NULL, `C` CHAR(255) PRIMARY KEY `C`)";
     r = run_query(hdb, 0, sql);
     ok(r == LIBMSI_RESULT_SUCCESS, "failed to add table\n");
 
-    cond = libmsi_database_is_table_persistent(hdb, "P");
-    ok( cond == LIBMSI_CONDITION_TRUE, "wrong return condition\n");
+    cond = libmsi_database_is_table_persistent(hdb, "P", NULL);
+    ok(cond, "wrong return condition\n");
 
     sql = "CREATE TABLE `P2` ( `B` SHORT NOT NULL, `C` CHAR(255) PRIMARY KEY `C`) HOLD";
     r = run_query(hdb, 0, sql);
     ok(r == LIBMSI_RESULT_SUCCESS, "failed to add table\n");
 
-    cond = libmsi_database_is_table_persistent(hdb, "P2");
-    ok( cond == LIBMSI_CONDITION_TRUE, "wrong return condition\n");
+    cond = libmsi_database_is_table_persistent(hdb, "P2", NULL);
+    ok(cond, "wrong return condition\n");
 
     sql = "CREATE TABLE `T` ( `B` SHORT NOT NULL TEMPORARY, `C` CHAR(255) TEMPORARY PRIMARY KEY `C`) HOLD";
     r = run_query(hdb, 0, sql);
     ok(r == LIBMSI_RESULT_SUCCESS, "failed to add table\n");
 
-    cond = libmsi_database_is_table_persistent(hdb, "T");
-    ok( cond == LIBMSI_CONDITION_FALSE, "wrong return condition\n");
+    cond = libmsi_database_is_table_persistent(hdb, "T", NULL);
+    ok(!cond, "wrong return condition\n");
 
     sql = "CREATE TABLE `T2` ( `B` SHORT NOT NULL TEMPORARY, `C` CHAR(255) TEMPORARY PRIMARY KEY `C`)";
     r = run_query(hdb, 0, sql);
@@ -3390,22 +3391,24 @@ static void test_temporary_table(void)
     g_assert_error(error, LIBMSI_RESULT_ERROR, LIBMSI_RESULT_BAD_QUERY_SYNTAX);
     g_clear_error(&error);
 
-    cond = libmsi_database_is_table_persistent(hdb, "T2");
-    ok( cond == LIBMSI_CONDITION_NONE, "wrong return condition\n");
+    cond = libmsi_database_is_table_persistent(hdb, "T2", &error);
+    g_assert_error(error, LIBMSI_RESULT_ERROR, LIBMSI_RESULT_INVALID_TABLE);
+    g_clear_error(&error);
 
     sql = "CREATE TABLE `T3` ( `B` SHORT NOT NULL TEMPORARY, `C` CHAR(255) PRIMARY KEY `C`)";
     r = run_query(hdb, 0, sql);
     ok(r == LIBMSI_RESULT_SUCCESS, "failed to add table\n");
 
-    cond = libmsi_database_is_table_persistent(hdb, "T3");
-    ok( cond == LIBMSI_CONDITION_TRUE, "wrong return condition\n");
+    cond = libmsi_database_is_table_persistent(hdb, "T3", NULL);
+    ok(cond, "wrong return condition\n");
 
     sql = "CREATE TABLE `T4` ( `B` SHORT NOT NULL, `C` CHAR(255) TEMPORARY PRIMARY KEY `C`)";
     r = run_query(hdb, 0, sql);
     ok(r == LIBMSI_RESULT_FUNCTION_FAILED, "failed to add table\n");
 
-    cond = libmsi_database_is_table_persistent(hdb, "T4");
-    ok( cond == LIBMSI_CONDITION_NONE, "wrong return condition\n");
+    cond = libmsi_database_is_table_persistent(hdb, "T4", &error);
+    g_assert_error(error, LIBMSI_RESULT_ERROR, LIBMSI_RESULT_INVALID_TABLE);
+    g_clear_error(&error);
 
     sql = "CREATE TABLE `T5` ( `B` SHORT NOT NULL TEMP, `C` CHAR(255) TEMP PRIMARY KEY `C`) HOLD";
     r = run_query(hdb, 0, sql);
@@ -3448,7 +3451,7 @@ static void test_temporary_table(void)
 
 static void test_alter(void)
 {
-    LibmsiCondition cond;
+    gboolean cond;
     LibmsiDatabase *hdb = 0;
     const char *sql;
     unsigned r;
@@ -3460,8 +3463,8 @@ static void test_alter(void)
     r = run_query(hdb, 0, sql);
     ok(r == LIBMSI_RESULT_SUCCESS, "failed to add table\n");
 
-    cond = libmsi_database_is_table_persistent(hdb, "T");
-    ok( cond == LIBMSI_CONDITION_FALSE, "wrong return condition\n");
+    cond = libmsi_database_is_table_persistent(hdb, "T", NULL);
+    ok(!cond, "wrong return condition\n");
 
     sql = "ALTER TABLE `T` HOLD";
     r = run_query(hdb, 0, sql);

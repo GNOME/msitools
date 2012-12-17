@@ -61,8 +61,9 @@ gboolean            libmsi_database_import              (LibmsiDatabase *db,
                                                          const char *folder,
                                                          const char *filename,
                                                          GError **error);
-LibmsiCondition     libmsi_database_is_table_persistent (LibmsiDatabase *db,
-                                                         const char *table);
+gboolean            libmsi_database_is_table_persistent (LibmsiDatabase *db,
+                                                         const char *table,
+                                                         GError **error);
 gboolean            libmsi_database_merge               (LibmsiDatabase *db,
                                                          LibmsiDatabase *merge,
                                                          const char *table,

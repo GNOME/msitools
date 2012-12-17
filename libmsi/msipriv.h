@@ -50,6 +50,14 @@
 #define MAX_PATH PATH_MAX
 #endif
 
+typedef enum LibmsiCondition
+{
+    LIBMSI_CONDITION_FALSE = 0,
+    LIBMSI_CONDITION_TRUE  = 1,
+    LIBMSI_CONDITION_NONE  = 2,
+    LIBMSI_CONDITION_ERROR = 3,
+} LibmsiCondition;
+
 #define MSI_DATASIZEMASK 0x00ff
 #define MSITYPE_VALID    0x0100
 #define MSITYPE_LOCALIZABLE 0x200

@@ -2443,20 +2443,29 @@ libmsi_database_get_primary_keys (LibmsiDatabase *db,
     return rec;
 }
 
-LibmsiCondition libmsi_database_is_table_persistent(
-              LibmsiDatabase *db, const char *szTableName)
+gboolean
+libmsi_database_is_table_persistent (LibmsiDatabase *db, const char *table,
+                                     GError **error)
 {
     LibmsiCondition r;
 
-    TRACE("%x %s\n", db, debugstr_a(szTableName));
+    TRACE("%p %s\n", db, debugstr_a(table));
 
-    g_return_val_if_fail(LIBMSI_IS_DATABASE(db), LIBMSI_CONDITION_ERROR);
+    g_return_val_if_fail (LIBMSI_IS_DATABASE (db), LIBMSI_CONDITION_ERROR);
+    g_return_val_if_fail (table != NULL, NULL);
+    g_return_val_if_fail (!error || *error == NULL, NULL);
 
     g_object_ref(db);
-    r = _libmsi_database_is_table_persistent( db, szTableName );
+    r = _libmsi_database_is_table_persistent( db, table );
     g_object_unref(db);
 
-    return r;
+    if (r == LIBMSI_CONDITION_NONE)
+        g_set_error (error, LIBMSI_RESULT_ERROR, LIBMSI_RESULT_INVALID_TABLE,
+                     "The table is unknown");
+    else if (r == LIBMSI_CONDITION_ERROR)
+        g_set_error (error, LIBMSI_RESULT_ERROR, LIBMSI_RESULT_FUNCTION_FAILED, "");
+
+    return r == LIBMSI_CONDITION_TRUE;
 }
 
 /* TODO: use GInitable */

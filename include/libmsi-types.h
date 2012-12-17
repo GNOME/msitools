@@ -34,14 +34,6 @@ typedef struct _LibmsiQuery LibmsiQuery;
 typedef struct _LibmsiRecord LibmsiRecord;
 typedef struct _LibmsiSummaryInfo LibmsiSummaryInfo;
 
-typedef enum LibmsiCondition
-{
-    LIBMSI_CONDITION_FALSE = 0,
-    LIBMSI_CONDITION_TRUE  = 1,
-    LIBMSI_CONDITION_NONE  = 2,
-    LIBMSI_CONDITION_ERROR = 3,
-} LibmsiCondition;
-
 typedef enum LibmsiResultError
 {
     LIBMSI_RESULT_SUCCESS, // FIXME: remove me
