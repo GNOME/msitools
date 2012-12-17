@@ -46,7 +46,7 @@ LibmsiDatabase *    libmsi_database_new                 (const gchar *path,
                                                          const char *persist,
                                                          GError **error);
 
-LibmsiDBState       libmsi_database_get_state           (LibmsiDatabase *db);
+gboolean            libmsi_database_is_readonly         (LibmsiDatabase *db);
 LibmsiRecord *      libmsi_database_get_primary_keys    (LibmsiDatabase *db,
                                                          const char *table,
                                                          GError **error);

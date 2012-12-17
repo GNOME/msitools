@@ -119,13 +119,6 @@ typedef enum LibmsiDBError
     LIBMSI_DB_ERROR_BADLOCALIZEATTRIB
 } LibmsiDBError;
 
-typedef enum LibmsiDBState
-{
-    LIBMSI_DB_STATE_ERROR = -1,
-    LIBMSI_DB_STATE_READ = 0,
-    LIBMSI_DB_STATE_WRITE = 1
-} LibmsiDBState;
-
 typedef enum LibmsiProperty
 {
     LIBMSI_PROPERTY_DICTIONARY = 0,

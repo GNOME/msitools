@@ -2037,21 +2037,14 @@ done:
     return r == LIBMSI_RESULT_SUCCESS;
 }
 
-LibmsiDBState libmsi_database_get_state( LibmsiDatabase *db )
+gboolean
+libmsi_database_is_readonly (LibmsiDatabase *db)
 {
-    LibmsiDBState ret = LIBMSI_DB_STATE_READ;
+    TRACE("%p\n", db);
 
-    TRACE("%d\n", db);
+    g_return_val_if_fail (LIBMSI_IS_DATABASE (db), TRUE);
 
-    if( !db )
-        return LIBMSI_RESULT_INVALID_HANDLE;
-
-    g_object_ref(db);
-    if (db->mode != LIBMSI_DB_OPEN_READONLY )
-        ret = LIBMSI_DB_STATE_WRITE;
-    g_object_unref(db);
-
-    return ret;
+    return db->mode == LIBMSI_DB_OPEN_READONLY;
 }
 
 static void cache_infile_structure( LibmsiDatabase *db )
