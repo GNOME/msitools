@@ -678,8 +678,8 @@ libmsi_summary_info_get_int (LibmsiSummaryInfo *self, LibmsiProperty prop,
     LibmsiPropertyType type;
     gint val;
 
-    g_return_val_if_fail (LIBMSI_SUMMARY_INFO (self), FALSE);
-    g_return_val_if_fail (!error || *error == NULL, FALSE);
+    g_return_val_if_fail (LIBMSI_SUMMARY_INFO (self), -1);
+    g_return_val_if_fail (!error || *error == NULL, -1);
 
     type = LIBMSI_PROPERTY_TYPE_INT;
     _summary_info_get_property (self, prop, &type, &val,
@@ -703,8 +703,8 @@ libmsi_summary_info_get_filetime (LibmsiSummaryInfo *self, LibmsiProperty prop,
     LibmsiPropertyType type;
     guint64 val;
 
-    g_return_val_if_fail (LIBMSI_SUMMARY_INFO (self), FALSE);
-    g_return_val_if_fail (!error || *error == NULL, FALSE);
+    g_return_val_if_fail (LIBMSI_SUMMARY_INFO (self), 0);
+    g_return_val_if_fail (!error || *error == NULL, 0);
 
     type = LIBMSI_PROPERTY_TYPE_FILETIME;
     _summary_info_get_property (self, prop, &type, NULL,
@@ -996,12 +996,10 @@ libmsi_summary_info_persist (LibmsiSummaryInfo *si, GError **error)
 {
     unsigned ret;
 
+    g_return_val_if_fail (LIBMSI_IS_SUMMARY_INFO (si), FALSE);
     g_return_val_if_fail (!error || *error == NULL, FALSE);
 
     TRACE("%p\n", si);
-
-    if (!si)
-        return FALSE;
 
     g_object_ref (si);
     ret = suminfo_persist (si);
@@ -1026,6 +1024,9 @@ libmsi_summary_info_new (LibmsiDatabase *database, unsigned update_count,
                          GError **error)
 {
     LibmsiSummaryInfo *self;
+
+    g_return_val_if_fail (LIBMSI_IS_DATABASE (database), NULL);
+    g_return_val_if_fail (!error || *error == NULL, NULL);
 
     self = g_object_new (LIBMSI_TYPE_SUMMARY_INFO,
                          "database", database,

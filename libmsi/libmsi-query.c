@@ -415,8 +415,9 @@ libmsi_query_fetch (LibmsiQuery *query, GError **error)
 
     TRACE("%p\n", query);
 
-    if( !query )
-        return NULL;
+    g_return_val_if_fail (LIBMSI_IS_QUERY (query), NULL);
+    g_return_val_if_fail (!error || *error == NULL, NULL);
+
     g_object_ref(query);
     ret = _libmsi_query_fetch( query, &record );
     g_object_unref(query);
@@ -445,8 +446,8 @@ libmsi_query_close (LibmsiQuery *query, GError **error)
 
     TRACE("%p\n", query );
 
-    if( !query )
-        return LIBMSI_RESULT_INVALID_HANDLE;
+    g_return_val_if_fail (LIBMSI_IS_QUERY (query), FALSE);
+    g_return_val_if_fail (!error || *error == NULL, FALSE);
 
     g_object_ref(query);
     view = query->view;
@@ -497,7 +498,11 @@ libmsi_query_execute (LibmsiQuery *query, LibmsiRecord *rec, GError **error)
 {
     LibmsiResult ret;
 
-    TRACE("%d %d\n", query, rec);
+    TRACE("%p %p\n", query, rec);
+
+    g_return_val_if_fail (LIBMSI_IS_QUERY (query), FALSE);
+    g_return_val_if_fail (!rec || LIBMSI_IS_RECORD (rec), FALSE);
+    g_return_val_if_fail (!error || *error == NULL, FALSE);
 
     if( !query )
         return LIBMSI_RESULT_INVALID_HANDLE;
@@ -614,11 +619,10 @@ libmsi_query_get_column_info (LibmsiQuery *query, LibmsiColInfo info, GError **e
 
     TRACE("%p %d\n", query, info);
 
-    if (info != LIBMSI_COL_INFO_NAMES && info != LIBMSI_COL_INFO_TYPES)
-        return NULL;
-
-    if (!query)
-        return NULL;
+    g_return_val_if_fail (LIBMSI_IS_QUERY (query), NULL);
+    g_return_val_if_fail (info == LIBMSI_COL_INFO_NAMES ||
+                          info == LIBMSI_COL_INFO_TYPES, NULL);
+    g_return_val_if_fail (!error || *error == NULL, NULL);
 
     g_object_ref(query);
     r = _libmsi_query_get_column_info( query, info, &rec);
@@ -644,6 +648,7 @@ libmsi_query_get_error (LibmsiQuery *query, gchar **column, GError **error)
     LibmsiView *v;
 
     g_return_if_fail (LIBMSI_IS_QUERY (query));
+    g_return_if_fail (!column || *column == NULL);
     g_return_if_fail (!error || *error == NULL);
 
     v = query->view;

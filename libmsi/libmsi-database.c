@@ -1350,10 +1350,12 @@ libmsi_database_export (LibmsiDatabase *db,
 {
     unsigned r = LIBMSI_RESULT_OUTOFMEMORY;
 
-    TRACE("%x %s %d\n", db, debugstr_a(szTable), fd);
+    TRACE("%p %s %d\n", db, debugstr_a(szTable), fd);
 
-    if( !db )
-        return LIBMSI_RESULT_INVALID_HANDLE;
+    g_return_val_if_fail (LIBMSI_IS_DATABASE (db), FALSE);
+    g_return_val_if_fail (table, FALSE);
+    g_return_val_if_fail (fd >= 0, FALSE);
+    g_return_val_if_fail (!error || *error == NULL, FALSE);
 
     g_object_ref(db);
     r = _libmsi_database_export(db, table, fd);
@@ -2002,6 +2004,7 @@ libmsi_database_merge (LibmsiDatabase *db,
     g_return_val_if_fail (LIBMSI_IS_DATABASE (db), FALSE);
     g_return_val_if_fail (LIBMSI_IS_DATABASE (merge), FALSE);
     g_return_val_if_fail (!tablename || *tablename, FALSE);
+    g_return_val_if_fail (!error || *error == NULL, FALSE);
 
     g_object_ref(db);
     g_object_ref(merge);
@@ -2217,15 +2220,17 @@ end:
  **/
 gboolean
 libmsi_database_apply_transform (LibmsiDatabase *db,
-                                 const char *szTransformFile,
+                                 const char *file,
                                  GError **error)
 {
     unsigned r;
 
+    g_return_val_if_fail (LIBMSI_IS_DATABASE (db), FALSE);
+    g_return_val_if_fail (file, FALSE);
+    g_return_val_if_fail (!error || *error == NULL, FALSE);
+
     g_object_ref(db);
-    if( !db )
-        return LIBMSI_RESULT_INVALID_HANDLE;
-    r = _libmsi_database_apply_transform( db, szTransformFile );
+    r = _libmsi_database_apply_transform (db, file);
     g_object_unref(db);
 
     if (r != LIBMSI_RESULT_SUCCESS)
@@ -2326,6 +2331,7 @@ libmsi_database_commit (LibmsiDatabase *db, GError **error)
     TRACE ("%p\n", db);
 
     g_return_val_if_fail (LIBMSI_IS_DATABASE (db), FALSE);
+    g_return_val_if_fail (!error || *error == NULL, FALSE);
 
     g_object_ref(db);
     if (db->mode == LIBMSI_DB_OPEN_READONLY)
@@ -2465,8 +2471,9 @@ libmsi_database_get_primary_keys (LibmsiDatabase *db,
 
     TRACE("%d %s %p\n", db, debugstr_a(table), prec);
 
-    if( !db )
-        return NULL;
+    g_return_val_if_fail (LIBMSI_IS_DATABASE (db), NULL);
+    g_return_val_if_fail (table != NULL, NULL);
+    g_return_val_if_fail (!error || *error == NULL, NULL);
 
     g_object_ref(db);
     r = _libmsi_database_get_primary_keys(db, table, &rec);
@@ -2552,6 +2559,7 @@ libmsi_database_new (const gchar *path, const char *persist, GError **error)
     gboolean patch = false;
 
     g_return_val_if_fail (path != NULL, NULL);
+    g_return_val_if_fail (!error || *error == NULL, NULL);
 
     if (IS_INTMSIDBOPEN (persist - LIBMSI_DB_OPEN_PATCHFILE)) {
         TRACE("Database is a patch\n");
