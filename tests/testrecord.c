@@ -50,6 +50,7 @@ static bool create_temp_file (char *name)
 
 static void test_msirecord (void)
 {
+    GInputStream *in, *in2;
     unsigned r, sz;
     int i;
     LibmsiRecord *h;
@@ -193,9 +194,8 @@ static void test_msirecord (void)
     r = libmsi_record_load_stream (h, 0, NULL);
     ok (!r, "set NULL stream\n");
     sz = sizeof buf;
-    r = libmsi_record_save_stream (h, 0, buf, &sz);
-    ok (!r, "read non-stream type\n");
-    ok (sz == sizeof buf, "set sz\n");
+    in = libmsi_record_get_stream (h, 0);
+    ok (!in, "read non-stream type\n");
 
     /* same record, now close it */
     g_object_unref (h);
@@ -210,47 +210,54 @@ static void test_msirecord (void)
     ok (!r, "added stream to field 0\n");
     r = libmsi_record_load_stream (h, 1, filename);
     ok (r, "failed to add stream to record\n");
-    r = libmsi_record_save_stream (h, 1, buf, NULL);
-    ok (!r, "should return error\n");
     unlink (filename); /* Windows 98 doesn't like this at all, so don't check return. */
-    r = libmsi_record_save_stream (h, 1, NULL, NULL);
-    ok (!r, "should return error\n");
-    sz = sizeof buf;
-    r = libmsi_record_save_stream (h, 1, NULL, &sz);
-    ok (r, "failed to read stream\n");
-    ok (sz == 26, "couldn't get size of stream\n");
-    sz = 0;
-    r = libmsi_record_save_stream (h, 1, buf, &sz);
-    ok (r, "failed to read stream\n");
-    ok (sz == 0, "short read\n");
-    sz = sizeof buf;
-    r = libmsi_record_save_stream (h, 1, buf, &sz);
-    ok (r, "failed to read stream\n");
-    ok (sz == sizeof buf, "short read\n");
+
+    in = libmsi_record_get_stream (h, 1);
+    ok (in, "failed to get stream\n");
+    in2 = libmsi_record_get_stream (h, 1);
+    ok (in2, "failed to get stream\n");
+    sz = g_input_stream_read (in, buf, sizeof(buf), NULL, NULL);
+    ok (sz == 10, "failed to read stream\n");
     ok (!strncmp (buf, "abcdefghij", 10), "read the wrong thing\n");
-    sz = sizeof buf;
-    r = libmsi_record_save_stream (h, 1, buf, &sz);
-    ok (r, "failed to read stream\n");
-    ok (sz == sizeof buf, "short read\n");
+    sz = g_input_stream_read (in2, buf, sizeof(buf), NULL, NULL);
+    ok (sz == 10, "failed to read stream\n");
+    ok (!strncmp (buf, "abcdefghij", 10), "read the wrong thing\n");
+    sz = g_input_stream_read (in, buf, sizeof(buf), NULL, NULL);
+    ok (sz == 10, "failed to read stream\n");
     ok (!strncmp (buf, "klmnopqrst", 10), "read the wrong thing\n");
-    memset (buf, 0, sizeof buf);
-    sz = sizeof buf;
-    r = libmsi_record_save_stream (h, 1, buf, &sz);
-    ok (r, "failed to read stream\n");
-    ok (sz == 6, "short read\n");
-    ok (!strcmp (buf, "uvwxyz"), "read the wrong thing\n");
-    memset (buf, 0, sizeof buf);
-    sz = sizeof buf;
-    r = libmsi_record_save_stream (h, 1, buf, &sz);
-    ok (r, "failed to read stream\n");
-    ok (sz == 0, "size non-zero at end of stream\n");
-    ok (buf[0] == 0, "read something at end of the stream\n");
-    r = libmsi_record_load_stream (h, 1, NULL);
-    ok (r, "failed to reset stream\n");
-    sz = 0;
-    r = libmsi_record_save_stream (h, 1, NULL, &sz);
-    ok (r, "bytes left wrong after reset\n");
-    ok (sz == 26, "couldn't get size of stream\n");
+    sz = g_input_stream_read (in, buf, sizeof(buf), NULL, NULL);
+    ok (sz == 6, "failed to read stream\n");
+    ok (!strncmp (buf, "uvwxyz", 6), "read the wrong thing\n");
+    g_object_unref (in);
+
+    sz = g_input_stream_read (in2, buf, sizeof(buf), NULL, NULL);
+    ok (sz == 10, "failed to read stream\n");
+    ok (!strncmp (buf, "klmnopqrst", 10), "read the wrong thing\n");
+    sz = g_seekable_tell (G_SEEKABLE (in2));
+    ok (sz == 20, "failed to get current position\n");
+    r = g_seekable_seek (G_SEEKABLE (in2), 0, G_SEEK_END, NULL, NULL);
+    ok (r, "failed to seek\n");
+    sz = g_seekable_tell (G_SEEKABLE (in2));
+    ok (sz == 26, "failed to get current position\n");
+    r = g_seekable_seek (G_SEEKABLE (in2), 0, G_SEEK_SET, NULL, NULL);
+    ok (r, "failed to seek\n");
+    sz = g_seekable_tell (G_SEEKABLE (in2));
+    ok (sz == 0, "failed to get current position\n");
+    sz = g_input_stream_read (in2, buf, sizeof(buf), NULL, NULL);
+    ok (sz == 10, "failed to read stream\n");
+    ok (!strncmp (buf, "abcdefghij", 10), "read the wrong thing\n");
+    g_object_unref (in2);
+
+    in = g_memory_input_stream_new_from_data ("12345", 5, NULL);
+    r = libmsi_record_set_stream (h, 1, in, 5, NULL, NULL);
+    ok (r, "failed to set stream to record\n");
+    g_object_unref(in);
+    in = libmsi_record_get_stream (h, 1);
+    ok (in, "failed to get stream\n");
+    sz = g_input_stream_read (in, buf, sizeof(buf), NULL, NULL);
+    ok (sz == 5, "failed to read stream\n");
+    ok (!strncmp (buf, "12345", 5), "read the wrong thing\n");
+    g_object_unref(in);
 
     /* now close the stream record */
     g_object_unref (h);

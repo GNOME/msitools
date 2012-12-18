@@ -304,6 +304,8 @@ struct _LibmsiSummaryInfo
     LibmsiOLEVariant property[MSI_MAX_PROPS];
 };
 
+typedef struct _LibmsiIStream LibmsiIStream;
+
 extern const char clsid_msi_transform[16];
 extern const char clsid_msi_database[16];
 extern const char clsid_msi_patch[16];
@@ -414,6 +416,9 @@ extern unsigned msi_view_get_row(LibmsiDatabase *, LibmsiView *, unsigned, Libms
 
 /* summary information */
 extern unsigned msi_add_suminfo( LibmsiDatabase *db, char ***records, int num_records, int num_columns );
+
+/* IStream internals */
+LibmsiIStream * libmsi_istream_new (GsfInput *input);
 
 /* Helpers */
 extern char *msi_dup_record_field(LibmsiRecord *row, int index);

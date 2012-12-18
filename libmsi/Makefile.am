@@ -17,6 +17,7 @@ libmsi_la_SOURCES =				\
 	drop.c					\
 	insert.c				\
 	libmsi-database.c			\
+	libmsi-istream.c			\
 	libmsi-query.c				\
 	libmsi-record.c				\
 	libmsi-summary-info.c			\

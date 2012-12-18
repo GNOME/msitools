@@ -5,7 +5,6 @@
   statement in the passed string
 - add a SQL tool with readline
 - add API to import from a string
-- add API to write a stream field to a GIO stream or back
 - split regression tests into many smaller harnesses, possibly using 
   gtester
 - add tests for msiinfo

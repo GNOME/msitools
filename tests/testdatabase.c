@@ -1088,6 +1088,7 @@ static void create_file_data(const char *name, const char *data, unsigned size)
 static void test_streamtable(void)
 {
     GError *error = NULL;
+    GInputStream *in;
     LibmsiDatabase *hdb = 0;
     LibmsiRecord *rec;
     LibmsiQuery *query;
@@ -1233,9 +1234,11 @@ static void test_streamtable(void)
 
     size = sizeof(buf);
     memset(buf, 0, sizeof(buf));
-    r = libmsi_record_save_stream( rec, 2, buf, &size );
-    ok(r, "Failed to get stream: %d\n", r);
+    in = libmsi_record_get_stream(rec, 2);
+    ok(in, "Failed to get stream\n");
+    size = g_input_stream_read(in, buf, sizeof(buf), NULL, NULL);
     ok( g_str_equal(buf, "test.txt\n"), "Expected 'test.txt\\n', got %s\n", buf);
+    g_object_unref(in);
 
     g_object_unref( rec );
     libmsi_query_close(query, NULL);
@@ -1255,9 +1258,11 @@ static void test_streamtable(void)
 
     size = sizeof(buf);
     memset(buf, 0, sizeof(buf));
-    r = libmsi_record_save_stream( rec, 2, buf, &size );
-    ok( r, "Failed to get stream: %d\n", r);
+    in = libmsi_record_get_stream(rec, 2);
+    ok(in, "Failed to get stream\n");
+    size = g_input_stream_read(in, buf, sizeof(buf), NULL, NULL);
     ok( g_str_equal(buf, "test1.txt\n"), "Expected 'test1.txt\\n', got %s\n", buf);
+    g_object_unref(in);
 
     g_object_unref( rec );
     libmsi_query_close(query, NULL);
@@ -1297,9 +1302,11 @@ static void test_streamtable(void)
 
     size = sizeof(buf);
     memset(buf, 0, sizeof(buf));
-    r = libmsi_record_save_stream( rec, 2, buf, &size );
-    ok(r, "Failed to get stream: %d\n", r);
+    in = libmsi_record_get_stream(rec, 2);
+    ok(in, "Failed to get stream\n");
+    size = g_input_stream_read(in, buf, sizeof(buf), NULL, NULL);
     todo_wine ok( g_str_equal(buf, "test2.txt\n"), "Expected 'test2.txt\\n', got %s\n", buf);
+    g_object_unref(in);
 
     g_object_unref( rec );
     libmsi_query_close(query, NULL);
@@ -1325,6 +1332,7 @@ static void test_streamtable(void)
 
 static void test_binary(void)
 {
+    GInputStream *in;
     LibmsiDatabase *hdb = 0;
     LibmsiRecord *rec;
     char file[256];
@@ -1370,9 +1378,11 @@ static void test_binary(void)
 
     size = sizeof(buf);
     memset( buf, 0, sizeof(buf) );
-    r = libmsi_record_save_stream( rec, 2, buf, &size );
-    ok(r, "Failed to get stream: %d\n", r );
+    in = libmsi_record_get_stream(rec, 2);
+    ok(in, "Failed to get stream\n");
+    size = g_input_stream_read(in, buf, sizeof(buf), NULL, NULL);
     ok( g_str_equal(buf, "test.txt\n"), "Expected 'test.txt\\n', got %s\n", buf );
+    g_object_unref(in);
 
     g_object_unref( rec );
 
@@ -1385,9 +1395,11 @@ static void test_binary(void)
 
     size = sizeof(buf);
     memset( buf, 0, sizeof(buf) );
-    r = libmsi_record_save_stream( rec, 3, buf, &size );
-    ok(r, "Failed to get stream: %d\n", r );
+    in = libmsi_record_get_stream(rec, 3);
+    ok(in, "Failed to get stream\n");
+    size = g_input_stream_read(in, buf, sizeof(buf), NULL, NULL);
     ok( g_str_equal(buf, "test.txt\n"), "Expected 'test.txt\\n', got %s\n", buf );
+    g_object_unref(in);
 
     g_object_unref( rec );
 
@@ -2010,6 +2022,7 @@ static const char bin_import_dat[] = "Name\tData\r\n"
 
 static void test_binary_import(void)
 {
+    GInputStream *in;
     LibmsiDatabase *hdb = 0;
     LibmsiRecord *rec;
     char file[256];
@@ -2040,11 +2053,12 @@ static void test_binary_import(void)
 
     size = sizeof(buf);
     memset(buf, 0, size);
-    r = libmsi_record_save_stream(rec, 2, buf, &size);
-    ok(r, "Failed to get stream: %d\n", r);
+    in = libmsi_record_get_stream(rec, 2);
+    ok(in, "Failed to get stream\n");
+    size = g_input_stream_read(in, buf, sizeof(buf), NULL, NULL);
     ok(g_str_equal(buf, "just some words"),
         "Expected 'just some words', got %s\n", buf);
-
+    g_object_unref(in);
     g_object_unref(rec);
 
     g_object_unref(hdb);
@@ -2573,12 +2587,13 @@ static void test_try_transform(void)
     ok(r == LIBMSI_RESULT_SUCCESS, "select query failed\n");
 
     /* check the contents of the stream */
-    sz = sizeof buffer;
-    r = libmsi_record_save_stream( hrec, 1, buffer, &sz );
-    ok(r, "read stream failed\n");
+    in = libmsi_record_get_stream(rec, 1);
+    ok(in, "Failed to get stream\n");
+    sz = g_input_stream_read(in, buffer, sizeof(buffer), NULL, NULL);
     ok(!memcmp(buffer, "naengmyon", 9), "stream data was wrong\n");
     ok(sz == 9, "stream data was wrong size\n");
     if (hrec) g_object_unref(hrec);
+    g_object_unref(in);
 
     /* check the validity of the table with a deleted row */
     hrec = 0;
@@ -5819,12 +5834,8 @@ static void test_storages_table(void)
 
     check_record_string(hrec, 1, "stgname");
 
-    size = sizeof(buf);
-    strcpy(buf, "apple");
-    r = libmsi_record_save_stream(hrec, 2, buf, &size);
-    ok(!r, "Expected ERROR_INVALID_DATA, got %d\n", r);
-    ok(g_str_equal(buf, "apple"), "Expected buf to be unchanged, got %s\n", buf);
-    ok(size == 0, "Expected 0, got %d\n", size);
+    in = libmsi_record_get_stream(hrec, 2);
+    ok(!in, "Expected ERROR_INVALID_DATA\n");
 
     g_object_unref(hrec);
 
@@ -6059,6 +6070,7 @@ static void test_droptable(void)
 static void test_dbmerge(void)
 {
     GError *error = NULL;
+    GInputStream *in;
     LibmsiDatabase *hdb;
     LibmsiDatabase *href;
     LibmsiQuery *hquery;
@@ -6554,11 +6566,12 @@ static void test_dbmerge(void)
 
     size = sizeof(buf);
     memset(buf, 0, sizeof(buf));
-    r = libmsi_record_save_stream(hrec, 2, buf, &size);
-    ok(r, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
+    in = libmsi_record_get_stream(hrec, 2);
+    ok(in, "Failed to get stream\n");
+    size = g_input_stream_read(in, buf, sizeof(buf), NULL, NULL);
     ok(g_str_equal(buf, "binary.dat\n"),
        "Expected \"binary.dat\\n\", got \"%s\"\n", buf);
-
+    g_object_unref(in);
     g_object_unref(hrec);
 
     /* nothing in MergeErrors */

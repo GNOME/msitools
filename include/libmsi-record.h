@@ -20,6 +20,7 @@
 #define _LIBMSI_RECORD_H
 
 #include <glib-object.h>
+#include <gio/gio.h>
 
 #include "libmsi-types.h"
 
@@ -59,10 +60,14 @@ gchar *           libmsi_record_get_string         (const LibmsiRecord *record,
 gboolean          libmsi_record_load_stream        (LibmsiRecord *record,
                                                     guint field,
                                                     const gchar *filename);
-gboolean          libmsi_record_save_stream        (LibmsiRecord *rec,
+gboolean          libmsi_record_set_stream         (LibmsiRecord *record,
                                                     guint field,
-                                                    gchar *buf,
-                                                    guint *sz);
+                                                    GInputStream *input,
+                                                    gsize count,
+                                                    GCancellable *cancellable,
+                                                    GError **error);
+GInputStream *    libmsi_record_get_stream         (LibmsiRecord *record,
+                                                    guint field);
 
 G_END_DECLS
 

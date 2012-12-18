@@ -577,80 +577,101 @@ libmsi_record_load_stream(LibmsiRecord *rec, unsigned field, const char *szFilen
     return ret == LIBMSI_RESULT_SUCCESS;
 }
 
-unsigned _libmsi_record_save_stream(const LibmsiRecord *rec, unsigned field, char *buf, unsigned *sz)
+/**
+ * libmsi_record_set_stream:
+ * @record: a #LibmsiRecord
+ * @field: a field identifier
+ * @input: a #GInputStream
+ * @count: the number of bytes to read from @input
+ * @cancellable: (allow-none): optional GCancellable object, %NULL to ignore
+ * @error: (allow-none): #GError to set on error, or %NULL
+ *
+ * Set the stream content from @input stream.
+ *
+ * Returns: %TRUE on success
+ **/
+gboolean
+libmsi_record_set_stream (LibmsiRecord *rec, guint field,
+                          GInputStream *input, gsize count,
+                          GCancellable *cancellable, GError **error)
 {
-    uint64_t left;
+    g_return_val_if_fail (LIBMSI_IS_RECORD (rec), FALSE);
+    g_return_val_if_fail (G_IS_INPUT_STREAM (input), FALSE);
+    g_return_val_if_fail (field > 0 && field <= rec->count, FALSE);
+    g_return_val_if_fail (count > 0, FALSE);
+    g_return_val_if_fail (!cancellable || G_IS_CANCELLABLE (cancellable), FALSE);
+    g_return_val_if_fail (!error || *error == NULL, FALSE);
+
+    gsize bytes_read = 0;
+    GsfInput *stm = NULL;
+    guint8 *data = g_malloc (count);
+
+    if (!g_input_stream_read_all (input, data, count, &bytes_read,
+                                  cancellable, error) ||
+        bytes_read != count) {
+        g_free (data);
+        return FALSE;
+    }
+
+    stm = gsf_input_memory_new (data, count, TRUE);
+    if (_libmsi_record_load_stream (rec, field, stm) != LIBMSI_RESULT_SUCCESS) {
+        g_object_unref (stm);
+        return FALSE;
+    }
+
+    return TRUE;
+}
+
+static GsfInput *
+_libmsi_record_get_stream (LibmsiRecord *rec, unsigned field, GError **error)
+{
     GsfInput *stm;
 
-    TRACE("%p %d %p %p\n", rec, field, buf, sz);
-
-    if( !sz )
-        return LIBMSI_RESULT_INVALID_PARAMETER;
-
-    if( field > rec->count)
-        return LIBMSI_RESULT_INVALID_PARAMETER;
-
-    if ( rec->fields[field].type == LIBMSI_FIELD_TYPE_NULL )
-    {
-        *sz = 0;
-        return LIBMSI_RESULT_INVALID_DATA;
+    if (field > rec->count) {
+        g_set_error (error, LIBMSI_RESULT_ERROR, LIBMSI_RESULT_INVALID_PARAMETER, G_STRFUNC);
+        return NULL;
     }
 
-    if( rec->fields[field].type != LIBMSI_FIELD_TYPE_STREAM )
-        return LIBMSI_RESULT_INVALID_DATATYPE;
+    if (rec->fields[field].type == LIBMSI_FIELD_TYPE_NULL) {
+        g_set_error (error, LIBMSI_RESULT_ERROR, LIBMSI_RESULT_INVALID_DATA, G_STRFUNC);
+        return NULL;
+    }
+
+    if (rec->fields[field].type != LIBMSI_FIELD_TYPE_STREAM) {
+        g_set_error (error, LIBMSI_RESULT_ERROR, LIBMSI_RESULT_INVALID_DATATYPE, G_STRFUNC);
+        return NULL;
+    }
 
     stm = rec->fields[field].u.stream;
-    if( !stm )
-        return LIBMSI_RESULT_INVALID_PARAMETER;
-
-    left = gsf_input_size(stm) - gsf_input_tell(stm);
-
-    /* if there's no buffer pointer, calculate the length to the end */
-    if( !buf )
-    {
-        *sz = left;
-
-        return LIBMSI_RESULT_SUCCESS;
+    if (!stm) {
+        g_set_error (error, LIBMSI_RESULT_ERROR, LIBMSI_RESULT_INVALID_PARAMETER, G_STRFUNC);
+        return NULL;
     }
 
-    /* read the data */
-    if (*sz > left)
-        *sz = left;
-
-    if (*sz > 0 && !gsf_input_read( stm, *sz, buf ))
-    {
-        *sz = 0;
-        return LIBMSI_RESULT_FUNCTION_FAILED;
-    }
-
-    return LIBMSI_RESULT_SUCCESS;
+    return stm;
 }
 
 /**
- * libmsi_record_save_stream:
- * @rec: a %LibmsiRecord
+ * libmsi_record_get_stream:
+ * @record: a #LibmsiRecord
  * @field: a field identifier
- * @buf: a buffer of size specified by %sz, or %NULL to return size
- * @sz: a pointer to %buf size
  *
- * Read the stream data into %buf from record %field.
+ * Get the stream associated with the given record @field.
  *
- * Returns: %TRUE on success.
+ * Returns: (transfer full): a new #GInputStream
  **/
-gboolean
-libmsi_record_save_stream(LibmsiRecord *rec, unsigned field, char *buf, unsigned *sz)
+GInputStream *
+libmsi_record_get_stream (LibmsiRecord *rec, guint field)
 {
-    unsigned ret;
+    GsfInput *stm;
 
-    TRACE("%d %d %p %p\n", rec, field, buf, sz);
+    g_return_val_if_fail (LIBMSI_IS_RECORD (rec), NULL);
 
-    g_return_val_if_fail (LIBMSI_IS_RECORD (rec), FALSE);
+    stm = _libmsi_record_get_stream (rec, field, NULL);
+    if (!stm)
+        return NULL;
 
-    g_object_ref(rec);
-    ret = _libmsi_record_save_stream( rec, field, buf, sz );
-    g_object_unref(rec);
-
-    return ret == LIBMSI_RESULT_SUCCESS;
+    return G_INPUT_STREAM (libmsi_istream_new (stm));
 }
 
 unsigned _libmsi_record_set_gsf_input( LibmsiRecord *rec, unsigned field, GsfInput *stm )

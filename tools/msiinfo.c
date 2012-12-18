@@ -371,6 +371,8 @@ static int cmd_extract(struct Command *cmd, int argc, char **argv, GError **erro
     LibmsiDatabase *db = NULL;
     LibmsiQuery *query = NULL;
     LibmsiRecord *rec = NULL;
+    GOutputStream *out = NULL;
+    GInputStream *in = NULL;
     int r = 1;
     char *buf;
     unsigned size, bufsize;
@@ -398,26 +400,23 @@ static int cmd_extract(struct Command *cmd, int argc, char **argv, GError **erro
     if (*error)
         goto end;
 
-    if (!libmsi_record_save_stream(rec, 1, NULL, &size))
-        exit(1);
-
-    bufsize = (size > 1048576 ? 1048576 : size);
-    buf = g_malloc(bufsize);
-
 #if O_BINARY
     _setmode(STDOUT_FILENO, O_BINARY);
 #endif
 
-    while (size > 0) {
-        r = libmsi_record_save_stream(rec, 1, buf, &bufsize);
-        assert(size >= bufsize);
-        full_write(STDOUT_FILENO, buf, bufsize);
-        size -= bufsize;
-    }
+    out = g_unix_output_stream_new(STDOUT_FILENO, FALSE);
+    in = G_INPUT_STREAM (libmsi_record_get_stream(rec, 1));
+    if (g_output_stream_splice(out, in, 0, NULL, error) == -1)
+        goto end;
 
-    r = 0;
+    if (!*error)
+        r = 0;
 
 end:
+    if (out)
+        g_object_unref(out);
+    if (in)
+        g_object_unref(in);
     if (rec)
         g_object_unref(rec);
     if (query)
