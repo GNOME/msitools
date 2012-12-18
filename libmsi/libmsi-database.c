@@ -968,33 +968,8 @@ done:
     return r;
 }
 
-static char *msi_import_stream_filename(const char *path, const char *name)
-{
-    unsigned len;
-    char *fullname;
-    char *ptr;
-
-    len = strlen(path) + strlen(name) + 1;
-    fullname = msi_alloc(len);
-    if (!fullname)
-       return NULL;
-
-    strcpy( fullname, path );
-
-    /* chop off extension from path */
-    ptr = strrchr(fullname, '.');
-    if (!ptr)
-    {
-        msi_free (fullname);
-        return NULL;
-    }
-    strcpy( ptr, G_DIR_SEPARATOR_S );
-    strcat( ptr, name );
-    return fullname;
-}
-
 static unsigned construct_record(unsigned num_columns, char **types,
-                             char **data, const char *path, LibmsiRecord **rec)
+                             char **data, const char *name, LibmsiRecord **rec)
 {
     unsigned i;
 
@@ -1017,12 +992,9 @@ static unsigned construct_record(unsigned num_columns, char **types,
                 if (*data[i])
                 {
                     unsigned r;
-                    char *file = msi_import_stream_filename(path, data[i]);
-                    if (!file)
-                        return LIBMSI_RESULT_FUNCTION_FAILED;
-
+                    char *file = g_build_filename (name, data[i], NULL);
                     r = _libmsi_record_load_stream_from_file(*rec, i + 1, file);
-                    msi_free (file);
+                    g_free (file);
                     if (r != LIBMSI_RESULT_SUCCESS)
                         return LIBMSI_RESULT_FUNCTION_FAILED;
                 }
@@ -1039,8 +1011,7 @@ static unsigned construct_record(unsigned num_columns, char **types,
 
 static unsigned msi_add_records_to_table(LibmsiDatabase *db, char **columns, char **types,
                                      char **labels, char ***records,
-                                     int num_columns, int num_records,
-                                     const char *path)
+                                     int num_columns, int num_records)
 {
     unsigned r, num_rows, num_cols;
     int i;
@@ -1064,7 +1035,7 @@ static unsigned msi_add_records_to_table(LibmsiDatabase *db, char **columns, cha
 
     for (i = 0; i < num_records; i++)
     {
-        r = construct_record(num_columns, types, records[i], path, &rec);
+        r = construct_record(num_columns, types, records[i], labels[0], &rec);
         if (r != LIBMSI_RESULT_SUCCESS)
             goto done;
 
@@ -1169,7 +1140,7 @@ static unsigned _libmsi_database_import(LibmsiDatabase *db, const char *path)
             }
         }
 
-        r = msi_add_records_to_table( db, columns, types, labels, records, num_columns, num_records, path );
+        r = msi_add_records_to_table( db, columns, types, labels, records, num_columns, num_records);
     }
 
 done:

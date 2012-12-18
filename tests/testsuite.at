@@ -183,13 +183,13 @@ AT_SETUP([Add table with streams])
 AT_MSIDATA([tables.txt])
 AT_MSIDATA([columns.txt])
 AT_MSIDATA([icon.txt])
-AT_MSIDATA([icon/firefox.16.0.2.0.ico.exe])
+AT_MSIDATA([Icon/firefox.16.0.2.0.ico.exe])
 AT_CHECK_MSIBUILD([out.msi -i tables.txt columns.txt icon.txt])
 cp icon.txt expout
 AT_CHECK_MSIINFO([streams out.msi | grep -v SummaryInformation], [0],
 [Icon.firefox.16.0.2.0.ico.exe
 ])
-cp icon/firefox.16.0.2.0.ico.exe expout
+cp Icon/firefox.16.0.2.0.ico.exe expout
 AT_CHECK_MSIINFO([extract out.msi Icon.firefox.16.0.2.0.ico.exe > stdout], [0])
 AT_CHECK([cmp stdout expout])
 AT_CLEANUP

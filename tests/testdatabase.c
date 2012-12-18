@@ -2034,8 +2034,8 @@ static void test_binary_import(void)
     /* create files to import */
     write_file("bin_import.idt", bin_import_dat,
           (sizeof(bin_import_dat) - 1) * sizeof(char));
-    mkdir("bin_import", 0755);
-    create_file_data("bin_import/filename1.ibd", "just some words", 15);
+    mkdir("Binary", 0755);
+    create_file_data("Binary/filename1.ibd", "just some words", 15);
 
     /* import files into database */
     hdb = libmsi_database_new(msifile, LIBMSI_DB_OPEN_CREATE, NULL);
