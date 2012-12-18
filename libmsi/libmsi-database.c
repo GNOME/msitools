@@ -1219,37 +1219,101 @@ libmsi_database_import (LibmsiDatabase *db,
     return r == LIBMSI_RESULT_SUCCESS;
 }
 
-static unsigned msi_export_record( int fd, LibmsiRecord *row, unsigned start )
+static gboolean
+msi_export_stream (GsfInput *gsfin, GFile *table_dir, gchar **str,
+                   GError **error)
 {
+    GError *err = NULL;
+    GFile *file = NULL;
+    GInputStream *in = NULL;
+    GOutputStream *out = NULL;
+    gssize spliced = -1;
+
+    if (!table_dir)
+        goto end;
+
+    if (!g_file_make_directory_with_parents (table_dir, NULL, &err) &&
+        !g_error_matches (err, G_IO_ERROR, G_IO_ERROR_EXISTS)) {
+        g_propagate_error (error, err);
+        goto end;
+    }
+
+    *str = g_strdup (g_object_get_data (G_OBJECT (gsfin), "stname"));
+    file = g_file_get_child (table_dir, *str);
+    out = g_file_replace (file, NULL, FALSE, 0, NULL, error);
+    in = libmsi_istream_new (gsfin);
+    spliced = g_output_stream_splice (out, in, 0, NULL, NULL);
+
+end:
+    g_clear_error (&err);
+    if (file)
+        g_object_unref (file);
+    if (out)
+        g_object_unref (out);
+    if (in)
+        g_object_unref (in);
+
+    return spliced != -1;
+
+}
+static unsigned msi_export_record(int fd, LibmsiRecord *row,
+                                  unsigned start, GFile *table_dir,
+                                  GError **error)
+{
+    GsfInput *in = NULL;
     unsigned i, count;
+    unsigned success = LIBMSI_RESULT_FUNCTION_FAILED;
 
     count = libmsi_record_get_field_count (row);
     for (i = start; i <= count; i++) {
         char *str;
 
-        str = libmsi_record_get_string (row, i);
-        if (!str)
-            return LIBMSI_RESULT_FUNCTION_FAILED;
+        _libmsi_record_get_gsf_input (row, i, &in);
+        if (in) {
+            if (!msi_export_stream (in, table_dir, &str, error))
+                goto end;
+            g_object_unref (in);
+            in = NULL;
+        } else {
+            str = libmsi_record_get_string (row, i);
+            if (!str)
+                goto end;
+        }
 
         /* TODO full_write */
         if (write (fd, str, strlen (str)) != strlen (str)) {
             g_free (str);
-            return LIBMSI_RESULT_FUNCTION_FAILED;
+            goto end;
         }
 
         g_free (str);
 
         const char *sep = (i < count) ? "\t" : "\r\n";
         if (write (fd, sep, strlen (sep)) != strlen (sep))
-            return LIBMSI_RESULT_FUNCTION_FAILED;
+            goto end;
     }
 
-    return LIBMSI_RESULT_SUCCESS;
+    success = LIBMSI_RESULT_SUCCESS;
+
+end:
+    if (in)
+        g_object_unref (in);
+
+    return success;
 }
+
+typedef struct _ExportRow {
+    int fd;
+    GFile *table_dir;
+    GError **error;
+} ExportRow;
 
 static unsigned msi_export_row( LibmsiRecord *row, void *arg )
 {
-    return msi_export_record( (intptr_t) arg, row, 1 );
+    ExportRow *export = arg;
+
+    return msi_export_record (export->fd, row, 1,
+                              export->table_dir, export->error);
 }
 
 static unsigned msi_export_forcecodepage( int fd, unsigned codepage )
@@ -1267,8 +1331,8 @@ static unsigned msi_export_forcecodepage( int fd, unsigned codepage )
     return LIBMSI_RESULT_SUCCESS;
 }
 
-static unsigned _libmsi_database_export( LibmsiDatabase *db, const char *table,
-               int fd)
+static unsigned _libmsi_database_export(LibmsiDatabase *db, const char *table,
+                                        int fd, GError **error)
 {
     static const char query[] = "select * from %s";
     static const char forcecodepage[] = "_ForceCodepage";
@@ -1292,7 +1356,7 @@ static unsigned _libmsi_database_export( LibmsiDatabase *db, const char *table,
         r = _libmsi_query_get_column_info(view, LIBMSI_COL_INFO_NAMES, &rec);
         if (r == LIBMSI_RESULT_SUCCESS)
         {
-            msi_export_record( fd, rec, 1 );
+            msi_export_record( fd, rec, 1, NULL, error);
             g_object_unref(rec);
         }
 
@@ -1300,7 +1364,7 @@ static unsigned _libmsi_database_export( LibmsiDatabase *db, const char *table,
         r = _libmsi_query_get_column_info(view, LIBMSI_COL_INFO_TYPES, &rec);
         if (r == LIBMSI_RESULT_SUCCESS)
         {
-            msi_export_record( fd, rec, 1 );
+            msi_export_record( fd, rec, 1, NULL, error);
             g_object_unref(rec);
         }
 
@@ -1309,13 +1373,20 @@ static unsigned _libmsi_database_export( LibmsiDatabase *db, const char *table,
         if (r == LIBMSI_RESULT_SUCCESS)
         {
             libmsi_record_set_string( rec, 0, table );
-            msi_export_record( fd, rec, 0 );
+            msi_export_record( fd, rec, 0, NULL, error);
             g_object_unref(rec);
         }
 
         /* write out row 4 onwards, the data */
-        r = _libmsi_query_iterate_records( view, 0, msi_export_row, (void *)(intptr_t) fd );
-        g_object_unref(view);
+        ExportRow export = {
+            .fd = fd,
+            .table_dir = g_file_new_for_path (table),
+            .error = error
+        };
+        r = _libmsi_query_iterate_records( view, 0, msi_export_row, &export);
+
+        g_object_unref (export.table_dir);
+        g_object_unref (view);
     }
 
 done:
@@ -1358,10 +1429,10 @@ libmsi_database_export (LibmsiDatabase *db,
     g_return_val_if_fail (!error || *error == NULL, FALSE);
 
     g_object_ref(db);
-    r = _libmsi_database_export(db, table, fd);
+    r = _libmsi_database_export (db, table, fd, error);
     g_object_unref(db);
 
-    if (r != LIBMSI_RESULT_SUCCESS)
+    if (r != LIBMSI_RESULT_SUCCESS && error && !*error)
         g_set_error (error, LIBMSI_RESULT_ERROR, r, G_STRFUNC);
 
     return r == LIBMSI_RESULT_SUCCESS;

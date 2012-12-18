@@ -1163,7 +1163,10 @@ static unsigned table_view_fetch_stream( LibmsiView *view, unsigned row, unsigne
     if( r )
         ERR("fetching stream %s, error = %d\n",debugstr_a(full_name), r);
 
-    msi_free( full_name );
+    if (*stm)
+        g_object_set_data_full (G_OBJECT (*stm), "stname", full_name, g_free);
+    else
+        msi_free( full_name );
     msi_free( encname );
     return r;
 }
