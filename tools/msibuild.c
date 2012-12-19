@@ -80,9 +80,10 @@ static gboolean init_suminfo(LibmsiSummaryInfo *si, GError **error)
 }
 
 static LibmsiResult open_database(const char *msifile, LibmsiDatabase **db,
-                                  LibmsiSummaryInfo **si, GError **error)
+                                  GError **error)
 {
-    LibmsiResult r = LIBMSI_RESULT_SUCCESS;
+    LibmsiSummaryInfo *si = NULL;
+    LibmsiResult r = LIBMSI_RESULT_FUNCTION_FAILED;
     struct stat st;
 
     if (stat(msifile, &st) == -1)
@@ -91,15 +92,18 @@ static LibmsiResult open_database(const char *msifile, LibmsiDatabase **db,
         if (!*db)
             return LIBMSI_RESULT_FUNCTION_FAILED;
 
-        *si = libmsi_summary_info_new(*db, INT_MAX, error);
-        if (!*si)
+        si = libmsi_summary_info_new(*db, INT_MAX, error);
+        if (!si)
         {
             fprintf(stderr, "failed to open summary info\n");
             return LIBMSI_RESULT_FUNCTION_FAILED;
         }
 
-        if (!init_suminfo(*si, error))
-            return LIBMSI_RESULT_FUNCTION_FAILED;
+        if (!init_suminfo(si, error))
+            goto end;
+
+        if (!libmsi_summary_info_persist(si, error))
+            goto end;
 
         if (!libmsi_database_commit(*db, error))
         {
@@ -113,20 +117,18 @@ static LibmsiResult open_database(const char *msifile, LibmsiDatabase **db,
         *db = libmsi_database_new(msifile, LIBMSI_DB_OPEN_TRANSACT, error);
         if (!*db)
             return LIBMSI_RESULT_FUNCTION_FAILED;
-
-        *si = libmsi_summary_info_new(*db, INT_MAX, error);
-        if (!*si)
-        {
-            fprintf(stderr, "failed to open summary info\n");
-            return LIBMSI_RESULT_FUNCTION_FAILED;
-        }
     }
+
+    r = LIBMSI_RESULT_SUCCESS;
+
+end:
+    if (si)
+        g_object_unref(si);
 
     return r;
 }
 
 static LibmsiDatabase *db;
-static LibmsiSummaryInfo *si;
 
 static gboolean import_table(char *table, GError **error)
 {
@@ -146,22 +148,37 @@ static gboolean add_summary_info(const char *name, const char *author,
                                  const char *template, const char *uuid,
                                  GError **error)
 {
-    if (!libmsi_summary_info_set_string(si, LIBMSI_PROPERTY_SUBJECT, name, error))
+    LibmsiSummaryInfo *si = libmsi_summary_info_new(db, INT_MAX, error);
+    gboolean success = FALSE;
+
+    if (!si)
         return FALSE;
+
+    if (!libmsi_summary_info_set_string(si, LIBMSI_PROPERTY_SUBJECT, name, error))
+        goto end;
 
     if (author &&
         !libmsi_summary_info_set_string(si, LIBMSI_PROPERTY_AUTHOR, author, error))
-        return FALSE;
+        goto end;
 
     if (template &&
         !libmsi_summary_info_set_string(si, LIBMSI_PROPERTY_TEMPLATE, template, error))
-        return FALSE;
+        goto end;
 
     if (uuid &&
         !libmsi_summary_info_set_string(si, LIBMSI_PROPERTY_UUID, uuid, error))
-        return FALSE;
+        goto end;
 
-    return TRUE;
+    if (!libmsi_summary_info_persist(si, error))
+        goto end;
+
+    success = TRUE;
+
+end:
+    if (si)
+        g_object_unref(si);
+
+    return success;
 }
 
 static gboolean add_stream(const char *stream, const char *file, GError **error)
@@ -257,10 +274,10 @@ int main(int argc, char *argv[])
 
     /* Accept package after first option for winemsibuilder compatibility.  */
     if (argc >= 3 && argv[1][0] == '-') {
-        r = open_database(argv[2], &db, &si, &error);
+        r = open_database(argv[2], &db, &error);
         argv[2] = argv[1];
     } else {
-        r = open_database(argv[1], &db, &si, &error);
+        r = open_database(argv[1], &db, &error);
     }
     if (r != LIBMSI_RESULT_SUCCESS) return 1;
 
@@ -326,15 +343,11 @@ int main(int argc, char *argv[])
     }
 
     if (r == LIBMSI_RESULT_SUCCESS) {
-        if (!libmsi_summary_info_persist(si, &error))
-            goto end;
-
         if (!libmsi_database_commit(db, &error))
             goto end;
     }
 
 end:
-    g_object_unref(si);
     g_object_unref(db);
 
     if (error != NULL) {

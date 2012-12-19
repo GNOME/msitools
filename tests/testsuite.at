@@ -211,3 +211,23 @@ Binary
 ])
 AT_CLEANUP
 
+AT_SETUP([Update _SummaryInformation table])
+AT_MSIDATA([_SummaryInformation.idt])
+AT_CHECK_MSIBUILD([-i out.msi _SummaryInformation.idt])
+AT_CHECK_MSIINFO([suminfo out.msi], [0],
+[Title: Installation Database
+Subject: Acme's Foobar 1.0 Installer
+Author: Acme Ltd.
+Keywords: Installer
+Comments: Foobar is a registered trademark of Acme Ltd.
+Template: Intel;1033
+Revision number (UUID): {D045A303-F114-4A3B-A01D-24FC2D2A67D7}
+Created: Wed Dec 18 15:12:50 3912
+Last saved: Wed Dec 18 15:12:50 3912
+Version: 100 (64)
+Source: 2 (2)
+Restrict: 0 (0)
+Application: Windows Installer XML (3.7.1119.0)
+Security: 2 (2)
+])
+AT_CLEANUP
