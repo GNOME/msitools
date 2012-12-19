@@ -221,7 +221,8 @@ static unsigned read_dword( uint8_t *data, unsigned *ofs )
 
 static void parse_filetime( const WCHAR *str, guint64 *ft )
 {
-    struct tm tm;
+    /* set to 0, tm_isdst can make the result vary: */
+    struct tm tm = { 0, };
     time_t t;
     const WCHAR *p = str;
     WCHAR *end;
