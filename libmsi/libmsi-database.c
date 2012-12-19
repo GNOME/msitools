@@ -1287,7 +1287,7 @@ static unsigned msi_export_row( LibmsiRecord *row, void *arg )
                               export->table_dir, export->error);
 }
 
-static unsigned msi_export_forcecodepage( int fd, unsigned codepage )
+static LibmsiResult msi_export_forcecodepage( int fd, unsigned codepage )
 {
     static const char fmt[] = "\r\n\r\n%u\t_ForceCodepage\r\n";
     char data[sizeof(fmt) + 10];
@@ -1302,22 +1302,60 @@ static unsigned msi_export_forcecodepage( int fd, unsigned codepage )
     return LIBMSI_RESULT_SUCCESS;
 }
 
-static unsigned _libmsi_database_export(LibmsiDatabase *db, const char *table,
+static LibmsiResult msi_export_summaryinfo (LibmsiDatabase *db, int fd, GError **error)
+{
+    static const char header[] =
+        "PropertyId\tValue\r\ni2\tl255\r\n_SummaryInformation\tPropertyId\r\n";
+    LibmsiResult result = LIBMSI_RESULT_FUNCTION_FAILED;
+    LibmsiSummaryInfo *si = libmsi_summary_info_new (db, 0, error);
+    gchar *str = NULL;
+    gssize sz;
+    int i;
+
+    if (!si)
+        goto end;
+
+    sz = strlen (header);
+    if (write (fd, header, sz) != sz)
+        goto end;
+
+    for (i = 0; i < MSI_MAX_PROPS; i++)
+        if (si->property[i].vt != OLEVT_EMPTY) {
+            gchar *val = summary_info_as_string (si, i);
+            if (!val)
+                goto end;
+            gchar *str = g_strdup_printf ("%d\t%s\r\n", i, val);
+            sz = strlen (str);
+            if (write (fd, str, sz) != sz)
+                goto end;
+            g_free (str);
+            str = NULL;
+        }
+
+    result = LIBMSI_RESULT_SUCCESS;
+
+end:
+    g_free (str);
+    if (si)
+        g_object_unref (si);
+    return result;
+}
+
+static LibmsiResult _libmsi_database_export(LibmsiDatabase *db, const char *table,
                                         int fd, GError **error)
 {
     static const char query[] = "select * from %s";
-    static const char forcecodepage[] = "_ForceCodepage";
     LibmsiRecord *rec = NULL;
     LibmsiQuery *view = NULL;
-    unsigned r;
+    LibmsiResult r;
 
     TRACE("%p %s %d\n", db, debugstr_a(table), fd );
 
-    if (!strcmp( table, forcecodepage ))
-    {
-        unsigned codepage = msi_get_string_table_codepage( db->strings );
-        r = msi_export_forcecodepage( fd, codepage );
-        goto done;
+    if (!strcmp(table, "_ForceCodepage")) {
+        unsigned codepage = msi_get_string_table_codepage (db->strings);
+        return msi_export_forcecodepage (fd, codepage);
+    } else if (!strcmp (table, "_SummaryInformation")) {
+        return msi_export_summaryinfo (db, fd, error);
     }
 
     r = _libmsi_query_open( db, &view, query, table );
@@ -1360,7 +1398,6 @@ static unsigned _libmsi_database_export(LibmsiDatabase *db, const char *table,
         g_object_unref (view);
     }
 
-done:
     return r;
 }
 

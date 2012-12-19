@@ -416,6 +416,7 @@ extern unsigned msi_view_get_row(LibmsiDatabase *, LibmsiView *, unsigned, Libms
 
 /* summary information */
 extern unsigned msi_add_suminfo( LibmsiDatabase *db, char ***records, int num_records, int num_columns );
+gchar* summary_info_as_string (LibmsiSummaryInfo *si, unsigned uiProperty);
 
 /* IStream internals */
 LibmsiIStream * libmsi_istream_new (GsfInput *input);

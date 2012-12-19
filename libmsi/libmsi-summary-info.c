@@ -236,6 +236,23 @@ static unsigned read_dword( const uint8_t *data, unsigned *ofs )
     return val;
 }
 
+static gchar* filetime_to_string (guint64 ft)
+{
+    struct tm tm;
+    time_t t;
+
+    ft /= 10000000ULL;
+    ft -= 134774ULL * 86400ULL;
+    t = ft;
+
+    if (!gmtime_r (&t, &tm))
+        return NULL;
+
+    return g_strdup_printf ("%d/%d/%d %d:%d:%d",
+                            tm.tm_year + 1900, tm.tm_mon + 1, tm.tm_mday,
+                            tm.tm_hour, tm.tm_min, tm.tm_sec);
+}
+
 static void parse_filetime( const char *str, guint64 *ft )
 {
     /* set to 0, tm_isdst can make the result vary: */
@@ -600,6 +617,28 @@ libmsi_summary_info_get_property_type (LibmsiSummaryInfo *self,
                      "Unknown type");
         return LIBMSI_PROPERTY_TYPE_EMPTY;
     }
+}
+
+G_GNUC_INTERNAL gchar *
+summary_info_as_string (LibmsiSummaryInfo *si, unsigned uiProperty)
+{
+    LibmsiOLEVariant *prop = &si->property[uiProperty];
+
+    switch (prop->vt) {
+    case OLEVT_I2:
+    case OLEVT_I4:
+        return g_strdup_printf ("%d", prop->intval);
+    case OLEVT_LPSTR:
+        return g_strdup (prop->strval);
+    case OLEVT_FILETIME:
+        return filetime_to_string (prop->filetime);
+    case OLEVT_EMPTY:
+        return g_strdup ("");
+    default:
+        g_warn_if_reached ();
+    }
+
+    return NULL;
 }
 
 static void _summary_info_get_property (LibmsiSummaryInfo *si, unsigned uiProperty,
