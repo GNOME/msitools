@@ -242,7 +242,10 @@ static int cmd_tables(struct Command *cmd, int argc, char **argv, GError **error
     if (*error)
         goto end;
 
+    puts("_SummaryInformation");
+    puts("_ForceCodepage");
     print_strings_from_query(query, error);
+
     r = 0;
 
 end:
