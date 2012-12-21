@@ -42,4 +42,3 @@ $(srcdir)/tests/testsuite: tests/testsuite.at tests/package.m4
 	cd $(srcdir)/tests && \
 		$(AUTOM4TE) --language=autotest -o testsuite.tmp testsuite.at && \
 		mv testsuite.tmp testsuite
-

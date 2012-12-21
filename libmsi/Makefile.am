@@ -73,4 +73,21 @@ typelibdir = $(libdir)/girepository-1.0
 typelib_DATA = $(INTROSPECTION_GIRS:.gir=.typelib)
 
 CLEANFILES = $(gir_DATA) $(typelib_DATA)
-endif
+
+if VAPI
+vapidir = $(datadir)/vala/vapi
+vapi_DATA = libmsi-1.0.vapi
+BUILT_SOURCES += $(vapi_DATA)
+
+libmsi-1.0.vapi: Libmsi-1.0.gir
+	$(AM_V_GEN)$(VAPIGEN) -q		\
+		--metadatadir=$(srcdir)		\
+		--vapidir=$(builddir)		\
+		--library libmsi-1.0		\
+		--pkg gio-2.0			\
+		$<
+
+CLEANFILES += libmsi-1.0.vapi
+endif # VAPI
+
+endif # GIR
