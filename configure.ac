@@ -42,5 +42,10 @@ AC_CONFIG_FILES([tests/package.m4.tmp:tests/package.m4.in],
                 [$srcdir/build-aux/move-if-change tests/package.m4.tmp $srcdir/tests/package.m4
                  cp $srcdir/tests/package.m4 tests/package.m4.tmp])
 
-AC_CONFIG_FILES([Makefile libmsi/Makefile tests/Makefile])
+AC_CONFIG_FILES([
+    Makefile
+    libmsi-1.0.pc
+    libmsi/Makefile
+    tests/Makefile
+])
 AC_OUTPUT
