@@ -58,8 +58,6 @@ typedef enum LibmsiResultError
     LIBMSI_RESULT_INVALID_DATATYPE
 } LibmsiResultError;
 
-typedef LibmsiResultError LibmsiResult; // FIXME: remove me
-
 typedef enum LibmsiPropertyType
 {
    LIBMSI_PROPERTY_TYPE_EMPTY = 0,

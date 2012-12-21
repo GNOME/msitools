@@ -79,24 +79,24 @@ static gboolean init_suminfo(LibmsiSummaryInfo *si, GError **error)
     return TRUE;
 }
 
-static LibmsiResult open_database(const char *msifile, LibmsiDatabase **db,
-                                  GError **error)
+static gboolean open_database(const char *msifile, LibmsiDatabase **db,
+                              GError **error)
 {
     LibmsiSummaryInfo *si = NULL;
-    LibmsiResult r = LIBMSI_RESULT_FUNCTION_FAILED;
+    gboolean success = FALSE;
     struct stat st;
 
     if (stat(msifile, &st) == -1)
     {
         *db = libmsi_database_new(msifile, LIBMSI_DB_OPEN_CREATE, error);
         if (!*db)
-            return LIBMSI_RESULT_FUNCTION_FAILED;
+            goto end;
 
         si = libmsi_summary_info_new(*db, INT_MAX, error);
         if (!si)
         {
             fprintf(stderr, "failed to open summary info\n");
-            return LIBMSI_RESULT_FUNCTION_FAILED;
+            goto end;
         }
 
         if (!init_suminfo(si, error))
@@ -109,23 +109,23 @@ static LibmsiResult open_database(const char *msifile, LibmsiDatabase **db,
         {
             fprintf(stderr, "failed to commit database\n");
             g_object_unref(*db);
-            return LIBMSI_RESULT_FUNCTION_FAILED;
+            goto end;
         }
     }
     else
     {
         *db = libmsi_database_new(msifile, LIBMSI_DB_OPEN_TRANSACT, error);
         if (!*db)
-            return LIBMSI_RESULT_FUNCTION_FAILED;
+            goto end;
     }
 
-    r = LIBMSI_RESULT_SUCCESS;
+    success = TRUE;
 
 end:
     if (si)
         g_object_unref(si);
 
-    return r;
+    return success;
 }
 
 static LibmsiDatabase *db;
@@ -220,7 +220,7 @@ end:
 static int do_query(const char *sql, void *opaque)
 {
     GError **error = opaque;
-    LibmsiResult r = LIBMSI_RESULT_FUNCTION_FAILED;
+    gboolean success = FALSE;
     LibmsiQuery *query;
 
     query = libmsi_query_new(db, sql, error);
@@ -234,7 +234,7 @@ static int do_query(const char *sql, void *opaque)
         goto end;
     }
 
-    r = LIBMSI_RESULT_SUCCESS;
+    success = TRUE;
 
 end:
     if (query) {
@@ -242,7 +242,7 @@ end:
         g_object_unref(query);
     }
 
-    return r;
+    return !success;
 }
 
 static void show_usage(void)
@@ -262,7 +262,7 @@ static void show_usage(void)
 int main(int argc, char *argv[])
 {
     GError *error = NULL;
-    int r = LIBMSI_RESULT_SUCCESS;
+    gboolean success = FALSE;
     int n;
 
     g_type_init();
@@ -274,12 +274,12 @@ int main(int argc, char *argv[])
 
     /* Accept package after first option for winemsibuilder compatibility.  */
     if (argc >= 3 && argv[1][0] == '-') {
-        r = open_database(argv[2], &db, &error);
+        success = open_database(argv[2], &db, &error);
         argv[2] = argv[1];
     } else {
-        r = open_database(argv[1], &db, &error);
+        success = open_database(argv[1], &db, &error);
     }
-    if (r != LIBMSI_RESULT_SUCCESS) return 1;
+    if (!success) return 1;
 
     argc -= 2, argv += 2;
     while (argc > 0) {
@@ -337,15 +337,10 @@ int main(int argc, char *argv[])
             show_usage();
             break;
         }
-        if (r != LIBMSI_RESULT_SUCCESS) {
-            break;
-        }
     }
 
-    if (r == LIBMSI_RESULT_SUCCESS) {
-        if (!libmsi_database_commit(db, &error))
-            goto end;
-    }
+    if (!libmsi_database_commit(db, &error))
+        goto end;
 
 end:
     g_object_unref(db);
@@ -356,5 +351,5 @@ end:
         exit(1);
     }
 
-    return r != LIBMSI_RESULT_SUCCESS;
+    return 0;
 }

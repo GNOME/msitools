@@ -50,6 +50,8 @@
 #define MAX_PATH PATH_MAX
 #endif
 
+typedef LibmsiResultError LibmsiResult;
+
 typedef enum LibmsiCondition
 {
     LIBMSI_CONDITION_FALSE = 0,

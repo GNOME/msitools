@@ -91,7 +91,7 @@ static void cmd_usage(FILE *out, struct Command *cmd)
     exit (out == stderr);
 }
 
-static void print_libmsi_error(LibmsiResult r)
+static void print_libmsi_error(LibmsiResultError r)
 {
     switch (r)
     {
@@ -314,7 +314,6 @@ static int cmd_suminfo(struct Command *cmd, int argc, char **argv, GError **erro
 {
     LibmsiDatabase *db = NULL;
     LibmsiSummaryInfo *si = NULL;
-    LibmsiResult r;
 
     if (argc != 2) {
         cmd_usage(stderr, cmd);
@@ -430,7 +429,7 @@ end:
     return r;
 }
 
-static unsigned export_create_table(const char *table,
+static gboolean export_create_table(const char *table,
                                     LibmsiRecord *names,
                                     LibmsiRecord *types,
                                     LibmsiRecord *keys)
@@ -438,7 +437,6 @@ static unsigned export_create_table(const char *table,
     guint num_columns = libmsi_record_get_field_count(names);
     guint num_keys = libmsi_record_get_field_count(keys);
     guint i, len;
-    unsigned r = LIBMSI_RESULT_SUCCESS;
     char size[20], extra[30];
     gchar *name, *type;
     unsigned sz;
@@ -454,10 +452,10 @@ static unsigned export_create_table(const char *table,
     for (i = 1; i <= num_columns; i++)
     {
         name = libmsi_record_get_string(names, i);
-        g_return_val_if_fail(name != NULL, LIBMSI_RESULT_FUNCTION_FAILED);
+        g_return_val_if_fail(name != NULL, FALSE);
 
         type = libmsi_record_get_string(types, i);
-        g_return_val_if_fail(type != NULL, LIBMSI_RESULT_FUNCTION_FAILED);
+        g_return_val_if_fail(type != NULL, FALSE);
 
         if (i > 1) {
             printf(", ");
@@ -501,13 +499,13 @@ static unsigned export_create_table(const char *table,
     for (i = 1; i <= num_keys; i++)
     {
         name = libmsi_record_get_string(names, i);
-        g_return_val_if_fail(name != NULL, LIBMSI_RESULT_FUNCTION_FAILED);
+        g_return_val_if_fail(name != NULL, FALSE);
 
         printf("%s `%s`", (i > 1 ? "," : " PRIMARY KEY"), name);
         g_free(name);
     }
     printf(")\n");
-    return r;
+    return TRUE;
 }
 
 static void print_quoted_string(const char *s)
@@ -525,7 +523,7 @@ static void print_quoted_string(const char *s)
     putchar('\'');
 }
 
-static unsigned export_insert(const char *table,
+static gboolean export_insert(const char *table,
                               LibmsiRecord *names,
                               LibmsiRecord *types,
                               LibmsiRecord *vals)
@@ -533,7 +531,6 @@ static unsigned export_insert(const char *table,
     guint num_columns = libmsi_record_get_field_count(names);
     gchar *name, *type;
     guint i;
-    unsigned r;
     unsigned sz;
     char *s;
 
@@ -546,7 +543,7 @@ static unsigned export_insert(const char *table,
 
         sz = sizeof(name);
         name = libmsi_record_get_string(names, i);
-        g_return_val_if_fail(name != NULL, LIBMSI_RESULT_FUNCTION_FAILED);
+        g_return_val_if_fail(name != NULL, FALSE);
 
         if (i > 1) {
             printf(", ");
@@ -568,7 +565,7 @@ static unsigned export_insert(const char *table,
 
         sz = sizeof(type);
         type = libmsi_record_get_string(types, i);
-        g_return_val_if_fail(type != NULL, LIBMSI_RESULT_FUNCTION_FAILED);
+        g_return_val_if_fail(type != NULL, FALSE);
 
         switch (type[0])
         {
@@ -592,10 +589,10 @@ static unsigned export_insert(const char *table,
         g_free(type);
     }
     printf(")\n");
-    return r;
+    return TRUE;
 }
 
-static unsigned export_sql( LibmsiDatabase *db, const char *table, GError **error)
+static gboolean export_sql( LibmsiDatabase *db, const char *table, GError **error)
 {
     GError *err = NULL;
     LibmsiRecord *name = NULL;
@@ -603,7 +600,7 @@ static unsigned export_sql( LibmsiDatabase *db, const char *table, GError **erro
     LibmsiRecord *keys = NULL;
     LibmsiRecord *rec = NULL;
     LibmsiQuery *query = NULL;
-    unsigned r;
+    gboolean success = FALSE;
     char *sql;
 
     sql = g_strdup_printf("select * from `%s`", table);
@@ -630,41 +627,37 @@ static unsigned export_sql( LibmsiDatabase *db, const char *table, GError **erro
         goto done;
     }
 
-    r = export_create_table(table, name, type, keys);
-    if (r) {
+    if (!export_create_table(table, name, type, keys))
         goto done;
-    }
 
     /* write out row 4 onwards, the data */
     while ((rec = libmsi_query_fetch(query, &err))) {
         unsigned size = PATH_MAX;
-        r = export_insert(table, name, type, rec);
+        success = export_insert(table, name, type, rec);
         g_object_unref(rec);
-        if (r) {
+        if (!success) {
             break;
         }
     }
 
-    if (!g_error_matches(err, LIBMSI_RESULT_ERROR, LIBMSI_RESULT_NO_MORE_ITEMS))
+    if (!g_error_matches(err, LIBMSI_RESULT_ERROR, LIBMSI_RESULT_NO_MORE_ITEMS)) {
         g_propagate_error(error, err);
+        success = FALSE;
+    }
 
     g_clear_error(&err);
-    if (r == LIBMSI_RESULT_NO_MORE_ITEMS) {
-        r = LIBMSI_RESULT_SUCCESS;
-    }
 
 done:
     g_object_unref(name);
     g_object_unref(type);
     g_object_unref(keys);
     g_object_unref(query);
-    return r;
+    return success;
 }
 
 static int cmd_export(struct Command *cmd, int argc, char **argv, GError **error)
 {
     LibmsiDatabase *db = NULL;
-    LibmsiResult r = LIBMSI_RESULT_SUCCESS;
     gboolean sql = FALSE;
 
     if (argc > 1 && !strcmp(argv[1], "-s")) {
@@ -682,12 +675,8 @@ static int cmd_export(struct Command *cmd, int argc, char **argv, GError **error
         return 1;
 
     if (sql) {
-        r = export_sql(db, argv[2], error);
-    if (r) {
-        print_libmsi_error(r);
-    }
-
-
+        if (!export_sql(db, argv[2], error))
+            return 1;
     } else {
 #if O_BINARY
         _setmode(STDOUT_FILENO, O_BINARY);
@@ -801,6 +790,7 @@ int main(int argc, char **argv)
     int result = cmd->func(cmd, argc - 1, argv + 1, &error);
     if (error != NULL) {
         g_printerr("error: %s\n", error->message);
+        print_libmsi_error(error->code);
         g_clear_error(&error);
     }
 
