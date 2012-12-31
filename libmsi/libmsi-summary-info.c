@@ -120,10 +120,12 @@ libmsi_summary_info_constructed (GObject *object)
     unsigned r;
 
     /* read the stream... if we fail, we'll start with an empty property set */
-    r = msi_get_raw_stream (self->database, szSumInfo, &stm);
-    if (r == 0) {
-        load_summary_info (self, stm);
-        g_object_unref (G_OBJECT (stm));
+    if (self->database) {
+        r = msi_get_raw_stream (self->database, szSumInfo, &stm);
+        if (r == 0) {
+            load_summary_info (self, stm);
+            g_object_unref (G_OBJECT (stm));
+        }
     }
 
     G_OBJECT_CLASS (libmsi_summary_info_parent_class)->constructed (object);
@@ -1026,7 +1028,7 @@ end:
  * @si: a #LibmsiSummaryInfo
  * @error: (allow-none): #GError to set on error, or %NULL
  *
- * Save summary informations.
+ * Save summary informations to the associated database.
  *
  * Returns: %TRUE on success
  **/
@@ -1040,6 +1042,12 @@ libmsi_summary_info_persist (LibmsiSummaryInfo *si, GError **error)
 
     TRACE("%p\n", si);
 
+    if (!si->database) {
+        g_set_error (error, LIBMSI_RESULT_ERROR,
+                     LIBMSI_RESULT_FUNCTION_FAILED, "No database associated");
+        return FALSE;
+    }
+
     g_object_ref (si);
     ret = suminfo_persist (si);
     g_object_unref (si);
@@ -1052,7 +1060,7 @@ libmsi_summary_info_persist (LibmsiSummaryInfo *si, GError **error)
 
 /**
  * libmsi_summary_info_new:
- * @database: a #LibmsiDatabase
+ * @database: (allow-none): a #LibmsiDatabase
  * @update_count: number of changes allowed
  * @error: (allow-none): #GError to set on error, or %NULL
  *
@@ -1064,7 +1072,7 @@ libmsi_summary_info_new (LibmsiDatabase *database, unsigned update_count,
 {
     LibmsiSummaryInfo *self;
 
-    g_return_val_if_fail (LIBMSI_IS_DATABASE (database), NULL);
+    g_return_val_if_fail (!database || LIBMSI_IS_DATABASE (database), NULL);
     g_return_val_if_fail (!error || *error == NULL, NULL);
 
     self = g_object_new (LIBMSI_TYPE_SUMMARY_INFO,
