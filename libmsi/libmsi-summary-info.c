@@ -519,7 +519,7 @@ static unsigned write_property_to_data( const LibmsiOLEVariant *prop, uint8_t *d
     return sz;
 }
 
-static unsigned suminfo_persist( LibmsiSummaryInfo *si )
+static unsigned suminfo_persist (LibmsiSummaryInfo *si, LibmsiDatabase *database)
 {
     int cProperties, cbSection, dwOffset;
     GsfInput *stm;
@@ -574,7 +574,7 @@ static unsigned suminfo_persist( LibmsiSummaryInfo *si )
 
     assert(sz == 28 + 20 + cbSection);
 
-    r = write_raw_stream_data(si->database, szSumInfo, data, sz, &stm);
+    r = write_raw_stream_data (database, szSumInfo, data, sz, &stm);
     if (r == 0) {
         g_object_unref(G_OBJECT(stm));
     }
@@ -1017,7 +1017,7 @@ unsigned msi_add_suminfo( LibmsiDatabase *db, char ***records, int num_records, 
 
 end:
     if (r == LIBMSI_RESULT_SUCCESS)
-        r = suminfo_persist( si );
+        r = suminfo_persist( si, db );
 
     g_object_unref(si);
     return r;
@@ -1049,7 +1049,7 @@ libmsi_summary_info_persist (LibmsiSummaryInfo *si, GError **error)
     }
 
     g_object_ref (si);
-    ret = suminfo_persist (si);
+    ret = suminfo_persist (si, si->database);
     g_object_unref (si);
 
     if (ret != LIBMSI_RESULT_SUCCESS)
@@ -1059,10 +1059,42 @@ libmsi_summary_info_persist (LibmsiSummaryInfo *si, GError **error)
 }
 
 /**
+ * libmsi_summary_info_save:
+ * @si: a #LibmsiSummaryInfo
+ * @database: a #LibmsiDatabase to save to
+ * @error: (allow-none): #GError to set on error, or %NULL
+ *
+ * Save summary informations to the associated database.
+ *
+ * Returns: %TRUE on success
+ **/
+gboolean
+libmsi_summary_info_save (LibmsiSummaryInfo *si, LibmsiDatabase *db, GError **error)
+{
+    unsigned ret;
+
+    g_return_val_if_fail (LIBMSI_IS_SUMMARY_INFO (si), FALSE);
+    g_return_val_if_fail (LIBMSI_IS_DATABASE (db), FALSE);
+    g_return_val_if_fail (!error || *error == NULL, FALSE);
+
+    ret = suminfo_persist (si, db);
+    if (ret != LIBMSI_RESULT_SUCCESS)
+        g_set_error_literal (error, LIBMSI_RESULT_ERROR, ret, G_STRFUNC);
+
+    return ret == LIBMSI_RESULT_SUCCESS;
+}
+
+/**
  * libmsi_summary_info_new:
- * @database: (allow-none): a #LibmsiDatabase
+ * @database: (allow-none): an optionnal associated #LibmsiDatabase
  * @update_count: number of changes allowed
  * @error: (allow-none): #GError to set on error, or %NULL
+ *
+ * If @database is provided, the summary informations will be
+ * populated during creation, and the libmsi_summary_info_persist()
+ * function will save the properties to it. If @database is %NULL, you
+ * may still populate properties and then save them to a particular
+ * database with the libmsi_summary_info_save() function.
  *
  * Returns: a #LibmsiSummaryInfo or %NULL on failure
  **/

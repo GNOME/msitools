@@ -70,6 +70,9 @@ gboolean              libmsi_summary_info_set_filetime (LibmsiSummaryInfo *si,
                                                         GError **error);
 gboolean              libmsi_summary_info_persist      (LibmsiSummaryInfo *si,
                                                         GError **error);
+gboolean              libmsi_summary_info_save         (LibmsiSummaryInfo *si,
+                                                        LibmsiDatabase *db,
+                                                        GError **error);
 GArray *              libmsi_summary_info_get_properties (LibmsiSummaryInfo *si);
 
 G_END_DECLS
