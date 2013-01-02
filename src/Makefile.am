@@ -13,7 +13,10 @@ AM_VALAFLAGS =					\
 	$(NULL)
 
 wixl_SOURCES =					\
+	builder.vala				\
+	msi.vala				\
 	util.vala				\
+	wix.vala				\
 	wixl.vala				\
 	$(NULL)
 
