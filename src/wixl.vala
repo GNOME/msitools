@@ -35,19 +35,19 @@ namespace Wixl {
         construct {
             name = "AdminExecuteSequence";
             try {
-                add_sequence ("CostInitialize", 800);
-                add_sequence ("FileCost", 900);
-                add_sequence ("CostFinalize", 1000);
-                add_sequence ("InstallValidate", 1400);
-                add_sequence ("InstallInitialize", 1500);
-                add_sequence ("InstallAdminPackage", 3900);
-                add_sequence ("InstallFiles", 4000);
-                add_sequence ("InstallFinalize", 6600);
+                add ("CostInitialize", 800);
+                add ("FileCost", 900);
+                add ("CostFinalize", 1000);
+                add ("InstallValidate", 1400);
+                add ("InstallInitialize", 1500);
+                add ("InstallAdminPackage", 3900);
+                add ("InstallFiles", 4000);
+                add ("InstallFinalize", 6600);
             } catch (GLib.Error e) {
             }
         }
 
-        public void add_sequence (string action, int sequence) throws GLib.Error {
+        public void add (string action, int sequence) throws GLib.Error {
             var rec = new Libmsi.Record (2);
 
             if (!rec.set_string (1, action) ||
@@ -72,15 +72,15 @@ namespace Wixl {
             name = "AdminUISequence";
 
             try {
-                add_sequence ("CostInitialize", 800);
-                add_sequence ("FileCost", 900);
-                add_sequence ("CostFinalize", 1000);
-                add_sequence ("ExecuteAction", 1300);
+                add ("CostInitialize", 800);
+                add ("FileCost", 900);
+                add ("CostFinalize", 1000);
+                add ("ExecuteAction", 1300);
             } catch (GLib.Error e) {
             }
         }
 
-        public void add_sequence (string action, int sequence) throws GLib.Error {
+        public void add (string action, int sequence) throws GLib.Error {
             var rec = new Libmsi.Record (2);
 
             if (!rec.set_string (1, action) ||
@@ -105,18 +105,18 @@ namespace Wixl {
             name = "AdvtExecuteSequence";
 
             try {
-                add_sequence ("CostInitialize", 800);
-                add_sequence ("CostFinalize", 1000);
-                add_sequence ("InstallValidate", 1400);
-                add_sequence ("InstallInitialize", 1500);
-                add_sequence ("InstallFinalize", 6600);
-                add_sequence ("PublishFeatures", 6300);
-                add_sequence ("PublishProduct", 6400);
+                add ("CostInitialize", 800);
+                add ("CostFinalize", 1000);
+                add ("InstallValidate", 1400);
+                add ("InstallInitialize", 1500);
+                add ("InstallFinalize", 6600);
+                add ("PublishFeatures", 6300);
+                add ("PublishProduct", 6400);
             } catch (GLib.Error e) {
             }
         }
 
-        public void add_sequence (string action, int sequence) throws GLib.Error {
+        public void add (string action, int sequence) throws GLib.Error {
             var rec = new Libmsi.Record (2);
 
             if (!rec.set_string (1, action) ||
@@ -163,24 +163,24 @@ namespace Wixl {
             name = "InstallExecuteSequence";
 
             try {
-                add_sequence ("CostInitialize", 800);
-                add_sequence ("FileCost", 900);
-                add_sequence ("CostFinalize", 1000);
-                add_sequence ("InstallValidate", 1400);
-                add_sequence ("InstallInitialize", 1500);
-                add_sequence ("InstallFinalize", 6600);
-                add_sequence ("PublishFeatures", 6300);
-                add_sequence ("PublishProduct", 6400);
-                add_sequence ("ValidateProductID", 700);
-                add_sequence ("ProcessComponents", 1600);
-                add_sequence ("UnpublishFeatures", 1800);
-                add_sequence ("RegisterUser", 6000);
-                add_sequence ("RegisterProduct", 6100);
+                add ("CostInitialize", 800);
+                add ("FileCost", 900);
+                add ("CostFinalize", 1000);
+                add ("InstallValidate", 1400);
+                add ("InstallInitialize", 1500);
+                add ("InstallFinalize", 6600);
+                add ("PublishFeatures", 6300);
+                add ("PublishProduct", 6400);
+                add ("ValidateProductID", 700);
+                add ("ProcessComponents", 1600);
+                add ("UnpublishFeatures", 1800);
+                add ("RegisterUser", 6000);
+                add ("RegisterProduct", 6100);
             } catch (GLib.Error e) {
             }
         }
 
-        public void add_sequence (string action, int sequence) throws GLib.Error {
+        public void add (string action, int sequence) throws GLib.Error {
             var rec = new Libmsi.Record (2);
 
             if (!rec.set_string (1, action) ||
@@ -205,16 +205,16 @@ namespace Wixl {
             name = "InstallUISequence";
 
             try {
-                add_sequence ("CostInitialize", 800);
-                add_sequence ("FileCost", 900);
-                add_sequence ("CostFinalize", 1000);
-                add_sequence ("ExecuteAction", 1300);
-                add_sequence ("ValidateProductID", 700);
+                add ("CostInitialize", 800);
+                add ("FileCost", 900);
+                add ("CostFinalize", 1000);
+                add ("ExecuteAction", 1300);
+                add ("ValidateProductID", 700);
             } catch (GLib.Error e) {
             }
         }
 
-        public void add_sequence (string action, int sequence) throws GLib.Error {
+        public void add (string action, int sequence) throws GLib.Error {
             var rec = new Libmsi.Record (2);
 
             if (!rec.set_string (1, action) ||
