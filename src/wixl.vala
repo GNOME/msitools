@@ -402,13 +402,19 @@ namespace Wixl {
         public abstract void visit_product (WixProduct product) throws GLib.Error;
         public abstract void visit_icon (WixIcon icon) throws GLib.Error;
         public abstract void visit_package (WixPackage package) throws GLib.Error;
+        public abstract void visit_property (WixProperty prop) throws GLib.Error;
     }
 
     public class WixElement: Object {
         public string Id { get; set; }
+        public List<WixElement> children;
 
         static construct {
             Value.register_transform_func (typeof (WixElement), typeof (string), (ValueTransform)WixElement.value_to_string);
+        }
+
+        public void add_child (WixElement e) {
+            children.append (e);
         }
 
         public string to_string () {
@@ -443,6 +449,26 @@ namespace Wixl {
         }
 
         public virtual void accept (WixElementVisitor visitor) throws GLib.Error {
+            foreach (var child in children)
+                child.accept (visitor);
+        }
+    }
+
+    public class WixProperty: WixElement {
+        public string Value { get; set; }
+
+        public void load (Xml.Node *node) throws Wixl.Error {
+            if (node->name != "Property")
+                throw new Error.FAILED ("invalid node");
+
+            for (var prop = node->properties; prop != null; prop = prop->next) {
+                if (prop->type == Xml.ElementType.ATTRIBUTE_NODE)
+                    set_property (prop->name, get_attribute_content (prop));
+            }
+        }
+
+        public override void accept (WixElementVisitor visitor) throws GLib.Error {
+            visitor.visit_property (this);
         }
     }
 
@@ -483,6 +509,7 @@ namespace Wixl {
 
         public override void accept (WixElementVisitor visitor) throws GLib.Error {
             visitor.visit_package (this);
+            base.accept (visitor);
         }
     }
 
@@ -512,9 +539,6 @@ namespace Wixl {
         public string Version { get; set; }
         public string Manufacturer { get; set; }
 
-        public WixPackage package { get; set; }
-        public WixIcon icon { get; set; }
-
         public WixProduct () {
         }
 
@@ -535,12 +559,19 @@ namespace Wixl {
                 case Xml.ElementType.ELEMENT_NODE:
                     switch (child->name) {
                     case "Package":
-                        package = new WixPackage ();
+                        var package = new WixPackage ();
                         package.load (child);
+                        add_child (package);
                         continue;
                     case "Icon":
-                        icon = new WixIcon ();
+                        var icon = new WixIcon ();
                         icon.load (child);
+                        add_child (icon);
+                        continue;
+                    case "Property":
+                        var prop = new WixProperty ();
+                        prop.load (child);
+                        add_child (prop);
                         continue;
                     }
                     break;
@@ -551,15 +582,12 @@ namespace Wixl {
 
         public override void accept (WixElementVisitor visitor) throws GLib.Error {
             visitor.visit_product (this);
-
-            package.accept (visitor);
-            icon.accept (visitor);
+            base.accept (visitor);
         }
     }
 
     class WixRoot: WixElement {
         public string xmlns { get; set; }
-        public WixProduct product { get; set; }
 
         public WixRoot () {
         }
@@ -581,8 +609,9 @@ namespace Wixl {
                 case Xml.ElementType.ELEMENT_NODE:
                     switch (child->name) {
                     case "Product":
-                        product = new WixProduct ();
+                        var product = new WixProduct ();
                         product.load (child);
+                        add_child (product);
                         continue;
                     }
                     break;
@@ -590,10 +619,6 @@ namespace Wixl {
 
                 debug ("unhandled node %s", child->name);
             }
-        }
-
-        public override void accept (WixElementVisitor visitor) throws GLib.Error {
-            product.accept (visitor);
         }
     }
 
@@ -631,6 +656,10 @@ namespace Wixl {
 
         public override void visit_icon (WixIcon icon) throws GLib.Error {
             db.table_icon.add (icon.Id, icon.SourceFile);
+        }
+
+        public override void visit_property (WixProperty prop) throws GLib.Error {
+            db.table_property.add (prop.Id, prop.Value);
         }
     }
 
