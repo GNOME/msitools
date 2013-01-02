@@ -405,7 +405,8 @@ namespace Wixl {
         public abstract void visit_property (WixProperty prop) throws GLib.Error;
     }
 
-    public class WixElement: Object {
+    public abstract class WixElement: Object {
+        public static string name;
         public string Id { get; set; }
         public List<WixElement> children;
 
@@ -415,6 +416,16 @@ namespace Wixl {
 
         public void add_child (WixElement e) {
             children.append (e);
+        }
+
+        public virtual void load (Xml.Node *node) throws Wixl.Error {
+            if (node->name != name)
+                throw new Error.FAILED ("%s: invalid node %s".printf (name, node->name));
+
+            for (var prop = node->properties; prop != null; prop = prop->next) {
+                if (prop->type == Xml.ElementType.ATTRIBUTE_NODE)
+                    set_property (prop->name, get_attribute_content (prop));
+            }
         }
 
         public string to_string () {
@@ -455,17 +466,11 @@ namespace Wixl {
     }
 
     public class WixProperty: WixElement {
-        public string Value { get; set; }
-
-        public void load (Xml.Node *node) throws Wixl.Error {
-            if (node->name != "Property")
-                throw new Error.FAILED ("invalid node");
-
-            for (var prop = node->properties; prop != null; prop = prop->next) {
-                if (prop->type == Xml.ElementType.ATTRIBUTE_NODE)
-                    set_property (prop->name, get_attribute_content (prop));
-            }
+        static construct {
+            name = "Property";
         }
+
+        public string Value { get; set; }
 
         public override void accept (WixElementVisitor visitor) throws GLib.Error {
             visitor.visit_property (this);
@@ -473,6 +478,10 @@ namespace Wixl {
     }
 
     public class WixPackage: WixElement {
+        static construct {
+            name = "Package";
+        }
+
         public string Keywords { get; set; }
         public string InstallerDescription { get; set; }
         public string InstallerComments { get; set; }
@@ -484,14 +493,8 @@ namespace Wixl {
         public string Comments { get; set; }
         public string Description { get; set; }
 
-        public void load (Xml.Node *node) throws Wixl.Error {
-            if (node->name != "Package")
-                throw new Error.FAILED ("invalid node");
-
-            for (var prop = node->properties; prop != null; prop = prop->next) {
-                if (prop->type == Xml.ElementType.ATTRIBUTE_NODE)
-                    set_property (prop->name, get_attribute_content (prop));
-            }
+        public override void load (Xml.Node *node) throws Wixl.Error {
+            base.load (node);
 
             for (var child = node->children; child != null; child = child->next) {
                 switch (child->type) {
@@ -514,17 +517,11 @@ namespace Wixl {
     }
 
     public class WixIcon: WixElement {
-        public string SourceFile { get; set; }
-
-        public void load (Xml.Node *node) throws Wixl.Error {
-            if (node->name != "Icon")
-                throw new Error.FAILED ("invalid node");
-
-            for (var prop = node->properties; prop != null; prop = prop->next) {
-                if (prop->type == Xml.ElementType.ATTRIBUTE_NODE)
-                    set_property (prop->name, get_attribute_content (prop));
-            }
+        static construct {
+            name = "Icon";
         }
+
+        public string SourceFile { get; set; }
 
         public override void accept (WixElementVisitor visitor) throws GLib.Error {
             visitor.visit_icon (this);
@@ -532,6 +529,10 @@ namespace Wixl {
     }
 
     public class WixProduct: WixElement {
+        static construct {
+            name = "Product";
+        }
+
         public string Name { get; set; }
         public string UpgradeCode { get; set; }
         public string Language { get; set; }
@@ -542,14 +543,8 @@ namespace Wixl {
         public WixProduct () {
         }
 
-        public void load (Xml.Node *node) throws Wixl.Error {
-            if (node->name != "Product")
-                throw new Error.FAILED ("invalid node");
-
-            for (var prop = node->properties; prop != null; prop = prop->next) {
-                if (prop->type == Xml.ElementType.ATTRIBUTE_NODE)
-                    set_property (prop->name, get_attribute_content (prop));
-            }
+        public override void load (Xml.Node *node) throws Wixl.Error {
+            base.load (node);
 
             for (var child = node->children; child != null; child = child->next) {
                 switch (child->type) {
@@ -587,16 +582,18 @@ namespace Wixl {
     }
 
     class WixRoot: WixElement {
+        static construct {
+            name = "Wix";
+        }
+
         public string xmlns { get; set; }
 
         public WixRoot () {
         }
 
-        public void load (Xml.Doc *doc) throws Wixl.Error {
+        public void load_xml (Xml.Doc *doc) throws Wixl.Error {
             var root = doc->children;
-
-            if (root->name != "Wix")
-                throw new Error.FAILED ("invalid XML document");
+            load (root);
 
             if (root->ns != null)
                 xmlns = root->ns->href;
@@ -674,7 +671,7 @@ namespace Wixl {
             FileUtils.get_contents (file.get_path (), out data);
             var doc = Xml.Parser.read_memory (data, data.length);
             var root = new WixRoot ();
-            root.load (doc);
+            root.load_xml (doc);
             var builder = new WixBuilder (root);
             var msi = builder.build ();
             msi.build ("foo.msi");
