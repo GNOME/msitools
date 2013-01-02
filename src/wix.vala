@@ -33,7 +33,7 @@ namespace Wixl {
         public string to_string () {
             var type = get_type ();
             var klass = (ObjectClass)type.class_ref ();
-            var str = type.name () + " {";
+            var str = "<" + name;
 
             var i = 0;
             foreach (var p in klass.list_properties ()) {
@@ -41,11 +41,16 @@ namespace Wixl {
                 get_property (p.name, ref value);
                 var valstr = value.holds (typeof (string)) ?
                     (string)value : value.strdup_contents ();
-                str += (i == 0 ? "" : ", ") + p.name + ": " + valstr;
+                str += " " + p.name + "=\"" + valstr + "\"";
                 i += 1;
             }
+            str += ">\n";
 
-            return str + "}";
+            foreach (var child in children) {
+                str += child.to_string () + "\n";
+            }
+
+            return str + "</" + name + ">";
         }
 
         public static void value_to_string (Value src, out Value dest) {
