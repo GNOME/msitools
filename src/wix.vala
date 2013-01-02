@@ -8,7 +8,7 @@ namespace Wixl {
     }
 
     public abstract class WixElement: Object {
-        public static string name;
+        public class string name;
         public string Id { get; set; }
         public List<WixElement> children;
 
