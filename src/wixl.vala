@@ -2,62 +2,137 @@ namespace Wixl {
 
     abstract class MsiTable: Object {
         public string name;
+        public List<Libmsi.Record> records;
 
-        public abstract string create_sql ();
+        public abstract void create (Libmsi.Database db) throws GLib.Error;
+    }
+
+    class MsiTableIcon: MsiTable {
+        construct {
+            name = "Icon";
+        }
+
+        public void add (string filename) throws GLib.Error {
+            var rec = new Libmsi.Record (2);
+
+            if (!rec.set_string (1, filename) ||
+                !rec.load_stream (2, filename))
+                throw new Wixl.Error.FAILED ("failed to add record");
+
+            records.append (rec);
+        }
+
+        public override void create (Libmsi.Database db) throws GLib.Error {
+            var query = new Libmsi.Query (db, "CREATE TABLE `Icon` (`Name` CHAR(72) NOT NULL, `Data` OBJECT NOT NULL PRIMARY KEY `Name`)");
+            query.execute (null);
+            query = new Libmsi.Query (db, "INSERT INTO `Icon` (`Name`, `Data`) VALUES (?, ?)");
+            foreach (var r in records)
+                query.execute (r);
+        }
     }
 
     class MsiTableAdminExecuteSequence: MsiTable {
         construct {
             name = "AdminExecuteSequence";
+            try {
+                add_sequence ("CostInitialize", 800);
+                add_sequence ("FileCost", 900);
+                add_sequence ("CostFinalize", 1000);
+                add_sequence ("InstallValidate", 1400);
+                add_sequence ("InstallInitialize", 1500);
+                add_sequence ("InstallAdminPackage", 3900);
+                add_sequence ("InstallFiles", 4000);
+                add_sequence ("InstallFinalize", 6600);
+            } catch (GLib.Error e) {
+            }
         }
 
-        public override string create_sql () {
-            return """
-CREATE TABLE `AdminExecuteSequence` (`Action` CHAR(72) NOT NULL, `Condition` CHAR(255), `Sequence` INT PRIMARY KEY `Action`)
-INSERT INTO `AdminExecuteSequence` (`Action`, `Sequence`) VALUES ('CostInitialize', 800)
-INSERT INTO `AdminExecuteSequence` (`Action`, `Sequence`) VALUES ('FileCost', 900)
-INSERT INTO `AdminExecuteSequence` (`Action`, `Sequence`) VALUES ('CostFinalize', 1000)
-INSERT INTO `AdminExecuteSequence` (`Action`, `Sequence`) VALUES ('InstallValidate', 1400)
-INSERT INTO `AdminExecuteSequence` (`Action`, `Sequence`) VALUES ('InstallInitialize', 1500)
-INSERT INTO `AdminExecuteSequence` (`Action`, `Sequence`) VALUES ('InstallAdminPackage', 3900)
-INSERT INTO `AdminExecuteSequence` (`Action`, `Sequence`) VALUES ('InstallFiles', 4000)
-INSERT INTO `AdminExecuteSequence` (`Action`, `Sequence`) VALUES ('InstallFinalize', 6600)
-""";
+        public void add_sequence (string action, int sequence) throws GLib.Error {
+            var rec = new Libmsi.Record (2);
+
+            if (!rec.set_string (1, action) ||
+                !rec.set_int (2, sequence))
+                throw new Wixl.Error.FAILED ("failed to add record");
+
+            records.append (rec);
+        }
+
+        public override void create (Libmsi.Database db) throws GLib.Error {
+            var query = new Libmsi.Query (db, "CREATE TABLE `AdminExecuteSequence` (`Action` CHAR(72) NOT NULL, `Condition` CHAR(255), `Sequence` INT PRIMARY KEY `Action`)");
+            query.execute (null);
+
+            query = new Libmsi.Query (db, "INSERT INTO `AdminExecuteSequence` (`Action`, `Sequence`) VALUES (?, ?)");
+            foreach (var r in records)
+                query.execute (r);
         }
     }
 
     class MsiTableAdminUISequence: MsiTable {
         construct {
             name = "AdminUISequence";
+
+            try {
+                add_sequence ("CostInitialize", 800);
+                add_sequence ("FileCost", 900);
+                add_sequence ("CostFinalize", 1000);
+                add_sequence ("ExecuteAction", 1300);
+            } catch (GLib.Error e) {
+            }
         }
 
-        public override string create_sql () {
-            return """
-CREATE TABLE `AdminUISequence` (`Action` CHAR(72) NOT NULL, `Condition` CHAR(255), `Sequence` INT PRIMARY KEY `Action`)
-INSERT INTO `AdminUISequence` (`Action`, `Sequence`) VALUES ('CostInitialize', 800)
-INSERT INTO `AdminUISequence` (`Action`, `Sequence`) VALUES ('FileCost', 900)
-INSERT INTO `AdminUISequence` (`Action`, `Sequence`) VALUES ('CostFinalize', 1000)
-INSERT INTO `AdminUISequence` (`Action`, `Sequence`) VALUES ('ExecuteAction', 1300)
-""";
+        public void add_sequence (string action, int sequence) throws GLib.Error {
+            var rec = new Libmsi.Record (2);
+
+            if (!rec.set_string (1, action) ||
+                !rec.set_int (2, sequence))
+                throw new Wixl.Error.FAILED ("failed to add record");
+
+            records.append (rec);
+        }
+
+        public override void create (Libmsi.Database db) throws GLib.Error {
+            var query = new Libmsi.Query (db, "CREATE TABLE `AdminUISequence` (`Action` CHAR(72) NOT NULL, `Condition` CHAR(255), `Sequence` INT PRIMARY KEY `Action`)");
+            query.execute (null);
+
+            query = new Libmsi.Query (db, "INSERT INTO `AdminUISequence` (`Action`, `Sequence`) VALUES (?, ?)");
+            foreach (var r in records)
+                query.execute (r);
         }
     }
 
     class MsiTableAdvtExecuteSequence: MsiTable {
         construct {
             name = "AdvtExecuteSequence";
+
+            try {
+                add_sequence ("CostInitialize", 800);
+                add_sequence ("CostFinalize", 1000);
+                add_sequence ("InstallValidate", 1400);
+                add_sequence ("InstallInitialize", 1500);
+                add_sequence ("InstallFinalize", 6600);
+                add_sequence ("PublishFeatures", 6300);
+                add_sequence ("PublishProduct", 6400);
+            } catch (GLib.Error e) {
+            }
         }
 
-        public override string create_sql () {
-            return """
-CREATE TABLE `AdvtExecuteSequence` (`Action` CHAR(72) NOT NULL, `Condition` CHAR(255), `Sequence` INT PRIMARY KEY `Action`)
-INSERT INTO `AdvtExecuteSequence` (`Action`, `Sequence`) VALUES ('CostInitialize', 800)
-INSERT INTO `AdvtExecuteSequence` (`Action`, `Sequence`) VALUES ('CostFinalize', 1000)
-INSERT INTO `AdvtExecuteSequence` (`Action`, `Sequence`) VALUES ('InstallValidate', 1400)
-INSERT INTO `AdvtExecuteSequence` (`Action`, `Sequence`) VALUES ('InstallInitialize', 1500)
-INSERT INTO `AdvtExecuteSequence` (`Action`, `Sequence`) VALUES ('InstallFinalize', 6600)
-INSERT INTO `AdvtExecuteSequence` (`Action`, `Sequence`) VALUES ('PublishFeatures', 6300)
-INSERT INTO `AdvtExecuteSequence` (`Action`, `Sequence`) VALUES ('PublishProduct', 6400)
-""";
+        public void add_sequence (string action, int sequence) throws GLib.Error {
+            var rec = new Libmsi.Record (2);
+
+            if (!rec.set_string (1, action) ||
+                !rec.set_int (2, sequence))
+                throw new Wixl.Error.FAILED ("failed to add record");
+
+            records.append (rec);
+        }
+
+        public override void create (Libmsi.Database db) throws GLib.Error {
+            var query = new Libmsi.Query (db, "CREATE TABLE `AdvtExecuteSequence` (`Action` CHAR(72) NOT NULL, `Condition` CHAR(255), `Sequence` INT PRIMARY KEY `Action`)");
+            query.execute (null);
+
+            query = new Libmsi.Query (db, "INSERT INTO `AdvtExecuteSequence` (`Action`, `Sequence`) VALUES (?, ?)");
+            foreach (var r in records)
+                query.execute (r);
         }
     }
 
@@ -66,10 +141,9 @@ INSERT INTO `AdvtExecuteSequence` (`Action`, `Sequence`) VALUES ('PublishProduct
             name = "Error";
         }
 
-        public override string create_sql () {
-            return """
-CREATE TABLE `Error` (`Error` INT NOT NULL, `Message` CHAR(0) LOCALIZABLE PRIMARY KEY `Error`)
-""";
+        public override void create (Libmsi.Database db) throws GLib.Error {
+            var query = new Libmsi.Query (db, "CREATE TABLE `Error` (`Error` INT NOT NULL, `Message` CHAR(0) LOCALIZABLE PRIMARY KEY `Error`)");
+            query.execute (null);
         }
     }
 
@@ -78,52 +152,86 @@ CREATE TABLE `Error` (`Error` INT NOT NULL, `Message` CHAR(0) LOCALIZABLE PRIMAR
             name = "File";
         }
 
-        public override string create_sql () {
-            return """
-CREATE TABLE `File` (`File` CHAR(72) NOT NULL, `Component_` CHAR(72) NOT NULL, `FileName` CHAR(255) NOT NULL LOCALIZABLE, `FileSize` LONG NOT NULL, `Version` CHAR(72), `Language` CHAR(20), `Attributes` INT, `Sequence` LONG NOT NULL PRIMARY KEY `File`)
-""";
+        public override void create (Libmsi.Database db) throws GLib.Error {
+            var query = new Libmsi.Query (db, "CREATE TABLE `File` (`File` CHAR(72) NOT NULL, `Component_` CHAR(72) NOT NULL, `FileName` CHAR(255) NOT NULL LOCALIZABLE, `FileSize` LONG NOT NULL, `Version` CHAR(72), `Language` CHAR(20), `Attributes` INT, `Sequence` LONG NOT NULL PRIMARY KEY `File`)");
+            query.execute (null);
         }
     }
 
     class MsiTableInstallExecuteSequence: MsiTable {
         construct {
             name = "InstallExecuteSequence";
+
+            try {
+                add_sequence ("CostInitialize", 800);
+                add_sequence ("FileCost", 900);
+                add_sequence ("CostFinalize", 1000);
+                add_sequence ("InstallValidate", 1400);
+                add_sequence ("InstallInitialize", 1500);
+                add_sequence ("InstallFinalize", 6600);
+                add_sequence ("PublishFeatures", 6300);
+                add_sequence ("PublishProduct", 6400);
+                add_sequence ("ValidateProductID", 700);
+                add_sequence ("ProcessComponents", 1600);
+                add_sequence ("UnpublishFeatures", 1800);
+                add_sequence ("RegisterUser", 6000);
+                add_sequence ("RegisterProduct", 6100);
+            } catch (GLib.Error e) {
+            }
         }
 
-        public override string create_sql () {
-            return """
-CREATE TABLE `InstallExecuteSequence` (`Action` CHAR(72) NOT NULL, `Condition` CHAR(255), `Sequence` INT PRIMARY KEY `Action`)
-INSERT INTO `InstallExecuteSequence` (`Action`, `Sequence`) VALUES ('CostInitialize', 800)
-INSERT INTO `InstallExecuteSequence` (`Action`, `Sequence`) VALUES ('FileCost', 900)
-INSERT INTO `InstallExecuteSequence` (`Action`, `Sequence`) VALUES ('CostFinalize', 1000)
-INSERT INTO `InstallExecuteSequence` (`Action`, `Sequence`) VALUES ('InstallValidate', 1400)
-INSERT INTO `InstallExecuteSequence` (`Action`, `Sequence`) VALUES ('InstallInitialize', 1500)
-INSERT INTO `InstallExecuteSequence` (`Action`, `Sequence`) VALUES ('InstallFinalize', 6600)
-INSERT INTO `InstallExecuteSequence` (`Action`, `Sequence`) VALUES ('PublishFeatures', 6300)
-INSERT INTO `InstallExecuteSequence` (`Action`, `Sequence`) VALUES ('PublishProduct', 6400)
-INSERT INTO `InstallExecuteSequence` (`Action`, `Sequence`) VALUES ('ValidateProductID', 700)
-INSERT INTO `InstallExecuteSequence` (`Action`, `Sequence`) VALUES ('ProcessComponents', 1600)
-INSERT INTO `InstallExecuteSequence` (`Action`, `Sequence`) VALUES ('UnpublishFeatures', 1800)
-INSERT INTO `InstallExecuteSequence` (`Action`, `Sequence`) VALUES ('RegisterUser', 6000)
-INSERT INTO `InstallExecuteSequence` (`Action`, `Sequence`) VALUES ('RegisterProduct', 6100)
-""";
+        public void add_sequence (string action, int sequence) throws GLib.Error {
+            var rec = new Libmsi.Record (2);
+
+            if (!rec.set_string (1, action) ||
+                !rec.set_int (2, sequence))
+                throw new Wixl.Error.FAILED ("failed to add record");
+
+            records.append (rec);
+        }
+
+        public override void create (Libmsi.Database db) throws GLib.Error {
+            var query = new Libmsi.Query (db, "CREATE TABLE `InstallExecuteSequence` (`Action` CHAR(72) NOT NULL, `Condition` CHAR(255), `Sequence` INT PRIMARY KEY `Action`)");
+            query.execute (null);
+
+            query = new Libmsi.Query (db, "INSERT INTO `InstallExecuteSequence` (`Action`, `Sequence`) VALUES (?, ?)");
+            foreach (var r in records)
+                query.execute (r);
         }
     }
 
     class MsiTableInstallUISequence: MsiTable {
         construct {
             name = "InstallUISequence";
+
+            try {
+                add_sequence ("CostInitialize", 800);
+                add_sequence ("FileCost", 900);
+                add_sequence ("CostFinalize", 1000);
+                add_sequence ("ExecuteAction", 1300);
+                add_sequence ("ValidateProductID", 700);
+            } catch (GLib.Error e) {
+            }
         }
 
-        public override string create_sql () {
-            return """
-CREATE TABLE `InstallUISequence` (`Action` CHAR(72) NOT NULL, `Condition` CHAR(255), `Sequence` INT PRIMARY KEY `Action`)
-INSERT INTO `InstallUISequence` (`Action`, `Sequence`) VALUES ('CostInitialize', 800)
-INSERT INTO `InstallUISequence` (`Action`, `Sequence`) VALUES ('FileCost', 900)
-INSERT INTO `InstallUISequence` (`Action`, `Sequence`) VALUES ('CostFinalize', 1000)
-INSERT INTO `InstallUISequence` (`Action`, `Sequence`) VALUES ('ExecuteAction', 1300)
-INSERT INTO `InstallUISequence` (`Action`, `Sequence`) VALUES ('ValidateProductID', 700)
-""";
+        public void add_sequence (string action, int sequence) throws GLib.Error {
+            var rec = new Libmsi.Record (2);
+
+            if (!rec.set_string (1, action) ||
+                !rec.set_int (2, sequence))
+                throw new Wixl.Error.FAILED ("failed to add record");
+
+            records.append (rec);
+        }
+
+        public override void create (Libmsi.Database db) throws GLib.Error {
+            var query = new Libmsi.Query (db, "CREATE TABLE `InstallUISequence` (`Action` CHAR(72) NOT NULL, `Condition` CHAR(255), `Sequence` INT PRIMARY KEY `Action`)");
+            query.execute (null);
+
+            query = new Libmsi.Query (db, "INSERT INTO `InstallUISequence` (`Action`, `Sequence`) VALUES (?, ?)");
+            foreach (var r in records)
+                query.execute (r);
+
         }
     }
 
@@ -132,10 +240,9 @@ INSERT INTO `InstallUISequence` (`Action`, `Sequence`) VALUES ('ValidateProductI
             name = "Media";
         }
 
-        public override string create_sql () {
-            return """
-CREATE TABLE `Media` (`DiskId` INT NOT NULL, `LastSequence` LONG NOT NULL, `DiskPrompt` CHAR(64) LOCALIZABLE, `Cabinet` CHAR(255), `VolumeLabel` CHAR(32), `Source` CHAR(72) PRIMARY KEY `DiskId`)
-""";
+        public override void create (Libmsi.Database db) throws GLib.Error {
+            var query = new Libmsi.Query (db, "CREATE TABLE `Media` (`DiskId` INT NOT NULL, `LastSequence` LONG NOT NULL, `DiskPrompt` CHAR(64) LOCALIZABLE, `Cabinet` CHAR(255), `VolumeLabel` CHAR(32), `Source` CHAR(72) PRIMARY KEY `DiskId`)");
+            query.execute (null);
         }
     }
 
@@ -144,17 +251,32 @@ CREATE TABLE `Media` (`DiskId` INT NOT NULL, `LastSequence` LONG NOT NULL, `Disk
             name = "Property";
         }
 
-        public override string create_sql () {
-            return """
-CREATE TABLE `Property` (`Property` CHAR(72) NOT NULL, `Value` CHAR(0) NOT NULL LOCALIZABLE PRIMARY KEY `Property`)
-INSERT INTO `Property` (`Property`, `Value`) VALUES ('Manufacturer', 'Acme Ltd.')
-INSERT INTO `Property` (`Property`, `Value`) VALUES ('ProductCode', '{ABCDABCD-86C7-4D14-AEC0-86416A69ABDE}')
-INSERT INTO `Property` (`Property`, `Value`) VALUES ('ProductLanguage', '1033')
-INSERT INTO `Property` (`Property`, `Value`) VALUES ('ProductName', 'Foobar 1.0')
-INSERT INTO `Property` (`Property`, `Value`) VALUES ('ProductVersion', '1.0.0')
-INSERT INTO `Property` (`Property`, `Value`) VALUES ('UpgradeCode', '{ABCDABCD-7349-453F-94F6-BCB5110BA4FD}')
-INSERT INTO `Property` (`Property`, `Value`) VALUES ('WixPdbPath', 'SampleFirst.wixpdb')
-""";
+        public void add (string prop, string value) throws GLib.Error {
+            var rec = new Libmsi.Record (2);
+
+            if (!rec.set_string (1, prop) ||
+                !rec.set_string (2, value))
+                throw new Wixl.Error.FAILED ("failed to add record");
+
+            records.append (rec);
+        }
+
+        public override void create (Libmsi.Database db) throws GLib.Error {
+            var query = new Libmsi.Query (db, "CREATE TABLE `Property` (`Property` CHAR(72) NOT NULL, `Value` CHAR(0) NOT NULL LOCALIZABLE PRIMARY KEY `Property`)");
+            query.execute (null);
+
+            query = new Libmsi.Query (db, "INSERT INTO `Property` (`Property`, `Value`) VALUES (?, ?)");
+            foreach (var r in records)
+                query.execute (r);
+        }
+    }
+
+    class MsiTable_Validation: MsiTable {
+        construct {
+            name = "_Validation";
+        }
+
+        public override void create (Libmsi.Database db) throws GLib.Error {
         }
     }
 
@@ -209,18 +331,11 @@ INSERT INTO `Property` (`Property`, `Value`) VALUES ('WixPdbPath', 'SampleFirst.
 
     }
 
-    class MsiTable_Validation: MsiTable {
-        construct {
-            name = "_Validation";
-        }
-
-        public override string create_sql () {
-            return "";
-        }
-    }
-
     class MsiDatabase: Object {
         public MsiSummaryInfo info;
+        public MsiTableProperty table_property;
+        public MsiTableIcon table_icon;
+
         HashTable<string, MsiTable> tables;
 
         construct {
@@ -242,17 +357,20 @@ INSERT INTO `Property` (`Property`, `Value`) VALUES ('WixPdbPath', 'SampleFirst.
             }
 
             tables = new HashTable<string, MsiTable> (str_hash, str_equal);
+            table_property = new MsiTableProperty ();
+            table_icon = new MsiTableIcon ();
 
             foreach (var t in new MsiTable[] {
                     new MsiTableAdminExecuteSequence (),
                     new MsiTableAdminUISequence (),
-                    new MsiTableAdminExecuteSequence (),
+                    new MsiTableAdvtExecuteSequence (),
                     new MsiTableError (),
                     new MsiTableFile (),
                     new MsiTableInstallExecuteSequence (),
                     new MsiTableInstallUISequence (),
                     new MsiTableMedia (),
-                    new MsiTableProperty (),
+                    table_property,
+                    table_icon,
                     new MsiTable_Validation ()
                 }) {
                 tables.insert (t.name, t);
@@ -271,16 +389,8 @@ INSERT INTO `Property` (`Property`, `Value`) VALUES ('WixPdbPath', 'SampleFirst.
             info.save (db);
 
             var it = HashTableIter <string, MsiTable> (tables);
-            while (it.next (out name, out table)) {
-                var sql = table.create_sql ();
-
-                foreach (var stmt in sql.split ("\n")) {
-                    if (stmt.length == 0)
-                        continue;
-                    var query = new Libmsi.Query (db, stmt);
-                    query.execute (null);
-                }
-            }
+            while (it.next (out name, out table))
+                table.create (db);
 
             db.commit ();
         }
@@ -290,10 +400,13 @@ INSERT INTO `Property` (`Property`, `Value`) VALUES ('WixPdbPath', 'SampleFirst.
 
     public abstract class WixElementVisitor: Object {
         public abstract void visit_product (WixProduct product) throws GLib.Error;
+        public abstract void visit_icon (WixIcon icon) throws GLib.Error;
         public abstract void visit_package (WixPackage package) throws GLib.Error;
     }
 
     public class WixElement: Object {
+        public string Id { get; set; }
+
         static construct {
             Value.register_transform_func (typeof (WixElement), typeof (string), (ValueTransform)WixElement.value_to_string);
         }
@@ -334,7 +447,6 @@ INSERT INTO `Property` (`Property`, `Value`) VALUES ('WixPdbPath', 'SampleFirst.
     }
 
     public class WixPackage: WixElement {
-        public string Id { get; set; }
         public string Keywords { get; set; }
         public string InstallerDescription { get; set; }
         public string InstallerComments { get; set; }
@@ -374,9 +486,26 @@ INSERT INTO `Property` (`Property`, `Value`) VALUES ('WixPdbPath', 'SampleFirst.
         }
     }
 
+    public class WixIcon: WixElement {
+        public string SourceFile { get; set; }
+
+        public void load (Xml.Node *node) throws Wixl.Error {
+            if (node->name != "Icon")
+                throw new Error.FAILED ("invalid node");
+
+            for (var prop = node->properties; prop != null; prop = prop->next) {
+                if (prop->type == Xml.ElementType.ATTRIBUTE_NODE)
+                    set_property (prop->name, get_attribute_content (prop));
+            }
+        }
+
+        public override void accept (WixElementVisitor visitor) throws GLib.Error {
+            visitor.visit_icon (this);
+        }
+    }
+
     public class WixProduct: WixElement {
         public string Name { get; set; }
-        public string Id { get; set; }
         public string UpgradeCode { get; set; }
         public string Language { get; set; }
         public string Codepage { get; set; }
@@ -384,6 +513,7 @@ INSERT INTO `Property` (`Property`, `Value`) VALUES ('WixPdbPath', 'SampleFirst.
         public string Manufacturer { get; set; }
 
         public WixPackage package { get; set; }
+        public WixIcon icon { get; set; }
 
         public WixProduct () {
         }
@@ -408,6 +538,10 @@ INSERT INTO `Property` (`Property`, `Value`) VALUES ('WixPdbPath', 'SampleFirst.
                         package = new WixPackage ();
                         package.load (child);
                         continue;
+                    case "Icon":
+                        icon = new WixIcon ();
+                        icon.load (child);
+                        continue;
                     }
                     break;
                 }
@@ -419,6 +553,7 @@ INSERT INTO `Property` (`Property`, `Value`) VALUES ('WixPdbPath', 'SampleFirst.
             visitor.visit_product (this);
 
             package.accept (visitor);
+            icon.accept (visitor);
         }
     }
 
@@ -479,12 +614,23 @@ INSERT INTO `Property` (`Property`, `Value`) VALUES ('WixPdbPath', 'SampleFirst.
         public override void visit_product (WixProduct product) throws GLib.Error {
             db.info.set_codepage (int.parse (product.Codepage));
             db.info.set_author (product.Manufacturer);
+
+            db.table_property.add ("Manufacturer", product.Manufacturer);
+            db.table_property.add ("ProductLanguage", product.Codepage);
+            db.table_property.add ("ProductCode", product.Id);
+            db.table_property.add ("ProductName", product.Name);
+            db.table_property.add ("ProductVersion", product.Version);
+            db.table_property.add ("UpgradeCode", product.UpgradeCode);
         }
 
         public override void visit_package (WixPackage package) throws GLib.Error {
             db.info.set_keywords (package.Keywords);
             db.info.set_subject (package.Description);
             db.info.set_comments (package.Comments);
+        }
+
+        public override void visit_icon (WixIcon icon) throws GLib.Error {
+            db.table_icon.add (icon.SourceFile);
         }
     }
 
