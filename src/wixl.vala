@@ -12,10 +12,10 @@ namespace Wixl {
             name = "Icon";
         }
 
-        public void add (string filename) throws GLib.Error {
+        public void add (string id, string filename) throws GLib.Error {
             var rec = new Libmsi.Record (2);
 
-            if (!rec.set_string (1, filename) ||
+            if (!rec.set_string (1, id) ||
                 !rec.load_stream (2, filename))
                 throw new Wixl.Error.FAILED ("failed to add record");
 
@@ -630,7 +630,7 @@ namespace Wixl {
         }
 
         public override void visit_icon (WixIcon icon) throws GLib.Error {
-            db.table_icon.add (icon.SourceFile);
+            db.table_icon.add (icon.Id, icon.SourceFile);
         }
     }
 
