@@ -22,9 +22,20 @@ namespace Wixl {
         return (string) udn;
     }
 
+
+    int enum_from_string (Type t, string str) throws GLib.Error {
+        var k = (EnumClass)t.class_ref ();
+        var v = k.get_value_by_nick (str);
+
+        if (v == null)
+            throw new Wixl.Error.FAILED ("Can't convert string to enum");
+        return v.value;
+    }
+
     string add_braces (string str) {
         return "{" + str + "}";
     }
+
     long now () {
         var tv = TimeVal ();
         tv.get_current_time ();

@@ -10,6 +10,7 @@ namespace Wixl {
         public abstract void visit_component (WixComponent comp) throws GLib.Error;
         public abstract void visit_feature (WixFeature feature) throws GLib.Error;
         public abstract void visit_component_ref (WixComponentRef ref) throws GLib.Error;
+        public abstract void visit_remove_folder (WixRemoveFolder rm) throws GLib.Error;
     }
 
     public abstract class WixElement: Object {
@@ -126,6 +127,18 @@ namespace Wixl {
 
         public override void accept (WixElementVisitor visitor) throws GLib.Error {
             visitor.visit_icon (this);
+        }
+    }
+
+    public class WixRemoveFolder: WixElement {
+        static construct {
+            name = "RemoveFolder";
+        }
+
+        public string On { get; set; }
+
+        public override void accept (WixElementVisitor visitor) throws GLib.Error {
+            visitor.visit_remove_folder (this);
         }
     }
 
@@ -265,10 +278,30 @@ namespace Wixl {
 
         public override void load (Xml.Node *node) throws Wixl.Error {
             base.load (node);
+
+            for (var child = node->children; child != null; child = child->next) {
+                switch (child->type) {
+                case Xml.ElementType.COMMENT_NODE:
+                case Xml.ElementType.TEXT_NODE:
+                    continue;
+                case Xml.ElementType.ELEMENT_NODE:
+                    switch (child->name) {
+                    case "RemoveFolder":
+                        var rm = new WixRemoveFolder ();
+                        rm.load (child);
+                        add_child (rm);
+                        continue;
+                    }
+                    break;
+                }
+                debug ("unhandled node %s", child->name);
+            }
         }
 
         public override void accept (WixElementVisitor visitor) throws GLib.Error {
             visitor.visit_component (this);
+
+            base.accept (visitor);
         }
     }
 
