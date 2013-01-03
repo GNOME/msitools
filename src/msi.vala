@@ -339,6 +339,30 @@ namespace Wixl {
         }
     }
 
+    class MsiTableFeatureComponents: MsiTable {
+        construct {
+            name = "FeatureComponents";
+        }
+
+        public void add (string Feature, string Component) throws GLib.Error {
+            var rec = new Libmsi.Record (2);
+            if (!rec.set_string (1, Feature) ||
+                !rec.set_string (2, Component))
+                throw new Wixl.Error.FAILED ("failed to add record");
+
+            records.append (rec);
+        }
+
+        public override void create (Libmsi.Database db) throws GLib.Error {
+            var query = new Libmsi.Query (db, "CREATE TABLE `FeatureComponents` (`Feature_` CHAR(38) NOT NULL, `Component_` CHAR(72) NOT NULL PRIMARY KEY `Feature_`, `Component_`)");
+            query.execute (null);
+
+            query = new Libmsi.Query (db, "INSERT INTO `FeatureComponents` (`Feature_`, `Component_`) VALUES (?, ?)");
+            foreach (var r in records)
+                query.execute (r);
+        }
+    }
+
     class MsiTableFeature: MsiTable {
         construct {
             name = "Feature";
@@ -433,6 +457,7 @@ namespace Wixl {
         public MsiTableDirectory table_directory;
         public MsiTableComponent table_component;
         public MsiTableFeature table_feature;
+        public MsiTableFeatureComponents table_feature_components;
 
         HashTable<string, MsiTable> tables;
 
@@ -461,6 +486,7 @@ namespace Wixl {
             table_directory = new MsiTableDirectory ();
             table_component = new MsiTableComponent ();
             table_feature = new MsiTableFeature ();
+            table_feature_components = new MsiTableFeatureComponents ();
 
             foreach (var t in new MsiTable[] {
                     new MsiTableAdminExecuteSequence (),
@@ -476,6 +502,7 @@ namespace Wixl {
                     table_icon,
                     table_component,
                     table_feature,
+                    table_feature_components,
                     new MsiTable_Validation ()
                 }) {
                 tables.insert (t.name, t);

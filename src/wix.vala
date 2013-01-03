@@ -9,6 +9,7 @@ namespace Wixl {
         public abstract void visit_directory (WixDirectory dir) throws GLib.Error;
         public abstract void visit_component (WixComponent comp) throws GLib.Error;
         public abstract void visit_feature (WixFeature feature) throws GLib.Error;
+        public abstract void visit_component_ref (WixComponentRef ref) throws GLib.Error;
     }
 
     public abstract class WixElement: Object {
@@ -110,23 +111,6 @@ namespace Wixl {
         public string Comments { get; set; }
         public string Description { get; set; }
 
-        public override void load (Xml.Node *node) throws Wixl.Error {
-            base.load (node);
-
-            for (var child = node->children; child != null; child = child->next) {
-                switch (child->type) {
-                case Xml.ElementType.COMMENT_NODE:
-                case Xml.ElementType.TEXT_NODE:
-                    continue;
-                case Xml.ElementType.ELEMENT_NODE:
-                    switch (child->name) {
-                    }
-                    break;
-                }
-                debug ("unhandled node %s", child->name);
-            }
-        }
-
         public override void accept (WixElementVisitor visitor) throws GLib.Error {
             visitor.visit_package (this);
             base.accept (visitor);
@@ -152,8 +136,41 @@ namespace Wixl {
 
         public string Level { get; set; }
 
+        public override void load (Xml.Node *node) throws Wixl.Error {
+            base.load (node);
+
+            for (var child = node->children; child != null; child = child->next) {
+                switch (child->type) {
+                case Xml.ElementType.COMMENT_NODE:
+                case Xml.ElementType.TEXT_NODE:
+                    continue;
+                case Xml.ElementType.ELEMENT_NODE:
+                    switch (child->name) {
+                    case "ComponentRef":
+                        var ref = new WixComponentRef ();
+                        ref.load (child);
+                        add_child (@ref);
+                        continue;
+                    }
+                    break;
+                }
+                debug ("unhandled node %s", child->name);
+            }
+        }
+
         public override void accept (WixElementVisitor visitor) throws GLib.Error {
             visitor.visit_feature (this);
+            base.accept (visitor);
+        }
+    }
+
+    public class WixComponentRef: WixElement {
+        static construct {
+            name = "ComponentRef";
+        }
+
+        public override void accept (WixElementVisitor visitor) throws GLib.Error {
+            visitor.visit_component_ref (this);
         }
     }
 

@@ -67,6 +67,14 @@ namespace Wixl {
         public override void visit_feature (WixFeature feature) throws GLib.Error {
             db.table_feature.add (feature.Id, 2, int.parse (feature.Level), 0);
         }
+
+        public override void visit_component_ref (WixComponentRef ref) throws GLib.Error {
+            if (ref.parent is WixFeature) {
+                var parent = ref.parent as WixFeature;
+                db.table_feature_components.add (parent.Id, @ref.Id);
+            } else
+                warning ("unhandled parent type %s", @ref.parent.name);
+        }
     }
 
 } // Wixl
