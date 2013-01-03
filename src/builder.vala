@@ -63,6 +63,10 @@ namespace Wixl {
             } else
                 warning ("unhandled parent type %s", comp.parent.name);
         }
+
+        public override void visit_feature (WixFeature feature) throws GLib.Error {
+            db.table_feature.add (feature.Id, 2, int.parse (feature.Level), 0);
+        }
     }
 
 } // Wixl

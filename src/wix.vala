@@ -8,6 +8,7 @@ namespace Wixl {
         public abstract void visit_media (WixMedia media) throws GLib.Error;
         public abstract void visit_directory (WixDirectory dir) throws GLib.Error;
         public abstract void visit_component (WixComponent comp) throws GLib.Error;
+        public abstract void visit_feature (WixFeature feature) throws GLib.Error;
     }
 
     public abstract class WixElement: Object {
@@ -144,6 +145,18 @@ namespace Wixl {
         }
     }
 
+    public class WixFeature: WixElement {
+        static construct {
+            name = "Feature";
+        }
+
+        public string Level { get; set; }
+
+        public override void accept (WixElementVisitor visitor) throws GLib.Error {
+            visitor.visit_feature (this);
+        }
+    }
+
     public class WixProduct: WixElement {
         static construct {
             name = "Product";
@@ -193,6 +206,11 @@ namespace Wixl {
                         var directory = new WixDirectory ();
                         directory.load (child);
                         add_child (directory);
+                        continue;
+                    case "Feature":
+                        var feature = new WixFeature ();
+                        feature.load (child);
+                        add_child (feature);
                         continue;
                     }
                     break;
