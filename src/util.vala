@@ -67,4 +67,22 @@ namespace Wixl {
         return indented;
     }
 
+    public string generate_id (string prefix, uint n, ...) {
+        var l = va_list ();
+        var args = new string[n];
+
+        for (var i = 0; n > 0; n--) {
+            string? val = l.arg ();
+            if (val == null)
+                continue;
+            args[i] = val; // FIXME: misc vala bug when +=
+            i += 1;
+        }
+        var data = string.joinv ("|", args);
+        var hash = Checksum.compute_for_string (ChecksumType.MD5, data);
+        var str = prefix + hash[0:32].up ();
+
+        return str;
+    }
+
 } // Wixl

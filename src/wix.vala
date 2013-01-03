@@ -11,6 +11,7 @@ namespace Wixl {
         public abstract void visit_feature (WixFeature feature) throws GLib.Error;
         public abstract void visit_component_ref (WixComponentRef ref) throws GLib.Error;
         public abstract void visit_remove_folder (WixRemoveFolder rm) throws GLib.Error;
+        public abstract void visit_registry_value (WixRegistryValue reg) throws GLib.Error;
     }
 
     public abstract class WixElement: Object {
@@ -127,6 +128,23 @@ namespace Wixl {
 
         public override void accept (WixElementVisitor visitor) throws GLib.Error {
             visitor.visit_icon (this);
+        }
+    }
+
+    public class WixRegistryValue: WixElement {
+        static construct {
+            name = "RegistryValue";
+        }
+
+        public string Root { get; set; }
+        public string Key { get; set; }
+        public string Type { get; set; }
+        public string Value { get; set; }
+        public string KeyPath { get; set; }
+        public string Name { get; set; }
+
+        public override void accept (WixElementVisitor visitor) throws GLib.Error {
+            visitor.visit_registry_value (this);
         }
     }
 
@@ -290,6 +308,11 @@ namespace Wixl {
                         var rm = new WixRemoveFolder ();
                         rm.load (child);
                         add_child (rm);
+                        continue;
+                    case "RegistryValue":
+                        var reg = new WixRegistryValue ();
+                        reg.load (child);
+                        add_child (reg);
                         continue;
                     }
                     break;

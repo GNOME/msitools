@@ -363,6 +363,32 @@ namespace Wixl {
         }
     }
 
+    class MsiTableRegistry: MsiTable {
+        construct {
+            name = "Registry";
+        }
+
+        public void add (string Registry, int Root, string Key, string Component) throws GLib.Error {
+            var rec = new Libmsi.Record (4);
+            if (!rec.set_string (1, Registry) ||
+                !rec.set_int (2, Root) ||
+                !rec.set_string (3, Key) ||
+                !rec.set_string (4, Component))
+                throw new Wixl.Error.FAILED ("failed to add record");
+
+            records.append (rec);
+        }
+
+        public override void create (Libmsi.Database db) throws GLib.Error {
+            var query = new Libmsi.Query (db, "CREATE TABLE `Registry` (`Registry` CHAR(72) NOT NULL, `Root` INT NOT NULL, `Key` CHAR(255) NOT NULL LOCALIZABLE, `Name` CHAR(255) LOCALIZABLE, `Value` CHAR(0) LOCALIZABLE, `Component_` CHAR(72) NOT NULL PRIMARY KEY `Registry`)");
+            query.execute (null);
+
+            query = new Libmsi.Query (db, "INSERT INTO `Registry` (`Registry`, `Root`, `Key`, `Component_`) VALUES (?, ?, ?, ?)");
+            foreach (var r in records)
+                query.execute (r);
+        }
+    }
+
     class MsiTableRemoveFile: MsiTable {
         construct {
             name = "RemoveFile";
@@ -485,6 +511,7 @@ namespace Wixl {
         public MsiTableFeature table_feature;
         public MsiTableFeatureComponents table_feature_components;
         public MsiTableRemoveFile table_remove_file;
+        public MsiTableRegistry table_registry;
 
         HashTable<string, MsiTable> tables;
 
@@ -515,6 +542,7 @@ namespace Wixl {
             table_feature = new MsiTableFeature ();
             table_feature_components = new MsiTableFeatureComponents ();
             table_remove_file = new MsiTableRemoveFile ();
+            table_registry = new MsiTableRegistry ();
 
             foreach (var t in new MsiTable[] {
                     new MsiTableAdminExecuteSequence (),
@@ -532,6 +560,7 @@ namespace Wixl {
                     table_feature,
                     table_feature_components,
                     table_remove_file,
+                    table_registry,
                     new MsiTable_Validation ()
                 }) {
                 tables.insert (t.name, t);

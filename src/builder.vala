@@ -90,6 +90,41 @@ namespace Wixl {
             db.table_remove_file.add (rm.Id, comp.Id, dir.Id, on);
         }
 
+        enum RegistryValueType {
+            STRING,
+            INTEGER,
+            BINARY,
+            EXPANDABLE,
+            MULTI_STRING
+        }
+
+        enum RegistryRoot {
+            HKCR,
+            HKCU,
+            HKLM,
+            HKU,
+            HKMU
+        }
+
+        public override void visit_registry_value (WixRegistryValue reg) throws GLib.Error {
+            var comp = reg.parent as WixComponent;
+            var value = reg.Value;
+            var t = enum_from_string (typeof (RegistryValueType), reg.Type);
+            var r = enum_from_string (typeof (RegistryRoot), reg.Root.down ());
+            var id = generate_id ("reg", 4,
+                                  comp.Id,
+                                  reg.Root,
+                                  reg.Key != null ? reg.Key.down () : null,
+                                  reg.Name != null ? reg.Name.down () : null);
+
+            switch (t) {
+            case RegistryValueType.STRING:
+                value = value[0] == '#' ? "#" + value : value;
+                break;
+            }
+
+            db.table_registry.add (id, r, reg.Key, comp.Id);
+        }
     }
 
 } // Wixl
