@@ -240,9 +240,26 @@ namespace Wixl {
             name = "Media";
         }
 
+        public void add (string DiskId, string LastSequence, string DiskPrompt, string Cabinet) throws GLib.Error {
+            var rec = new Libmsi.Record (4);
+
+            if (!rec.set_int (1, int.parse (DiskId)) ||
+                !rec.set_int (2, int.parse (LastSequence)) ||
+                !rec.set_string (3, DiskPrompt) ||
+                !rec.set_string (4, Cabinet))
+                throw new Wixl.Error.FAILED ("failed to add record");
+
+            records.append (rec);
+
+        }
+
         public override void create (Libmsi.Database db) throws GLib.Error {
             var query = new Libmsi.Query (db, "CREATE TABLE `Media` (`DiskId` INT NOT NULL, `LastSequence` LONG NOT NULL, `DiskPrompt` CHAR(64) LOCALIZABLE, `Cabinet` CHAR(255), `VolumeLabel` CHAR(32), `Source` CHAR(72) PRIMARY KEY `DiskId`)");
             query.execute (null);
+
+            query = new Libmsi.Query (db, "INSERT INTO `Media` (`DiskId`, `LastSequence`, `DiskPrompt`, `Cabinet`) VALUES (?, ?, ?, ?)");
+            foreach (var r in records)
+                query.execute (r);
         }
     }
 
@@ -335,6 +352,7 @@ namespace Wixl {
         public MsiSummaryInfo info;
         public MsiTableProperty table_property;
         public MsiTableIcon table_icon;
+        public MsiTableMedia table_media;
 
         HashTable<string, MsiTable> tables;
 
@@ -359,6 +377,7 @@ namespace Wixl {
             tables = new HashTable<string, MsiTable> (str_hash, str_equal);
             table_property = new MsiTableProperty ();
             table_icon = new MsiTableIcon ();
+            table_media = new MsiTableMedia ();
 
             foreach (var t in new MsiTable[] {
                     new MsiTableAdminExecuteSequence (),
@@ -368,7 +387,7 @@ namespace Wixl {
                     new MsiTableFile (),
                     new MsiTableInstallExecuteSequence (),
                     new MsiTableInstallUISequence (),
-                    new MsiTableMedia (),
+                    table_media,
                     table_property,
                     table_icon,
                     new MsiTable_Validation ()

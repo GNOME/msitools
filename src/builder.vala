@@ -39,6 +39,10 @@ namespace Wixl {
         public override void visit_property (WixProperty prop) throws GLib.Error {
             db.table_property.add (prop.Id, prop.Value);
         }
+
+        public override void visit_media (WixMedia media) throws GLib.Error {
+            db.table_media.add (media.Id, media.EmbedCab, media.DiskPrompt, "#" + media.Cabinet);
+        }
     }
 
 } // Wixl

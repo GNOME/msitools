@@ -5,6 +5,7 @@ namespace Wixl {
         public abstract void visit_icon (WixIcon icon) throws GLib.Error;
         public abstract void visit_package (WixPackage package) throws GLib.Error;
         public abstract void visit_property (WixProperty prop) throws GLib.Error;
+        public abstract void visit_media (WixMedia media) throws GLib.Error;
     }
 
     public abstract class WixElement: Object {
@@ -175,6 +176,11 @@ namespace Wixl {
                         prop.load (child);
                         add_child (prop);
                         continue;
+                    case "Media":
+                        var media = new WixMedia ();
+                        media.load (child);
+                        add_child (media);
+                        continue;
                     }
                     break;
                 }
@@ -185,6 +191,20 @@ namespace Wixl {
         public override void accept (WixElementVisitor visitor) throws GLib.Error {
             visitor.visit_product (this);
             base.accept (visitor);
+        }
+    }
+
+    public class WixMedia: WixElement {
+        static construct {
+            name = "Media";
+        }
+
+        public string Cabinet { get; set; }
+        public string EmbedCab { get; set; }
+        public string DiskPrompt { get; set; }
+
+        public override void accept (WixElementVisitor visitor) throws GLib.Error {
+            visitor.visit_media (this);
         }
     }
 
