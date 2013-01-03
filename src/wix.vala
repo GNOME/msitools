@@ -7,6 +7,7 @@ namespace Wixl {
         public abstract void visit_property (WixProperty prop) throws GLib.Error;
         public abstract void visit_media (WixMedia media) throws GLib.Error;
         public abstract void visit_directory (WixDirectory dir) throws GLib.Error;
+        public abstract void visit_component (WixComponent comp) throws GLib.Error;
     }
 
     public abstract class WixElement: Object {
@@ -220,6 +221,22 @@ namespace Wixl {
         }
     }
 
+    public class WixComponent: WixElement {
+        static construct {
+            name = "Component";
+        }
+
+        public string Guid { get; set; }
+
+        public override void load (Xml.Node *node) throws Wixl.Error {
+            base.load (node);
+        }
+
+        public override void accept (WixElementVisitor visitor) throws GLib.Error {
+            visitor.visit_component (this);
+        }
+    }
+
     public class WixDirectory: WixElement {
         static construct {
             name = "Directory";
@@ -241,6 +258,11 @@ namespace Wixl {
                         var directory = new WixDirectory ();
                         directory.load (child);
                         add_child (directory);
+                        continue;
+                    case "Component":
+                        var component = new WixComponent ();
+                        component.load (child);
+                        add_child (component);
                         continue;
                     }
                     break;

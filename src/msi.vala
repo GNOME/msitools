@@ -313,6 +313,32 @@ namespace Wixl {
         }
     }
 
+    class MsiTableComponent: MsiTable {
+        construct {
+            name = "Component";
+        }
+
+        public void add (string Component, string ComponentId, string Directory, int Attributes) throws GLib.Error {
+            var rec = new Libmsi.Record (4);
+            if (!rec.set_string (1, Component) ||
+                !rec.set_string (2, ComponentId) ||
+                !rec.set_string (3, Directory) ||
+                !rec.set_int (4, Attributes))
+                throw new Wixl.Error.FAILED ("failed to add record");
+
+            records.append (rec);
+        }
+
+        public override void create (Libmsi.Database db) throws GLib.Error {
+            var query = new Libmsi.Query (db, "CREATE TABLE `Component` (`Component` CHAR(72) NOT NULL, `ComponentId` CHAR(38), `Directory_` CHAR(72) NOT NULL, `Attributes` INT NOT NULL, `Condition` CHAR(255), `KeyPath` CHAR(72) PRIMARY KEY `Component`)");
+            query.execute (null);
+
+            query = new Libmsi.Query (db, "INSERT INTO `Component` (`Component`, `ComponentId`, `Directory_`, `Attributes`) VALUES (?, ?, ?, ?)");
+            foreach (var r in records)
+                query.execute (r);
+        }
+    }
+
     class MsiTable_Validation: MsiTable {
         construct {
             name = "_Validation";
@@ -379,6 +405,7 @@ namespace Wixl {
         public MsiTableIcon table_icon;
         public MsiTableMedia table_media;
         public MsiTableDirectory table_directory;
+        public MsiTableComponent table_component;
 
         HashTable<string, MsiTable> tables;
 
@@ -405,6 +432,7 @@ namespace Wixl {
             table_icon = new MsiTableIcon ();
             table_media = new MsiTableMedia ();
             table_directory = new MsiTableDirectory ();
+            table_component = new MsiTableComponent ();
 
             foreach (var t in new MsiTable[] {
                     new MsiTableAdminExecuteSequence (),
@@ -418,6 +446,7 @@ namespace Wixl {
                     table_media,
                     table_property,
                     table_icon,
+                    table_component,
                     new MsiTable_Validation ()
                 }) {
                 tables.insert (t.name, t);

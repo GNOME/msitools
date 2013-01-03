@@ -55,6 +55,14 @@ namespace Wixl {
             } else
                 warning ("unhandled parent type %s", dir.parent.name);
         }
+
+        public override void visit_component (WixComponent comp) throws GLib.Error {
+            if (comp.parent.get_type () == typeof (WixDirectory)) {
+                var parent = comp.parent as WixDirectory;
+                db.table_component.add (comp.Id, add_braces (comp.Guid), parent.Id, 0);
+            } else
+                warning ("unhandled parent type %s", comp.parent.name);
+        }
     }
 
 } // Wixl
