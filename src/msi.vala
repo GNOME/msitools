@@ -288,6 +288,31 @@ namespace Wixl {
         }
     }
 
+    class MsiTableDirectory: MsiTable {
+        construct {
+            name = "Directory";
+        }
+
+        public void add (string Directory, string? Parent, string DefaultDir) throws GLib.Error {
+            var rec = new Libmsi.Record (3);
+            if (!rec.set_string (1, Directory) ||
+                !rec.set_string (2, Parent) ||
+                !rec.set_string (3, DefaultDir))
+                throw new Wixl.Error.FAILED ("failed to add record");
+
+            records.append (rec);
+        }
+
+        public override void create (Libmsi.Database db) throws GLib.Error {
+            var query = new Libmsi.Query (db, "CREATE TABLE `Directory` (`Directory` CHAR(72) NOT NULL, `Directory_Parent` CHAR(72), `DefaultDir` CHAR(255) NOT NULL LOCALIZABLE PRIMARY KEY `Directory`)");
+            query.execute (null);
+
+            query = new Libmsi.Query (db, "INSERT INTO `Directory` (`Directory`, `Directory_Parent`, `DefaultDir`) VALUES (?, ?, ?)");
+            foreach (var r in records)
+                query.execute (r);
+        }
+    }
+
     class MsiTable_Validation: MsiTable {
         construct {
             name = "_Validation";
@@ -353,6 +378,7 @@ namespace Wixl {
         public MsiTableProperty table_property;
         public MsiTableIcon table_icon;
         public MsiTableMedia table_media;
+        public MsiTableDirectory table_directory;
 
         HashTable<string, MsiTable> tables;
 
@@ -378,6 +404,7 @@ namespace Wixl {
             table_property = new MsiTableProperty ();
             table_icon = new MsiTableIcon ();
             table_media = new MsiTableMedia ();
+            table_directory = new MsiTableDirectory ();
 
             foreach (var t in new MsiTable[] {
                     new MsiTableAdminExecuteSequence (),
@@ -387,6 +414,7 @@ namespace Wixl {
                     new MsiTableFile (),
                     new MsiTableInstallExecuteSequence (),
                     new MsiTableInstallUISequence (),
+                    table_directory,
                     table_media,
                     table_property,
                     table_icon,

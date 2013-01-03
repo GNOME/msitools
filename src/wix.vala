@@ -6,11 +6,13 @@ namespace Wixl {
         public abstract void visit_package (WixPackage package) throws GLib.Error;
         public abstract void visit_property (WixProperty prop) throws GLib.Error;
         public abstract void visit_media (WixMedia media) throws GLib.Error;
+        public abstract void visit_directory (WixDirectory dir) throws GLib.Error;
     }
 
     public abstract class WixElement: Object {
         public class string name;
         public string Id { get; set; }
+        public WixElement parent;
         public List<WixElement> children;
 
         static construct {
@@ -18,6 +20,7 @@ namespace Wixl {
         }
 
         public void add_child (WixElement e) {
+            e.parent = this;
             children.append (e);
         }
 
@@ -45,13 +48,17 @@ namespace Wixl {
                 str += " " + p.name + "=\"" + valstr + "\"";
                 i += 1;
             }
-            str += ">\n";
 
-            foreach (var child in children) {
-                str += child.to_string () + "\n";
-            }
+            if (children.length () != 0) {
+                str += ">\n";
 
-            return str + "</" + name + ">";
+                foreach (var child in children) {
+                    str += child.to_string () + "\n";
+                }
+
+                return str + "</" + name + ">";
+            } else
+                return str + "/>";
         }
 
         public static void value_to_string (Value src, out Value dest) {
@@ -181,6 +188,11 @@ namespace Wixl {
                         media.load (child);
                         add_child (media);
                         continue;
+                    case "Directory":
+                        var directory = new WixDirectory ();
+                        directory.load (child);
+                        add_child (directory);
+                        continue;
                     }
                     break;
                 }
@@ -205,6 +217,42 @@ namespace Wixl {
 
         public override void accept (WixElementVisitor visitor) throws GLib.Error {
             visitor.visit_media (this);
+        }
+    }
+
+    public class WixDirectory: WixElement {
+        static construct {
+            name = "Directory";
+        }
+
+        public string Name { get; set; }
+
+        public override void load (Xml.Node *node) throws Wixl.Error {
+            base.load (node);
+
+            for (var child = node->children; child != null; child = child->next) {
+                switch (child->type) {
+                case Xml.ElementType.COMMENT_NODE:
+                case Xml.ElementType.TEXT_NODE:
+                    continue;
+                case Xml.ElementType.ELEMENT_NODE:
+                    switch (child->name) {
+                    case "Directory":
+                        var directory = new WixDirectory ();
+                        directory.load (child);
+                        add_child (directory);
+                        continue;
+                    }
+                    break;
+                }
+                debug ("unhandled node %s", child->name);
+            }
+        }
+
+        public override void accept (WixElementVisitor visitor) throws GLib.Error {
+            visitor.visit_directory (this);
+
+            base.accept (visitor);
         }
     }
 

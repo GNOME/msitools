@@ -43,6 +43,18 @@ namespace Wixl {
         public override void visit_media (WixMedia media) throws GLib.Error {
             db.table_media.add (media.Id, media.EmbedCab, media.DiskPrompt, "#" + media.Cabinet);
         }
+
+        public override void visit_directory (WixDirectory dir) throws GLib.Error {
+            if (dir.parent.get_type () == typeof (WixProduct)) {
+                if (dir.Id != "TARGETDIR")
+                    throw new Wixl.Error.FAILED ("Invalid root directory");
+                db.table_directory.add (dir.Id, null, dir.Name);
+            } else if (dir.parent.get_type () == typeof (WixDirectory)) {
+                var parent = dir.parent as WixDirectory;
+                db.table_directory.add (dir.Id, parent.Id, dir.Name);
+            } else
+                warning ("unhandled parent type %s", dir.parent.name);
+        }
     }
 
 } // Wixl
