@@ -127,7 +127,8 @@ namespace Wixl {
         public override void visit_component (WixComponent comp) throws GLib.Error {
             if (comp.parent.get_type () == typeof (WixDirectory)) {
                 var parent = comp.parent as WixDirectory;
-                db.table_component.add (comp.Id, add_braces (comp.Guid), parent.Id, 0);
+                db.table_component.add (comp.Id, add_braces (comp.Guid), parent.Id, 0,
+                                        comp.key != null ? comp.key.Id : null);
             } else
                 warning ("unhandled parent type %s", comp.parent.name);
         }
@@ -158,6 +159,15 @@ namespace Wixl {
             db.table_remove_file.add (rm.Id, comp.Id, dir.Id, on);
         }
 
+        void visit_key_element (WixKeyElement key) throws GLib.Error {
+            var component = key.parent as WixComponent;
+
+            if (!parse_yesno (key.KeyPath))
+                return;
+
+            component.key = key;
+        }
+
         enum RegistryValueType {
             STRING,
             INTEGER,
@@ -179,11 +189,13 @@ namespace Wixl {
             var value = reg.Value;
             var t = enum_from_string (typeof (RegistryValueType), reg.Type);
             var r = enum_from_string (typeof (RegistryRoot), reg.Root.down ());
-            var id = generate_id ("reg", 4,
-                                  comp.Id,
-                                  reg.Root,
-                                  reg.Key != null ? reg.Key.down () : null,
-                                  reg.Name != null ? reg.Name.down () : null);
+            if (reg.Id == null) {
+                reg.Id = generate_id ("reg", 4,
+                                      comp.Id,
+                                      reg.Root,
+                                      reg.Key != null ? reg.Key.down () : null,
+                                      reg.Name != null ? reg.Name.down () : null);
+            }
 
             switch (t) {
             case RegistryValueType.STRING:
@@ -191,7 +203,9 @@ namespace Wixl {
                 break;
             }
 
-            db.table_registry.add (id, r, reg.Key, comp.Id);
+            db.table_registry.add (reg.Id, r, reg.Key, comp.Id);
+
+            visit_key_element (reg);
         }
     }
 

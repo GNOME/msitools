@@ -85,4 +85,7 @@ namespace Wixl {
         return str;
     }
 
+    bool parse_yesno (string str) {
+        return (str[0] == 'Y' || str[0] == 'y');
+    }
 } // Wixl

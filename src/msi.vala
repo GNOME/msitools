@@ -262,12 +262,13 @@ namespace Wixl {
             name = "Component";
         }
 
-        public void add (string Component, string ComponentId, string Directory, int Attributes) throws GLib.Error {
-            var rec = new Libmsi.Record (4);
+        public void add (string Component, string ComponentId, string Directory, int Attributes, string? KeyPath = null) throws GLib.Error {
+            var rec = new Libmsi.Record (5);
             if (!rec.set_string (1, Component) ||
                 !rec.set_string (2, ComponentId) ||
                 !rec.set_string (3, Directory) ||
-                !rec.set_int (4, Attributes))
+                !rec.set_int (4, Attributes) ||
+                !rec.set_string (5, KeyPath))
                 throw new Wixl.Error.FAILED ("failed to add record");
 
             records.append (rec);
@@ -277,7 +278,7 @@ namespace Wixl {
             var query = new Libmsi.Query (db, "CREATE TABLE `Component` (`Component` CHAR(72) NOT NULL, `ComponentId` CHAR(38), `Directory_` CHAR(72) NOT NULL, `Attributes` INT NOT NULL, `Condition` CHAR(255), `KeyPath` CHAR(72) PRIMARY KEY `Component`)");
             query.execute (null);
 
-            query = new Libmsi.Query (db, "INSERT INTO `Component` (`Component`, `ComponentId`, `Directory_`, `Attributes`) VALUES (?, ?, ?, ?)");
+            query = new Libmsi.Query (db, "INSERT INTO `Component` (`Component`, `ComponentId`, `Directory_`, `Attributes`, `KeyPath`) VALUES (?, ?, ?, ?, ?)");
             foreach (var r in records)
                 query.execute (r);
         }
