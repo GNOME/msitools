@@ -124,10 +124,32 @@ namespace Wixl {
                 warning ("unhandled parent type %s", dir.parent.name);
         }
 
+        [Flags]
+        enum ComponentAttribute {
+            LOCAL_ONLY = 0,
+            SOURCE_ONLY,
+            OPTIONAL,
+            REGISTRY_KEY_PATH,
+            SHARED_DLL_REF_COUNT,
+            PERMANENT,
+            ODBC_DATA_SOURCE,
+            TRANSITIVE,
+            NEVER_OVERWRITE,
+            64BIT,
+            REGISTRY_REFLECTION,
+            UNINSTALL_ON_SUPERSEDENCE,
+            SHARED,
+        }
+
         public override void visit_component (WixComponent comp) throws GLib.Error {
+            var attr = 0;
+
+            if (comp.key is WixRegistryValue)
+                attr |= ComponentAttribute.REGISTRY_KEY_PATH;
+
             if (comp.parent.get_type () == typeof (WixDirectory)) {
                 var parent = comp.parent as WixDirectory;
-                db.table_component.add (comp.Id, add_braces (comp.Guid), parent.Id, 0,
+                db.table_component.add (comp.Id, add_braces (comp.Guid), parent.Id, attr,
                                         comp.key != null ? comp.key.Id : null);
             } else
                 warning ("unhandled parent type %s", comp.parent.name);
