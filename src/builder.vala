@@ -8,9 +8,77 @@ namespace Wixl {
             this.root = root;
         }
 
+        delegate void AddSequence (string action, int sequence) throws GLib.Error;
+
+        void sequence_actions () throws GLib.Error {
+            AddSequence add = (action, sequence) => {
+                db.table_admin_execute_sequence.add (action, sequence);
+            };
+            add ("CostInitialize", 800);
+            add ("FileCost", 900);
+            add ("CostFinalize", 1000);
+            add ("InstallValidate", 1400);
+            add ("InstallInitialize", 1500);
+            add ("InstallAdminPackage", 3900);
+            add ("InstallFiles", 4000);
+            add ("InstallFinalize", 6600);
+
+            add = (action, sequence) => {
+                db.table_admin_ui_sequence.add (action, sequence);
+            };
+            add ("CostInitialize", 800);
+            add ("FileCost", 900);
+            add ("CostFinalize", 1000);
+            add ("ExecuteAction", 1300);
+
+            add = (action, sequence) => {
+                db.table_advt_execute_sequence.add (action, sequence);
+            };
+            add ("CostInitialize", 800);
+            add ("CostFinalize", 1000);
+            add ("InstallValidate", 1400);
+            add ("InstallInitialize", 1500);
+            add ("PublishFeatures", 6300);
+            add ("PublishProduct", 6400);
+            add ("InstallFinalize", 6600);
+
+            add = (action, sequence) => {
+                db.table_install_execute_sequence.add (action, sequence);
+            };
+            add ("ValidateProductID", 700);
+            add ("CostInitialize", 800);
+            add ("FileCost", 900);
+            add ("CostFinalize", 1000);
+            add ("InstallValidate", 1400);
+            add ("InstallInitialize", 1500);
+            add ("ProcessComponents", 1600);
+            add ("UnpublishFeatures", 1800);
+            if (db.table_registry.records.length () > 0) {
+                add ("RemoveRegistryValues", 2600);
+                add ("WriteRegistryValues", 2600);
+            }
+            if (db.table_remove_file.records.length () > 0)
+                add ("RemoveFiles", 3500);
+            add ("RegisterUser", 6000);
+            add ("RegisterProduct", 6100);
+            add ("PublishFeatures", 6300);
+            add ("PublishProduct", 6400);
+            add ("InstallFinalize", 6600);
+
+            add = (action, sequence) => {
+                db.table_install_ui_sequence.add (action, sequence);
+            };
+            add ("ValidateProductID", 700);
+            add ("CostInitialize", 800);
+            add ("FileCost", 900);
+            add ("CostFinalize", 1000);
+            add ("ExecuteAction", 1300);
+        }
+
         public MsiDatabase build () throws GLib.Error {
             db = new MsiDatabase ();
             root.accept (this);
+            sequence_actions ();
             return db;
         }
 

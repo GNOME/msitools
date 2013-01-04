@@ -34,17 +34,6 @@ namespace Wixl {
     class MsiTableAdminExecuteSequence: MsiTable {
         construct {
             name = "AdminExecuteSequence";
-            try {
-                add ("CostInitialize", 800);
-                add ("FileCost", 900);
-                add ("CostFinalize", 1000);
-                add ("InstallValidate", 1400);
-                add ("InstallInitialize", 1500);
-                add ("InstallAdminPackage", 3900);
-                add ("InstallFiles", 4000);
-                add ("InstallFinalize", 6600);
-            } catch (GLib.Error e) {
-            }
         }
 
         public void add (string action, int sequence) throws GLib.Error {
@@ -70,14 +59,6 @@ namespace Wixl {
     class MsiTableAdminUISequence: MsiTable {
         construct {
             name = "AdminUISequence";
-
-            try {
-                add ("CostInitialize", 800);
-                add ("FileCost", 900);
-                add ("CostFinalize", 1000);
-                add ("ExecuteAction", 1300);
-            } catch (GLib.Error e) {
-            }
         }
 
         public void add (string action, int sequence) throws GLib.Error {
@@ -103,17 +84,6 @@ namespace Wixl {
     class MsiTableAdvtExecuteSequence: MsiTable {
         construct {
             name = "AdvtExecuteSequence";
-
-            try {
-                add ("CostInitialize", 800);
-                add ("CostFinalize", 1000);
-                add ("InstallValidate", 1400);
-                add ("InstallInitialize", 1500);
-                add ("InstallFinalize", 6600);
-                add ("PublishFeatures", 6300);
-                add ("PublishProduct", 6400);
-            } catch (GLib.Error e) {
-            }
         }
 
         public void add (string action, int sequence) throws GLib.Error {
@@ -161,23 +131,6 @@ namespace Wixl {
     class MsiTableInstallExecuteSequence: MsiTable {
         construct {
             name = "InstallExecuteSequence";
-
-            try {
-                add ("CostInitialize", 800);
-                add ("FileCost", 900);
-                add ("CostFinalize", 1000);
-                add ("InstallValidate", 1400);
-                add ("InstallInitialize", 1500);
-                add ("InstallFinalize", 6600);
-                add ("PublishFeatures", 6300);
-                add ("PublishProduct", 6400);
-                add ("ValidateProductID", 700);
-                add ("ProcessComponents", 1600);
-                add ("UnpublishFeatures", 1800);
-                add ("RegisterUser", 6000);
-                add ("RegisterProduct", 6100);
-            } catch (GLib.Error e) {
-            }
         }
 
         public void add (string action, int sequence) throws GLib.Error {
@@ -203,15 +156,6 @@ namespace Wixl {
     class MsiTableInstallUISequence: MsiTable {
         construct {
             name = "InstallUISequence";
-
-            try {
-                add ("CostInitialize", 800);
-                add ("FileCost", 900);
-                add ("CostFinalize", 1000);
-                add ("ExecuteAction", 1300);
-                add ("ValidateProductID", 700);
-            } catch (GLib.Error e) {
-            }
         }
 
         public void add (string action, int sequence) throws GLib.Error {
@@ -512,6 +456,11 @@ namespace Wixl {
         public MsiTableFeatureComponents table_feature_components;
         public MsiTableRemoveFile table_remove_file;
         public MsiTableRegistry table_registry;
+        public MsiTableAdminExecuteSequence table_admin_execute_sequence;
+        public MsiTableAdminUISequence table_admin_ui_sequence;
+        public MsiTableAdvtExecuteSequence table_advt_execute_sequence;
+        public MsiTableInstallExecuteSequence table_install_execute_sequence;
+        public MsiTableInstallUISequence table_install_ui_sequence;
 
         HashTable<string, MsiTable> tables;
 
@@ -543,15 +492,18 @@ namespace Wixl {
             table_feature_components = new MsiTableFeatureComponents ();
             table_remove_file = new MsiTableRemoveFile ();
             table_registry = new MsiTableRegistry ();
+            table_admin_execute_sequence = new MsiTableAdminExecuteSequence ();
+            table_admin_ui_sequence = new MsiTableAdminUISequence ();
+            table_advt_execute_sequence = new MsiTableAdvtExecuteSequence ();
+            table_install_execute_sequence = new MsiTableInstallExecuteSequence ();
+            table_install_ui_sequence = new MsiTableInstallUISequence ();
 
             foreach (var t in new MsiTable[] {
-                    new MsiTableAdminExecuteSequence (),
-                    new MsiTableAdminUISequence (),
-                    new MsiTableAdvtExecuteSequence (),
-                    new MsiTableError (),
-                    new MsiTableFile (),
-                    new MsiTableInstallExecuteSequence (),
-                    new MsiTableInstallUISequence (),
+                    table_admin_execute_sequence,
+                    table_admin_ui_sequence,
+                    table_advt_execute_sequence,
+                    table_install_execute_sequence,
+                    table_install_ui_sequence,
                     table_directory,
                     table_media,
                     table_property,
@@ -561,6 +513,7 @@ namespace Wixl {
                     table_feature_components,
                     table_remove_file,
                     table_registry,
+                    new MsiTableError (),
                     new MsiTable_Validation ()
                 }) {
                 tables.insert (t.name, t);
