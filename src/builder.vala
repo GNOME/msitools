@@ -1,12 +1,15 @@
 namespace Wixl {
 
     class WixBuilder: WixElementVisitor {
-        WixRoot root;
-        MsiDatabase db;
 
         public WixBuilder (WixRoot root) {
             this.root = root;
         }
+
+        WixRoot root;
+        MsiDatabase db;
+        List<WixFile> files;
+        List<WixMedia> medias;
 
         delegate void AddSequence (string action, int sequence) throws GLib.Error;
 
@@ -59,6 +62,8 @@ namespace Wixl {
             }
             if (db.table_remove_file.records.length () > 0)
                 add ("RemoveFiles", 3500);
+            if (db.table_file.records.length () > 0)
+                add ("InstallFiles", 4000);
             add ("RegisterUser", 6000);
             add ("RegisterProduct", 6100);
             add ("PublishFeatures", 6300);
@@ -75,10 +80,41 @@ namespace Wixl {
             add ("ExecuteAction", 1300);
         }
 
+        public void build_cabinet () throws GLib.Error {
+            var sequence = 0;
+
+            foreach (var m in medias) {
+                var folder = new GCab.Folder (GCab.Compression.MSZIP);
+
+                foreach (var f in files) {
+                    if (f.DiskId != m.Id)
+                        continue;
+
+                    folder.add_file (new GCab.File.with_file (f.Id, File.new_for_path (f.Name)), false);
+                    var rec = f.record;
+                    sequence += 1;
+                    MsiTableFile.set_sequence (rec, sequence);
+                }
+
+                var cab = new GCab.Cabinet ();
+                cab.add_folder (folder);
+                var output = new MemoryOutputStream (null, realloc, free);
+                cab.write (output, null, null, null);
+                var input = new MemoryInputStream.from_data (output.get_data ()[0:output.data_size], null);
+                if (parse_yesno (m.EmbedCab))
+                    db.table_streams.add (m.Cabinet, input, output.data_size);
+
+                db.table_media.set_last_sequence (m.record, sequence);
+            }
+        }
+
         public MsiDatabase build () throws GLib.Error {
             db = new MsiDatabase ();
+
             root.accept (this);
             sequence_actions ();
+            build_cabinet ();
+
             return db;
         }
 
@@ -109,7 +145,14 @@ namespace Wixl {
         }
 
         public override void visit_media (WixMedia media) throws GLib.Error {
-            db.table_media.add (media.Id, media.EmbedCab, media.DiskPrompt, "#" + media.Cabinet);
+            var cabinet = media.Cabinet;
+
+            medias.append (media);
+            if (parse_yesno (media.EmbedCab))
+                cabinet = "#" + cabinet;
+
+            var rec = db.table_media.add (media.Id, media.DiskPrompt, cabinet);
+            media.record = rec;
         }
 
         public override void visit_directory (WixDirectory dir) throws GLib.Error {
@@ -228,6 +271,33 @@ namespace Wixl {
             db.table_registry.add (reg.Id, r, reg.Key, comp.Id);
 
             visit_key_element (reg);
+        }
+
+        [Flags]
+        enum FileAttribute {
+            READ_ONLY = 1 << 0,
+            HIDDEN = 1 << 1,
+            SYSTEM = 1 << 2,
+            VITAL = 1 << 9,
+            CHECKSUM = 1 << 10,
+            PATCH_ADDED = 1 << 11,
+            NON_COMPRESSED = 1 << 12,
+            COMPRESSED = 1 << 13
+        }
+
+        public override void visit_file (WixFile file) throws GLib.Error {
+            return_if_fail (file.DiskId == "1");
+            files.append (file);
+
+            var comp = file.parent as WixComponent;
+            var gfile = File.new_for_path (file.Name);
+            var info = gfile.query_info ("standard::*", 0, null);
+            var attr = FileAttribute.VITAL;
+
+            var rec = db.table_file.add (file.Id, comp.Id, file.Name, (int)info.get_size (), attr);
+            file.record = rec;
+
+            visit_key_element (file);
         }
     }
 

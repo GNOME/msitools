@@ -122,9 +122,33 @@ namespace Wixl {
             name = "File";
         }
 
+        public Libmsi.Record add (string File, string Component, string FileName, int FileSize, int Attributes, int Sequence = 0) throws GLib.Error {
+            var rec = new Libmsi.Record (6);
+
+            if (!rec.set_string (1, File) ||
+                !rec.set_string (2, Component) ||
+                !rec.set_string (3, FileName) ||
+                !rec.set_int (4, FileSize) ||
+                !rec.set_int (5, Attributes) ||
+                !rec.set_int (6, Sequence))
+                throw new Wixl.Error.FAILED ("failed to add record");
+
+            records.append (rec);
+
+            return rec;
+        }
+
+        public static bool set_sequence (Libmsi.Record rec, int Sequence) {
+            return rec.set_int (6, Sequence);
+        }
+
         public override void create (Libmsi.Database db) throws GLib.Error {
             var query = new Libmsi.Query (db, "CREATE TABLE `File` (`File` CHAR(72) NOT NULL, `Component_` CHAR(72) NOT NULL, `FileName` CHAR(255) NOT NULL LOCALIZABLE, `FileSize` LONG NOT NULL, `Version` CHAR(72), `Language` CHAR(20), `Attributes` INT, `Sequence` LONG NOT NULL PRIMARY KEY `File`)");
             query.execute (null);
+
+            query = new Libmsi.Query (db, "INSERT INTO `File` (`File`, `Component_`, `FileName`, `FileSize`, `Attributes`, `Sequence`) VALUES (?, ?, ?, ?, ?, ?)");
+            foreach (var r in records)
+                query.execute (r);
         }
     }
 
@@ -184,17 +208,21 @@ namespace Wixl {
             name = "Media";
         }
 
-        public void add (string DiskId, string LastSequence, string DiskPrompt, string Cabinet) throws GLib.Error {
+        public bool set_last_sequence (Libmsi.Record rec, int last_sequence) {
+            return rec.set_int (2, last_sequence);
+        }
+
+        public Libmsi.Record add (string DiskId, string DiskPrompt, string Cabinet) throws GLib.Error {
             var rec = new Libmsi.Record (4);
 
             if (!rec.set_int (1, int.parse (DiskId)) ||
-                !rec.set_int (2, int.parse (LastSequence)) ||
+                !rec.set_int (2, 0) ||
                 !rec.set_string (3, DiskPrompt) ||
                 !rec.set_string (4, Cabinet))
                 throw new Wixl.Error.FAILED ("failed to add record");
 
             records.append (rec);
-
+            return rec;
         }
 
         public override void create (Libmsi.Database db) throws GLib.Error {
@@ -386,12 +414,33 @@ namespace Wixl {
         }
     }
 
-    class MsiTable_Validation: MsiTable {
+    class MsiTableValidation: MsiTable {
         construct {
             name = "_Validation";
         }
 
         public override void create (Libmsi.Database db) throws GLib.Error {
+        }
+    }
+
+    class MsiTableStreams: MsiTable {
+        construct {
+            name = "_Streams";
+        }
+
+        public void add (string name, GLib.InputStream input, size_t count) throws GLib.Error {
+            var rec = new Libmsi.Record (2);
+            if (!rec.set_string (1, name) ||
+                !rec.set_stream (2, input, count))
+                throw new Wixl.Error.FAILED ("failed to add record");
+
+            records.append (rec);
+        }
+
+        public override void create (Libmsi.Database db) throws GLib.Error {
+            var query = new Libmsi.Query (db, "INSERT INTO `_Streams` (`Name`, `Data`) VALUES (?, ?)");
+            foreach (var r in records)
+                query.execute (r);
         }
     }
 
@@ -457,11 +506,13 @@ namespace Wixl {
         public MsiTableFeatureComponents table_feature_components;
         public MsiTableRemoveFile table_remove_file;
         public MsiTableRegistry table_registry;
+        public MsiTableFile table_file;
         public MsiTableAdminExecuteSequence table_admin_execute_sequence;
         public MsiTableAdminUISequence table_admin_ui_sequence;
         public MsiTableAdvtExecuteSequence table_advt_execute_sequence;
         public MsiTableInstallExecuteSequence table_install_execute_sequence;
         public MsiTableInstallUISequence table_install_ui_sequence;
+        public MsiTableStreams table_streams;
 
         HashTable<string, MsiTable> tables;
 
@@ -493,11 +544,13 @@ namespace Wixl {
             table_feature_components = new MsiTableFeatureComponents ();
             table_remove_file = new MsiTableRemoveFile ();
             table_registry = new MsiTableRegistry ();
+            table_file = new MsiTableFile ();
             table_admin_execute_sequence = new MsiTableAdminExecuteSequence ();
             table_admin_ui_sequence = new MsiTableAdminUISequence ();
             table_advt_execute_sequence = new MsiTableAdvtExecuteSequence ();
             table_install_execute_sequence = new MsiTableInstallExecuteSequence ();
             table_install_ui_sequence = new MsiTableInstallUISequence ();
+            table_streams = new MsiTableStreams ();
 
             foreach (var t in new MsiTable[] {
                     table_admin_execute_sequence,
@@ -514,8 +567,10 @@ namespace Wixl {
                     table_feature_components,
                     table_remove_file,
                     table_registry,
+                    table_file,
+                    table_streams,
                     new MsiTableError (),
-                    new MsiTable_Validation ()
+                    new MsiTableValidation ()
                 }) {
                 tables.insert (t.name, t);
             }

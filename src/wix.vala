@@ -12,6 +12,7 @@ namespace Wixl {
         public abstract void visit_component_ref (WixComponentRef ref) throws GLib.Error;
         public abstract void visit_remove_folder (WixRemoveFolder rm) throws GLib.Error;
         public abstract void visit_registry_value (WixRegistryValue reg) throws GLib.Error;
+        public abstract void visit_file (WixFile reg) throws GLib.Error;
     }
 
     public abstract class WixElement: Object {
@@ -133,6 +134,22 @@ namespace Wixl {
 
     public abstract class WixKeyElement: WixElement {
         public string KeyPath { get; set; }
+    }
+
+    public class WixFile: WixKeyElement {
+        static construct {
+            name = "File";
+        }
+
+        public string DiskId { get; set; }
+        public string Source { get; set; }
+        public string Name { get; set; }
+
+        public Libmsi.Record record;
+
+        public override void accept (WixElementVisitor visitor) throws GLib.Error {
+            visitor.visit_file (this);
+        }
     }
 
     public class WixRegistryValue: WixKeyElement {
@@ -285,6 +302,8 @@ namespace Wixl {
         public string EmbedCab { get; set; }
         public string DiskPrompt { get; set; }
 
+        public Libmsi.Record record;
+
         public override void accept (WixElementVisitor visitor) throws GLib.Error {
             visitor.visit_media (this);
         }
@@ -317,6 +336,11 @@ namespace Wixl {
                         var reg = new WixRegistryValue ();
                         reg.load (child);
                         add_child (reg);
+                        continue;
+                    case "File":
+                        var file = new WixFile ();
+                        file.load (child);
+                        add_child (file);
                         continue;
                     }
                     break;
