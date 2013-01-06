@@ -4,12 +4,27 @@ namespace Wixl {
         public class string name;
         public List<Libmsi.Record> records;
 
-        public abstract void create (Libmsi.Database db) throws GLib.Error;
+        public class string sql_create;
+        public class string sql_insert;
+
+        public virtual void create (Libmsi.Database db) throws GLib.Error {
+            var query = new Libmsi.Query (db, sql_create);
+            query.execute (null);
+
+            if (sql_insert == null)
+                return;
+
+            query = new Libmsi.Query (db, sql_insert);
+            foreach (var r in records)
+                query.execute (r);
+        }
     }
 
     class MsiTableIcon: MsiTable {
         static construct {
             name = "Icon";
+            sql_create = "CREATE TABLE `Icon` (`Name` CHAR(72) NOT NULL, `Data` OBJECT NOT NULL PRIMARY KEY `Name`)";
+            sql_insert = "INSERT INTO `Icon` (`Name`, `Data`) VALUES (?, ?)";
         }
 
         public void add (string id, string filename) throws GLib.Error {
@@ -21,19 +36,13 @@ namespace Wixl {
 
             records.append (rec);
         }
-
-        public override void create (Libmsi.Database db) throws GLib.Error {
-            var query = new Libmsi.Query (db, "CREATE TABLE `Icon` (`Name` CHAR(72) NOT NULL, `Data` OBJECT NOT NULL PRIMARY KEY `Name`)");
-            query.execute (null);
-            query = new Libmsi.Query (db, "INSERT INTO `Icon` (`Name`, `Data`) VALUES (?, ?)");
-            foreach (var r in records)
-                query.execute (r);
-        }
     }
 
     class MsiTableAdminExecuteSequence: MsiTable {
         static construct {
             name = "AdminExecuteSequence";
+            sql_create = "CREATE TABLE `AdminExecuteSequence` (`Action` CHAR(72) NOT NULL, `Condition` CHAR(255), `Sequence` INT PRIMARY KEY `Action`)";
+            sql_insert = "INSERT INTO `AdminExecuteSequence` (`Action`, `Sequence`) VALUES (?, ?)";
         }
 
         public void add (string action, int sequence) throws GLib.Error {
@@ -44,21 +53,14 @@ namespace Wixl {
                 throw new Wixl.Error.FAILED ("failed to add record");
 
             records.append (rec);
-        }
-
-        public override void create (Libmsi.Database db) throws GLib.Error {
-            var query = new Libmsi.Query (db, "CREATE TABLE `AdminExecuteSequence` (`Action` CHAR(72) NOT NULL, `Condition` CHAR(255), `Sequence` INT PRIMARY KEY `Action`)");
-            query.execute (null);
-
-            query = new Libmsi.Query (db, "INSERT INTO `AdminExecuteSequence` (`Action`, `Sequence`) VALUES (?, ?)");
-            foreach (var r in records)
-                query.execute (r);
         }
     }
 
     class MsiTableAdminUISequence: MsiTable {
         static construct {
             name = "AdminUISequence";
+            sql_create = "CREATE TABLE `AdminUISequence` (`Action` CHAR(72) NOT NULL, `Condition` CHAR(255), `Sequence` INT PRIMARY KEY `Action`)";
+            sql_insert = "INSERT INTO `AdminUISequence` (`Action`, `Sequence`) VALUES (?, ?)";
         }
 
         public void add (string action, int sequence) throws GLib.Error {
@@ -69,21 +71,14 @@ namespace Wixl {
                 throw new Wixl.Error.FAILED ("failed to add record");
 
             records.append (rec);
-        }
-
-        public override void create (Libmsi.Database db) throws GLib.Error {
-            var query = new Libmsi.Query (db, "CREATE TABLE `AdminUISequence` (`Action` CHAR(72) NOT NULL, `Condition` CHAR(255), `Sequence` INT PRIMARY KEY `Action`)");
-            query.execute (null);
-
-            query = new Libmsi.Query (db, "INSERT INTO `AdminUISequence` (`Action`, `Sequence`) VALUES (?, ?)");
-            foreach (var r in records)
-                query.execute (r);
         }
     }
 
     class MsiTableAdvtExecuteSequence: MsiTable {
         static construct {
             name = "AdvtExecuteSequence";
+            sql_create = "CREATE TABLE `AdvtExecuteSequence` (`Action` CHAR(72) NOT NULL, `Condition` CHAR(255), `Sequence` INT PRIMARY KEY `Action`)";
+            sql_insert = "INSERT INTO `AdvtExecuteSequence` (`Action`, `Sequence`) VALUES (?, ?)";
         }
 
         public void add (string action, int sequence) throws GLib.Error {
@@ -95,31 +90,20 @@ namespace Wixl {
 
             records.append (rec);
         }
-
-        public override void create (Libmsi.Database db) throws GLib.Error {
-            var query = new Libmsi.Query (db, "CREATE TABLE `AdvtExecuteSequence` (`Action` CHAR(72) NOT NULL, `Condition` CHAR(255), `Sequence` INT PRIMARY KEY `Action`)");
-            query.execute (null);
-
-            query = new Libmsi.Query (db, "INSERT INTO `AdvtExecuteSequence` (`Action`, `Sequence`) VALUES (?, ?)");
-            foreach (var r in records)
-                query.execute (r);
-        }
     }
 
     class MsiTableError: MsiTable {
         static construct {
             name = "Error";
-        }
-
-        public override void create (Libmsi.Database db) throws GLib.Error {
-            var query = new Libmsi.Query (db, "CREATE TABLE `Error` (`Error` INT NOT NULL, `Message` CHAR(0) LOCALIZABLE PRIMARY KEY `Error`)");
-            query.execute (null);
+            sql_create = "CREATE TABLE `Error` (`Error` INT NOT NULL, `Message` CHAR(0) LOCALIZABLE PRIMARY KEY `Error`)";
         }
     }
 
     class MsiTableFile: MsiTable {
         static construct {
             name = "File";
+            sql_create = "CREATE TABLE `File` (`File` CHAR(72) NOT NULL, `Component_` CHAR(72) NOT NULL, `FileName` CHAR(255) NOT NULL LOCALIZABLE, `FileSize` LONG NOT NULL, `Version` CHAR(72), `Language` CHAR(20), `Attributes` INT, `Sequence` LONG NOT NULL PRIMARY KEY `File`)";
+            sql_insert = "INSERT INTO `File` (`File`, `Component_`, `FileName`, `FileSize`, `Attributes`, `Sequence`) VALUES (?, ?, ?, ?, ?, ?)";
         }
 
         public Libmsi.Record add (string File, string Component, string FileName, int FileSize, int Attributes, int Sequence = 0) throws GLib.Error {
@@ -141,20 +125,13 @@ namespace Wixl {
         public static bool set_sequence (Libmsi.Record rec, int Sequence) {
             return rec.set_int (6, Sequence);
         }
-
-        public override void create (Libmsi.Database db) throws GLib.Error {
-            var query = new Libmsi.Query (db, "CREATE TABLE `File` (`File` CHAR(72) NOT NULL, `Component_` CHAR(72) NOT NULL, `FileName` CHAR(255) NOT NULL LOCALIZABLE, `FileSize` LONG NOT NULL, `Version` CHAR(72), `Language` CHAR(20), `Attributes` INT, `Sequence` LONG NOT NULL PRIMARY KEY `File`)");
-            query.execute (null);
-
-            query = new Libmsi.Query (db, "INSERT INTO `File` (`File`, `Component_`, `FileName`, `FileSize`, `Attributes`, `Sequence`) VALUES (?, ?, ?, ?, ?, ?)");
-            foreach (var r in records)
-                query.execute (r);
-        }
     }
 
     class MsiTableInstallExecuteSequence: MsiTable {
         static construct {
             name = "InstallExecuteSequence";
+            sql_create = "CREATE TABLE `InstallExecuteSequence` (`Action` CHAR(72) NOT NULL, `Condition` CHAR(255), `Sequence` INT PRIMARY KEY `Action`)";
+            sql_insert = "INSERT INTO `InstallExecuteSequence` (`Action`, `Sequence`) VALUES (?, ?)";
         }
 
         public void add (string action, int sequence) throws GLib.Error {
@@ -165,21 +142,14 @@ namespace Wixl {
                 throw new Wixl.Error.FAILED ("failed to add record");
 
             records.append (rec);
-        }
-
-        public override void create (Libmsi.Database db) throws GLib.Error {
-            var query = new Libmsi.Query (db, "CREATE TABLE `InstallExecuteSequence` (`Action` CHAR(72) NOT NULL, `Condition` CHAR(255), `Sequence` INT PRIMARY KEY `Action`)");
-            query.execute (null);
-
-            query = new Libmsi.Query (db, "INSERT INTO `InstallExecuteSequence` (`Action`, `Sequence`) VALUES (?, ?)");
-            foreach (var r in records)
-                query.execute (r);
         }
     }
 
     class MsiTableInstallUISequence: MsiTable {
         static construct {
             name = "InstallUISequence";
+            sql_create = "CREATE TABLE `InstallUISequence` (`Action` CHAR(72) NOT NULL, `Condition` CHAR(255), `Sequence` INT PRIMARY KEY `Action`)";
+            sql_insert = "INSERT INTO `InstallUISequence` (`Action`, `Sequence`) VALUES (?, ?)";
         }
 
         public void add (string action, int sequence) throws GLib.Error {
@@ -191,21 +161,13 @@ namespace Wixl {
 
             records.append (rec);
         }
-
-        public override void create (Libmsi.Database db) throws GLib.Error {
-            var query = new Libmsi.Query (db, "CREATE TABLE `InstallUISequence` (`Action` CHAR(72) NOT NULL, `Condition` CHAR(255), `Sequence` INT PRIMARY KEY `Action`)");
-            query.execute (null);
-
-            query = new Libmsi.Query (db, "INSERT INTO `InstallUISequence` (`Action`, `Sequence`) VALUES (?, ?)");
-            foreach (var r in records)
-                query.execute (r);
-
-        }
     }
 
     class MsiTableMedia: MsiTable {
         static construct {
             name = "Media";
+            sql_create = "CREATE TABLE `Media` (`DiskId` INT NOT NULL, `LastSequence` LONG NOT NULL, `DiskPrompt` CHAR(64) LOCALIZABLE, `Cabinet` CHAR(255), `VolumeLabel` CHAR(32), `Source` CHAR(72) PRIMARY KEY `DiskId`)";
+            sql_insert = "INSERT INTO `Media` (`DiskId`, `LastSequence`, `DiskPrompt`, `Cabinet`) VALUES (?, ?, ?, ?)";
         }
 
         public bool set_last_sequence (Libmsi.Record rec, int last_sequence) {
@@ -224,20 +186,13 @@ namespace Wixl {
             records.append (rec);
             return rec;
         }
-
-        public override void create (Libmsi.Database db) throws GLib.Error {
-            var query = new Libmsi.Query (db, "CREATE TABLE `Media` (`DiskId` INT NOT NULL, `LastSequence` LONG NOT NULL, `DiskPrompt` CHAR(64) LOCALIZABLE, `Cabinet` CHAR(255), `VolumeLabel` CHAR(32), `Source` CHAR(72) PRIMARY KEY `DiskId`)");
-            query.execute (null);
-
-            query = new Libmsi.Query (db, "INSERT INTO `Media` (`DiskId`, `LastSequence`, `DiskPrompt`, `Cabinet`) VALUES (?, ?, ?, ?)");
-            foreach (var r in records)
-                query.execute (r);
-        }
     }
 
     class MsiTableProperty: MsiTable {
         static construct {
             name = "Property";
+            sql_create = "CREATE TABLE `Property` (`Property` CHAR(72) NOT NULL, `Value` CHAR(0) NOT NULL LOCALIZABLE PRIMARY KEY `Property`)";
+            sql_insert = "INSERT INTO `Property` (`Property`, `Value`) VALUES (?, ?)";
         }
 
         public void add (string prop, string value) throws GLib.Error {
@@ -249,20 +204,13 @@ namespace Wixl {
 
             records.append (rec);
         }
-
-        public override void create (Libmsi.Database db) throws GLib.Error {
-            var query = new Libmsi.Query (db, "CREATE TABLE `Property` (`Property` CHAR(72) NOT NULL, `Value` CHAR(0) NOT NULL LOCALIZABLE PRIMARY KEY `Property`)");
-            query.execute (null);
-
-            query = new Libmsi.Query (db, "INSERT INTO `Property` (`Property`, `Value`) VALUES (?, ?)");
-            foreach (var r in records)
-                query.execute (r);
-        }
     }
 
     class MsiTableDirectory: MsiTable {
         static construct {
             name = "Directory";
+            sql_create = "CREATE TABLE `Directory` (`Directory` CHAR(72) NOT NULL, `Directory_Parent` CHAR(72), `DefaultDir` CHAR(255) NOT NULL LOCALIZABLE PRIMARY KEY `Directory`)";
+            sql_insert = "INSERT INTO `Directory` (`Directory`, `Directory_Parent`, `DefaultDir`) VALUES (?, ?, ?)";
         }
 
         public void add (string Directory, string? Parent, string DefaultDir) throws GLib.Error {
@@ -274,20 +222,13 @@ namespace Wixl {
 
             records.append (rec);
         }
-
-        public override void create (Libmsi.Database db) throws GLib.Error {
-            var query = new Libmsi.Query (db, "CREATE TABLE `Directory` (`Directory` CHAR(72) NOT NULL, `Directory_Parent` CHAR(72), `DefaultDir` CHAR(255) NOT NULL LOCALIZABLE PRIMARY KEY `Directory`)");
-            query.execute (null);
-
-            query = new Libmsi.Query (db, "INSERT INTO `Directory` (`Directory`, `Directory_Parent`, `DefaultDir`) VALUES (?, ?, ?)");
-            foreach (var r in records)
-                query.execute (r);
-        }
     }
 
     class MsiTableComponent: MsiTable {
         static construct {
             name = "Component";
+            sql_create = "CREATE TABLE `Component` (`Component` CHAR(72) NOT NULL, `ComponentId` CHAR(38), `Directory_` CHAR(72) NOT NULL, `Attributes` INT NOT NULL, `Condition` CHAR(255), `KeyPath` CHAR(72) PRIMARY KEY `Component`)";
+            sql_insert = "INSERT INTO `Component` (`Component`, `ComponentId`, `Directory_`, `Attributes`, `KeyPath`) VALUES (?, ?, ?, ?, ?)";
         }
 
         public void add (string Component, string ComponentId, string Directory, int Attributes, string? KeyPath = null) throws GLib.Error {
@@ -301,20 +242,13 @@ namespace Wixl {
 
             records.append (rec);
         }
-
-        public override void create (Libmsi.Database db) throws GLib.Error {
-            var query = new Libmsi.Query (db, "CREATE TABLE `Component` (`Component` CHAR(72) NOT NULL, `ComponentId` CHAR(38), `Directory_` CHAR(72) NOT NULL, `Attributes` INT NOT NULL, `Condition` CHAR(255), `KeyPath` CHAR(72) PRIMARY KEY `Component`)");
-            query.execute (null);
-
-            query = new Libmsi.Query (db, "INSERT INTO `Component` (`Component`, `ComponentId`, `Directory_`, `Attributes`, `KeyPath`) VALUES (?, ?, ?, ?, ?)");
-            foreach (var r in records)
-                query.execute (r);
-        }
     }
 
     class MsiTableFeatureComponents: MsiTable {
         static construct {
             name = "FeatureComponents";
+            sql_create = "CREATE TABLE `FeatureComponents` (`Feature_` CHAR(38) NOT NULL, `Component_` CHAR(72) NOT NULL PRIMARY KEY `Feature_`, `Component_`)";
+            sql_insert = "INSERT INTO `FeatureComponents` (`Feature_`, `Component_`) VALUES (?, ?)";
         }
 
         public void add (string Feature, string Component) throws GLib.Error {
@@ -325,20 +259,13 @@ namespace Wixl {
 
             records.append (rec);
         }
-
-        public override void create (Libmsi.Database db) throws GLib.Error {
-            var query = new Libmsi.Query (db, "CREATE TABLE `FeatureComponents` (`Feature_` CHAR(38) NOT NULL, `Component_` CHAR(72) NOT NULL PRIMARY KEY `Feature_`, `Component_`)");
-            query.execute (null);
-
-            query = new Libmsi.Query (db, "INSERT INTO `FeatureComponents` (`Feature_`, `Component_`) VALUES (?, ?)");
-            foreach (var r in records)
-                query.execute (r);
-        }
     }
 
     class MsiTableRegistry: MsiTable {
         static construct {
             name = "Registry";
+            sql_create = "CREATE TABLE `Registry` (`Registry` CHAR(72) NOT NULL, `Root` INT NOT NULL, `Key` CHAR(255) NOT NULL LOCALIZABLE, `Name` CHAR(255) LOCALIZABLE, `Value` CHAR(0) LOCALIZABLE, `Component_` CHAR(72) NOT NULL PRIMARY KEY `Registry`)";
+            sql_insert = "INSERT INTO `Registry` (`Registry`, `Root`, `Key`, `Component_`) VALUES (?, ?, ?, ?)";
         }
 
         public void add (string Registry, int Root, string Key, string Component) throws GLib.Error {
@@ -351,20 +278,13 @@ namespace Wixl {
 
             records.append (rec);
         }
-
-        public override void create (Libmsi.Database db) throws GLib.Error {
-            var query = new Libmsi.Query (db, "CREATE TABLE `Registry` (`Registry` CHAR(72) NOT NULL, `Root` INT NOT NULL, `Key` CHAR(255) NOT NULL LOCALIZABLE, `Name` CHAR(255) LOCALIZABLE, `Value` CHAR(0) LOCALIZABLE, `Component_` CHAR(72) NOT NULL PRIMARY KEY `Registry`)");
-            query.execute (null);
-
-            query = new Libmsi.Query (db, "INSERT INTO `Registry` (`Registry`, `Root`, `Key`, `Component_`) VALUES (?, ?, ?, ?)");
-            foreach (var r in records)
-                query.execute (r);
-        }
     }
 
     class MsiTableShortcut: MsiTable {
         static construct {
             name = "Shortcut";
+            sql_create = "CREATE TABLE `Shortcut` (`Shortcut` CHAR(72) NOT NULL, `Directory_` CHAR(72) NOT NULL, `Name` CHAR(128) NOT NULL LOCALIZABLE, `Component_` CHAR(72) NOT NULL, `Target` CHAR(72) NOT NULL, `Arguments` CHAR(255), `Description` CHAR(255) LOCALIZABLE, `Hotkey` INT, `Icon_` CHAR(72), `IconIndex` INT, `ShowCmd` INT, `WkDir` CHAR(72), `DisplayResourceDLL` CHAR(255), `DisplayResourceId` INT, `DescriptionResourceDLL` CHAR(255), `DescriptionResourceId` INT PRIMARY KEY `Shortcut`)";
+            sql_insert = "INSERT INTO `Shortcut` (`Shortcut`, `Directory_`, `Name`, `Component_`, `Target`, `Icon_`, `IconIndex`, `WkDir`) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
         }
 
         public Libmsi.Record add (string Shortcut, string Directory, string Name, string Component) throws GLib.Error {
@@ -396,20 +316,13 @@ namespace Wixl {
             if (!rec.set_string (8, WkDir))
                 throw new Wixl.Error.FAILED ("failed to set record");
         }
-
-        public override void create (Libmsi.Database db) throws GLib.Error {
-            var query = new Libmsi.Query (db, "CREATE TABLE `Shortcut` (`Shortcut` CHAR(72) NOT NULL, `Directory_` CHAR(72) NOT NULL, `Name` CHAR(128) NOT NULL LOCALIZABLE, `Component_` CHAR(72) NOT NULL, `Target` CHAR(72) NOT NULL, `Arguments` CHAR(255), `Description` CHAR(255) LOCALIZABLE, `Hotkey` INT, `Icon_` CHAR(72), `IconIndex` INT, `ShowCmd` INT, `WkDir` CHAR(72), `DisplayResourceDLL` CHAR(255), `DisplayResourceId` INT, `DescriptionResourceDLL` CHAR(255), `DescriptionResourceId` INT PRIMARY KEY `Shortcut`)");
-            query.execute (null);
-
-            query = new Libmsi.Query (db, "INSERT INTO `Shortcut` (`Shortcut`, `Directory_`, `Name`, `Component_`, `Target`, `Icon_`, `IconIndex`, `WkDir`) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
-            foreach (var r in records)
-                query.execute (r);
-        }
     }
 
     class MsiTableRemoveFile: MsiTable {
         static construct {
             name = "RemoveFile";
+            sql_create = "CREATE TABLE `RemoveFile` (`FileKey` CHAR(72) NOT NULL, `Component_` CHAR(72) NOT NULL, `FileName` CHAR(255) LOCALIZABLE, `DirProperty` CHAR(72) NOT NULL, `InstallMode` INT NOT NULL PRIMARY KEY `FileKey`)";
+            sql_insert = "INSERT INTO `RemoveFile` (`FileKey`, `Component_`, `DirProperty`, `InstallMode`) VALUES (?, ?, ?, ?)";
         }
 
         public void add (string FileKey, string Component, string DirProperty, int InstallMode) throws GLib.Error {
@@ -422,20 +335,13 @@ namespace Wixl {
 
             records.append (rec);
         }
-
-        public override void create (Libmsi.Database db) throws GLib.Error {
-            var query = new Libmsi.Query (db, "CREATE TABLE `RemoveFile` (`FileKey` CHAR(72) NOT NULL, `Component_` CHAR(72) NOT NULL, `FileName` CHAR(255) LOCALIZABLE, `DirProperty` CHAR(72) NOT NULL, `InstallMode` INT NOT NULL PRIMARY KEY `FileKey`)");
-            query.execute (null);
-
-            query = new Libmsi.Query (db, "INSERT INTO `RemoveFile` (`FileKey`, `Component_`, `DirProperty`, `InstallMode`) VALUES (?, ?, ?, ?)");
-            foreach (var r in records)
-                query.execute (r);
-        }
     }
 
     class MsiTableFeature: MsiTable {
         static construct {
             name = "Feature";
+            sql_create = "CREATE TABLE `Feature` (`Feature` CHAR(38) NOT NULL, `Feature_Parent` CHAR(38), `Title` CHAR(64) LOCALIZABLE, `Description` CHAR(255) LOCALIZABLE, `Display` INT, `Level` INT NOT NULL, `Directory_` CHAR(72), `Attributes` INT NOT NULL PRIMARY KEY `Feature`)";
+            sql_insert = "INSERT INTO `Feature` (`Feature`, `Display`, `Level`, `Attributes`) VALUES (?, ?, ?, ?)";
         }
 
         public void add (string Feature, int Display, int Level, int Attributes) throws GLib.Error {
@@ -447,15 +353,6 @@ namespace Wixl {
                 throw new Wixl.Error.FAILED ("failed to add record");
 
             records.append (rec);
-        }
-
-        public override void create (Libmsi.Database db) throws GLib.Error {
-            var query = new Libmsi.Query (db, "CREATE TABLE `Feature` (`Feature` CHAR(38) NOT NULL, `Feature_Parent` CHAR(38), `Title` CHAR(64) LOCALIZABLE, `Description` CHAR(255) LOCALIZABLE, `Display` INT, `Level` INT NOT NULL, `Directory_` CHAR(72), `Attributes` INT NOT NULL PRIMARY KEY `Feature`)");
-            query.execute (null);
-
-            query = new Libmsi.Query (db, "INSERT INTO `Feature` (`Feature`, `Display`, `Level`, `Attributes`) VALUES (?, ?, ?, ?)");
-            foreach (var r in records)
-                query.execute (r);
         }
     }
 
