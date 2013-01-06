@@ -1,14 +1,14 @@
 namespace Wixl {
 
     abstract class MsiTable: Object {
-        public string name;
+        public class string name;
         public List<Libmsi.Record> records;
 
         public abstract void create (Libmsi.Database db) throws GLib.Error;
     }
 
     class MsiTableIcon: MsiTable {
-        construct {
+        static construct {
             name = "Icon";
         }
 
@@ -32,7 +32,7 @@ namespace Wixl {
     }
 
     class MsiTableAdminExecuteSequence: MsiTable {
-        construct {
+        static construct {
             name = "AdminExecuteSequence";
         }
 
@@ -57,7 +57,7 @@ namespace Wixl {
     }
 
     class MsiTableAdminUISequence: MsiTable {
-        construct {
+        static construct {
             name = "AdminUISequence";
         }
 
@@ -82,7 +82,7 @@ namespace Wixl {
     }
 
     class MsiTableAdvtExecuteSequence: MsiTable {
-        construct {
+        static construct {
             name = "AdvtExecuteSequence";
         }
 
@@ -107,7 +107,7 @@ namespace Wixl {
     }
 
     class MsiTableError: MsiTable {
-        construct {
+        static construct {
             name = "Error";
         }
 
@@ -118,7 +118,7 @@ namespace Wixl {
     }
 
     class MsiTableFile: MsiTable {
-        construct {
+        static construct {
             name = "File";
         }
 
@@ -153,7 +153,7 @@ namespace Wixl {
     }
 
     class MsiTableInstallExecuteSequence: MsiTable {
-        construct {
+        static construct {
             name = "InstallExecuteSequence";
         }
 
@@ -178,7 +178,7 @@ namespace Wixl {
     }
 
     class MsiTableInstallUISequence: MsiTable {
-        construct {
+        static construct {
             name = "InstallUISequence";
         }
 
@@ -204,7 +204,7 @@ namespace Wixl {
     }
 
     class MsiTableMedia: MsiTable {
-        construct {
+        static construct {
             name = "Media";
         }
 
@@ -236,7 +236,7 @@ namespace Wixl {
     }
 
     class MsiTableProperty: MsiTable {
-        construct {
+        static construct {
             name = "Property";
         }
 
@@ -261,7 +261,7 @@ namespace Wixl {
     }
 
     class MsiTableDirectory: MsiTable {
-        construct {
+        static construct {
             name = "Directory";
         }
 
@@ -286,7 +286,7 @@ namespace Wixl {
     }
 
     class MsiTableComponent: MsiTable {
-        construct {
+        static construct {
             name = "Component";
         }
 
@@ -313,7 +313,7 @@ namespace Wixl {
     }
 
     class MsiTableFeatureComponents: MsiTable {
-        construct {
+        static construct {
             name = "FeatureComponents";
         }
 
@@ -337,7 +337,7 @@ namespace Wixl {
     }
 
     class MsiTableRegistry: MsiTable {
-        construct {
+        static construct {
             name = "Registry";
         }
 
@@ -363,7 +363,7 @@ namespace Wixl {
     }
 
     class MsiTableShortcut: MsiTable {
-        construct {
+        static construct {
             name = "Shortcut";
         }
 
@@ -408,7 +408,7 @@ namespace Wixl {
     }
 
     class MsiTableRemoveFile: MsiTable {
-        construct {
+        static construct {
             name = "RemoveFile";
         }
 
@@ -434,7 +434,7 @@ namespace Wixl {
     }
 
     class MsiTableFeature: MsiTable {
-        construct {
+        static construct {
             name = "Feature";
         }
 
@@ -460,7 +460,7 @@ namespace Wixl {
     }
 
     class MsiTableValidation: MsiTable {
-        construct {
+        static construct {
             name = "_Validation";
         }
 
@@ -469,7 +469,7 @@ namespace Wixl {
     }
 
     class MsiTableStreams: MsiTable {
-        construct {
+        static construct {
             name = "_Streams";
         }
 
