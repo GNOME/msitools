@@ -203,6 +203,8 @@ namespace Wixl {
 
         public string SourceFile { get; set; }
 
+        public File file;
+
         public override void accept (WixElementVisitor visitor) throws GLib.Error {
             visitor.visit_icon (this);
         }
@@ -250,6 +252,7 @@ namespace Wixl {
         public string Name { get; set; }
 
         public Libmsi.Record record;
+        public File file;
 
         public override void accept (WixElementVisitor visitor) throws GLib.Error {
             base.accept (visitor);

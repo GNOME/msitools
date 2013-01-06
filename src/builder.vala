@@ -4,6 +4,7 @@ namespace Wixl {
 
         public WixBuilder (WixRoot root) {
             this.root = root;
+            add_path (".");
         }
 
         WixRoot root;
@@ -102,7 +103,7 @@ namespace Wixl {
                     if (f.DiskId != m.Id)
                         continue;
 
-                    folder.add_file (new GCab.File.with_file (f.Id, File.new_for_path (f.Name)), false);
+                    folder.add_file (new GCab.File.with_file (f.Id, f.file), false);
                     var rec = f.record;
                     sequence += 1;
                     MsiTableFile.set_sequence (rec, sequence);
@@ -160,7 +161,10 @@ namespace Wixl {
         }
 
         public override void visit_icon (WixIcon icon) throws GLib.Error {
-            db.table_icon.add (icon.Id, icon.SourceFile);
+            FileInfo info;
+
+            icon.file = find_file (icon.SourceFile, out info);
+            db.table_icon.add (icon.Id, icon.file.get_path ());
         }
 
         public override void visit_property (WixProperty prop) throws GLib.Error {
@@ -310,12 +314,31 @@ namespace Wixl {
             COMPRESSED = 1 << 13
         }
 
+        File? find_file (string name, out FileInfo info) throws GLib.Error {
+            info = null;
+
+            foreach (var p in path) {
+                var file = p.get_child (name);
+                try {
+                    info = file.query_info ("standard::*", 0, null);
+                    if (info != null)
+                        return file;
+                } catch (IOError error) {
+                    if (error is IOError.NOT_FOUND)
+                        continue;
+                    throw error;
+                }
+            }
+
+            throw new Wixl.Error.FAILED ("Couldn't find file %s", name);
+        }
+
         public override void visit_file (WixFile file) throws GLib.Error {
             return_if_fail (file.DiskId == "1");
 
             var comp = file.parent as WixComponent;
-            var gfile = File.new_for_path (file.Name);
-            var info = gfile.query_info ("standard::*", 0, null);
+            FileInfo info;
+            file.file = find_file (file.Name, out info);
             var attr = FileAttribute.VITAL;
 
             var rec = db.table_file.add (file.Id, comp.Id, file.Name, (int)info.get_size (), attr);
