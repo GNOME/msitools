@@ -10,6 +10,7 @@ AM_VALAFLAGS =					\
 	--pkg libmsi-1.0			\
 	--pkg libgcab-1.0			\
 	--pkg libxml-2.0			\
+	--pkg posix				\
 	$(NULL)
 
 wixl_SOURCES =					\
