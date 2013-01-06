@@ -1,7 +1,8 @@
 namespace Wixl {
 
     public errordomain Error {
-        FAILED
+        FAILED,
+        FIXME,
     }
 
     namespace UUID {
@@ -85,7 +86,10 @@ namespace Wixl {
         return str;
     }
 
-    bool parse_yesno (string str) {
+    bool parse_yesno (string? str) {
+        if (str == null)
+            return false;
+
         return (str[0] == 'Y' || str[0] == 'y');
     }
 } // Wixl

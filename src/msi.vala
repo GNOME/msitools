@@ -362,6 +362,51 @@ namespace Wixl {
         }
     }
 
+    class MsiTableShortcut: MsiTable {
+        construct {
+            name = "Shortcut";
+        }
+
+        public Libmsi.Record add (string Shortcut, string Directory, string Name, string Component) throws GLib.Error {
+            var rec = new Libmsi.Record (8);
+
+            if (!rec.set_string (1, Shortcut) ||
+                !rec.set_string (2, Directory) ||
+                !rec.set_string (3, Name) ||
+                !rec.set_string (4, Component))
+                throw new Wixl.Error.FAILED ("failed to add record");
+
+            records.append (rec);
+
+            return rec;
+        }
+
+        public static void set_target (Libmsi.Record rec, string Target) throws GLib.Error {
+            if (!rec.set_string (5, Target))
+                throw new Wixl.Error.FAILED ("failed to set record");
+        }
+
+        public static void set_icon (Libmsi.Record rec, string Icon, int IconIndex) throws GLib.Error {
+            if (!rec.set_string (6, Icon) ||
+                !rec.set_int (7, IconIndex))
+                throw new Wixl.Error.FAILED ("failed to set record");
+        }
+
+        public static void set_working_dir (Libmsi.Record rec, string WkDir) throws GLib.Error {
+            if (!rec.set_string (8, WkDir))
+                throw new Wixl.Error.FAILED ("failed to set record");
+        }
+
+        public override void create (Libmsi.Database db) throws GLib.Error {
+            var query = new Libmsi.Query (db, "CREATE TABLE `Shortcut` (`Shortcut` CHAR(72) NOT NULL, `Directory_` CHAR(72) NOT NULL, `Name` CHAR(128) NOT NULL LOCALIZABLE, `Component_` CHAR(72) NOT NULL, `Target` CHAR(72) NOT NULL, `Arguments` CHAR(255), `Description` CHAR(255) LOCALIZABLE, `Hotkey` INT, `Icon_` CHAR(72), `IconIndex` INT, `ShowCmd` INT, `WkDir` CHAR(72), `DisplayResourceDLL` CHAR(255), `DisplayResourceId` INT, `DescriptionResourceDLL` CHAR(255), `DescriptionResourceId` INT PRIMARY KEY `Shortcut`)");
+            query.execute (null);
+
+            query = new Libmsi.Query (db, "INSERT INTO `Shortcut` (`Shortcut`, `Directory_`, `Name`, `Component_`, `Target`, `Icon_`, `IconIndex`, `WkDir`) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+            foreach (var r in records)
+                query.execute (r);
+        }
+    }
+
     class MsiTableRemoveFile: MsiTable {
         construct {
             name = "RemoveFile";
@@ -513,6 +558,7 @@ namespace Wixl {
         public MsiTableInstallExecuteSequence table_install_execute_sequence;
         public MsiTableInstallUISequence table_install_ui_sequence;
         public MsiTableStreams table_streams;
+        public MsiTableShortcut table_shortcut;
 
         HashTable<string, MsiTable> tables;
 
@@ -551,6 +597,7 @@ namespace Wixl {
             table_install_execute_sequence = new MsiTableInstallExecuteSequence ();
             table_install_ui_sequence = new MsiTableInstallUISequence ();
             table_streams = new MsiTableStreams ();
+            table_shortcut = new MsiTableShortcut ();
 
             foreach (var t in new MsiTable[] {
                     table_admin_execute_sequence,
@@ -569,6 +616,7 @@ namespace Wixl {
                     table_registry,
                     table_file,
                     table_streams,
+                    table_shortcut,
                     new MsiTableError (),
                     new MsiTableValidation ()
                 }) {

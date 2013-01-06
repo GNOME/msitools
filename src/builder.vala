@@ -41,6 +41,8 @@ namespace Wixl {
             add ("CostFinalize", 1000);
             add ("InstallValidate", 1400);
             add ("InstallInitialize", 1500);
+            if (db.table_shortcut.records.length () > 0)
+                add ("CreateShortcuts", 4500);
             add ("PublishFeatures", 6300);
             add ("PublishProduct", 6400);
             add ("InstallFinalize", 6600);
@@ -60,10 +62,14 @@ namespace Wixl {
                 add ("RemoveRegistryValues", 2600);
                 add ("WriteRegistryValues", 2600);
             }
+            if (db.table_shortcut.records.length () > 0)
+                add ("RemoveShortcuts", 3200);
             if (db.table_remove_file.records.length () > 0)
                 add ("RemoveFiles", 3500);
             if (db.table_file.records.length () > 0)
                 add ("InstallFiles", 4000);
+            if (db.table_shortcut.records.length () > 0)
+                add ("CreateShortcuts", 4500);
             add ("RegisterUser", 6000);
             add ("RegisterProduct", 6100);
             add ("PublishFeatures", 6300);
@@ -108,10 +114,21 @@ namespace Wixl {
             }
         }
 
+        public void shortcut_target () throws GLib.Error {
+            var shortcuts = root.get_elements<WixShortcut> ();
+
+            foreach (var sc in shortcuts) {
+                var component = sc.get_component ();
+                var feature = component.in_feature.first ().data;
+                MsiTableShortcut.set_target (sc.record, feature.Id);
+            }
+        }
+
         public MsiDatabase build () throws GLib.Error {
             db = new MsiDatabase ();
 
             root.accept (this);
+            shortcut_target ();
             sequence_actions ();
             build_cabinet ();
 
@@ -204,8 +221,11 @@ namespace Wixl {
 
         public override void visit_component_ref (WixComponentRef ref) throws GLib.Error {
             if (ref.parent is WixFeature) {
-                var parent = ref.parent as WixFeature;
-                db.table_feature_components.add (parent.Id, @ref.Id);
+                var feature = ref.parent as WixFeature;
+
+                var component = root.find_element (typeof (WixComponent), @ref.Id) as WixComponent;
+                component.in_feature.append (feature);
+                db.table_feature_components.add (feature.Id, @ref.Id);
             } else
                 warning ("unhandled parent type %s", @ref.parent.name);
         }
@@ -298,6 +318,23 @@ namespace Wixl {
             file.record = rec;
 
             visit_key_element (file);
+        }
+
+        public override void visit_shortcut (WixShortcut shortcut) throws GLib.Error {
+            if (!parse_yesno (shortcut.Advertise))
+                throw new Wixl.Error.FIXME ("unimplemented");
+
+            var component = shortcut.get_component ();
+            var rec = db.table_shortcut.add (shortcut.Id, shortcut.Directory, shortcut.Name, component.Id);
+            shortcut.record = rec;
+
+            if (shortcut.Icon != null)
+                MsiTableShortcut.set_icon (rec, shortcut.Icon, int.parse (shortcut.IconIndex));
+            if (shortcut.WorkingDirectory != null)
+                MsiTableShortcut.set_working_dir (rec, shortcut.WorkingDirectory);
+        }
+
+        public override void visit_create_folder (WixCreateFolder folder) throws GLib.Error {
         }
     }
 

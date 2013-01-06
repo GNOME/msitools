@@ -14,6 +14,7 @@ namespace Wixl {
         public abstract void visit_registry_value (WixRegistryValue reg) throws GLib.Error;
         public abstract void visit_file (WixFile reg) throws GLib.Error;
         public abstract void visit_shortcut (WixShortcut shortcut) throws GLib.Error;
+        public abstract void visit_create_folder (WixCreateFolder folder) throws GLib.Error;
     }
 
     public abstract class WixElement: Object {
@@ -42,6 +43,37 @@ namespace Wixl {
         public void add_child (WixElement e) {
             e.parent = this;
             children.append (e);
+        }
+
+        private G[] add_elements<G> (owned G[] a) {
+            // jeez, vala, took me a while to workaround generics & array issues..
+            var array = a;
+            var type = typeof (G);
+
+            if (this.get_type () == type)
+                array += this;
+
+            foreach (var c in children)
+                array = c.add_elements<G> (array);
+
+            return array;
+        }
+
+        public G[] get_elements<G> () {
+            return add_elements<G> ({});
+        }
+
+        public WixElement? find_element (Type type, string Id) {
+            if (this.Id == Id && this.get_type () == type)
+                return this;
+
+            foreach (var c in children) {
+                var e = c.find_element (type, Id);
+                if (e != null)
+                    return e;
+            }
+
+            return null;
         }
 
         public virtual void load (Xml.Node *node) throws Wixl.Error {
@@ -152,6 +184,18 @@ namespace Wixl {
         }
     }
 
+    public class WixCreateFolder: WixElement {
+        static construct {
+            name = "CreateFolder";
+        }
+
+        public string Directory { get; set; }
+
+        public override void accept (WixElementVisitor visitor) throws GLib.Error {
+            visitor.visit_create_folder (this);
+        }
+    }
+
     public class WixIcon: WixElement {
         static construct {
             name = "Icon";
@@ -164,6 +208,32 @@ namespace Wixl {
         }
     }
 
+    public class WixShortcut: WixElement {
+        static construct {
+            name = "Shortcut";
+        }
+
+        public string Directory { get; set; }
+        public string Name { get; set; }
+        public string IconIndex { get; set; }
+        public string WorkingDirectory { get; set; }
+        public string Icon { get; set; }
+        public string Advertise { get; set; }
+
+        public Libmsi.Record record;
+
+        public WixComponent? get_component () {
+            if (parent is WixFile || parent is WixCreateFolder)
+                return parent.parent as WixComponent;
+            else
+                return parent as WixComponent;
+        }
+
+        public override void accept (WixElementVisitor visitor) throws GLib.Error {
+            visitor.visit_shortcut (this);
+        }
+    }
+
     public abstract class WixKeyElement: WixElement {
         public string KeyPath { get; set; }
     }
@@ -171,6 +241,8 @@ namespace Wixl {
     public class WixFile: WixKeyElement {
         static construct {
             name = "File";
+
+            add_child_types (child_types, { typeof (WixShortcut) });
         }
 
         public string DiskId { get; set; }
@@ -180,6 +252,7 @@ namespace Wixl {
         public Libmsi.Record record;
 
         public override void accept (WixElementVisitor visitor) throws GLib.Error {
+            base.accept (visitor);
             visitor.visit_file (this);
         }
     }
@@ -296,6 +369,8 @@ namespace Wixl {
 
         public string Guid { get; set; }
         public WixKeyElement? key;
+
+        public List<WixFeature> in_feature;
 
         public override void accept (WixElementVisitor visitor) throws GLib.Error {
             base.accept (visitor);
