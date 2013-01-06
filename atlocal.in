@@ -1,0 +1,5 @@
+EXEEXT=@EXEEXT@
+
+_wixl() {
+  wixl$EXEEXT "$@"
+}

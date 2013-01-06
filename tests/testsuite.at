@@ -1,0 +1,4 @@
+m4_include([package.m4])
+
+AT_INIT
+AT_BANNER([wixl])

@@ -35,6 +35,13 @@ AC_SUBST(GETTEXT_PACKAGE)
 AM_GNU_GETTEXT_VERSION([1.11])
 AM_GLIB_GNU_GETTEXT
 
+AM_MISSING_PROG([AUTOM4TE], [autom4te])
+AC_CONFIG_TESTDIR([.])
+AC_CONFIG_FILES([atlocal])
+AC_CONFIG_FILES([tests/package.m4.tmp:tests/package.m4.in],
+                [$srcdir/build-aux/move-if-change tests/package.m4.tmp $srcdir/tests/package.m4
+                 cp $srcdir/tests/package.m4 tests/package.m4.tmp])
+
 CFLAGS="$CFLAGS -w"
 
 AC_CONFIG_FILES([
