@@ -29,7 +29,7 @@ CLEANFILES += testsuite.log
 
 check-local: $(TESTSUITE) atconfig
 	builddir=`pwd` && \
-		$(SHELL) $(TESTSUITE) AUTOTEST_PATH=$$builddir $(TESTSUITEFLAGS)
+		$(SHELL) $(TESTSUITE) AUTOTEST_PATH=$$builddir/src $(TESTSUITEFLAGS)
 
 installcheck-local: $(TESTSUITE) atconfig
 	$(SHELL) $(TESTSUITE) AUTOTEST_PATH=$(bindir) $(TESTSUITEFLAGS)

@@ -2,3 +2,30 @@ m4_include([package.m4])
 
 AT_INIT
 AT_BANNER([wixl])
+
+# AT_CHECK_... - add exeext automatically
+m4_define([AT_CHECK_WIXL], [
+AT_CHECK([_wixl ]$@)])
+
+# AT_WIXLDATA - copy data file from source tree
+m4_define([AT_WIXLDATA], [
+dir=`dirname $1`
+AS_MKDIR_P([$dir])
+AT_CHECK([cp $abs_srcdir/tests/data/$1 $1])])
+
+
+AT_SETUP([Invalid command line])
+AT_CHECK_WIXL([], [1], [ignore], [ignore])
+AT_CHECK_WIXL([out.msi], [1], [ignore], [ignore])
+AT_CHECK([test -f out.msi], [1])
+AT_CLEANUP
+
+AT_SETUP([WiX tutorial SampleFirst])
+AT_WIXLDATA([SampleFirst.wxs])
+AT_WIXLDATA([FoobarAppl10.exe])
+AT_WIXLDATA([Helper.dll])
+AT_WIXLDATA([Manual.pdf])
+AT_CHECK_WIXL([out.msi SampleFirst.wxs], [0], [ignore], [ignore])
+# FIXME: add tons of tests on out.msi
+AT_CHECK([test -f out.msi], [0])
+AT_CLEANUP
