@@ -1,0 +1,8 @@
+wixl
+====
+
+A wiX-like tool, that builds Windows Installer (MSI) packages from an XML document.
+
+Wixl will try to share the same syntax as the WiX toolset, http://wixtoolset.org/
+
+The major advantage of Wixl is that it doesn't require .NET, nor Windows. Thus it is very well suited for cross-compilation. However, Wixl lacks many features compared to WiX. As always, contributions are welcome!
