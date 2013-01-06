@@ -8,8 +8,12 @@ namespace Wixl {
 
         WixRoot root;
         MsiDatabase db;
-        List<WixFile> files;
-        List<WixMedia> medias;
+
+        List<File> path;
+        public void add_path (string p) {
+            var file = File.new_for_path (p);
+            path.append (file);
+        }
 
         delegate void AddSequence (string action, int sequence) throws GLib.Error;
 
@@ -88,6 +92,8 @@ namespace Wixl {
 
         public void build_cabinet () throws GLib.Error {
             var sequence = 0;
+            var medias = root.get_elements<WixMedia> ();
+            var files = root.get_elements<WixFile> ();
 
             foreach (var m in medias) {
                 var folder = new GCab.Folder (GCab.Compression.MSZIP);
@@ -164,7 +170,6 @@ namespace Wixl {
         public override void visit_media (WixMedia media) throws GLib.Error {
             var cabinet = media.Cabinet;
 
-            medias.append (media);
             if (parse_yesno (media.EmbedCab))
                 cabinet = "#" + cabinet;
 
@@ -307,7 +312,6 @@ namespace Wixl {
 
         public override void visit_file (WixFile file) throws GLib.Error {
             return_if_fail (file.DiskId == "1");
-            files.append (file);
 
             var comp = file.parent as WixComponent;
             var gfile = File.new_for_path (file.Name);
