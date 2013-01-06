@@ -38,7 +38,7 @@ private const OptionEntry[] options = {
         }
 
         if (files.length != 2) {
-            GLib.stderr.printf (_("Please specify a output and input files.\n"));
+            GLib.stderr.printf (_("Please specify output and input files.\n"));
             exit (1);
         }
 
