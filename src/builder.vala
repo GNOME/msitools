@@ -60,7 +60,7 @@ namespace Wixl {
             add ("UnpublishFeatures", 1800);
             if (db.table_registry.records.length () > 0) {
                 add ("RemoveRegistryValues", 2600);
-                add ("WriteRegistryValues", 2600);
+                add ("WriteRegistryValues", 5000);
             }
             if (db.table_shortcut.records.length () > 0)
                 add ("RemoveShortcuts", 3200);
@@ -140,7 +140,7 @@ namespace Wixl {
             db.info.set_author (product.Manufacturer);
 
             db.table_property.add ("Manufacturer", product.Manufacturer);
-            db.table_property.add ("ProductLanguage", product.Codepage);
+            db.table_property.add ("ProductLanguage", product.Language);
             db.table_property.add ("ProductCode", add_braces (product.Id));
             db.table_property.add ("ProductName", product.Name);
             db.table_property.add ("ProductVersion", product.Version);

@@ -567,7 +567,8 @@ namespace Wixl {
             try {
                 info.set_property (Libmsi.Property.TITLE, "Installation Database");
                 info.set_property (Libmsi.Property.TEMPLATE, "Intel;1033");
-                info.set_property (Libmsi.Property.UUID, uuid_generate ());
+                info.set_property (Libmsi.Property.UUID,
+                                   add_braces (uuid_generate ()));
                 info.set_property (Libmsi.Property.CREATED_TM,
                                    time_to_filetime (now ()));
                 info.set_property (Libmsi.Property.LASTSAVED_TM,
