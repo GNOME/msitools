@@ -30,7 +30,7 @@ namespace Wixl {
 
         protected class HashTable<string, Type> child_types = null; // FIXME: would be nice if vala always initialize class member to null
         class construct {
-            child_types = new HashTable<string, Type> (int_hash, int_equal);
+            child_types = new HashTable<string, Type> (str_hash, str_equal);
         }
 
         public class void add_child_types (HashTable<string, Type> table, Type[] child_types) {
