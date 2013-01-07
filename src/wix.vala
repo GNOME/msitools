@@ -15,6 +15,8 @@ namespace Wixl {
         public abstract void visit_file (WixFile reg) throws GLib.Error;
         public abstract void visit_shortcut (WixShortcut shortcut) throws GLib.Error;
         public abstract void visit_create_folder (WixCreateFolder folder) throws GLib.Error;
+        public abstract void visit_fragment (WixFragment fragment) throws GLib.Error;
+        public abstract void visit_directory_ref (WixDirectoryRef ref) throws GLib.Error;
     }
 
     public abstract class WixElement: Object {
@@ -35,8 +37,8 @@ namespace Wixl {
 
         public class void add_child_types (HashTable<string, Type> table, Type[] child_types) {
             foreach (var t in child_types) {
-                var name = ((WixElement) Object.new (t)).name;
-                table.insert (name, t);
+                var n = ((WixElement) Object.new (t)).name;
+                table.insert (n, t);
             }
         }
 
@@ -45,7 +47,7 @@ namespace Wixl {
             children.append (e);
         }
 
-        private G[] add_elements<G> (owned G[] a) {
+        public G[] add_elements<G> (owned G[] a) {
             // jeez, vala, took me a while to workaround generics & array issues..
             var array = a;
             var type = typeof (G);
@@ -63,12 +65,13 @@ namespace Wixl {
             return add_elements<G> ({});
         }
 
-        public WixElement? find_element (Type type, string Id) {
+        public G? find_element<G> (string Id) {
+            var type = typeof (G);
             if (this.Id == Id && this.get_type () == type)
                 return this;
 
             foreach (var c in children) {
-                var e = c.find_element (type, Id);
+                var e = c.find_element<G> (Id);
                 if (e != null)
                     return e;
             }
@@ -147,6 +150,22 @@ namespace Wixl {
         public virtual void accept (WixElementVisitor visitor) throws GLib.Error {
             foreach (var child in children)
                 child.accept (visitor);
+        }
+    }
+
+    public class WixFragment: WixElement {
+        static construct {
+            name = "Fragment";
+
+            add_child_types (child_types, {
+                typeof (WixDirectory),
+                typeof (WixDirectoryRef),
+            });
+        }
+
+        public override void accept (WixElementVisitor visitor) throws GLib.Error {
+            base.accept (visitor);
+            visitor.visit_fragment (this);
         }
     }
 
@@ -292,10 +311,17 @@ namespace Wixl {
         static construct {
             name = "Feature";
 
-            add_child_types (child_types, { typeof (WixComponentRef) });
+            add_child_types (child_types, {
+                typeof (WixComponentRef),
+                typeof (WixFeature),
+            });
         }
 
         public string Level { get; set; }
+        public string Title { get; set; }
+        public string Description { get; set; }
+        public string Display { get; set; }
+        public string ConfigurableDirectory { get; set; }
 
         public override void accept (WixElementVisitor visitor) throws GLib.Error {
             base.accept (visitor);
@@ -303,9 +329,10 @@ namespace Wixl {
         }
     }
 
-    public class WixComponentRef: WixElement {
+    public class WixComponentRef: WixElementRef<WixComponent> {
         static construct {
             name = "ComponentRef";
+            ref_type = typeof (WixComponent);
         }
 
         public override void accept (WixElementVisitor visitor) throws GLib.Error {
@@ -318,12 +345,12 @@ namespace Wixl {
             name = "Product";
 
             add_child_types (child_types, {
-                typeof (WixPackage),
-                typeof (WixIcon),
-                typeof (WixProperty),
-                typeof (WixMedia),
                 typeof (WixDirectory),
-                typeof (WixFeature)
+                typeof (WixFeature),
+                typeof (WixIcon),
+                typeof (WixMedia),
+                typeof (WixPackage),
+                typeof (WixProperty)
             });
         }
 
@@ -399,11 +426,41 @@ namespace Wixl {
         }
     }
 
+    public class WixElementRef<G>: WixElement {
+        public class Type ref_type;
+        public G? resolved;
+
+        // protected WixElementRef () {
+        //     // FIXME vala: class init/construct fails, construct fails...
+        //     ref_type = typeof (G);
+        // }
+    }
+
+    public class WixDirectoryRef: WixElementRef<WixDirectory> {
+        static construct {
+            name = "DirectoryRef";
+            ref_type = typeof (WixDirectory);
+
+            add_child_types (child_types, {
+                typeof (WixDirectory),
+                typeof (WixComponent),
+            });
+        }
+
+        public override void accept (WixElementVisitor visitor) throws GLib.Error {
+            base.accept (visitor);
+            visitor.visit_directory_ref (this);
+        }
+    }
+
     class WixRoot: WixElement {
         static construct {
             name = "Wix";
 
-            add_child_types (child_types, { typeof (WixProduct) });
+            add_child_types (child_types, {
+                typeof (WixProduct),
+                typeof (WixFragment),
+            });
         }
 
         public string xmlns { get; set; }

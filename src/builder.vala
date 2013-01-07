@@ -2,8 +2,7 @@ namespace Wixl {
 
     class WixBuilder: WixElementVisitor {
 
-        public WixBuilder (WixRoot root) {
-            this.root = root;
+        public WixBuilder () {
             add_path (".");
         }
 
@@ -16,9 +15,35 @@ namespace Wixl {
             path.append (file);
         }
 
+        List<WixRoot> roots;
+        public void load_xml (string data) throws GLib.Error {
+            var doc = Xml.Parser.read_memory (data, data.length);
+            var root = new WixRoot ();
+            root.load_xml (doc);
+            roots.append (root);
+        }
+
+        public G? find_element<G> (string Id) {
+            foreach (var r in roots) {
+                var e = r.find_element<G> (Id);
+                if (e != null)
+                    return e;
+            }
+
+            return null;
+        }
+
+        public G[] get_elements<G> () {
+            G[] elems = {};
+            foreach (var r in roots)
+                elems = r.add_elements<G> (elems);
+
+            return elems;
+        }
+
         delegate void AddSequence (string action, int sequence) throws GLib.Error;
 
-        void sequence_actions () throws GLib.Error {
+        private void sequence_actions () throws GLib.Error {
             AddSequence add = (action, sequence) => {
                 db.table_admin_execute_sequence.add (action, sequence);
             };
@@ -91,10 +116,10 @@ namespace Wixl {
             add ("ExecuteAction", 1300);
         }
 
-        public void build_cabinet () throws GLib.Error {
+        private void build_cabinet () throws GLib.Error {
             var sequence = 0;
-            var medias = root.get_elements<WixMedia> ();
-            var files = root.get_elements<WixFile> ();
+            var medias = get_elements<WixMedia> ();
+            var files = get_elements<WixFile> ();
 
             foreach (var m in medias) {
                 var folder = new GCab.Folder (GCab.Compression.MSZIP);
@@ -121,8 +146,8 @@ namespace Wixl {
             }
         }
 
-        public void shortcut_target () throws GLib.Error {
-            var shortcuts = root.get_elements<WixShortcut> ();
+        private void shortcut_target () throws GLib.Error {
+            var shortcuts = get_elements<WixShortcut> ();
 
             foreach (var sc in shortcuts) {
                 var component = sc.get_component ();
@@ -134,7 +159,12 @@ namespace Wixl {
         public MsiDatabase build () throws GLib.Error {
             db = new MsiDatabase ();
 
-            root.accept (this);
+            foreach (var r in roots) {
+                root = r;
+                root.accept (this);
+            }
+            root = null;
+
             shortcut_target ();
             sequence_actions ();
             build_cabinet ();
@@ -210,18 +240,32 @@ namespace Wixl {
             SHARED,
         }
 
+        G? resolve<G> (WixElement element) throws GLib.Error {
+            if (element.get_type () == typeof (G))
+                return element;
+            else if (element is WixElementRef) {
+                var ref = element as WixElementRef<G>;
+                if (ref.ref_type != typeof (G))
+                    return null;
+                if (ref.resolved != null)
+                    return ref.resolved;
+                ref.resolved = find_element<G> (element.Id);
+                return ref.resolved;
+            }
+
+            throw new Wixl.Error.FAILED ("couldn't resolve %s", element.Id);
+        }
+
         public override void visit_component (WixComponent comp) throws GLib.Error {
             var attr = 0;
 
             if (comp.key is WixRegistryValue)
                 attr |= ComponentAttribute.REGISTRY_KEY_PATH;
 
-            if (comp.parent.get_type () == typeof (WixDirectory)) {
-                var parent = comp.parent as WixDirectory;
-                db.table_component.add (comp.Id, add_braces (comp.Guid), parent.Id, attr,
-                                        comp.key != null ? comp.key.Id : null);
-            } else
-                warning ("unhandled parent type %s", comp.parent.name);
+            var parent = resolve<WixDirectory> (comp.parent);
+            db.table_component.add (comp.Id, add_braces (comp.Guid), parent.Id, attr,
+                                    comp.key != null ? comp.key.Id : null);
+
         }
 
         public override void visit_feature (WixFeature feature) throws GLib.Error {
@@ -232,7 +276,7 @@ namespace Wixl {
             if (ref.parent is WixFeature) {
                 var feature = ref.parent as WixFeature;
 
-                var component = root.find_element (typeof (WixComponent), @ref.Id) as WixComponent;
+                var component = resolve<WixComponent> (@ref);
                 component.in_feature.append (feature);
                 db.table_feature_components.add (feature.Id, @ref.Id);
             } else
@@ -362,6 +406,12 @@ namespace Wixl {
         }
 
         public override void visit_create_folder (WixCreateFolder folder) throws GLib.Error {
+        }
+
+        public override void visit_fragment (WixFragment fragment) throws GLib.Error {
+        }
+
+        public override void visit_directory_ref (WixDirectoryRef ref) throws GLib.Error {
         }
     }
 

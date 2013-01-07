@@ -2,15 +2,15 @@ using Posix;
 
 namespace Wixl {
 
-static bool version;
-[CCode (array_length = false, array_null_terminated = true)]
-static string[] files;
+    static bool version;
+    [CCode (array_length = false, array_null_terminated = true)]
+    static string[] files;
 
-private const OptionEntry[] options = {
-    { "version", 0, 0, OptionArg.NONE, ref version, N_("Display version number"), null },
-    { "", 0, 0, OptionArg.FILENAME_ARRAY, ref files, null, N_("OUTPUT_FILE INPUT_FILE...") },
-    { null }
-};
+    private const OptionEntry[] options = {
+        { "version", 0, 0, OptionArg.NONE, ref version, N_("Display version number"), null },
+        { "", 0, 0, OptionArg.FILENAME_ARRAY, ref files, null, N_("OUTPUT_FILE INPUT_FILE...") },
+        { null }
+    };
 
     int main (string[] args) {
         Intl.bindtextdomain (Config.GETTEXT_PACKAGE, Config.LOCALEDIR);
@@ -37,20 +37,23 @@ private const OptionEntry[] options = {
             exit (0);
         }
 
-        if (files.length != 2) {
+        if (files.length < 2) {
             GLib.stderr.printf (_("Please specify output and input files.\n"));
             exit (1);
         }
 
         try {
-            var file = File.new_for_commandline_arg (files[1]);
-            string data;
-            FileUtils.get_contents (file.get_path (), out data);
-            var doc = Xml.Parser.read_memory (data, data.length);
-            var root = new WixRoot ();
-            root.load_xml (doc);
-            var builder = new WixBuilder (root);
-            builder.add_path (file.get_parent ().get_path ());
+            var builder = new WixBuilder ();
+            foreach (var arg in files[1:files.length]) {
+                print ("Loading %s...\n", arg);
+                var file = File.new_for_commandline_arg (arg);
+                string data;
+                FileUtils.get_contents (file.get_path (), out data);
+                builder.load_xml (data);
+                builder.add_path (file.get_parent ().get_path ());
+            }
+
+            print ("Building %s...\n", files[0]);
             var msi = builder.build ();
             msi.build (files[0]);
         } catch (GLib.Error error) {

@@ -4,6 +4,7 @@ bin_PROGRAMS = wixl
 AM_CFLAGS = -w
 
 AM_VALAFLAGS =					\
+	-H wixl.h --use-header			\
 	--vapidir=$(srcdir) --pkg config	\
 	--enable-experimental			\
 	--pkg gio-2.0				\
