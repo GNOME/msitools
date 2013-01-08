@@ -206,6 +206,9 @@ namespace Wixl {
             if (product.Codepage != null)
                 db.info.set_codepage (int.parse (product.Codepage));
 
+            if (product.Name != null)
+                db.info.set_subject (product.Name);
+
             db.info.set_author (product.Manufacturer);
 
             db.table_property.add ("Manufacturer", product.Manufacturer);
@@ -224,6 +227,10 @@ namespace Wixl {
 
             if (package.Keywords != null)
                 db.info.set_keywords (package.Keywords);
+
+            if (package.InstallerVersion != null)
+                db.info.set_property (Libmsi.Property.VERSION, int.parse (package.InstallerVersion));
+
         }
 
         public override void visit_icon (WixIcon icon) throws GLib.Error {

@@ -438,7 +438,6 @@ namespace Wixl {
         public void set_comments (string value) throws GLib.Error {
             set_property (Libmsi.Property.COMMENTS, value);
         }
-
     }
 
     class MsiDatabase: Object {
@@ -468,6 +467,8 @@ namespace Wixl {
             try {
                 info.set_property (Libmsi.Property.TITLE, "Installation Database");
                 info.set_property (Libmsi.Property.TEMPLATE, "Intel;1033");
+                info.set_property (Libmsi.Property.KEYWORDS, "Installer");
+                info.set_property (Libmsi.Property.CODEPAGE, 1252);
                 info.set_property (Libmsi.Property.UUID,
                                    add_braces (uuid_generate ()));
                 info.set_property (Libmsi.Property.CREATED_TM,
