@@ -386,10 +386,8 @@ namespace Wixl {
         void visit_key_element (WixKeyElement key) throws GLib.Error {
             var component = key.parent as WixComponent;
 
-            if (!parse_yesno (key.KeyPath))
-                return;
-
-            component.key = key;
+            if (component.key == null || parse_yesno (key.KeyPath))
+                component.key = key;
         }
 
         enum RegistryValueType {
