@@ -19,6 +19,7 @@ AT_CHECK_WIXL([], [1], [ignore], [ignore])
 AT_CHECK_WIXL([out.msi foo.wxs], [1], [ignore], [ignore])
 AT_CHECK_WIXL([-o out.msi], [1], [ignore], [ignore])
 AT_CHECK_WIXL([-E], [1], [ignore], [ignore])
+AT_CHECK_WIXL([-D], [1], [ignore], [ignore])
 AT_CHECK_WIXL([-E -o out.msi], [1], [ignore], [ignore])
 AT_CHECK([test -f out.msi], [1])
 AT_CLEANUP
@@ -74,4 +75,17 @@ AT_CHECK_WIXL([-E variables.wxs], [0], [<?xml version="1.0"?>
   <Property Id="IdSys" Value="(variables.wxs)foo"/>
 </Wix>
 ], [ignore])
+AT_DATA([variables.wxs], [<?xml version="1.0"?>
+<Wix xmlns='http://schemas.microsoft.com/wix/2006/wi'>
+  <Property Id="Id$(var.Foo)" Value="$(var.Foo)"/>
+  <Property Id="Id$(var.Zig)" Value="$(var.Zig)"/>
+</Wix>
+])
+AT_CHECK_WIXL([-E variables.wxs -D Foo -D Zig=Zag], [0], [<?xml version="1.0"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+  <Property Id="Id1" Value="1"/>
+  <Property Id="IdZag" Value="Zag"/>
+</Wix>
+], [ignore])
+
 AT_CLEANUP
