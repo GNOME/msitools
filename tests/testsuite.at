@@ -29,3 +29,14 @@ AT_CHECK_WIXL([out.msi SampleFirst.wxs], [0], [ignore], [ignore])
 # FIXME: add tons of tests on out.msi
 AT_CHECK([test -f out.msi], [0])
 AT_CLEANUP
+
+AT_SETUP([WiX tutorial SampleFragment])
+AT_WIXLDATA([SampleFragment.wxs])
+AT_WIXLDATA([Manual.wxs])
+AT_WIXLDATA([FoobarAppl10.exe])
+AT_WIXLDATA([Helper.dll])
+AT_WIXLDATA([Manual.pdf])
+AT_CHECK_WIXL([out.msi SampleFragment.wxs Manual.wxs], [0], [ignore], [ignore])
+# FIXME: add tons of tests on out.msi
+AT_CHECK([test -f out.msi], [0])
+AT_CLEANUP

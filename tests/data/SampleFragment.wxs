@@ -26,12 +26,6 @@
               <File Id='HelperDLL' Name='Helper.dll' DiskId='1' Source='Helper.dll' KeyPath='yes' />
             </Component>
 
-            <Component Id='Manual' Guid='ABCDDCBA-574D-4A9A-A266-5B5EC2C022A4'>
-              <File Id='Manual' Name='Manual.pdf' DiskId='1' Source='Manual.pdf' KeyPath='yes'>
-                <Shortcut Id="startmenuManual" Directory="ProgramMenuDir" Name="Instruction Manual" Advertise="yes" />
-              </File>
-            </Component>
-
           </Directory>
         </Directory>
       </Directory>
@@ -48,11 +42,17 @@
       <Directory Id="DesktopFolder" Name="Desktop" />
     </Directory>
 
-    <Feature Id='Complete' Level='1'>
-      <ComponentRef Id='MainExecutable' />
-      <ComponentRef Id='HelperLibrary' />
-      <ComponentRef Id='Manual' />
-      <ComponentRef Id='ProgramMenuDir' />
+    <Feature Id='Complete' Title='Foobar 1.0' Description='The complete package.'
+      Display='expand' Level='1' ConfigurableDirectory='INSTALLDIR'>
+      <Feature Id='MainProgram' Title='Program' Description='The main executable.' Level='1'>
+        <ComponentRef Id='MainExecutable' />
+        <ComponentRef Id='HelperLibrary' />
+        <ComponentRef Id='ProgramMenuDir' />
+      </Feature>
+
+      <Feature Id='Documentation' Title='Description' Description='The instruction manual.' Level='1'>
+        <ComponentRef Id='Manual' />
+      </Feature>
     </Feature>
 
     <Icon Id="Foobar10.exe" SourceFile="FoobarAppl10.exe" />
