@@ -178,7 +178,8 @@ namespace Wixl {
                 get_property (p.name, ref value);
                 var valstr = value.holds (typeof (string)) ?
                     (string)value : value.strdup_contents ();
-                str += " " + p.name + "=\"" + valstr + "\"";
+                if (valstr != null)
+                    str += " " + p.name + "=\"" + valstr + "\"";
                 i += 1;
             }
 
