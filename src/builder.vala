@@ -1,6 +1,6 @@
 namespace Wixl {
 
-    class WixBuilder: WixElementVisitor {
+    class WixBuilder: WixNodeVisitor {
 
         public WixBuilder () {
             add_path (".");
@@ -513,6 +513,9 @@ namespace Wixl {
         }
 
         public override void visit_directory_ref (WixDirectoryRef ref) throws GLib.Error {
+        }
+
+        public override void visit_text (WixText text) throws GLib.Error {
         }
     }
 

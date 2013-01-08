@@ -6,7 +6,7 @@ namespace Wixl {
         LEAVE
     }
 
-    public abstract class WixElementVisitor: Object {
+    public abstract class WixNodeVisitor: Object {
         public abstract void visit_product (WixProduct product) throws GLib.Error;
         public abstract void visit_icon (WixIcon icon) throws GLib.Error;
         public abstract void visit_package (WixPackage package) throws GLib.Error;
@@ -28,19 +28,56 @@ namespace Wixl {
         public abstract void visit_upgrade (WixUpgrade upgrade) throws GLib.Error;
         public abstract void visit_upgrade_version (WixUpgradeVersion version) throws GLib.Error;
         public abstract void visit_remove_existing_products (WixRemoveExistingProducts remove) throws GLib.Error;
+        public abstract void visit_text (WixText text) throws GLib.Error;
     }
 
-    public abstract class WixElement: Object {
+    public abstract class WixNode: Object {
+        public WixElement? parent;
+
+        static construct {
+            Value.register_transform_func (typeof (WixNode), typeof (string), (ValueTransform)WixNode.value_to_string);
+        }
+
+        public abstract string to_string ();
+
+        public static void value_to_string (Value src, out Value dest) {
+            WixNode e = value_get_node (src);
+
+            dest = e.to_string ();
+        }
+
+        public static WixNode? value_get_node (Value value) {
+            if (! value.holds (typeof (WixNode)))
+                return null;
+
+            return (WixNode)value.get_object ();
+        }
+
+        public abstract void accept (WixNodeVisitor visitor) throws GLib.Error;
+    }
+
+    public class WixText: WixNode {
+        public string Text;
+
+        public WixText (string str) {
+            Text = str;
+        }
+
+        public override string to_string () {
+            return Text;
+        }
+
+        public override void accept (WixNodeVisitor visitor) throws GLib.Error {
+            visitor.visit_text (this);
+        }
+    }
+
+    public abstract class WixElement: WixNode {
         public class string name;
 
         public string Id { get; set; }
-        public WixElement parent;
-        public List<WixElement> children;
+        public List<WixNode> children;
 
-        static construct {
-            Value.register_transform_func (typeof (WixElement), typeof (string), (ValueTransform)WixElement.value_to_string);
-        }
- 
         // FIXME: would be nice if vala always initialize class member to null
         // GObject copy class init so other class hashtable will be unrefed...??
         protected class HashTable<string, Type> *child_types = null;
@@ -55,7 +92,7 @@ namespace Wixl {
             }
         }
 
-        public void add_child (WixElement e) {
+        public void add_child (WixNode e) {
             e.parent = this;
             children.append (e);
         }
@@ -68,8 +105,12 @@ namespace Wixl {
             if (this.get_type () == type)
                 array += this;
 
-            foreach (var c in children)
-                array = c.add_elements<G> (array);
+            foreach (var c in children) {
+                if (c is WixElement)
+                    array = (c as WixElement).add_elements<G> (array);
+                else if (c.get_type () == type)
+                    array += c;
+            }
 
             return array;
         }
@@ -84,9 +125,11 @@ namespace Wixl {
                 return this;
 
             foreach (var c in children) {
-                var e = c.find_element<G> (Id);
-                if (e != null)
-                    return e;
+                if (c is WixElement) {
+                    var e = (c as WixElement).find_element<G> (Id);
+                    if (e != null)
+                        return e;
+                }
             }
 
             return null;
@@ -104,7 +147,9 @@ namespace Wixl {
             for (var child = node->children; child != null; child = child->next) {
                 switch (child->type) {
                 case Xml.ElementType.COMMENT_NODE:
+                    continue;
                 case Xml.ElementType.TEXT_NODE:
+                    add_child (new WixText (child->content));
                     continue;
                 case Xml.ElementType.ELEMENT_NODE:
                     var t = child_types->lookup (child->name);
@@ -120,13 +165,15 @@ namespace Wixl {
             }
         }
 
-        public string to_string () {
+        public override string to_string () {
             var type = get_type ();
             var klass = (ObjectClass)type.class_ref ();
             var str = "<" + name;
 
             var i = 0;
             foreach (var p in klass.list_properties ()) {
+                if (!(ParamFlags.READABLE in p.flags))
+                    continue;
                 var value = Value (p.value_type);
                 get_property (p.name, ref value);
                 var valstr = value.holds (typeof (string)) ?
@@ -147,20 +194,7 @@ namespace Wixl {
                 return str + "/>";
         }
 
-        public static void value_to_string (Value src, out Value dest) {
-            WixElement e = value_get_element (src);
-
-            dest = e.to_string ();
-        }
-
-        public static WixElement? value_get_element (Value value) {
-            if (! value.holds (typeof (WixElement)))
-                return null;
-
-            return (WixElement)value.get_object ();
-        }
-
-        public virtual void accept (WixElementVisitor visitor) throws GLib.Error {
+        public override void accept (WixNodeVisitor visitor) throws GLib.Error {
             foreach (var child in children)
                 child.accept (visitor);
         }
@@ -176,7 +210,7 @@ namespace Wixl {
             });
         }
 
-        public override void accept (WixElementVisitor visitor) throws GLib.Error {
+        public override void accept (WixNodeVisitor visitor) throws GLib.Error {
             base.accept (visitor);
             visitor.visit_fragment (this);
         }
@@ -189,7 +223,7 @@ namespace Wixl {
 
         public string Value { get; set; }
 
-        public override void accept (WixElementVisitor visitor) throws GLib.Error {
+        public override void accept (WixNodeVisitor visitor) throws GLib.Error {
             visitor.visit_property (this);
         }
     }
@@ -210,7 +244,7 @@ namespace Wixl {
         public string Comments { get; set; }
         public string Description { get; set; }
 
-        public override void accept (WixElementVisitor visitor) throws GLib.Error {
+        public override void accept (WixNodeVisitor visitor) throws GLib.Error {
             base.accept (visitor);
             visitor.visit_package (this);
         }
@@ -223,7 +257,7 @@ namespace Wixl {
 
         public string Directory { get; set; }
 
-        public override void accept (WixElementVisitor visitor) throws GLib.Error {
+        public override void accept (WixNodeVisitor visitor) throws GLib.Error {
             visitor.visit_create_folder (this);
         }
     }
@@ -237,7 +271,7 @@ namespace Wixl {
 
         public File file;
 
-        public override void accept (WixElementVisitor visitor) throws GLib.Error {
+        public override void accept (WixNodeVisitor visitor) throws GLib.Error {
             visitor.visit_icon (this);
         }
     }
@@ -263,7 +297,7 @@ namespace Wixl {
                 return parent as WixComponent;
         }
 
-        public override void accept (WixElementVisitor visitor) throws GLib.Error {
+        public override void accept (WixNodeVisitor visitor) throws GLib.Error {
             visitor.visit_shortcut (this);
         }
     }
@@ -286,7 +320,7 @@ namespace Wixl {
         public Libmsi.Record record;
         public File file;
 
-        public override void accept (WixElementVisitor visitor) throws GLib.Error {
+        public override void accept (WixNodeVisitor visitor) throws GLib.Error {
             base.accept (visitor);
             visitor.visit_file (this);
         }
@@ -303,7 +337,7 @@ namespace Wixl {
         public string Value { get; set; }
         public string Name { get; set; }
 
-        public override void accept (WixElementVisitor visitor) throws GLib.Error {
+        public override void accept (WixNodeVisitor visitor) throws GLib.Error {
             visitor.visit_registry_value (this);
         }
     }
@@ -315,7 +349,7 @@ namespace Wixl {
 
         public string On { get; set; }
 
-        public override void accept (WixElementVisitor visitor) throws GLib.Error {
+        public override void accept (WixNodeVisitor visitor) throws GLib.Error {
             visitor.visit_remove_folder (this);
         }
     }
@@ -336,7 +370,7 @@ namespace Wixl {
         public string Display { get; set; }
         public string ConfigurableDirectory { get; set; }
 
-        public override void accept (WixElementVisitor visitor) throws GLib.Error {
+        public override void accept (WixNodeVisitor visitor) throws GLib.Error {
             visitor.visit_feature (this, VisitState.ENTER);
             base.accept (visitor);
             visitor.visit_feature (this, VisitState.LEAVE);
@@ -349,7 +383,7 @@ namespace Wixl {
             ref_type = typeof (WixComponent);
         }
 
-        public override void accept (WixElementVisitor visitor) throws GLib.Error {
+        public override void accept (WixNodeVisitor visitor) throws GLib.Error {
             visitor.visit_component_ref (this);
         }
     }
@@ -361,7 +395,7 @@ namespace Wixl {
 
         public string Message { get; set; }
 
-        public override void accept (WixElementVisitor visitor) throws GLib.Error {
+        public override void accept (WixNodeVisitor visitor) throws GLib.Error {
             visitor.visit_condition (this);
         }
     }
@@ -373,7 +407,7 @@ namespace Wixl {
 
         public string After { get; set; }
 
-        public override void accept (WixElementVisitor visitor) throws GLib.Error {
+        public override void accept (WixNodeVisitor visitor) throws GLib.Error {
             visitor.visit_remove_existing_products (this);
         }
     }
@@ -387,7 +421,7 @@ namespace Wixl {
             });
         }
 
-        public override void accept (WixElementVisitor visitor) throws GLib.Error {
+        public override void accept (WixNodeVisitor visitor) throws GLib.Error {
             visitor.visit_install_execute_sequence (this);
         }
     }
@@ -401,7 +435,7 @@ namespace Wixl {
             });
         }
 
-        public override void accept (WixElementVisitor visitor) throws GLib.Error {
+        public override void accept (WixNodeVisitor visitor) throws GLib.Error {
             visitor.visit_upgrade (this);
         }
     }
@@ -418,7 +452,7 @@ namespace Wixl {
         public string OnlyDetect { get; set; }
         public string Property { get; set; }
 
-        public override void accept (WixElementVisitor visitor) throws GLib.Error {
+        public override void accept (WixNodeVisitor visitor) throws GLib.Error {
             visitor.visit_upgrade_version (this);
         }
     }
@@ -450,7 +484,7 @@ namespace Wixl {
         public WixProduct () {
         }
 
-        public override void accept (WixElementVisitor visitor) throws GLib.Error {
+        public override void accept (WixNodeVisitor visitor) throws GLib.Error {
             base.accept (visitor);
             visitor.visit_product (this);
         }
@@ -467,7 +501,7 @@ namespace Wixl {
 
         public Libmsi.Record record;
 
-        public override void accept (WixElementVisitor visitor) throws GLib.Error {
+        public override void accept (WixNodeVisitor visitor) throws GLib.Error {
             visitor.visit_media (this);
         }
     }
@@ -488,7 +522,7 @@ namespace Wixl {
 
         public List<WixFeature> in_feature;
 
-        public override void accept (WixElementVisitor visitor) throws GLib.Error {
+        public override void accept (WixNodeVisitor visitor) throws GLib.Error {
             base.accept (visitor);
             visitor.visit_component (this);
         }
@@ -506,7 +540,7 @@ namespace Wixl {
 
         public string Name { get; set; }
 
-        public override void accept (WixElementVisitor visitor) throws GLib.Error {
+        public override void accept (WixNodeVisitor visitor) throws GLib.Error {
             base.accept (visitor);
             visitor.visit_directory (this);
         }
@@ -533,7 +567,7 @@ namespace Wixl {
             });
         }
 
-        public override void accept (WixElementVisitor visitor) throws GLib.Error {
+        public override void accept (WixNodeVisitor visitor) throws GLib.Error {
             base.accept (visitor);
             visitor.visit_directory_ref (this);
         }
