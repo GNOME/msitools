@@ -341,15 +341,19 @@ namespace Wixl {
         static construct {
             name = "Feature";
             sql_create = "CREATE TABLE `Feature` (`Feature` CHAR(38) NOT NULL, `Feature_Parent` CHAR(38), `Title` CHAR(64) LOCALIZABLE, `Description` CHAR(255) LOCALIZABLE, `Display` INT, `Level` INT NOT NULL, `Directory_` CHAR(72), `Attributes` INT NOT NULL PRIMARY KEY `Feature`)";
-            sql_insert = "INSERT INTO `Feature` (`Feature`, `Display`, `Level`, `Attributes`) VALUES (?, ?, ?, ?)";
+            sql_insert = "INSERT INTO `Feature` (`Feature`, `Display`, `Level`, `Attributes`, `Feature_Parent`, `Title`, `Description`, `Directory_`) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
         }
 
-        public void add (string Feature, int Display, int Level, int Attributes) throws GLib.Error {
-            var rec = new Libmsi.Record (4);
+        public void add (string Feature, int Display, int Level, int Attributes, string? Parent = null, string? Title = null, string? Description = null, string? ConfigurableDirectory = null) throws GLib.Error {
+            var rec = new Libmsi.Record (8);
             if (!rec.set_string (1, Feature) ||
                 !rec.set_int (2, Display) ||
                 !rec.set_int (3, Level) ||
-                !rec.set_int (4, Attributes))
+                !rec.set_int (4, Attributes) ||
+                (Parent != null && !rec.set_string (5, Parent)) ||
+                (Title != null && !rec.set_string (6, Title)) ||
+                (Description != null && !rec.set_string (7, Description)) ||
+                (ConfigurableDirectory != null && !rec.set_string (8, ConfigurableDirectory)))
                 throw new Wixl.Error.FAILED ("failed to add record");
 
             records.append (rec);

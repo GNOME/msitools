@@ -1,5 +1,11 @@
 namespace Wixl {
 
+    public enum VisitState {
+        ENTER,
+        INFIX,
+        LEAVE
+    }
+
     public abstract class WixElementVisitor: Object {
         public abstract void visit_product (WixProduct product) throws GLib.Error;
         public abstract void visit_icon (WixIcon icon) throws GLib.Error;
@@ -8,7 +14,7 @@ namespace Wixl {
         public abstract void visit_media (WixMedia media) throws GLib.Error;
         public abstract void visit_directory (WixDirectory dir) throws GLib.Error;
         public abstract void visit_component (WixComponent comp) throws GLib.Error;
-        public abstract void visit_feature (WixFeature feature) throws GLib.Error;
+        public abstract void visit_feature (WixFeature feature, VisitState state) throws GLib.Error;
         public abstract void visit_component_ref (WixComponentRef ref) throws GLib.Error;
         public abstract void visit_remove_folder (WixRemoveFolder rm) throws GLib.Error;
         public abstract void visit_registry_value (WixRegistryValue reg) throws GLib.Error;
@@ -324,8 +330,9 @@ namespace Wixl {
         public string ConfigurableDirectory { get; set; }
 
         public override void accept (WixElementVisitor visitor) throws GLib.Error {
+            visitor.visit_feature (this, VisitState.ENTER);
             base.accept (visitor);
-            visitor.visit_feature (this);
+            visitor.visit_feature (this, VisitState.LEAVE);
         }
     }
 

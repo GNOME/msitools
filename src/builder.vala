@@ -268,8 +268,49 @@ namespace Wixl {
 
         }
 
-        public override void visit_feature (WixFeature feature) throws GLib.Error {
-            db.table_feature.add (feature.Id, 2, int.parse (feature.Level), 0);
+        enum FeatureDisplay {
+            HIDDEN = 0,
+            EXPAND,
+            COLLAPSE
+        }
+        WixFeature? feature_root;
+        int feature_display;
+
+        public override void visit_feature (WixFeature feature, VisitState state) throws GLib.Error {
+            if (state == VisitState.ENTER && feature_root == null) {
+                feature_display = 0;
+                feature_root = feature;
+            } else if (state == VisitState.LEAVE && feature_root == feature) {
+                feature_root = null;
+            }
+
+            if (state != VisitState.ENTER)
+                return;
+
+            int display = FeatureDisplay.COLLAPSE;
+            if (feature.Display != null) {
+                try {
+                    display = enum_from_string (typeof (FeatureDisplay), feature.Display);
+                } catch (GLib.Error error) {
+                    display = int.parse (feature.Display);
+                    if (display != 0)
+                        feature_display = display;
+                }
+            }
+
+            switch (display) {
+            case FeatureDisplay.COLLAPSE:
+                display = feature_display = (feature_display | 1) + 1;
+                break;
+            case FeatureDisplay.EXPAND:
+                display = feature_display = (feature_display + 1) | 1;
+                break;
+            }
+
+            string? parent = (feature.parent is WixFeature) ? feature.parent.Id : null;
+
+            db.table_feature.add (feature.Id, display, int.parse (feature.Level), 0, parent, feature.Title, feature.Description, feature.ConfigurableDirectory);
+
         }
 
         public override void visit_component_ref (WixComponentRef ref) throws GLib.Error {
