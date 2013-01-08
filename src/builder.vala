@@ -186,6 +186,13 @@ namespace Wixl {
             }
         }
 
+        string[] secureProperties;
+
+        public void property_update () throws GLib.Error {
+            var prop = string.joinv (";", secureProperties);
+            db.table_property.add ("SecureCustomProperties", prop);
+        }
+
         public MsiDatabase build () throws GLib.Error {
             db = new MsiDatabase ();
 
@@ -195,6 +202,7 @@ namespace Wixl {
             }
             root = null;
 
+            property_update ();
             shortcut_target ();
             sequence_actions ();
             build_cabinet ();
@@ -526,6 +534,8 @@ namespace Wixl {
                 attributes |= UpgradeAttribute.VERSION_MIN_INCLUSIVE;
 
             db.table_upgrade.add (get_uuid (upgrade.Id), version.Minimum, version.Maximum, attributes, version.Property);
+
+            secureProperties += version.Property;
         }
 
         public override void visit_remove_existing_products (WixRemoveExistingProducts remove) throws GLib.Error {
