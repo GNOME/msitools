@@ -30,12 +30,17 @@ namespace Wixl {
             }
         }
 
-        public void load_file (File file) throws GLib.Error {
+        public void load_file (File file, bool preproc_only = false) throws GLib.Error {
             string data;
             FileUtils.get_contents (file.get_path (), out data);
 
             var p = new Preprocessor ();
             var doc = p.preprocess (data, file);
+            if (preproc_only) {
+                doc.dump_format (FileStream.fdopen (1, "w"));
+                return;
+            }
+
             load_doc (doc);
         }
 

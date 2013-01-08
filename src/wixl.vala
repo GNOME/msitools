@@ -3,11 +3,17 @@ using Posix;
 namespace Wixl {
 
     static bool version;
+    static bool verbose;
+    static bool preproc;
+    static string output;
     [CCode (array_length = false, array_null_terminated = true)]
     static string[] files;
 
     private const OptionEntry[] options = {
         { "version", 0, 0, OptionArg.NONE, ref version, N_("Display version number"), null },
+        { "verbose", 'v', 0, OptionArg.NONE, ref verbose, N_("Verbose output"), null },
+        { "output", 'o', 0, OptionArg.FILENAME, ref output, N_("Output file"), null },
+        { "only-preproc", 'E', 0, OptionArg.NONE, ref preproc, N_("Stop after the preprocessing stage"), null },
         { "", 0, 0, OptionArg.FILENAME_ARRAY, ref files, null, N_("OUTPUT_FILE INPUT_FILE...") },
         { null }
     };
@@ -37,23 +43,33 @@ namespace Wixl {
             exit (0);
         }
 
-        if (files.length < 2) {
-            GLib.stderr.printf (_("Please specify output and input files.\n"));
+        if (files.length < 1) {
+            GLib.stderr.printf (_("Please specify input files.\n"));
+            exit (1);
+        }
+
+        if (output == null && !preproc) {
+            GLib.stderr.printf (_("Please specify the output file.\n"));
             exit (1);
         }
 
         try {
             var builder = new WixBuilder ();
-            foreach (var arg in files[1:files.length]) {
-                print ("Loading %s...\n", arg);
+            foreach (var arg in files) {
+                if (verbose)
+                    print ("Loading %s...\n", arg);
                 var file = File.new_for_commandline_arg (arg);
-                builder.load_file (file);
+                builder.load_file (file, preproc);
                 builder.add_path (file.get_parent ().get_path ());
             }
 
-            print ("Building %s...\n", files[0]);
+            if (preproc)
+                return 0;
+
+            if (verbose)
+                print ("Building %s...\n", files[0]);
             var msi = builder.build ();
-            msi.build (files[0]);
+            msi.build (output);
         } catch (GLib.Error error) {
             printerr (error.message + "\n");
             return 1;

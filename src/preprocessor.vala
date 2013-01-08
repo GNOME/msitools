@@ -107,7 +107,6 @@ namespace Wixl {
             }
             writer.end_document ();
 
-            doc.dump_format (FileStream.fdopen (1, "w"));
             return doc;
         }
     }
