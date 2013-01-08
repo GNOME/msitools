@@ -174,12 +174,12 @@ namespace Wixl {
             return rec.set_int (2, last_sequence);
         }
 
-        public Libmsi.Record add (string DiskId, string DiskPrompt, string Cabinet) throws GLib.Error {
+        public Libmsi.Record add (string DiskId, string? DiskPrompt, string Cabinet) throws GLib.Error {
             var rec = new Libmsi.Record (4);
 
             if (!rec.set_int (1, int.parse (DiskId)) ||
                 !rec.set_int (2, 0) ||
-                !rec.set_string (3, DiskPrompt) ||
+                (DiskPrompt != null && !rec.set_string (3, DiskPrompt)) ||
                 !rec.set_string (4, Cabinet))
                 throw new Wixl.Error.FAILED ("failed to add record");
 

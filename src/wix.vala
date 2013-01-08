@@ -35,8 +35,10 @@ namespace Wixl {
         static construct {
             Value.register_transform_func (typeof (WixElement), typeof (string), (ValueTransform)WixElement.value_to_string);
         }
-
-        protected class HashTable<string, Type> child_types = null; // FIXME: would be nice if vala always initialize class member to null
+ 
+        // FIXME: would be nice if vala always initialize class member to null
+        // GObject copy class init so other class hashtable will be unrefed...??
+        protected class HashTable<string, Type> *child_types = null;
         class construct {
             child_types = new HashTable<string, Type> (str_hash, str_equal);
         }
@@ -100,7 +102,7 @@ namespace Wixl {
                 case Xml.ElementType.TEXT_NODE:
                     continue;
                 case Xml.ElementType.ELEMENT_NODE:
-                    var t = child_types.lookup (child->name);
+                    var t = child_types->lookup (child->name);
                     if (t != 0) {
                         var elem = Object.new (t) as WixElement;
                         elem.load (child);

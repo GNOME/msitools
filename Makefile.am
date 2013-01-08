@@ -12,6 +12,7 @@ EXTRA_DIST =					\
 	intltool-extract.in			\
 	intltool-merge.in			\
 	intltool-update.in			\
+	vapi/libxml-2.0.vapi			\
 	$(NULL)
 
 DISTCLEANFILES =				\

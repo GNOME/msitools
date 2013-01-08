@@ -5,7 +5,9 @@ AM_CFLAGS = -w
 
 AM_VALAFLAGS =					\
 	-H wixl.h --use-header			\
-	--vapidir=$(srcdir) --pkg config	\
+	--vapidir=$(srcdir)			\
+	--vapidir=$(top_srcdir)/vapi		\
+	--pkg config				\
 	--enable-experimental			\
 	--pkg gio-2.0				\
 	--pkg libmsi-1.0			\
@@ -17,6 +19,7 @@ AM_VALAFLAGS =					\
 wixl_SOURCES =					\
 	builder.vala				\
 	msi.vala				\
+	preprocessor.vala			\
 	util.vala				\
 	wix.vala				\
 	wixl.vala				\

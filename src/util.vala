@@ -92,4 +92,37 @@ namespace Wixl {
 
         return (str[0] == 'Y' || str[0] == 'y');
     }
+
+    string unquote (string str) {
+        if ((str[0] == '\'' && str[str.length-1] == '\'') ||
+            (str[0] == '"' && str[str.length-1] == '"'))
+            return str[1:-1];
+
+        return str;
+    }
+
+    string remove_prefix (string prefix, string str) {
+        if (str.has_prefix (prefix))
+            return str[prefix.length:str.length];
+
+        return str;
+    }
+
+    int find_closing_paren (string str) {
+        return_val_if_fail (str[0] == '(', -1);
+
+        var open_count = 1;
+        var close_count = 0;
+        for (var pos = 1;  pos < str.length; pos++) {
+            if (str[pos] == '(')
+                open_count++;
+            else if (str[pos] == ')') {
+                close_count++;
+                if (open_count == close_count)
+                    return pos;
+            }
+        }
+
+        return -1;
+    }
 } // Wixl

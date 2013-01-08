@@ -47,9 +47,7 @@ namespace Wixl {
             foreach (var arg in files[1:files.length]) {
                 print ("Loading %s...\n", arg);
                 var file = File.new_for_commandline_arg (arg);
-                string data;
-                FileUtils.get_contents (file.get_path (), out data);
-                builder.load_xml (data);
+                builder.load_file (file);
                 builder.add_path (file.get_parent ().get_path ());
             }
 

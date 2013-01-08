@@ -16,10 +16,8 @@ namespace Wixl {
         }
 
         List<WixRoot> roots;
-        public void load_xml (string data) throws GLib.Error {
-            var doc = Xml.Parser.read_memory (data, data.length);
-
-            for (var child = doc->children; child != null; child = child->next) {
+        public void load_doc (Xml.Doc doc) throws GLib.Error {
+            for (var child = doc.children; child != null; child = child->next) {
                 switch (child->type) {
                 case Xml.ElementType.ELEMENT_NODE:
                     if (child->name != "Wix")
@@ -30,6 +28,15 @@ namespace Wixl {
                     break;
                 }
             }
+        }
+
+        public void load_file (File file) throws GLib.Error {
+            string data;
+            FileUtils.get_contents (file.get_path (), out data);
+
+            var p = new Preprocessor ();
+            var doc = p.preprocess (data, file);
+            load_doc (doc);
         }
 
         public G? find_element<G> (string Id) {
@@ -182,7 +189,9 @@ namespace Wixl {
         }
 
         public override void visit_product (WixProduct product) throws GLib.Error {
-            db.info.set_codepage (int.parse (product.Codepage));
+            if (product.Codepage != null)
+                db.info.set_codepage (int.parse (product.Codepage));
+
             db.info.set_author (product.Manufacturer);
 
             db.table_property.add ("Manufacturer", product.Manufacturer);
@@ -194,9 +203,13 @@ namespace Wixl {
         }
 
         public override void visit_package (WixPackage package) throws GLib.Error {
-            db.info.set_keywords (package.Keywords);
-            db.info.set_subject (package.Description);
             db.info.set_comments (package.Comments);
+
+            if (package.Description != null)
+                db.info.set_subject (package.Description);
+
+            if (package.Keywords != null)
+                db.info.set_keywords (package.Keywords);
         }
 
         public override void visit_icon (WixIcon icon) throws GLib.Error {
@@ -221,13 +234,15 @@ namespace Wixl {
         }
 
         public override void visit_directory (WixDirectory dir) throws GLib.Error {
+            var defaultdir = dir.Name ?? ".";
+
             if (dir.parent.get_type () == typeof (WixProduct)) {
                 if (dir.Id != "TARGETDIR")
                     throw new Wixl.Error.FAILED ("Invalid root directory");
-                db.table_directory.add (dir.Id, null, dir.Name);
+                db.table_directory.add (dir.Id, null, defaultdir);
             } else if (dir.parent.get_type () == typeof (WixDirectory)) {
                 var parent = dir.parent as WixDirectory;
-                db.table_directory.add (dir.Id, parent.Id, dir.Name);
+                db.table_directory.add (dir.Id, parent.Id, defaultdir);
             } else
                 warning ("unhandled parent type %s", dir.parent.name);
         }
@@ -428,14 +443,21 @@ namespace Wixl {
         }
 
         public override void visit_file (WixFile file) throws GLib.Error {
-            return_if_fail (file.DiskId == "1");
+            var diskid = file.DiskId ?? "1";
+            return_if_fail (diskid == "1");
+
+            var name = file.Id;
+            if (file.Name != null)
+                name = file.Name;
+            else if (file.Source != null)
+                name = Path.get_basename (file.Source);
 
             var comp = file.parent as WixComponent;
             FileInfo info;
-            file.file = find_file (file.Name, out info);
+            file.file = find_file (name, out info);
             var attr = FileAttribute.VITAL;
 
-            var rec = db.table_file.add (file.Id, comp.Id, file.Name, (int)info.get_size (), attr);
+            var rec = db.table_file.add (file.Id, comp.Id, name, (int)info.get_size (), attr);
             file.record = rec;
 
             visit_key_element (file);
