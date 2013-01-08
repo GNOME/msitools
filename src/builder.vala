@@ -491,6 +491,21 @@ namespace Wixl {
                 MsiTableShortcut.set_working_dir (rec, shortcut.WorkingDirectory);
         }
 
+        public override void visit_install_execute_sequence (WixInstallExecuteSequence sequence) throws GLib.Error {
+        }
+
+        public override void visit_condition (WixCondition condition) throws GLib.Error {
+        }
+
+        public override void visit_upgrade (WixUpgrade upgrade) throws GLib.Error {
+        }
+
+        public override void visit_upgrade_version (WixUpgradeVersion version) throws GLib.Error {
+        }
+
+        public override void visit_remove_existing_products (WixRemoveExistingProducts remove) throws GLib.Error {
+        }
+
         public override void visit_create_folder (WixCreateFolder folder) throws GLib.Error {
         }
 

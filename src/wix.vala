@@ -23,6 +23,11 @@ namespace Wixl {
         public abstract void visit_create_folder (WixCreateFolder folder) throws GLib.Error;
         public abstract void visit_fragment (WixFragment fragment) throws GLib.Error;
         public abstract void visit_directory_ref (WixDirectoryRef ref) throws GLib.Error;
+        public abstract void visit_install_execute_sequence (WixInstallExecuteSequence sequence) throws GLib.Error;
+        public abstract void visit_condition (WixCondition condition) throws GLib.Error;
+        public abstract void visit_upgrade (WixUpgrade upgrade) throws GLib.Error;
+        public abstract void visit_upgrade_version (WixUpgradeVersion version) throws GLib.Error;
+        public abstract void visit_remove_existing_products (WixRemoveExistingProducts remove) throws GLib.Error;
     }
 
     public abstract class WixElement: Object {
@@ -349,17 +354,89 @@ namespace Wixl {
         }
     }
 
+    public class WixCondition: WixElement {
+        static construct {
+            name = "Condition";
+        }
+
+        public string Message { get; set; }
+
+        public override void accept (WixElementVisitor visitor) throws GLib.Error {
+            visitor.visit_condition (this);
+        }
+    }
+
+    public class WixRemoveExistingProducts: WixElement {
+        static construct {
+            name = "RemoveExistingProducts";
+        }
+
+        public string After { get; set; }
+
+        public override void accept (WixElementVisitor visitor) throws GLib.Error {
+            visitor.visit_remove_existing_products (this);
+        }
+    }
+
+    public class WixInstallExecuteSequence: WixElement {
+        static construct {
+            name = "InstallExecuteSequence";
+
+            add_child_types (child_types, {
+                typeof (WixRemoveExistingProducts),
+            });
+        }
+
+        public override void accept (WixElementVisitor visitor) throws GLib.Error {
+            visitor.visit_install_execute_sequence (this);
+        }
+    }
+
+    public class WixUpgrade: WixElement {
+        static construct {
+            name = "Upgrade";
+
+            add_child_types (child_types, {
+                typeof (WixUpgradeVersion),
+            });
+        }
+
+        public override void accept (WixElementVisitor visitor) throws GLib.Error {
+            visitor.visit_upgrade (this);
+        }
+    }
+
+    public class WixUpgradeVersion: WixElement {
+        static construct {
+            name = "UpgradeVersion";
+        }
+
+        public string Minimum { get; set; }
+        public string Maximum { get; set; }
+        public string IncludeMinimum { get; set; }
+        public string IncludeMaximum { get; set; }
+        public string OnlyDetect { get; set; }
+        public string Property { get; set; }
+
+        public override void accept (WixElementVisitor visitor) throws GLib.Error {
+            visitor.visit_upgrade_version (this);
+        }
+    }
+
     public class WixProduct: WixElement {
         static construct {
             name = "Product";
 
             add_child_types (child_types, {
+                typeof (WixCondition),
                 typeof (WixDirectory),
                 typeof (WixFeature),
                 typeof (WixIcon),
+                typeof (WixInstallExecuteSequence),
                 typeof (WixMedia),
                 typeof (WixPackage),
-                typeof (WixProperty)
+                typeof (WixProperty),
+                typeof (WixUpgrade),
             });
         }
 
