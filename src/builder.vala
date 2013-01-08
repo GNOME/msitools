@@ -542,7 +542,7 @@ namespace Wixl {
             secureProperties += version.Property;
         }
 
-        public override void visit_remove_existing_products (WixRemoveExistingProducts remove) throws GLib.Error {
+        public override void visit_action (WixAction action) throws GLib.Error {
         }
 
         public override void visit_create_folder (WixCreateFolder folder) throws GLib.Error {

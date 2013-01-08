@@ -27,7 +27,7 @@ namespace Wixl {
         public abstract void visit_condition (WixCondition condition) throws GLib.Error;
         public abstract void visit_upgrade (WixUpgrade upgrade) throws GLib.Error;
         public abstract void visit_upgrade_version (WixUpgradeVersion version) throws GLib.Error;
-        public abstract void visit_remove_existing_products (WixRemoveExistingProducts remove) throws GLib.Error;
+        public abstract void visit_action (WixAction action) throws GLib.Error;
         public abstract void visit_text (WixText text) throws GLib.Error;
     }
 
@@ -401,15 +401,21 @@ namespace Wixl {
         }
     }
 
-    public class WixRemoveExistingProducts: WixElement {
-        static construct {
-            name = "RemoveExistingProducts";
-        }
-
+    public abstract class WixAction: WixElement {
         public string After { get; set; }
+        public string Before { get; set; }
+        public string Overridable { get; set; }
+        public string Sequence { get; set; }
+        public string Suppress { get; set; }
 
         public override void accept (WixNodeVisitor visitor) throws GLib.Error {
-            visitor.visit_remove_existing_products (this);
+            visitor.visit_action (this);
+        }
+    }
+
+    public class WixRemoveExistingProducts: WixAction {
+        static construct {
+            name = "RemoveExistingProducts";
         }
     }
 
