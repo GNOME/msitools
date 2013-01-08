@@ -115,6 +115,12 @@ namespace Wixl {
                 case Xml.ReaderType.END_ELEMENT:
                     writer.end_element ();
                     break;
+                case Xml.ReaderType.TEXT:
+                    writer.write_string (eval (reader.const_value(), file));
+                    break;
+                case Xml.ReaderType.CDATA:
+                    writer.write_cdata (eval (reader.const_value(), file));
+                    break;
                 }
             }
             writer.end_document ();

@@ -1039,6 +1039,9 @@ namespace Xml {
 		[CCode (cname = "xmlTextWriterWriteString")]
 		public int write_string (string content);
 
+		[CCode (cname = "xmlTextWriterWriteCDATA")]
+		public int write_cdata (string content);
+
 		/* formatted */
 
 		[CCode (cname = "xmlTextWriterWriteFormatAttribute")]
