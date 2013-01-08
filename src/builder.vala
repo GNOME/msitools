@@ -508,6 +508,10 @@ namespace Wixl {
         }
 
         public override void visit_condition (WixCondition condition) throws GLib.Error {
+            return_if_fail (condition.children.length () == 1);
+            var text = condition.children.first ().data as WixText;
+
+            db.table_launch_condition.add (text.Text, condition.Message);
         }
 
         [Flags]

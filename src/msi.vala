@@ -209,6 +209,24 @@ namespace Wixl {
         }
     }
 
+    class MsiTableLaunchCondition: MsiTable {
+        static construct {
+            name = "LaunchCondition";
+            sql_create = "CREATE TABLE `LaunchCondition` (`Condition` CHAR(255) NOT NULL, `Description` CHAR(255) NOT NULL LOCALIZABLE PRIMARY KEY `Condition`)";
+            sql_insert = "INSERT INTO `LaunchCondition` (`Condition`, `Description`) VALUES (?, ?)";
+        }
+
+        public void add (string condition, string description) throws GLib.Error {
+            var rec = new Libmsi.Record (2);
+
+            if (!rec.set_string (1, condition) ||
+                !rec.set_string (2, description))
+                throw new Wixl.Error.FAILED ("failed to add record");
+
+            records.append (rec);
+        }
+    }
+
     class MsiTableProperty: MsiTable {
         static construct {
             name = "Property";
@@ -481,6 +499,7 @@ namespace Wixl {
         public MsiTableStreams table_streams;
         public MsiTableShortcut table_shortcut;
         public MsiTableUpgrade table_upgrade;
+        public MsiTableLaunchCondition table_launch_condition;
 
         HashTable<string, MsiTable> tables;
 
@@ -523,6 +542,7 @@ namespace Wixl {
             table_streams = new MsiTableStreams ();
             table_shortcut = new MsiTableShortcut ();
             table_upgrade = new MsiTableUpgrade ();
+            table_launch_condition = new MsiTableLaunchCondition ();
 
             foreach (var t in new MsiTable[] {
                     table_admin_execute_sequence,
@@ -543,6 +563,7 @@ namespace Wixl {
                     table_streams,
                     table_shortcut,
                     table_upgrade,
+                    table_launch_condition,
                     new MsiTableError (),
                     new MsiTableValidation ()
                 }) {
