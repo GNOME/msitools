@@ -18,9 +18,18 @@ namespace Wixl {
         List<WixRoot> roots;
         public void load_xml (string data) throws GLib.Error {
             var doc = Xml.Parser.read_memory (data, data.length);
-            var root = new WixRoot ();
-            root.load_xml (doc);
-            roots.append (root);
+
+            for (var child = doc->children; child != null; child = child->next) {
+                switch (child->type) {
+                case Xml.ElementType.ELEMENT_NODE:
+                    if (child->name != "Wix")
+                        warning ("unhandled node %s", child->name);
+                    var root = new WixRoot ();
+                    root.load (child);
+                    roots.append (root);
+                    break;
+                }
+            }
         }
 
         public G? find_element<G> (string Id) {

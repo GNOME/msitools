@@ -469,19 +469,6 @@ namespace Wixl {
                 typeof (WixFragment),
             });
         }
-
-        public string xmlns { get; set; }
-
-        public WixRoot () {
-        }
-
-        public void load_xml (Xml.Doc *doc) throws Wixl.Error {
-            var root = doc->children;
-            load (root);
-
-            if (root->ns != null)
-                xmlns = root->ns->href;
-        }
     }
 
 } // Wixl
