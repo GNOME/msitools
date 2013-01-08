@@ -462,8 +462,8 @@ namespace Wixl {
         }
 
         public override void visit_file (WixFile file) throws GLib.Error {
-            var diskid = file.DiskId ?? "1";
-            return_if_fail (diskid == "1");
+            file.DiskId = file.DiskId ?? "1";
+            return_if_fail (file.DiskId == "1");
 
             var name = file.Id;
             if (file.Name != null)
