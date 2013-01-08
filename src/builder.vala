@@ -8,6 +8,15 @@ namespace Wixl {
 
         WixRoot root;
         MsiDatabase db;
+        HashTable<string, string> variables;
+
+        construct {
+            variables = new HashTable<string, string> (str_hash, str_equal);
+        }
+
+        public void define_variable (string name, string value) {
+            variables.insert (name, value);
+        }
 
         List<File> path;
         public void add_path (string p) {
@@ -34,7 +43,7 @@ namespace Wixl {
             string data;
             FileUtils.get_contents (file.get_path (), out data);
 
-            var p = new Preprocessor ();
+            var p = new Preprocessor (variables);
             var doc = p.preprocess (data, file);
             if (preproc_only) {
                 doc.dump_format (FileStream.fdopen (1, "w"));

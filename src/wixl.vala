@@ -8,11 +8,14 @@ namespace Wixl {
     static string output;
     [CCode (array_length = false, array_null_terminated = true)]
     static string[] files;
+    [CCode (array_length = false, array_null_terminated = true)]
+    static string[] defines;
 
     private const OptionEntry[] options = {
         { "version", 0, 0, OptionArg.NONE, ref version, N_("Display version number"), null },
         { "verbose", 'v', 0, OptionArg.NONE, ref verbose, N_("Verbose output"), null },
         { "output", 'o', 0, OptionArg.FILENAME, ref output, N_("Output file"), null },
+        { "define", 'D', 0, OptionArg.STRING_ARRAY, ref defines, N_("Define variable"), null },
         { "only-preproc", 'E', 0, OptionArg.NONE, ref preproc, N_("Stop after the preprocessing stage"), null },
         { "", 0, 0, OptionArg.FILENAME_ARRAY, ref files, null, N_("INPUT_FILE...") },
         { null }
@@ -55,6 +58,14 @@ namespace Wixl {
 
         try {
             var builder = new WixBuilder ();
+
+            foreach (var d in defines) {
+                var def = d.split ("=", 2);
+                var name = def[0];
+                var value = def.length == 2 ? def[1] : "1";
+                builder.define_variable (name, value);
+            }
+
             foreach (var arg in files) {
                 if (verbose)
                     print ("Loading %s...\n", arg);

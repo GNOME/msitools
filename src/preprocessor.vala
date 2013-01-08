@@ -2,23 +2,35 @@ namespace Wixl {
 
     class Preprocessor: Object {
 
+        HashTable<string, string> globals;
         HashTable<string, string> variables;
         construct {
             variables = new HashTable<string, string> (str_hash, str_equal);
+        }
+
+        public Preprocessor (HashTable<string, string> globals) {
+            this.globals = globals;
         }
 
         public void define_variable (string name, string value) {
             variables.insert (name, value);
         }
 
-        public string get_variable (string str, File? file) throws GLib.Error {
+        public string? lookup_variable (string name) {
+            return variables.lookup (name) ?? globals.lookup (name);
+        }
+
+        public string eval_variable (string str, File? file) throws GLib.Error {
             var var = str.split (".", 2);
             if (var.length != 2)
                 throw new Wixl.Error.FAILED ("invalid variable %s", str);
 
             switch (var[0]) {
             case "var":
-                return variables.lookup (var[1]);
+                var val = lookup_variable (var[1]);
+                if (val == null)
+                    throw new Wixl.Error.FAILED ("Undefined variable %s", var[1]);
+                return val;
             case "env":
                 return Environment.get_variable (var[1]);
             case "sys":
@@ -55,7 +67,7 @@ namespace Wixl {
                     var substring = remainder[1:closing];
                     if (substring.index_of ("(") != -1)
                         throw new Wixl.Error.FIXME ("unsupported function");
-                    result += get_variable (substring, file);
+                    result += eval_variable (substring, file);
                     end += closing + 1;
                 }
             }
