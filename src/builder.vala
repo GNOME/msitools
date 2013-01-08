@@ -213,7 +213,7 @@ namespace Wixl {
 
             db.table_property.add ("Manufacturer", product.Manufacturer);
             db.table_property.add ("ProductLanguage", product.Language);
-            db.table_property.add ("ProductCode", add_braces (product.Id));
+            db.table_property.add ("ProductCode", get_uuid (product.Id));
             db.table_property.add ("ProductName", product.Name);
             db.table_property.add ("ProductVersion", product.Version);
             db.table_property.add ("UpgradeCode", add_braces (product.UpgradeCode));

@@ -23,7 +23,6 @@ namespace Wixl {
         return (string) udn;
     }
 
-
     int enum_from_string (Type t, string str) throws GLib.Error {
         var k = (EnumClass)t.class_ref ();
         var v = k.get_value_by_nick (str);
@@ -34,7 +33,19 @@ namespace Wixl {
     }
 
     string add_braces (string str) {
+        if (str[0] == '{')
+            return str;
+
         return "{" + str + "}";
+    }
+
+    string get_uuid (owned string uuid) throws GLib.Error {
+        if (uuid == "*")
+            uuid = uuid_generate ();
+        uuid = add_braces (uuid);
+        uuid = uuid.up ();
+        // FIXME: validate
+        return uuid;
     }
 
     long now () {

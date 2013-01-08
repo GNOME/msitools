@@ -469,8 +469,7 @@ namespace Wixl {
                 info.set_property (Libmsi.Property.TEMPLATE, "Intel;1033");
                 info.set_property (Libmsi.Property.KEYWORDS, "Installer");
                 info.set_property (Libmsi.Property.CODEPAGE, 1252);
-                info.set_property (Libmsi.Property.UUID,
-                                   add_braces (uuid_generate ()));
+                info.set_property (Libmsi.Property.UUID, get_uuid ("*"));
                 info.set_property (Libmsi.Property.CREATED_TM,
                                    time_to_filetime (now ()));
                 info.set_property (Libmsi.Property.LASTSAVED_TM,
