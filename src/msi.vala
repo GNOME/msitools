@@ -188,6 +188,27 @@ namespace Wixl {
         }
     }
 
+    class MsiTableUpgrade: MsiTable {
+        static construct {
+            name = "Upgrade";
+            sql_create = "CREATE TABLE `Upgrade` (`UpgradeCode` CHAR(38) NOT NULL, `VersionMin` CHAR(20), `VersionMax` CHAR(20), `Language` CHAR(255), `Attributes` LONG NOT NULL, `Remove` CHAR(255), `ActionProperty` CHAR(72) NOT NULL PRIMARY KEY `UpgradeCode`, `VersionMin`, `VersionMax`, `Language`, `Attributes`)";
+            sql_insert = "INSERT INTO `Upgrade` (`UpgradeCode`, `VersionMin`, `VersionMax`, `Attributes`, `ActionProperty`) VALUES (?, ?, ?, ?, ?)";
+        }
+
+        public void add (string UpgradeCode, string VersionMin, string? VersionMax, int Attributes, string ActionProperty) throws GLib.Error {
+            var rec = new Libmsi.Record (5);
+
+            if (!rec.set_string (1, UpgradeCode) ||
+                !rec.set_string (2, VersionMin) ||
+                (VersionMax != null && !rec.set_string (3, VersionMax)) ||
+                !rec.set_int (4, Attributes) ||
+                !rec.set_string (5, ActionProperty))
+                throw new Wixl.Error.FAILED ("failed to add record");
+
+            records.append (rec);
+        }
+    }
+
     class MsiTableProperty: MsiTable {
         static construct {
             name = "Property";
@@ -459,6 +480,7 @@ namespace Wixl {
         public MsiTableInstallUISequence table_install_ui_sequence;
         public MsiTableStreams table_streams;
         public MsiTableShortcut table_shortcut;
+        public MsiTableUpgrade table_upgrade;
 
         HashTable<string, MsiTable> tables;
 
@@ -500,6 +522,7 @@ namespace Wixl {
             table_install_ui_sequence = new MsiTableInstallUISequence ();
             table_streams = new MsiTableStreams ();
             table_shortcut = new MsiTableShortcut ();
+            table_upgrade = new MsiTableUpgrade ();
 
             foreach (var t in new MsiTable[] {
                     table_admin_execute_sequence,
@@ -519,6 +542,7 @@ namespace Wixl {
                     table_file,
                     table_streams,
                     table_shortcut,
+                    table_upgrade,
                     new MsiTableError (),
                     new MsiTableValidation ()
                 }) {

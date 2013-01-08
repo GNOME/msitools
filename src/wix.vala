@@ -437,6 +437,7 @@ namespace Wixl {
         }
 
         public override void accept (WixNodeVisitor visitor) throws GLib.Error {
+            base.accept (visitor);
             visitor.visit_upgrade (this);
         }
     }

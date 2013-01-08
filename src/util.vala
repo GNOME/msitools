@@ -97,9 +97,9 @@ namespace Wixl {
         return str;
     }
 
-    bool parse_yesno (string? str) {
+    bool parse_yesno (string? str, bool default = false) {
         if (str == null)
-            return false;
+            return default;
 
         return (str[0] == 'Y' || str[0] == 'y');
     }

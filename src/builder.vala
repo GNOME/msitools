@@ -502,10 +502,30 @@ namespace Wixl {
         public override void visit_condition (WixCondition condition) throws GLib.Error {
         }
 
+        [Flags]
+        enum UpgradeAttribute {
+            MIGRATE_FEATURES = 1 << 0,
+            ONLY_DETECT = 1 << 1,
+            IGNORE_REMOVE_FAILURE = 1 << 2,
+            VERSION_MIN_INCLUSIVE = 1 << 8,
+            VERSION_MAX_INCLUSIVE = 1 << 9,
+            LANGUAGES_EXCLUSIVE = 1 << 10
+        }
+
         public override void visit_upgrade (WixUpgrade upgrade) throws GLib.Error {
         }
 
         public override void visit_upgrade_version (WixUpgradeVersion version) throws GLib.Error {
+            var upgrade = version.parent as WixUpgrade;
+            UpgradeAttribute attributes = 0;
+
+            if (parse_yesno (version.OnlyDetect))
+                attributes |= UpgradeAttribute.ONLY_DETECT;
+
+            if (parse_yesno (version.IncludeMinimum, true))
+                attributes |= UpgradeAttribute.VERSION_MIN_INCLUSIVE;
+
+            db.table_upgrade.add (get_uuid (upgrade.Id), version.Minimum, version.Maximum, attributes, version.Property);
         }
 
         public override void visit_remove_existing_products (WixRemoveExistingProducts remove) throws GLib.Error {
