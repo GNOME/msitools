@@ -14,7 +14,7 @@ namespace Wixl {
         { "verbose", 'v', 0, OptionArg.NONE, ref verbose, N_("Verbose output"), null },
         { "output", 'o', 0, OptionArg.FILENAME, ref output, N_("Output file"), null },
         { "only-preproc", 'E', 0, OptionArg.NONE, ref preproc, N_("Stop after the preprocessing stage"), null },
-        { "", 0, 0, OptionArg.FILENAME_ARRAY, ref files, null, N_("OUTPUT_FILE INPUT_FILE...") },
+        { "", 0, 0, OptionArg.FILENAME_ARRAY, ref files, null, N_("INPUT_FILE...") },
         { null }
     };
 
