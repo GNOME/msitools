@@ -655,7 +655,7 @@ static int cmd_export(struct Command *cmd, int argc, char **argv)
     LibmsiResult r;
     gboolean sql = FALSE;
 
-    if (!strcmp(argv[1], "-s")) {
+    if (argc > 1 && !strcmp(argv[1], "-s")) {
         sql = TRUE;
         argc--;
         argv++;
