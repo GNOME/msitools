@@ -46,7 +46,7 @@ static const uint8_t fmtid_SummaryInformation[16] =
 static unsigned load_summary_info( LibmsiSummaryInfo *si, GsfInput *stm );
 
 static void
-libmsi_summary_info_init (LibmsiSummaryInfo *p)
+libmsi_summary_info_init (LibmsiSummaryInfo *self)
 {
 }
 
@@ -61,14 +61,14 @@ free_prop (LibmsiOLEVariant *prop)
 static void
 libmsi_summary_info_finalize (GObject *object)
 {
-    LibmsiSummaryInfo *p = LIBMSI_SUMMARY_INFO (object);
+    LibmsiSummaryInfo *self = LIBMSI_SUMMARY_INFO (object);
     unsigned i;
 
     for (i = 0; i < MSI_MAX_PROPS; i++)
-        free_prop (&p->property[i]);
+        free_prop (&self->property[i]);
 
-    if (p->database)
-        g_object_unref (p->database);
+    if (self->database)
+        g_object_unref (self->database);
 
     G_OBJECT_CLASS (libmsi_summary_info_parent_class)->finalize (object);
 }
@@ -77,15 +77,15 @@ static void
 summary_info_set_property (GObject *object, guint prop_id, const GValue *value, GParamSpec *pspec)
 {
     g_return_if_fail (LIBMSI_IS_SUMMARY_INFO (object));
-    LibmsiSummaryInfo *p = LIBMSI_SUMMARY_INFO (object);
+    LibmsiSummaryInfo *self = LIBMSI_SUMMARY_INFO (object);
 
     switch (prop_id) {
     case PROP_DATABASE:
-        g_return_if_fail (p->database == NULL);
-        p->database = g_value_dup_object (value);
+        g_return_if_fail (self->database == NULL);
+        self->database = g_value_dup_object (value);
         break;
     case PROP_UPDATE_COUNT:
-        p->update_count = g_value_get_uint (value);
+        self->update_count = g_value_get_uint (value);
         break;
     default:
         G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -97,14 +97,14 @@ static void
 summary_info_get_property (GObject *object, guint prop_id, GValue *value, GParamSpec *pspec)
 {
     g_return_if_fail (LIBMSI_IS_SUMMARY_INFO (object));
-    LibmsiSummaryInfo *p = LIBMSI_SUMMARY_INFO (object);
+    LibmsiSummaryInfo *self = LIBMSI_SUMMARY_INFO (object);
 
     switch (prop_id) {
     case PROP_DATABASE:
-        g_value_set_object (value, p->database);
+        g_value_set_object (value, self->database);
         break;
     case PROP_UPDATE_COUNT:
-        g_value_set_uint (value, p->update_count);
+        g_value_set_uint (value, self->update_count);
         break;
     default:
         G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -116,12 +116,11 @@ static void
 libmsi_summary_info_constructed (GObject *object)
 {
     LibmsiSummaryInfo *self = LIBMSI_SUMMARY_INFO (object);
-    LibmsiSummaryInfo *p = self;
     GsfInput *stm = NULL;
     unsigned r;
 
     /* read the stream... if we fail, we'll start with an empty property set */
-    r = msi_get_raw_stream (p->database, szSumInfo, &stm);
+    r = msi_get_raw_stream (self->database, szSumInfo, &stm);
     if (r == 0) {
         load_summary_info (self, stm);
         g_object_unref (G_OBJECT (stm));

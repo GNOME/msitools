@@ -90,12 +90,12 @@ libmsi_db_error_quark (void)
 }
 
 static void
-libmsi_database_init (LibmsiDatabase *p)
+libmsi_database_init (LibmsiDatabase *self)
 {
-    list_init (&p->tables);
-    list_init (&p->transforms);
-    list_init (&p->streams);
-    list_init (&p->storages);
+    list_init (&self->tables);
+    list_init (&self->transforms);
+    list_init (&self->streams);
+    list_init (&self->storages);
 }
 
 static void
@@ -120,13 +120,12 @@ static void
 libmsi_database_finalize (GObject *object)
 {
     LibmsiDatabase *self = LIBMSI_DATABASE (object);
-    LibmsiDatabase *p = self;
 
     _libmsi_database_close (self, false);
     free_cached_tables (self);
     free_transforms (self);
 
-    g_free (p->path);
+    g_free (self->path);
 
     G_OBJECT_CLASS (libmsi_database_parent_class)->finalize (object);
 }
@@ -135,23 +134,23 @@ static void
 libmsi_database_set_property (GObject *object, guint prop_id, const GValue *value, GParamSpec *pspec)
 {
     g_return_if_fail (LIBMSI_IS_DATABASE (object));
-    LibmsiDatabase *p = LIBMSI_DATABASE (object);
+    LibmsiDatabase *self = LIBMSI_DATABASE (object);
 
     switch (prop_id) {
     case PROP_PATH:
-        g_return_if_fail (p->path == NULL);
-        p->path = g_value_dup_string (value);
+        g_return_if_fail (self->path == NULL);
+        self->path = g_value_dup_string (value);
         break;
     case PROP_MODE:
-        g_return_if_fail (p->mode == NULL);
-        p->mode = (const char*)g_value_get_int (value);
+        g_return_if_fail (self->mode == NULL);
+        self->mode = (const char*)g_value_get_int (value);
         break;
     case PROP_OUTPATH:
-        g_return_if_fail (p->outpath == NULL);
-        p->outpath = (const char*)g_value_dup_string (value);
+        g_return_if_fail (self->outpath == NULL);
+        self->outpath = (const char*)g_value_dup_string (value);
         break;
     case PROP_PATCH:
-        p->patch = g_value_get_boolean (value);
+        self->patch = g_value_get_boolean (value);
         break;
     default:
         G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -163,20 +162,20 @@ static void
 libmsi_database_get_property (GObject *object, guint prop_id, GValue *value, GParamSpec *pspec)
 {
     g_return_if_fail (LIBMSI_IS_DATABASE (object));
-    LibmsiDatabase *p = LIBMSI_DATABASE (object);
+    LibmsiDatabase *self = LIBMSI_DATABASE (object);
 
     switch (prop_id) {
     case PROP_PATH:
-        g_value_set_string (value, p->path);
+        g_value_set_string (value, self->path);
         break;
     case PROP_MODE:
-        g_value_set_int (value, (int)p->mode);
+        g_value_set_int (value, (int)self->mode);
         break;
     case PROP_OUTPATH:
-        g_value_set_string (value, p->outpath);
+        g_value_set_string (value, self->outpath);
         break;
     case PROP_PATCH:
-        g_value_set_boolean (value, p->patch);
+        g_value_set_boolean (value, self->patch);
         break;
     default:
         G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -2448,21 +2447,20 @@ LibmsiCondition libmsi_database_is_table_persistent(
 static gboolean
 init (LibmsiDatabase *self, GError **error)
 {
-    LibmsiDatabase *p = LIBMSI_DATABASE (self);
     LibmsiResult ret;
 
-    if (p->mode == LIBMSI_DB_OPEN_CREATE) {
-        p->strings = msi_init_string_table (&p->bytes_per_strref);
+    if (self->mode == LIBMSI_DB_OPEN_CREATE) {
+        self->strings = msi_init_string_table (&self->bytes_per_strref);
     } else {
         if (_libmsi_database_open(self))
             return FALSE;
     }
 
-    p->media_transform_offset = MSI_INITIAL_MEDIA_TRANSFORM_OFFSET;
-    p->media_transform_disk_id = MSI_INITIAL_MEDIA_TRANSFORM_DISKID;
+    self->media_transform_offset = MSI_INITIAL_MEDIA_TRANSFORM_OFFSET;
+    self->media_transform_disk_id = MSI_INITIAL_MEDIA_TRANSFORM_DISKID;
 
     if (TRACE_ON(msi))
-        enum_stream_names (p->infile);
+        enum_stream_names (self->infile);
 
     ret = _libmsi_database_start_transaction (self);
 

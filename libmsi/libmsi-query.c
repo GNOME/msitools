@@ -38,29 +38,28 @@ enum
 G_DEFINE_TYPE (LibmsiQuery, libmsi_query, G_TYPE_OBJECT);
 
 static void
-libmsi_query_init (LibmsiQuery *p)
+libmsi_query_init (LibmsiQuery *self)
 {
-    list_init (&p->mem);
+    list_init (&self->mem);
 }
 
 static void
 libmsi_query_finalize (GObject *object)
 {
     LibmsiQuery *self = LIBMSI_QUERY (object);
-    LibmsiQuery *p = self;
     struct list *ptr, *t;
 
-    if (p->view && p->view->ops->delete)
-        p->view->ops->delete (p->view);
+    if (self->view && self->view->ops->delete)
+        self->view->ops->delete (self->view);
 
-    if (p->database)
-        g_object_unref (p->database);
+    if (self->database)
+        g_object_unref (self->database);
 
-    LIST_FOR_EACH_SAFE (ptr, t, &p->mem) {
+    LIST_FOR_EACH_SAFE (ptr, t, &self->mem) {
         msi_free (ptr);
     }
 
-    g_free (p->query);
+    g_free (self->query);
 
     G_OBJECT_CLASS (libmsi_query_parent_class)->finalize (object);
 }
@@ -68,17 +67,17 @@ libmsi_query_finalize (GObject *object)
 static void
 libmsi_query_set_property (GObject *object, guint prop_id, const GValue *value, GParamSpec *pspec)
 {
-    LibmsiQuery *p = LIBMSI_QUERY (object);
     g_return_if_fail (LIBMSI_IS_QUERY (object));
+    LibmsiQuery *self = LIBMSI_QUERY (object);
 
     switch (prop_id) {
     case PROP_DATABASE:
-        g_return_if_fail (p->database == NULL);
-        p->database = g_value_dup_object (value);
+        g_return_if_fail (self->database == NULL);
+        self->database = g_value_dup_object (value);
         break;
     case PROP_QUERY:
-        g_return_if_fail (p->query == NULL);
-        p->query = g_value_dup_string (value);
+        g_return_if_fail (self->query == NULL);
+        self->query = g_value_dup_string (value);
         break;
     default:
         G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -89,15 +88,15 @@ libmsi_query_set_property (GObject *object, guint prop_id, const GValue *value, 
 static void
 libmsi_query_get_property (GObject *object, guint prop_id, GValue *value, GParamSpec *pspec)
 {
-    LibmsiQuery *p = LIBMSI_QUERY (object);
     g_return_if_fail (LIBMSI_IS_QUERY (object));
+    LibmsiQuery *self = LIBMSI_QUERY (object);
 
     switch (prop_id) {
     case PROP_DATABASE:
-        g_value_set_object (value, p->database);
+        g_value_set_object (value, self->database);
         break;
     case PROP_QUERY:
-        g_value_set_string (value, p->query);
+        g_value_set_string (value, self->query);
         break;
     default:
         G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -136,10 +135,9 @@ libmsi_query_class_init (LibmsiQueryClass *klass)
 static gboolean
 init (LibmsiQuery *self, GError **error)
 {
-    LibmsiQuery *p = self;
     unsigned r;
 
-    r = _libmsi_parse_sql (p->database, p->query, &p->view, &p->mem);
+    r = _libmsi_parse_sql (self->database, self->query, &self->view, &self->mem);
 
     return r == LIBMSI_RESULT_SUCCESS;
 }
