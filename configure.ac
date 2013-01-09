@@ -70,7 +70,6 @@ AC_CONFIG_FILES([
     libmsi-1.0.pc
     po/Makefile.in
     libmsi/Makefile
-    wixl/Makefile
     tests/Makefile
 ])
 AC_OUTPUT
