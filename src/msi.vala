@@ -38,13 +38,7 @@ namespace Wixl {
         }
     }
 
-    class MsiTableAdminExecuteSequence: MsiTable {
-        static construct {
-            name = "AdminExecuteSequence";
-            sql_create = "CREATE TABLE `AdminExecuteSequence` (`Action` CHAR(72) NOT NULL, `Condition` CHAR(255), `Sequence` INT PRIMARY KEY `Action`)";
-            sql_insert = "INSERT INTO `AdminExecuteSequence` (`Action`, `Sequence`) VALUES (?, ?)";
-        }
-
+    abstract class MsiTableSequence: MsiTable {
         public void add (string action, int sequence) throws GLib.Error {
             var rec = new Libmsi.Record (2);
 
@@ -53,42 +47,42 @@ namespace Wixl {
                 throw new Wixl.Error.FAILED ("failed to add record");
 
             records.append (rec);
+        }
+
+        protected class void set_sequence_table_name (string table) {
+            name = table;
+            sql_create = "CREATE TABLE `%s` (`Action` CHAR(72) NOT NULL, `Condition` CHAR(255), `Sequence` INT PRIMARY KEY `Action`)".printf (table);
+            sql_insert = "INSERT INTO `%s` (`Action`, `Sequence`) VALUES (?, ?)".printf (table);
         }
     }
 
-    class MsiTableAdminUISequence: MsiTable {
+    class MsiTableAdminExecuteSequence: MsiTableSequence {
         static construct {
-            name = "AdminUISequence";
-            sql_create = "CREATE TABLE `AdminUISequence` (`Action` CHAR(72) NOT NULL, `Condition` CHAR(255), `Sequence` INT PRIMARY KEY `Action`)";
-            sql_insert = "INSERT INTO `AdminUISequence` (`Action`, `Sequence`) VALUES (?, ?)";
-        }
-
-        public void add (string action, int sequence) throws GLib.Error {
-            var rec = new Libmsi.Record (2);
-
-            if (!rec.set_string (1, action) ||
-                !rec.set_int (2, sequence))
-                throw new Wixl.Error.FAILED ("failed to add record");
-
-            records.append (rec);
+            set_sequence_table_name ("AdminExecuteSequence");
         }
     }
 
-    class MsiTableAdvtExecuteSequence: MsiTable {
+    class MsiTableAdminUISequence: MsiTableSequence {
         static construct {
-            name = "AdvtExecuteSequence";
-            sql_create = "CREATE TABLE `AdvtExecuteSequence` (`Action` CHAR(72) NOT NULL, `Condition` CHAR(255), `Sequence` INT PRIMARY KEY `Action`)";
-            sql_insert = "INSERT INTO `AdvtExecuteSequence` (`Action`, `Sequence`) VALUES (?, ?)";
+            set_sequence_table_name ("AdminUISequence");
         }
+    }
 
-        public void add (string action, int sequence) throws GLib.Error {
-            var rec = new Libmsi.Record (2);
+    class MsiTableAdvtExecuteSequence: MsiTableSequence {
+        static construct {
+            set_sequence_table_name ("AdvtExecuteSequence");
+        }
+    }
 
-            if (!rec.set_string (1, action) ||
-                !rec.set_int (2, sequence))
-                throw new Wixl.Error.FAILED ("failed to add record");
+    class MsiTableInstallExecuteSequence: MsiTableSequence {
+        static construct {
+            set_sequence_table_name ("InstallExecuteSequence");
+        }
+    }
 
-            records.append (rec);
+    class MsiTableInstallUISequence: MsiTableSequence {
+        static construct {
+            set_sequence_table_name ("InstallUISequence");
         }
     }
 
@@ -124,42 +118,6 @@ namespace Wixl {
 
         public static bool set_sequence (Libmsi.Record rec, int Sequence) {
             return rec.set_int (6, Sequence);
-        }
-    }
-
-    class MsiTableInstallExecuteSequence: MsiTable {
-        static construct {
-            name = "InstallExecuteSequence";
-            sql_create = "CREATE TABLE `InstallExecuteSequence` (`Action` CHAR(72) NOT NULL, `Condition` CHAR(255), `Sequence` INT PRIMARY KEY `Action`)";
-            sql_insert = "INSERT INTO `InstallExecuteSequence` (`Action`, `Sequence`) VALUES (?, ?)";
-        }
-
-        public void add (string action, int sequence) throws GLib.Error {
-            var rec = new Libmsi.Record (2);
-
-            if (!rec.set_string (1, action) ||
-                !rec.set_int (2, sequence))
-                throw new Wixl.Error.FAILED ("failed to add record");
-
-            records.append (rec);
-        }
-    }
-
-    class MsiTableInstallUISequence: MsiTable {
-        static construct {
-            name = "InstallUISequence";
-            sql_create = "CREATE TABLE `InstallUISequence` (`Action` CHAR(72) NOT NULL, `Condition` CHAR(255), `Sequence` INT PRIMARY KEY `Action`)";
-            sql_insert = "INSERT INTO `InstallUISequence` (`Action`, `Sequence`) VALUES (?, ?)";
-        }
-
-        public void add (string action, int sequence) throws GLib.Error {
-            var rec = new Libmsi.Record (2);
-
-            if (!rec.set_string (1, action) ||
-                !rec.set_int (2, sequence))
-                throw new Wixl.Error.FAILED ("failed to add record");
-
-            records.append (rec);
         }
     }
 
