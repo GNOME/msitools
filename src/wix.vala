@@ -102,13 +102,13 @@ namespace Wixl {
             var array = a;
             var type = typeof (G);
 
-            if (this.get_type () == type)
+            if (this.get_type ().is_a (type))
                 array += this;
 
             foreach (var c in children) {
                 if (c is WixElement)
                     array = (c as WixElement).add_elements<G> (array);
-                else if (c.get_type () == type)
+                else if (c.get_type ().is_a (type))
                     array += c;
             }
 
