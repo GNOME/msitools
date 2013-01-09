@@ -1,8 +1,0 @@
-For the time being, development is done in both the Windows
-(IStream/IStorage) and portable (libgsf) versions.  This is because the
-test coverage is slightly worse in the libgsf version---some tests fail
-only in that version.
-
-The pre-gsf branch is developed with the mingw cross-compiler and wine.
-The master branch, which uses libgsf, is developed both with mingw+wine
-(though some tests fail) and native tools.
