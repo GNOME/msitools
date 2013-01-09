@@ -78,7 +78,7 @@ namespace Wixl {
                 return 0;
 
             if (verbose)
-                print ("Building %s...\n", files[0]);
+                print ("Building %s...\n", output);
             var msi = builder.build ();
             msi.build (output);
         } catch (GLib.Error error) {

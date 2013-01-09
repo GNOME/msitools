@@ -120,7 +120,7 @@ namespace Wixl {
             }
         }
 
-        public void add_sorted_actions () {
+        public void add_sorted_actions () throws GLib.Error {
             add_implicit_deps ();
             var sorted = sort_topological ();
 

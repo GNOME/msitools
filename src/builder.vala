@@ -71,9 +71,6 @@ namespace Wixl {
             return elems;
         }
 
-        public void add_custom_actions<G> (MsiTableSequence table) {
-        }
-
         delegate void AddSequence (string action, int sequence) throws GLib.Error;
 
         private void sequence_actions () throws GLib.Error {
@@ -205,8 +202,10 @@ namespace Wixl {
         string[] secureProperties;
 
         public void property_update () throws GLib.Error {
-            var prop = string.joinv (";", secureProperties);
-            db.table_property.add ("SecureCustomProperties", prop);
+            if (secureProperties.length != 0) {
+                var prop = string.joinv (";", secureProperties);
+                db.table_property.add ("SecureCustomProperties", prop);
+            }
         }
 
         public MsiDatabase build () throws GLib.Error {
