@@ -76,9 +76,6 @@ wixl_LDADD =					\
 
 wixl_DEPENDENCIES = libmsi/libmsi.la
 
-pkgconfigdir = $(libdir)/pkgconfig
-pkgconfig_DATA = libmsi-1.0.pc
-
 # Autotest support
 
 dist_noinst_DATA = tests/testsuite.at tests/package.m4 tests/testsuite

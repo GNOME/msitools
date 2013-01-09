@@ -1,4 +1,7 @@
 NULL =
+
+pkgconfigdir = $(libdir)/pkgconfig
+pkgconfig_DATA = libmsi-1.0.pc
 lib_LTLIBRARIES = libmsi.la
 
 AM_CPPFLAGS = -I$(top_srcdir)/include -I$(srcdir) -I. \
