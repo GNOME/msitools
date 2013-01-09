@@ -71,12 +71,20 @@ namespace Wixl {
             return elems;
         }
 
+        public void add_custom_actions<G> (MsiTableSequence table) {
+        }
+
         delegate void AddSequence (string action, int sequence) throws GLib.Error;
 
         private void sequence_actions () throws GLib.Error {
+            MsiTableSequence? table = null;
             AddSequence add = (action, sequence) => {
-                db.table_admin_execute_sequence.add (action, sequence);
+                var seq = table.get_action (action);
+                seq.sequence = sequence;
             };
+
+            // AdminExecuteSequence
+            table = db.table_admin_execute_sequence;
             add ("CostInitialize", 800);
             add ("FileCost", 900);
             add ("CostFinalize", 1000);
@@ -85,18 +93,17 @@ namespace Wixl {
             add ("InstallAdminPackage", 3900);
             add ("InstallFiles", 4000);
             add ("InstallFinalize", 6600);
+            table.add_sorted_actions ();
 
-            add = (action, sequence) => {
-                db.table_admin_ui_sequence.add (action, sequence);
-            };
+            // AdminUISequence
+            table = db.table_admin_ui_sequence;
             add ("CostInitialize", 800);
             add ("FileCost", 900);
             add ("CostFinalize", 1000);
             add ("ExecuteAction", 1300);
+            table.add_sorted_actions ();
 
-            add = (action, sequence) => {
-                db.table_advt_execute_sequence.add (action, sequence);
-            };
+            table = db.table_advt_execute_sequence;
             add ("CostInitialize", 800);
             add ("CostFinalize", 1000);
             add ("InstallValidate", 1400);
@@ -106,10 +113,14 @@ namespace Wixl {
             add ("PublishFeatures", 6300);
             add ("PublishProduct", 6400);
             add ("InstallFinalize", 6600);
+            table.add_sorted_actions ();
 
-            add = (action, sequence) => {
-                db.table_install_execute_sequence.add (action, sequence);
-            };
+            // InstallExecuteSequence
+            table = db.table_install_execute_sequence;
+            if (db.table_upgrade.records.length () > 0)
+                add ("FindRelatedProducts", 25);
+            if (db.table_launch_condition.records.length () > 0)
+                add ("LaunchConditions", 100);
             add ("ValidateProductID", 700);
             add ("CostInitialize", 800);
             add ("FileCost", 900);
@@ -118,32 +129,37 @@ namespace Wixl {
             add ("InstallInitialize", 1500);
             add ("ProcessComponents", 1600);
             add ("UnpublishFeatures", 1800);
-            if (db.table_registry.records.length () > 0) {
+            if (db.table_registry.records.length () > 0)
                 add ("RemoveRegistryValues", 2600);
-                add ("WriteRegistryValues", 5000);
-            }
             if (db.table_shortcut.records.length () > 0)
                 add ("RemoveShortcuts", 3200);
-            if (db.table_remove_file.records.length () > 0)
+            if (db.table_file.records.length () > 0 ||
+                db.table_remove_file.records.length () > 0)
                 add ("RemoveFiles", 3500);
             if (db.table_file.records.length () > 0)
                 add ("InstallFiles", 4000);
             if (db.table_shortcut.records.length () > 0)
                 add ("CreateShortcuts", 4500);
+            if (db.table_registry.records.length () > 0)
+                add ("WriteRegistryValues", 5000);
             add ("RegisterUser", 6000);
             add ("RegisterProduct", 6100);
             add ("PublishFeatures", 6300);
             add ("PublishProduct", 6400);
             add ("InstallFinalize", 6600);
+            table.add_sorted_actions ();
 
-            add = (action, sequence) => {
-                db.table_install_ui_sequence.add (action, sequence);
-            };
+            table = db.table_install_ui_sequence;
+            if (db.table_upgrade.records.length () > 0)
+                add ("FindRelatedProducts", 25);
+            if (db.table_launch_condition.records.length () > 0)
+                add ("LaunchConditions", 100);
             add ("ValidateProductID", 700);
             add ("CostInitialize", 800);
             add ("FileCost", 900);
             add ("CostFinalize", 1000);
             add ("ExecuteAction", 1300);
+            table.add_sorted_actions ();
         }
 
         private void build_cabinet () throws GLib.Error {
@@ -504,7 +520,7 @@ namespace Wixl {
                 MsiTableShortcut.set_working_dir (rec, shortcut.WorkingDirectory);
         }
 
-        public override void visit_install_execute_sequence (WixInstallExecuteSequence sequence) throws GLib.Error {
+        public override void visit_sequence (WixSequence sequence) throws GLib.Error {
         }
 
         public override void visit_condition (WixCondition condition) throws GLib.Error {
@@ -543,6 +559,20 @@ namespace Wixl {
         }
 
         public override void visit_action (WixAction action) throws GLib.Error {
+            var parent = action.parent as WixSequence;
+            var table = db.tables.lookup (parent.name) as MsiTableSequence;
+
+            var node = table.get_action (action.name);
+            warn_if_fail (node.action == null);
+            node.action = action;
+
+            if (action.After != null)
+                node.add_dep (table.get_action (action.After));
+
+            if (action.Before != null) {
+                var before = table.get_action (action.Before);
+                before.add_dep (node);
+            }
         }
 
         public override void visit_create_folder (WixCreateFolder folder) throws GLib.Error {

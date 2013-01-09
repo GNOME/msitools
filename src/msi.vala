@@ -39,7 +39,7 @@ namespace Wixl {
     }
 
     abstract class MsiTableSequence: MsiTable {
-        public void add (string action, int sequence) throws GLib.Error {
+        private void add (string action, int sequence) throws GLib.Error {
             var rec = new Libmsi.Record (2);
 
             if (!rec.set_string (1, action) ||
@@ -53,6 +53,97 @@ namespace Wixl {
             name = table;
             sql_create = "CREATE TABLE `%s` (`Action` CHAR(72) NOT NULL, `Condition` CHAR(255), `Sequence` INT PRIMARY KEY `Action`)".printf (table);
             sql_insert = "INSERT INTO `%s` (`Action`, `Sequence`) VALUES (?, ?)".printf (table);
+        }
+
+        public class Action {
+            public string name;
+            public int sequence = -1;
+            public WixAction? action;
+
+            public bool visited = false;
+            public bool incoming_deps = false;
+
+            // Use it as a set, so value is not refcounted please vala
+            public HashTable<Action, Action*> depends_on = new HashTable<Action, Action*> (direct_hash, direct_equal);
+
+            public void add_dep (Action a) {
+                depends_on.add (a);
+                a.incoming_deps = true;
+            }
+        }
+
+        HashTable<string, Action> actions = new HashTable<string, Action> (str_hash, str_equal);
+
+
+        void sort_topological_visit (Action action, ref List<Action> sorted) {
+            if (action.visited)
+                return;
+
+            action.visited = true;
+
+            Action dep;
+            var it = HashTableIter <Action, Action*> (action.depends_on);
+            while (it.next (null, out dep))
+                sort_topological_visit (dep, ref sorted);
+
+            sorted.append (action);
+        }
+
+        List<Action> sort_topological () {
+            List<Action> sorted = null;
+
+            Action action;
+            var it = HashTableIter <string, Action> (actions);
+            while (it.next (null, out action)) {
+                if (action.incoming_deps)
+                    continue;
+                sort_topological_visit (action, ref sorted);
+            }
+
+            return sorted;
+        }
+
+        void add_implicit_deps () {
+            CompareFunc<Action> cmp = (a, b) => {
+                return a.sequence - b.sequence;
+            };
+            var list = actions.get_values ();
+            list.sort (cmp);
+
+            Action? prev = null;
+            foreach (var a in list) {
+                if (a.sequence == -1)
+                    continue;
+                if (prev != null)
+                    a.add_dep (prev);
+                prev = a;
+            }
+        }
+
+        public void add_sorted_actions () {
+            add_implicit_deps ();
+            var sorted = sort_topological ();
+
+            int sequence = 0;
+            foreach (var action in sorted) {
+                if (action.sequence == -1)
+                    action.sequence = ++sequence;
+
+                sequence = action.sequence;
+                add (action.name, action.sequence);
+            }
+        }
+
+        public Action get_action (string name) {
+            var action = actions.lookup (name);
+            if (action != null)
+                return action;
+
+            action = new Action ();
+            actions.insert (name, action);
+            action.name = name;
+
+            return action;
         }
     }
 
@@ -459,7 +550,7 @@ namespace Wixl {
         public MsiTableUpgrade table_upgrade;
         public MsiTableLaunchCondition table_launch_condition;
 
-        HashTable<string, MsiTable> tables;
+        public HashTable<string, MsiTable> tables;
 
         construct {
             info = new MsiSummaryInfo ();

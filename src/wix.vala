@@ -23,7 +23,7 @@ namespace Wixl {
         public abstract void visit_create_folder (WixCreateFolder folder) throws GLib.Error;
         public abstract void visit_fragment (WixFragment fragment) throws GLib.Error;
         public abstract void visit_directory_ref (WixDirectoryRef ref) throws GLib.Error;
-        public abstract void visit_install_execute_sequence (WixInstallExecuteSequence sequence) throws GLib.Error;
+        public abstract void visit_sequence (WixSequence sequence) throws GLib.Error;
         public abstract void visit_condition (WixCondition condition) throws GLib.Error;
         public abstract void visit_upgrade (WixUpgrade upgrade) throws GLib.Error;
         public abstract void visit_upgrade_version (WixUpgradeVersion version) throws GLib.Error;
@@ -419,17 +419,20 @@ namespace Wixl {
         }
     }
 
-    public class WixInstallExecuteSequence: WixElement {
+    public class WixSequence: WixElement {
+        public override void accept (WixNodeVisitor visitor) throws GLib.Error {
+            base.accept (visitor);
+            visitor.visit_sequence (this);
+        }
+    }
+
+    public class WixInstallExecuteSequence: WixSequence {
         static construct {
             name = "InstallExecuteSequence";
 
             add_child_types (child_types, {
                 typeof (WixRemoveExistingProducts),
             });
-        }
-
-        public override void accept (WixNodeVisitor visitor) throws GLib.Error {
-            visitor.visit_install_execute_sequence (this);
         }
     }
 
