@@ -1,0 +1,45 @@
+<?xml version="1.0"?>
+<?define Version = "0.2.0"?>
+<?define UpgradeCode = "ABCDDCBA-8392-0202-1993-199374829923"?>
+<Wix xmlns='http://schemas.microsoft.com/wix/2006/wi'>
+
+   <Product Id="*" Name="name" Manufacturer="manufacturer"
+            Version="$(var.Version)" UpgradeCode="$(var.UpgradeCode)"
+            Language="1033">
+
+      <Package InstallerVersion="200" Compressed="yes" Comments="comments"/>
+      <Media Id="1" Cabinet="cabinet.cab" EmbedCab="yes"/>
+
+      <Property Id="ARPHELPLINK" Value="http://www.foobar.baz"/>
+      <Property Id="ARPNOMODIFY" Value="1"/>
+      <Property Id="ARPNOREPAIR" Value="1"/>
+      <Property Id="ARPPRODUCTICON" Value="FoobarAppl10.exe"/>
+      <Property Id="ARPURLINFOABOUT" Value="http://www.foobar.baz/info"/>
+      <Upgrade Id="$(var.UpgradeCode)">
+         <UpgradeVersion Minimum="$(var.Version)" OnlyDetect="yes" Property="NEWERVERSIONDETECTED"/>
+         <UpgradeVersion Minimum="0.0.0" Maximum="$(var.Version)" IncludeMinimum="yes" IncludeMaximum="no" Property="OLDERVERSIONBEINGUPGRADED"/>	  
+      </Upgrade>
+      <Condition Message="A newer version is already installed.">NOT NEWERVERSIONDETECTED</Condition>
+
+      <Directory Id="TARGETDIR" Name="SourceDir">
+         <Directory Id="ProgramFilesFolder">
+            <Directory Id="INSTALLDIR" Name="Example">
+               <Component Id="MainExecutable" Guid="ABCDDCBA-2034-1019-3233-949940039491">
+                  <File Id="FoobarAppl10.exe" Source="FoobarAppl10.exe"/>
+               </Component>
+            </Directory>
+         </Directory>
+      </Directory>
+
+      <Feature Id="Complete" Level="1">
+         <ComponentRef Id="MainExecutable"/>
+      </Feature>
+
+      <InstallExecuteSequence>
+         <RemoveExistingProducts After="InstallValidate"/>
+      </InstallExecuteSequence>
+
+      <Icon Id="FoobarAppl10.exe" SourceFile="FoobarAppl10.exe"/>
+
+   </Product>
+</Wix>

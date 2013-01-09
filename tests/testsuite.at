@@ -87,5 +87,12 @@ AT_CHECK_WIXL([-E variables.wxs -D Foo -D Zig=Zag], [0], [<?xml version="1.0"?>
   <Property Id="IdZag" Value="Zag"/>
 </Wix>
 ], [ignore])
+AT_CLEANUP
 
+AT_SETUP([ARP example])
+AT_WIXLDATA([test-arp.wxs])
+AT_WIXLDATA([FoobarAppl10.exe])
+AT_CHECK_WIXL([-o out.msi test-arp.wxs], [0], [ignore], [ignore])
+# FIXME: add tons of tests on out.msi
+AT_CHECK([test -f out.msi], [0])
 AT_CLEANUP
