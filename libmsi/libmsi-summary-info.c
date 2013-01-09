@@ -1061,7 +1061,7 @@ libmsi_summary_info_persist (LibmsiSummaryInfo *si, GError **error)
 /**
  * libmsi_summary_info_save:
  * @si: a #LibmsiSummaryInfo
- * @database: a #LibmsiDatabase to save to
+ * @db: a #LibmsiDatabase to save to
  * @error: (allow-none): #GError to set on error, or %NULL
  *
  * Save summary informations to the associated database.
