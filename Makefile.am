@@ -1,6 +1,10 @@
 ACLOCAL_AMFLAGS = -I m4
 SUBDIRS = libmsi tests .
 
+if WIXL
+SUBDIRS += po wixl
+endif
+
 dist_include_HEADERS = \
 	include/libmsi.h \
 	include/libmsi-database.h \
@@ -33,7 +37,7 @@ DISTCLEANFILES = atconfig atlocal
 CLEANFILES = testsuite.log
 
 check-local: $(srcdir)/tests/testsuite atconfig atlocal
-	 $(SHELL) $(srcdir)/tests/testsuite AUTOTEST_PATH=. $(TESTSUITEFLAGS)
+	$(SHELL) $(srcdir)/tests/testsuite AUTOTEST_PATH=.:wixl $(TESTSUITEFLAGS)
 
 installcheck-local: $(srcdir)/tests/testsuite atconfig atlocal
 	$(SHELL) $(srcdir)/tests/testsuite AUTOTEST_PATH=$(bindir) $(TESTSUITEFLAGS)

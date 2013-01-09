@@ -6,11 +6,17 @@ implementation of the Windows Installer.
 msitools plans to be a solution for packaging and deployment of
 cross-compiled Windows applications.
 
-While in a very early stage, it is already usable.  Two tools are
-provided, msiinfo and msibuild, respectively to inspect and create
-MSI files.  They are very low-level, but it should already be possible
-to use these tools to take an existing .MSI file, and update it with
-new build products (for example after a cross-compilation).
+Provided tools include:
+
+- msiinfo, to inspect MSI files
+
+- msibuild, a low-level tool to create MSI files
+
+- wixl, a WiX-like tool, that builds Windows Installer (MSI) packages
+  from an XML document, and tries to share the same syntax as the WiX
+  toolset, http://wixtoolset.org/
+
+While in a very early stage, it is already usable.
 
 msitools uses libgsf in order to read OLE Structured Storage files
 (which are the underlying format of .MSI files).  As of December 7th,
@@ -18,4 +24,8 @@ msitools uses libgsf in order to read OLE Structured Storage files
 found in any release.  Fedora packages for a fixed libgsf can be found
 at http://bonzini.fedorapeople.org/.
 
-For more information, contact me at pbonzini@redhat.com.
+Wixl lacks many features compared to WiX. As always, contributions
+are welcome!
+
+For more information, please contact us by email.  Forking and sending
+github pull requests is also welcome.

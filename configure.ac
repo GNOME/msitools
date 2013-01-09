@@ -15,6 +15,8 @@ AC_USE_SYSTEM_EXTENSIONS
 AC_PROG_CC
 AC_PROG_YACC
 
+IT_PROG_INTLTOOL([0.35])
+
 AM_PATH_GLIB_2_0([2.12.0])
 PKG_CHECK_MODULES([GOBJECT], [gobject-2.0 gio-2.0 >= 2.14])
 PKG_CHECK_MODULES([GSF], [libgsf-1])
@@ -28,10 +30,31 @@ LT_INIT([win32-dll disable-fast-install])
 GOBJECT_INTROSPECTION_CHECK([0.9.4])
 AM_CONDITIONAL([GIR], [test "x$INTROSPECTION_MAKEFILE" != x])
 
-AM_PROG_VALAC([0.14])
+AM_PROG_VALAC([0.16])
 AC_PATH_PROG(VAPIGEN, vapigen, no)
 AC_SUBST(VAPIGEN)
 AM_CONDITIONAL([VAPI], [test "x$VAPIGEN" != xno])
+
+PKG_CHECK_MODULES([WIXL], [gio-2.0 >= 2.26.0
+                           libgcab-1.0
+                           uuid >= 1.41.3
+                           libxml-2.0 >= 2.9],
+                  [wixl_ok=yes], [wixl_ok=no])
+
+AC_ARG_ENABLE([wixl],
+              [AS_HELP_STRING([--disable-wixl], [do not build wixl (default=yes)])],
+              [wixl=$enableval], [wixl=yes])
+
+AS_IF([test $wixl_ok = no && test $wixl != no],
+      [AC_MSG_ERROR([Wixl dependencies not found])])
+
+AM_CONDITIONAL([WIXL], [test "x$wixl" != xno])
+
+GETTEXT_PACKAGE=wixl
+AC_DEFINE_UNQUOTED([GETTEXT_PACKAGE], ["$GETTEXT_PACKAGE"], [Gettext Package])
+AC_SUBST(GETTEXT_PACKAGE)
+AM_GNU_GETTEXT_VERSION([1.11])
+AM_GLIB_GNU_GETTEXT
 
 m4_ifdef([AM_SILENT_RULES],[AM_SILENT_RULES([yes])])
 
@@ -45,7 +68,19 @@ AC_CONFIG_FILES([tests/package.m4.tmp:tests/package.m4.in],
 AC_CONFIG_FILES([
     Makefile
     libmsi-1.0.pc
+    po/Makefile.in
     libmsi/Makefile
+    wixl/Makefile
     tests/Makefile
 ])
 AC_OUTPUT
+
+AC_MSG_NOTICE([
+        msitools $VERSION
+        ================
+
+        prefix:                   ${prefix}
+        c compiler:               ${CC}
+        uuid:                     ${uuid}
+        wixl:                     ${wixl}
+])

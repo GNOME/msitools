@@ -22,3 +22,7 @@ _msiinfo() {
 _msibuild() {
   WINEDEBUG=-all msibuild$EXEEXT "$@"
 }
+
+_wixl() {
+  wixl$EXEEXT "$@"
+}

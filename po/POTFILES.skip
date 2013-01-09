@@ -1,0 +1,3 @@
+wixl/builder.c
+wixl/wixl.c
+libmsi/sql-parser.c

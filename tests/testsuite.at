@@ -231,3 +231,5 @@ Application: Windows Installer XML (3.7.1119.0)
 Security: 2 (2)
 ])
 AT_CLEANUP
+
+m4_include([wixl.at])
