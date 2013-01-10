@@ -135,15 +135,18 @@ namespace Wixl {
             return null;
         }
 
-        public virtual void load (Xml.Node *node) throws Wixl.Error {
-            if (node->name != name)
-                throw new Error.FAILED ("%s: invalid node %s".printf (name, node->name));
-
+        protected void load_properties_from_node (Xml.Node *node) throws Wixl.Error {
             for (var prop = node->properties; prop != null; prop = prop->next) {
                 if (prop->type == Xml.ElementType.ATTRIBUTE_NODE)
                     set_property (prop->name, get_attribute_content (prop));
             }
+        }
 
+        public virtual void load (Xml.Node *node) throws Wixl.Error {
+            if (node->name != name)
+                throw new Error.FAILED ("%s: invalid node %s".printf (name, node->name));
+
+            load_properties_from_node (node);
             for (var child = node->children; child != null; child = child->next) {
                 switch (child->type) {
                 case Xml.ElementType.COMMENT_NODE:
@@ -161,7 +164,7 @@ namespace Wixl {
                     }
                     break;
                 }
-                debug ("unhandled child %s node %s", name, child->name);
+                error ("unhandled child %s node %s", name, child->name);
             }
         }
 
@@ -401,27 +404,22 @@ namespace Wixl {
         }
     }
 
-    public abstract class WixAction: WixElement {
+    public class WixAction: WixElement {
+        public new string name;
+
         public string After { get; set; }
         public string Before { get; set; }
         public string Overridable { get; set; }
         public string Sequence { get; set; }
         public string Suppress { get; set; }
 
+        public override void load (Xml.Node *node) throws Wixl.Error {
+            name = node->name;
+            load_properties_from_node (node);
+        }
+
         public override void accept (WixNodeVisitor visitor) throws GLib.Error {
             visitor.visit_action (this);
-        }
-    }
-
-    public class WixRemoveExistingProducts: WixAction {
-        static construct {
-            name = "RemoveExistingProducts";
-        }
-    }
-
-    public class WixLaunchConditions: WixAction {
-        static construct {
-            name = "LaunchConditions";
         }
     }
 
@@ -436,10 +434,172 @@ namespace Wixl {
         static construct {
             name = "InstallExecuteSequence";
 
-            add_child_types (child_types, {
-                typeof (WixRemoveExistingProducts),
-                typeof (WixLaunchConditions),
-            });
+            foreach (var action in new string[] {
+                    "AllocateRegistrySpace",
+                    "AppSearch",
+                    "BindImage",
+                    "CCPSearch",
+                    "CostFinalize",
+                    "CostInitialize",
+                    "CreateFolders",
+                    "CreateShortcuts",
+                    "Custom",
+                    "DeleteServices",
+                    "DisableRollback",
+                    "DuplicateFiles",
+                    "FileCost",
+                    "FindRelatedProducts",
+                    "ForceReboot",
+                    "InstallExecute",
+                    "InstallExecuteAgain",
+                    "InstallFiles",
+                    "InstallFinalize",
+                    "InstallInitialize",
+                    "InstallODBC",
+                    "InstallServices",
+                    "InstallValidate",
+                    "IsolateComponents",
+                    "LaunchConditions",
+                    "MigrateFeatureStates",
+                    "MoveFiles",
+                    "MsiPublishAssemblies",
+                    "MsiUnpublishAssemblies",
+                    "PatchFiles",
+                    "ProcessComponents",
+                    "PublishComponents",
+                    "PublishFeatures",
+                    "PublishProduct",
+                    "RegisterClassInfo",
+                    "RegisterComPlus",
+                    "RegisterExtensionInfo",
+                    "RegisterFonts",
+                    "RegisterMIMEInfo",
+                    "RegisterProduct",
+                    "RegisterProgIdInfo",
+                    "RegisterTypeLibraries",
+                    "RegisterUser",
+                    "RemoveDuplicateFiles",
+                    "RemoveEnvironmentStrings",
+                    "RemoveExistingProducts",
+                    "RemoveFiles",
+                    "RemoveFolders",
+                    "RemoveIniValues",
+                    "RemoveODBC",
+                    "RemoveRegistryValues",
+                    "RemoveShortcuts",
+                    "ResolveSource",
+                    "RMCCPSearch",
+                    "ScheduleReboot",
+                    "SelfRegModules",
+                    "SelfUnregModules",
+                    "SetODBCFolders",
+                    "StartServices",
+                    "StopServices",
+                    "UnpublishComponents",
+                    "UnpublishFeatures",
+                    "UnregisterClassInfo",
+                    "UnregisterComPlus",
+                    "UnregisterExtensionInfo",
+                    "UnregisterFonts",
+                    "UnregisterMIMEInfo",
+                    "UnregisterProgIdInfo",
+                    "UnregisterTypeLibraries",
+                    "ValidateProductID",
+                    "WriteEnvironmentStrings",
+                    "WriteIniValues",
+                    "WriteRegistryValues" })
+                child_types->insert (action, typeof (WixAction));
+        }
+    }
+
+    public class WixInstallUISequence: WixSequence {
+        static construct {
+            name = "InstallUISequence";
+
+            foreach (var action in new string[] {
+                    "AppSearch",
+                    "CCPSearch",
+                    "CostFinalize",
+                    "CostInitialize",
+                    "Custom",
+                    "ExecuteAction",
+                    "FileCost",
+                    "FindRelatedProducts",
+                    "IsolateComponents",
+                    "LaunchConditions",
+                    "MigrateFeatureStates",
+                    "ResolveSource",
+                    "RMCCPSearch",
+                    "ScheduleReboot",
+                    "Show",
+                    "ValidateProductID" })
+                child_types->insert (action, typeof (WixAction));
+        }
+    }
+
+    public class WixAdminExecuteSequence: WixSequence {
+        static construct {
+            name = "AdminExecuteSequence";
+
+            foreach (var action in new string[] {
+                    "CostFinalize",
+                    "CostInitialize",
+                    "Custom",
+                    "FileCost",
+                    "InstallAdminPackage",
+                    "InstallFiles",
+                    "InstallFinalize",
+                    "InstallInitialize",
+                    "InstallValidate",
+                    "LaunchConditions",
+                    "PatchFiles",
+                    "ResolveSource" })
+                child_types->insert (action, typeof (WixAction));
+        }
+    }
+
+    public class WixAdminUISequence: WixSequence {
+        static construct {
+            name = "AdminUISequence";
+
+            foreach (var action in new string[] {
+                    "CostFinalize",
+                    "CostInitialize",
+                    "Custom",
+                    "ExecuteAction",
+                    "FileCost",
+                    "InstallAdminPackage",
+                    "InstallFiles",
+                    "InstallFinalize",
+                    "InstallInitialize",
+                    "InstallValidate",
+                    "LaunchConditions",
+                    "Show" })
+                child_types->insert (action, typeof (WixAction));
+        }
+    }
+
+    public class WixAdvertiseExecuteSequence: WixSequence {
+        static construct {
+            name = "AdvertiseExecuteSequence";
+
+            foreach (var action in new string[] {
+                    "CostFinalize",
+                    "CostInitialize",
+                    "CreateShortcuts",
+                    "Custom",
+                    "InstallFinalize",
+                    "InstallInitialize",
+                    "InstallValidate",
+                    "MsiPublishAssemblies",
+                    "PublishComponents",
+                    "PublishFeatures",
+                    "PublishProduct",
+                    "RegisterClassInfo",
+                    "RegisterExtensionInfo",
+                    "RegisterMIMEInfo",
+                    "RegisterProgIdInfo" })
+                child_types->insert (action, typeof (WixAction));
         }
     }
 
@@ -485,6 +645,10 @@ namespace Wixl {
                 typeof (WixFeature),
                 typeof (WixIcon),
                 typeof (WixInstallExecuteSequence),
+                typeof (WixInstallUISequence),
+                typeof (WixAdminExecuteSequence),
+                typeof (WixAdminUISequence),
+                typeof (WixAdvertiseExecuteSequence),
                 typeof (WixMedia),
                 typeof (WixPackage),
                 typeof (WixProperty),
