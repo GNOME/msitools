@@ -513,9 +513,10 @@ namespace Wixl {
             else if (file.Source != null)
                 name = Path.get_basename (file.Source);
 
+            var source = file.Source ?? name;
             var comp = file.parent as WixComponent;
             FileInfo info;
-            file.file = find_file (name, out info);
+            file.file = find_file (source, out info);
             var attr = FileAttribute.VITAL;
 
             var rec = db.table_file.add (file.Id, comp.Id, name, (int)info.get_size (), attr);
