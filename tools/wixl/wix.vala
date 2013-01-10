@@ -392,6 +392,8 @@ namespace Wixl {
         public string Description { get; set; }
         public string Display { get; set; }
         public string ConfigurableDirectory { get; set; }
+        public string AllowAdvertise { get; set; }
+        public string Absent { get; set; }
 
         public override void accept (WixNodeVisitor visitor) throws GLib.Error {
             visitor.visit_feature (this, VisitState.ENTER);
