@@ -35,10 +35,14 @@ AC_PATH_PROG(VAPIGEN, vapigen, no)
 AC_SUBST(VAPIGEN)
 AM_CONDITIONAL([VAPI], [test "x$VAPIGEN" != xno])
 
+AS_IF([test $win32 = no],
+      [WIXL_UNIX="gio-unix-2.0"])
+
 PKG_CHECK_MODULES([WIXL], [gio-2.0 >= 2.26.0
                            libgcab-1.0
                            uuid >= 1.41.3
-                           libxml-2.0 >= 2.9],
+                           libxml-2.0 >= 2.9
+                           $WIXL_UNIX],
                   [wixl_ok=yes], [wixl_ok=no])
 
 AC_ARG_ENABLE([wixl],

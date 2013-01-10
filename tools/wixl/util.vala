@@ -90,6 +90,16 @@ namespace Wixl {
         return str;
     }
 
+    public string random_id (string prefix) {
+        var data = new uint32[8] {};
+        for (var i = 0; i < 8; i++)
+            data[i] = Random.next_int ();
+
+        var hash = Checksum.compute_for_data (ChecksumType.MD5, (uint8[])data);
+
+        return prefix + hash[0:32].up ();
+    }
+
     public bool parse_yesno (string? str, bool default = false) {
         if (str == null)
             return default;

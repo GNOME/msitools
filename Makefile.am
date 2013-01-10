@@ -77,6 +77,27 @@ wixl_LDADD =					\
 
 wixl_DEPENDENCIES = libmsi/libmsi.la
 
+if !WIN32
+bin_PROGRAMS += wixl-heat
+
+wixl_heat_CFLAGS = -w
+
+wixl_heat_VALAFLAGS =				\
+	--vapidir=.				\
+	--pkg config				\
+	--enable-experimental			\
+	--pkg gio-unix-2.0			\
+	$(NULL)
+
+wixl_heat_SOURCES =				\
+	tools/wixl/wixl-heat.vala		\
+	tools/wixl/util.vala			\
+	$(NULL)
+
+wixl_heat_CPPFLAGS = $(wixl_CPPFLAGS)
+wixl_heat_LDADD = $(wixl_LDADD)
+endif
+
 # Autotest support
 
 dist_noinst_DATA = tests/testsuite.at tests/package.m4 tests/testsuite
