@@ -333,7 +333,7 @@ namespace Wixl {
                 attr |= ComponentAttribute.REGISTRY_KEY_PATH;
 
             var parent = resolve<WixDirectory> (comp.parent);
-            db.table_component.add (comp.Id, add_braces (comp.Guid), parent.Id, attr,
+            db.table_component.add (comp.Id, get_uuid (comp.Guid), parent.Id, attr,
                                     comp.key != null ? comp.key.Id : null);
 
         }
