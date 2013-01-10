@@ -105,19 +105,15 @@ namespace Wixl {
             add (MSIDefault.Action.CostFinalize);
             add (MSIDefault.Action.InstallValidate);
             add (MSIDefault.Action.InstallInitialize);
-            if (db.table_shortcut.records.length () > 0)
-                add (MSIDefault.Action.CreateShortcuts);
             add (MSIDefault.Action.PublishFeatures);
             add (MSIDefault.Action.PublishProduct);
             add (MSIDefault.Action.InstallFinalize);
+            if (db.table_shortcut.records.length () > 0)
+                add (MSIDefault.Action.CreateShortcuts);
             table.add_sorted_actions ();
 
             // InstallExecuteSequence
             table = db.table_install_execute_sequence;
-            if (db.table_upgrade.records.length () > 0)
-                add (MSIDefault.Action.FindRelatedProducts);
-            if (db.table_launch_condition.records.length () > 0)
-                add (MSIDefault.Action.LaunchConditions);
             add (MSIDefault.Action.ValidateProductID);
             add (MSIDefault.Action.CostInitialize);
             add (MSIDefault.Action.FileCost);
@@ -126,37 +122,42 @@ namespace Wixl {
             add (MSIDefault.Action.InstallInitialize);
             add (MSIDefault.Action.ProcessComponents);
             add (MSIDefault.Action.UnpublishFeatures);
-            if (db.table_registry.records.length () > 0)
-                add (MSIDefault.Action.RemoveRegistryValues);
-            if (db.table_shortcut.records.length () > 0)
-                add (MSIDefault.Action.RemoveShortcuts);
-            if (db.table_file.records.length () > 0 ||
-                db.table_remove_file.records.length () > 0)
-                add (MSIDefault.Action.RemoveFiles);
-            if (db.table_file.records.length () > 0)
-                add (MSIDefault.Action.InstallFiles);
-            if (db.table_shortcut.records.length () > 0)
-                add (MSIDefault.Action.CreateShortcuts);
-            if (db.table_registry.records.length () > 0)
-                add (MSIDefault.Action.WriteRegistryValues);
             add (MSIDefault.Action.RegisterUser);
             add (MSIDefault.Action.RegisterProduct);
             add (MSIDefault.Action.PublishFeatures);
             add (MSIDefault.Action.PublishProduct);
             add (MSIDefault.Action.InstallFinalize);
-            table.add_sorted_actions ();
-
-            // InstallUISequence
-            table = db.table_install_ui_sequence;
             if (db.table_upgrade.records.length () > 0)
                 add (MSIDefault.Action.FindRelatedProducts);
             if (db.table_launch_condition.records.length () > 0)
                 add (MSIDefault.Action.LaunchConditions);
+            if (db.table_registry.records.length () > 0) {
+                add (MSIDefault.Action.RemoveRegistryValues);
+                add (MSIDefault.Action.WriteRegistryValues);
+            }
+            if (db.table_shortcut.records.length () > 0) {
+                add (MSIDefault.Action.RemoveShortcuts);
+                add (MSIDefault.Action.CreateShortcuts);
+            }
+            if (db.table_file.records.length () > 0) {
+                add (MSIDefault.Action.RemoveFiles);
+                add (MSIDefault.Action.InstallFiles);
+            }
+            if (db.table_remove_file.records.length () > 0)
+                add (MSIDefault.Action.RemoveFiles);
+            table.add_sorted_actions ();
+
+            // InstallUISequence
+            table = db.table_install_ui_sequence;
             add (MSIDefault.Action.ValidateProductID);
             add (MSIDefault.Action.CostInitialize);
             add (MSIDefault.Action.FileCost);
             add (MSIDefault.Action.CostFinalize);
             add (MSIDefault.Action.ExecuteAction);
+            if (db.table_upgrade.records.length () > 0)
+                add (MSIDefault.Action.FindRelatedProducts);
+            if (db.table_launch_condition.records.length () > 0)
+                add (MSIDefault.Action.LaunchConditions);
             table.add_sorted_actions ();
         }
 
