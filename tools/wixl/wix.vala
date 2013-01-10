@@ -135,6 +135,13 @@ namespace Wixl {
             return null;
         }
 
+        string get_attribute_content (Xml.Attr *attr) {
+            if (attr->children == null)
+                return "";
+
+            return attr->children->content;
+        }
+
         protected void load_properties_from_node (Xml.Node *node) throws Wixl.Error {
             for (var prop = node->properties; prop != null; prop = prop->next) {
                 if (prop->type == Xml.ElementType.ATTRIBUTE_NODE)

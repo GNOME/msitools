@@ -58,13 +58,6 @@ namespace Wixl {
         return (t + 134774ULL * 86400ULL) * 10000000ULL;
     }
 
-    string get_attribute_content (Xml.Attr *attr) {
-        if (attr->children == null)
-            return "";
-
-        return attr->children->content;
-    }
-
     public string indent (string space, string text) {
         var indented = "";
 
