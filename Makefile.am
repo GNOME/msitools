@@ -51,12 +51,12 @@ wixl_VALAFLAGS =				\
 	$(NULL)
 
 wixl_SOURCES =					\
-	wixl/builder.vala			\
-	wixl/msi.vala				\
-	wixl/preprocessor.vala			\
-	wixl/util.vala				\
-	wixl/wix.vala				\
-	wixl/wixl.vala				\
+	tools/wixl/builder.vala			\
+	tools/wixl/msi.vala			\
+	tools/wixl/preprocessor.vala		\
+	tools/wixl/util.vala			\
+	tools/wixl/wix.vala			\
+	tools/wixl/wixl.vala			\
 	$(NULL)
 
 wixl_CPPFLAGS =					\
