@@ -22,7 +22,6 @@ namespace Wixl {
         public abstract void visit_shortcut (WixShortcut shortcut) throws GLib.Error;
         public abstract void visit_create_folder (WixCreateFolder folder) throws GLib.Error;
         public abstract void visit_fragment (WixFragment fragment) throws GLib.Error;
-        public abstract void visit_directory_ref (WixDirectoryRef ref) throws GLib.Error;
         public abstract void visit_sequence (WixSequence sequence) throws GLib.Error;
         public abstract void visit_condition (WixCondition condition) throws GLib.Error;
         public abstract void visit_upgrade (WixUpgrade upgrade) throws GLib.Error;
@@ -754,11 +753,6 @@ namespace Wixl {
                 typeof (WixDirectory),
                 typeof (WixComponent),
             });
-        }
-
-        public override void accept (WixNodeVisitor visitor) throws GLib.Error {
-            base.accept (visitor);
-            visitor.visit_directory_ref (this);
         }
     }
 

@@ -282,12 +282,12 @@ namespace Wixl {
         public override void visit_directory (WixDirectory dir) throws GLib.Error {
             var defaultdir = dir.Name ?? ".";
 
-            if (dir.parent.get_type () == typeof (WixProduct)) {
+            if (dir.parent is WixProduct) {
                 if (dir.Id != "TARGETDIR")
                     throw new Wixl.Error.FAILED ("Invalid root directory");
                 db.table_directory.add (dir.Id, null, defaultdir);
-            } else if (dir.parent.get_type () == typeof (WixDirectory)) {
-                var parent = dir.parent as WixDirectory;
+            } else if (dir.parent is WixDirectory || dir.parent is WixDirectoryRef) {
+                var parent = resolve<WixDirectory> (dir.parent);
                 db.table_directory.add (dir.Id, parent.Id, defaultdir);
             } else
                 warning ("unhandled parent type %s", dir.parent.name);
@@ -580,9 +580,6 @@ namespace Wixl {
         }
 
         public override void visit_fragment (WixFragment fragment) throws GLib.Error {
-        }
-
-        public override void visit_directory_ref (WixDirectoryRef ref) throws GLib.Error {
         }
 
         public override void visit_text (WixText text) throws GLib.Error {
