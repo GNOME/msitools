@@ -52,6 +52,7 @@ wixl_VALAFLAGS =				\
 
 wixl_SOURCES =					\
 	tools/wixl/builder.vala			\
+	tools/wixl/msi-default.vala		\
 	tools/wixl/msi.vala			\
 	tools/wixl/preprocessor.vala		\
 	tools/wixl/util.vala			\
