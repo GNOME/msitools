@@ -71,91 +71,102 @@ namespace Wixl {
             return elems;
         }
 
-        delegate void AddSequence (string action, int sequence) throws GLib.Error;
+        delegate void AddDefaultAction (MSIDefault.Action action) throws GLib.Error;
 
         private void sequence_actions () throws GLib.Error {
             MsiTableSequence? table = null;
-            AddSequence add = (action, sequence) => {
-                var seq = table.get_action (action);
-                seq.sequence = sequence;
+            var flags = 0;
+            AddDefaultAction add = (action) => {
+                var default = MSIDefault.get_action (action);
+                if (!(flags in default.flags))
+                    critical ("Action %s shouldn't be added in this sequence", default.name);
+                var seq = table.get_action (default.name);
+                seq.sequence = default.sequence;
             };
 
             // AdminExecuteSequence
             table = db.table_admin_execute_sequence;
-            add ("CostInitialize", 800);
-            add ("FileCost", 900);
-            add ("CostFinalize", 1000);
-            add ("InstallValidate", 1400);
-            add ("InstallInitialize", 1500);
-            add ("InstallAdminPackage", 3900);
-            add ("InstallFiles", 4000);
-            add ("InstallFinalize", 6600);
+            flags = MSIDefault.ActionFlags.ADMIN_EXECUTE_SEQUENCE;
+            add (MSIDefault.Action.CostInitialize);
+            add (MSIDefault.Action.FileCost);
+            add (MSIDefault.Action.CostFinalize);
+            add (MSIDefault.Action.InstallValidate);
+            add (MSIDefault.Action.InstallInitialize);
+            add (MSIDefault.Action.InstallAdminPackage);
+            add (MSIDefault.Action.InstallFiles);
+            add (MSIDefault.Action.InstallFinalize);
             table.add_sorted_actions ();
 
             // AdminUISequence
             table = db.table_admin_ui_sequence;
-            add ("CostInitialize", 800);
-            add ("FileCost", 900);
-            add ("CostFinalize", 1000);
-            add ("ExecuteAction", 1300);
+            flags = MSIDefault.ActionFlags.ADMIN_UI_SEQUENCE;
+            add (MSIDefault.Action.CostInitialize);
+            add (MSIDefault.Action.FileCost);
+            add (MSIDefault.Action.CostFinalize);
+            add (MSIDefault.Action.ExecuteAction);
             table.add_sorted_actions ();
 
+            // AdvtExecuteSequence
             table = db.table_advt_execute_sequence;
-            add ("CostInitialize", 800);
-            add ("CostFinalize", 1000);
-            add ("InstallValidate", 1400);
-            add ("InstallInitialize", 1500);
+            flags = MSIDefault.ActionFlags.ADVT_EXECUTE_SEQUENCE;
+            add (MSIDefault.Action.CostInitialize);
+            add (MSIDefault.Action.CostFinalize);
+            add (MSIDefault.Action.InstallValidate);
+            add (MSIDefault.Action.InstallInitialize);
             if (db.table_shortcut.records.length () > 0)
-                add ("CreateShortcuts", 4500);
-            add ("PublishFeatures", 6300);
-            add ("PublishProduct", 6400);
-            add ("InstallFinalize", 6600);
+                add (MSIDefault.Action.CreateShortcuts);
+            add (MSIDefault.Action.PublishFeatures);
+            add (MSIDefault.Action.PublishProduct);
+            add (MSIDefault.Action.InstallFinalize);
             table.add_sorted_actions ();
 
             // InstallExecuteSequence
             table = db.table_install_execute_sequence;
+            flags = MSIDefault.ActionFlags.INSTALL_EXECUTE_SEQUENCE;
             if (db.table_upgrade.records.length () > 0)
-                add ("FindRelatedProducts", 25);
+                add (MSIDefault.Action.FindRelatedProducts);
             if (db.table_launch_condition.records.length () > 0)
-                add ("LaunchConditions", 100);
-            add ("ValidateProductID", 700);
-            add ("CostInitialize", 800);
-            add ("FileCost", 900);
-            add ("CostFinalize", 1000);
-            add ("InstallValidate", 1400);
-            add ("InstallInitialize", 1500);
-            add ("ProcessComponents", 1600);
-            add ("UnpublishFeatures", 1800);
+                add (MSIDefault.Action.LaunchConditions);
+            add (MSIDefault.Action.ValidateProductID);
+            add (MSIDefault.Action.CostInitialize);
+            add (MSIDefault.Action.FileCost);
+            add (MSIDefault.Action.CostFinalize);
+            add (MSIDefault.Action.InstallValidate);
+            add (MSIDefault.Action.InstallInitialize);
+            add (MSIDefault.Action.ProcessComponents);
+            add (MSIDefault.Action.UnpublishFeatures);
             if (db.table_registry.records.length () > 0)
-                add ("RemoveRegistryValues", 2600);
+                add (MSIDefault.Action.RemoveRegistryValues);
             if (db.table_shortcut.records.length () > 0)
-                add ("RemoveShortcuts", 3200);
+                add (MSIDefault.Action.RemoveShortcuts);
             if (db.table_file.records.length () > 0 ||
                 db.table_remove_file.records.length () > 0)
-                add ("RemoveFiles", 3500);
+                add (MSIDefault.Action.RemoveFiles);
             if (db.table_file.records.length () > 0)
-                add ("InstallFiles", 4000);
+                add (MSIDefault.Action.InstallFiles);
             if (db.table_shortcut.records.length () > 0)
-                add ("CreateShortcuts", 4500);
+                add (MSIDefault.Action.CreateShortcuts);
             if (db.table_registry.records.length () > 0)
-                add ("WriteRegistryValues", 5000);
-            add ("RegisterUser", 6000);
-            add ("RegisterProduct", 6100);
-            add ("PublishFeatures", 6300);
-            add ("PublishProduct", 6400);
-            add ("InstallFinalize", 6600);
+                add (MSIDefault.Action.WriteRegistryValues);
+            add (MSIDefault.Action.RegisterUser);
+            add (MSIDefault.Action.RegisterProduct);
+            add (MSIDefault.Action.PublishFeatures);
+            add (MSIDefault.Action.PublishProduct);
+            add (MSIDefault.Action.InstallFinalize);
             table.add_sorted_actions ();
 
+            // InstallUISequence
             table = db.table_install_ui_sequence;
+            flags = MSIDefault.ActionFlags.INSTALL_UI_SEQUENCE;
             if (db.table_upgrade.records.length () > 0)
-                add ("FindRelatedProducts", 25);
+                add (MSIDefault.Action.FindRelatedProducts);
             if (db.table_launch_condition.records.length () > 0)
-                add ("LaunchConditions", 100);
-            add ("ValidateProductID", 700);
-            add ("CostInitialize", 800);
-            add ("FileCost", 900);
-            add ("CostFinalize", 1000);
-            add ("ExecuteAction", 1300);
+                add (MSIDefault.Action.LaunchConditions);
+            add (MSIDefault.Action.ValidateProductID);
+            add (MSIDefault.Action.CostInitialize);
+            add (MSIDefault.Action.FileCost);
+            add (MSIDefault.Action.CostFinalize);
+            add (MSIDefault.Action.ExecuteAction);
             table.add_sorted_actions ();
         }
 

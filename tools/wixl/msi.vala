@@ -1,6 +1,6 @@
 namespace Wixl {
 
-    abstract class MsiTable: Object {
+    public abstract class MsiTable: Object {
         public class string name;
         public List<Libmsi.Record> records;
 
@@ -38,7 +38,7 @@ namespace Wixl {
         }
     }
 
-    abstract class MsiTableSequence: MsiTable {
+    public abstract class MsiTableSequence: MsiTable {
         private void add (string action, int sequence) throws GLib.Error {
             var rec = new Libmsi.Record (2);
 
