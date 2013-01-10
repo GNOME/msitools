@@ -13,7 +13,7 @@ namespace Wixl {
                                              [CCode (array_length = false)] uchar[] output);
     }
 
-    string uuid_generate () {
+    public string uuid_generate () {
         var udn = new uchar[50];
         var id = new uchar[16];
 
@@ -23,7 +23,7 @@ namespace Wixl {
         return (string) udn;
     }
 
-    int enum_from_string (Type t, string str) throws GLib.Error {
+    public int enum_from_string (Type t, string str) throws GLib.Error {
         var k = (EnumClass)t.class_ref ();
         var v = k.get_value_by_nick (str);
 
@@ -32,14 +32,14 @@ namespace Wixl {
         return v.value;
     }
 
-    string add_braces (string str) {
+    public string add_braces (string str) {
         if (str[0] == '{')
             return str;
 
         return "{" + str + "}";
     }
 
-    string get_uuid (owned string uuid) throws GLib.Error {
+    public string get_uuid (owned string uuid) throws GLib.Error {
         if (uuid == "*")
             uuid = uuid_generate ();
         uuid = add_braces (uuid);
@@ -48,13 +48,13 @@ namespace Wixl {
         return uuid;
     }
 
-    long now () {
+    public long now () {
         var tv = TimeVal ();
         tv.get_current_time ();
         return tv.tv_sec;
     }
 
-    uint64 time_to_filetime (long t) {
+    public uint64 time_to_filetime (long t) {
         return (t + 134774ULL * 86400ULL) * 10000000ULL;
     }
 
@@ -90,14 +90,14 @@ namespace Wixl {
         return str;
     }
 
-    bool parse_yesno (string? str, bool default = false) {
+    public bool parse_yesno (string? str, bool default = false) {
         if (str == null)
             return default;
 
         return (str[0] == 'Y' || str[0] == 'y');
     }
 
-    string unquote (string str) {
+    public string unquote (string str) {
         if ((str[0] == '\'' && str[str.length-1] == '\'') ||
             (str[0] == '"' && str[str.length-1] == '"'))
             return str[1:-1];
@@ -105,14 +105,14 @@ namespace Wixl {
         return str;
     }
 
-    string remove_prefix (string prefix, string str) {
+    public string remove_prefix (string prefix, string str) {
         if (str.has_prefix (prefix))
             return str[prefix.length:str.length];
 
         return str;
     }
 
-    int find_closing_paren (string str) {
+    public int find_closing_paren (string str) {
         return_val_if_fail (str[0] == '(', -1);
 
         var open_count = 1;
