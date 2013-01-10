@@ -39,6 +39,8 @@ namespace Wixl {
     }
 
     public abstract class MsiTableSequence: MsiTable {
+        public class MSIDefault.ActionFlags flags;
+
         private void add (string action, int sequence) throws GLib.Error {
             var rec = new Libmsi.Record (2);
 
@@ -73,7 +75,6 @@ namespace Wixl {
         }
 
         HashTable<string, Action> actions = new HashTable<string, Action> (str_hash, str_equal);
-
 
         void sort_topological_visit (Action action, ref List<Action> sorted) {
             if (action.visited)
@@ -145,35 +146,55 @@ namespace Wixl {
 
             return action;
         }
+
+        public void add_default_action (MSIDefault.Action action) {
+            var default = MSIDefault.get_action (action);
+            if (!(flags in default.flags))
+                critical ("Action %s shouldn't be added in %s", default.name, name);
+
+            var seq = actions.lookup (default.name);
+            if (seq != null)
+                return;
+
+            seq = new Action ();
+            actions.insert (default.name, seq);
+            seq.name = default.name;
+            seq.sequence = default.sequence;
+        }
     }
 
     class MsiTableAdminExecuteSequence: MsiTableSequence {
         static construct {
             set_sequence_table_name ("AdminExecuteSequence");
+            flags = MSIDefault.ActionFlags.ADMIN_EXECUTE_SEQUENCE;
         }
     }
 
     class MsiTableAdminUISequence: MsiTableSequence {
         static construct {
             set_sequence_table_name ("AdminUISequence");
+            flags = MSIDefault.ActionFlags.ADMIN_UI_SEQUENCE;
         }
     }
 
     class MsiTableAdvtExecuteSequence: MsiTableSequence {
         static construct {
             set_sequence_table_name ("AdvtExecuteSequence");
+            flags = MSIDefault.ActionFlags.ADVT_EXECUTE_SEQUENCE;
         }
     }
 
     class MsiTableInstallExecuteSequence: MsiTableSequence {
         static construct {
             set_sequence_table_name ("InstallExecuteSequence");
+            flags = MSIDefault.ActionFlags.INSTALL_EXECUTE_SEQUENCE;
         }
     }
 
     class MsiTableInstallUISequence: MsiTableSequence {
         static construct {
             set_sequence_table_name ("InstallUISequence");
+            flags = MSIDefault.ActionFlags.INSTALL_UI_SEQUENCE;
         }
     }
 

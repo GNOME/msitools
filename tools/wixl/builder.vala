@@ -75,18 +75,12 @@ namespace Wixl {
 
         private void sequence_actions () throws GLib.Error {
             MsiTableSequence? table = null;
-            var flags = 0;
             AddDefaultAction add = (action) => {
-                var default = MSIDefault.get_action (action);
-                if (!(flags in default.flags))
-                    critical ("Action %s shouldn't be added in this sequence", default.name);
-                var seq = table.get_action (default.name);
-                seq.sequence = default.sequence;
+                table.add_default_action (action);
             };
 
             // AdminExecuteSequence
             table = db.table_admin_execute_sequence;
-            flags = MSIDefault.ActionFlags.ADMIN_EXECUTE_SEQUENCE;
             add (MSIDefault.Action.CostInitialize);
             add (MSIDefault.Action.FileCost);
             add (MSIDefault.Action.CostFinalize);
@@ -99,7 +93,6 @@ namespace Wixl {
 
             // AdminUISequence
             table = db.table_admin_ui_sequence;
-            flags = MSIDefault.ActionFlags.ADMIN_UI_SEQUENCE;
             add (MSIDefault.Action.CostInitialize);
             add (MSIDefault.Action.FileCost);
             add (MSIDefault.Action.CostFinalize);
@@ -108,7 +101,6 @@ namespace Wixl {
 
             // AdvtExecuteSequence
             table = db.table_advt_execute_sequence;
-            flags = MSIDefault.ActionFlags.ADVT_EXECUTE_SEQUENCE;
             add (MSIDefault.Action.CostInitialize);
             add (MSIDefault.Action.CostFinalize);
             add (MSIDefault.Action.InstallValidate);
@@ -122,7 +114,6 @@ namespace Wixl {
 
             // InstallExecuteSequence
             table = db.table_install_execute_sequence;
-            flags = MSIDefault.ActionFlags.INSTALL_EXECUTE_SEQUENCE;
             if (db.table_upgrade.records.length () > 0)
                 add (MSIDefault.Action.FindRelatedProducts);
             if (db.table_launch_condition.records.length () > 0)
@@ -157,7 +148,6 @@ namespace Wixl {
 
             // InstallUISequence
             table = db.table_install_ui_sequence;
-            flags = MSIDefault.ActionFlags.INSTALL_UI_SEQUENCE;
             if (db.table_upgrade.records.length () > 0)
                 add (MSIDefault.Action.FindRelatedProducts);
             if (db.table_launch_condition.records.length () > 0)
