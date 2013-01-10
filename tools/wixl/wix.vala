@@ -28,6 +28,7 @@ namespace Wixl {
         public abstract void visit_upgrade_version (WixUpgradeVersion version) throws GLib.Error;
         public abstract void visit_action (WixAction action) throws GLib.Error;
         public abstract void visit_text (WixText text) throws GLib.Error;
+        public abstract void visit_component_group_ref (WixComponentGroupRef ref) throws GLib.Error;
     }
 
     public abstract class WixNode: Object {
@@ -210,6 +211,16 @@ namespace Wixl {
         }
     }
 
+    public class WixComponentGroup: WixElement {
+        static construct {
+            name = "ComponentGroup";
+
+            add_child_types (child_types, {
+                typeof (WixComponentRef),
+            });
+        }
+    }
+
     public class WixFragment: WixElement {
         static construct {
             name = "Fragment";
@@ -217,6 +228,7 @@ namespace Wixl {
             add_child_types (child_types, {
                 typeof (WixDirectory),
                 typeof (WixDirectoryRef),
+                typeof (WixComponentGroup),
             });
         }
 
@@ -370,6 +382,7 @@ namespace Wixl {
 
             add_child_types (child_types, {
                 typeof (WixComponentRef),
+                typeof (WixComponentGroupRef),
                 typeof (WixFeature),
             });
         }
@@ -395,6 +408,17 @@ namespace Wixl {
 
         public override void accept (WixNodeVisitor visitor) throws GLib.Error {
             visitor.visit_component_ref (this);
+        }
+    }
+
+    public class WixComponentGroupRef: WixElementRef<WixComponentGroup> {
+        static construct {
+            name = "ComponentGroupRef";
+            ref_type = typeof (WixComponentGroup);
+        }
+
+        public override void accept (WixNodeVisitor visitor) throws GLib.Error {
+            visitor.visit_component_group_ref (this);
         }
     }
 

@@ -383,13 +383,30 @@ namespace Wixl {
 
         }
 
+        void feature_add_component (WixFeature feature, WixComponent component) throws GLib.Error {
+            component.in_feature.append (feature);
+            db.table_feature_components.add (feature.Id, component.Id);
+        }
+
         public override void visit_component_ref (WixComponentRef ref) throws GLib.Error {
+            var component = resolve<WixComponent> (@ref);
+
+            if (ref.parent is WixFeature) {
+                feature_add_component (@ref.parent as WixFeature, component);
+            } else if (ref.parent is WixComponentGroup) {
+                // will be added in GroupRef
+            } else
+                warning ("unhandled parent type %s", @ref.parent.name);
+        }
+
+        public override void visit_component_group_ref (WixComponentGroupRef ref) throws GLib.Error {
+            var group = resolve<WixComponentGroup> (@ref);
+
             if (ref.parent is WixFeature) {
                 var feature = ref.parent as WixFeature;
 
-                var component = resolve<WixComponent> (@ref);
-                component.in_feature.append (feature);
-                db.table_feature_components.add (feature.Id, @ref.Id);
+                foreach (var comp in group.children)
+                    feature_add_component (feature, resolve<WixComponent> (comp as WixElement));
             } else
                 warning ("unhandled parent type %s", @ref.parent.name);
         }
