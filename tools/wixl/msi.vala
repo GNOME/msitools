@@ -144,6 +144,10 @@ namespace Wixl {
             actions.insert (name, action);
             action.name = name;
 
+            var default = MSIDefault.get_action_by_name (name);
+            if (default != null)
+                action.sequence = default.sequence;
+
             return action;
         }
 

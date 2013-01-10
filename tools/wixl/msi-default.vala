@@ -168,6 +168,17 @@ namespace Wixl {
         public static ActionInfo get_action (Action action) {
             return actions[action];
         }
+
+        public static ActionInfo? get_action_by_name (string name) {
+            ActionInfo? action = null;
+
+            try {
+                action = actions[enum_from_string (typeof (Action), name.down ())];
+            } catch (GLib.Error error) {
+            }
+
+            return action;
+        }
     }
 
 } // Wixl
