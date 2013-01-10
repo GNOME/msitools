@@ -419,6 +419,12 @@ namespace Wixl {
         }
     }
 
+    public class WixLaunchConditions: WixAction {
+        static construct {
+            name = "LaunchConditions";
+        }
+    }
+
     public class WixSequence: WixElement {
         public override void accept (WixNodeVisitor visitor) throws GLib.Error {
             base.accept (visitor);
@@ -432,6 +438,7 @@ namespace Wixl {
 
             add_child_types (child_types, {
                 typeof (WixRemoveExistingProducts),
+                typeof (WixLaunchConditions),
             });
         }
     }
