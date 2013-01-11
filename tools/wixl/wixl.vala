@@ -10,12 +10,15 @@ namespace Wixl {
     static string[] files;
     [CCode (array_length = false, array_null_terminated = true)]
     static string[] defines;
+    [CCode (array_length = false, array_null_terminated = true)]
+    static string[] includedirs;
 
     private const OptionEntry[] options = {
         { "version", 0, 0, OptionArg.NONE, ref version, N_("Display version number"), null },
         { "verbose", 'v', 0, OptionArg.NONE, ref verbose, N_("Verbose output"), null },
         { "output", 'o', 0, OptionArg.FILENAME, ref output, N_("Output file"), null },
         { "define", 'D', 0, OptionArg.STRING_ARRAY, ref defines, N_("Define variable"), null },
+        { "includedir", 'I', 0, OptionArg.STRING_ARRAY, ref includedirs, N_("Include directory"), null },
         { "only-preproc", 'E', 0, OptionArg.NONE, ref preproc, N_("Stop after the preprocessing stage"), null },
         { "", 0, 0, OptionArg.FILENAME_ARRAY, ref files, null, N_("INPUT_FILE...") },
         { null }
@@ -57,7 +60,7 @@ namespace Wixl {
         }
 
         try {
-            var builder = new WixBuilder ();
+            var builder = new WixBuilder (includedirs);
 
             foreach (var d in defines) {
                 var def = d.split ("=", 2);

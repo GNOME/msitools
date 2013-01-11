@@ -2,14 +2,16 @@ namespace Wixl {
 
     class Preprocessor: Object {
 
+        unowned List<File> includedirs;
         HashTable<string, string> globals;
         HashTable<string, string> variables;
         construct {
             variables = new HashTable<string, string> (str_hash, str_equal);
         }
 
-        public Preprocessor (HashTable<string, string> globals) {
+        public Preprocessor (HashTable<string, string> globals, List<File> includedirs) {
             this.globals = globals;
+            this.includedirs = includedirs;
         }
 
         public void define_variable (string name, string value) {
@@ -114,11 +116,21 @@ namespace Wixl {
                         break;
                     case "include":
                         var value = eval (reader.const_value (), file).strip ();
-                        foreach (var inc in new string[] {
-                                 value,
-                                 file.get_parent ().get_child (value).get_path () })
-                            if (include (inc, writer))
+                        var success = false;
+                        string[] dirs = {};
+                        dirs += value;
+                        dirs += file.get_parent ().get_child (value).get_path ();
+                        foreach (var dir in includedirs)
+                            dirs += dir.get_child (value).get_path ();
+                        foreach (var inc in dirs) {
+                            success = include (inc, writer);
+                            if (success)
                                 break;
+                        }
+                        if (!success) {
+                            print ("error", loc, "Failed to include %s".printf (value));
+                            Posix.exit (1);
+                        }
                         break;
                     case "warning":
                         print ("warning", loc, eval (reader.const_value (), file));

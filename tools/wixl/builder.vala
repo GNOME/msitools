@@ -2,13 +2,16 @@ namespace Wixl {
 
     class WixBuilder: WixNodeVisitor {
 
-        public WixBuilder () {
+        public WixBuilder (string[] includedirs) {
             add_path (".");
+            foreach (var i in includedirs)
+                this.includedirs.append (File.new_for_path (i));
         }
 
         WixRoot root;
         MsiDatabase db;
         HashTable<string, string> variables;
+        List<File> includedirs;
 
         construct {
             variables = new HashTable<string, string> (str_hash, str_equal);
@@ -43,7 +46,7 @@ namespace Wixl {
             string data;
             FileUtils.get_contents (file.get_path (), out data);
 
-            var p = new Preprocessor (variables);
+            var p = new Preprocessor (variables, includedirs);
             var doc = p.preprocess (data, file);
             if (preproc_only) {
                 doc.dump_format (FileStream.fdopen (1, "w"));
