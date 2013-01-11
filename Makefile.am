@@ -113,7 +113,7 @@ installcheck-local: $(srcdir)/tests/testsuite atconfig atlocal
 clean-local:
 	-$(SHELL) $(srcdir)/tests/testsuite --clean
 
-$(srcdir)/tests/testsuite: tests/testsuite.at tests/package.m4
+$(srcdir)/tests/testsuite: tests/testsuite.at tests/wixl.at tests/package.m4
 	cd $(srcdir)/tests && \
 		$(AUTOM4TE) --language=autotest -o testsuite.tmp testsuite.at && \
 		mv testsuite.tmp testsuite
