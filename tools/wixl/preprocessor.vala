@@ -75,12 +75,7 @@ namespace Wixl {
             return result + str[end:str.length];
         }
 
-        public Xml.Doc preprocess (string data, File? file) throws GLib.Error {
-            Xml.Doc doc;
-            var writer = new Xml.TextWriter.doc (out doc);
-            var reader = new Xml.TextReader.for_doc (data, "");
-
-            writer.start_document ();
+        void preprocess_xml (Xml.TextReader reader, Xml.TextWriter writer, File? file, bool is_include = false) throws GLib.Error {
             while (reader.read () > 0) {
                 switch (reader.node_type ()) {
                 case Xml.ReaderType.PROCESSING_INSTRUCTION:
@@ -95,6 +90,14 @@ namespace Wixl {
                         } else
                             throw new Wixl.Error.FAILED ("invalid define");
                         break;
+                    case "include":
+                        var value = eval (reader.const_value (), file).strip ();
+                        foreach (var inc in new string[] {
+                                 value,
+                                 file.get_parent ().get_child (value).get_path () })
+                            if (include (inc, writer))
+                                break;
+                        break;
                     case "warning":
                         warning (eval (reader.const_value (), file));
                         break;
@@ -107,6 +110,9 @@ namespace Wixl {
                     break;
                 case Xml.ReaderType.ELEMENT:
                     var empty = reader.is_empty_element () > 0;
+                    if (is_include && reader.depth () == 0 &&
+                        reader.const_name () == "Include")
+                        break;
 
                     writer.start_element (reader.const_name ());
                     while (reader.move_to_next_attribute () > 0) {
@@ -118,16 +124,44 @@ namespace Wixl {
                         writer.end_element ();
                     break;
                 case Xml.ReaderType.END_ELEMENT:
+                    if (is_include && reader.depth () == 0 &&
+                        reader.const_name () == "Include")
+                        break;
+
                     writer.end_element ();
                     break;
                 case Xml.ReaderType.TEXT:
-                    writer.write_string (eval (reader.const_value(), file));
+                    writer.write_string (eval (reader.const_value (), file));
                     break;
                 case Xml.ReaderType.CDATA:
-                    writer.write_cdata (eval (reader.const_value(), file));
+                    writer.write_cdata (eval (reader.const_value (), file));
                     break;
                 }
             }
+        }
+
+        bool include (string filename, Xml.TextWriter writer) throws GLib.Error {
+            string data;
+            var file = File.new_for_path (filename);
+
+            try {
+                FileUtils.get_contents (filename, out data);
+            } catch (GLib.FileError error) {
+                return false;
+            }
+
+            var reader = new Xml.TextReader.for_doc (data, "");
+            preprocess_xml (reader, writer, file, true);
+            return true;
+        }
+
+        public Xml.Doc preprocess (string data, File? file) throws GLib.Error {
+            Xml.Doc doc;
+            Xml.TextWriter writer = new Xml.TextWriter.doc (out doc);
+            var reader = new Xml.TextReader.for_doc (data, "");
+
+            writer.start_document ();
+            preprocess_xml (reader, writer, file);
             writer.end_document ();
 
             return doc;
