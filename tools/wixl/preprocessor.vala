@@ -75,8 +75,30 @@ namespace Wixl {
             return result + str[end:str.length];
         }
 
+        class Location: Object {
+            File file;
+            int line;
+
+            public Location (Xml.TextReader reader, File file) {
+                this.file = file;
+                var node = reader.current_node ();
+                this.line = node->line;
+            }
+
+            public string to_string () {
+                return "%s:%d".printf (file.get_basename (), line);
+            }
+        }
+
+        void print (string prefix, Location loc, string msg) {
+            stderr.printf (loc.to_string () + ": " + prefix + ": " + msg + "\n");
+        }
+
+
         void preprocess_xml (Xml.TextReader reader, Xml.TextWriter writer, File? file, bool is_include = false) throws GLib.Error {
             while (reader.read () > 0) {
+                var loc = new Location (reader, file);
+
                 switch (reader.node_type ()) {
                 case Xml.ReaderType.PROCESSING_INSTRUCTION:
                     switch (reader.const_local_name ()) {
@@ -99,10 +121,12 @@ namespace Wixl {
                                 break;
                         break;
                     case "warning":
-                        warning (eval (reader.const_value (), file));
+                        print ("warning", loc, eval (reader.const_value (), file));
                         break;
                     case "error":
-                        error (eval (reader.const_value (), file));
+                        print ("error", loc, eval (reader.const_value (), file));
+                        Posix.exit (1);
+                        break;
                     default:
                         warning ("unhandled preprocessor instruction %s", reader.const_local_name ());
                         break;
