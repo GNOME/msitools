@@ -311,19 +311,23 @@ namespace Wixl {
         }
 
         G? resolve<G> (WixElement element) throws GLib.Error {
+            G? resolved = null;
+
             if (element.get_type () == typeof (G))
-                return element;
+                resolved = element;
             else if (element is WixElementRef) {
                 var ref = element as WixElementRef<G>;
                 if (ref.ref_type != typeof (G))
-                    return null;
-                if (ref.resolved != null)
-                    return ref.resolved;
-                ref.resolved = find_element<G> (element.Id);
-                return ref.resolved;
+                    resolved = null;
+                else if (ref.resolved == null)
+                    ref.resolved = find_element<G> (element.Id);
+                resolved = ref.resolved;
             }
 
-            throw new Wixl.Error.FAILED ("couldn't resolve %s", element.Id);
+            if (resolved == null)
+                throw new Wixl.Error.FAILED ("couldn't resolve %s", element.Id);
+
+            return resolved;
         }
 
         public override void visit_component (WixComponent comp) throws GLib.Error {
