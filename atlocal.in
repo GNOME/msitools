@@ -26,3 +26,6 @@ _msibuild() {
 _wixl() {
   wixl$EXEEXT "$@"
 }
+_wixl_heat() {
+  wixl-heat$EXEEXT "$@"
+}

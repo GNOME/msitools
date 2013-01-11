@@ -93,3 +93,16 @@ AT_CHECK_WIXL([-o out.msi test-arp.wxs], [0], [ignore], [ignore])
 # FIXME: add tons of tests on out.msi
 AT_CHECK([test -f out.msi], [0])
 AT_CLEANUP
+
+AT_SETUP([Heat])
+mkdir -p test/a/b test/c
+touch test/a/file test/c/file
+find test > list
+AT_CHECK([cat list | _wixl_heat -p test/ | grep File], [0],
+[          <File Id="fil1C4ED87DDF872C3D730CE70E5F0B56D2" KeyPath="yes" Source="SourceDir/a/file"/>
+          <File Id="filA95C2C271801F96CC9C5D672A7E6CC66" KeyPath="yes" Source="SourceDir/c/file"/>
+], [ignore])
+AT_CHECK([cat list | _wixl_heat -p test/ -x c | grep File], [0],
+[          <File Id="fil1C4ED87DDF872C3D730CE70E5F0B56D2" KeyPath="yes" Source="SourceDir/a/file"/>
+], [ignore])
+AT_CLEANUP
