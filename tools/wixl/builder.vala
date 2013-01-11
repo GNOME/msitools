@@ -176,6 +176,10 @@ namespace Wixl {
                     if (f.DiskId != m.Id)
                         continue;
 
+                    var component = f.parent as WixComponent;
+                    if (component.in_feature.length () == 0)
+                        continue;
+
                     folder.add_file (new GCab.File.with_file (f.Id, f.file), false);
                     var rec = f.record;
                     sequence += 1;
