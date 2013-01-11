@@ -95,6 +95,11 @@ namespace Wixl {
                         } else
                             throw new Wixl.Error.FAILED ("invalid define");
                         break;
+                    case "warning":
+                        warning (eval (reader.const_value (), file));
+                        break;
+                    case "error":
+                        error (eval (reader.const_value (), file));
                     default:
                         warning ("unhandled preprocessor instruction %s", reader.const_local_name ());
                         break;
