@@ -217,6 +217,7 @@ namespace Wixl {
 
             add_child_types (child_types, {
                 typeof (WixComponentRef),
+                typeof (WixComponentGroupRef),
             });
         }
     }
