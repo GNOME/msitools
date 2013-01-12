@@ -2,6 +2,10 @@
 <Wix xmlns='http://schemas.microsoft.com/wix/2006/wi'>
   <?ifdef var.Foo?>
     <?warning Foo?>
+    <?undef Foo?>
+    <?ifdef var.Foo?>
+      <?error Foo?>
+    <?endif?>
   <?else?>
     <?ifdef var.Bar?>
       <?warning Bar?>

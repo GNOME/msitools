@@ -3,14 +3,17 @@ namespace Wixl {
     class Preprocessor: Object {
 
         unowned List<File> includedirs;
-        HashTable<string, string> globals;
         HashTable<string, string> variables;
         construct {
             variables = new HashTable<string, string> (str_hash, str_equal);
         }
 
         public Preprocessor (HashTable<string, string> globals, List<File> includedirs) {
-            this.globals = globals;
+            string name, value;
+            var it = HashTableIter <string, string> (globals);
+            while (it.next (out name, out value))
+                define_variable (name, value);
+
             this.includedirs = includedirs;
         }
 
@@ -18,8 +21,12 @@ namespace Wixl {
             variables.insert (name, value);
         }
 
+        public void undefine_variable (string name) {
+            variables.remove (name);
+        }
+
         public string? lookup_variable (string name) {
-            return variables.lookup (name) ?? globals.lookup (name);
+            return variables.lookup (name);
         }
 
         public string eval_variable (string str, File? file, bool needed = true) throws GLib.Error {
@@ -187,6 +194,10 @@ namespace Wixl {
                             define_variable (name, value);
                         } else
                             throw new Wixl.Error.FAILED ("invalid define");
+                        break;
+                    case "undef":
+                        var value = reader.const_value ().strip ();
+                        undefine_variable (value);
                         break;
                     case "include":
                         var value = eval (reader.const_value (), file).strip ();

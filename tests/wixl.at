@@ -93,7 +93,7 @@ AT_CHECK_WIXL([-o out.msi IncludeTest.wxs], [0], [ignore],
 [IncludeWarn.wxi:3: warning: IncludeWarn is included
 ])
 AT_CHECK_WIXL([-D Bar -o out.msi IncludeTest.wxs], [0], [ignore],
-[IncludeTest.wxs:7: warning: Bar
+[IncludeTest.wxs:11: warning: Bar
 ])
 AT_CHECK_WIXL([-D Foo -o out.msi IncludeTest.wxs], [0], [ignore],
 [IncludeTest.wxs:4: warning: Foo
