@@ -22,7 +22,7 @@ namespace Wixl {
             return variables.lookup (name) ?? globals.lookup (name);
         }
 
-        public string eval_variable (string str, File? file) throws GLib.Error {
+        public string eval_variable (string str, File? file, bool needed = true) throws GLib.Error {
             var var = str.split (".", 2);
             if (var.length != 2)
                 throw new Wixl.Error.FAILED ("invalid variable %s", str);
@@ -30,7 +30,7 @@ namespace Wixl {
             switch (var[0]) {
             case "var":
                 var val = lookup_variable (var[1]);
-                if (val == null)
+                if (val == null && needed)
                     throw new Wixl.Error.FAILED ("Undefined variable %s", var[1]);
                 return val;
             case "env":
@@ -96,10 +96,84 @@ namespace Wixl {
             stderr.printf (loc.to_string () + ": " + prefix + ": " + msg + "\n");
         }
 
+        class IfContext {
+            public enum State {
+                UNKNOWN,
+                IF,
+                ELSE,
+                ELSEIF;
+
+                public bool in_if () {
+                    return this == IF || this == ELSEIF;
+                }
+            }
+
+            bool _is_true;
+            public bool is_true {
+                get {
+                    return _is_true;
+                }
+                set {
+                    if (value)
+                        never_true = false;
+                    _is_true = value;
+                }
+            }
+
+            public bool never_true = true;
+            public bool enabled;
+            public State state;
+
+            public IfContext (bool enabled = false, bool is_true = false, State state = State.UNKNOWN) {
+                this.enabled = enabled;
+                this.is_true = is_true;
+                this.state = state;
+            }
+        }
 
         void preprocess_xml (Xml.TextReader reader, Xml.TextWriter writer, File? file, bool is_include = false) throws GLib.Error {
+            IfContext context = new IfContext (true, true);
+            var ifstack = new Queue<IfContext> ();
+
             while (reader.read () > 0) {
                 var loc = new Location (reader, file);
+                bool handled = false;
+
+                if (reader.node_type () == Xml.ReaderType.PROCESSING_INSTRUCTION) {
+                    handled = true;
+
+                    switch (reader.const_local_name ()) {
+                    case "ifdef":
+                        ifstack.push_head (context);
+                        var value = reader.const_value ().strip ();
+                        context = new IfContext (context.enabled && context.is_true, eval_variable (value, file, false) != null, IfContext.State.IF);
+                        break;
+                    case "ifndef":
+                        ifstack.push_head (context);
+                        var value = reader.const_value ().strip ();
+                        context = new IfContext (context.enabled && context.is_true, eval_variable (value, file, false) == null, IfContext.State.IF);
+                        break;
+                    case "else":
+                        if (ifstack.is_empty ())
+                            throw new Wixl.Error.FAILED ("Unmatched else");
+                        if (!context.state.in_if ())
+                            throw new Wixl.Error.FAILED ("Unmatched else");
+                        context.state = IfContext.State.ELSE;
+                        context.is_true = context.never_true;
+                        break;
+                    case "endif":
+                        if (ifstack.is_empty ())
+                            throw new Wixl.Error.FAILED ("Unmatched endif");
+                        context = ifstack.pop_head ();
+                        break;
+                    default:
+                        handled = false;
+                        break;
+                    }
+                }
+
+                if (handled || !context.enabled || !context.is_true)
+                    continue;
 
                 switch (reader.node_type ()) {
                 case Xml.ReaderType.PROCESSING_INSTRUCTION:
@@ -174,6 +248,9 @@ namespace Wixl {
                     break;
                 }
             }
+
+            if (!ifstack.is_empty ())
+                throw new Wixl.Error.FAILED ("Missing endif");
         }
 
         bool include (string filename, Xml.TextWriter writer) throws GLib.Error {
