@@ -86,11 +86,17 @@ AT_CHECK_WIXL([-E variables.wxs -D Foo -D Zig=Zag], [0], [<?xml version="1.0"?>
 ], [ignore])
 AT_CLEANUP
 
-AT_SETUP([Preprocessor include])
+AT_SETUP([Preprocessor include & condition])
 AT_WIXLDATA([IncludeTest.wxs])
 AT_WIXLDATA([IncludeWarn.wxi])
 AT_CHECK_WIXL([-o out.msi IncludeTest.wxs], [0], [ignore],
 [IncludeWarn.wxi:3: warning: IncludeWarn is included
+])
+AT_CHECK_WIXL([-D Bar -o out.msi IncludeTest.wxs], [0], [ignore],
+[IncludeTest.wxs:7: warning: Bar
+])
+AT_CHECK_WIXL([-D Foo -o out.msi IncludeTest.wxs], [0], [ignore],
+[IncludeTest.wxs:4: warning: Foo
 ])
 # FIXME: add tons of tests on out.msi
 AT_CHECK([test -f out.msi], [0])

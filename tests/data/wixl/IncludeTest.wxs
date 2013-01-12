@@ -1,5 +1,12 @@
 <?xml version='1.0' encoding='windows-1252'?>
 <Wix xmlns='http://schemas.microsoft.com/wix/2006/wi'>
-  <?include IncludeWarn.wxi ?> 
+  <?ifdef var.Foo?>
+    <?warning Foo?>
+  <?else?>
+    <?ifdef var.Bar?>
+      <?warning Bar?>
+    <?else?>
+      <?include IncludeWarn.wxi ?>
+    <?endif?>
+  <?endif?>
 </Wix>
-
