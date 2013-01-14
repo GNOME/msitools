@@ -395,6 +395,8 @@ namespace Wixl {
         }
 
         void feature_add_component (WixFeature feature, WixComponent component) throws GLib.Error {
+            if (component.in_feature.find (feature) != null)
+                return;
             component.in_feature.append (feature);
             db.table_feature_components.add (feature.Id, component.Id);
         }

@@ -85,8 +85,8 @@ namespace Wixl {
         }
 
         class Location: Object {
-            File file;
-            int line;
+            public File file;
+            public int line;
 
             public Location (Xml.TextReader reader, File file) {
                 this.file = file;
@@ -199,23 +199,13 @@ namespace Wixl {
                         var value = reader.const_value ().strip ();
                         undefine_variable (value);
                         break;
+                    case "require":
+                        var value = eval (reader.const_value (), file).strip ();
+                        include (value, loc, writer, true);
+                        break;
                     case "include":
                         var value = eval (reader.const_value (), file).strip ();
-                        var success = false;
-                        string[] dirs = {};
-                        dirs += value;
-                        dirs += file.get_parent ().get_child (value).get_path ();
-                        foreach (var dir in includedirs)
-                            dirs += dir.get_child (value).get_path ();
-                        foreach (var inc in dirs) {
-                            success = include (inc, writer);
-                            if (success)
-                                break;
-                        }
-                        if (!success) {
-                            print ("error", loc, "Failed to include %s".printf (value));
-                            Posix.exit (1);
-                        }
+                        include (value, loc, writer);
                         break;
                     case "warning":
                         print ("warning", loc, eval (reader.const_value (), file));
@@ -264,7 +254,7 @@ namespace Wixl {
                 throw new Wixl.Error.FAILED ("Missing endif");
         }
 
-        bool include (string filename, Xml.TextWriter writer) throws GLib.Error {
+        bool include_try (string filename, Xml.TextWriter writer) throws GLib.Error {
             string data;
             var file = File.new_for_path (filename);
 
@@ -277,6 +267,34 @@ namespace Wixl {
             var reader = new Xml.TextReader.for_doc (data, "");
             preprocess_xml (reader, writer, file, true);
             return true;
+        }
+
+        // Use it as a set
+        HashTable<string,string*> requires = new HashTable<string, string*> (str_hash, str_equal);
+        void include (string name, Location loc, Xml.TextWriter writer, bool is_req = false) throws GLib.Error {
+            var success = false;
+
+            if (is_req) {
+                if (requires.lookup_extended (name, null, null))
+                    return;
+                requires.add (name);
+            }
+
+            string[] dirs = {};
+            dirs += name;
+            dirs += loc.file.get_parent ().get_child (name).get_path ();
+            foreach (var dir in includedirs)
+                dirs += dir.get_child (name).get_path ();
+
+            foreach (var inc in dirs) {
+                success = include_try (inc, writer);
+                if (success)
+                    break;
+            }
+            if (!success) {
+                print ("error", loc, "Failed to include %s".printf (name));
+                Posix.exit (1);
+            }
         }
 
         public Xml.Doc preprocess (string data, File? file) throws GLib.Error {
