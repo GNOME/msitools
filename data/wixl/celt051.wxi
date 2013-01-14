@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<?require libogg.wxi?>
+<!-- 
+  <ComponentGroup Id="CG.celt051">
+    <Requires>
+      CG.libogg
+    </Requires>
+    <Files>
+      bin/libcelt051-0.dll
+    </Files>
+  </ComponentGroup>
+-->
+
+<Include>
+  <Fragment>
+    <DirectoryRef Id="INSTALLDIR">
+      <Directory Id="dirDC1C691F531D46C718020066C3909F20" Name="bin">
+        <Component Id="cmp81CDD846C962D3ED3E6AB12F6555421F" Guid="*">
+          <File Id="filC3F74D9F5B11B0C760638C18F0F4BBB1" KeyPath="yes" Source="$(var.SourceDir)/bin/libcelt051-0.dll"/>
+        </Component>
+      </Directory>
+    </DirectoryRef>
+  </Fragment>
+  <Fragment>
+    <ComponentGroup Id="CG.celt051">
+      <ComponentGroupRef Id="CG.libogg"/>
+      <ComponentRef Id="cmp81CDD846C962D3ED3E6AB12F6555421F"/>
+    </ComponentGroup>
+  </Fragment>
+</Include>

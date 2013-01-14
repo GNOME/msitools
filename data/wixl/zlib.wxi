@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Include xmlns="http://schemas.microsoft.com/wix/2006/wi">
+  <Fragment>
+    <DirectoryRef Id="INSTALLDIR">
+      <Directory Id="dir0B67CC27EB49B5BDEEB6FC29E81D9A88" Name="bin">
+        <Component Id="cmp756537FE3C108611BF8CD08AED61D290" Guid="*">
+          <File Id="fil592EE6B483F8EF8500AB4D3BC83064DD" KeyPath="yes" Source="$(var.SourceDir)/bin/zlib1.dll"/>
+        </Component>
+        </Directory>
+    </DirectoryRef>
+  </Fragment>
+  <Fragment>
+    <ComponentGroup Id="CG.zlib">
+      <ComponentRef Id="cmp756537FE3C108611BF8CD08AED61D290"/>
+    </ComponentGroup>
+  </Fragment>
+</Include>

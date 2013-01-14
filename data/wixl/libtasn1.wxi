@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Include xmlns="http://schemas.microsoft.com/wix/2006/wi">
+  <Fragment>
+    <DirectoryRef Id="INSTALLDIR">
+      <Directory Id="dir353068C57C7655EF0641549FDAAB3898" Name="bin">
+        <Component Id="cmpA0ECA72D4779635FA3B2FDA40876FCC3" Guid="*">
+          <File Id="fil4B149CE82CDBC6A91851CD63D11A682E" KeyPath="yes" Source="$(var.SourceDir)/bin/libtasn1-3.dll"/>
+        </Component>
+        </Directory>
+    </DirectoryRef>
+  </Fragment>
+  <Fragment>
+    <ComponentGroup Id="CG.libtasn1">
+      <ComponentRef Id="cmpA0ECA72D4779635FA3B2FDA40876FCC3"/>
+    </ComponentGroup>
+  </Fragment>
+</Include>

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Include xmlns="http://schemas.microsoft.com/wix/2006/wi">
+  <Fragment>
+    <DirectoryRef Id="INSTALLDIR">
+      <Directory Id="dir97450B04590A6A18E3F9CBD3F6D6EBB2" Name="share">
+        <Directory Id="dir8EF955C020E501D5CD6240128B80C6AD" Name="icons">
+          <Directory Id="dir51B835413F1FC64DE74DEB85C02CA165" Name="hicolor">
+            <Component Id="cmpC25AB02DEE38E172F1402997BB4F02EA" Guid="*">
+              <File Id="fil1EB9F2F674AF9060404405F8B3AD7AFF" KeyPath="yes" Source="/usr/share/icons/hicolor/index.theme"/>
+            </Component>
+          </Directory>
+        </Directory>
+      </Directory>
+    </DirectoryRef>
+  </Fragment>
+  <Fragment>
+    <ComponentGroup Id="CG.hicolor-icon-theme">
+      <ComponentRef Id="cmpC25AB02DEE38E172F1402997BB4F02EA"/>
+    </ComponentGroup>
+  </Fragment>
+</Include>

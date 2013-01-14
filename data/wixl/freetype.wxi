@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<?require zlib.wxi?>
+<Include xmlns="http://schemas.microsoft.com/wix/2006/wi">
+  <Fragment>
+    <DirectoryRef Id="INSTALLDIR">
+      <Directory Id="dir1729C9CE0AA251E0128542A58F801606" Name="bin">
+        <Component Id="cmp7DA3DC54BBE4B60593CD317C4279F7F9" Guid="*">
+          <File Id="fil53B7125271679B510082D9F968223250" KeyPath="yes" Source="$(var.SourceDir)/bin/freetype-config"/>
+        </Component>
+        <Component Id="cmpF7131FB60E792D02C7BC8C64E5B69F31" Guid="*">
+          <File Id="fil01101BFE7C69CEE465647F09497D5909" KeyPath="yes" Source="$(var.SourceDir)/bin/libfreetype-6.dll"/>
+        </Component>
+      </Directory>
+      <Directory Id="dir391BD37EAB9DC3CDB4496EB44F794241" Name="share">
+        <Directory Id="dir1B23D87C5DE98800A56339D4797B49BE" Name="aclocal">
+          <Component Id="cmp8A37F66595F5F762AB4F86BE3F6A1171" Guid="*">
+            <File Id="fil7BC3179231B58B74C38FF1AB0AB48C03" KeyPath="yes" Source="$(var.SourceDir)/share/aclocal/freetype2.m4"/>
+          </Component>
+          </Directory>
+        </Directory>
+    </DirectoryRef>
+  </Fragment>
+  <Fragment>
+    <ComponentGroup Id="CG.freetype">
+      <ComponentGroupRef Id="CG.zlib"/>
+      <ComponentRef Id="cmp7DA3DC54BBE4B60593CD317C4279F7F9"/>
+      <ComponentRef Id="cmpF7131FB60E792D02C7BC8C64E5B69F31"/>
+      <ComponentRef Id="cmp8A37F66595F5F762AB4F86BE3F6A1171"/>
+    </ComponentGroup>
+  </Fragment>
+</Include>

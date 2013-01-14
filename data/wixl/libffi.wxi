@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Include xmlns="http://schemas.microsoft.com/wix/2006/wi">
+  <Fragment>
+    <DirectoryRef Id="INSTALLDIR">
+      <Directory Id="dirB37BA35DC0E52FA4D62B8457EA52998D" Name="bin">
+        <Component Id="cmp4F67E190AA41922A005AF2B11F7D98C7" Guid="*">
+          <File Id="fil3C28FBAFB6D0436D0420107C1F59E022" KeyPath="yes" Source="$(var.SourceDir)/bin/libffi-6.dll"/>
+        </Component>
+      </Directory>
+    </DirectoryRef>
+  </Fragment>
+  <Fragment>
+    <ComponentGroup Id="CG.libffi">
+      <ComponentRef Id="cmp4F67E190AA41922A005AF2B11F7D98C7"/>
+    </ComponentGroup>
+  </Fragment>
+</Include>

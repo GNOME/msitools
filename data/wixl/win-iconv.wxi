@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Include xmlns="http://schemas.microsoft.com/wix/2006/wi">
+  <Fragment>
+    <DirectoryRef Id="INSTALLDIR">
+      <Directory Id="dir7F336A2C4B5DA9E2D6A824B7A9A79979" Name="bin">
+        <Component Id="cmp3807A1C7915A2A7EFF8C88382DB67C3C" Guid="*">
+          <File Id="fil0B4ECF3732A0BB456B9212EECD25CF37" KeyPath="yes" Source="$(var.SourceDir)/bin/iconv.dll"/>
+        </Component>
+      </Directory>
+    </DirectoryRef>
+  </Fragment>
+  <Fragment>
+    <ComponentGroup Id="CG.win-iconv">
+      <ComponentRef Id="cmp3807A1C7915A2A7EFF8C88382DB67C3C"/>
+    </ComponentGroup>
+  </Fragment>
+</Include>

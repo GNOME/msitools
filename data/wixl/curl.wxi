@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<?require libssh2.wxi?>
+<?require libidn.wxi?>
+<?require zlib.wxi?>
+<?require openssl.wxi?>
+<Include xmlns="http://schemas.microsoft.com/wix/2006/wi">
+  <Fragment>
+    <DirectoryRef Id="INSTALLDIR">
+      <Directory Id="dir228046DAD8E98D16E9275D1D5B2A4070" Name="bin">
+        <Component Id="cmpD17DE7BDBF0C5DD49F836AC69F4B3B5F" Guid="*">
+          <File Id="filC09E7BC3640F1C5BE2A36213327D902F" KeyPath="yes" Source="$(var.SourceDir)/bin/libcurl-4.dll"/>
+        </Component>
+        </Directory>
+    </DirectoryRef>
+  </Fragment>
+  <Fragment>
+    <ComponentGroup Id="CG.curl">
+      <ComponentGroupRef Id="CG.libssh2"/>
+      <ComponentGroupRef Id="CG.libidn"/>
+      <ComponentGroupRef Id="CG.zlib"/>
+      <ComponentGroupRef Id="CG.openssl"/>
+      <ComponentRef Id="cmpD17DE7BDBF0C5DD49F836AC69F4B3B5F"/>
+    </ComponentGroup>
+  </Fragment>
+</Include>

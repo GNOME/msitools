@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<?require glib2.wxi?>
+<?require libpng.wxi?>
+<?require pixman.wxi?>
+<?require zlib.wxi?>
+<Include xmlns="http://schemas.microsoft.com/wix/2006/wi">
+  <Fragment>
+    <DirectoryRef Id="INSTALLDIR">
+      <Directory Id="dir0C707FE57D1835D36676DC503C89282A" Name="bin">
+        <Component Id="cmpC9A10C197D135A61A3FC2CA016DE26E6" Guid="*">
+          <File Id="filCF9796638D750D06CA04C01E5A5F30E6" KeyPath="yes" Source="$(var.SourceDir)/bin/libcairo-2.dll"/>
+        </Component>
+        <Component Id="cmp2FEBFD1B33A65C29917E2B6F3F20EEBE" Guid="*">
+          <File Id="fil013083177D49ECAD9D651BE7DCF04B4E" KeyPath="yes" Source="$(var.SourceDir)/bin/libcairo-gobject-2.dll"/>
+        </Component>
+        <Component Id="cmp933B5D951CF1E2D1F6384212D1930A75" Guid="*">
+          <File Id="fil9779538448D9D47320A67B9985126DF1" KeyPath="yes" Source="$(var.SourceDir)/bin/libcairo-script-interpreter-2.dll"/>
+        </Component>
+        </Directory>
+    </DirectoryRef>
+  </Fragment>
+  <Fragment>
+    <ComponentGroup Id="CG.cairo">
+      <ComponentGroupRef Id="CG.glib2"/>
+      <ComponentGroupRef Id="CG.libpng"/>
+      <ComponentGroupRef Id="CG.pixman"/>
+      <ComponentGroupRef Id="CG.zlib"/>
+      <ComponentRef Id="cmpC9A10C197D135A61A3FC2CA016DE26E6"/>
+      <ComponentRef Id="cmp2FEBFD1B33A65C29917E2B6F3F20EEBE"/>
+      <ComponentRef Id="cmp933B5D951CF1E2D1F6384212D1930A75"/>
+    </ComponentGroup>
+  </Fragment>
+</Include>

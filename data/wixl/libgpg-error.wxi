@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Include xmlns="http://schemas.microsoft.com/wix/2006/wi">
+  <Fragment>
+    <DirectoryRef Id="INSTALLDIR">
+      <Directory Id="dir8CE238A586E7F1480C035F69655D43CE" Name="bin">
+        <Component Id="cmpDDAF30DD250EE6A297D2F9D2B1E5DA64" Guid="*">
+          <File Id="fil5EE0E2655D72C6D58E404F2C25AB2D6C" KeyPath="yes" Source="$(var.SourceDir)/bin/libgpg-error-0.dll"/>
+        </Component>
+      </Directory>
+      <Directory Id="dir2B9DA0643168C751A9BCAAACC599A9D1" Name="share">
+        <Directory Id="dirDABB764363E41C309C58627882938C2B" Name="locale">
+          <Directory Id="dirC0BC33BF0B297225BA49D4E153DD0D27" Name="cs">
+            <Directory Id="dir8CF58A268BCD9C96ADA4A2D76B05BEC7" Name="LC_MESSAGES">
+              <Component Id="cmp2FF0AD4FC85CBFCF23A83045A6303C42" Guid="*">
+                <File Id="fil6DE5BDF74639FB80EDD48FABFFF4B78C" KeyPath="yes" Source="$(var.SourceDir)/share/locale/cs/LC_MESSAGES/libgpg-error.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir6CE77A22B02267E9560849F227350404" Name="de">
+            <Directory Id="dir7965BF2F5E6A30A6294B99E903037AEE" Name="LC_MESSAGES">
+              <Component Id="cmp515E3EA54C3696051B4011090130326E" Guid="*">
+                <File Id="fil87945AC72C746D95D2338B3B0892C4AD" KeyPath="yes" Source="$(var.SourceDir)/share/locale/de/LC_MESSAGES/libgpg-error.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir86959560754B370F4137105CF7977CB1" Name="fr">
+            <Directory Id="dirBE005F5D32DF049085B766AD9C3F46CB" Name="LC_MESSAGES">
+              <Component Id="cmp321EBE8BE6B428644F1145D18532B14E" Guid="*">
+                <File Id="fil21DDC9B90D24563A04A3A1CACA496A32" KeyPath="yes" Source="$(var.SourceDir)/share/locale/fr/LC_MESSAGES/libgpg-error.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir71779CA22D679FADCD31A0261242AA68" Name="it">
+            <Directory Id="dirFF59668C6237B6DB273F43D88E3973E0" Name="LC_MESSAGES">
+              <Component Id="cmp0B89CDAE856FF0FBF7A409C6CA2C7250" Guid="*">
+                <File Id="filB8C74DADFE61869F4FBDF929EE828FF4" KeyPath="yes" Source="$(var.SourceDir)/share/locale/it/LC_MESSAGES/libgpg-error.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dirBDE789B1DAD01765BBC194B471EA9943" Name="nl">
+            <Directory Id="dirCB6E7CF933B2C07960C698D650F4E3F9" Name="LC_MESSAGES">
+              <Component Id="cmp37D69A1107EC405842E105769DCFB9C2" Guid="*">
+                <File Id="fil7BD61D0E11F0C763918AD8B3FD95F32A" KeyPath="yes" Source="$(var.SourceDir)/share/locale/nl/LC_MESSAGES/libgpg-error.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir653858486910E11885590E46F78109E7" Name="pl">
+            <Directory Id="dirD5FBB37F1D7F419E8136932D44A4883D" Name="LC_MESSAGES">
+              <Component Id="cmp928D2C18229968995106FCE357ABF905" Guid="*">
+                <File Id="filD32071679DAF3E2E723AB1D3B22D915C" KeyPath="yes" Source="$(var.SourceDir)/share/locale/pl/LC_MESSAGES/libgpg-error.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir40A7A55E9F231A177FB16AC045A70DBC" Name="ro">
+            <Directory Id="dirCAAF78B208AB911E9788B4B2DD20F37A" Name="LC_MESSAGES">
+              <Component Id="cmp668E75CED737E1F6928C7DAC50E896E3" Guid="*">
+                <File Id="fil03286813162AF82259D6FF84AE138FE0" KeyPath="yes" Source="$(var.SourceDir)/share/locale/ro/LC_MESSAGES/libgpg-error.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir6EE23E60840DFF5E7FC28E32DE626C61" Name="sv">
+            <Directory Id="dir2C5F0C98D7E35355B950D1764A288740" Name="LC_MESSAGES">
+              <Component Id="cmpE2E2C9A32014693D364CECD573E63F3F" Guid="*">
+                <File Id="fil72E02E71A88B6E163FFF63C4AA965A73" KeyPath="yes" Source="$(var.SourceDir)/share/locale/sv/LC_MESSAGES/libgpg-error.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir28D6D25D89EBC10D57FA5AA760309DC5" Name="vi">
+            <Directory Id="dir0C96C29FA6408E232470E010C838F39B" Name="LC_MESSAGES">
+              <Component Id="cmpE0411046BC4806C98C1E84622CA74736" Guid="*">
+                <File Id="fil8425B986FCAE568805A4D2CB4AF203CB" KeyPath="yes" Source="$(var.SourceDir)/share/locale/vi/LC_MESSAGES/libgpg-error.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dirF8E2A82681D862C9E3FF011A0AAB38C2" Name="zh_CN">
+            <Directory Id="dirA6B0E59AA8114F92E2031A6A19A9C9C5" Name="LC_MESSAGES">
+              <Component Id="cmp0B0B441FE0CCEA25FB7A948C1C642956" Guid="*">
+                <File Id="filA97296BF9DF40DF726D6D0AF5527070A" KeyPath="yes" Source="$(var.SourceDir)/share/locale/zh_CN/LC_MESSAGES/libgpg-error.mo"/>
+              </Component>
+              </Directory>
+            </Directory>
+          </Directory>
+        </Directory>
+    </DirectoryRef>
+  </Fragment>
+  <Fragment>
+    <ComponentGroup Id="CG.libgpg-error">
+      <ComponentRef Id="cmpDDAF30DD250EE6A297D2F9D2B1E5DA64"/>
+      <ComponentRef Id="cmp2FF0AD4FC85CBFCF23A83045A6303C42"/>
+      <ComponentRef Id="cmp515E3EA54C3696051B4011090130326E"/>
+      <ComponentRef Id="cmp321EBE8BE6B428644F1145D18532B14E"/>
+      <ComponentRef Id="cmp0B89CDAE856FF0FBF7A409C6CA2C7250"/>
+      <ComponentRef Id="cmp37D69A1107EC405842E105769DCFB9C2"/>
+      <ComponentRef Id="cmp928D2C18229968995106FCE357ABF905"/>
+      <ComponentRef Id="cmp668E75CED737E1F6928C7DAC50E896E3"/>
+      <ComponentRef Id="cmpE2E2C9A32014693D364CECD573E63F3F"/>
+      <ComponentRef Id="cmpE0411046BC4806C98C1E84622CA74736"/>
+      <ComponentRef Id="cmp0B0B441FE0CCEA25FB7A948C1C642956"/>
+    </ComponentGroup>
+  </Fragment>
+</Include>

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Include xmlns="http://schemas.microsoft.com/wix/2006/wi">
+  <Fragment>
+    <DirectoryRef Id="INSTALLDIR">
+      <Directory Id="dirE76CBF8BBA1F8574D226433F79EC6052" Name="bin">
+        <Component Id="cmp7C7539F2ACE2AF31823E3A1B78156443" Guid="*">
+          <File Id="fil1A8355E221DF31D6C81BC0D370C0BD66" KeyPath="yes" Source="$(var.SourceDir)/bin/libhistory6.dll"/>
+        </Component>
+        <Component Id="cmpEF32E14B9685643E27AF514A96E080EB" Guid="*">
+          <File Id="filC39390DE90893D8C6E1D2FB055615A58" KeyPath="yes" Source="$(var.SourceDir)/bin/libreadline6.dll"/>
+        </Component>
+        </Directory>
+    </DirectoryRef>
+  </Fragment>
+  <Fragment>
+    <ComponentGroup Id="CG.readline">
+      <ComponentRef Id="cmp7C7539F2ACE2AF31823E3A1B78156443"/>
+      <ComponentRef Id="cmpEF32E14B9685643E27AF514A96E080EB"/>
+    </ComponentGroup>
+  </Fragment>
+</Include>

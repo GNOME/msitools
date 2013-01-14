@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Include xmlns="http://schemas.microsoft.com/wix/2006/wi">
+  <Fragment>
+    <DirectoryRef Id="INSTALLDIR">
+      <Directory Id="dir5B8D234B6944569CF9D63A0845C2C714" Name="bin">
+        <Component Id="cmpD74B99A7894F2D6E2B1F93E5D403C0BB" Guid="*">
+          <File Id="fil3152DFC6CBD8BB05A5A806FE595675D1" KeyPath="yes" Source="$(var.SourceDir)/bin/liborc-0.4-0.dll"/>
+        </Component>
+        <Component Id="cmp462AA8AF641AC020455E07D6D3EE94AC" Guid="*">
+          <File Id="fil2534E81F2EE42A0A493B4169233E9CE3" KeyPath="yes" Source="$(var.SourceDir)/bin/orc-bugreport.exe"/>
+        </Component>
+      </Directory>
+    </DirectoryRef>
+  </Fragment>
+  <Fragment>
+    <ComponentGroup Id="CG.orc">
+      <ComponentRef Id="cmpD74B99A7894F2D6E2B1F93E5D403C0BB"/>
+      <ComponentRef Id="cmp462AA8AF641AC020455E07D6D3EE94AC"/>
+    </ComponentGroup>
+  </Fragment>
+</Include>

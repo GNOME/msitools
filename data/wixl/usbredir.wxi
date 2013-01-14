@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<?require libusbx.wxi?>
+<Include xmlns="http://schemas.microsoft.com/wix/2006/wi">
+  <Fragment>
+    <DirectoryRef Id="INSTALLDIR">
+      <Directory Id="dirA85F181264B4CDDD35B5874300B3EF0F" Name="bin">
+        <Component Id="cmpCE0EE24B2A1AF5DC602D6AF0B067F39A" Guid="*">
+          <File Id="fil75C15C827FBDF05115A68E7515421B89" KeyPath="yes" Source="$(var.SourceDir)/bin/libusbredirhost-1.dll"/>
+        </Component>
+        <Component Id="cmpE4FC3C3C7912197F97C49292AAEA17E2" Guid="*">
+          <File Id="fil2385B1BB5B07DEF6E0DECC06F5A2A45D" KeyPath="yes" Source="$(var.SourceDir)/bin/libusbredirparser-0.dll"/>
+        </Component>
+        </Directory>
+    </DirectoryRef>
+  </Fragment>
+  <Fragment>
+    <ComponentGroup Id="CG.usbredir">
+      <ComponentGroupRef Id="CG.libusbx"/>
+      <ComponentRef Id="cmpCE0EE24B2A1AF5DC602D6AF0B067F39A"/>
+      <ComponentRef Id="cmpE4FC3C3C7912197F97C49292AAEA17E2"/>
+    </ComponentGroup>
+  </Fragment>
+</Include>

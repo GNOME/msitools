@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Include xmlns="http://schemas.microsoft.com/wix/2006/wi">
+  <Fragment>
+    <DirectoryRef Id="INSTALLDIR">
+      <Directory Id="dir550BF0206CDE089C1765C9E202FA648F" Name="bin">
+        <Component Id="cmp8D382588B7F7DD3EF2B6D88927913BA5" Guid="*">
+          <File Id="filD1331BF1F5AA97B1DEF1BE66794E05A9" KeyPath="yes" Source="$(var.SourceDir)/bin/libtiff-5.dll"/>
+        </Component>
+        <Component Id="cmp1E73886068B760FB1A37062110040830" Guid="*">
+          <File Id="fil32C66F84A6181D0ECA02DAB6A54A7D03" KeyPath="yes" Source="$(var.SourceDir)/bin/libtiffxx-5.dll"/>
+        </Component>
+        </Directory>
+    </DirectoryRef>
+  </Fragment>
+  <Fragment>
+    <ComponentGroup Id="CG.libtiff">
+      <ComponentRef Id="cmp8D382588B7F7DD3EF2B6D88927913BA5"/>
+      <ComponentRef Id="cmp1E73886068B760FB1A37062110040830"/>
+    </ComponentGroup>
+  </Fragment>
+</Include>

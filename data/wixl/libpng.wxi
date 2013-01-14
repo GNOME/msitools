@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<?require zlib.wxi?>
+<Include xmlns="http://schemas.microsoft.com/wix/2006/wi">
+  <Fragment>
+    <DirectoryRef Id="INSTALLDIR">
+      <Directory Id="dir4F037DA059A1304DD8B0E91921F03295" Name="bin">
+        <Component Id="cmp71CA8B05415501F69863A36302EE1D4F" Guid="*">
+          <File Id="fil61969A4C9C2629AE404A707620CF5AED" KeyPath="yes" Source="$(var.SourceDir)/bin/libpng15-15.dll"/>
+        </Component>
+      </Directory>
+    </DirectoryRef>
+  </Fragment>
+  <Fragment>
+    <ComponentGroup Id="CG.libpng">
+      <ComponentGroupRef Id="CG.zlib"/>
+      <ComponentRef Id="cmp71CA8B05415501F69863A36302EE1D4F"/>
+    </ComponentGroup>
+  </Fragment>
+</Include>

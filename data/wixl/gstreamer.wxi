@@ -1,0 +1,391 @@
+<?xml version="1.0" encoding="utf-8"?>
+<?require glib2.wxi?>
+<Include xmlns="http://schemas.microsoft.com/wix/2006/wi">
+  <Fragment>
+    <DirectoryRef Id="INSTALLDIR">
+      <Directory Id="dirB3E7FAAE785E255B806AFC2C1836637D" Name="bin">
+        <Component Id="cmpFADD48213C312FDF38DBDAC806C1C602" Guid="*">
+          <File Id="fil63D720D23DFDE8D532ADE7058835652A" KeyPath="yes" Source="$(var.SourceDir)/bin/gst-feedback-0.10"/>
+        </Component>
+        <Component Id="cmp057BDD3A0F4E1D0B34E9B1552D91E4A7" Guid="*">
+          <File Id="fil4131DBC0C1C3831EA5BAD8D265962545" KeyPath="yes" Source="$(var.SourceDir)/bin/gst-feedback.exe"/>
+        </Component>
+        <Component Id="cmpA22A0BE92B2CD1202E3678C160441460" Guid="*">
+          <File Id="fil96EC80AF63BF3698A7ABF6EC11040DE6" KeyPath="yes" Source="$(var.SourceDir)/bin/gst-inspect-0.10.exe"/>
+        </Component>
+        <Component Id="cmp2093A22CC06DD77E9DA88D75F74D3785" Guid="*">
+          <File Id="filC1F199439D63C36B0A35C8A4DB58AD87" KeyPath="yes" Source="$(var.SourceDir)/bin/gst-inspect.exe"/>
+        </Component>
+        <Component Id="cmpE691892D39FD31323955115419F7C822" Guid="*">
+          <File Id="filBCE60534883BA1189C580F0C9AFBD467" KeyPath="yes" Source="$(var.SourceDir)/bin/gst-launch-0.10.exe"/>
+        </Component>
+        <Component Id="cmp690C0F7A2D81B54371BE7189F16F0C0F" Guid="*">
+          <File Id="filA4BBDCE9AA995ED9ED3DBDE6A1BAFE96" KeyPath="yes" Source="$(var.SourceDir)/bin/gst-launch.exe"/>
+        </Component>
+        <Component Id="cmp035E5FA6A381A9856BF4639A66D04C46" Guid="*">
+          <File Id="fil05D443CE99FEFC2F7E9BA1C95A78DA15" KeyPath="yes" Source="$(var.SourceDir)/bin/gst-typefind-0.10.exe"/>
+        </Component>
+        <Component Id="cmpFEFBCE3788BD093F5CA3F6A7B6270154" Guid="*">
+          <File Id="fil547A138730D8BF6522ADB852B8A4955D" KeyPath="yes" Source="$(var.SourceDir)/bin/gst-typefind.exe"/>
+        </Component>
+        <Component Id="cmp567B14E5ADB788AF3A0A4324B5D91657" Guid="*">
+          <File Id="filE625BF16A2D47294DB3EDEDE13D2E6F1" KeyPath="yes" Source="$(var.SourceDir)/bin/gst-xmlinspect-0.10.exe"/>
+        </Component>
+        <Component Id="cmp9D5275E1B091241ECE82FF24E2056550" Guid="*">
+          <File Id="filD91C67149BE5B97E352F164BE1C2819D" KeyPath="yes" Source="$(var.SourceDir)/bin/gst-xmlinspect.exe"/>
+        </Component>
+        <Component Id="cmp6588182E78AC86006996857BE13AD4DB" Guid="*">
+          <File Id="filF011F77697B77C9CDD1629DD1EE31CE4" KeyPath="yes" Source="$(var.SourceDir)/bin/gst-xmllaunch-0.10.exe"/>
+        </Component>
+        <Component Id="cmp7CBBB0CB53B1FA1B80DBA5C28C6E1FE3" Guid="*">
+          <File Id="fil5F254082C752401563DFC9E3DD5C8DFC" KeyPath="yes" Source="$(var.SourceDir)/bin/gst-xmllaunch.exe"/>
+        </Component>
+        <Component Id="cmp2DE60E1127B7F488935CCC84BB49C0EC" Guid="*">
+          <File Id="filD68F5CB67D653D3084FE31E57ED82C94" KeyPath="yes" Source="$(var.SourceDir)/bin/libgstbase-0.10-0.dll"/>
+        </Component>
+        <Component Id="cmp9D11FE291638FACBCD6AB014FB74A83E" Guid="*">
+          <File Id="fil3F505937AAA2BD2421E07B1477E91FD0" KeyPath="yes" Source="$(var.SourceDir)/bin/libgstcontroller-0.10-0.dll"/>
+        </Component>
+        <Component Id="cmp6ED5626204DE69E8B92BABE926F6700D" Guid="*">
+          <File Id="fil8C2346FCB9D88A4DB75949B273EC1D61" KeyPath="yes" Source="$(var.SourceDir)/bin/libgstdataprotocol-0.10-0.dll"/>
+        </Component>
+        <Component Id="cmpA51B0D59A5EFF8CC81E5872E9B11C431" Guid="*">
+          <File Id="fil1DBF82C1CBE8F91EC13F6D5B0172929F" KeyPath="yes" Source="$(var.SourceDir)/bin/libgstnet-0.10-0.dll"/>
+        </Component>
+        <Component Id="cmpE505F644FA3A982DD899264EE4AD7812" Guid="*">
+          <File Id="fil46A2E6642C996364985ADBCDEA0D439E" KeyPath="yes" Source="$(var.SourceDir)/bin/libgstreamer-0.10-0.dll"/>
+        </Component>
+      </Directory>
+      <Directory Id="dir6ABE1982764EA314644AA6E1E7440E53" Name="share">
+        <Directory Id="dir4C27B5A27A0DC0D85C2375E8CA15D1F2" Name="locale">
+          <Directory Id="dir40CE49F2E17F97E6E45E7B5C979AD1E8" Name="af">
+            <Directory Id="dir94D29737000D855A4F50BCA00ABBBC3B" Name="LC_MESSAGES">
+              <Component Id="cmp419711F7315A98C7779BCEB86B9886D0" Guid="*">
+                <File Id="filCC4E9D810C9912588D2C5EFB790D7329" KeyPath="yes" Source="$(var.SourceDir)/share/locale/af/LC_MESSAGES/gstreamer-0.10.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir25A232A2331A78C5CD71FE8B5A0FA5CD" Name="az">
+            <Directory Id="dir20214C52CD099E739E46267A4B46A877" Name="LC_MESSAGES">
+              <Component Id="cmpA92545359D9D9D0C82F24DE12794A5F9" Guid="*">
+                <File Id="fil6AC89E9E7B11BD08CE1A23079A4E9B1B" KeyPath="yes" Source="$(var.SourceDir)/share/locale/az/LC_MESSAGES/gstreamer-0.10.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir924373875E0FEFED34D8C5F2DD3B9392" Name="be">
+            <Directory Id="dirF0E8468AB765465365981E148B462FCF" Name="LC_MESSAGES">
+              <Component Id="cmpDDD25E3D5EDA3734E4AD5C6A02F99C05" Guid="*">
+                <File Id="filE121333EBDF292749BDAADA9C225B946" KeyPath="yes" Source="$(var.SourceDir)/share/locale/be/LC_MESSAGES/gstreamer-0.10.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dirAEADB9AFD0C124B5B18677DF45426500" Name="bg">
+            <Directory Id="dir33D62C0050D5FEA2C5C0C6B3B443E966" Name="LC_MESSAGES">
+              <Component Id="cmp5B116C21687CC2F5DFA80BA52787D4B3" Guid="*">
+                <File Id="filDE02F7C1B5A27E01CCA2F532B6561AA7" KeyPath="yes" Source="$(var.SourceDir)/share/locale/bg/LC_MESSAGES/gstreamer-0.10.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dirC9645FC0675C91544D1B4FB09B0C8EEF" Name="ca">
+            <Directory Id="dirA2365D0121EE98D5AD89BD9F61057D4A" Name="LC_MESSAGES">
+              <Component Id="cmp088F5B08931065AA9A996CCB4B336874" Guid="*">
+                <File Id="fil2685BD3BD3D4C6AF5841EE3DF8B4F6E2" KeyPath="yes" Source="$(var.SourceDir)/share/locale/ca/LC_MESSAGES/gstreamer-0.10.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dirEA480DAA9B1F26A6891692C322ADAACD" Name="cs">
+            <Directory Id="dirD3C902D8D215293BB2E9E53136E9A31C" Name="LC_MESSAGES">
+              <Component Id="cmpF81888C75BE639A9C2F7DBD71B2C3991" Guid="*">
+                <File Id="fil2C3BD3DB6F7FA70AA312A28C6D5233A8" KeyPath="yes" Source="$(var.SourceDir)/share/locale/cs/LC_MESSAGES/gstreamer-0.10.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dirC28388EFDFA52A1058306AF2D0F3CCEC" Name="da">
+            <Directory Id="dir87E536250EEFA9D28937D288A9AEE5FA" Name="LC_MESSAGES">
+              <Component Id="cmp23319ED1EB754AB8A17523343106243F" Guid="*">
+                <File Id="filC2AEA0217CED4DAEA8F57AF7D284C0B0" KeyPath="yes" Source="$(var.SourceDir)/share/locale/da/LC_MESSAGES/gstreamer-0.10.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir1A779A4D69AD98460CA45AA6320ABCEA" Name="de">
+            <Directory Id="dir0634F6D12ACE351AD384534A220A71E1" Name="LC_MESSAGES">
+              <Component Id="cmp85AFA98DA3CE2567C80576C0B87384C9" Guid="*">
+                <File Id="fil569041AAF37CEF95EE07A6D0E6765C82" KeyPath="yes" Source="$(var.SourceDir)/share/locale/de/LC_MESSAGES/gstreamer-0.10.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dirA7DF9C07C61CB4506AE1E5B70314B37F" Name="el">
+            <Directory Id="dir4CAA22687C93D2C1E5C1684A4904E116" Name="LC_MESSAGES">
+              <Component Id="cmp0639E0E0ACB9EE29CF62379AD66B0763" Guid="*">
+                <File Id="filC7A0841A88851433D4AAD3FB95408FF4" KeyPath="yes" Source="$(var.SourceDir)/share/locale/el/LC_MESSAGES/gstreamer-0.10.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dirB26C5D5B356B99DDD1F612E97F93582D" Name="en_GB">
+            <Directory Id="dir53D33BA38A925ADACC285859ADEE2309" Name="LC_MESSAGES">
+              <Component Id="cmpBCEC97D4F944FBA252CB27A049A790A8" Guid="*">
+                <File Id="filD8907DA662E4539F343B56FF7867B358" KeyPath="yes" Source="$(var.SourceDir)/share/locale/en_GB/LC_MESSAGES/gstreamer-0.10.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir83C7A2E36827FB648FBE30BAA85A3482" Name="eo">
+            <Directory Id="dir1D9CDB09574AE3EFB5BA38E617049B78" Name="LC_MESSAGES">
+              <Component Id="cmpFE6E5D5376042DDC096356CC8A37AAB4" Guid="*">
+                <File Id="fil31C24CF2917B746DC3CC4835E6EAC295" KeyPath="yes" Source="$(var.SourceDir)/share/locale/eo/LC_MESSAGES/gstreamer-0.10.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir132320D4E289050E40556CB27FD67E69" Name="es">
+            <Directory Id="dir0FE135C372C05BE13F31E092DC073993" Name="LC_MESSAGES">
+              <Component Id="cmp4504616533E33D9AE4F3EC92F17A98BF" Guid="*">
+                <File Id="filFE779A456E38431A8DB6B2737456A5CD" KeyPath="yes" Source="$(var.SourceDir)/share/locale/es/LC_MESSAGES/gstreamer-0.10.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dirDF1203B1F0D21D01CB702D0163979224" Name="eu">
+            <Directory Id="dirC1BE28042BC9EF6BEC55A9A9480C2B5E" Name="LC_MESSAGES">
+              <Component Id="cmp27C0DD6D849AB5323A5E570950C4FD9B" Guid="*">
+                <File Id="fil6B15DF8AFCEE58D9EAACC73F5F46D62A" KeyPath="yes" Source="$(var.SourceDir)/share/locale/eu/LC_MESSAGES/gstreamer-0.10.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dirAF26663393AD79CDB8E3A9D1D54C2744" Name="fi">
+            <Directory Id="dir609D955846ECFD69EB1723872606340E" Name="LC_MESSAGES">
+              <Component Id="cmp6C1BAC8637A053C5DAB7445FB891CBD0" Guid="*">
+                <File Id="fil4ED566467378C837C0AF7917C029A90E" KeyPath="yes" Source="$(var.SourceDir)/share/locale/fi/LC_MESSAGES/gstreamer-0.10.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir9AE1BC8639D8079710259896F74E3E1F" Name="fr">
+            <Directory Id="dir906E70EB7B8DEE6CD21DBAD7C9A7F5DD" Name="LC_MESSAGES">
+              <Component Id="cmpD58069F59D3F9D673F6F1CB999C1285B" Guid="*">
+                <File Id="filDFE615DF3F4D096507F1D81F5DC7C08F" KeyPath="yes" Source="$(var.SourceDir)/share/locale/fr/LC_MESSAGES/gstreamer-0.10.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir044CE7B3E2B5C3F84E38BAA0D97C59A7" Name="gl">
+            <Directory Id="dir9DF475F7B71CC5635B83F582C020F67C" Name="LC_MESSAGES">
+              <Component Id="cmpBE3C3CDA4F10B0A576E658C6381D66A2" Guid="*">
+                <File Id="fil1162D0C1F0A889132DF430C09AE4A896" KeyPath="yes" Source="$(var.SourceDir)/share/locale/gl/LC_MESSAGES/gstreamer-0.10.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir1A23724A633787ADB094443D84CE32B8" Name="hu">
+            <Directory Id="dir3CE562EF8B9195884060E9BFAA0621A2" Name="LC_MESSAGES">
+              <Component Id="cmpCD38D179057E4A79F6A443F0236E2132" Guid="*">
+                <File Id="fil501480DFE9409FB8AD09A6C7BDF748F5" KeyPath="yes" Source="$(var.SourceDir)/share/locale/hu/LC_MESSAGES/gstreamer-0.10.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir7B5A36E41F758A3DA7632F42E7916A89" Name="id">
+            <Directory Id="dir367826067BBF7CADADCFFD5E0D9BC840" Name="LC_MESSAGES">
+              <Component Id="cmpDEEE63894FA098CF9D225A4762D0003F" Guid="*">
+                <File Id="filC9C43D7D0D4C12D700BBB20E2D413850" KeyPath="yes" Source="$(var.SourceDir)/share/locale/id/LC_MESSAGES/gstreamer-0.10.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir433C8AB1E7CF8DDD59200A747A361EDB" Name="it">
+            <Directory Id="dirA42C09B52FF5BF69118361C2F1398995" Name="LC_MESSAGES">
+              <Component Id="cmp1219D33457D4D9E3CA0288E0E5F0B19B" Guid="*">
+                <File Id="fil05AAC44473387966F1AB16AC27BBFAEE" KeyPath="yes" Source="$(var.SourceDir)/share/locale/it/LC_MESSAGES/gstreamer-0.10.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir81441790DEAE639E314BCB6F5E2562B1" Name="ja">
+            <Directory Id="dir0B5C5EB2F2E8068E175BFF3936EB60BB" Name="LC_MESSAGES">
+              <Component Id="cmp80C2D78995304E5AD92376148AC24694" Guid="*">
+                <File Id="fil275854D11A2F77E083D51B6899D33F04" KeyPath="yes" Source="$(var.SourceDir)/share/locale/ja/LC_MESSAGES/gstreamer-0.10.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dirB8870DB5CF121E5F6FAF76E6DDEC8BB1" Name="lt">
+            <Directory Id="dirBB5EEE1E19230FF1BB93A12351AF0F3B" Name="LC_MESSAGES">
+              <Component Id="cmp63202585AF592DC2A53C239562605FB7" Guid="*">
+                <File Id="filD21C69573AD60501D794F37790AFD928" KeyPath="yes" Source="$(var.SourceDir)/share/locale/lt/LC_MESSAGES/gstreamer-0.10.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir493A2ED292390E64601C15F0603D4B5B" Name="nb">
+            <Directory Id="dir7B0EC6398702FAC12CC53944E39F3109" Name="LC_MESSAGES">
+              <Component Id="cmp58FB5E2190F9BC9C43AB5A3C85A56234" Guid="*">
+                <File Id="fil9DBE03A67E697D2BA18773C3E2C2CAFF" KeyPath="yes" Source="$(var.SourceDir)/share/locale/nb/LC_MESSAGES/gstreamer-0.10.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir706B02B200059DB7C3BA658BCD99860F" Name="nl">
+            <Directory Id="dirBE94A7DFB4016B7D104A25F402A22B9D" Name="LC_MESSAGES">
+              <Component Id="cmpE24F18EC3475DC9F53ECCFF424B36EDE" Guid="*">
+                <File Id="fil3030579BEA62F2C85787ABC382F7216F" KeyPath="yes" Source="$(var.SourceDir)/share/locale/nl/LC_MESSAGES/gstreamer-0.10.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir2D8101063C051D02613A4470CBF880F1" Name="pl">
+            <Directory Id="dir32C4FD9299E31E06FB823635F8A4A5EF" Name="LC_MESSAGES">
+              <Component Id="cmpB5BCBA3EAC9E0FAAE6018129C151D6D7" Guid="*">
+                <File Id="fil618A258DBC887C70E8CF4835692A6F12" KeyPath="yes" Source="$(var.SourceDir)/share/locale/pl/LC_MESSAGES/gstreamer-0.10.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir28374F8C5357779AA454ADC77812D287" Name="pt_BR">
+            <Directory Id="dir75D97956E0D156FD9B55F2A4B8B1DEE6" Name="LC_MESSAGES">
+              <Component Id="cmp9D02F73BEC3812DEBB8C795FAE916EC9" Guid="*">
+                <File Id="fil468D630FDF70D4529CA887973AB28724" KeyPath="yes" Source="$(var.SourceDir)/share/locale/pt_BR/LC_MESSAGES/gstreamer-0.10.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dirC90D6A8FDB82A8BBFCF6C57618D4AD50" Name="ro">
+            <Directory Id="dir05397CDF702BD0BBCF0C7B8A6DA8C042" Name="LC_MESSAGES">
+              <Component Id="cmpBDF612A0918AAF9F13B4D5F3F4393690" Guid="*">
+                <File Id="fil57284CE4B78551E7BE10EB161BEE5665" KeyPath="yes" Source="$(var.SourceDir)/share/locale/ro/LC_MESSAGES/gstreamer-0.10.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dirEFDB46B5F411AEC1306B20460E6DB931" Name="ru">
+            <Directory Id="dir3315D8420232DE1D71FE082EFE01EEE5" Name="LC_MESSAGES">
+              <Component Id="cmp7EAAA56851D061EB70EA7EDEDE3A5904" Guid="*">
+                <File Id="fil40A8F39DE615A7FD3C6855BFC6B03883" KeyPath="yes" Source="$(var.SourceDir)/share/locale/ru/LC_MESSAGES/gstreamer-0.10.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dirD6CA1DB1DFE567FB32BC888EA9882E28" Name="rw">
+            <Directory Id="dir077DB452F21EE8749EC9B48C8483F22D" Name="LC_MESSAGES">
+              <Component Id="cmp72226BF2FA244087E731A89F207D64B7" Guid="*">
+                <File Id="filED34D7F15A9FA4C30E137CDCF4E16952" KeyPath="yes" Source="$(var.SourceDir)/share/locale/rw/LC_MESSAGES/gstreamer-0.10.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dirD69D0202A81168842B653BCB6C8FF42B" Name="sk">
+            <Directory Id="dirF016B14DE56D9CC64E7F7FE7DC34E6FF" Name="LC_MESSAGES">
+              <Component Id="cmp3681139EA8B8CE5495451E19E22C7CC4" Guid="*">
+                <File Id="filA807EB7D1A257C64D78BADB797A573A2" KeyPath="yes" Source="$(var.SourceDir)/share/locale/sk/LC_MESSAGES/gstreamer-0.10.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dirB47926DB70F659B0797D2BB55549C6A4" Name="sl">
+            <Directory Id="dirD3FAD0349D4459C62191C2B431CFEAD3" Name="LC_MESSAGES">
+              <Component Id="cmp8A49BBBBB8F52C14C6746BFCA0558EB8" Guid="*">
+                <File Id="fil42B573D53D50CD0332F14FEDFF2260DF" KeyPath="yes" Source="$(var.SourceDir)/share/locale/sl/LC_MESSAGES/gstreamer-0.10.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir050CDCD74B49D2CAF23B9ED71FEB8BFA" Name="sq">
+            <Directory Id="dirCB6FF867BC369E3917C82F66361BD23D" Name="LC_MESSAGES">
+              <Component Id="cmp4AC6C83B68D070C1F825C16181447EDA" Guid="*">
+                <File Id="filE6044C8C9F94895A989FE54A4E22A28F" KeyPath="yes" Source="$(var.SourceDir)/share/locale/sq/LC_MESSAGES/gstreamer-0.10.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir7BB9557809C83851D60F7D12839F83C9" Name="sr">
+            <Directory Id="dir707A8466638870974B568C3F19B769A7" Name="LC_MESSAGES">
+              <Component Id="cmp7B09305E70B9DDD0F1BC999FD5ADA723" Guid="*">
+                <File Id="filC226449188405309A2657A65FC36686D" KeyPath="yes" Source="$(var.SourceDir)/share/locale/sr/LC_MESSAGES/gstreamer-0.10.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir6039E605E2281ED236E442C73C2DE6F8" Name="sv">
+            <Directory Id="dirA52D787989861FE8A2BB017E0E6A6441" Name="LC_MESSAGES">
+              <Component Id="cmp1BCDFB65F8F1B10524B63D36971F188A" Guid="*">
+                <File Id="fil41FEBCC2818040197527A16FE9C306E2" KeyPath="yes" Source="$(var.SourceDir)/share/locale/sv/LC_MESSAGES/gstreamer-0.10.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir6E09153971D49D2CCFD7145AF5BC0717" Name="tr">
+            <Directory Id="dirB9C76F0BC0EEFC7D6381F8A9A2F62427" Name="LC_MESSAGES">
+              <Component Id="cmpB9B7D7342D282EB7ACD760E462FDDFFA" Guid="*">
+                <File Id="fil0CA2B0B7672BCE25F859DEFDD1AE6459" KeyPath="yes" Source="$(var.SourceDir)/share/locale/tr/LC_MESSAGES/gstreamer-0.10.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir50C5E3ADFECDB8425CFA5D1F1A44EA2B" Name="uk">
+            <Directory Id="dir249B08BEF8F3C9E0AA27307193DE971D" Name="LC_MESSAGES">
+              <Component Id="cmpBDFAACF40A5859DD8105573D06EE036B" Guid="*">
+                <File Id="fil09F7B86B6C7FB0758FAA8196BF4F3B34" KeyPath="yes" Source="$(var.SourceDir)/share/locale/uk/LC_MESSAGES/gstreamer-0.10.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir854390B5563F28D31FF184D372F1FB20" Name="vi">
+            <Directory Id="dir0A9B911235487E812E552D32A2C737EE" Name="LC_MESSAGES">
+              <Component Id="cmp986C6BE8949D52F116825DF3AC98343C" Guid="*">
+                <File Id="filF810D2DF6062CC4C54C25C6112958376" KeyPath="yes" Source="$(var.SourceDir)/share/locale/vi/LC_MESSAGES/gstreamer-0.10.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir0DFB5532772E918319C9FFA4BFC67D2D" Name="zh_CN">
+            <Directory Id="dir13745FC48E8C017EB2383A7E25A6ED9D" Name="LC_MESSAGES">
+              <Component Id="cmpE1CEA94730DB78ADE2608A4F4A037B6F" Guid="*">
+                <File Id="fil4E04F41F2C1F513DD5740092D390E48E" KeyPath="yes" Source="$(var.SourceDir)/share/locale/zh_CN/LC_MESSAGES/gstreamer-0.10.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir94FEC347081A2DE59CD68225355225D2" Name="zh_TW">
+            <Directory Id="dirA8E5D985FDF51A6AC25FD8A2C23DE36C" Name="LC_MESSAGES">
+              <Component Id="cmpE858E96B291E9E05C24928057BA54F28" Guid="*">
+                <File Id="fil5ACDB1B246FC56E3C5E3FBA8CC8F5372" KeyPath="yes" Source="$(var.SourceDir)/share/locale/zh_TW/LC_MESSAGES/gstreamer-0.10.mo"/>
+              </Component>
+              </Directory>
+            </Directory>
+          </Directory>
+        </Directory>
+    </DirectoryRef>
+  </Fragment>
+  <Fragment>
+    <ComponentGroup Id="CG.gstreamer">
+      <ComponentGroupRef Id="CG.glib2"/>
+      <ComponentRef Id="cmpFADD48213C312FDF38DBDAC806C1C602"/>
+      <ComponentRef Id="cmp057BDD3A0F4E1D0B34E9B1552D91E4A7"/>
+      <ComponentRef Id="cmpA22A0BE92B2CD1202E3678C160441460"/>
+      <ComponentRef Id="cmp2093A22CC06DD77E9DA88D75F74D3785"/>
+      <ComponentRef Id="cmpE691892D39FD31323955115419F7C822"/>
+      <ComponentRef Id="cmp690C0F7A2D81B54371BE7189F16F0C0F"/>
+      <ComponentRef Id="cmp035E5FA6A381A9856BF4639A66D04C46"/>
+      <ComponentRef Id="cmpFEFBCE3788BD093F5CA3F6A7B6270154"/>
+      <ComponentRef Id="cmp567B14E5ADB788AF3A0A4324B5D91657"/>
+      <ComponentRef Id="cmp9D5275E1B091241ECE82FF24E2056550"/>
+      <ComponentRef Id="cmp6588182E78AC86006996857BE13AD4DB"/>
+      <ComponentRef Id="cmp7CBBB0CB53B1FA1B80DBA5C28C6E1FE3"/>
+      <ComponentRef Id="cmp2DE60E1127B7F488935CCC84BB49C0EC"/>
+      <ComponentRef Id="cmp9D11FE291638FACBCD6AB014FB74A83E"/>
+      <ComponentRef Id="cmp6ED5626204DE69E8B92BABE926F6700D"/>
+      <ComponentRef Id="cmpA51B0D59A5EFF8CC81E5872E9B11C431"/>
+      <ComponentRef Id="cmpE505F644FA3A982DD899264EE4AD7812"/>
+      <ComponentRef Id="cmp419711F7315A98C7779BCEB86B9886D0"/>
+      <ComponentRef Id="cmpA92545359D9D9D0C82F24DE12794A5F9"/>
+      <ComponentRef Id="cmpDDD25E3D5EDA3734E4AD5C6A02F99C05"/>
+      <ComponentRef Id="cmp5B116C21687CC2F5DFA80BA52787D4B3"/>
+      <ComponentRef Id="cmp088F5B08931065AA9A996CCB4B336874"/>
+      <ComponentRef Id="cmpF81888C75BE639A9C2F7DBD71B2C3991"/>
+      <ComponentRef Id="cmp23319ED1EB754AB8A17523343106243F"/>
+      <ComponentRef Id="cmp85AFA98DA3CE2567C80576C0B87384C9"/>
+      <ComponentRef Id="cmp0639E0E0ACB9EE29CF62379AD66B0763"/>
+      <ComponentRef Id="cmpBCEC97D4F944FBA252CB27A049A790A8"/>
+      <ComponentRef Id="cmpFE6E5D5376042DDC096356CC8A37AAB4"/>
+      <ComponentRef Id="cmp4504616533E33D9AE4F3EC92F17A98BF"/>
+      <ComponentRef Id="cmp27C0DD6D849AB5323A5E570950C4FD9B"/>
+      <ComponentRef Id="cmp6C1BAC8637A053C5DAB7445FB891CBD0"/>
+      <ComponentRef Id="cmpD58069F59D3F9D673F6F1CB999C1285B"/>
+      <ComponentRef Id="cmpBE3C3CDA4F10B0A576E658C6381D66A2"/>
+      <ComponentRef Id="cmpCD38D179057E4A79F6A443F0236E2132"/>
+      <ComponentRef Id="cmpDEEE63894FA098CF9D225A4762D0003F"/>
+      <ComponentRef Id="cmp1219D33457D4D9E3CA0288E0E5F0B19B"/>
+      <ComponentRef Id="cmp80C2D78995304E5AD92376148AC24694"/>
+      <ComponentRef Id="cmp63202585AF592DC2A53C239562605FB7"/>
+      <ComponentRef Id="cmp58FB5E2190F9BC9C43AB5A3C85A56234"/>
+      <ComponentRef Id="cmpE24F18EC3475DC9F53ECCFF424B36EDE"/>
+      <ComponentRef Id="cmpB5BCBA3EAC9E0FAAE6018129C151D6D7"/>
+      <ComponentRef Id="cmp9D02F73BEC3812DEBB8C795FAE916EC9"/>
+      <ComponentRef Id="cmpBDF612A0918AAF9F13B4D5F3F4393690"/>
+      <ComponentRef Id="cmp7EAAA56851D061EB70EA7EDEDE3A5904"/>
+      <ComponentRef Id="cmp72226BF2FA244087E731A89F207D64B7"/>
+      <ComponentRef Id="cmp3681139EA8B8CE5495451E19E22C7CC4"/>
+      <ComponentRef Id="cmp8A49BBBBB8F52C14C6746BFCA0558EB8"/>
+      <ComponentRef Id="cmp4AC6C83B68D070C1F825C16181447EDA"/>
+      <ComponentRef Id="cmp7B09305E70B9DDD0F1BC999FD5ADA723"/>
+      <ComponentRef Id="cmp1BCDFB65F8F1B10524B63D36971F188A"/>
+      <ComponentRef Id="cmpB9B7D7342D282EB7ACD760E462FDDFFA"/>
+      <ComponentRef Id="cmpBDFAACF40A5859DD8105573D06EE036B"/>
+      <ComponentRef Id="cmp986C6BE8949D52F116825DF3AC98343C"/>
+      <ComponentRef Id="cmpE1CEA94730DB78ADE2608A4F4A037B6F"/>
+      <ComponentRef Id="cmpE858E96B291E9E05C24928057BA54F28"/>
+    </ComponentGroup>
+  </Fragment>
+</Include>

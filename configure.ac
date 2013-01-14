@@ -71,6 +71,7 @@ AC_CONFIG_FILES([tests/package.m4.tmp:tests/package.m4.in],
 
 AC_CONFIG_FILES([
     Makefile
+    data/Makefile
     po/Makefile.in
     libmsi/Makefile
     libmsi/libmsi-1.0.pc

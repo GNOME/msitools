@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Include xmlns="http://schemas.microsoft.com/wix/2006/wi">
+  <Fragment>
+    <DirectoryRef Id="INSTALLDIR">
+      <Directory Id="dir2D5CA9C21426E527BC8B9FD68858C67C" Name="bin">
+        <Component Id="cmp005FB795284130F682F44FA733170184" Guid="*">
+          <File Id="fil95D8B997A825793363F155E03E367FDF" KeyPath="yes" Source="$(var.SourceDir)/bin/libidn-11.dll"/>
+        </Component>
+      </Directory>
+      <Directory Id="dir20F19A3AB47F7C826FDF59EF03ACFCB1" Name="share">
+        <Directory Id="dir16041E2C3100A4BD2D21D17A0AB6CA52" Name="locale">
+          <Directory Id="dir986372E205F334F4279C154F329065AC" Name="cs">
+            <Directory Id="dir9C4C34C3E28562EF48FF787FE557CF95" Name="LC_MESSAGES">
+              <Component Id="cmp372F5B9D77EC686AC83A6125C8FA037E" Guid="*">
+                <File Id="fil6449FBC8AFE7E85740E771A154617BD6" KeyPath="yes" Source="$(var.SourceDir)/share/locale/cs/LC_MESSAGES/libidn.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir5C5354951741F2D9E83D7DCD1B9BD5E1" Name="da">
+            <Directory Id="dirDDEC81DAAC49CF0F0C85C16C2E34830B" Name="LC_MESSAGES">
+              <Component Id="cmp8BCAA57D03A2B3D19AA8545FCA546276" Guid="*">
+                <File Id="fil4D52795CE6EC1328A37EE71C71C00D9F" KeyPath="yes" Source="$(var.SourceDir)/share/locale/da/LC_MESSAGES/libidn.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir8FA66F790F9D0DA62C3E0CB559D86CA2" Name="de">
+            <Directory Id="dir7E68F0F2450B05E859D52CA61BAE8FF9" Name="LC_MESSAGES">
+              <Component Id="cmpCEB3CA0372EC74E41CF891AC44AA3678" Guid="*">
+                <File Id="fil342459DB7E9CC5DCEA715E87B70B7139" KeyPath="yes" Source="$(var.SourceDir)/share/locale/de/LC_MESSAGES/libidn.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir4F5106E2FE264AF35A090896A432119F" Name="en@boldquot">
+            <Directory Id="dirC3563CE1AF5B221DEFA5B1B64DF7DECE" Name="LC_MESSAGES">
+              <Component Id="cmp099103F1B5DF556F8213BC23D3195855" Guid="*">
+                <File Id="fil3438DECE3572868BCFCA58E8215B0609" KeyPath="yes" Source="$(var.SourceDir)/share/locale/en@boldquot/LC_MESSAGES/libidn.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dirBF1B5278EB79B35CC2F2410BEA8FCAF9" Name="en@quot">
+            <Directory Id="dirF6E6CCDE79537AB893A882AFB5DA2D47" Name="LC_MESSAGES">
+              <Component Id="cmp0F7F5530E6DB11183D30422804FB8C08" Guid="*">
+                <File Id="fil7E2449094992B22AF99EFD5531118228" KeyPath="yes" Source="$(var.SourceDir)/share/locale/en@quot/LC_MESSAGES/libidn.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir3614C535B8D790387D13EE99FE9FD93D" Name="eo">
+            <Directory Id="dir1233A4022C72D4680883E8E42DC96689" Name="LC_MESSAGES">
+              <Component Id="cmp5EACBE76188E12C89513E3411C1E2211" Guid="*">
+                <File Id="filC84BCA23407C5DC72E1AFD2C7818981E" KeyPath="yes" Source="$(var.SourceDir)/share/locale/eo/LC_MESSAGES/libidn.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir756CDD820B6945A2F92FAF0C17C8733D" Name="fi">
+            <Directory Id="dirD18F4E7AFAAAF683F63147B1B2DEA7E2" Name="LC_MESSAGES">
+              <Component Id="cmpC3A15825C080726B9350868554FA8FDE" Guid="*">
+                <File Id="fil436E594F992FDB446EDF2529986169F4" KeyPath="yes" Source="$(var.SourceDir)/share/locale/fi/LC_MESSAGES/libidn.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dirA4449585F0D392816ED97622B5EA8D28" Name="fr">
+            <Directory Id="dirE3DF7507EA0E6A1757B82B0AC1C3D291" Name="LC_MESSAGES">
+              <Component Id="cmp675F61FD24612C3655C2D03216640322" Guid="*">
+                <File Id="fil8AFF86161A74D5A010488E4C13D670F5" KeyPath="yes" Source="$(var.SourceDir)/share/locale/fr/LC_MESSAGES/libidn.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir1A4F225B471A51E8FD6A9CD5BEE8D1FA" Name="id">
+            <Directory Id="dir269B185F5F5FE6F3FB77A65D4571F693" Name="LC_MESSAGES">
+              <Component Id="cmp19B245D571D5273E67F814BD76975D3F" Guid="*">
+                <File Id="fil016779852AE75554FA9FF4D5A4B674A0" KeyPath="yes" Source="$(var.SourceDir)/share/locale/id/LC_MESSAGES/libidn.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir025F732B561F8331AF5A3D514CA8D445" Name="it">
+            <Directory Id="dir171EB9AABC0DEE2463D2F17C84EA1B40" Name="LC_MESSAGES">
+              <Component Id="cmpB373AE47BB6E8D466D8D749B6DCF7870" Guid="*">
+                <File Id="filC744C60451F911037A3C5DCA22F75D86" KeyPath="yes" Source="$(var.SourceDir)/share/locale/it/LC_MESSAGES/libidn.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir06EB6DFE7B5FF08EE1BA715910FA2B9E" Name="ja">
+            <Directory Id="dir485BBE79C58000973B00AD74DAF81B70" Name="LC_MESSAGES">
+              <Component Id="cmpC13835AFC717880004EBF3B53B1A376C" Guid="*">
+                <File Id="fil634038C68339AFD6D92A6713A56F2EDC" KeyPath="yes" Source="$(var.SourceDir)/share/locale/ja/LC_MESSAGES/libidn.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir24AA0DB71E1977B7B2AB5F0ED7C6639A" Name="nl">
+            <Directory Id="dir5F16347DEE06023E2B3163CD3A81106F" Name="LC_MESSAGES">
+              <Component Id="cmp969125BD4ECF2C7B81AB8E52238503A3" Guid="*">
+                <File Id="fil50F32C3DEB72A0766D4B24E15674BE3D" KeyPath="yes" Source="$(var.SourceDir)/share/locale/nl/LC_MESSAGES/libidn.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dirC3E919A293F54CAA4ED1390DAF5050AB" Name="pl">
+            <Directory Id="dirB3DC27377C3107EA5284C4DFD81F6A38" Name="LC_MESSAGES">
+              <Component Id="cmp4BBA96C803B3F12959DC9C65EA5A915C" Guid="*">
+                <File Id="fil5D5AC8A5F126AB00F710B3A4E6159968" KeyPath="yes" Source="$(var.SourceDir)/share/locale/pl/LC_MESSAGES/libidn.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir0F69F3E00D94756B93F46EC66F7BACA6" Name="ro">
+            <Directory Id="dir8AE0C0D2DCC34EDA493E590328F07A20" Name="LC_MESSAGES">
+              <Component Id="cmp2C62F0CD102BCF2461B1FF420752B09D" Guid="*">
+                <File Id="fil5985E566A469FE8718181E6CDB81D097" KeyPath="yes" Source="$(var.SourceDir)/share/locale/ro/LC_MESSAGES/libidn.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir49A8229C6240487414761C0D636BD625" Name="sr">
+            <Directory Id="dirB0FC0CF85C36CB3AFCB8F9A00D08E5D6" Name="LC_MESSAGES">
+              <Component Id="cmp07EB8FAE7DA1D269E1F94F65E431FE30" Guid="*">
+                <File Id="fil8BC641F84407B98332DAD2D40335C455" KeyPath="yes" Source="$(var.SourceDir)/share/locale/sr/LC_MESSAGES/libidn.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir5A2CE1D94615A349555F84E9F1455C32" Name="uk">
+            <Directory Id="dir9689A5603851CA9FEF3E5045E7C19788" Name="LC_MESSAGES">
+              <Component Id="cmp5C7FE605653446FF869530765CF0C63C" Guid="*">
+                <File Id="fil1679A3B71EB9C6DC60AA313EF457971D" KeyPath="yes" Source="$(var.SourceDir)/share/locale/uk/LC_MESSAGES/libidn.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir46E5426F5CD9D6AB426BD8F16FCD67EA" Name="vi">
+            <Directory Id="dirE0248C303219638405AF9A4F1FA6BC97" Name="LC_MESSAGES">
+              <Component Id="cmp1B228B92A53A73B2229A1030DCC24AB6" Guid="*">
+                <File Id="fil07A0CCEBEB6A8A2A86631B6D22AFB5F0" KeyPath="yes" Source="$(var.SourceDir)/share/locale/vi/LC_MESSAGES/libidn.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir6AE8551B65EB02AC1CEA119E30ACCECF" Name="zh_CN">
+            <Directory Id="dir153D80E174F70B1D04604517DCE3E224" Name="LC_MESSAGES">
+              <Component Id="cmpB8F7F9A4806F4A0579C1E052E090FD8F" Guid="*">
+                <File Id="fil7FC7BA648B80EF9DCAED57CD8CDF3F4A" KeyPath="yes" Source="$(var.SourceDir)/share/locale/zh_CN/LC_MESSAGES/libidn.mo"/>
+              </Component>
+              </Directory>
+            </Directory>
+          </Directory>
+        </Directory>
+    </DirectoryRef>
+  </Fragment>
+  <Fragment>
+    <ComponentGroup Id="CG.libidn">
+      <ComponentGroupRef Id="CG.gettext"/>
+      <ComponentRef Id="cmp005FB795284130F682F44FA733170184"/>
+      <ComponentRef Id="cmp372F5B9D77EC686AC83A6125C8FA037E"/>
+      <ComponentRef Id="cmp8BCAA57D03A2B3D19AA8545FCA546276"/>
+      <ComponentRef Id="cmpCEB3CA0372EC74E41CF891AC44AA3678"/>
+      <ComponentRef Id="cmp099103F1B5DF556F8213BC23D3195855"/>
+      <ComponentRef Id="cmp0F7F5530E6DB11183D30422804FB8C08"/>
+      <ComponentRef Id="cmp5EACBE76188E12C89513E3411C1E2211"/>
+      <ComponentRef Id="cmpC3A15825C080726B9350868554FA8FDE"/>
+      <ComponentRef Id="cmp675F61FD24612C3655C2D03216640322"/>
+      <ComponentRef Id="cmp19B245D571D5273E67F814BD76975D3F"/>
+      <ComponentRef Id="cmpB373AE47BB6E8D466D8D749B6DCF7870"/>
+      <ComponentRef Id="cmpC13835AFC717880004EBF3B53B1A376C"/>
+      <ComponentRef Id="cmp969125BD4ECF2C7B81AB8E52238503A3"/>
+      <ComponentRef Id="cmp4BBA96C803B3F12959DC9C65EA5A915C"/>
+      <ComponentRef Id="cmp2C62F0CD102BCF2461B1FF420752B09D"/>
+      <ComponentRef Id="cmp07EB8FAE7DA1D269E1F94F65E431FE30"/>
+      <ComponentRef Id="cmp5C7FE605653446FF869530765CF0C63C"/>
+      <ComponentRef Id="cmp1B228B92A53A73B2229A1030DCC24AB6"/>
+      <ComponentRef Id="cmpB8F7F9A4806F4A0579C1E052E090FD8F"/>
+    </ComponentGroup>
+  </Fragment>
+</Include>
