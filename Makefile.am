@@ -66,7 +66,7 @@ wixl_CPPFLAGS =					\
 	$(WIXL_CFLAGS)				\
 	-DG_LOG_DOMAIN=\""wixl"\"		\
 	-DLOCALEDIR=\""$(localedir)"\"		\
-	-DPKGDATADIR=\""$(pkgdatadir)"\"	\
+	-DPKGDATADIR=\""$(datadir)/wixl-0.1/"\"	\
 	-DPKGLIBDIR=\""$(pkglibdir)"\"		\
 	$(NULL)
 

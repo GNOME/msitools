@@ -6,6 +6,7 @@ namespace Wixl {
             add_path (".");
             foreach (var i in includedirs)
                 this.includedirs.append (File.new_for_path (i));
+            this.includedirs.append (File.new_for_path (Config.PKGDATADIR + "include"));
         }
 
         WixRoot root;
