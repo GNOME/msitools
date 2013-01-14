@@ -340,7 +340,6 @@ namespace Wixl {
         public string Source { get; set; }
         public string Name { get; set; }
 
-        public Libmsi.Record record;
         public File file;
 
         public override void accept (WixNodeVisitor visitor) throws GLib.Error {

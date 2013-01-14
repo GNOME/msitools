@@ -167,12 +167,12 @@ namespace Wixl {
         private void build_cabinet () throws GLib.Error {
             var sequence = 0;
             var medias = get_elements<WixMedia> ();
-            var files = get_elements<WixFile> ();
 
             foreach (var m in medias) {
                 var folder = new GCab.Folder (GCab.Compression.MSZIP);
 
-                foreach (var f in files) {
+                foreach (var rec in db.table_file.records) {
+                    var f = rec.get_data<WixFile> ("wixfile");
                     if (f.DiskId != m.Id)
                         continue;
 
@@ -181,7 +181,6 @@ namespace Wixl {
                         continue;
 
                     folder.add_file (new GCab.File.with_file (f.Id, f.file), false);
-                    var rec = f.record;
                     sequence += 1;
                     MsiTableFile.set_sequence (rec, sequence);
                 }
@@ -544,7 +543,7 @@ namespace Wixl {
             var attr = FileAttribute.VITAL;
 
             var rec = db.table_file.add (file.Id, comp.Id, name, (int)info.get_size (), attr);
-            file.record = rec;
+            rec.set_data<WixFile> ("wixfile", file);
 
             visit_key_element (file);
         }
