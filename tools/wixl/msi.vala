@@ -397,11 +397,11 @@ namespace Wixl {
         static construct {
             name = "Shortcut";
             sql_create = "CREATE TABLE `Shortcut` (`Shortcut` CHAR(72) NOT NULL, `Directory_` CHAR(72) NOT NULL, `Name` CHAR(128) NOT NULL LOCALIZABLE, `Component_` CHAR(72) NOT NULL, `Target` CHAR(72) NOT NULL, `Arguments` CHAR(255), `Description` CHAR(255) LOCALIZABLE, `Hotkey` INT, `Icon_` CHAR(72), `IconIndex` INT, `ShowCmd` INT, `WkDir` CHAR(72), `DisplayResourceDLL` CHAR(255), `DisplayResourceId` INT, `DescriptionResourceDLL` CHAR(255), `DescriptionResourceId` INT PRIMARY KEY `Shortcut`)";
-            sql_insert = "INSERT INTO `Shortcut` (`Shortcut`, `Directory_`, `Name`, `Component_`, `Target`, `Icon_`, `IconIndex`, `WkDir`) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+            sql_insert = "INSERT INTO `Shortcut` (`Shortcut`, `Directory_`, `Name`, `Component_`, `Target`, `Icon_`, `IconIndex`, `WkDir`, `Description`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
         }
 
         public Libmsi.Record add (string Shortcut, string Directory, string Name, string Component) throws GLib.Error {
-            var rec = new Libmsi.Record (8);
+            var rec = new Libmsi.Record (9);
 
             if (!rec.set_string (1, Shortcut) ||
                 !rec.set_string (2, Directory) ||
@@ -419,14 +419,23 @@ namespace Wixl {
                 throw new Wixl.Error.FAILED ("failed to set record");
         }
 
-        public static void set_icon (Libmsi.Record rec, string Icon, int IconIndex) throws GLib.Error {
-            if (!rec.set_string (6, Icon) ||
-                !rec.set_int (7, IconIndex))
+        public static void set_icon (Libmsi.Record rec, string Icon) throws GLib.Error {
+            if (!rec.set_string (6, Icon))
+                throw new Wixl.Error.FAILED ("failed to set record");
+        }
+
+        public static void set_icon_index (Libmsi.Record rec, int IconIndex) throws GLib.Error {
+            if (!rec.set_int (7, IconIndex))
                 throw new Wixl.Error.FAILED ("failed to set record");
         }
 
         public static void set_working_dir (Libmsi.Record rec, string WkDir) throws GLib.Error {
             if (!rec.set_string (8, WkDir))
+                throw new Wixl.Error.FAILED ("failed to set record");
+        }
+
+        public static void set_description (Libmsi.Record rec, string Description) throws GLib.Error {
+            if (!rec.set_string (9, Description))
                 throw new Wixl.Error.FAILED ("failed to set record");
         }
     }

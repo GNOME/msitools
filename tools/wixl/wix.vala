@@ -310,6 +310,8 @@ namespace Wixl {
         public string WorkingDirectory { get; set; }
         public string Icon { get; set; }
         public string Advertise { get; set; }
+        public string Description { get; set; }
+        public string Target { get; set; }
 
         public Libmsi.Record record;
 
@@ -674,6 +676,7 @@ namespace Wixl {
             add_child_types (child_types, {
                 typeof (WixCondition),
                 typeof (WixDirectory),
+                typeof (WixDirectoryRef),
                 typeof (WixFeature),
                 typeof (WixIcon),
                 typeof (WixInstallExecuteSequence),
@@ -727,7 +730,8 @@ namespace Wixl {
             add_child_types (child_types, {
                 typeof (WixRemoveFolder),
                 typeof (WixRegistryValue),
-                typeof (WixFile)
+                typeof (WixFile),
+                typeof (WixShortcut),
             });
         }
 

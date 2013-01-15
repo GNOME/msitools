@@ -200,8 +200,9 @@ namespace Wixl {
 
         private void shortcut_target () throws GLib.Error {
             var shortcuts = get_elements<WixShortcut> ();
-
             foreach (var sc in shortcuts) {
+                if (sc.Target != null)
+                    continue;
                 var component = sc.get_component ();
                 var feature = component.in_feature.first ().data;
                 MsiTableShortcut.set_target (sc.record, feature.Id);
@@ -446,13 +447,16 @@ namespace Wixl {
         public override void visit_remove_folder (WixRemoveFolder rm) throws GLib.Error {
             var on = enum_from_string (typeof (RemoveFileInstallMode), rm.On);
             var comp = rm.parent as WixComponent;
-            var dir = comp.parent as WixDirectory;
+            var dir = resolve<WixDirectory> (comp.parent);
 
             db.table_remove_file.add (rm.Id, comp.Id, dir.Id, on);
         }
 
-        void visit_key_element (WixKeyElement key) throws GLib.Error {
-            var component = key.parent as WixComponent;
+        void visit_key_element (WixKeyElement key, WixComponent? component = null) throws GLib.Error {
+            if (component == null)
+                component = key.parent as WixComponent;
+
+            return_if_fail (component != null);
 
             if (component.key == null || parse_yesno (key.KeyPath))
                 component.key = key;
@@ -552,17 +556,30 @@ namespace Wixl {
         }
 
         public override void visit_shortcut (WixShortcut shortcut) throws GLib.Error {
-            if (!parse_yesno (shortcut.Advertise))
-                throw new Wixl.Error.FIXME ("unimplemented");
+            string? directory = shortcut.Directory;
+
+            if (!parse_yesno (shortcut.Advertise, true))
+                message ("unimplemented");
 
             var component = shortcut.get_component ();
-            var rec = db.table_shortcut.add (shortcut.Id, shortcut.Directory, shortcut.Name, component.Id);
+            if (directory == null && shortcut.parent is WixComponent) {
+                var dir = resolve<WixDirectory> (component.parent);
+                directory = dir.Id;
+            }
+
+            var rec = db.table_shortcut.add (shortcut.Id, directory, shortcut.Name, component.Id);
             shortcut.record = rec;
 
             if (shortcut.Icon != null)
-                MsiTableShortcut.set_icon (rec, shortcut.Icon, int.parse (shortcut.IconIndex));
+                MsiTableShortcut.set_icon (rec, shortcut.Icon);
+            if (shortcut.IconIndex != null)
+                MsiTableShortcut.set_icon_index (rec, int.parse (shortcut.IconIndex));
             if (shortcut.WorkingDirectory != null)
                 MsiTableShortcut.set_working_dir (rec, shortcut.WorkingDirectory);
+            if (shortcut.Target != null)
+                MsiTableShortcut.set_target (rec, shortcut.Target);
+            if (shortcut.Description != null)
+                MsiTableShortcut.set_description (rec, shortcut.Description);
         }
 
         public override void visit_sequence (WixSequence sequence) throws GLib.Error {
