@@ -723,6 +723,19 @@ namespace Wixl {
         }
     }
 
+    public class WixRegistryKey: WixElement {
+        static construct {
+            name = "RegistryKey";
+
+            add_child_types (child_types, {
+                typeof (WixRegistryValue),
+            });
+        }
+
+        public string Key { get; set; }
+        public string Root { get; set; }
+    }
+
     public class WixComponent: WixElement {
         static construct {
             name = "Component";
@@ -732,6 +745,7 @@ namespace Wixl {
                 typeof (WixRegistryValue),
                 typeof (WixFile),
                 typeof (WixShortcut),
+                typeof (WixRegistryKey),
             });
         }
 

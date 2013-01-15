@@ -479,27 +479,49 @@ namespace Wixl {
         }
 
         public override void visit_registry_value (WixRegistryValue reg) throws GLib.Error {
-            var comp = reg.parent as WixComponent;
+            WixComponent comp;
+            string reg_key = "";
+            string reg_root = "";
+
+            if (reg.parent is WixRegistryKey) {
+                var regkey = reg.parent as WixRegistryKey;
+                comp = regkey.parent as WixComponent;
+                reg_key = regkey.Key + "\\" + reg.Key;
+                reg_root = regkey.Root;
+            } else if (reg.parent is WixComponent) {
+                comp = reg.parent as WixComponent;
+                reg_key = reg.Key;
+            } else {
+                warning ("unhandled parent kind");
+                return;
+            }
+
+            if (reg.Root != null)
+                reg_root = reg.Root;
+
             var value = reg.Value;
             var t = enum_from_string (typeof (RegistryValueType), reg.Type);
-            var r = enum_from_string (typeof (RegistryRoot), reg.Root.down ());
+            var r = enum_from_string (typeof (RegistryRoot), reg_root.down ());
             if (reg.Id == null) {
                 reg.Id = generate_id ("reg", 4,
                                       comp.Id,
-                                      reg.Root,
-                                      reg.Key != null ? reg.Key.down () : null,
+                                      reg_root,
+                                      reg_key,
                                       reg.Name != null ? reg.Name.down () : null);
             }
 
             switch (t) {
+            case RegistryValueType.INTEGER:
+                value = "#" + value;
+                break;
             case RegistryValueType.STRING:
                 value = value[0] == '#' ? "#" + value : value;
                 break;
             }
 
-            db.table_registry.add (reg.Id, r, reg.Key, comp.Id);
+            db.table_registry.add (reg.Id, r, reg_key, comp.Id, reg.Name, value);
 
-            visit_key_element (reg);
+            visit_key_element (reg, comp);
         }
 
         [Flags]

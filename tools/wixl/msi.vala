@@ -378,15 +378,17 @@ namespace Wixl {
         static construct {
             name = "Registry";
             sql_create = "CREATE TABLE `Registry` (`Registry` CHAR(72) NOT NULL, `Root` INT NOT NULL, `Key` CHAR(255) NOT NULL LOCALIZABLE, `Name` CHAR(255) LOCALIZABLE, `Value` CHAR(0) LOCALIZABLE, `Component_` CHAR(72) NOT NULL PRIMARY KEY `Registry`)";
-            sql_insert = "INSERT INTO `Registry` (`Registry`, `Root`, `Key`, `Component_`) VALUES (?, ?, ?, ?)";
+            sql_insert = "INSERT INTO `Registry` (`Registry`, `Root`, `Key`, `Component_`, `Name`, `Value`) VALUES (?, ?, ?, ?, ?, ?)";
         }
 
-        public void add (string Registry, int Root, string Key, string Component) throws GLib.Error {
-            var rec = new Libmsi.Record (4);
+        public void add (string Registry, int Root, string Key, string Component, string? Name, string? Value) throws GLib.Error {
+            var rec = new Libmsi.Record (6);
             if (!rec.set_string (1, Registry) ||
                 !rec.set_int (2, Root) ||
                 !rec.set_string (3, Key) ||
-                !rec.set_string (4, Component))
+                !rec.set_string (4, Component) ||
+                (Name != null && !rec.set_string (5, Name)) ||
+                (Value != null && !rec.set_string (6, Value)))
                 throw new Wixl.Error.FAILED ("failed to add record");
 
             records.append (rec);
