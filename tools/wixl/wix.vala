@@ -29,6 +29,9 @@ namespace Wixl {
         public abstract void visit_action (WixAction action) throws GLib.Error;
         public abstract void visit_text (WixText text) throws GLib.Error;
         public abstract void visit_component_group_ref (WixComponentGroupRef ref) throws GLib.Error;
+        public abstract void visit_progid (WixProgId progid) throws GLib.Error;
+        public abstract void visit_extension (WixExtension extension) throws GLib.Error;
+        public abstract void visit_verb (WixVerb verb) throws GLib.Error;
     }
 
     public abstract class WixNode: Object {
@@ -438,6 +441,56 @@ namespace Wixl {
         }
     }
 
+    public class WixVerb: WixElement {
+        static construct {
+            name = "Verb";
+        }
+
+        public string Command { get; set; }
+        public string TargetFile { get; set; }
+        public string Argument { get; set; }
+
+        public override void accept (WixNodeVisitor visitor) throws GLib.Error {
+            base.accept (visitor);
+            visitor.visit_verb (this);
+        }
+    }
+
+    public class WixExtension: WixElement {
+        static construct {
+            name = "Extension";
+
+            add_child_types (child_types, {
+                typeof (WixVerb),
+            });
+        }
+
+        public string ContentType { get; set; }
+
+        public override void accept (WixNodeVisitor visitor) throws GLib.Error {
+            base.accept (visitor);
+            visitor.visit_extension (this);
+        }
+    }
+
+    public class WixProgId: WixElement {
+        static construct {
+            name = "ProgId";
+
+            add_child_types (child_types, {
+                typeof (WixExtension),
+            });
+        }
+
+        public string Description { get; set; }
+        public string Advertise { get; set; }
+
+        public override void accept (WixNodeVisitor visitor) throws GLib.Error {
+            base.accept (visitor);
+            visitor.visit_progid (this);
+        }
+    }
+
     public class WixAction: WixElement {
         public new string name;
 
@@ -745,6 +798,7 @@ namespace Wixl {
                 typeof (WixRegistryValue),
                 typeof (WixFile),
                 typeof (WixShortcut),
+                typeof (WixProgId),
                 typeof (WixRegistryKey),
             });
         }

@@ -659,6 +659,57 @@ namespace Wixl {
             }
         }
 
+        public override void visit_progid (WixProgId progid) throws GLib.Error {
+            return_if_fail (!parse_yesno (progid.Advertise));
+
+            var comp = progid.parent as WixComponent;
+            var regid = generate_id ("reg", 2,
+                                     comp.Id,
+                                     progid.Id);
+
+            db.table_registry.add (regid, 0, progid.Id, comp.Id, null, progid.Description);
+        }
+
+        public override void visit_extension (WixExtension ext) throws GLib.Error {
+            var progid = ext.parent as WixProgId;
+            var comp = progid.parent as WixComponent;
+            var regid = generate_id ("reg", 3,
+                                     comp.Id,
+                                     ext.Id,
+                                     "Content Type");
+
+            db.table_registry.add (regid, 0, "." + ext.Id, comp.Id, "Content Type", ext.ContentType);
+
+            regid = generate_id ("reg", 2,
+                                 comp.Id,
+                                 ext.Id);
+
+            db.table_registry.add (regid, 0, "." + ext.Id, comp.Id, null, progid.Id);
+        }
+
+        public override void visit_verb (WixVerb verb) throws GLib.Error {
+            return_if_fail (verb.Id == "open");
+
+            var ext = verb.parent as WixExtension;
+            var progid = ext.parent as WixProgId;
+            var comp = progid.parent as WixComponent;
+
+            var key = progid.Id + "\\shell\\open";
+            var regid = generate_id ("reg", 2,
+                                     comp.Id,
+                                     key);
+
+            db.table_registry.add (regid, 0, key, comp.Id, null, "Open");
+
+            key += "\\command";
+            regid = generate_id ("reg", 2,
+                                 comp.Id,
+                                 key);
+
+            db.table_registry.add (regid, 0, key, comp.Id, null,
+                                   "\"[#%s]\" %s".printf (verb.TargetFile, verb.Argument));
+        }
+
         public override void visit_create_folder (WixCreateFolder folder) throws GLib.Error {
         }
 
