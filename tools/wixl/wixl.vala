@@ -55,8 +55,12 @@ namespace Wixl {
         }
 
         if (output == null && !preproc) {
-            GLib.stderr.printf (_("Please specify the output file.\n"));
-            exit (1);
+            if (files[0].has_suffix (".wxs"))
+                output = files[0].slice (0, -4) + ".msi";
+            else {
+                GLib.stderr.printf (_("Please specify the output file.\n"));
+                exit (1);
+            }
         }
 
         try {
