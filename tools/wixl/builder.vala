@@ -344,7 +344,9 @@ namespace Wixl {
                 attr |= ComponentAttribute.REGISTRY_KEY_PATH;
 
             var parent = resolve<WixDirectory> (comp.parent);
-            db.table_component.add (comp.Id, get_uuid (comp.Guid), parent.Id, attr,
+            // FIXME: stable uuid generation based on ns/dir/path
+            var uuid = get_uuid (comp.Guid);
+            db.table_component.add (comp.Id, uuid, parent.Id, attr,
                                     comp.key != null ? comp.key.Id : null);
 
         }
