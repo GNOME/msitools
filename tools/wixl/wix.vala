@@ -32,6 +32,7 @@ namespace Wixl {
         public abstract void visit_progid (WixProgId progid) throws GLib.Error;
         public abstract void visit_extension (WixExtension extension) throws GLib.Error;
         public abstract void visit_verb (WixVerb verb) throws GLib.Error;
+        public abstract void visit_mime (WixMIME mime) throws GLib.Error;
     }
 
     public abstract class WixNode: Object {
@@ -441,6 +442,20 @@ namespace Wixl {
         }
     }
 
+    public class WixMIME: WixElement {
+        static construct {
+            name = "MIME";
+        }
+
+        public string Advertise { get; set; }
+        public string ContentType { get; set; }
+        public string Default { get; set; }
+
+        public override void accept (WixNodeVisitor visitor) throws GLib.Error {
+            visitor.visit_mime (this);
+        }
+    }
+
     public class WixVerb: WixElement {
         static construct {
             name = "Verb";
@@ -462,10 +477,12 @@ namespace Wixl {
 
             add_child_types (child_types, {
                 typeof (WixVerb),
+                typeof (WixMIME),
             });
         }
 
         public string ContentType { get; set; }
+        public string Advertise { get; set; }
 
         public override void accept (WixNodeVisitor visitor) throws GLib.Error {
             base.accept (visitor);

@@ -673,6 +673,9 @@ namespace Wixl {
         public override void visit_extension (WixExtension ext) throws GLib.Error {
             var progid = ext.parent as WixProgId;
             var comp = progid.parent as WixComponent;
+
+            return_if_fail (!parse_yesno (progid.Advertise));
+
             var regid = generate_id ("reg", 3,
                                      comp.Id,
                                      ext.Id,
@@ -708,6 +711,22 @@ namespace Wixl {
 
             db.table_registry.add (regid, 0, key, comp.Id, null,
                                    "\"[#%s]\" %s".printf (verb.TargetFile, verb.Argument));
+        }
+
+        public override void visit_mime (WixMIME mime) throws GLib.Error {
+            var ext = mime.parent as WixExtension;
+            var progid = ext.parent as WixProgId;
+            var comp = progid.parent as WixComponent;
+
+            return_if_fail (!parse_yesno (progid.Advertise));
+
+            var key = "MIME\\Database\\Content Type\\" + mime.ContentType;
+            var regid = generate_id ("reg", 3,
+                                     comp.Id,
+                                     key,
+                                     "Extension");
+
+            db.table_registry.add (regid, 0, key, comp.Id, "Extension", "." + ext.Id);
         }
 
         public override void visit_create_folder (WixCreateFolder folder) throws GLib.Error {
