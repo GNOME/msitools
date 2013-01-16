@@ -15,13 +15,17 @@ implementation of the Windows Installer.
 
   <maintainer>
     <foaf:Person>
-      <foaf:name>Paolo Bonzini/foaf:name>
+      <foaf:name>Paolo Bonzini</foaf:name>
       <foaf:mbox rdf:resource="mailto:pbonzini@redhat.com" />
     </foaf:Person>
+  </maintainer>
+
+  <maintainer>
     <foaf:Person>
       <foaf:name>Marc-André Lureau</foaf:name>
       <foaf:mbox rdf:resource="mailto:malureau@gnome.org" />
       <gnome:userid>malureau</gnome:userid>
     </foaf:Person>
   </maintainer>
+
 </Project>
