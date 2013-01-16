@@ -2,7 +2,8 @@ NULL =
 ACLOCAL_AMFLAGS = -I m4
 SUBDIRS = data libmsi tests po .
 
-dist_include_HEADERS = \
+libmsiincludedir = $(includedir)/libmsi-1.0
+dist_libmsiinclude_HEADERS = \
 	include/libmsi.h \
 	include/libmsi-database.h \
 	include/libmsi-query.h \
