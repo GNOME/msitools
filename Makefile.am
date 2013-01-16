@@ -100,7 +100,7 @@ endif
 
 # Autotest support
 
-dist_noinst_DATA = tests/testsuite.at tests/package.m4 tests/testsuite
+dist_noinst_DATA = tests/testsuite.at tests/wixl.at tests/package.m4 tests/testsuite
 DISTCLEANFILES = atconfig atlocal
 CLEANFILES = testsuite.log
 

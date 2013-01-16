@@ -2,7 +2,7 @@ NULL =
 
 wixdir = $(datadir)/wixl-0.1/include
 
-wix_DATA =					\
+dist_wix_DATA =					\
 	wixl/atk.wxi				\
 	wixl/cairo.wxi				\
 	wixl/celt051.wxi			\

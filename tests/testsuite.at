@@ -191,6 +191,7 @@ cp icon.txt expout
 AT_CHECK_MSIINFO([streams out.msi | grep -v SummaryInformation], [0],
 [Icon.firefox.16.0.2.0.ico.exe
 ])
+rm -f expout
 cp Icon/firefox.16.0.2.0.ico.exe expout
 AT_CHECK_MSIINFO([extract out.msi Icon.firefox.16.0.2.0.ico.exe > stdout], [0])
 AT_CHECK([cmp stdout expout])
