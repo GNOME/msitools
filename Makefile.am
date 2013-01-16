@@ -129,4 +129,4 @@ $(srcdir)/tests/testsuite: tests/testsuite.at tests/wixl.at tests/package.m4
 		$(AUTOM4TE) --language=autotest -o testsuite.tmp testsuite.at && \
 		mv testsuite.tmp testsuite
 
-EXTRA_DIST = msitools.doap
+EXTRA_DIST = msitools.doap build-aux/move-if-change autogen.sh
