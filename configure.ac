@@ -76,7 +76,6 @@ AC_CONFIG_FILES([
     libmsi/Makefile
     libmsi/libmsi-1.0.pc
     tests/Makefile
-    tests/data/Makefile
 ])
 AC_OUTPUT
 

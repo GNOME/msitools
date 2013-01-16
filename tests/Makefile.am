@@ -1,5 +1,3 @@
-SUBDIRS = data
-
 AM_CPPFLAGS = -I$(top_srcdir)/include -I$(srcdir) -I. \
 	      $(GLIB_CFLAGS) $(GOBJECT_CFLAGS)
 
