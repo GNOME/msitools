@@ -2,7 +2,8 @@ NULL =
 ACLOCAL_AMFLAGS = -I m4
 SUBDIRS = data libmsi tests po .
 
-dist_include_HEADERS = \
+libmsiincludedir = $(includedir)/libmsi-1.0
+dist_libmsiinclude_HEADERS = \
 	include/libmsi.h \
 	include/libmsi-database.h \
 	include/libmsi-query.h \
@@ -113,9 +114,20 @@ installcheck-local: $(srcdir)/tests/testsuite atconfig atlocal
 clean-local:
 	-$(SHELL) $(srcdir)/tests/testsuite --clean
 
+dist-hook:
+	@for file in `cd $(srcdir)/tests && \
+		$(AUTOM4TE) --language=autotest --trace='AT_MSIDATA:tests/data/$$1' \
+			    testsuite.at`; do \
+	    dir=`echo "/$$file" | sed -e 's,/[^/]*$$,,'`; \
+	    $(MKDIR_P) "$(distdir)$$dir" || exit 1; \
+	    echo cp -fpR $(srcdir)/$$file "$(distdir)$$dir"; \
+	    cp -fpR $(srcdir)/$$file "$(distdir)$$dir" || exit 1; \
+	done
+
+
 $(srcdir)/tests/testsuite: tests/testsuite.at tests/wixl.at tests/package.m4
 	cd $(srcdir)/tests && \
 		$(AUTOM4TE) --language=autotest -o testsuite.tmp testsuite.at && \
 		mv testsuite.tmp testsuite
 
-EXTRA_DIST = msitools.doap
+EXTRA_DIST = msitools.doap build-aux/move-if-change autogen.sh

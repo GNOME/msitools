@@ -1,4 +1,4 @@
-AC_INIT([msitools], [0.01])
+AC_INIT([msitools], [0.90])
 AC_PREREQ([2.64])
 
 AC_CONFIG_HEADERS([config.h])
@@ -57,7 +57,7 @@ AM_CONDITIONAL([WIXL], [test "x$wixl" != xno])
 GETTEXT_PACKAGE=wixl
 AC_DEFINE_UNQUOTED([GETTEXT_PACKAGE], ["$GETTEXT_PACKAGE"], [Gettext Package])
 AC_SUBST(GETTEXT_PACKAGE)
-AM_GNU_GETTEXT_VERSION([1.11])
+AM_GNU_GETTEXT_VERSION([0.18])
 AM_GLIB_GNU_GETTEXT
 
 m4_ifdef([AM_SILENT_RULES],[AM_SILENT_RULES([yes])])
@@ -76,7 +76,6 @@ AC_CONFIG_FILES([
     libmsi/Makefile
     libmsi/libmsi-1.0.pc
     tests/Makefile
-    tests/data/Makefile
 ])
 AC_OUTPUT
 
