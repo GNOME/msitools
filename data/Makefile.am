@@ -1,8 +1,8 @@
 NULL =
 
-wixdir = $(datadir)/wixl-0.1/include
+wxidir = $(datadir)/wixl-$(VERSION)/include
 
-dist_wix_DATA =					\
+dist_wxi_DATA =					\
 	wixl/atk.wxi				\
 	wixl/cairo.wxi				\
 	wixl/celt051.wxi			\
