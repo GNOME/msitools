@@ -770,16 +770,132 @@ namespace Wixl {
         public override void visit_text (WixText text) throws GLib.Error {
         }
 
+        [Flags]
+        enum ServiceControlEvent {
+            INSTALL_START = 1 << 0,
+            INSTALL_STOP = 1 << 1,
+            INSTALL_DELETE = 1 << 3,
+            UNINSTALL_START = 1 << 4,
+            UNINSTALL_STOP = 1 << 5,
+            UNINSTALL_DELETE = 1 << 7,
+        }
+
+        private int install_mode_to_event(string modeString, ServiceControlEvent install, ServiceControlEvent uninstall) throws GLib.Error {
+            InstallMode mode = InstallMode.from_string (modeString);
+            int event = 0;
+
+            if (mode == InstallMode.INSTALL || mode == InstallMode.BOTH)
+                event |= install;
+            if (mode == InstallMode.UNINSTALL || mode == InstallMode.BOTH)
+                event |= uninstall;
+            return event;
+        }
+
+        string ServiceArguments;
+
         public override void visit_service_argument (WixServiceArgument service_argument) throws GLib.Error {
+            if (ServiceArguments == null)
+                ServiceArguments = "";
+            else
+                ServiceArguments += "[~]";
+
+            ServiceArguments += service_argument.get_text();
         }
 
         public override void visit_service_control (WixServiceControl service_control, VisitState state) throws GLib.Error {
+            var comp = service_control.parent as WixComponent;
+            bool? Wait = null;
+            int event = 0;
+
+            if (state == VisitState.ENTER) {
+                ServiceArguments = null;
+                return;
+            }
+
+            if (service_control.Wait != null)
+                Wait = parse_yesno(service_control.Wait);
+
+            event |= install_mode_to_event(service_control.Start, ServiceControlEvent.INSTALL_START, ServiceControlEvent.UNINSTALL_START);
+            event |= install_mode_to_event(service_control.Stop, ServiceControlEvent.INSTALL_STOP, ServiceControlEvent.UNINSTALL_STOP);
+            event |= install_mode_to_event(service_control.Remove, ServiceControlEvent.INSTALL_DELETE, ServiceControlEvent.UNINSTALL_DELETE);
+
+            db.table_service_control.add(service_control.Id, service_control.Name, event, ServiceArguments, Wait, comp.Id);
         }
 
+        string ServiceDependencies;
+
         public override void visit_service_dependency (WixServiceDependency service_dependency) throws GLib.Error {
+            if (parse_yesno (service_dependency.Group)) {
+                ServiceDependencies += "+" + service_dependency.Id;
+            } else {
+                /* TODO: it must be the Name of a previously installed service.  */
+                ServiceDependencies += service_dependency.Id;
+            }
+            ServiceDependencies += "[~]";
+        }
+
+        enum ServiceTypeAttribute {
+            OWN_PROCESS = 1 << 4,
+            SHARE_PROCESS = 1 << 5;
+
+            public static ServiceTypeAttribute from_string(string s) throws GLib.Error {
+                if (s == "ownProcess")
+                    return OWN_PROCESS;
+                if (s == "shareProcess")
+                    return SHARE_PROCESS;
+                throw new Wixl.Error.FAILED ("Can't convert string to enum");
+            }
+        }
+
+        enum StartTypeAttribute {
+            AUTO = 2,
+            DEMAND = 3,
+            DISABLED = 4;
+
+            public static StartTypeAttribute from_string(string s) throws GLib.Error {
+                return enum_from_string<StartTypeAttribute> (s);
+            }
+        }
+
+        enum ErrorControlAttribute {
+            IGNORE = 0,
+            NORMAL = 1,
+            CRITICAL = 3;
+
+            public static ErrorControlAttribute from_string(string s) throws GLib.Error {
+                return enum_from_string<ErrorControlAttribute> (s);
+            }
         }
 
         public override void visit_service_install (WixServiceInstall service_install, VisitState state) throws GLib.Error {
+            var comp = service_install.parent as WixComponent;
+            int ServiceType;
+            int StartType;
+            int ErrorControl;
+            string Description;
+
+            if (state == VisitState.ENTER) {
+                ServiceDependencies = "";
+                return;
+            }
+
+            StartType = StartTypeAttribute.from_string (service_install.Start);
+            ErrorControl = ErrorControlAttribute.from_string (service_install.ErrorControl);
+            ServiceType = ServiceTypeAttribute.from_string (service_install.Type);
+
+            if (parse_yesno (service_install.Interactive))
+                ServiceType |= 1 << 8;
+
+            if (ServiceDependencies == "")
+                ServiceDependencies = null;
+            else
+                ServiceDependencies += "[~]";
+
+            Description = service_install.Description;
+            if (parse_yesno (service_install.EraseDescription))
+                Description = "[~]";
+
+            db.table_service_install.add(service_install.Id, service_install.Name, service_install.DisplayName, ServiceType, StartType, ErrorControl, service_install.LoadOrderGroup, ServiceDependencies, service_install.Account, service_install.Password, service_install.Arguments, comp.Id, Description);
         }
     }
 
