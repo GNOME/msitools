@@ -32,6 +32,10 @@ namespace Wixl {
         return v.value;
     }
 
+    public void hash_table_add<G> (HashTable<G, G*> h, G o) {
+        h.replace (o, o);
+    }
+
     public string add_braces (string str) {
         if (str[0] == '{')
             return str;

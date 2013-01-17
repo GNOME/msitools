@@ -277,7 +277,7 @@ namespace Wixl {
             if (is_req) {
                 if (requires.lookup_extended (name, null, null))
                     return;
-                requires.add (name);
+                hash_table_add (requires, name);
             }
 
             string[] dirs = {};

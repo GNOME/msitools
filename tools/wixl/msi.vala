@@ -69,7 +69,7 @@ namespace Wixl {
             public HashTable<Action, Action*> depends_on = new HashTable<Action, Action*> (direct_hash, direct_equal);
 
             public void add_dep (Action a) {
-                depends_on.add (a);
+                hash_table_add (depends_on, a);
                 a.incoming_deps = true;
             }
         }
