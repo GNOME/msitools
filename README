@@ -16,6 +16,12 @@ Provided tools include:
   from an XML document, and tries to share the same syntax as the WiX
   toolset, http://wixtoolset.org/
 
+- wixl-heat, a tool that builds XML fragments from a list of files
+  and directories.
+
+Right now, msitools does not work under Windows.  It is planned that
+it will self-host.
+
 While in a very early stage, it is already usable.
 
 msitools uses libgsf in order to read OLE Structured Storage files
