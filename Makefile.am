@@ -29,6 +29,29 @@ msiinfo_SOURCES = tools/msiinfo.c
 msiinfo_LDADD = -lmsi $(GLIB_LIBS) $(GSF_LIBS)
 msiinfo_DEPENDENCIES = libmsi/libmsi.la
 
+# msiextract, something on the TODO list...
+
+noinst_PROGRAMS = msiextract
+
+msiextract_CFLAGS = -w
+
+msiextract_VALAFLAGS =				\
+	--enable-experimental			\
+	--pkg config				\
+	--pkg gio-unix-2.0			\
+	--pkg libgcab-1.0			\
+	--pkg libmsi-1.0			\
+	--pkg posix				\
+	--vapidir=.				\
+	$(NULL)
+
+msiextract_SOURCES =				\
+	tools/msiextract.vala			\
+	$(NULL)
+
+msiextract_CPPFLAGS = $(wixl_CPPFLAGS)
+msiextract_LDADD = $(wixl_LDADD)
+
 # Wixl
 
 bin_PROGRAMS += wixl
