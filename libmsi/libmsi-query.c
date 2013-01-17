@@ -107,7 +107,8 @@ libmsi_query_get_property (GObject *object, guint prop_id, GValue *value, GParam
 static void
 libmsi_query_constructed (GObject *object)
 {
-    G_OBJECT_CLASS (libmsi_query_parent_class)->constructed (object);
+    if (G_OBJECT_CLASS (libmsi_query_parent_class)->constructed)
+        G_OBJECT_CLASS (libmsi_query_parent_class)->constructed (object);
 }
 
 static void

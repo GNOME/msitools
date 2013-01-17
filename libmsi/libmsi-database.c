@@ -101,7 +101,8 @@ libmsi_database_init (LibmsiDatabase *self)
 static void
 libmsi_database_constructed (GObject *object)
 {
-    G_OBJECT_CLASS (libmsi_database_parent_class)->constructed (object);
+    if (G_OBJECT_CLASS (libmsi_database_parent_class)->constructed)
+        G_OBJECT_CLASS (libmsi_database_parent_class)->constructed (object);
 }
 
 static void

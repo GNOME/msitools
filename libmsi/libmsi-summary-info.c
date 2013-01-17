@@ -128,7 +128,8 @@ libmsi_summary_info_constructed (GObject *object)
         }
     }
 
-    G_OBJECT_CLASS (libmsi_summary_info_parent_class)->constructed (object);
+    if (G_OBJECT_CLASS (libmsi_summary_info_parent_class)->constructed)
+        G_OBJECT_CLASS (libmsi_summary_info_parent_class)->constructed (object);
 }
 
 static void

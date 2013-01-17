@@ -122,7 +122,8 @@ libmsi_record_constructed (GObject *object)
     // FIXME: +1 could be removed if accessing with idx-1
     self->fields = g_new0 (LibmsiField, self->count + 1);
 
-    G_OBJECT_CLASS (libmsi_record_parent_class)->constructed (object);
+    if (G_OBJECT_CLASS (libmsi_record_parent_class)->constructed)
+        G_OBJECT_CLASS (libmsi_record_parent_class)->constructed (object);
 }
 
 static void
