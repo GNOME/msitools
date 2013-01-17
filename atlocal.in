@@ -24,7 +24,7 @@ _msibuild() {
 }
 
 _wixl() {
-  wixl$EXEEXT "$@"
+  wixl$EXEEXT --wxidir "$abs_top_srcdir/data/wixl" "$@"
 }
 _wixl_heat() {
   wixl-heat$EXEEXT "$@"

@@ -11,14 +11,18 @@ namespace Wixl {
     [CCode (array_length = false, array_null_terminated = true)]
     static string[] defines;
     [CCode (array_length = false, array_null_terminated = true)]
+    static string[] opt_includedirs;
+
     static string[] includedirs;
+    static string wxidir;
 
     private const OptionEntry[] options = {
         { "version", 0, 0, OptionArg.NONE, ref version, N_("Display version number"), null },
         { "verbose", 'v', 0, OptionArg.NONE, ref verbose, N_("Verbose output"), null },
         { "output", 'o', 0, OptionArg.FILENAME, ref output, N_("Output file"), null },
         { "define", 'D', 0, OptionArg.STRING_ARRAY, ref defines, N_("Define variable"), null },
-        { "includedir", 'I', 0, OptionArg.STRING_ARRAY, ref includedirs, N_("Include directory"), null },
+        { "includedir", 'I', 0, OptionArg.STRING_ARRAY, ref opt_includedirs, N_("Include directory"), null },
+        { "wxidir", 0, 0, OptionArg.STRING, ref wxidir, N_("System include directory"), null },
         { "only-preproc", 'E', 0, OptionArg.NONE, ref preproc, N_("Stop after the preprocessing stage"), null },
         { "", 0, 0, OptionArg.FILENAME_ARRAY, ref files, null, N_("INPUT_FILE...") },
         { null }
@@ -35,6 +39,8 @@ namespace Wixl {
         opt_context.set_help_enabled (true);
         opt_context.add_main_entries (options, null);
 
+        wxidir = Config.PKGDATADIR + "/include";
+
         try {
             opt_context.parse (ref args);
         } catch (OptionError.BAD_VALUE err) {
@@ -43,6 +49,10 @@ namespace Wixl {
         } catch (OptionError error) {
             warning (error.message);
         }
+
+        /* fixme vala, does not support += on arrays without length.  */
+        includedirs = opt_includedirs;
+        includedirs += wxidir;
 
         if (version) {
             GLib.stdout.printf ("%s\n", Config.PACKAGE_VERSION);
