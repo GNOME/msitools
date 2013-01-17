@@ -437,14 +437,14 @@ namespace Wixl {
                 warning ("unhandled parent type %s", @ref.parent.name);
         }
 
-        enum RemoveFileInstallMode {
+        enum InstallMode {
             INSTALL = 1,
             UNINSTALL,
             BOTH
         }
 
         public override void visit_remove_folder (WixRemoveFolder rm) throws GLib.Error {
-            var on = enum_from_string (typeof (RemoveFileInstallMode), rm.On);
+            var on = enum_from_string (typeof (InstallMode), rm.On);
             var comp = rm.parent as WixComponent;
             var dir = resolve<WixDirectory> (comp.parent);
 
