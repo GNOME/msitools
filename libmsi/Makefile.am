@@ -88,7 +88,7 @@ vapidir = $(datadir)/vala/vapi
 vapi_DATA = libmsi-1.0.vapi
 BUILT_SOURCES += $(vapi_DATA)
 
-libmsi-1.0.vapi: Libmsi-1.0.gir
+libmsi-1.0.vapi: Libmsi-1.0.gir Libmsi-1.0.metadata
 	$(AM_V_GEN)$(VAPIGEN) -q		\
 		--metadatadir=$(srcdir)		\
 		--vapidir=$(builddir)		\
