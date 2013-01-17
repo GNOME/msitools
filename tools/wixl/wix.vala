@@ -33,6 +33,10 @@ namespace Wixl {
         public abstract void visit_extension (WixExtension extension) throws GLib.Error;
         public abstract void visit_verb (WixVerb verb) throws GLib.Error;
         public abstract void visit_mime (WixMIME mime) throws GLib.Error;
+        public abstract void visit_service_argument (WixServiceArgument service_argument) throws GLib.Error;
+        public abstract void visit_service_control (WixServiceControl service_control, VisitState state) throws GLib.Error;
+        public abstract void visit_service_dependency (WixServiceDependency service_dependency) throws GLib.Error;
+        public abstract void visit_service_install (WixServiceInstall service_install, VisitState state) throws GLib.Error;
     }
 
     public abstract class WixNode: Object {
@@ -456,6 +460,90 @@ namespace Wixl {
         }
     }
 
+    public class WixServiceArgument: WixElement {
+        static construct {
+            name = "ServiceArgument";
+        }
+
+        public string get_text() {
+            foreach (var c in children) {
+                if (c is WixText) {
+                    return (c as WixText).Text;
+                }
+            }
+
+            return "";
+        }
+
+        public override void accept (WixNodeVisitor visitor) throws GLib.Error {
+            visitor.visit_service_argument (this);
+        }
+    }
+
+    public class WixServiceControl: WixElement {
+        static construct {
+            name = "ServiceControl";
+
+            add_child_types (child_types, {
+                typeof (WixServiceArgument),
+            });
+        }
+
+        public string Name { get; set; }
+        public string Start { get; set; }
+        public string Stop { get; set; }
+        public string Remove { get; set; }
+        public string Wait { get; set; }
+
+        public override void accept (WixNodeVisitor visitor) throws GLib.Error {
+            visitor.visit_service_control (this, VisitState.ENTER);
+            base.accept (visitor);
+            visitor.visit_service_control (this, VisitState.LEAVE);
+        }
+    }
+
+    public class WixServiceDependency: WixElement {
+        static construct {
+            name = "ServiceDependency";
+        }
+
+        public string Group { get; set; }
+
+        public override void accept (WixNodeVisitor visitor) throws GLib.Error {
+            visitor.visit_service_dependency (this);
+        }
+    }
+
+    public class WixServiceInstall: WixElement {
+        static construct {
+            name = "ServiceInstall";
+
+            add_child_types (child_types, {
+                typeof (WixServiceDependency),
+            });
+        }
+
+        public string Name { get; set; }
+        public string DisplayName { get; set; }
+        public string Type { get; set; }
+        public string Interactive { get; set; }
+        public string Start { get; set; }
+        public string ErrorControl { get; set; }
+        public string Vital { get; set; }
+        public string LoadOrderGroup { get; set; }
+        public string Account { get; set; }
+        public string Password { get; set; }
+        public string Arguments { get; set; }
+        public string Description { get; set; }
+        public string EraseDescription { get; set; }
+
+        public override void accept (WixNodeVisitor visitor) throws GLib.Error {
+            visitor.visit_service_install (this, VisitState.ENTER);
+            base.accept (visitor);
+            visitor.visit_service_install (this, VisitState.LEAVE);
+        }
+    }
+
     public class WixVerb: WixElement {
         static construct {
             name = "Verb";
@@ -817,6 +905,8 @@ namespace Wixl {
                 typeof (WixShortcut),
                 typeof (WixProgId),
                 typeof (WixRegistryKey),
+                typeof (WixServiceControl),
+                typeof (WixServiceInstall),
             });
         }
 

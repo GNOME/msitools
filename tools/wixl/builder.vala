@@ -762,6 +762,18 @@ namespace Wixl {
 
         public override void visit_text (WixText text) throws GLib.Error {
         }
+
+        public override void visit_service_argument (WixServiceArgument service_argument) throws GLib.Error {
+        }
+
+        public override void visit_service_control (WixServiceControl service_control, VisitState state) throws GLib.Error {
+        }
+
+        public override void visit_service_dependency (WixServiceDependency service_dependency) throws GLib.Error {
+        }
+
+        public override void visit_service_install (WixServiceInstall service_install, VisitState state) throws GLib.Error {
+        }
     }
 
 } // Wixl
