@@ -20,11 +20,7 @@ IT_PROG_INTLTOOL([0.35])
 AM_PATH_GLIB_2_0([2.12.0])
 PKG_CHECK_MODULES([GOBJECT], [gobject-2.0 gio-2.0 >= 2.14])
 PKG_CHECK_MODULES([GSF], [libgsf-1])
-PKG_CHECK_MODULES([UUID], [uuid], [uuid=yes], [uuid=no])
-AS_IF([test "$uuid" = yes],
-      [AC_DEFINE([HAVE_LIBUUID], 1,
-                 [Define to 1 if libuuid is present on the system])],
-      [AC_MSG_WARN([libuuid not found, msibuild will generate packages without a GUID])])
+PKG_CHECK_MODULES([UUID], [uuid >= 1.41.3])
 
 LT_INIT([win32-dll disable-fast-install])
 GOBJECT_INTROSPECTION_CHECK([0.9.4])
@@ -42,17 +38,7 @@ PKG_CHECK_MODULES([WIXL], [gio-2.0 >= 0.23.0
                            libgcab-1.0
                            uuid >= 1.41.3
                            libxml-2.0 >= 2.7
-                           $WIXL_UNIX],
-                  [wixl_ok=yes], [wixl_ok=no])
-
-AC_ARG_ENABLE([wixl],
-              [AS_HELP_STRING([--disable-wixl], [do not build wixl (default=yes)])],
-              [wixl=$enableval], [wixl=yes])
-
-AS_IF([test $wixl_ok = no && test $wixl != no],
-      [AC_MSG_ERROR([Wixl dependencies not found])])
-
-AM_CONDITIONAL([WIXL], [test "x$wixl" != xno])
+                           $WIXL_UNIX])
 
 GETTEXT_PACKAGE=wixl
 AC_DEFINE_UNQUOTED([GETTEXT_PACKAGE], ["$GETTEXT_PACKAGE"], [Gettext Package])
@@ -85,6 +71,4 @@ AC_MSG_NOTICE([
 
         prefix:                   ${prefix}
         c compiler:               ${CC}
-        uuid:                     ${uuid}
-        wixl:                     ${wixl}
 ])
