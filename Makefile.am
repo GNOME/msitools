@@ -35,6 +35,8 @@ noinst_PROGRAMS = msiextract
 
 msiextract_CFLAGS = -w
 
+# --vapidir paths are relative to the source directory!
+
 msiextract_VALAFLAGS =				\
 	--enable-experimental			\
 	--pkg config				\
@@ -43,6 +45,7 @@ msiextract_VALAFLAGS =				\
 	--pkg libmsi-1.0			\
 	--pkg posix				\
 	--vapidir=.				\
+	--vapidir=$(abs_top_builddir)/libmsi	\
 	$(NULL)
 
 msiextract_SOURCES =				\
@@ -57,8 +60,6 @@ msiextract_LDADD = $(wixl_LDADD)
 bin_PROGRAMS += wixl
 
 wixl_CFLAGS = -w
-
-# --vapidir paths are relative to the source directory!
 
 wixl_VALAFLAGS =				\
 	-H wixl.h --use-header			\

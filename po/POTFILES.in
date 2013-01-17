@@ -1,3 +1,4 @@
 [encoding: UTF-8]
-tools/wixl/wixl.vala
+tools/msiextract.vala
 tools/wixl/builder.vala
+tools/wixl/wixl.vala
