@@ -26,7 +26,7 @@ public void extract_cab (Libmsi.Database db, string cab,
     if (cab.has_prefix ("#")) {
         var name = cab.substring (1);
         var query = new Libmsi.Query (db, "SELECT `Data` FROM `_Streams` WHERE `Name` = '%s'".printf (name));
-        query.execute (null);
+        query.execute ();
         var rec = query.fetch ();
         var cabinet = new GCab.Cabinet ();
         cabinet.load (rec.get_stream (1));
@@ -39,13 +39,13 @@ public void extract (string filename) throws GLib.Error {
 
     var directories = new HashTable<string, Libmsi.Record> (str_hash, str_equal);
     var query = new Libmsi.Query (db, "SELECT * FROM `Directory`");
-    query.execute (null);
+    query.execute ();
     while ((rec = query.fetch ()) != null)
         directories.insert (rec.get_string (1), rec);
 
     var components_dir = new HashTable<string, string> (str_hash, str_equal);
     query = new Libmsi.Query (db, "SELECT * FROM `Component`");
-    query.execute (null);
+    query.execute ();
     while ((rec = query.fetch ()) != null) {
         var dir_id = rec.get_string (3);
         var dir_rec = directories.lookup (dir_id);
@@ -72,7 +72,7 @@ public void extract (string filename) throws GLib.Error {
 
     var cab_to_name = new HashTable<string, string> (str_hash, str_equal);
     query = new Libmsi.Query (db, "SELECT * FROM `File`");
-    query.execute (null);
+    query.execute ();
     while ((rec = query.fetch ()) != null) {
         var dir = components_dir.lookup (rec.get_string (2));
         var file = Path.build_filename (dir, get_long_name (rec.get_string (3)));
@@ -86,7 +86,7 @@ public void extract (string filename) throws GLib.Error {
 
     message ("FIXME: gcab doesn't support extraction yet!");
     query = new Libmsi.Query (db, "SELECT * FROM `Media`");
-    query.execute (null);
+    query.execute ();
     while ((rec = query.fetch ()) != null) {
         var cab = rec.get_string (4);
         extract_cab (db, cab, cab_to_name);

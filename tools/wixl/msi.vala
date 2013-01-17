@@ -9,7 +9,7 @@ namespace Wixl {
 
         public virtual void create (Libmsi.Database db) throws GLib.Error {
             var query = new Libmsi.Query (db, sql_create);
-            query.execute (null);
+            query.execute ();
 
             if (sql_insert == null)
                 return;
