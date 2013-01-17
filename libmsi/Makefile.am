@@ -20,6 +20,7 @@ libmsi_la_SOURCES =				\
 	drop.c					\
 	insert.c				\
 	libmsi-database.c			\
+	libmsi-enums.c				\
 	libmsi-istream.h			\
 	libmsi-istream.c			\
 	libmsi-query.c				\
@@ -44,6 +45,8 @@ libmsi_la_LDFLAGS = -no-undefined -rpath $(libdir) \
 
 libmsi_la_LIBADD = $(GLIB_LIBS) $(GSF_LIBS) $(GOBJECT_LIBS)
 
+EXTRA_DIST = libmsi-enums.c.etemplate
+
 INTROSPECTION_SCANNER_ARGS = --warn-all
 
 if GIR
@@ -57,16 +60,18 @@ Libmsi_1_0_gir_CFLAGS = $(AM_CPPFLAGS)
 Libmsi_1_0_gir_INCLUDES = GObject-2.0 GLib-2.0 Gio-2.0
 Libmsi_1_0_gir_LIBS = libmsi.la
 Libmsi_1_0_gir_FILES =					\
-	$(top_srcdir)/include/libmsi.h			\
-	$(top_srcdir)/include/libmsi-types.h		\
 	$(top_srcdir)/include/libmsi-database.h		\
 	$(top_srcdir)/include/libmsi-query.h		\
 	$(top_srcdir)/include/libmsi-record.h		\
 	$(top_srcdir)/include/libmsi-summary-info.h	\
+	$(top_srcdir)/include/libmsi-types.h		\
+	$(top_srcdir)/include/libmsi.h			\
 	$(top_srcdir)/libmsi/libmsi-database.c		\
 	$(top_srcdir)/libmsi/libmsi-query.c		\
 	$(top_srcdir)/libmsi/libmsi-record.c		\
 	$(top_srcdir)/libmsi/libmsi-summary-info.c	\
+	$(top_builddir)/include/libmsi-enums.h		\
+	libmsi-enums.c					\
 	$(NULL)
 Libmsi_1_0_gir_EXPORT_PACKAGES = libmsi-1.0
 Libmsi_1_0_gir_SCANNERFLAGS = --c-include="libmsi.h"

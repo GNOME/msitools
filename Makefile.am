@@ -1,15 +1,17 @@
 NULL =
 ACLOCAL_AMFLAGS = -I m4
-SUBDIRS = data libmsi tests po .
+SUBDIRS = include data libmsi tests po .
 
 libmsiincludedir = $(includedir)/libmsi-1.0
-dist_libmsiinclude_HEADERS = \
-	include/libmsi.h \
-	include/libmsi-database.h \
-	include/libmsi-query.h \
-	include/libmsi-record.h \
-	include/libmsi-summary-info.h \
-	include/libmsi-types.h
+dist_libmsiinclude_HEADERS =			\
+	include/libmsi-database.h		\
+	include/libmsi-enums.h			\
+	include/libmsi-query.h			\
+	include/libmsi-record.h			\
+	include/libmsi-summary-info.h		\
+	include/libmsi-types.h			\
+	include/libmsi.h			\
+	$(NULL)
 
 AM_CPPFLAGS = -Iinclude -I$(srcdir)/include	\
 	$(GLIB_CFLAGS) $(GSF_CFLAGS) $(UUID_CFLAGS) \

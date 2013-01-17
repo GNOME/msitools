@@ -1,3 +1,4 @@
+/*** BEGIN file-header ***/
 /*
  * Copyright (C) 2002,2003 Mike McCormack
  *
@@ -16,14 +17,21 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA
  */
 
-#ifndef _LIBMSI_H
-#define _LIBMSI_H
+#ifndef LIBMSI_ENUMS_H
+#define LIBMSI_ENUMS_H
 
-#include <libmsi-types.h>
-#include <libmsi-database.h>
-#include <libmsi-query.h>
-#include <libmsi-record.h>
-#include <libmsi-summary-info.h>
-#include <libmsi-enums.h>
+#include <glib-object.h>
 
-#endif /* _LIBMSI_H */
+G_BEGIN_DECLS
+/*** END file-header ***/
+
+/*** BEGIN value-header ***/
+GType @enum_name@_get_type (void) G_GNUC_CONST;
+#define LIBMSI_TYPE_@ENUMSHORT@ (@enum_name@_get_type ())
+/*** END value-header ***/
+
+/*** BEGIN file-tail ***/
+G_END_DECLS
+
+#endif
+/*** END file-tail ***/

@@ -36,7 +36,7 @@ typedef struct _LibmsiSummaryInfo LibmsiSummaryInfo;
 
 typedef enum LibmsiResultError
 {
-    LIBMSI_RESULT_SUCCESS, // FIXME: remove me
+    LIBMSI_RESULT_SUCCESS, /* FIXME: remove me */
     LIBMSI_RESULT_ACCESS_DENIED,
     LIBMSI_RESULT_INVALID_HANDLE,
     LIBMSI_RESULT_NOT_ENOUGH_MEMORY,
@@ -82,7 +82,7 @@ typedef enum LibmsiColInfo
 
 typedef enum LibmsiDBError
 {
-    LIBMSI_DB_ERROR_SUCCESS, // FIXME: remove me
+    LIBMSI_DB_ERROR_SUCCESS, /* FIXME: remove me */
     LIBMSI_DB_ERROR_INVALIDARG,
     LIBMSI_DB_ERROR_MOREDATA,
     LIBMSI_DB_ERROR_FUNCTIONERROR,
