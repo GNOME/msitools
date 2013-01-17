@@ -24,6 +24,7 @@
 #include <fcntl.h>
 #include <sys/stat.h>
 
+#include "libmsi-enums.h"
 #include "libmsi-database.h"
 
 #include "debug.h"
@@ -36,9 +37,8 @@ enum
     PROP_0,
 
     PROP_PATH,
-    PROP_MODE,
+    PROP_FLAGS,
     PROP_OUTPATH,
-    PROP_PATCH,
 };
 
 G_DEFINE_TYPE (LibmsiDatabase, libmsi_database, G_TYPE_OBJECT);
@@ -142,16 +142,12 @@ libmsi_database_set_property (GObject *object, guint prop_id, const GValue *valu
         g_return_if_fail (self->path == NULL);
         self->path = g_value_dup_string (value);
         break;
-    case PROP_MODE:
-        g_return_if_fail (self->mode == NULL);
-        self->mode = (const char*)g_value_get_int (value);
+    case PROP_FLAGS:
+        self->flags = g_value_get_flags (value);
         break;
     case PROP_OUTPATH:
         g_return_if_fail (self->outpath == NULL);
-        self->outpath = (const char*)g_value_dup_string (value);
-        break;
-    case PROP_PATCH:
-        self->patch = g_value_get_boolean (value);
+        self->outpath = g_value_dup_string (value);
         break;
     default:
         G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -169,14 +165,11 @@ libmsi_database_get_property (GObject *object, guint prop_id, GValue *value, GPa
     case PROP_PATH:
         g_value_set_string (value, self->path);
         break;
-    case PROP_MODE:
-        g_value_set_int (value, (int)self->mode);
+    case PROP_FLAGS:
+        g_value_set_flags (value, self->flags);
         break;
     case PROP_OUTPATH:
         g_value_set_string (value, self->outpath);
-        break;
-    case PROP_PATCH:
-        g_value_set_boolean (value, self->patch);
         break;
     default:
         G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -199,20 +192,15 @@ libmsi_database_class_init (LibmsiDatabaseClass *klass)
                              G_PARAM_CONSTRUCT_ONLY | G_PARAM_READWRITE |
                              G_PARAM_STATIC_STRINGS));
 
-    g_object_class_install_property (G_OBJECT_CLASS (klass), PROP_MODE,
-        g_param_spec_int ("mode", "mode", "mode", 0, G_MAXINT, 0,
-                          G_PARAM_CONSTRUCT_ONLY | G_PARAM_READWRITE |
-                          G_PARAM_STATIC_STRINGS));
+    g_object_class_install_property (G_OBJECT_CLASS (klass), PROP_FLAGS,
+        g_param_spec_flags ("flags", "flags", "flags", LIBMSI_TYPE_DB_FLAGS, 0,
+                            G_PARAM_CONSTRUCT_ONLY | G_PARAM_READWRITE |
+                            G_PARAM_STATIC_STRINGS));
 
     g_object_class_install_property (G_OBJECT_CLASS (klass), PROP_OUTPATH,
         g_param_spec_string ("outpath", "outpath", "outpath", NULL,
                              G_PARAM_CONSTRUCT_ONLY | G_PARAM_READWRITE |
                              G_PARAM_STATIC_STRINGS));
-
-    g_object_class_install_property (G_OBJECT_CLASS (klass), PROP_PATCH,
-        g_param_spec_boolean ("patch", "patch", "patch", FALSE,
-                              G_PARAM_CONSTRUCT_ONLY | G_PARAM_READWRITE |
-                              G_PARAM_STATIC_STRINGS));
 }
 
 unsigned msi_open_storage( LibmsiDatabase *db, const char *stname )
@@ -262,7 +250,7 @@ unsigned msi_create_storage( LibmsiDatabase *db, const char *stname, GsfInput *s
     bool found = false;
     unsigned r;
 
-    if ( db->mode == LIBMSI_DB_OPEN_READONLY )
+    if (db->flags & LIBMSI_DB_FLAGS_READONLY)
         return LIBMSI_RESULT_ACCESS_DENIED;
 
     LIST_FOR_EACH_ENTRY( storage, &db->storages, LibmsiStorage, entry )
@@ -371,7 +359,7 @@ unsigned write_raw_stream_data( LibmsiDatabase *db, const char *stname,
     char *mem;
     LibmsiStream *stream;
 
-    if (db->mode == LIBMSI_DB_OPEN_READONLY)
+    if (db->flags & LIBMSI_DB_FLAGS_READONLY)
         return LIBMSI_RESULT_FUNCTION_FAILED;
 
     LIST_FOR_EACH_ENTRY( stream, &db->streams, LibmsiStream, entry )
@@ -403,7 +391,7 @@ unsigned msi_create_stream( LibmsiDatabase *db, const char *stname, GsfInput *st
     unsigned r = LIBMSI_RESULT_FUNCTION_FAILED;
     bool found = false;
 
-    if ( db->mode == LIBMSI_DB_OPEN_READONLY )
+    if (db->flags & LIBMSI_DB_FLAGS_READONLY)
         return LIBMSI_RESULT_ACCESS_DENIED;
 
     encname = encode_streamname(false, stname);
@@ -633,14 +621,14 @@ LibmsiResult _libmsi_database_start_transaction(LibmsiDatabase *db)
     char *tmpfile = NULL;
     char path[PATH_MAX];
 
-    if( db->mode == LIBMSI_DB_OPEN_READONLY )
+    if (db->flags & LIBMSI_DB_FLAGS_READONLY)
         return LIBMSI_RESULT_SUCCESS;
 
     db->rename_outpath = false;
     if( !db->outpath )
     {
         strcpy( path, db->path );
-        if( db->mode == LIBMSI_DB_OPEN_TRANSACT )
+        if (db->flags & LIBMSI_DB_FLAGS_TRANSACT)
 	{
             strcat( path, ".tmp" );
             db->rename_outpath = true;
@@ -665,7 +653,8 @@ LibmsiResult _libmsi_database_start_transaction(LibmsiDatabase *db)
     }
 
     if (!gsf_outfile_msole_set_class_id(GSF_OUTFILE_MSOLE(stg),
-                                       db->patch ? clsid_msi_patch : clsid_msi_database ))
+                                        db->flags & LIBMSI_DB_FLAGS_PATCH ?
+                                        clsid_msi_patch : clsid_msi_database ))
     {
         WARN("set guid failed\n");
         ret = LIBMSI_RESULT_FUNCTION_FAILED;
@@ -2143,7 +2132,7 @@ libmsi_database_is_readonly (LibmsiDatabase *db)
 
     g_return_val_if_fail (LIBMSI_IS_DATABASE (db), TRUE);
 
-    return db->mode == LIBMSI_DB_OPEN_READONLY;
+    return db->flags & LIBMSI_DB_FLAGS_READONLY;
 }
 
 static void cache_infile_structure( LibmsiDatabase *db )
@@ -2223,7 +2212,7 @@ LibmsiResult _libmsi_database_open(LibmsiDatabase *db)
         goto end;
     }
 
-    if ( db->patch && memcmp( uuid, clsid_msi_patch, 16 ) != 0 )
+    if ( db->flags & LIBMSI_DB_FLAGS_PATCH && memcmp( uuid, clsid_msi_patch, 16 ) != 0 )
     {
         ERR("storage GUID is not the MSI patch GUID %s\n",
              debugstr_guid(uuid) );
@@ -2414,7 +2403,7 @@ libmsi_database_commit (LibmsiDatabase *db, GError **error)
     g_return_val_if_fail (!error || *error == NULL, FALSE);
 
     g_object_ref(db);
-    if (db->mode == LIBMSI_DB_OPEN_READONLY)
+    if (db->flags & LIBMSI_DB_FLAGS_READONLY)
         goto end;
 
     /* FIXME: lock the database */
@@ -2452,7 +2441,8 @@ libmsi_database_commit (LibmsiDatabase *db, GError **error)
     /* FIXME: unlock the database */
 
     _libmsi_database_close(db, true);
-    db->mode = LIBMSI_DB_OPEN_TRANSACT;
+    db->flags &= ~LIBMSI_DB_FLAGS_CREATE;
+    db->flags |= LIBMSI_DB_FLAGS_TRANSACT;
     _libmsi_database_open(db);
     _libmsi_database_start_transaction(db);
 
@@ -2581,9 +2571,9 @@ libmsi_database_is_table_persistent (LibmsiDatabase *db, const char *table,
 
     TRACE("%p %s\n", db, debugstr_a(table));
 
-    g_return_val_if_fail (LIBMSI_IS_DATABASE (db), LIBMSI_CONDITION_ERROR);
-    g_return_val_if_fail (table != NULL, NULL);
-    g_return_val_if_fail (!error || *error == NULL, NULL);
+    g_return_val_if_fail (LIBMSI_IS_DATABASE (db), FALSE);
+    g_return_val_if_fail (table != NULL, FALSE);
+    g_return_val_if_fail (!error || *error == NULL, FALSE);
 
     g_object_ref(db);
     r = _libmsi_database_is_table_persistent( db, table );
@@ -2604,7 +2594,7 @@ init (LibmsiDatabase *self, GError **error)
 {
     LibmsiResult ret;
 
-    if (self->mode == LIBMSI_DB_OPEN_CREATE) {
+    if (self->flags & LIBMSI_DB_FLAGS_CREATE) {
         self->strings = msi_init_string_table (&self->bytes_per_strref);
     } else {
         if (_libmsi_database_open(self))
@@ -2625,7 +2615,8 @@ init (LibmsiDatabase *self, GError **error)
 /**
  * libmsi_database_new:
  * @path: path to a MSI file
- * @persist: path to a MSI file or LIBMSI_DB_OPEN flag
+ * @flags: #LibmsiDbFlags opening flags
+ * @persist: (allow-none): path to output MSI file
  * @error: (allow-none): #GError to set on error, or %NULL
  *
  * Create a MSI database or open from @path.
@@ -2633,25 +2624,20 @@ init (LibmsiDatabase *self, GError **error)
  * Returns: a new #LibmsiDatabase on success, %NULL if fail.
  **/
 LibmsiDatabase *
-libmsi_database_new (const gchar *path, const char *persist, GError **error)
+libmsi_database_new (const gchar *path,
+                     guint flags,
+                     const char *persist,
+                     GError **error)
 {
     LibmsiDatabase *self;
-    gboolean patch = false;
 
     g_return_val_if_fail (path != NULL, NULL);
     g_return_val_if_fail (!error || *error == NULL, NULL);
 
-    if (IS_INTMSIDBOPEN (persist - LIBMSI_DB_OPEN_PATCHFILE)) {
-        TRACE("Database is a patch\n");
-        persist -= LIBMSI_DB_OPEN_PATCHFILE;
-        patch = true;
-    }
-
     self = g_object_new (LIBMSI_TYPE_DATABASE,
                          "path", path,
-                         "patch", patch,
-                         "outpath", IS_INTMSIDBOPEN(persist) ? NULL : persist,
-                         "mode", (int)(intptr_t)(IS_INTMSIDBOPEN(persist) ? persist : LIBMSI_DB_OPEN_TRANSACT),
+                         "outpath", persist,
+                         "flags", flags,
                          NULL);
 
     if (!init (self, error)) {

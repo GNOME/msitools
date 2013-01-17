@@ -74,11 +74,13 @@ typedef enum LibmsiColInfo
     LIBMSI_COL_INFO_TYPES = 1
 } LibmsiColInfo;
 
-#define LIBMSI_DB_OPEN_READONLY (const char *)0
-#define LIBMSI_DB_OPEN_TRANSACT (const char *)1
-#define LIBMSI_DB_OPEN_CREATE   (const char *)2
-
-#define LIBMSI_DB_OPEN_PATCHFILE 32 / sizeof(*LIBMSI_DB_OPEN_READONLY)
+typedef enum LibmsiDbFlags
+{
+    LIBMSI_DB_FLAGS_READONLY   = 1 << 0,
+    LIBMSI_DB_FLAGS_CREATE     = 1 << 1,
+    LIBMSI_DB_FLAGS_TRANSACT   = 1 << 2,
+    LIBMSI_DB_FLAGS_PATCH      = 1 << 3,
+} LibmsiDbFlags;
 
 typedef enum LibmsiDBError
 {

@@ -94,8 +94,7 @@ struct _LibmsiDatabase
     char *path;
     char *outpath;
     bool rename_outpath;
-    bool patch;
-    const char *mode; /* FIXME: turn this into an enum */
+    guint flags;
     unsigned media_transform_offset;
     unsigned media_transform_disk_id;
     struct list tables;

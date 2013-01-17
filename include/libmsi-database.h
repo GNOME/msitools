@@ -43,6 +43,7 @@ GType libmsi_database_get_type (void) G_GNUC_CONST;
 
 
 LibmsiDatabase *    libmsi_database_new                 (const gchar *path,
+                                                         guint flags,
                                                          const char *persist,
                                                          GError **error);
 
