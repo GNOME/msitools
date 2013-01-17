@@ -372,11 +372,10 @@ static int cmd_extract(struct Command *cmd, int argc, char **argv, GError **erro
     LibmsiDatabase *db = NULL;
     LibmsiQuery *query = NULL;
     LibmsiRecord *rec = NULL;
-    GOutputStream *out = NULL;
     GInputStream *in = NULL;
     int r = 1;
-    char *buf;
-    unsigned size, bufsize;
+    char buffer[4096];
+    size_t n_read, n_written;
 
     if (argc != 3) {
         cmd_usage(stderr, cmd);
@@ -405,17 +404,21 @@ static int cmd_extract(struct Command *cmd, int argc, char **argv, GError **erro
     _setmode(STDOUT_FILENO, O_BINARY);
 #endif
 
-    out = g_unix_output_stream_new(STDOUT_FILENO, FALSE);
     in = G_INPUT_STREAM (libmsi_record_get_stream(rec, 1));
-    if (g_output_stream_splice(out, in, 0, NULL, error) == -1)
-        goto end;
+    for (;;) {
+        n_read = g_input_stream_read (in, buffer, sizeof (buffer), NULL, error);
+        if (n_read == -1)
+            goto end;
+        if (n_read == 0)
+            break;
+
+	full_write (STDOUT_FILENO, buffer, n_read);
+    }
 
     if (!*error)
         r = 0;
 
 end:
-    if (out)
-        g_object_unref(out);
     if (in)
         g_object_unref(in);
     if (rec)

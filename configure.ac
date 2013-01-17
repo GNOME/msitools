@@ -31,6 +31,7 @@ AC_PATH_PROG(VAPIGEN, vapigen, no)
 AC_SUBST(VAPIGEN)
 AM_CONDITIONAL([VAPI], [test "x$VAPIGEN" != xno])
 
+# used by wixl-heat
 AS_IF([test $win32 = no],
       [WIXL_UNIX="gio-unix-2.0"])
 
