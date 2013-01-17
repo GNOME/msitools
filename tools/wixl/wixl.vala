@@ -28,7 +28,7 @@ namespace Wixl {
         Intl.bindtextdomain (Config.GETTEXT_PACKAGE, Config.LOCALEDIR);
         Intl.bind_textdomain_codeset (Config.GETTEXT_PACKAGE, "UTF-8");
         Intl.textdomain (Config.GETTEXT_PACKAGE);
-        GLib.Environment.set_application_name (Config.PACKAGE_NAME);
+        GLib.Environment.set_application_name ("wixl");
 
         var parameter_string = _("- a msi building tool");
         var opt_context = new OptionContext (parameter_string);
