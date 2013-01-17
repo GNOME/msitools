@@ -16,7 +16,7 @@ implementation of the Windows Installer.
   <maintainer>
     <foaf:Person>
       <foaf:name>Paolo Bonzini</foaf:name>
-      <foaf:mbox rdf:resource="mailto:pbonzini@gnu.org" />
+      <foaf:mbox rdf:resource="mailto:bonzini@gnu.org" />
     </foaf:Person>
   </maintainer>
 
