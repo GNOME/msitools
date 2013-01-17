@@ -33,6 +33,66 @@ public void extract_cab (Libmsi.Database db, string cab,
     }
 }
 
+public void extract (string filename) throws GLib.Error {
+    Libmsi.Record? rec;
+    var db = new Libmsi.Database (files[0], Libmsi.DbFlags.READONLY, null);
+
+    var directories = new HashTable<string, Libmsi.Record> (str_hash, str_equal);
+    var query = new Libmsi.Query (db, "SELECT * FROM `Directory`");
+    query.execute (null);
+    while ((rec = query.fetch ()) != null)
+        directories.insert (rec.get_string (1), rec);
+
+    var components_dir = new HashTable<string, string> (str_hash, str_equal);
+    query = new Libmsi.Query (db, "SELECT * FROM `Component`");
+    query.execute (null);
+    while ((rec = query.fetch ()) != null) {
+        var dir_id = rec.get_string (3);
+        var dir_rec = directories.lookup (dir_id);
+        var dir = get_long_name (dir_rec.get_string (3));
+
+        do {
+            var parent = dir_rec.get_string (2);
+            dir_rec = directories.lookup (parent);
+            if (dir_rec == null)
+                break;
+            parent = get_long_name (dir_rec.get_string (3));
+            // only by intuition...
+            if (dir_rec.get_string (1) == "ProgramFilesFolder")
+                parent = "Program Files";
+            else if (parent == ".")
+                continue;
+            else if (parent == "SourceDir")
+                break;
+            dir = Path.build_filename (parent, dir);
+        } while (true);
+
+        components_dir.insert (rec.get_string (1), dir);
+    }
+
+    var cab_to_name = new HashTable<string, string> (str_hash, str_equal);
+    query = new Libmsi.Query (db, "SELECT * FROM `File`");
+    query.execute (null);
+    while ((rec = query.fetch ()) != null) {
+        var dir = components_dir.lookup (rec.get_string (2));
+        var file = Path.build_filename (dir, get_long_name (rec.get_string (3)));
+        if (list_only)
+            GLib.stdout.printf ("%s\n", file);
+        cab_to_name.insert (rec.get_string (1), file);
+    }
+
+    if (list_only)
+        exit (0);
+
+    message ("FIXME: gcab doesn't support extraction yet!");
+    query = new Libmsi.Query (db, "SELECT * FROM `Media`");
+    query.execute (null);
+    while ((rec = query.fetch ()) != null) {
+        var cab = rec.get_string (4);
+        extract_cab (db, cab, cab_to_name);
+    }
+}
+
 public int main (string[] args) {
     Intl.bindtextdomain (Config.GETTEXT_PACKAGE, Config.LOCALEDIR);
     Intl.bind_textdomain_codeset (Config.GETTEXT_PACKAGE, "UTF-8");
@@ -48,7 +108,7 @@ public int main (string[] args) {
         opt_context.parse (ref args);
     } catch (OptionError.BAD_VALUE err) {
         GLib.stdout.printf (opt_context.get_help (true, null));
-        return 1;
+        exit (1);
     } catch (OptionError error) {
         warning (error.message);
     }
@@ -63,83 +123,11 @@ public int main (string[] args) {
         exit (1);
     }
 
-    Libmsi.Database? db = null;
     try {
-        db = new Libmsi.Database (files[0], Libmsi.DbFlags.READONLY, null);
+        extract (files[0]);
     } catch (GLib.Error error) {
         GLib.stderr.printf (error.message);
         exit (1);
-    }
-
-    var directories = new HashTable<string, Libmsi.Record> (str_hash, str_equal);
-    try {
-        var query = new Libmsi.Query (db, "SELECT * FROM `Directory`");
-        query.execute (null);
-        do {
-            var rec = query.fetch ();
-            directories.insert (rec.get_string (1), rec);
-        } while (true);
-    } catch (GLib.Error error) {
-    }
-
-    var components_dir = new HashTable<string, string> (str_hash, str_equal);
-    try {
-        var query = new Libmsi.Query (db, "SELECT * FROM `Component`");
-        query.execute (null);
-        do {
-            var rec = query.fetch ();
-            var dir_id = rec.get_string (3);
-            var dir_rec = directories.lookup (dir_id);
-            var dir = get_long_name (dir_rec.get_string (3));
-            do {
-                var parent = dir_rec.get_string (2);
-                dir_rec = directories.lookup (parent);
-                if (dir_rec == null)
-                    break;
-                parent = get_long_name (dir_rec.get_string (3));
-                // only by intuition...
-                if (dir_rec.get_string (1) == "ProgramFilesFolder")
-                    parent = "Program Files";
-                else if (parent == ".")
-                    continue;
-                else if (parent == "SourceDir")
-                    break;
-                dir = Path.build_filename (parent, dir);
-            } while (true);
-
-            components_dir.insert (rec.get_string (1), dir);
-        } while (true);
-    } catch (GLib.Error error) {
-    }
-
-    var cab_to_name = new HashTable<string, string> (str_hash, str_equal);
-    try {
-        var query = new Libmsi.Query (db, "SELECT * FROM `File`");
-        query.execute (null);
-        do {
-            var rec = query.fetch ();
-            var dir = components_dir.lookup (rec.get_string (2));
-            var file = Path.build_filename (dir, get_long_name (rec.get_string (3)));
-            if (list_only)
-                GLib.stdout.printf ("%s\n", file);
-            cab_to_name.insert (rec.get_string (1), file);
-        } while (true);
-    } catch (GLib.Error error) {
-    }
-
-    if (list_only)
-        exit (0);
-
-    message ("FIXME: gcab doesn't support extraction yet!");
-    try {
-        var query = new Libmsi.Query (db, "SELECT * FROM `Media`");
-        query.execute (null);
-        do {
-            var rec = query.fetch ();
-            var cab = rec.get_string (4);
-            extract_cab (db, cab, cab_to_name);
-        } while (true);
-    } catch (GLib.Error error) {
     }
 
     return 0;
