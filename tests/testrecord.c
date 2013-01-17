@@ -374,7 +374,7 @@ static void test_fieldzero (void)
 
     g_object_unref (rec);
 
-    hdb = libmsi_database_new(msifile, LIBMSI_DB_OPEN_CREATE, NULL);
+    hdb = libmsi_database_new(msifile, LIBMSI_DB_FLAGS_CREATE, NULL, NULL);
     ok (hdb, "libmsi_database_open failed\n");
 
     query = "CREATE TABLE `drone` ( "

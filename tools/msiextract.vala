@@ -65,7 +65,7 @@ public int main (string[] args) {
 
     Libmsi.Database? db = null;
     try {
-        db = new Libmsi.Database (files[0], null);
+        db = new Libmsi.Database (files[0], Libmsi.DbFlags.READONLY, null);
     } catch (GLib.Error error) {
         GLib.stderr.printf (error.message);
         exit (1);

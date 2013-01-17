@@ -59,11 +59,11 @@ static void test_msidatabase(void)
 
     unlink(msifile);
 
-    hdb = libmsi_database_new( msifile, msifile2, NULL);
+    hdb = libmsi_database_new( msifile, LIBMSI_DB_FLAGS_TRANSACT, msifile2, NULL);
     ok(!hdb, "expected failure\n");
 
     /* create an empty database */
-    hdb = libmsi_database_new(msifile, LIBMSI_DB_OPEN_CREATE, NULL );
+    hdb = libmsi_database_new(msifile, LIBMSI_DB_FLAGS_CREATE, NULL, NULL );
     ok(hdb , "Failed to create database\n" );
 
     res = libmsi_database_commit(hdb, NULL);
@@ -73,7 +73,7 @@ static void test_msidatabase(void)
 
     g_object_unref( hdb );
 
-    hdb2 = libmsi_database_new( msifile, msifile2, NULL );
+    hdb2 = libmsi_database_new( msifile, LIBMSI_DB_FLAGS_TRANSACT, msifile2, NULL );
     ok(hdb2 , "Failed to open database\n" );
 
     res = libmsi_database_commit(hdb2, NULL);
@@ -83,14 +83,14 @@ static void test_msidatabase(void)
 
     g_object_unref( hdb2 );
 
-    hdb2 = libmsi_database_new( msifile, msifile2, NULL );
+    hdb2 = libmsi_database_new( msifile, LIBMSI_DB_FLAGS_TRANSACT, msifile2, NULL );
     ok( hdb2 , "Failed to open database\n" );
 
     g_object_unref( hdb2 );
 
     ok( -1 == access( msifile2, F_OK ), "uncommitted database should not exist\n");
 
-    hdb2 = libmsi_database_new( msifile, msifile2, NULL );
+    hdb2 = libmsi_database_new( msifile, LIBMSI_DB_FLAGS_TRANSACT, msifile2, NULL );
     ok( hdb2 , "Failed to close database\n" );
 
     res = libmsi_database_commit(hdb2, NULL);
@@ -100,7 +100,7 @@ static void test_msidatabase(void)
 
     ok( -1 != access( msifile2, F_OK ), "committed database should exist\n");
 
-    hdb = libmsi_database_new( msifile, LIBMSI_DB_OPEN_READONLY, NULL );
+    hdb = libmsi_database_new( msifile, LIBMSI_DB_FLAGS_READONLY, NULL, NULL );
     ok(hdb , "Failed to open database\n" );
 
     res = libmsi_database_commit(hdb, NULL);
@@ -108,7 +108,7 @@ static void test_msidatabase(void)
 
     g_object_unref( hdb );
 
-    hdb = libmsi_database_new( msifile, LIBMSI_DB_OPEN_TRANSACT, NULL );
+    hdb = libmsi_database_new( msifile, LIBMSI_DB_FLAGS_TRANSACT, NULL, NULL );
     ok(hdb , "Failed to open database\n" );
 
     g_object_unref( hdb );
@@ -116,15 +116,15 @@ static void test_msidatabase(void)
 
     unlink( msifile );
 
-    /* LIBMSI_DB_OPEN_CREATE deletes the database if MsiCommitDatabase isn't called */
-    hdb = libmsi_database_new( msifile, LIBMSI_DB_OPEN_CREATE, NULL );
+    /* LIBMSI_DB_FLAGS_CREATE deletes the database if MsiCommitDatabase isn't called */
+    hdb = libmsi_database_new( msifile, LIBMSI_DB_FLAGS_CREATE, NULL, NULL );
     ok(hdb , "Failed to open database\n" );
 
     g_object_unref( hdb );
 
     ok( -1 == access( msifile, F_OK ), "database should not exist\n");
 
-    hdb = libmsi_database_new( msifile, LIBMSI_DB_OPEN_CREATE, NULL );
+    hdb = libmsi_database_new( msifile, LIBMSI_DB_FLAGS_CREATE, NULL, NULL );
     ok(hdb , "Failed to open database\n" );
 
     res = libmsi_database_commit(hdb, NULL);
@@ -312,7 +312,7 @@ static void test_msiinsert(void)
     unlink(msifile);
 
     /* just libmsi_database_open should not create a file */
-    hdb = libmsi_database_new(msifile, LIBMSI_DB_OPEN_CREATE, NULL);
+    hdb = libmsi_database_new(msifile, LIBMSI_DB_FLAGS_CREATE, NULL, NULL);
     ok(hdb, "libmsi_database_new failed\n");
 
     /* create a table */
@@ -491,7 +491,7 @@ static void test_msibadqueries(void)
     unlink(msifile);
 
     /* just libmsi_database_open should not create a file */
-    hdb = libmsi_database_new(msifile, LIBMSI_DB_OPEN_CREATE, NULL);
+    hdb = libmsi_database_new(msifile, LIBMSI_DB_FLAGS_CREATE, NULL, NULL);
     ok(hdb, "libmsi_database_open failed\n");
 
     r = libmsi_database_commit(hdb, NULL);
@@ -500,7 +500,7 @@ static void test_msibadqueries(void)
     g_object_unref( hdb );
 
     /* open it readonly */
-    hdb = libmsi_database_new(msifile, LIBMSI_DB_OPEN_READONLY, NULL );
+    hdb = libmsi_database_new(msifile, LIBMSI_DB_FLAGS_READONLY, NULL, NULL );
     ok(hdb , "Failed to open database r/o\n");
 
     /* add a table to it */
@@ -510,7 +510,7 @@ static void test_msibadqueries(void)
     g_object_unref( hdb );
 
     /* open it read/write */
-    hdb = libmsi_database_new(msifile, LIBMSI_DB_OPEN_TRANSACT, NULL );
+    hdb = libmsi_database_new(msifile, LIBMSI_DB_FLAGS_TRANSACT, NULL, NULL );
     ok(hdb , "Failed to open database r/w\n");
 
     /* a bunch of test queries that fail with the native MSI */
@@ -707,7 +707,7 @@ static LibmsiDatabase *create_db(void)
     unlink(msifile);
 
     /* create an empty database */
-    hdb = libmsi_database_new(msifile, LIBMSI_DB_OPEN_CREATE, NULL );
+    hdb = libmsi_database_new(msifile, LIBMSI_DB_FLAGS_CREATE, NULL, NULL );
     ok(hdb , "Failed to create database\n" );
 
     res = libmsi_database_commit(hdb, NULL);
@@ -954,7 +954,7 @@ static void test_msiexport(void)
     unlink(msifile);
 
     /* just libmsi_database_open should not create a file */
-    hdb = libmsi_database_new(msifile, LIBMSI_DB_OPEN_CREATE, NULL);
+    hdb = libmsi_database_new(msifile, LIBMSI_DB_FLAGS_CREATE, NULL, NULL);
     ok(hdb, "libmsi_database_open failed\n");
 
     /* create a table */
@@ -1022,7 +1022,7 @@ static void test_longstrings(void)
 
     unlink(msifile);
     /* just libmsi_database_open should not create a file */
-    hdb = libmsi_database_new(msifile, LIBMSI_DB_OPEN_CREATE, NULL);
+    hdb = libmsi_database_new(msifile, LIBMSI_DB_FLAGS_CREATE, NULL, NULL);
     ok(hdb, "libmsi_database_open failed\n");
 
     /* create a table */
@@ -1043,7 +1043,7 @@ static void test_longstrings(void)
     ok(r, "libmsi_database_commit failed\n");
     g_object_unref(hdb);
 
-    hdb = libmsi_database_new(msifile, LIBMSI_DB_OPEN_READONLY, NULL);
+    hdb = libmsi_database_new(msifile, LIBMSI_DB_FLAGS_READONLY, NULL, NULL);
     ok(hdb, "libmsi_database_open failed\n");
 
     hquery = libmsi_query_new(hdb, "select * from `strings` where `id` = 1", NULL);
@@ -1116,7 +1116,7 @@ static void test_streamtable(void)
 
     g_object_unref( hdb );
 
-    hdb = libmsi_database_new(msifile, LIBMSI_DB_OPEN_TRANSACT, NULL );
+    hdb = libmsi_database_new(msifile, LIBMSI_DB_FLAGS_TRANSACT, NULL, NULL );
     ok(hdb , "Failed to open database\n" );
 
     /* check the column types */
@@ -1342,7 +1342,7 @@ static void test_binary(void)
     unsigned r;
 
     /* insert a file into the Binary table */
-    hdb = libmsi_database_new(msifile, LIBMSI_DB_OPEN_CREATE, NULL );
+    hdb = libmsi_database_new(msifile, LIBMSI_DB_FLAGS_CREATE, NULL, NULL );
     ok(hdb , "Failed to open database\n" );
 
     sql = "CREATE TABLE `Binary` ( `Name` CHAR(72) NOT NULL, `ID` INT NOT NULL, `Data` OBJECT  PRIMARY KEY `Name`, `ID`)";
@@ -1367,7 +1367,7 @@ static void test_binary(void)
     g_object_unref( hdb );
 
     /* read file from the Stream table */
-    hdb = libmsi_database_new( msifile, LIBMSI_DB_OPEN_READONLY, NULL );
+    hdb = libmsi_database_new( msifile, LIBMSI_DB_FLAGS_READONLY, NULL, NULL );
     ok(hdb , "Failed to open database\n" );
 
     sql = "SELECT * FROM `_Streams`";
@@ -1726,7 +1726,7 @@ static void test_suminfo_import(void)
     int int_value;
     guint64 ft_value;
 
-    hdb = libmsi_database_new(msifile, LIBMSI_DB_OPEN_CREATE, NULL);
+    hdb = libmsi_database_new(msifile, LIBMSI_DB_FLAGS_CREATE, NULL, NULL);
     ok(hdb, "Expected LIBMSI_RESULT_SUCCESS, got %u\n", r);
 
     r = add_table_to_db(hdb, suminfo);
@@ -1818,7 +1818,7 @@ static void test_msiimport(void)
     unsigned r, count;
     signed int i;
 
-    hdb = libmsi_database_new(msifile, LIBMSI_DB_OPEN_CREATE, NULL);
+    hdb = libmsi_database_new(msifile, LIBMSI_DB_FLAGS_CREATE, NULL, NULL);
     ok(hdb, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     r = add_table_to_db(hdb, test_data);
@@ -2038,7 +2038,7 @@ static void test_binary_import(void)
     create_file_data("Binary/filename1.ibd", "just some words", 15);
 
     /* import files into database */
-    hdb = libmsi_database_new(msifile, LIBMSI_DB_OPEN_CREATE, NULL);
+    hdb = libmsi_database_new(msifile, LIBMSI_DB_FLAGS_CREATE, NULL, NULL);
     ok(hdb , "Failed to open database\n");
 
     r = libmsi_database_import(hdb, "bin_import.idt", NULL);
@@ -2463,7 +2463,7 @@ static LibmsiDatabase *create_package_db(const char *filename)
     unlink(msifile);
 
     /* create an empty database */
-    hdb = libmsi_database_new(filename, LIBMSI_DB_OPEN_CREATE, NULL );
+    hdb = libmsi_database_new(filename, LIBMSI_DB_FLAGS_CREATE, NULL, NULL );
     ok(hdb , "Failed to create database\n" );
 
     res = libmsi_database_commit(hdb, NULL);
@@ -2538,7 +2538,7 @@ static void test_try_transform(void)
 
     generate_transform_manual();
 
-    hdb = libmsi_database_new(msifile, LIBMSI_DB_OPEN_TRANSACT, NULL );
+    hdb = libmsi_database_new(msifile, LIBMSI_DB_FLAGS_TRANSACT, NULL, NULL );
     ok(hdb , "Failed to create database\n" );
 
     r = libmsi_database_apply_transform(hdb, mstfile, NULL);
@@ -3650,7 +3650,7 @@ static void test_integers(void)
     unsigned r;
 
     /* just libmsi_database_open should not create a file */
-    hdb = libmsi_database_new(msifile, LIBMSI_DB_OPEN_CREATE, NULL);
+    hdb = libmsi_database_new(msifile, LIBMSI_DB_FLAGS_CREATE, NULL, NULL);
     ok(hdb, "libmsi_database_open failed\n");
 
     /* create a table */
@@ -3778,7 +3778,7 @@ static void test_update(void)
     unsigned r;
 
     /* just libmsi_database_open should not create a file */
-    hdb = libmsi_database_new(msifile, LIBMSI_DB_OPEN_CREATE, NULL);
+    hdb = libmsi_database_new(msifile, LIBMSI_DB_FLAGS_CREATE, NULL, NULL);
     ok(hdb, "libmsi_database_open failed\n");
 
     /* create the Control table */
@@ -4054,7 +4054,7 @@ static void test_special_tables(void)
     LibmsiDatabase *hdb = 0;
     unsigned r;
 
-    hdb = libmsi_database_new(msifile, LIBMSI_DB_OPEN_CREATE, NULL);
+    hdb = libmsi_database_new(msifile, LIBMSI_DB_FLAGS_CREATE, NULL, NULL);
     ok(hdb, "libmsi_database_open failed\n");
 
     sql = "CREATE TABLE `_Properties` ( "
@@ -4096,7 +4096,7 @@ static void test_tables_order(void)
     char buffer[100];
     unsigned sz;
 
-    hdb = libmsi_database_new(msifile, LIBMSI_DB_OPEN_CREATE, NULL);
+    hdb = libmsi_database_new(msifile, LIBMSI_DB_FLAGS_CREATE, NULL, NULL);
     ok(hdb, "libmsi_database_open failed\n");
 
     sql = "CREATE TABLE `foo` ( "
@@ -4203,7 +4203,7 @@ static void test_rows_order(void)
     char buffer[100];
     unsigned sz;
 
-    hdb = libmsi_database_new(msifile, LIBMSI_DB_OPEN_CREATE, NULL);
+    hdb = libmsi_database_new(msifile, LIBMSI_DB_FLAGS_CREATE, NULL, NULL);
     ok(hdb, "libmsi_database_open failed\n");
 
     sql = "CREATE TABLE `foo` ( "
@@ -4326,7 +4326,7 @@ static void test_collation(void)
     unsigned sz;
     gchar *str;
 
-    hdb = libmsi_database_new(msifile, LIBMSI_DB_OPEN_CREATE, NULL);
+    hdb = libmsi_database_new(msifile, LIBMSI_DB_FLAGS_CREATE, NULL, NULL);
     ok(hdb, "libmsi_database_open failed\n");
 
     sql = "CREATE TABLE `bar` ( "
@@ -4599,7 +4599,7 @@ static void test_stringtable(void)
 
     unlink(msifile);
 
-    hdb = libmsi_database_new(msifile, LIBMSI_DB_OPEN_CREATE, NULL);
+    hdb = libmsi_database_new(msifile, LIBMSI_DB_FLAGS_CREATE, NULL, NULL);
     ok(hdb, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     sql = "CREATE TABLE `MOO` (`A` INT, `B` CHAR(72) PRIMARY KEY `A`)";
@@ -4640,7 +4640,7 @@ static void test_stringtable(void)
 
     g_object_unref(hdb);
 
-    hdb = libmsi_database_new(msifile, LIBMSI_DB_OPEN_READONLY, NULL);
+    hdb = libmsi_database_new(msifile, LIBMSI_DB_FLAGS_READONLY, NULL, NULL);
     ok(hdb, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     sql = "SELECT * FROM `MOO`";
@@ -4867,7 +4867,7 @@ static void test_defaultdatabase(void)
 
     unlink(msifile);
 
-    hdb = libmsi_database_new(msifile, LIBMSI_DB_OPEN_CREATE, NULL);
+    hdb = libmsi_database_new(msifile, LIBMSI_DB_FLAGS_CREATE, NULL, NULL);
     ok(hdb, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     r = libmsi_database_commit(hdb);
@@ -5151,7 +5151,7 @@ static void test_deleterow(void)
 
     unlink(msifile);
 
-    hdb = libmsi_database_new(msifile, LIBMSI_DB_OPEN_CREATE, NULL);
+    hdb = libmsi_database_new(msifile, LIBMSI_DB_FLAGS_CREATE, NULL, NULL);
     ok(hdb, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     sql = "CREATE TABLE `Table` ( `A` CHAR(72) NOT NULL PRIMARY KEY `A` )";
@@ -5175,7 +5175,7 @@ static void test_deleterow(void)
 
     g_object_unref(hdb);
 
-    hdb = libmsi_database_new(msifile, LIBMSI_DB_OPEN_READONLY, NULL);
+    hdb = libmsi_database_new(msifile, LIBMSI_DB_FLAGS_READONLY, NULL, NULL);
     ok(hdb, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     sql = "SELECT * FROM `Table`";
@@ -5216,7 +5216,7 @@ static void test_quotes(void)
 
     unlink(msifile);
 
-    hdb = libmsi_database_new(msifile, LIBMSI_DB_OPEN_CREATE, NULL);
+    hdb = libmsi_database_new(msifile, LIBMSI_DB_FLAGS_CREATE, NULL, NULL);
     ok(hdb, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     sql = "CREATE TABLE `Table` ( `A` CHAR(72) NOT NULL PRIMARY KEY `A` )";
@@ -5314,7 +5314,7 @@ static void test_carriagereturn(void)
 
     unlink(msifile);
 
-    hdb = libmsi_database_new(msifile, LIBMSI_DB_OPEN_CREATE, NULL);
+    hdb = libmsi_database_new(msifile, LIBMSI_DB_FLAGS_CREATE, NULL, NULL);
     ok(hdb, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     sql = "CREATE TABLE `Table`\r ( `A` CHAR(72) NOT NULL PRIMARY KEY `A` )";
@@ -5489,7 +5489,7 @@ static void test_noquotes(void)
 
     unlink(msifile);
 
-    hdb = libmsi_database_new(msifile, LIBMSI_DB_OPEN_CREATE, NULL);
+    hdb = libmsi_database_new(msifile, LIBMSI_DB_FLAGS_CREATE, NULL, NULL);
     ok(hdb, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     sql = "CREATE TABLE Table ( `A` CHAR(72) NOT NULL PRIMARY KEY `A` )";
@@ -5657,7 +5657,7 @@ static void test_forcecodepage(void)
 
     unlink(msifile);
 
-    hdb = libmsi_database_new(msifile, LIBMSI_DB_OPEN_CREATE, NULL);
+    hdb = libmsi_database_new(msifile, LIBMSI_DB_FLAGS_CREATE, NULL, NULL);
     ok(hdb, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     sql = "SELECT * FROM `_ForceCodepage`";
@@ -5681,7 +5681,7 @@ static void test_forcecodepage(void)
 
     g_object_unref(hdb);
 
-    hdb = libmsi_database_new(msifile, LIBMSI_DB_OPEN_TRANSACT, NULL);
+    hdb = libmsi_database_new(msifile, LIBMSI_DB_FLAGS_TRANSACT, NULL, NULL);
     ok(hdb, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     sql = "SELECT * FROM `_ForceCodepage`";
@@ -5782,7 +5782,7 @@ static void test_storages_table(void)
 
     g_object_unref(hdb);
 
-    hdb = libmsi_database_new(msifile, LIBMSI_DB_OPEN_TRANSACT, NULL);
+    hdb = libmsi_database_new(msifile, LIBMSI_DB_FLAGS_TRANSACT, NULL, NULL);
     ok(hdb , "Failed to open database\n");
 
     /* check the column types */
@@ -5888,7 +5888,7 @@ static void test_droptable(void)
     unsigned r;
     GError *error = NULL;
 
-    hdb = libmsi_database_new(msifile, LIBMSI_DB_OPEN_CREATE, NULL);
+    hdb = libmsi_database_new(msifile, LIBMSI_DB_FLAGS_CREATE, NULL, NULL);
     ok(hdb, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     sql = "CREATE TABLE `One` ( `A` INT PRIMARY KEY `A` )";
@@ -6080,10 +6080,10 @@ static void test_dbmerge(void)
     unsigned size;
     unsigned r;
 
-    hdb = libmsi_database_new(msifile, LIBMSI_DB_OPEN_CREATE, NULL);
+    hdb = libmsi_database_new(msifile, LIBMSI_DB_FLAGS_CREATE, NULL, NULL);
     ok(hdb, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
-    href = libmsi_database_new("refdb.msi", LIBMSI_DB_OPEN_CREATE, NULL);
+    href = libmsi_database_new("refdb.msi", LIBMSI_DB_FLAGS_CREATE, NULL, NULL);
     ok(href, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
 
     /* szTableName is NULL */
@@ -7223,7 +7223,7 @@ static void test_createtable(void)
 
         g_object_unref(hdb);
 
-        hdb = libmsi_database_new(msifile, LIBMSI_DB_OPEN_TRANSACT, NULL);
+        hdb = libmsi_database_new(msifile, LIBMSI_DB_FLAGS_TRANSACT, NULL, NULL);
         ok(hdb, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", res);
 
         sql = "SELECT * FROM `a`";
@@ -7263,7 +7263,7 @@ static void test_embedded_nulls(void)
     char buffer[32];
     gchar *str;
 
-    hdb = libmsi_database_new( msifile, LIBMSI_DB_OPEN_CREATE, NULL);
+    hdb = libmsi_database_new( msifile, LIBMSI_DB_FLAGS_CREATE, NULL, NULL);
     ok(hdb, "failed to open database %u\n", r );
 
     write_file( "temp_file", control_table, sizeof(control_table) );
@@ -7295,7 +7295,7 @@ static void test_select_column_names(void)
 
     unlink(msifile);
 
-    hdb = libmsi_database_new( msifile, LIBMSI_DB_OPEN_CREATE, NULL);
+    hdb = libmsi_database_new( msifile, LIBMSI_DB_FLAGS_CREATE, NULL, NULL);
     ok(hdb, "failed to open database: %u\n", r );
 
     r = try_query( hdb, "CREATE TABLE `t` (`a` CHAR NOT NULL, `b` CHAR PRIMARY KEY `a`)");

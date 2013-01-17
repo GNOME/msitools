@@ -196,7 +196,7 @@ static int cmd_streams(struct Command *cmd, int argc, char **argv, GError **erro
         cmd_usage(stderr, cmd);
     }
 
-    db = libmsi_database_new(argv[1], LIBMSI_DB_OPEN_READONLY, error);
+    db = libmsi_database_new(argv[1], LIBMSI_DB_FLAGS_READONLY, NULL, error);
     if (!db)
         goto end;
 
@@ -230,7 +230,7 @@ static int cmd_tables(struct Command *cmd, int argc, char **argv, GError **error
         cmd_usage(stderr, cmd);
     }
 
-    db = libmsi_database_new(argv[1], LIBMSI_DB_OPEN_READONLY, error);
+    db = libmsi_database_new(argv[1], LIBMSI_DB_FLAGS_READONLY, NULL, error);
     if (!db)
         goto end;
 
@@ -319,7 +319,7 @@ static int cmd_suminfo(struct Command *cmd, int argc, char **argv, GError **erro
         cmd_usage(stderr, cmd);
     }
 
-    db = libmsi_database_new(argv[1], LIBMSI_DB_OPEN_READONLY, error);
+    db = libmsi_database_new(argv[1], LIBMSI_DB_FLAGS_READONLY, NULL, error);
     if (!db)
         goto end;
 
@@ -383,7 +383,7 @@ static int cmd_extract(struct Command *cmd, int argc, char **argv, GError **erro
         cmd_usage(stderr, cmd);
     }
 
-    db = libmsi_database_new(argv[1], LIBMSI_DB_OPEN_READONLY, error);
+    db = libmsi_database_new(argv[1], LIBMSI_DB_FLAGS_READONLY, NULL, error);
     if (!db)
         goto end;
 
@@ -670,7 +670,7 @@ static int cmd_export(struct Command *cmd, int argc, char **argv, GError **error
         cmd_usage(stderr, cmd);
     }
 
-    db = libmsi_database_new(argv[1], LIBMSI_DB_OPEN_READONLY, error);
+    db = libmsi_database_new(argv[1], LIBMSI_DB_FLAGS_READONLY, NULL, error);
     if (!db)
         return 1;
 

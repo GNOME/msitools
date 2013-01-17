@@ -664,7 +664,7 @@ namespace Wixl {
             string name;
             MsiTable table;
 
-            var db = new Libmsi.Database (filename, (string)2);
+            var db = new Libmsi.Database (filename, Libmsi.DbFlags.CREATE, null);
             info.save (db);
 
             var it = HashTableIter <string, MsiTable> (tables);

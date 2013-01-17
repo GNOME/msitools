@@ -83,7 +83,7 @@ static gboolean open_database(const char *msifile, LibmsiDatabase **db,
 
     if (stat(msifile, &st) == -1)
     {
-        *db = libmsi_database_new(msifile, LIBMSI_DB_OPEN_CREATE, error);
+        *db = libmsi_database_new(msifile, LIBMSI_DB_FLAGS_CREATE, NULL, error);
         if (!*db)
             goto end;
 
@@ -109,7 +109,7 @@ static gboolean open_database(const char *msifile, LibmsiDatabase **db,
     }
     else
     {
-        *db = libmsi_database_new(msifile, LIBMSI_DB_OPEN_TRANSACT, error);
+        *db = libmsi_database_new(msifile, LIBMSI_DB_FLAGS_TRANSACT, NULL, error);
         if (!*db)
             goto end;
     }
