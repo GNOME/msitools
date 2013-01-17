@@ -251,7 +251,7 @@ unsigned _libmsi_query_iterate_records( LibmsiQuery *view, unsigned *count,
     if( count )
         *count = n;
 
-    if( r == LIBMSI_RESULT_NO_MORE_ITEMS )
+    if( r == NO_MORE_ITEMS )
         r = LIBMSI_RESULT_SUCCESS;
 
     return r;
@@ -315,7 +315,7 @@ unsigned msi_view_get_row(LibmsiDatabase *db, LibmsiView *view, unsigned row, Li
         return LIBMSI_RESULT_INVALID_PARAMETER;
 
     if (row >= row_count)
-        return LIBMSI_RESULT_NO_MORE_ITEMS;
+        return NO_MORE_ITEMS;
 
     *rec = libmsi_record_new (col_count);
     if (!*rec)
@@ -402,11 +402,11 @@ LibmsiResult _libmsi_query_fetch(LibmsiQuery *query, LibmsiRecord **prec)
  * @query: a #LibmsiQuery
  * @error: (allow-none): return location for the error
  *
- * Return the next query result. A %LIBMSI_RESULT_NO_MORE_ITEMS error
- * is returned when the query result set has reached the end.
+ * Return the next query result. %NULL is returned when there
+ * is no more results.
  *
- * Returns: (transfer full): a newly allocated #LibmsiRecord
- *     or %NULL when no results or failure.
+ * Returns: (transfer full) (allow-none): a newly allocated
+ *     #LibmsiRecord or %NULL when no results or failure.
  **/
 LibmsiRecord *
 libmsi_query_fetch (LibmsiQuery *query, GError **error)
@@ -424,7 +424,8 @@ libmsi_query_fetch (LibmsiQuery *query, GError **error)
     g_object_unref(query);
 
     /* FIXME: raise error when it happens */
-    if (ret != LIBMSI_RESULT_SUCCESS)
+    if (ret != LIBMSI_RESULT_SUCCESS &&
+        ret != NO_MORE_ITEMS)
         g_set_error_literal (error, LIBMSI_RESULT_ERROR, ret, G_STRFUNC);
 
     return record;

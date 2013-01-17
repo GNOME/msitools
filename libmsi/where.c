@@ -107,7 +107,7 @@ static unsigned init_reorder(LibmsiWhereView *wv)
 static inline unsigned find_row(LibmsiWhereView *wv, unsigned row, unsigned *(values[]))
 {
     if (row >= wv->row_count)
-        return LIBMSI_RESULT_NO_MORE_ITEMS;
+        return NO_MORE_ITEMS;
 
     *values = wv->reorder[row]->values;
 
@@ -927,7 +927,7 @@ static unsigned where_view_find_matching_rows( LibmsiView *view, unsigned col,
         }
     }
 
-    return LIBMSI_RESULT_NO_MORE_ITEMS;
+    return NO_MORE_ITEMS;
 }
 
 static unsigned where_view_sort(LibmsiView *view, column_info *columns)

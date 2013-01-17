@@ -122,7 +122,6 @@ static void print_libmsi_error(LibmsiResultError r)
     case LIBMSI_RESULT_CALL_NOT_IMPLEMENTED:
         fprintf(stderr, "%s: not implemented\n", program_name);
         exit(1);
-    case LIBMSI_RESULT_NO_MORE_ITEMS:
     case LIBMSI_RESULT_NOT_FOUND:
         fprintf(stderr, "%s: not found\n", program_name);
         exit(1);
@@ -180,7 +179,7 @@ static void print_strings_from_query(LibmsiQuery *query, GError **error)
         g_object_unref(rec);
     }
 
-    if (!g_error_matches(err, LIBMSI_RESULT_ERROR, LIBMSI_RESULT_NO_MORE_ITEMS))
+    if (err)
         g_propagate_error(error, err);
 
     g_clear_error(&err);
@@ -640,7 +639,7 @@ static gboolean export_sql( LibmsiDatabase *db, const char *table, GError **erro
         }
     }
 
-    if (!g_error_matches(err, LIBMSI_RESULT_ERROR, LIBMSI_RESULT_NO_MORE_ITEMS)) {
+    if (err) {
         g_propagate_error(error, err);
         success = FALSE;
     }

@@ -81,7 +81,7 @@ static unsigned storages_view_fetch_int(LibmsiView *view, unsigned row, unsigned
         return LIBMSI_RESULT_INVALID_PARAMETER;
 
     if (row >= sv->num_rows)
-        return LIBMSI_RESULT_NO_MORE_ITEMS;
+        return NO_MORE_ITEMS;
 
     *val = sv->storages[row]->str_index;
 
@@ -291,7 +291,7 @@ static unsigned storages_view_find_matching_rows(LibmsiView *view, unsigned col,
 
     *handle = (MSIITERHANDLE)(uintptr_t)++index;
     if (index >= sv->num_rows)
-        return LIBMSI_RESULT_NO_MORE_ITEMS;
+        return NO_MORE_ITEMS;
 
     return LIBMSI_RESULT_SUCCESS;
 }

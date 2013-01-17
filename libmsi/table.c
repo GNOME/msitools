@@ -1025,7 +1025,7 @@ static unsigned table_view_fetch_int( LibmsiView *view, unsigned row, unsigned c
 
     /* how many rows are there ? */
     if( row >= tv->table->row_count )
-        return LIBMSI_RESULT_NO_MORE_ITEMS;
+        return NO_MORE_ITEMS;
 
     if( tv->columns[col-1].offset >= tv->row_size )
     {
@@ -1773,7 +1773,7 @@ static unsigned table_view_find_matching_rows( LibmsiView *view, unsigned col,
 
     *handle = entry;
     if (!entry)
-        return LIBMSI_RESULT_NO_MORE_ITEMS;
+        return NO_MORE_ITEMS;
 
     *row = entry->row;
 

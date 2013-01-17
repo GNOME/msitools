@@ -291,8 +291,7 @@ static void query_check_no_more(LibmsiQuery *query)
     LibmsiRecord *hrec;
 
     hrec = libmsi_query_fetch(query, &error);
-    g_assert_error(error, LIBMSI_RESULT_ERROR, LIBMSI_RESULT_NO_MORE_ITEMS);
-    g_clear_error(&error);
+    g_assert_no_error(error);
     ok(hrec == NULL, "hrec should be null\n");
 }
 
@@ -379,24 +378,28 @@ static void test_msiinsert(void)
     hrec = NULL;
     sql = "SELECT * FROM `phone` WHERE `id` >= 10";
     r = do_query(hdb, sql, &hrec);
-    ok(r == LIBMSI_RESULT_NO_MORE_ITEMS, "libmsi_query_fetch failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_query_fetch failed\n");
     ok(hrec == NULL, "hrec should be null\n");
 
     sql = "SELECT * FROM `phone` WHERE `id` < 0";
     r = do_query(hdb, sql, &hrec);
-    ok(r == LIBMSI_RESULT_NO_MORE_ITEMS, "libmsi_query_fetch failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_query_fetch failed\n");
+    ok(hrec == NULL, "hrec should be null\n");
 
     sql = "SELECT * FROM `phone` WHERE `id` <= 0";
     r = do_query(hdb, sql, &hrec);
-    ok(r == LIBMSI_RESULT_NO_MORE_ITEMS, "libmsi_query_fetch failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_query_fetch failed\n");
+    ok(hrec == NULL, "hrec should be null\n");
 
     sql = "SELECT * FROM `phone` WHERE `id` <> 1";
     r = do_query(hdb, sql, &hrec);
-    ok(r == LIBMSI_RESULT_NO_MORE_ITEMS, "libmsi_query_fetch failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_query_fetch failed\n");
+    ok(hrec == NULL, "hrec should be null\n");
 
     sql = "SELECT * FROM `phone` WHERE `id` > 10";
     r = do_query(hdb, sql, &hrec);
-    ok(r == LIBMSI_RESULT_NO_MORE_ITEMS, "libmsi_query_fetch failed\n");
+    ok(r == LIBMSI_RESULT_SUCCESS, "libmsi_query_fetch failed\n");
+    ok(hrec == NULL, "hrec should be null\n");
 
     /* now try a few bad INSERT xqueries */
     sql = "INSERT INTO `phone` ( `id`, `name`, `number` )"
@@ -1619,7 +1622,7 @@ static void test_where(void)
 
     sql = "SELECT * FROM `Media` WHERE `DiskPrompt` = 'Cabinet'";
     r = do_query(hdb, sql, &rec);
-    ok( r == LIBMSI_RESULT_NO_MORE_ITEMS, "query failed: %d\n", r );
+    ok( r == LIBMSI_RESULT_SUCCESS, "query failed: %d\n", r );
     ok(rec == NULL, "Must be null");
 
     rec = libmsi_record_new(1);
@@ -2577,8 +2580,8 @@ static void test_try_transform(void)
     hrec = 0;
     sql = "select * from `MOO` where `NOO` = 3";
     r = do_query(hdb, sql, &hrec);
-    ok(r == LIBMSI_RESULT_NO_MORE_ITEMS, "select query failed\n");
-    if (hrec) g_object_unref(hrec);
+    ok(r == LIBMSI_RESULT_SUCCESS, "select query failed\n");
+    ok(hrec == NULL);
 
     /* check added stream */
     hrec = 0;
@@ -2910,8 +2913,7 @@ static void test_join(void)
     }
 
     ok( i == 5, "Expected 5 rows, got %d\n", i );
-    g_assert_error(error, LIBMSI_RESULT_ERROR, LIBMSI_RESULT_NO_MORE_ITEMS);
-    g_clear_error(&error);
+    g_assert_no_error(error);
 
     libmsi_query_close(hquery, NULL);
     g_object_unref(hquery);
@@ -2971,8 +2973,7 @@ static void test_join(void)
     ok( data_correct, "data returned in the wrong order\n");
 
     ok( i == 2, "Expected 2 rows, got %d\n", i );
-    g_assert_error(error, LIBMSI_RESULT_ERROR, LIBMSI_RESULT_NO_MORE_ITEMS);
-    g_clear_error(&error);
+    g_assert_no_error(error);
 
     libmsi_query_close(hquery, NULL);
     g_object_unref(hquery);
@@ -3012,8 +3013,7 @@ static void test_join(void)
     ok( data_correct, "data returned in the wrong order\n");
 
     ok( i == 2, "Expected 2 rows, got %d\n", i );
-    g_assert_error(error, LIBMSI_RESULT_ERROR, LIBMSI_RESULT_NO_MORE_ITEMS);
-    g_clear_error(&error);
+    g_assert_no_error(error);
 
     libmsi_query_close(hquery, NULL);
     g_object_unref(hquery);
@@ -3053,7 +3053,7 @@ static void test_join(void)
     ok( data_correct, "data returned in the wrong order\n");
 
     ok( i == 1, "Expected 1 rows, got %d\n", i );
-    g_assert_error(error, LIBMSI_RESULT_ERROR, LIBMSI_RESULT_NO_MORE_ITEMS);
+    g_assert_no_error(error);
     g_clear_error(&error);
 
     libmsi_query_close(hquery, NULL);
@@ -3095,8 +3095,7 @@ static void test_join(void)
     ok( data_correct, "data returned in the wrong order\n");
 
     ok( i == 1, "Expected 1 rows, got %d\n", i );
-    g_assert_error(error, LIBMSI_RESULT_ERROR, LIBMSI_RESULT_NO_MORE_ITEMS);
-    g_clear_error(&error);
+    g_assert_no_error(error);
 
     libmsi_query_close(hquery, NULL);
     g_object_unref(hquery);
@@ -3136,8 +3135,7 @@ static void test_join(void)
     ok( data_correct, "data returned in the wrong order\n");
 
     ok( i == 6, "Expected 6 rows, got %d\n", i );
-    g_assert_error(error, LIBMSI_RESULT_ERROR, LIBMSI_RESULT_NO_MORE_ITEMS);
-    g_clear_error(&error);
+    g_assert_no_error(error);
 
     libmsi_query_close(hquery, NULL);
     g_object_unref(hquery);
@@ -3178,8 +3176,7 @@ static void test_join(void)
 
     ok( data_correct, "data returned in the wrong order\n");
     ok( i == 3, "Expected 3 rows, got %d\n", i );
-    g_assert_error(error, LIBMSI_RESULT_ERROR, LIBMSI_RESULT_NO_MORE_ITEMS);
-    g_clear_error(&error);
+    g_assert_no_error(error);
 
     libmsi_query_close(hquery, NULL);
     g_object_unref(hquery);
@@ -3217,8 +3214,7 @@ static void test_join(void)
 
     ok( data_correct, "data returned in the wrong order\n");
     ok( i == 6, "Expected 6 rows, got %d\n", i );
-    g_assert_error(error, LIBMSI_RESULT_ERROR, LIBMSI_RESULT_NO_MORE_ITEMS);
-    g_clear_error(&error);
+    g_assert_no_error(error);
 
     libmsi_query_close(hquery, NULL);
     g_object_unref(hquery);
@@ -3267,8 +3263,7 @@ static void test_join(void)
     ok( data_correct, "data returned in the wrong order\n");
 
     ok( i == 6, "Expected 6 rows, got %d\n", i );
-    g_assert_error(error, LIBMSI_RESULT_ERROR, LIBMSI_RESULT_NO_MORE_ITEMS);
-    g_clear_error(&error);
+    g_assert_no_error(error);
 
     libmsi_query_close(hquery, NULL);
     g_object_unref(hquery);
@@ -3317,8 +3312,7 @@ static void test_join(void)
     ok( data_correct, "data returned in the wrong order\n");
 
     ok( i == 6, "Expected 6 rows, got %d\n", i );
-    g_assert_error(error, LIBMSI_RESULT_ERROR, LIBMSI_RESULT_NO_MORE_ITEMS);
-    g_clear_error(&error);
+    g_assert_no_error(error);
 
     libmsi_query_close(hquery, NULL);
     g_object_unref(hquery);
@@ -3451,12 +3445,12 @@ static void test_temporary_table(void)
     /* query the column data */
     rec = 0;
     r = do_query(hdb, "select * from `_Columns` where `Table` = 'T' AND `Name` = 'B'", &rec);
-    ok( r == LIBMSI_RESULT_NO_MORE_ITEMS, "temporary table exists in _Columns\n");
-    if (rec) g_object_unref( rec );
+    ok( r == LIBMSI_RESULT_SUCCESS, "temporary table exists in _Columns\n");
+    g_assert(rec == NULL);
 
     r = do_query(hdb, "select * from `_Columns` where `Table` = 'T' AND `Name` = 'C'", &rec);
-    ok( r == LIBMSI_RESULT_NO_MORE_ITEMS, "temporary table exists in _Columns\n");
-    if (rec) g_object_unref( rec );
+    ok( r == LIBMSI_RESULT_SUCCESS, "temporary table exists in _Columns\n");
+    g_assert(rec == NULL);
 
     g_object_unref( hdb );
 
@@ -3716,8 +3710,7 @@ static void test_integers(void)
 
     sql = "SELECT * FROM `integers`";
     r = do_query(hdb, sql, &rec);
-    ok(r == LIBMSI_RESULT_NO_MORE_ITEMS, "Expected LIBMSI_RESULT_NO_MORE_ITEMS, got %d\n", r);
-
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_NO_MORE_ITEMS, got %d\n", r);
     ok(rec == NULL, "Must be null");
 
     /* insert legitimate values into it */
@@ -5897,7 +5890,8 @@ static void test_droptable(void)
 
     sql = "SELECT * FROM `One`";
     r = do_query(hdb, sql, &hrec);
-    ok(r == LIBMSI_RESULT_NO_MORE_ITEMS, "Expected LIBMSI_RESULT_NO_MORE_ITEMS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_NO_MORE_ITEMS, got %d\n", r);
+    g_assert(hrec == NULL);
 
     sql = "SELECT * FROM `_Tables` WHERE `Name` = 'One'";
     hquery = libmsi_query_new(hdb, sql, NULL);
@@ -5984,11 +5978,13 @@ static void test_droptable(void)
 
     sql = "SELECT * FROM `_Tables` WHERE `Name` = 'One'";
     r = do_query(hdb, sql, &hrec);
-    ok(r == LIBMSI_RESULT_NO_MORE_ITEMS, "Expected LIBMSI_RESULT_NO_MORE_ITEMS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_NO_MORE_ITEMS, got %d\n", r);
+    g_assert(hrec == NULL);
 
     sql = "SELECT * FROM `_Columns` WHERE `Table` = 'One'";
     r = do_query(hdb, sql, &hrec);
-    ok(r == LIBMSI_RESULT_NO_MORE_ITEMS, "Expected LIBMSI_RESULT_NO_MORE_ITEMS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_NO_MORE_ITEMS, got %d\n", r);
+    g_assert(hrec == NULL);
 
     sql = "CREATE TABLE `One` ( `B` INT, `C` INT PRIMARY KEY `B` )";
     r = run_query(hdb, 0, sql);
@@ -5996,7 +5992,8 @@ static void test_droptable(void)
 
     sql = "SELECT * FROM `One`";
     r = do_query(hdb, sql, &hrec);
-    ok(r == LIBMSI_RESULT_NO_MORE_ITEMS, "Expected LIBMSI_RESULT_NO_MORE_ITEMS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_NO_MORE_ITEMS, got %d\n", r);
+    g_assert(hrec == NULL);
 
     sql = "SELECT * FROM `_Tables` WHERE `Name` = 'One'";
     hquery = libmsi_query_new(hdb, sql, NULL);
@@ -6057,11 +6054,13 @@ static void test_droptable(void)
 
     sql = "SELECT * FROM `_Tables` WHERE `Name` = 'One'";
     r = do_query(hdb, sql, &hrec);
-    ok(r == LIBMSI_RESULT_NO_MORE_ITEMS, "Expected LIBMSI_RESULT_NO_MORE_ITEMS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_NO_MORE_ITEMS, got %d\n", r);
+    g_assert(hrec == NULL);
 
     sql = "SELECT * FROM `_Columns` WHERE `Table` = 'One'";
     r = do_query(hdb, sql, &hrec);
-    ok(r == LIBMSI_RESULT_NO_MORE_ITEMS, "Expected LIBMSI_RESULT_NO_MORE_ITEMS, got %d\n", r);
+    ok(r == LIBMSI_RESULT_SUCCESS, "Expected LIBMSI_RESULT_NO_MORE_ITEMS, got %d\n", r);
+    g_assert(hrec == NULL);
 
     g_object_unref(hdb);
     unlink(msifile);

@@ -72,6 +72,8 @@ typedef enum LibmsiCondition
 #define MAX_STREAM_NAME_LEN     62
 #define LONG_STR_BYTES  3
 
+#define NO_MORE_ITEMS G_MAXINT
+
 #define MSITYPE_IS_BINARY(type) (((type) & ~MSITYPE_NULLABLE) == (MSITYPE_STRING|MSITYPE_VALID))
 
 struct _LibmsiTable;

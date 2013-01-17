@@ -240,7 +240,7 @@ static unsigned distinct_view_find_matching_rows( LibmsiView *view, unsigned col
     r = dv->table->ops->find_matching_rows( dv->table, col, val, row, handle );
 
     if( *row > dv->row_count )
-        return LIBMSI_RESULT_NO_MORE_ITEMS;
+        return NO_MORE_ITEMS;
 
     *row = dv->translation[ *row ];
 

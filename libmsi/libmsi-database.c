@@ -1696,7 +1696,7 @@ static unsigned merge_diff_row(LibmsiRecord *rec, void *param)
             table->numconflicts++;
             goto done;
         }
-        else if (r != LIBMSI_RESULT_NO_MORE_ITEMS)
+        else if (r != NO_MORE_ITEMS)
             goto done;
 
         r = LIBMSI_RESULT_SUCCESS;
