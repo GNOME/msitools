@@ -31,15 +31,10 @@ AC_PATH_PROG(VAPIGEN, vapigen, no)
 AC_SUBST(VAPIGEN)
 AM_CONDITIONAL([VAPI], [test "x$VAPIGEN" != xno])
 
-# used by wixl-heat
-AS_IF([test $win32 = no],
-      [WIXL_UNIX="gio-unix-2.0"])
-
 PKG_CHECK_MODULES([WIXL], [gio-2.0 >= 0.23.0
                            libgcab-1.0 >= 0.1.10
                            uuid >= 1.41.3
-                           libxml-2.0 >= 2.7
-                           $WIXL_UNIX])
+                           libxml-2.0 >= 2.7])
 
 GETTEXT_PACKAGE=wixl
 AC_DEFINE_UNQUOTED([GETTEXT_PACKAGE], ["$GETTEXT_PACKAGE"], [Gettext Package])

@@ -61,7 +61,7 @@ public int main (string[] args) {
     var indent = "      ";
 
     try {
-        var dis = new DataInputStream (new UnixInputStream (0, false));
+        var dis = new DataInputStream (new UnixInputStream (0));
         string line;
 
         while ((line = dis.read_line (null)) != null) {

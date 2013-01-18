@@ -104,7 +104,8 @@ wixl_LDADD =					\
 
 wixl_DEPENDENCIES = libmsi/libmsi.la
 
-if !WIN32
+# Wixl-heat
+
 bin_PROGRAMS += wixl-heat
 
 wixl_heat_CFLAGS = -w
@@ -112,8 +113,9 @@ wixl_heat_CFLAGS = -w
 wixl_heat_VALAFLAGS =				\
 	--vapidir=.				\
 	--pkg config				\
+	--pkg gio-2.0				\
+	--pkg posix				\
 	--enable-experimental			\
-	--pkg gio-unix-2.0			\
 	$(NULL)
 
 wixl_heat_SOURCES =				\
@@ -123,7 +125,6 @@ wixl_heat_SOURCES =				\
 
 wixl_heat_CPPFLAGS = $(wixl_CPPFLAGS)
 wixl_heat_LDADD = $(wixl_LDADD)
-endif
 
 # Autotest support
 
