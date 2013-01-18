@@ -35,7 +35,7 @@ AS_IF([test $win32 = no],
       [WIXL_UNIX="gio-unix-2.0"])
 
 PKG_CHECK_MODULES([WIXL], [gio-2.0 >= 0.23.0
-                           libgcab-1.0
+                           libgcab-1.0 >= 0.1.10
                            uuid >= 1.41.3
                            libxml-2.0 >= 2.7
                            $WIXL_UNIX])

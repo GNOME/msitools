@@ -4,10 +4,12 @@ static bool version;
 static bool list_only;
 [CCode (array_length = false, array_null_terminated = true)]
 static string[] files;
+static string? directory = null;
 
 private const OptionEntry[] options = {
     { "version", 0, 0, OptionArg.NONE, ref version, N_("Display version number"), null },
-    { "list", 0, 0, OptionArg.NONE, ref list_only, N_("List files only"), null },
+    { "directory", 'C', 0, OptionArg.FILENAME, ref directory, N_("Extract to directory"), null },
+    { "list", 'l', 0, OptionArg.NONE, ref list_only, N_("List files only"), null },
     { "", 0, 0, OptionArg.FILENAME_ARRAY, ref files, null, N_("MSI_FILE...") },
     { null }
 };
@@ -30,12 +32,36 @@ public void extract_cab (Libmsi.Database db, string cab,
         var rec = query.fetch ();
         var cabinet = new GCab.Cabinet ();
         cabinet.load (rec.get_stream (1));
+        var path = File.new_for_path (directory);
+        cabinet.extract_simple (path, (current) => {
+                var extname = cab_to_name.lookup (current.get_name ());
+                if (extname == null) {
+                    extname = current.get_name ();
+                    warning ("couldn't lookup MSI name, fallback on cab name %s", extname);
+                }
+                current.set_extract_name (extname);
+                return true;
+            }, null);
     }
+}
+
+public string? get_directory_name (Libmsi.Record rec) throws GLib.Error {
+    var name = get_long_name (rec.get_string (3));
+
+    // only by intuition...
+    if (rec.get_string (1) == "ProgramFilesFolder")
+        return "Program Files";
+    else if (name == ".")
+        return "";
+    else if (name == "SourceDir")
+        return null;
+
+    return name;
 }
 
 public void extract (string filename) throws GLib.Error {
     Libmsi.Record? rec;
-    var db = new Libmsi.Database (files[0], Libmsi.DbFlags.READONLY, null);
+    var db = new Libmsi.Database (filename, Libmsi.DbFlags.READONLY, null);
 
     var directories = new HashTable<string, Libmsi.Record> (str_hash, str_equal);
     var query = new Libmsi.Query (db, "SELECT * FROM `Directory`");
@@ -49,21 +75,19 @@ public void extract (string filename) throws GLib.Error {
     while ((rec = query.fetch ()) != null) {
         var dir_id = rec.get_string (3);
         var dir_rec = directories.lookup (dir_id);
-        var dir = get_long_name (dir_rec.get_string (3));
+        var dir = get_directory_name (dir_rec);
 
         do {
             var parent = dir_rec.get_string (2);
             dir_rec = directories.lookup (parent);
             if (dir_rec == null)
                 break;
-            parent = get_long_name (dir_rec.get_string (3));
-            // only by intuition...
-            if (dir_rec.get_string (1) == "ProgramFilesFolder")
-                parent = "Program Files";
-            else if (parent == ".")
-                continue;
-            else if (parent == "SourceDir")
+            parent = get_directory_name (dir_rec);
+            if (parent == null)
                 break;
+            if (parent == "")
+                continue;
+
             dir = Path.build_filename (parent, dir);
         } while (true);
 
@@ -84,7 +108,6 @@ public void extract (string filename) throws GLib.Error {
     if (list_only)
         exit (0);
 
-    message ("FIXME: gcab doesn't support extraction yet!");
     query = new Libmsi.Query (db, "SELECT * FROM `Media`");
     query.execute ();
     while ((rec = query.fetch ()) != null) {
@@ -123,8 +146,12 @@ public int main (string[] args) {
         exit (1);
     }
 
+    if (directory == null)
+        directory = Environment.get_current_dir ();
+
     try {
-        extract (files[0]);
+        foreach (var file in files)
+            extract (file);
     } catch (GLib.Error error) {
         GLib.stderr.printf (error.message);
         exit (1);
