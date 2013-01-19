@@ -40,6 +40,7 @@ public void extract_cab (Libmsi.Database db, string cab,
                     warning ("couldn't lookup MSI name, fallback on cab name %s", extname);
                 }
                 current.set_extract_name (extname);
+                GLib.stdout.printf ("%s\n", extname);
                 return true;
             }, null);
     }
