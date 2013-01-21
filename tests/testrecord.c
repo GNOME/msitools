@@ -435,7 +435,9 @@ static void test_fieldzero (void)
 
 void main ()
 {
+#if !GLIB_CHECK_VERSION(2,35,1)
     g_type_init ();
+#endif
 
     test_msirecord ();
     test_MsiRecordGetString ();

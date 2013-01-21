@@ -7468,7 +7468,9 @@ static void test_select_column_names(void)
 
 void main()
 {
-    g_type_init();
+#if !GLIB_CHECK_VERSION(2,35,1)
+    g_type_init ();
+#endif
 
     test_msidatabase();
     test_msiinsert();

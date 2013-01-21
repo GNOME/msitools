@@ -776,7 +776,10 @@ int main(int argc, char **argv)
     GError *error = NULL;
     struct Command *cmd = NULL;
 
-    g_type_init();
+#if !GLIB_CHECK_VERSION(2,35,1)
+    g_type_init ();
+#endif
+
     program_name = get_basename(argv[0]);
 
     if (argc == 1) {

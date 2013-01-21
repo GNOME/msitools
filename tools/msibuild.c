@@ -260,7 +260,10 @@ int main(int argc, char *argv[])
     gboolean success = FALSE;
     int n;
 
-    g_type_init();
+#if !GLIB_CHECK_VERSION(2,35,1)
+    g_type_init ();
+#endif
+
     if (argc <= 2 )
     {
         show_usage();

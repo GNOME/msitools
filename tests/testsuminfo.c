@@ -373,7 +373,10 @@ static void test_summary_binary(void)
 
 void main()
 {
-    g_type_init();
+#if !GLIB_CHECK_VERSION(2,35,1)
+    g_type_init ();
+#endif
+
     test_suminfo();
     test_summary_binary();
 }
