@@ -87,6 +87,7 @@ if VAPI
 vapidir = $(datadir)/vala/vapi
 vapi_DATA = libmsi-1.0.vapi
 BUILT_SOURCES += $(vapi_DATA)
+EXTRA_DIST += Libmsi-1.0.metadata
 
 libmsi-1.0.vapi: Libmsi-1.0.gir Libmsi-1.0.metadata
 	$(AM_V_GEN)$(VAPIGEN) -q		\
