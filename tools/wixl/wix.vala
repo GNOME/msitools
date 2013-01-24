@@ -296,6 +296,7 @@ namespace Wixl {
         public string Key { get; set; }
         public string Type { get; set; }
         public string Name { get; set; }
+        public string Win64 { get; set; }
 
         public override void accept (WixNodeVisitor visitor) throws GLib.Error {
             visitor.visit_registry_search (this);

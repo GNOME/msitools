@@ -919,7 +919,29 @@ namespace Wixl {
             db.table_service_install.add(service_install.Id, service_install.Name, service_install.DisplayName, ServiceType, StartType, ErrorControl, service_install.LoadOrderGroup, ServiceDependencies, service_install.Account, service_install.Password, service_install.Arguments, comp.Id, Description);
         }
 
+
+        enum RegistryType {
+            DIRECTORY,
+            FILE,
+            RAW,
+            64BIT = 0x10;
+
+            public static RegistryType from_string (string s) throws GLib.Error {
+                return enum_from_string<RegistryType> (s);
+            }
+        }
+
         public override void visit_registry_search (WixRegistrySearch search) throws GLib.Error {
+            var property = search.parent as WixProperty;
+
+            var root = RegistryRoot.from_string (search.Root.down ());
+            var type = RegistryType.from_string (search.Type.down ());
+            if (parse_yesno (search.Win64))
+                type |= RegistryType.64BIT;
+
+            db.table_app_search.add (property.Id, search.Id);
+            db.table_reg_locator.add (search.Id, root, search.Key, search.Name, type);
+        }
 
         [Flags]
         enum CustomActionType {
