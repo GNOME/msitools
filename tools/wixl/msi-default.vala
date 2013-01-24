@@ -173,7 +173,7 @@ namespace Wixl {
             ActionInfo? action = null;
 
             try {
-                action = actions[enum_from_string (typeof (Action), name.down ())];
+                action = actions[enum_from_string<Action> (name.down ())];
             } catch (GLib.Error error) {
             }
 

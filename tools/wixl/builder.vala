@@ -354,7 +354,11 @@ namespace Wixl {
         enum FeatureDisplay {
             HIDDEN = 0,
             EXPAND,
-            COLLAPSE
+            COLLAPSE;
+
+            public static FeatureDisplay from_string(string s) throws GLib.Error {
+                return enum_from_string<FeatureDisplay> (s);
+            }
         }
         WixFeature? feature_root;
         int feature_display;
@@ -373,7 +377,7 @@ namespace Wixl {
             int display = FeatureDisplay.COLLAPSE;
             if (feature.Display != null) {
                 try {
-                    display = enum_from_string (typeof (FeatureDisplay), feature.Display);
+                    display = FeatureDisplay.from_string (feature.Display);
                 } catch (GLib.Error error) {
                     display = int.parse (feature.Display);
                     if (display != 0)
@@ -440,11 +444,15 @@ namespace Wixl {
         enum InstallMode {
             INSTALL = 1,
             UNINSTALL,
-            BOTH
+            BOTH;
+
+            public static InstallMode from_string(string s) throws GLib.Error {
+                return enum_from_string<InstallMode> (s);
+            }
         }
 
         public override void visit_remove_folder (WixRemoveFolder rm) throws GLib.Error {
-            var on = enum_from_string (typeof (InstallMode), rm.On);
+            var on = InstallMode.from_string (rm.On);
             var comp = rm.parent as WixComponent;
             var dir = resolve<WixDirectory> (comp.parent);
 
@@ -466,7 +474,21 @@ namespace Wixl {
             INTEGER,
             BINARY,
             EXPANDABLE,
-            MULTI_STRING
+            MULTI_STRING;
+
+            public static RegistryValueType from_string(string s) throws GLib.Error {
+                if (s == "string")
+                    return STRING;
+                if (s == "integer")
+                    return INTEGER;
+                if (s == "binary")
+                    return BINARY;
+                if (s == "expandable")
+                    return EXPANDABLE;
+                if (s == "multistring")
+                    return MULTI_STRING;
+                throw new Wixl.Error.FAILED ("Can't convert string to enum");
+            }
         }
 
         enum RegistryRoot {
@@ -474,7 +496,11 @@ namespace Wixl {
             HKCU,
             HKLM,
             HKU,
-            HKMU
+            HKMU;
+
+            public static RegistryRoot from_string(string s) throws GLib.Error {
+                return enum_from_string<RegistryRoot> (s);
+            }
         }
 
         public override void visit_registry_value (WixRegistryValue reg) throws GLib.Error {
@@ -499,8 +525,8 @@ namespace Wixl {
                 reg_root = reg.Root;
 
             var value = reg.Value;
-            var t = enum_from_string (typeof (RegistryValueType), reg.Type);
-            var r = enum_from_string (typeof (RegistryRoot), reg_root.down ());
+            var t = RegistryValueType.from_string (reg.Type);
+            var r = RegistryRoot.from_string (reg_root.down ());
             if (reg.Id == null) {
                 reg.Id = generate_id ("reg", 4,
                                       comp.Id,

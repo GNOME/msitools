@@ -23,8 +23,8 @@ namespace Wixl {
         return (string) udn;
     }
 
-    public int enum_from_string (Type t, string str) throws GLib.Error {
-        var k = (EnumClass)t.class_ref ();
+    public G enum_from_string<G> (string str) throws GLib.Error {
+        var k = (EnumClass)typeof(G).class_ref ();
         var v = k.get_value_by_nick (str);
 
         if (v == null)
