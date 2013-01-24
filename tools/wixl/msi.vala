@@ -41,11 +41,12 @@ namespace Wixl {
     public abstract class MsiTableSequence: MsiTable {
         public class MSIDefault.ActionFlags flags;
 
-        private void add (string action, int sequence) throws GLib.Error {
-            var rec = new Libmsi.Record (2);
+        private void add (string action, string? condition, int sequence) throws GLib.Error {
+            var rec = new Libmsi.Record (3);
 
             if (!rec.set_string (1, action) ||
-                !rec.set_int (2, sequence))
+                (condition != null && !rec.set_string (2, condition)) ||
+                !rec.set_int (3, sequence))
                 throw new Wixl.Error.FAILED ("failed to add record");
 
             records.append (rec);
@@ -54,11 +55,12 @@ namespace Wixl {
         protected class void set_sequence_table_name (string table) {
             name = table;
             sql_create = "CREATE TABLE `%s` (`Action` CHAR(72) NOT NULL, `Condition` CHAR(255), `Sequence` INT PRIMARY KEY `Action`)".printf (table);
-            sql_insert = "INSERT INTO `%s` (`Action`, `Sequence`) VALUES (?, ?)".printf (table);
+            sql_insert = "INSERT INTO `%s` (`Action`, `Condition`, `Sequence`) VALUES (?, ?, ?)".printf (table);
         }
 
         public class Action {
             public string name;
+            public string? condition;
             public int sequence = -1;
             public WixAction? action;
 
@@ -131,7 +133,7 @@ namespace Wixl {
                     action.sequence = ++sequence;
 
                 sequence = action.sequence;
-                add (action.name, action.sequence);
+                add (action.name, action.condition, action.sequence);
             }
         }
 

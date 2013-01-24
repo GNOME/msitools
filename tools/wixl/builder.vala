@@ -701,6 +701,12 @@ namespace Wixl {
                 var before = table.get_action (action.Before);
                 before.add_dep (node);
             }
+
+            if (action.children.length () > 0) {
+                return_if_fail (action.children.length () == 1);
+                var text = action.children.first ().data as WixText;
+                node.condition = text.Text;
+            }
         }
 
         public override void visit_progid (WixProgId progid) throws GLib.Error {
