@@ -280,6 +280,9 @@ namespace Wixl {
         }
 
         public override void visit_property (WixProperty prop) throws GLib.Error {
+            if (prop.Value == null)
+                return;
+
             db.table_property.add (prop.Id, prop.Value);
         }
 
