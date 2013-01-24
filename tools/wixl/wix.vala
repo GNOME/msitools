@@ -196,7 +196,7 @@ namespace Wixl {
         }
 
         public virtual void load (Xml.Node *node) throws Wixl.Error {
-            if (node->name != name)
+            if (name != null && node->name != name)
                 throw new Error.FAILED ("%s: invalid node %s".printf (name, node->name));
 
             load_properties_from_node (node);
@@ -644,8 +644,8 @@ namespace Wixl {
         public string Suppress { get; set; }
 
         public override void load (Xml.Node *node) throws Wixl.Error {
+            base.load (node);
             name = node->name;
-            load_properties_from_node (node);
         }
 
         public override void accept (WixNodeVisitor visitor) throws GLib.Error {
