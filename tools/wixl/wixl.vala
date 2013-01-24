@@ -97,6 +97,8 @@ namespace Wixl {
             if (verbose)
                 print ("Building %s...\n", output);
             var msi = builder.build ();
+            if (verbose)
+                print ("Writing %s...\n", output);
             msi.build (output);
         } catch (GLib.Error error) {
             printerr (error.message + "\n");
