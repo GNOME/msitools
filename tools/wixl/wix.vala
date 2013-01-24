@@ -1,5 +1,29 @@
 namespace Wixl {
 
+    public interface WixResolver {
+        public abstract G? find_element<G> (string Id);
+
+        public G? resolve<G> (WixElement element) throws GLib.Error {
+            G? resolved = null;
+
+            if (element.get_type ().is_a (typeof (G)))
+                resolved = element;
+            else if (element is WixElementRef) {
+                var ref = element as WixElementRef<G>;
+                if (!ref.ref_type.is_a (typeof (G)))
+                    resolved = null;
+                else if (ref.resolved == null)
+                    ref.resolved = find_element<G> (element.Id);
+                resolved = ref.resolved;
+            }
+
+            if (resolved == null)
+                throw new Wixl.Error.FAILED ("couldn't resolve %s", element.Id);
+
+            return resolved;
+        }
+    }
+
     public enum VisitState {
         ENTER,
         INFIX,

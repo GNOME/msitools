@@ -1,6 +1,6 @@
 namespace Wixl {
 
-    class WixBuilder: WixNodeVisitor {
+    class WixBuilder: WixNodeVisitor, WixResolver {
 
         public WixBuilder (string[] includedirs) {
             add_path (".");
@@ -322,26 +322,6 @@ namespace Wixl {
             REGISTRY_REFLECTION,
             UNINSTALL_ON_SUPERSEDENCE,
             SHARED,
-        }
-
-        G? resolve<G> (WixElement element) throws GLib.Error {
-            G? resolved = null;
-
-            if (element.get_type () == typeof (G))
-                resolved = element;
-            else if (element is WixElementRef) {
-                var ref = element as WixElementRef<G>;
-                if (ref.ref_type != typeof (G))
-                    resolved = null;
-                else if (ref.resolved == null)
-                    ref.resolved = find_element<G> (element.Id);
-                resolved = ref.resolved;
-            }
-
-            if (resolved == null)
-                throw new Wixl.Error.FAILED ("couldn't resolve %s", element.Id);
-
-            return resolved;
         }
 
         public override void visit_component (WixComponent comp) throws GLib.Error {
