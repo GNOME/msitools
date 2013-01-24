@@ -484,6 +484,55 @@ namespace Wixl {
         }
     }
 
+    class MsiTableServiceControl : MsiTable {
+        static construct {
+            name = "ServiceControl";
+            sql_create = "CREATE TABLE `ServiceControl` (`ServiceControl` CHAR(72) NOT NULL, `Name` CHAR(255) NOT NULL LOCALIZABLE, `Event` INT NOT NULL, `Arguments` CHAR(255) LOCALIZABLE, `Wait` INT, `Component_` CHAR(72) NOT NULL PRIMARY KEY `ServiceControl`)";
+            sql_insert = "INSERT INTO `ServiceControl` (`ServiceControl`, `Name`, `Event`, `Arguments`, `Wait`, `Component_`) VALUES (?, ?, ?, ?, ?, ?)";
+        }
+
+        public void add (string ServiceControl, string Name, int Event, string? Arguments = null, bool? Wait = null, string Component) throws GLib.Error {
+            var rec = new Libmsi.Record (6);
+            if (!rec.set_string (1, ServiceControl) ||
+                !rec.set_string (2, Name) ||
+                !rec.set_int (3, Event) ||
+                (Arguments != null && !rec.set_string (4, Arguments)) ||
+                (Wait != null && !rec.set_int (5, Wait ? 1 : 0)) ||
+                !rec.set_string (6, Component))
+                throw new Wixl.Error.FAILED ("failed to add record");
+
+            records.append (rec);
+        }
+    }
+
+    class MsiTableServiceInstall : MsiTable {
+        static construct {
+            name = "ServiceInstall";
+            sql_create = "CREATE TABLE `ServiceInstall` (`ServiceInstall` CHAR(72) NOT NULL, `Name` CHAR(255) NOT NULL LOCALIZABLE, `DisplayName` CHAR(255) LOCALIZABLE, `ServiceType` LONG NOT NULL, `StartType` LONG NOT NULL, `ErrorControl` LONG NOT NULL, `LoadOrderGroup` CHAR(255), `Dependencies` CHAR(255), `StartName` CHAR(255), `Password` CHAR(255), `Arguments` CHAR(255), `Component_` CHAR(72) NOT NULL, `Description` CHAR(255) LOCALIZABLE PRIMARY KEY `ServiceInstall`)";
+            sql_insert = "INSERT INTO `ServiceInstall` (`ServiceInstall`, `Name`, `DisplayName`, `ServiceType`, `StartType`, `ErrorControl`, `LoadOrderGroup`, `Dependencies`, `StartName`, `Password`, `Arguments`, `Component_`, `Description`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        }
+
+        public void add (string ServiceInstall, string Name, string? DisplayName = null, int ServiceType, int StartType, int ErrorControl, string? LoadOrderGroup = null, string? Dependencies = null, string? StartName = null, string? Password = null, string? Arguments = null, string Component, string? Description = null) throws GLib.Error {
+            var rec = new Libmsi.Record (13);
+            if (!rec.set_string (1, ServiceInstall) ||
+                !rec.set_string (2, Name) ||
+                (DisplayName != null && !rec.set_string (3, DisplayName)) ||
+                !rec.set_int (4, ServiceType) ||
+                !rec.set_int (5, StartType) ||
+                !rec.set_int (6, ErrorControl) ||
+                (LoadOrderGroup != null && !rec.set_string (7, LoadOrderGroup)) ||
+                (Dependencies != null && !rec.set_string (8, Dependencies)) ||
+                (StartName != null && !rec.set_string (9, StartName)) ||
+                (Password != null && !rec.set_string (10, Password)) ||
+                (Arguments != null && !rec.set_string (11, Arguments)) ||
+                !rec.set_string (12, Component) ||
+                (Description != null && !rec.set_string (13, Description)))
+                throw new Wixl.Error.FAILED ("failed to add record");
+
+            records.append (rec);
+        }
+    }
+
     class MsiTableValidation: MsiTable {
         static construct {
             name = "_Validation";
@@ -575,6 +624,8 @@ namespace Wixl {
         public MsiTableFeatureComponents table_feature_components;
         public MsiTableRemoveFile table_remove_file;
         public MsiTableRegistry table_registry;
+        public MsiTableServiceControl table_service_control;
+        public MsiTableServiceInstall table_service_install;
         public MsiTableFile table_file;
         public MsiTableAdminExecuteSequence table_admin_execute_sequence;
         public MsiTableAdminUISequence table_admin_ui_sequence;
@@ -618,6 +669,8 @@ namespace Wixl {
             table_feature_components = new MsiTableFeatureComponents ();
             table_remove_file = new MsiTableRemoveFile ();
             table_registry = new MsiTableRegistry ();
+            table_service_control = new MsiTableServiceControl ();
+            table_service_install = new MsiTableServiceInstall ();
             table_file = new MsiTableFile ();
             table_admin_execute_sequence = new MsiTableAdminExecuteSequence ();
             table_admin_ui_sequence = new MsiTableAdminUISequence ();
@@ -644,6 +697,8 @@ namespace Wixl {
                     table_feature_components,
                     table_remove_file,
                     table_registry,
+                    table_service_control,
+                    table_service_install,
                     table_file,
                     table_streams,
                     table_shortcut,

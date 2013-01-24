@@ -148,6 +148,13 @@ namespace Wixl {
             }
             if (db.table_remove_file.records.length () > 0)
                 add (MSIDefault.Action.RemoveFiles);
+            if (db.table_service_control.records.length () > 0) {
+                add (MSIDefault.Action.StartServices);
+                add (MSIDefault.Action.StopServices);
+                add (MSIDefault.Action.DeleteServices);
+            }
+            if (db.table_service_install.records.length () > 0)
+                add (MSIDefault.Action.InstallServices);
             table.add_sorted_actions ();
 
             // InstallUISequence
