@@ -915,6 +915,14 @@ namespace Wixl {
 
             db.table_service_install.add(service_install.Id, service_install.Name, service_install.DisplayName, ServiceType, StartType, ErrorControl, service_install.LoadOrderGroup, ServiceDependencies, service_install.Account, service_install.Password, service_install.Arguments, comp.Id, Description);
         }
+
+        public override void visit_registry_search (WixRegistrySearch search) throws GLib.Error {
+
+        }
+
+        public override void visit_custom_action (WixCustomAction action) throws GLib.Error {
+
+        }
     }
 
 } // Wixl

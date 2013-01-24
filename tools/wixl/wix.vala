@@ -61,6 +61,8 @@ namespace Wixl {
         public abstract void visit_service_control (WixServiceControl service_control, VisitState state) throws GLib.Error;
         public abstract void visit_service_dependency (WixServiceDependency service_dependency) throws GLib.Error;
         public abstract void visit_service_install (WixServiceInstall service_install, VisitState state) throws GLib.Error;
+        public abstract void visit_registry_search (WixRegistrySearch search) throws GLib.Error;
+        public abstract void visit_custom_action (WixCustomAction action) throws GLib.Error;
     }
 
     public abstract class WixNode: Object {
@@ -285,14 +287,34 @@ namespace Wixl {
         }
     }
 
+    public class WixRegistrySearch: WixElement {
+        static construct {
+            name = "RegistrySearch";
+        }
+
+        public string Root { get; set; }
+        public string Key { get; set; }
+        public string Type { get; set; }
+        public string Name { get; set; }
+
+        public override void accept (WixNodeVisitor visitor) throws GLib.Error {
+            visitor.visit_registry_search (this);
+        }
+    }
+
     public class WixProperty: WixElement {
         static construct {
             name = "Property";
+
+            add_child_types (child_types, {
+                typeof (WixRegistrySearch),
+            });
         }
 
         public string Value { get; set; }
 
         public override void accept (WixNodeVisitor visitor) throws GLib.Error {
+            base.accept (visitor);
             visitor.visit_property (this);
         }
     }
@@ -642,6 +664,7 @@ namespace Wixl {
         public string Overridable { get; set; }
         public string Sequence { get; set; }
         public string Suppress { get; set; }
+        public string Action { get; set; }
 
         public override void load (Xml.Node *node) throws Wixl.Error {
             base.load (node);
@@ -865,6 +888,22 @@ namespace Wixl {
         }
     }
 
+    public class WixCustomAction: WixElement {
+        static construct {
+            name = "CustomAction";
+        }
+
+        public string Property { get; set; }
+        public string Execute { get; set; }
+        public string ExeCommand { get; set; }
+        public string Impersonate { get; set; }
+        public string Return { get; set; }
+
+        public override void accept (WixNodeVisitor visitor) throws GLib.Error {
+            visitor.visit_custom_action (this);
+        }
+    }
+
     public class WixProduct: WixElement {
         static construct {
             name = "Product";
@@ -884,6 +923,7 @@ namespace Wixl {
                 typeof (WixPackage),
                 typeof (WixProperty),
                 typeof (WixUpgrade),
+                typeof (WixCustomAction),
             });
         }
 
