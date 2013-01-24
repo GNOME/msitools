@@ -536,6 +536,62 @@ namespace Wixl {
         }
     }
 
+    class MsiTableAppSearch : MsiTable {
+        static construct {
+            name = "AppSearch";
+            sql_create = "CREATE TABLE `AppSearch` (`Property` CHAR(72) NOT NULL, `Signature_` CHAR(72) NOT NULL PRIMARY KEY `Property`, `Signature_`)";
+            sql_insert = "INSERT INTO `AppSearch` (`Property`, `Signature_`) VALUES (?, ?)";
+        }
+
+        public void add (string Property, string Signature) throws GLib.Error {
+            var rec = new Libmsi.Record (2);
+            if (!rec.set_string (1, Property) ||
+                !rec.set_string (2, Signature))
+                throw new Wixl.Error.FAILED ("failed to add record");
+
+            records.append (rec);
+        }
+    }
+
+    class MsiTableCustomAction : MsiTable {
+        static construct {
+            name = "CustomAction";
+            sql_create = "CREATE TABLE `CustomAction` (`Action` CHAR(72) NOT NULL, `Type` INT NOT NULL, `Source` CHAR(72), `Target` CHAR(255), `ExtendedType` LONG PRIMARY KEY `Action`)";
+            sql_insert = "INSERT INTO `CustomAction` (`Action`, `Type`, `Source`, `Target`) VALUES (?, ?, ?, ?)";
+        }
+
+        public void add (string Action, int Type, string Source, string Target) throws GLib.Error {
+            var rec = new Libmsi.Record (4);
+            if (!rec.set_string (1, Action) ||
+                !rec.set_int (2, Type) ||
+                !rec.set_string (3, Source) ||
+                !rec.set_string (4, Target))
+                throw new Wixl.Error.FAILED ("failed to add record");
+
+            records.append (rec);
+        }
+    }
+
+    class MsiTableRegLocator : MsiTable {
+        static construct {
+            name = "RegLocator";
+            sql_create = "CREATE TABLE `RegLocator` (`Signature_` CHAR(72) NOT NULL, `Root` INT NOT NULL, `Key` CHAR(255) NOT NULL, `Name` CHAR(255), `Type` INT PRIMARY KEY `Signature_`)";
+            sql_insert = "INSERT INTO `RegLocator` (`Signature_`, `Root`, `Key`, `Name`, `Type`) VALUES (?, ?, ?, ?, ?)";
+        }
+
+        public void add (string Signature, int Root, string Key, string Name, int Type) throws GLib.Error {
+            var rec = new Libmsi.Record (5);
+            if (!rec.set_string (1, Signature) ||
+                !rec.set_int (2, Root) ||
+                !rec.set_string (3, Key) ||
+                !rec.set_string (4, Name) ||
+                !rec.set_int (5, Type))
+                throw new Wixl.Error.FAILED ("failed to add record");
+
+            records.append (rec);
+        }
+    }
+
     class MsiTableValidation: MsiTable {
         static construct {
             name = "_Validation";
@@ -639,6 +695,9 @@ namespace Wixl {
         public MsiTableShortcut table_shortcut;
         public MsiTableUpgrade table_upgrade;
         public MsiTableLaunchCondition table_launch_condition;
+        public MsiTableAppSearch table_app_search;
+        public MsiTableCustomAction table_custom_action;
+        public MsiTableRegLocator table_reg_locator;
 
         public HashTable<string, MsiTable> tables;
 
@@ -684,6 +743,9 @@ namespace Wixl {
             table_shortcut = new MsiTableShortcut ();
             table_upgrade = new MsiTableUpgrade ();
             table_launch_condition = new MsiTableLaunchCondition ();
+            table_app_search = new MsiTableAppSearch ();
+            table_custom_action = new MsiTableCustomAction ();
+            table_reg_locator = new MsiTableRegLocator ();
 
             foreach (var t in new MsiTable[] {
                     table_admin_execute_sequence,
@@ -707,6 +769,9 @@ namespace Wixl {
                     table_shortcut,
                     table_upgrade,
                     table_launch_condition,
+                    table_app_search,
+                    table_custom_action,
+                    table_reg_locator,
                     new MsiTableError (),
                     new MsiTableValidation ()
                 }) {
