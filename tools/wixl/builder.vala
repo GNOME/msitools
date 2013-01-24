@@ -687,6 +687,9 @@ namespace Wixl {
             var parent = action.parent as WixSequence;
             var table = db.tables.lookup (parent.name) as MsiTableSequence;
 
+            if (action.name == "Custom")
+                action.name = action.Action;
+
             var node = table.get_action (action.name);
             warn_if_fail (node.action == null);
             node.action = action;
