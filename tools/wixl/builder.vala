@@ -691,6 +691,9 @@ namespace Wixl {
             warn_if_fail (node.action == null);
             node.action = action;
 
+            if (action.Sequence != null)
+                node.sequence = int.parse (action.Sequence);
+
             if (action.After != null)
                 node.add_dep (table.get_action (action.After));
 
