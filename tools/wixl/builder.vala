@@ -921,10 +921,52 @@ namespace Wixl {
 
         public override void visit_registry_search (WixRegistrySearch search) throws GLib.Error {
 
+        [Flags]
+        enum CustomActionType {
+            DLL_BINARY = 1,
+            EXE_BINARY = 2,
+            JSCRIPT_BINARY = 5,
+            VBSCRIPT_BINARY = 6,
+            DLL_FILE = 17,
+            EXE_FILE = 18,
+            ERROR = 19,
+            JSCRIPT_FILE = 21,
+            VBSCRIPT_FILE = 22,
+            EXE_DIR = 34,
+            SET_DIR = 35,
+            JSCRIPT_SEQUENCE = 37,
+            VBSCRIPT_SEQUENCE = 38,
+            EXE_PROPERTY = 50,
+            SET_PROPERTY = 51,
+            JSCRIPT_PROPERTY = 53,
+            VBSCRIPT_PROPERTY = 54,
+            // return processing
+            CONTINUE = 0x40,
+            ASYNC = 0x80,
+            // scheduling
+            FIRST_SEQUENCE = 0x100,
+            ONCE_PER_PROCESS = 0x200,
+            CLIENT_REPEAT = 0x300,
+            // in-script
+            IN_SCRIPT = 0x400,
+            ROLLBACK = 0x100,
+            COMMIT = 0x200,
+            NO_IMPERSONATE = 0x800,
+            TS_AWARE = 0x4000,
         }
 
         public override void visit_custom_action (WixCustomAction action) throws GLib.Error {
+            // FIXME: so many missing things here...
+            var type = CustomActionType.EXE_PROPERTY;
 
+            if (action.Return == "ignore")
+                type |= CustomActionType.CONTINUE;
+            if (action.Execute == "deferred")
+                type |= CustomActionType.IN_SCRIPT;
+            if (!parse_yesno (action.Impersonate))
+                type |= CustomActionType.NO_IMPERSONATE;
+
+            db.table_custom_action.add (action.Id, type, action.Property, action.ExeCommand);
         }
     }
 
