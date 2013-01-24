@@ -147,6 +147,20 @@ namespace Wixl {
             return array;
         }
 
+        public string full_path (WixResolver r) throws GLib.Error {
+            WixDirectory dir = null;
+
+            if (parent != null && parent is WixDirectory)
+                dir = this.parent as WixDirectory;
+            else if (parent != null && parent is WixDirectoryRef)
+                dir = r.resolve<WixDirectory> (this.parent);
+
+            if (dir != null)
+                return dir.full_path (r) + "/" + this.Id;
+            else
+                return this.Id;
+        }
+
         public G[] get_elements<G> () {
             return add_elements<G> ({});
         }

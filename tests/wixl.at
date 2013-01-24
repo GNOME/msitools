@@ -28,6 +28,19 @@ AT_CHECK_WIXL([-o out.msi SampleFirst.wxs], [0], [ignore], [ignore])
 AT_CHECK([test -f out.msi], [0])
 AT_CLEANUP
 
+AT_SETUP([Stable component GUIDs])
+AT_WIXLDATA([ComponentGUID.wxs])
+AT_WIXLDATA([FoobarAppl10.exe])
+AT_WIXLDATA([Manual.pdf])
+AT_CHECK_WIXL([-o out.msi ComponentGUID.wxs], [0], [ignore], [ignore])
+# FIXME: add tons of tests on out.msi
+AT_CHECK([msiinfo export -s out.msi Component | sort | grep INSERT], [0],
+[INSERT INTO `Component` (`Component`, `ComponentId`, `Directory_`, `Attributes`, `KeyPath`) VALUES ('MainExecutable', '{8C320F7C-C521-5B19-A3C5-AF2B2ECEE71E}', 'INSTALLDIR', 0, 'FoobarEXE')
+INSERT INTO `Component` (`Component`, `ComponentId`, `Directory_`, `Attributes`, `KeyPath`) VALUES ('Manual', '{BAEE488E-70FF-566B-8A74-FE3107FDBDE2}', 'INSTALLDIR', 0, 'Manual')
+INSERT INTO `Component` (`Component`, `ComponentId`, `Directory_`, `Attributes`, `KeyPath`) VALUES ('ProgramMenuDir', '{F9F7F81C-5E64-5B7C-8018-FAF096969B88}', 'ProgramMenuDir', 4, 'reg5453B5C95074EA6F633E6D36318AFBF7')
+])
+AT_CLEANUP
+
 AT_SETUP([WiX tutorial SampleFragment])
 AT_WIXLDATA([SampleFragment.wxs])
 AT_WIXLDATA([Manual.wxs])
