@@ -89,7 +89,8 @@ wixl_SOURCES =					\
 
 wixl_CPPFLAGS =					\
 	-include config.h			\
-	-I $(top_srcdir)/include		\
+	-Iinclude				\
+	-I$(srcdir)/include			\
 	$(WIXL_CFLAGS)				\
 	-DG_LOG_DOMAIN=\""wixl"\"		\
 	-DLOCALEDIR=\""$(localedir)"\"		\
