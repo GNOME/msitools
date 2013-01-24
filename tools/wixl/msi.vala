@@ -166,6 +166,7 @@ namespace Wixl {
             actions.insert (default.name, seq);
             seq.name = default.name;
             seq.sequence = default.sequence;
+            seq.condition = default.condition;
         }
     }
 
