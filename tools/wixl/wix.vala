@@ -149,16 +149,9 @@ namespace Wixl {
             return array;
         }
 
-        public string full_path (WixResolver r) throws GLib.Error {
-            WixDirectory dir = null;
-
-            if (parent != null && parent is WixDirectory)
-                dir = this.parent as WixDirectory;
-            else if (parent != null && parent is WixDirectoryRef)
-                dir = r.resolve<WixDirectory> (this.parent);
-
-            if (dir != null)
-                return dir.full_path (r) + "/" + this.Id;
+        public virtual string full_path (WixResolver r) throws GLib.Error {
+            if (parent != null && (parent is WixDirectory || parent is WixDirectoryRef))
+                return parent.full_path (r) + "/" + this.Id;
             else
                 return this.Id;
         }
@@ -398,6 +391,10 @@ namespace Wixl {
 
     public abstract class WixKeyElement: WixElement {
         public string KeyPath { get; set; }
+
+        public virtual string path_name () throws GLib.Error {
+            throw new Wixl.Error.FAILED("this key path does not support generating a component GUID");
+        }
     }
 
     public class WixFile: WixKeyElement {
@@ -412,6 +409,10 @@ namespace Wixl {
         public string Name { get; set; }
 
         public File file;
+
+        public override string path_name () throws GLib.Error {
+            return Name;
+        }
 
         public override void accept (WixNodeVisitor visitor) throws GLib.Error {
             base.accept (visitor);
@@ -429,6 +430,10 @@ namespace Wixl {
         public string Type { get; set; }
         public string Value { get; set; }
         public string Name { get; set; }
+
+        public override string path_name () throws GLib.Error {
+            return Root + "/" + Key;
+        }
 
         public override void accept (WixNodeVisitor visitor) throws GLib.Error {
             visitor.visit_registry_value (this);
@@ -999,6 +1004,14 @@ namespace Wixl {
             base.accept (visitor);
             visitor.visit_component (this, VisitState.LEAVE);
         }
+
+        public override string full_path (WixResolver r) throws GLib.Error {
+            if (key == null)
+                throw new Wixl.Error.FAILED("a child is needed to generate a component GUID");
+
+            return parent.full_path (r) + "/" + key.path_name ();
+        }
+
     }
 
     public class WixDirectory: WixElement {
@@ -1027,6 +1040,11 @@ namespace Wixl {
         //     // FIXME vala: class init/construct fails, construct fails...
         //     ref_type = typeof (G);
         // }
+
+        public override string full_path (WixResolver r) throws GLib.Error {
+            return (r.resolve<G> (this) as WixElement).full_path (r);
+        }
+
     }
 
     public class WixDirectoryRef: WixElementRef<WixDirectory> {
