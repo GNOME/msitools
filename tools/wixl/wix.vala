@@ -37,7 +37,7 @@ namespace Wixl {
         public abstract void visit_property (WixProperty prop) throws GLib.Error;
         public abstract void visit_media (WixMedia media) throws GLib.Error;
         public abstract void visit_directory (WixDirectory dir) throws GLib.Error;
-        public abstract void visit_component (WixComponent comp) throws GLib.Error;
+        public abstract void visit_component (WixComponent comp, VisitState state) throws GLib.Error;
         public abstract void visit_feature (WixFeature feature, VisitState state) throws GLib.Error;
         public abstract void visit_component_ref (WixComponentRef ref) throws GLib.Error;
         public abstract void visit_remove_folder (WixRemoveFolder rm) throws GLib.Error;
@@ -995,8 +995,9 @@ namespace Wixl {
         public List<WixFeature> in_feature;
 
         public override void accept (WixNodeVisitor visitor) throws GLib.Error {
+            visitor.visit_component (this, VisitState.ENTER);
             base.accept (visitor);
-            visitor.visit_component (this);
+            visitor.visit_component (this, VisitState.LEAVE);
         }
     }
 

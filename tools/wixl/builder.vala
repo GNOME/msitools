@@ -347,8 +347,10 @@ namespace Wixl {
                         buffer[12], buffer[13], buffer[14], buffer[15]);
         }
 
-        public override void visit_component (WixComponent comp) throws GLib.Error {
+        public override void visit_component (WixComponent comp, VisitState state) throws GLib.Error {
             var attr = 0;
+            if (state == VisitState.ENTER)
+                return;
 
             if (comp.key is WixRegistryValue)
                 attr |= ComponentAttribute.REGISTRY_KEY_PATH;
