@@ -60,6 +60,18 @@ msiextract_LDADD = $(wixl_LDADD)
 
 # Wixl
 
+noinst_LIBRARIES = libcommon.a
+libcommon_a_SOURCES =				\
+	tools/wixl/util.vala			\
+	$(NULL)
+libcommon_a_VALAFLAGS =				\
+	--enable-experimental			\
+	--pkg gio-2.0				\
+	--pkg posix				\
+	-H libcommon.h --library common		\
+	$(NULL)
+libcommon_a_CFLAGS = -w
+
 bin_PROGRAMS += wixl
 
 wixl_CFLAGS = -w
@@ -76,6 +88,7 @@ wixl_VALAFLAGS =				\
 	--pkg libgcab-1.0			\
 	--pkg libxml-2.0			\
 	--pkg posix				\
+	--pkg common				\
 	$(NULL)
 
 wixl_SOURCES =					\
@@ -83,7 +96,6 @@ wixl_SOURCES =					\
 	tools/wixl/msi-default.vala		\
 	tools/wixl/msi.vala			\
 	tools/wixl/preprocessor.vala		\
-	tools/wixl/util.vala			\
 	tools/wixl/wix.vala			\
 	tools/wixl/wixl.vala			\
 	$(NULL)
@@ -102,6 +114,7 @@ wixl_CPPFLAGS =					\
 wixl_LDADD =					\
 	$(WIXL_LIBS)				\
 	libmsi/libmsi.la			\
+	libcommon.a				\
 	$(NULL)
 
 wixl_DEPENDENCIES = libmsi/libmsi.la
@@ -117,12 +130,12 @@ wixl_heat_VALAFLAGS =				\
 	--pkg config				\
 	--pkg gio-2.0				\
 	--pkg posix				\
+	--pkg common				\
 	--enable-experimental			\
 	$(NULL)
 
 wixl_heat_SOURCES =				\
 	tools/wixl/wixl-heat.vala		\
-	tools/wixl/util.vala			\
 	$(NULL)
 
 wixl_heat_CPPFLAGS = $(wixl_CPPFLAGS)
