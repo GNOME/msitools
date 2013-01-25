@@ -347,10 +347,19 @@ namespace Wixl {
                         buffer[12], buffer[13], buffer[14], buffer[15]);
         }
 
+        WixKeyElement? component_default_key = null;
+        int            component_children_count;
+
         public override void visit_component (WixComponent comp, VisitState state) throws GLib.Error {
             var attr = 0;
-            if (state == VisitState.ENTER)
+            if (state == VisitState.ENTER) {
+                component_default_key = null;
+                component_children_count = 0;
                 return;
+            }
+
+            if (comp.key == null && component_default_key != null)
+                comp.key = component_default_key;
 
             if (comp.key is WixRegistryValue)
                 attr |= ComponentAttribute.REGISTRY_KEY_PATH;
@@ -483,8 +492,14 @@ namespace Wixl {
 
             return_if_fail (component != null);
 
-            if (component.key == null || parse_yesno (key.KeyPath))
+            if (component_children_count++ == 0)
+                component_default_key = key;
+            if (parse_yesno (key.KeyPath)) {
+                component_default_key = null;
+                if (component.key != null)
+                    throw new Wixl.Error.FAILED ("multiple elements have keyPath='yes'");
                 component.key = key;
+            }
         }
 
         enum RegistryValueType {
