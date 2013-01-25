@@ -1,4 +1,5 @@
 NULL =
+EXTRA_DIST =
 ACLOCAL_AMFLAGS = -I m4
 SUBDIRS = include data libmsi tests po .
 
@@ -127,6 +128,12 @@ wixl_heat_SOURCES =				\
 wixl_heat_CPPFLAGS = $(wixl_CPPFLAGS)
 wixl_heat_LDADD = $(wixl_LDADD)
 
+# bash completion
+
+completiondir = $(datadir)/bash-completion/completions
+completion_DATA = completion/msitools
+EXTRA_DIST += $(completion_DATA)
+
 # Autotest support
 
 dist_noinst_DATA = tests/testsuite.at tests/wixl.at tests/package.m4 tests/testsuite
@@ -158,4 +165,4 @@ $(srcdir)/tests/testsuite: tests/testsuite.at tests/wixl.at tests/package.m4
 		$(AUTOM4TE) --language=autotest -o testsuite.tmp testsuite.at && \
 		mv testsuite.tmp testsuite
 
-EXTRA_DIST = msitools.doap build-aux/move-if-change autogen.sh
+EXTRA_DIST += msitools.doap build-aux/move-if-change autogen.sh
