@@ -41,7 +41,7 @@ libmsi_la_SOURCES =				\
 	$(NULL)
 
 libmsi_la_LDFLAGS = -no-undefined -rpath $(libdir) \
-		    -export-symbols-regex='^libmsi_'
+		    -export-symbols-regex '^libmsi_'
 
 libmsi_la_LIBADD = $(GLIB_LIBS) $(GSF_LIBS) $(GOBJECT_LIBS)
 
