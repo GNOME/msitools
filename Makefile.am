@@ -31,9 +31,9 @@ msiinfo_SOURCES = tools/msiinfo.c
 msiinfo_LDADD = -lmsi $(GLIB_LIBS) $(GSF_LIBS)
 msiinfo_DEPENDENCIES = libmsi/libmsi.la
 
-# msiextract, something on the TODO list...
+# msiextract
 
-noinst_PROGRAMS = msiextract
+bin_PROGRAMS += msiextract
 
 msiextract_CFLAGS = -w
 
