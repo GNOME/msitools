@@ -36,7 +36,7 @@ PKG_CHECK_MODULES([WIXL], [gio-2.0 >= 0.23.0
                            uuid >= 1.41.3
                            libxml-2.0 >= 2.7])
 
-GETTEXT_PACKAGE=wixl
+GETTEXT_PACKAGE=msitools
 AC_DEFINE_UNQUOTED([GETTEXT_PACKAGE], ["$GETTEXT_PACKAGE"], [Gettext Package])
 AC_SUBST(GETTEXT_PACKAGE)
 AM_GNU_GETTEXT_VERSION([0.18])
