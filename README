@@ -12,6 +12,8 @@ Provided tools include:
 
 - msibuild, a low-level tool to create MSI files
 
+- msiextract, to inspect and extract the files of an MSI file
+
 - wixl, a WiX-like tool, that builds Windows Installer (MSI) packages
   from an XML document, and tries to share the same syntax as the WiX
   toolset, http://wixtoolset.org/
