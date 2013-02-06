@@ -851,7 +851,7 @@ static char *msi_build_createsql_columns(char **columns_data, char **types, unsi
                 type = type_object;
                 break;
             default:
-                ERR("Unknown type: %c\n", types[i][0]);
+                g_critical("Unknown type: %c\n", types[i][0]);
                 msi_free(columns);
                 return NULL;
         }
@@ -991,7 +991,7 @@ static unsigned construct_record(unsigned num_columns, char **types,
                 }
                 break;
             default:
-                ERR("Unhandled column type: %c\n", types[i][0]);
+                g_critical("Unhandled column type: %c\n", types[i][0]);
                 g_object_unref(*rec);
                 return LIBMSI_RESULT_FUNCTION_FAILED;
         }
@@ -2208,14 +2208,14 @@ LibmsiResult _libmsi_database_open(LibmsiDatabase *db)
          memcmp( uuid, clsid_msi_patch, 16 ) != 0 &&
          memcmp( uuid, clsid_msi_transform, 16 ) != 0 )
     {
-        ERR("storage GUID is not a MSI database GUID %s\n",
+        g_critical("storage GUID is not a MSI database GUID %s\n",
              debugstr_guid(uuid) );
         goto end;
     }
 
     if ( db->flags & LIBMSI_DB_FLAGS_PATCH && memcmp( uuid, clsid_msi_patch, 16 ) != 0 )
     {
-        ERR("storage GUID is not the MSI patch GUID %s\n",
+        g_critical("storage GUID is not the MSI patch GUID %s\n",
              debugstr_guid(uuid) );
         goto end;
     }

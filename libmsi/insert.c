@@ -84,7 +84,7 @@ LibmsiRecord *msi_query_merge_record( unsigned fields, const column_info *vl, Li
             wildcard_count++;
             break;
         default:
-            ERR("Unknown expression type %d\n", vl->val->type);
+            g_critical("Unknown expression type %d\n", vl->val->type);
         }
         vl = vl->next;
     }

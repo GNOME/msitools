@@ -855,7 +855,7 @@ int sql_atoi( void *info )
     {
         if( '0' > p[i] || '9' < p[i] )
         {
-            ERR("should only be numbers here!\n");
+            g_critical("should only be numbers here!\n");
             break;
         }
         r = (p[i]-'0') + r*10;

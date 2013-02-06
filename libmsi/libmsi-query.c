@@ -326,7 +326,7 @@ unsigned msi_view_get_row(LibmsiDatabase *db, LibmsiView *view, unsigned row, Li
         ret = view->ops->get_column_info(view, i, NULL, &type, NULL, NULL);
         if (ret)
         {
-            ERR("Error getting column type for %d\n", i);
+            g_critical("Error getting column type for %d\n", i);
             continue;
         }
 
@@ -349,12 +349,12 @@ unsigned msi_view_get_row(LibmsiDatabase *db, LibmsiView *view, unsigned row, Li
         ret = view->ops->fetch_int(view, row, i, &ival);
         if (ret)
         {
-            ERR("Error fetching data for %d\n", i);
+            g_critical("Error fetching data for %d\n", i);
             continue;
         }
 
         if (! (type & MSITYPE_VALID))
-            ERR("Invalid type!\n");
+            g_critical("Invalid type!\n");
 
         /* check if it's nul (0) - if so, don't set anything */
         if (!ival)

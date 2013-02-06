@@ -96,7 +96,7 @@ static inline unsigned bytes_per_column( LibmsiDatabase *db, const LibmsiColumnI
         return 2;
 
     if( (col->type & 0xff) != 4 )
-        ERR("Invalid column size!\n");
+        g_critical("Invalid column size!\n");
 
     return 4;
 }
@@ -170,7 +170,7 @@ char *encode_streamname(bool bTable, const char *in)
             *p++ = ch;
         }
     }
-    ERR("Failed to encode stream name (%s)\n",debugstr_a(in));
+    g_critical("Failed to encode stream name (%s)\n",debugstr_a(in));
     msi_free( out );
     return NULL;
 }
@@ -426,7 +426,7 @@ static unsigned read_table_from_storage( LibmsiDatabase *db, LibmsiTable *t, Gsf
 
             if ( n != 2 && n != 3 && n != 4 )
             {
-                ERR("oops - unknown column width %d\n", n);
+                g_critical("oops - unknown column width %d\n", n);
                 goto err;
             }
             if (t->colinfo[j].type & MSITYPE_STRING && n < m)
@@ -651,7 +651,7 @@ static unsigned get_tablecolumns( LibmsiDatabase *db, const char *szTableName, L
     r = get_table( db, szColumns, &table );
     if (r != LIBMSI_RESULT_SUCCESS)
     {
-        ERR("couldn't load _Columns table\n");
+        g_critical("couldn't load _Columns table\n");
         return LIBMSI_RESULT_FUNCTION_FAILED;
     }
 
@@ -680,13 +680,13 @@ static unsigned get_tablecolumns( LibmsiDatabase *db, const char *szTableName, L
             /* check the column number is in range */
             if (col < 1 || col > maxcount)
             {
-                ERR("column %d out of range\n", col);
+                g_critical("column %d out of range\n", col);
                 continue;
             }
             /* check if this column was already set */
             if (colinfo[col - 1].number)
             {
-                ERR("duplicate column %d\n", col);
+                g_critical("duplicate column %d\n", col);
                 continue;
             }
             colinfo[col - 1].tablename = msi_string_lookup_id( db->strings, table_id );
@@ -704,7 +704,7 @@ static unsigned get_tablecolumns( LibmsiDatabase *db, const char *szTableName, L
 
     if (colinfo && n != maxcount)
     {
-        ERR("missing column in table %s\n", debugstr_a(szTableName));
+        g_critical("missing column in table %s\n", debugstr_a(szTableName));
         msi_free_colinfo( colinfo, maxcount );
         return LIBMSI_RESULT_FUNCTION_FAILED;
     }
@@ -910,7 +910,7 @@ static unsigned save_table( LibmsiDatabase *db, const LibmsiTable *t, unsigned b
 
             if (n != 2 && n != 3 && n != 4)
             {
-                ERR("oops - unknown column width %d\n", n);
+                g_critical("oops - unknown column width %d\n", n);
                 goto err;
             }
             if (t->colinfo[j].type & MSITYPE_STRING && n < m)
@@ -918,7 +918,7 @@ static unsigned save_table( LibmsiDatabase *db, const LibmsiTable *t, unsigned b
                 unsigned id = read_table_int( t->data, i, ofs_mem, LONG_STR_BYTES );
                 if (id > 1 << bytes_per_strref * 8)
                 {
-                    ERR("string id %u out of range\n", id);
+                    g_critical("string id %u out of range\n", id);
                     goto err;
                 }
             }
@@ -986,7 +986,7 @@ bool table_view_exists( LibmsiDatabase *db, const char *name )
     r = get_table( db, szTables, &table );
     if( r != LIBMSI_RESULT_SUCCESS )
     {
-        ERR("table %s not available\n", debugstr_a(szTables));
+        g_critical("table %s not available\n", debugstr_a(szTables));
         return false;
     }
 
@@ -1029,15 +1029,15 @@ static unsigned table_view_fetch_int( LibmsiView *view, unsigned row, unsigned c
 
     if( tv->columns[col-1].offset >= tv->row_size )
     {
-        ERR("Stuffed up %d >= %d\n", tv->columns[col-1].offset, tv->row_size );
-        ERR("%p %p\n", tv, tv->columns );
+        g_critical("Stuffed up %d >= %d\n", tv->columns[col-1].offset, tv->row_size );
+        g_critical("%p %p\n", tv, tv->columns );
         return LIBMSI_RESULT_FUNCTION_FAILED;
     }
 
     n = bytes_per_column( tv->db, &tv->columns[col - 1], LONG_STR_BYTES );
     if (n != 2 && n != 3 && n != 4)
     {
-        ERR("oops! what is %d bytes per column?\n", n );
+        g_critical("oops! what is %d bytes per column?\n", n );
         return LIBMSI_RESULT_FUNCTION_FAILED;
     }
 
@@ -1104,7 +1104,7 @@ static unsigned msi_stream_name( const LibmsiTableView *tv, unsigned row, char *
                     sprintf( number, fmt, ival^0x80000000 );
                     break;
                 default:
-                    ERR( "oops - unknown column width %d\n", n );
+                    g_critical( "oops - unknown column width %d\n", n );
                     r = LIBMSI_RESULT_FUNCTION_FAILED;
                     goto err;
                 }
@@ -1154,14 +1154,14 @@ static unsigned table_view_fetch_stream( LibmsiView *view, unsigned row, unsigne
     r = msi_stream_name( tv, row, &full_name );
     if ( r != LIBMSI_RESULT_SUCCESS )
     {
-        ERR("fetching stream, error = %d\n", r);
+        g_critical("fetching stream, error = %d\n", r);
         return r;
     }
 
     encname = encode_streamname( false, full_name );
     r = msi_get_raw_stream( tv->db, encname, stm );
     if( r )
-        ERR("fetching stream %s, error = %d\n",debugstr_a(full_name), r);
+        g_critical("fetching stream %s, error = %d\n",debugstr_a(full_name), r);
 
     if (*stm)
         g_object_set_data_full (G_OBJECT (*stm), "stname", full_name, g_free);
@@ -1186,8 +1186,8 @@ static unsigned table_view_set_int( LibmsiTableView *tv, unsigned row, unsigned 
 
     if( tv->columns[col-1].offset >= tv->row_size )
     {
-        ERR("Stuffed up %d >= %d\n", tv->columns[col-1].offset, tv->row_size );
-        ERR("%p %p\n", tv, tv->columns );
+        g_critical("Stuffed up %d >= %d\n", tv->columns[col-1].offset, tv->row_size );
+        g_critical("%p %p\n", tv, tv->columns );
         return LIBMSI_RESULT_FUNCTION_FAILED;
     }
 
@@ -1197,7 +1197,7 @@ static unsigned table_view_set_int( LibmsiTableView *tv, unsigned row, unsigned 
     n = bytes_per_column( tv->db, &tv->columns[col - 1], LONG_STR_BYTES );
     if ( n != 2 && n != 3 && n != 4 )
     {
-        ERR("oops! what is %d bytes per column?\n", n );
+        g_critical("oops! what is %d bytes per column?\n", n );
         return LIBMSI_RESULT_FUNCTION_FAILED;
     }
 
@@ -1285,7 +1285,7 @@ static unsigned get_table_value_from_record( LibmsiTableView *tv, LibmsiRecord *
         *pvalue = 0x8000 + libmsi_record_get_int( rec, iField );
         if ( *pvalue & 0xffff0000 )
         {
-            ERR("field %u value %d out of range\n", iField, *pvalue - 0x8000);
+            g_critical("field %u value %d out of range\n", iField, *pvalue - 0x8000);
             return LIBMSI_RESULT_FUNCTION_FAILED;
         }
     }
@@ -1724,8 +1724,8 @@ static unsigned table_view_find_matching_rows( LibmsiView *view, unsigned col,
 
         if( tv->columns[col-1].offset >= tv->row_size )
         {
-            ERR("Stuffed up %d >= %d\n", tv->columns[col-1].offset, tv->row_size );
-            ERR("%p %p\n", tv, tv->columns );
+            g_critical("Stuffed up %d >= %d\n", tv->columns[col-1].offset, tv->row_size );
+            g_critical("%p %p\n", tv, tv->columns );
             return LIBMSI_RESULT_FUNCTION_FAILED;
         }
 
@@ -2215,7 +2215,7 @@ static LibmsiRecord *msi_get_transform_record( const LibmsiTableView *tv, const 
                 TRACE(" field %d [0x%08x]\n", i+1, val );
                 break;
             default:
-                ERR("oops - unknown column width %d\n", n);
+                g_critical("oops - unknown column width %d\n", n);
                 break;
             }
             ofs += n;
@@ -2314,7 +2314,7 @@ static unsigned msi_row_matches( LibmsiTableView *tv, unsigned row, const unsign
         r = table_view_fetch_int( &tv->view, row, i+1, &x );
         if ( r != LIBMSI_RESULT_SUCCESS )
         {
-            ERR("table_view_fetch_int shouldn't fail here\n");
+            g_critical("table_view_fetch_int shouldn't fail here\n");
             break;
         }
 
@@ -2444,7 +2444,7 @@ static unsigned msi_table_load_transform( LibmsiDatabase *db, GsfInfile *stg,
         /* check we didn't run of the end of the table */
         if (n + sz > rawsize)
         {
-            ERR("borked.\n");
+            g_critical("borked.\n");
             dump_table( st, (uint16_t *)rawdata, rawsize );
             break;
         }

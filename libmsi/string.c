@@ -161,7 +161,7 @@ static int st_find_free_entry( string_table *st )
     st->maxcount = sz;
     if( st->strings[st->freeslot].persistent_refcount ||
         st->strings[st->freeslot].nonpersistent_refcount )
-        ERR("oops. expected freeslot to be free...\n");
+        g_critical("oops. expected freeslot to be free...\n");
     return st->freeslot;
 }
 
@@ -280,7 +280,7 @@ static int msi_addstring( string_table *st, unsigned n, const char *data, int le
 
     if( n < 1 )
     {
-        ERR("invalid index adding %s (%d)\n", debugstr_a( data ), n );
+        g_critical("invalid index adding %s (%d)\n", debugstr_a( data ), n );
         return -1;
     }
 
@@ -428,7 +428,7 @@ static void string_totalsize( const string_table *st, unsigned *datasize, unsign
     char *str;
 
     if( st->strings[0].str || st->strings[0].persistent_refcount || st->strings[0].nonpersistent_refcount)
-        ERR("oops. element 0 has a string\n");
+        g_critical("oops. element 0 has a string\n");
 
     codepage = st->codepage ? st->codepage : gsf_msole_iconv_win_codepage();
 
@@ -531,18 +531,18 @@ string_table *msi_load_string_table( GsfInfile *stg, unsigned *bytes_per_strref 
 
         if ( (offset + len) > datasize )
         {
-            ERR("string table corrupt?\n");
+            g_critical("string table corrupt?\n");
             break;
         }
 
         r = msi_addstring( st, n, data+offset, len, refs, StringPersistent );
         if( r != n )
-            ERR("Failed to add string %d\n", n );
+            g_critical("Failed to add string %d\n", n );
         offset += len;
     }
 
     if ( datasize != offset )
-        ERR("string table load failed! (%08x != %08x), please report\n", datasize, offset );
+        g_critical("string table load failed! (%08x != %08x), please report\n", datasize, offset );
 
     TRACE("Loaded %d strings\n", count);
 
@@ -611,7 +611,7 @@ unsigned msi_save_string_table( const string_table *st, LibmsiDatabase *db, unsi
         r = _libmsi_string_id( st, n, data+used, &sz );
         if( r != LIBMSI_RESULT_SUCCESS )
         {
-            ERR("failed to fetch string\n");
+            g_critical("failed to fetch string\n");
             sz = 0;
         }
 
@@ -642,14 +642,14 @@ unsigned msi_save_string_table( const string_table *st, LibmsiDatabase *db, unsi
         used += sz;
         if( used > datasize  )
         {
-            ERR("oops overran %d >= %d\n", used, datasize);
+            g_critical("oops overran %d >= %d\n", used, datasize);
             goto err;
         }
     }
 
     if( used != datasize )
     {
-        ERR("oops used %d != datasize %d\n", used, datasize);
+        g_critical("oops used %d != datasize %d\n", used, datasize);
         goto err;
     }
 

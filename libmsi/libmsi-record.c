@@ -64,7 +64,7 @@ _libmsi_free_field (LibmsiField *field )
         }
         break;
     default:
-        ERR ("Invalid field type %d\n", field->type);
+        g_critical ("Invalid field type %d\n", field->type);
     }
 }
 
@@ -213,7 +213,7 @@ unsigned _libmsi_record_copy_field( LibmsiRecord *in_rec, unsigned in_n,
             out->u.stream = in->u.stream;
             break;
         default:
-            ERR("invalid field type %d\n", in->type);
+            g_critical("invalid field type %d\n", in->type);
         }
         if (r == LIBMSI_RESULT_SUCCESS)
             out->type = in->type;
@@ -807,7 +807,7 @@ char *msi_dup_record_field( LibmsiRecord *rec, int field )
     r = _libmsi_record_get_string( rec, field, str, &sz );
     if (r != LIBMSI_RESULT_SUCCESS)
     {
-        ERR("failed to get string!\n");
+        g_critical("failed to get string!\n");
         msi_free( str );
         return NULL;
     }

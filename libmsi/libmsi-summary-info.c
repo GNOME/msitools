@@ -321,14 +321,14 @@ static void read_properties_from_data( LibmsiOLEVariant *prop, const uint8_t *da
 
         if( propid >= MSI_MAX_PROPS )
         {
-            ERR("Unknown property ID %d\n", propid );
+            g_critical("Unknown property ID %d\n", propid );
             break;
         }
 
         type = get_type( propid );
         if( type == OLEVT_EMPTY )
         {
-            ERR("propid %d has unknown type\n", propid);
+            g_critical("propid %d has unknown type\n", propid);
             break;
         }
 
@@ -336,14 +336,14 @@ static void read_properties_from_data( LibmsiOLEVariant *prop, const uint8_t *da
 
         if( dwOffset + 4 > sz )
         {
-            ERR("not enough data for type %d %d \n", dwOffset, sz);
+            g_critical("not enough data for type %d %d \n", dwOffset, sz);
             break;
         }
 
         proptype = read_dword(data, &dwOffset);
         if( dwOffset + 4 > sz )
         {
-            ERR("not enough data for type %d %d \n", dwOffset, sz);
+            g_critical("not enough data for type %d %d \n", dwOffset, sz);
             break;
         }
 
@@ -357,7 +357,7 @@ static void read_properties_from_data( LibmsiOLEVariant *prop, const uint8_t *da
         case OLEVT_FILETIME:
             if( dwOffset + 8 > sz )
             {
-                ERR("not enough data for type %d %d \n", dwOffset, sz);
+                g_critical("not enough data for type %d %d \n", dwOffset, sz);
                 break;
             }
             property->filetime = read_dword(data, &dwOffset);
@@ -367,7 +367,7 @@ static void read_properties_from_data( LibmsiOLEVariant *prop, const uint8_t *da
             len = read_dword(data, &dwOffset);
             if( dwOffset + len > sz )
             {
-                ERR("not enough data for type %d %d %d \n", dwOffset, len, sz);
+                g_critical("not enough data for type %d %d %d \n", dwOffset, len, sz);
                 break;
             }
             str = msi_alloc( len );
@@ -391,7 +391,7 @@ static void read_properties_from_data( LibmsiOLEVariant *prop, const uint8_t *da
         }
         else
         {
-            ERR("invalid type \n");
+            g_critical("invalid type \n");
             break;
         }
     }
@@ -421,7 +421,7 @@ static unsigned load_summary_info( LibmsiSummaryInfo *si, GsfInput *stm )
     ofs = 0;
     if( read_word( data, &ofs) != 0xfffe )
     {
-        ERR("property set not little-endian\n");
+        g_critical("property set not little-endian\n");
         goto done;
     }
 
@@ -442,7 +442,7 @@ static unsigned load_summary_info( LibmsiSummaryInfo *si, GsfInput *stm )
 
     if( cProperties > MSI_MAX_PROPS )
     {
-        ERR("too many properties %d\n", cProperties);
+        g_critical("too many properties %d\n", cProperties);
         goto done;
     }
 
@@ -990,7 +990,7 @@ unsigned msi_add_suminfo( LibmsiDatabase *db, char ***records, int num_records, 
     si = libmsi_summary_info_new (db, num_records * (num_columns / 2), NULL);
     if (!si)
     {
-        ERR("no summary information!\n");
+        g_critical("no summary information!\n");
         return LIBMSI_RESULT_FUNCTION_FAILED;
     }
 

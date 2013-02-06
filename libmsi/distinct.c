@@ -133,14 +133,14 @@ static unsigned distinct_view_execute( LibmsiView *view, LibmsiRecord *record )
             r = dv->table->ops->fetch_int( dv->table, i, j, &val );
             if( r != LIBMSI_RESULT_SUCCESS )
             {
-                ERR("Failed to fetch int at %d %d\n", i, j );
+                g_critical("Failed to fetch int at %d %d\n", i, j );
                 distinct_free( rowset );
                 return r;
             }
             x = distinct_insert( x, val, i );
             if( !*x )
             {
-                ERR("Failed to insert at %d %d\n", i, j );
+                g_critical("Failed to insert at %d %d\n", i, j );
                 distinct_free( rowset );
                 return LIBMSI_RESULT_FUNCTION_FAILED;
             }
@@ -279,7 +279,7 @@ unsigned distinct_view_create( LibmsiDatabase *db, LibmsiView **view, LibmsiView
     r = table->ops->get_dimensions( table, NULL, &count );
     if( r != LIBMSI_RESULT_SUCCESS )
     {
-        ERR("can't get table dimensions\n");
+        g_critical("can't get table dimensions\n");
         return r;
     }
 

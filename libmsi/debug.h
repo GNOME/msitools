@@ -116,8 +116,6 @@ static inline const char *debugstr_a( const char *s )  { return wine_dbgstr_an( 
 #define WARN_ON(channel)    0
 #define FIXME(fmt, ...)     (void)0 // WINE_DPRINTF(FIXME, __func__, fmt, ## __VA_ARGS__)
 #define FIXME_ON(channel)   0
-#define ERR(fmt, ...)       (void)0 // WINE_DPRINTF(ERR, __func__, fmt, ## __VA_ARGS__)
-#define ERR_ON(channel)     0
 
 
 #ifdef __cplusplus

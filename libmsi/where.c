@@ -428,7 +428,7 @@ static int expr_eval_binary( LibmsiWhereView *wv, const unsigned rows[],
         *val = ( lval != rval );
         break;
     default:
-        ERR("Unknown operator %d\n", expr->op );
+        g_critical("Unknown operator %d\n", expr->op );
         return LIBMSI_RESULT_FUNCTION_FAILED;
     }
 
@@ -468,7 +468,7 @@ static unsigned expr_eval_unary( LibmsiWhereView *wv, const unsigned rows[],
         *val = lval;
         break;
     default:
-        ERR("Unknown operator %d\n", expr->op );
+        g_critical("Unknown operator %d\n", expr->op );
         return LIBMSI_RESULT_FUNCTION_FAILED;
     }
     return LIBMSI_RESULT_SUCCESS;
@@ -500,7 +500,7 @@ static unsigned expr_eval_string( LibmsiWhereView *wv, const unsigned rows[],
         break;
 
     default:
-        ERR("Invalid expression type\n");
+        g_critical("Invalid expression type\n");
         r = LIBMSI_RESULT_FUNCTION_FAILED;
         *str = NULL;
         break;
@@ -584,7 +584,7 @@ static unsigned where_view_evaluate( LibmsiWhereView *wv, const unsigned rows[],
         return LIBMSI_RESULT_SUCCESS;
 
     default:
-        ERR("Invalid expression type\n");
+        g_critical("Invalid expression type\n");
         break;
     }
 
@@ -724,7 +724,7 @@ static unsigned reorder_check( const struct expr *expr, JOINTABLE **ordered_tabl
                 add_to_array(ordered_tables, *lastused);
             return res;
         default:
-            ERR("Unknown expr type: %i\n", expr->type);
+            g_critical("Unknown expr type: %i\n", expr->type);
             assert(0);
             return 0x1000000;
     }
@@ -780,7 +780,7 @@ static unsigned where_view_execute( LibmsiView *view, LibmsiRecord *record )
         r = table->view->ops->get_dimensions(table->view, &table->row_count, NULL);
         if (r != LIBMSI_RESULT_SUCCESS)
         {
-            ERR("failed to get table dimensions\n");
+            g_critical("failed to get table dimensions\n");
             return r;
         }
 
@@ -1082,7 +1082,7 @@ static unsigned where_view_verify_condition( LibmsiWhereView *wv, struct expr *c
         *valid = 1;
         break;
     default:
-        ERR("Invalid expression type\n");
+        g_critical("Invalid expression type\n");
         *valid = 0;
         break;
     }
@@ -1135,7 +1135,7 @@ unsigned where_view_create( LibmsiDatabase *db, LibmsiView **view, char *tables,
                                              &table->col_count);
         if (r != LIBMSI_RESULT_SUCCESS)
         {
-            ERR("can't get table dimensions\n");
+            g_critical("can't get table dimensions\n");
             goto end;
         }
 
