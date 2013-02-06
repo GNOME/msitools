@@ -52,6 +52,7 @@ nw="$nw -Wtraditional"          # All compilers nowadays support ANSI C
 nw="$nw -Wconversion"           # These warnings usually don't point to mistakes.
 nw="$nw -Wsign-conversion"      # Likewise.
 nw="$nw -Wunused-parameter"     # Likewise.
+nw="$nw -Wunused-local-typedef" # Likewise.
 nw="$nw -Wunused-macros"        # Likewise.
 # Enable all GCC warnings not in this list.
 gl_MANYWARN_COMPLEMENT([warnings], [$warnings], [$nw])
@@ -60,6 +61,7 @@ for w in $warnings; do
 done
 gl_WARN_ADD([-Wno-sign-compare])
 gl_WARN_ADD([-Wno-unused-parameter])
+gl_WARN_ADD([-Wno-unused-local-typedefs])
 gl_WARN_ADD([-Wno-missing-field-initializers])
 
 m4_ifdef([AM_SILENT_RULES],[AM_SILENT_RULES([yes])])
