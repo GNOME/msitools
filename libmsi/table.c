@@ -2480,7 +2480,7 @@ static unsigned msi_table_load_transform( LibmsiDatabase *db, GsfInfile *stg,
                 }
             }
 
-            if (TRACE_ON(msidb)) dump_record( rec );
+            if (TRACE_ON) dump_record( rec );
 
             r = msi_table_find_row( tv, rec, &row, NULL );
             if (r == LIBMSI_RESULT_SUCCESS)

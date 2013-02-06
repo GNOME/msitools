@@ -637,7 +637,7 @@ LibmsiResult _libmsi_database_start_transaction(LibmsiDatabase *db)
         db->outpath = strdup(path);
     }
 
-    TRACE("%p %s\n", db, szPersist);
+    TRACE("%p %s\n", db, db->outpath);
 
     out = gsf_output_stdio_new(db->outpath, NULL);
     if (!out)
@@ -1202,8 +1202,8 @@ msi_export_stream (GsfInput *gsfin, GFile *table_dir, gchar **str,
 
     *str = g_strdup (g_object_get_data (G_OBJECT (gsfin), "stname"));
     file = g_file_get_child (table_dir, *str);
-    out = g_file_replace (file, NULL, FALSE, 0, NULL, error);
-    in = libmsi_istream_new (gsfin);
+    out = G_OUTPUT_STREAM (g_file_replace (file, NULL, FALSE, 0, NULL, error));
+    in = G_INPUT_STREAM (libmsi_istream_new (gsfin));
     spliced = g_output_stream_splice (out, in, 0, NULL, NULL);
 
 end:
@@ -1420,7 +1420,7 @@ libmsi_database_export (LibmsiDatabase *db,
 {
     unsigned r = LIBMSI_RESULT_OUTOFMEMORY;
 
-    TRACE("%p %s %d\n", db, debugstr_a(szTable), fd);
+    TRACE("%p %s %d\n", db, table, fd);
 
     g_return_val_if_fail (LIBMSI_IS_DATABASE (db), FALSE);
     g_return_val_if_fail (table, FALSE);
@@ -2162,6 +2162,7 @@ static void cache_infile_structure( LibmsiDatabase *db )
                     continue;
 
                 r = _libmsi_open_table( db, decname, false );
+                g_warn_if_fail (r == LIBMSI_RESULT_SUCCESS);
             }
             else
             {
@@ -2248,7 +2249,7 @@ unsigned _libmsi_database_apply_transform( LibmsiDatabase *db,
     GsfInfile *stg;
     uint8_t uuid[16];
 
-    TRACE("%p %s %d\n", db, debugstr_a(szTransformFile), iErrorCond);
+    TRACE("%p %s\n", db, debugstr_a(szTransformFile));
     in = gsf_input_stdio_new(szTransformFile, NULL);
     if (!in)
     {
@@ -2267,7 +2268,7 @@ unsigned _libmsi_database_apply_transform( LibmsiDatabase *db,
     if ( memcmp( uuid, clsid_msi_transform, 16 ) != 0 )
         goto end;
 
-    if( TRACE_ON( msi ) )
+    if (TRACE_ON && stg)
         enum_stream_names( stg );
 
     ret = msi_table_apply_transform( db, stg );
@@ -2540,7 +2541,7 @@ libmsi_database_get_primary_keys (LibmsiDatabase *db,
     LibmsiRecord *rec;
     unsigned r;
 
-    TRACE("%d %s %p\n", db, debugstr_a(table), prec);
+    TRACE("%d %s\n", db, debugstr_a(table));
 
     g_return_val_if_fail (LIBMSI_IS_DATABASE (db), NULL);
     g_return_val_if_fail (table != NULL, NULL);
@@ -2605,7 +2606,7 @@ init (LibmsiDatabase *self, GError **error)
     self->media_transform_offset = MSI_INITIAL_MEDIA_TRANSFORM_OFFSET;
     self->media_transform_disk_id = MSI_INITIAL_MEDIA_TRANSFORM_DISKID;
 
-    if (TRACE_ON(msi))
+    if (TRACE_ON && self->infile)
         enum_stream_names (self->infile);
 
     ret = _libmsi_database_start_transaction (self);

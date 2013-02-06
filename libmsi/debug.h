@@ -109,9 +109,15 @@ static inline const char *debugstr_an( const char * s, int n ) { return wine_dbg
 static inline const char *debugstr_guid( const uint8_t *id )  { return wine_dbgstr_guid( id ); }
 static inline const char *debugstr_a( const char *s )  { return wine_dbgstr_an( s, -1 ); }
 
-#undef ERR  /* Solaris got an 'ERR' define in <sys/reg.h> */
-#define TRACE(fmt, ...)     (void)0 // WINE_DPRINTF(TRACE, __func__, fmt, ## __VA_ARGS__)
-#define TRACE_ON(channel)   0
+#ifndef TRACE_ON
+#define TRACE_ON  0
+#endif
+
+#define TRACE(fmt, ...)     G_STMT_START{       \
+  if (TRACE_ON) {                               \
+     g_debug(G_STRLOC " " fmt, ## __VA_ARGS__); \
+  }                                             \
+}G_STMT_END
 
 #ifdef __cplusplus
 }
