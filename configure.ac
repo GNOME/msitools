@@ -52,6 +52,8 @@ AC_CONFIG_FILES([tests/package.m4.tmp:tests/package.m4.in],
                 [$srcdir/build-aux/move-if-change tests/package.m4.tmp $srcdir/tests/package.m4
                  cp $srcdir/tests/package.m4 tests/package.m4.tmp])
 
+AC_CONFIG_FILES([tools/msidump], [chmod +x tools/msidump])
+AC_CONFIG_FILES([tools/msidiff], [chmod +x tools/msidiff])
 AC_CONFIG_FILES([
     Makefile
     include/Makefile
@@ -59,12 +61,7 @@ AC_CONFIG_FILES([
     po/Makefile.in
     libmsi/Makefile
     libmsi/libmsi-1.0.pc
-    tools/msidump
-    tools/msidiff
     tests/Makefile
-],[
-    chmod +x tools/msidump
-    chmod +x tools/msidiff
 ])
 AC_OUTPUT
 
