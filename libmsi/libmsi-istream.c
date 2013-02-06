@@ -47,7 +47,7 @@ libmsi_can_seek (GSeekable *seekable)
 
 static gboolean
 libmsi_seek (GSeekable *seekable, goffset offset,
-             GSeekType type, GCancellable *cancellable)
+             GSeekType type, GCancellable *cancellable, GError **error)
 {
     g_return_val_if_fail (LIBMSI_IS_ISTREAM(seekable), FALSE);
 
