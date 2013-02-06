@@ -1,4 +1,5 @@
 NULL =
+CLEANFILES =
 EXTRA_DIST =
 ACLOCAL_AMFLAGS = -I m4
 SUBDIRS = include data libmsi tests po .
@@ -21,6 +22,8 @@ AM_CPPFLAGS = -Iinclude -I$(srcdir)/include	\
 AM_LDFLAGS = -Llibmsi
 
 # Low-level tools
+bin_SCRIPTS = tools/msidump tools/msidiff
+CLEANFILES += $(bin_SCRIPTS)
 
 bin_PROGRAMS = msibuild msiinfo
 
@@ -151,7 +154,7 @@ EXTRA_DIST += $(completion_DATA)
 
 dist_noinst_DATA = tests/testsuite.at tests/wixl.at tests/package.m4 tests/testsuite
 DISTCLEANFILES = atconfig atlocal
-CLEANFILES = testsuite.log
+CLEANFILES += testsuite.log
 
 check-local: $(srcdir)/tests/testsuite atconfig atlocal
 	$(SHELL) $(srcdir)/tests/testsuite AUTOTEST_PATH=. $(TESTSUITEFLAGS)

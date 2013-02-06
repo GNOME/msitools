@@ -1,4 +1,3 @@
-- write a msidiff tool
 - document an easy way to hack on wixl, using WiX and msi diff
 - verify gsf conversion, some tests fail on Windows but not POSIX?
 - make a SummaryInformation API that does not suck (including converting

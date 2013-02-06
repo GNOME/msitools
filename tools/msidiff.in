@@ -1,0 +1,219 @@
+#!/bin/bash
+# -*- coding: utf-8 -*-
+
+# msidiff - compare two MSI files table content with diff
+# (originally based on rpmdev-diff)
+#
+# Copyright (c) 2004-2010 Ville Skyttä <ville.skytta@iki.fi>
+# Copyright (c) 2013 Red Hat, Inc.
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+
+set -e
+
+unset CDPATH
+tmpdir=
+diffopts=
+list=
+long=
+tables=
+diffcopts=-Nup
+diffoopts=-U0
+
+trap cleanup EXIT
+cleanup()
+{
+    set +e
+    [ -z "$tmpdir" -o ! -d "$tmpdir" ] || rm -rf "$tmpdir"
+}
+
+version()
+{
+    cat <<EOF
+@PACKAGE_VERSION@
+EOF
+}
+
+help()
+{
+    cat <<EOF
+msidiff diffs contents of two MSI files.
+EOF
+    usage
+    echo ""
+    echo "Report bugs to <@PACKAGE_BUGREPORT@>."
+}
+
+usage()
+{
+    cat <<EOF
+Usage: msidiff [OPTION]... [DIFF-OPTIONS] FROM-MSI TO-MSI
+
+Options:
+  -t, --tables     Diff MSI tables as text.  This is the default.
+  -l, --list       Diff lists of files.
+  -L, --long-list  Diff long lists (akin to 'find -ls') of files.
+  -h, --help       Print help message and exit.
+  -v, --version    Print version information and exit.
+  diff-options     Options passed to diff(1).  The first repeated argument of
+                   the above or the first argument starting with a '-' but not
+                   one of the above starts diff-options, the first one not
+                   starting with it ends them.  Default: $diffcopts for contents
+                   (in addition to -r which will always be passed), -U0 for
+                   others.
+
+More than one of -t, -l or -L may be specified.
+EOF
+}
+
+while true ; do
+    case $1 in
+        -t|--tables)
+            if [[ $tables$diffopts ]] ; then
+                diffopts+=" $1"
+            else
+                tables=true
+            fi
+            ;;
+        -l|--list)
+            if [[ $list$diffopts ]] ; then
+                diffopts+=" $1"
+            else
+                list=true
+            fi
+            ;;
+        -L|--long-list)
+            if [[ $long$diffopts ]] ; then
+                diffopts+=" $1"
+            else
+                long=true
+            fi
+            ;;
+        -h|--help)
+            if [[ $diffopts ]] ; then
+                diffopts+=" $1"
+            else
+                help
+                exit 0
+            fi
+            ;;
+        -v|--version)
+            if [[ $diffopts ]] ; then
+                diffopts+=" $1"
+            else
+                version
+                exit 0
+            fi
+            ;;
+        -*)
+            diffopts+=" $1"
+            ;;
+        *)
+            break
+            ;;
+    esac
+    shift
+done
+if [[ $# -lt 2 ]] ; then
+    usage
+    exit 1
+fi
+for file in "$1" "$2" ; do
+    if [[ ! -f $file ]] ; then
+        [[ -e $file ]] && \
+            echo "Error: not a regular file: '$file'" >&2 ||
+            echo "Error: file does not exist: '$file'" >&2
+        exit 1
+    fi
+done
+
+tmpdir=`mktemp -d ${TMPDIR:-/tmp}/msidiff.XXXXXX`
+
+mkdir "$tmpdir/old" "$tmpdir/new"
+msidump --tables --directory "$tmpdir/old" $1 >/dev/null
+msidump --tables --directory "$tmpdir/new" $2 >/dev/null
+if ${list:-false} || ${long:-false} ; then
+  msiextract --directory "$tmpdir/old/files" $1 >/dev/null
+  msiextract --directory "$tmpdir/new/files" $2 >/dev/null
+fi
+
+cd "$tmpdir"
+
+# Did the archives uncompress into base dirs?
+if [[ $(ls -1d old/* | wc -l) -eq 1 ]] ; then
+  old=$(ls -1d old/*)
+else
+  old=old
+fi
+if [[ $(ls -1d new/* | wc -l) -eq 1 ]] ; then
+  new=$(ls -1d new/*)
+else
+  new=new
+fi
+
+# Fixup base dirs to the same level.
+if [[ $(basename "$old") != $(basename "$new") ]] ; then
+  if [[ $old != old ]] ; then
+    mv "$old" .
+    old=`basename "$old"`
+  fi
+  if [[ $new != new ]] ; then
+    mv "$new" .
+    new=`basename "$new"`
+  fi
+fi
+
+# Tables mode is the default.
+if [[ -z $list$tables$long ]] ; then
+    tables=true
+else
+    tables=${tables:-false}
+fi
+list=${list:-false}
+long=${long:-false}
+
+# Here we go.
+
+if $tables ; then
+    set +e
+    diff -r ${diffopts:-$diffcopts} "$old" "$new"
+    [[ $? -eq 0 || $? -eq 1 ]] || exit $?
+    set -e
+fi
+
+
+if $list ; then
+    find "$old/files" | sort | cut -d/ -f 3- -s > "$old.files"
+    find "$new/files" | sort | cut -d/ -f 3- -s > "$new.files"
+    set +e
+    diff ${diffopts:-$diffoopts} "$old.files" "$new.files"
+    [[ $? -eq 0 || $? -eq 1 ]] || exit $?
+    set -e
+fi
+
+if $long ; then
+    find "$old/files" -ls | \
+        perl -pe "s|^(?:[\d\s]*)(\S+)(?:\s+\d+)(.+)$|\1\2| ;
+                  s|.*\s\Q$old/files\E$|| ; s|(\s)\Q$old/files/\E|\1|" | \
+        sort > "$old.files"
+    find "$new/files" -ls | \
+        perl -pe "s|^(?:[\d\s]*)(\S+)(?:\s+\d+)(.+)$|\1\2| ;
+                  s|.*\s\Q$new/files\E$|| ; s|(\s)\Q$new/files/\E|\1|" | \
+        sort > "$new.files"
+    set +e
+    diff ${diffopts:-$diffoopts} "$old.files" "$new.files"
+    [[ $? -eq 0 || $? -eq 1 ]] || exit $?
+    set -e
+fi

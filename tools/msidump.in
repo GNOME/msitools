@@ -1,0 +1,131 @@
+#!/bin/bash
+# -*- coding: utf-8 -*-
+
+# msidump - dump raw MSI tables and stream content
+#
+# Copyright (c) 2013 Red Hat, Inc.
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+
+set -e
+
+tables=
+streams=
+destdir=.
+
+version()
+{
+    cat <<EOF
+@PACKAGE_VERSION@
+EOF
+}
+
+help()
+{
+    cat <<EOF
+msidump dumps MSI tables as idt text and streams
+EOF
+    usage
+    echo ""
+    echo "Report bugs to <@PACKAGE_BUGREPORT@>."
+}
+
+usage()
+{
+    cat <<EOF
+Usage: msidump [OPTION]... MSI-FILE
+
+Options:
+  -t, --tables         Dump tables.  This is the default.
+  -s, --streams        Dump streams
+  -d, --directory DIR  Dump to given directory DIR
+  -h, --help           Print help message and exit.
+  -v, --version        Print version information and exit.
+
+More than one of -t or -s may be specified.
+EOF
+}
+
+while true ; do
+    case $1 in
+        -t|--tables)
+            tables=true
+            ;;
+        -s|--streams)
+            streams=true
+            ;;
+        -d|--directory)
+            destdir=$2
+            shift
+            ;;
+        -h|--help)
+            help
+            exit 0
+            ;;
+        -v|--version)
+            version
+            exit 0
+            ;;
+        *)
+            break
+            ;;
+    esac
+    shift
+done
+if [[ $# -lt 1 ]] ; then
+    usage
+    exit 1
+fi
+for file in "$1" ; do
+    if [[ ! -f $file ]] ; then
+        [[ -e $file ]] && \
+            echo "Error: not a regular file: '$file'" >&2 ||
+            echo "Error: file does not exist: '$file'" >&2
+        exit 1
+    fi
+done
+
+if [[ ! -d $destdir ]] ; then
+    echo "Error: directory does not exist: '$destdir'" >&2
+    exit 1
+fi
+
+# Tables mode is the default.
+if [[ -z $tables$streams ]] ; then
+    tables=true
+else
+    tables=${tables:-false}
+fi
+streams=${streams:-false}
+
+
+# Here we go
+
+if $tables ; then
+    TABLES=$(msiinfo tables "$1")
+    for i in $TABLES; do
+        echo "Exporting table $i..."
+        msiinfo export "$1" "$i" > "$destdir/$i.idt"
+    done
+fi
+
+if $streams ; then
+    mkdir -p "$destdir/_Streams"
+    STREAMS=$(msiinfo streams "$1")
+    for i in $STREAMS; do
+        echo "Exporting stream $i..."
+        msiinfo extract "$1" "$i" > "$destdir/_Streams/$i"
+    done
+fi

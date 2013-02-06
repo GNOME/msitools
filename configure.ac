@@ -59,7 +59,12 @@ AC_CONFIG_FILES([
     po/Makefile.in
     libmsi/Makefile
     libmsi/libmsi-1.0.pc
+    tools/msidump
+    tools/msidiff
     tests/Makefile
+],[
+    chmod +x tools/msidump
+    chmod +x tools/msidiff
 ])
 AC_OUTPUT
 
