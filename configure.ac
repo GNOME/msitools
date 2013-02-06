@@ -43,6 +43,25 @@ AC_SUBST(GETTEXT_PACKAGE)
 AM_GNU_GETTEXT_VERSION([0.18])
 AM_GLIB_GNU_GETTEXT
 
+gl_MANYWARN_ALL_GCC([warnings])
+
+nw=
+nw="$nw -Wsystem-headers"       # Don't let system headers trigger warnings
+nw="$nw -Wundef"                # All compiler preprocessors support #if UNDEF
+nw="$nw -Wtraditional"          # All compilers nowadays support ANSI C
+nw="$nw -Wconversion"           # These warnings usually don't point to mistakes.
+nw="$nw -Wsign-conversion"      # Likewise.
+nw="$nw -Wunused-parameter"     # Likewise.
+nw="$nw -Wunused-macros"        # Likewise.
+# Enable all GCC warnings not in this list.
+gl_MANYWARN_COMPLEMENT([warnings], [$warnings], [$nw])
+for w in $warnings; do
+  gl_WARN_ADD([$w])
+done
+gl_WARN_ADD([-Wno-sign-compare])
+gl_WARN_ADD([-Wno-unused-parameter])
+gl_WARN_ADD([-Wno-missing-field-initializers])
+
 m4_ifdef([AM_SILENT_RULES],[AM_SILENT_RULES([yes])])
 
 AM_MISSING_PROG([AUTOM4TE], [autom4te])

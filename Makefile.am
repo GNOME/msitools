@@ -19,6 +19,7 @@ dist_libmsiinclude_HEADERS =			\
 	include/libmsi.h			\
 	$(NULL)
 
+AM_CFLAGS = $(WARN_CFLAGS)
 AM_CPPFLAGS = -Iinclude -I$(srcdir)/include	\
 	$(GLIB_CFLAGS) $(GSF_CFLAGS) $(UUID_CFLAGS) \
 	$(NULL)

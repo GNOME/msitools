@@ -7,7 +7,7 @@ lib_LTLIBRARIES = libmsi.la
 AM_CPPFLAGS = -I$(top_srcdir)/include -I$(top_builddir)/include -I$(srcdir) -I. \
 	      $(GLIB_CFLAGS) $(GSF_CFLAGS) $(GOBJECT_CFLAGS)
 
-AM_CFLAGS = -Wunused -Wimplicit
+AM_CFLAGS = $(WARN_CFLAGS)
 AM_YFLAGS = -d
 BUILT_SOURCES = sql-parser.c sql-parser.h
 
