@@ -2200,7 +2200,7 @@ LibmsiResult _libmsi_database_open(LibmsiDatabase *db)
 
     if( !gsf_infile_msole_get_class_id (GSF_INFILE_MSOLE(stg), uuid))
     {
-        FIXME("Failed to stat storage\n");
+        g_warning("FIXME: Failed to stat storage\n");
         goto end;
     }
 
@@ -2260,7 +2260,7 @@ unsigned _libmsi_database_apply_transform( LibmsiDatabase *db,
 
     if( !gsf_infile_msole_get_class_id (GSF_INFILE_MSOLE(stg), uuid))
     {
-        FIXME("Failed to stat storage\n");
+        g_warning("FIXME: Failed to stat storage\n");
         goto end;
     }
 

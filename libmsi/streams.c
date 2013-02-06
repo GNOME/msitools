@@ -143,7 +143,7 @@ static unsigned streams_view_set_row(LibmsiView *view, unsigned row, LibmsiRecor
 
     if (sv->streams[row]) {
         if (mask & 1) {
-            FIXME("renaming stream via UPDATE on _Streams table");
+            g_warning("FIXME: renaming stream via UPDATE on _Streams table");
             goto done;
         }
 

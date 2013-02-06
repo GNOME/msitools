@@ -104,7 +104,7 @@ static unsigned storages_view_get_row( LibmsiView *view, unsigned row, LibmsiRec
 {
     LibmsiStorageView *sv = (LibmsiStorageView *)view;
 
-    FIXME("%p %d %p\n", sv, row, rec);
+    g_warning("FIXME: %p %d %p\n", sv, row, rec);
 
     return LIBMSI_RESULT_CALL_NOT_IMPLEMENTED;
 }
@@ -128,7 +128,7 @@ static unsigned storages_view_set_row(LibmsiView *view, unsigned row, LibmsiReco
 
     if (sv->storages[row]) {
         if (mask & 1) {
-            FIXME("renaming storage via UPDATE on _Storages table\n");
+            g_warning("FIXME: renaming storage via UPDATE on _Storages table\n");
             goto done;
         }
 
