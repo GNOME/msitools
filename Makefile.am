@@ -115,9 +115,9 @@ wixl_CPPFLAGS =					\
 	$(NULL)
 
 wixl_LDADD =					\
-	$(WIXL_LIBS)				\
-	libmsi/libmsi.la			\
 	libcommon.a				\
+	libmsi/libmsi.la			\
+	$(WIXL_LIBS)				\
 	$(NULL)
 
 wixl_DEPENDENCIES = libmsi/libmsi.la
