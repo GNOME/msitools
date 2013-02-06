@@ -6,6 +6,7 @@ AC_CONFIG_AUX_DIR([build-aux])
 AC_CONFIG_MACRO_DIR([m4])
 AC_CONFIG_SRCDIR([libmsi/sql-parser.y])
 AM_INIT_AUTOMAKE([foreign -Wno-portability dist-xz])
+AM_MAINTAINER_MODE([enable])
 
 AC_CANONICAL_HOST
 AS_CASE([$host], [*-*-mingw*|*-*-cygwin*], [win32=yes], [win32=no])

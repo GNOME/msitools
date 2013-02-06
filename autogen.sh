@@ -7,4 +7,4 @@ test -n "$srcdir" || srcdir=.
   mkdir -p m4 &&
   AUTOPOINT='intltoolize --automake --copy' autoreconf -fiv -Wall
 ) || exit
-test -n "$NOCONFIGURE" || "$srcdir/configure" --enable-maintainer-mode "$@"
+test -n "$NOCONFIGURE" || "$srcdir/configure" "$@"
