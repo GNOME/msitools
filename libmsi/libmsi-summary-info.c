@@ -974,7 +974,7 @@ static unsigned parse_prop( const char *prop, const char *value, unsigned *pid, 
         break;
 
     default:
-        WARN("unhandled prop id %u\n", *pid);
+        g_warning("unhandled prop id %u\n", *pid);
         return LIBMSI_RESULT_FUNCTION_FAILED;
     }
 

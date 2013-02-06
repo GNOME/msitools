@@ -263,13 +263,13 @@ unsigned read_stream_data( GsfInfile *stg, const char *stname,
     msi_free(encname);
     if( !stm )
     {
-        WARN("open stream failed - empty table?\n");
+        TRACE("open stream failed - empty table?\n");
         return ret;
     }
 
     if( gsf_input_size(stm) >> 32 )
     {
-        WARN("Too big!\n");
+        g_warning("Too big!\n");
         goto end;
     }
         
@@ -283,7 +283,7 @@ unsigned read_stream_data( GsfInfile *stg, const char *stname,
         data = g_try_malloc( sz );
         if( !data )
         {
-            WARN("couldn't allocate memory (%u bytes)!\n", sz);
+            g_warning("couldn't allocate memory (%u bytes)!\n", sz);
             ret = LIBMSI_RESULT_NOT_ENOUGH_MEMORY;
             goto end;
         }
@@ -291,7 +291,7 @@ unsigned read_stream_data( GsfInfile *stg, const char *stname,
         if (! gsf_input_read( stm, sz, data ))
         {
             msi_free( data );
-            WARN("read stream failed\n");
+            g_warning("read stream failed\n");
             goto end;
         }
     }
@@ -322,13 +322,13 @@ unsigned write_stream_data( LibmsiDatabase *db, const char *stname,
     msi_free( encname );
     if( !stm )
     {
-        WARN("open stream failed\n");
+        g_warning("open stream failed\n");
         return ret;
     }
 
     if (! gsf_output_write(stm, sz, data) )
     {
-        WARN("Failed to Write\n");
+        g_warning("Failed to Write\n");
         goto end;
     }
 
@@ -395,7 +395,7 @@ static unsigned read_table_from_storage( LibmsiDatabase *db, LibmsiTable *t, Gsf
 
     if( rawsize % row_size )
     {
-        WARN("Table size is invalid %d/%d\n", rawsize, row_size );
+        g_warning("Table size is invalid %d/%d\n", rawsize, row_size );
         goto err;
     }
 
@@ -659,7 +659,7 @@ static unsigned get_tablecolumns( LibmsiDatabase *db, const char *szTableName, L
     r = _libmsi_id_from_string_utf8( db->strings, szTableName, &table_id );
     if (r != LIBMSI_RESULT_SUCCESS)
     {
-        WARN("Couldn't find id for %s\n", debugstr_a(szTableName));
+        g_warning("Couldn't find id for %s\n", debugstr_a(szTableName));
         return r;
     }
     TRACE("Table id is %d, row count is %d\n", table_id, table->row_count);
@@ -727,7 +727,7 @@ unsigned msi_create_table( LibmsiDatabase *db, const char *name, column_info *co
     /* only add tables that don't exist already */
     if( table_view_exists(db, name ) )
     {
-        WARN("table %s exists\n", debugstr_a(name));
+        g_warning("table %s exists\n", debugstr_a(name));
         return LIBMSI_RESULT_BAD_QUERY_SYNTAX;
     }
 
@@ -1573,7 +1573,7 @@ static int compare_record( LibmsiTableView *tv, unsigned row, LibmsiRecord *rec 
         r = table_view_fetch_int( &tv->view, row, i + 1, &x );
         if (r != LIBMSI_RESULT_SUCCESS)
         {
-            WARN("table_view_fetch_int should not fail here %u\n", r);
+            g_warning("table_view_fetch_int should not fail here %u\n", r);
             return -1;
         }
         if (ivalue > x)
@@ -1997,7 +1997,7 @@ unsigned table_view_create( LibmsiDatabase *db, const char *name, LibmsiView **v
     if( r != LIBMSI_RESULT_SUCCESS )
     {
         msi_free( tv );
-        WARN("table not found\n");
+        g_warning("table not found\n");
         return r;
     }
 
@@ -2034,14 +2034,14 @@ unsigned _libmsi_database_commit_tables( LibmsiDatabase *db, unsigned bytes_per_
         r = get_table( db, table->name, &t );
         if( r != LIBMSI_RESULT_SUCCESS )
         {
-            WARN("failed to load table %s (r=%08x)\n",
+            g_warning("failed to load table %s (r=%08x)\n",
                   debugstr_a(table->name), r);
             return r;
         }
         r = save_table( db, table, bytes_per_strref );
         if( r != LIBMSI_RESULT_SUCCESS )
         {
-            WARN("failed to save table %s (r=%08x)\n",
+            g_warning("failed to save table %s (r=%08x)\n",
                   debugstr_a(table->name), r);
             return r;
         }
@@ -2490,21 +2490,21 @@ static unsigned msi_table_load_transform( LibmsiDatabase *db, GsfInfile *stg,
                     TRACE("deleting row [%d]:\n", row);
                     r = table_view_delete_row( &tv->view, row );
                     if (r != LIBMSI_RESULT_SUCCESS)
-                        WARN("failed to delete row %u\n", r);
+                        g_warning("failed to delete row %u\n", r);
                 }
                 else if (mask & 1)
                 {
                     TRACE("modifying full row [%d]:\n", row);
                     r = table_view_set_row( &tv->view, row, rec, (1 << tv->num_cols) - 1 );
                     if (r != LIBMSI_RESULT_SUCCESS)
-                        WARN("failed to modify row %u\n", r);
+                        g_warning("failed to modify row %u\n", r);
                 }
                 else
                 {
                     TRACE("modifying masked row [%d]:\n", row);
                     r = table_view_set_row( &tv->view, row, rec, mask );
                     if (r != LIBMSI_RESULT_SUCCESS)
-                        WARN("failed to modify row %u\n", r);
+                        g_warning("failed to modify row %u\n", r);
                 }
             }
             else
@@ -2512,7 +2512,7 @@ static unsigned msi_table_load_transform( LibmsiDatabase *db, GsfInfile *stg,
                 TRACE("inserting row\n");
                 r = table_view_insert_row( &tv->view, rec, -1, false );
                 if (r != LIBMSI_RESULT_SUCCESS)
-                    WARN("failed to insert row %u\n", r);
+                    g_warning("failed to insert row %u\n", r);
             }
 
             if (number != LIBMSI_NULL_INT && !strcmp( name, szColumns ))

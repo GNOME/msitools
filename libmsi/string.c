@@ -570,13 +570,13 @@ unsigned msi_save_string_table( const string_table *st, LibmsiDatabase *db, unsi
     pool = msi_alloc( poolsize );
     if( ! pool )
     {
-        WARN("Failed to alloc pool %d bytes\n", poolsize );
+        g_warning("Failed to alloc pool %d bytes\n", poolsize );
         goto err;
     }
     data = msi_alloc( datasize );
     if( ! data )
     {
-        WARN("Failed to alloc data %d bytes\n", datasize );
+        g_warning("Failed to alloc data %d bytes\n", datasize );
         goto err;
     }
 

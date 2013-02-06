@@ -475,7 +475,7 @@ unsigned clone_infile_stream( LibmsiDatabase *db, const char *name, GsfInput **s
         stream = gsf_input_dup( stream, NULL );
         if( !stream )
         {
-            WARN("failed to clone stream\n");
+            g_warning("failed to clone stream\n");
             return LIBMSI_RESULT_FUNCTION_FAILED;
         }
 
@@ -642,14 +642,14 @@ LibmsiResult _libmsi_database_start_transaction(LibmsiDatabase *db)
     out = gsf_output_stdio_new(db->outpath, NULL);
     if (!out)
     {
-        WARN("open file failed for %s\n", debugstr_a(db->outpath));
+        g_warning("open file failed for %s\n", debugstr_a(db->outpath));
         return LIBMSI_RESULT_OPEN_FAILED;
     }
     stg = gsf_outfile_msole_new(out);
     g_object_unref(G_OBJECT(out));
     if (!stg)
     {
-        WARN("open failed for %s\n", debugstr_a(db->outpath));
+        g_warning("open failed for %s\n", debugstr_a(db->outpath));
         return LIBMSI_RESULT_OPEN_FAILED;
     }
 
@@ -657,7 +657,7 @@ LibmsiResult _libmsi_database_start_transaction(LibmsiDatabase *db)
                                         db->flags & LIBMSI_DB_FLAGS_PATCH ?
                                         clsid_msi_patch : clsid_msi_database ))
     {
-        WARN("set guid failed\n");
+        g_warning("set guid failed\n");
         ret = LIBMSI_RESULT_FUNCTION_FAILED;
         goto end;
     }
@@ -839,7 +839,7 @@ static char *msi_build_createsql_columns(char **columns_data, char **types, unsi
                     type = type_long;
                 else
                 {
-                    WARN("invalid int width %u\n", len);
+                    g_warning("invalid int width %u\n", len);
                     msi_free(columns);
                     return NULL;
                 }
@@ -2187,14 +2187,14 @@ LibmsiResult _libmsi_database_open(LibmsiDatabase *db)
     in = gsf_input_stdio_new(db->path, NULL);
     if (!in)
     {
-        WARN("open file failed for %s\n", debugstr_a(db->path));
+        g_warning("open file failed for %s\n", debugstr_a(db->path));
         return LIBMSI_RESULT_OPEN_FAILED;
     }
     stg = gsf_infile_msole_new( in, NULL );
     g_object_unref(G_OBJECT(in));
     if( !stg )
     {
-        WARN("open failed for %s\n", debugstr_a(db->path));
+        g_warning("open failed for %s\n", debugstr_a(db->path));
         return LIBMSI_RESULT_OPEN_FAILED;
     }
 
@@ -2252,7 +2252,7 @@ unsigned _libmsi_database_apply_transform( LibmsiDatabase *db,
     in = gsf_input_stdio_new(szTransformFile, NULL);
     if (!in)
     {
-        WARN("open file failed for transform %s\n", debugstr_a(szTransformFile));
+        g_warning("open file failed for transform %s\n", debugstr_a(szTransformFile));
         return LIBMSI_RESULT_OPEN_FAILED;
     }
     stg = gsf_infile_msole_new( in, NULL );

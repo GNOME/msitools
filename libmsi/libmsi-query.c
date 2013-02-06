@@ -341,7 +341,7 @@ unsigned msi_view_get_row(LibmsiDatabase *db, LibmsiView *view, unsigned row, Li
                 g_object_unref(G_OBJECT(stm));
             }
             else
-                WARN("failed to get stream\n");
+                g_warning("failed to get stream\n");
 
             continue;
         }

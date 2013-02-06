@@ -112,8 +112,6 @@ static inline const char *debugstr_a( const char *s )  { return wine_dbgstr_an( 
 #undef ERR  /* Solaris got an 'ERR' define in <sys/reg.h> */
 #define TRACE(fmt, ...)     (void)0 // WINE_DPRINTF(TRACE, __func__, fmt, ## __VA_ARGS__)
 #define TRACE_ON(channel)   0
-#define WARN(fmt, ...)      (void)0 // WINE_DPRINTF(WARN, __func__, fmt, ## __VA_ARGS__)
-#define WARN_ON(channel)    0
 
 #ifdef __cplusplus
 }

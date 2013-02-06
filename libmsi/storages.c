@@ -184,7 +184,7 @@ static unsigned storages_view_delete_row(LibmsiView *view, unsigned row)
     name = msi_string_lookup_id(sv->db->strings, sv->storages[row]->str_index);
     if (!name)
     {
-        WARN("failed to retrieve storage name\n");
+        g_warning("failed to retrieve storage name\n");
         return LIBMSI_RESULT_FUNCTION_FAILED;
     }
 

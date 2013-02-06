@@ -476,7 +476,7 @@ static unsigned _libmsi_addstream_from_file(const char *szFile, GsfInput **pstm)
     stm = gsf_input_stdio_new(szFile, NULL);
     if (!stm)
     {
-        WARN("open file failed for %s\n", debugstr_a(szFile));
+        g_warning("open file failed for %s\n", debugstr_a(szFile));
         return LIBMSI_RESULT_OPEN_FAILED;
     }
 

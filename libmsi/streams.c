@@ -153,7 +153,7 @@ static unsigned streams_view_set_row(LibmsiView *view, unsigned row, LibmsiRecor
         name = strdup(_libmsi_record_get_string_raw(rec, 1));
         if (!name)
         {
-            WARN("failed to retrieve stream name\n");
+            g_warning("failed to retrieve stream name\n");
             goto done;
         }
 
@@ -166,7 +166,7 @@ static unsigned streams_view_set_row(LibmsiView *view, unsigned row, LibmsiRecor
     r = msi_create_stream(sv->db, name, stm);
     if (r != LIBMSI_RESULT_SUCCESS)
     {
-        WARN("failed to create stream: %08x\n", r);
+        g_warning("failed to create stream: %08x\n", r);
         g_object_unref(G_OBJECT(stream->stream));
         msi_free(stream);
         goto done;
@@ -217,7 +217,7 @@ static unsigned streams_view_delete_row(LibmsiView *view, unsigned row)
     name = msi_string_lookup_id(sv->db->strings, sv->streams[row]->str_index);
     if (!name)
     {
-        WARN("failed to retrieve stream name\n");
+        g_warning("failed to retrieve stream name\n");
         return LIBMSI_RESULT_FUNCTION_FAILED;
     }
 

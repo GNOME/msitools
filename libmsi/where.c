@@ -201,7 +201,7 @@ static unsigned parse_column(LibmsiWhereView *wv, union ext_column *column,
     }
     while ((table = table->next));
 
-    WARN("Couldn't find column %s.%s\n", debugstr_a( column->unparsed.table ), debugstr_a( column->unparsed.column ) );
+    g_warning("Couldn't find column %s.%s\n", debugstr_a( column->unparsed.table ), debugstr_a( column->unparsed.column ) );
     return LIBMSI_RESULT_BAD_QUERY_SYNTAX;
 }
 
@@ -1125,7 +1125,7 @@ unsigned where_view_create( LibmsiDatabase *db, LibmsiView **view, char *tables,
         r = table_view_create(db, tables, &table->view);
         if (r != LIBMSI_RESULT_SUCCESS)
         {
-            WARN("can't create table: %s\n", debugstr_a(tables));
+            g_warning("can't create table: %s\n", debugstr_a(tables));
             msi_free(table);
             r = LIBMSI_RESULT_BAD_QUERY_SYNTAX;
             goto end;
