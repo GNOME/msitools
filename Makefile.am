@@ -4,6 +4,10 @@ EXTRA_DIST =
 ACLOCAL_AMFLAGS = -I m4
 SUBDIRS = include data libmsi tests po .
 
+makeflags_ = $(am__v_lt_$(AM_DEFAULT_VERBOSITY))
+makeflags_0 = --no-print-directory -s
+AM_MAKEFLAGS = $(makeflags_$(V))
+
 libmsiincludedir = $(includedir)/libmsi-1.0
 dist_libmsiinclude_HEADERS =			\
 	include/libmsi-database.h		\
