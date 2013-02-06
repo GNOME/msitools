@@ -214,7 +214,7 @@ unsigned msi_open_storage( LibmsiDatabase *db, const char *stname )
         if( !strcmp( stname, storage->name ) )
         {
             TRACE("found %s\n", debugstr_a(stname));
-            return;
+            return r;
         }
     }
 
@@ -611,6 +611,7 @@ LibmsiResult _libmsi_database_close(LibmsiDatabase *db, bool committed)
         }
     }
     db->outpath = NULL;
+    return LIBMSI_RESULT_SUCCESS;
 }
 
 LibmsiResult _libmsi_database_start_transaction(LibmsiDatabase *db)

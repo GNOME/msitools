@@ -5748,6 +5748,8 @@ done:
     IStorage_Release(stg);
 
     return res;
+#else
+    return true;
 #endif
 }
 
