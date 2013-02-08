@@ -58,6 +58,7 @@ static const Keyword aKeywordTable[] = {
 /*
 ** Comparison function for binary search.
 */
+G_GNUC_PURE
 static int sql_compare_keyword(const void *m1, const void *m2){
     const uint8_t *p = m1;
     const Keyword *k = m2;

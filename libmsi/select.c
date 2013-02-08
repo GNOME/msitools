@@ -330,6 +330,7 @@ static unsigned select_view_add_column( LibmsiSelectView *sv, const char *name,
     return LIBMSI_RESULT_SUCCESS;
 }
 
+G_GNUC_PURE
 static int select_count_columns( const column_info *col )
 {
     int n;

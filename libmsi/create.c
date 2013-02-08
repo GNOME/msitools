@@ -125,6 +125,7 @@ static const LibmsiViewOps create_ops =
     NULL,
 };
 
+G_GNUC_PURE
 static unsigned check_columns( const column_info *col_info )
 {
     const column_info *c1, *c2;

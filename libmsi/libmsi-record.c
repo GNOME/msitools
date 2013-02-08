@@ -373,6 +373,7 @@ libmsi_record_get_string (const LibmsiRecord *self, guint field)
     return NULL;
 }
 
+G_GNUC_PURE
 const char *_libmsi_record_get_string_raw( const LibmsiRecord *rec, unsigned field )
 {
     if( field > rec->count )
@@ -748,6 +749,7 @@ LibmsiRecord *_libmsi_record_clone(LibmsiRecord *rec)
     return clone;
 }
 
+G_GNUC_PURE
 bool _libmsi_record_compare_fields(const LibmsiRecord *a, const LibmsiRecord *b, unsigned field)
 {
     if (a->fields[field].type != b->fields[field].type)
@@ -776,6 +778,7 @@ bool _libmsi_record_compare_fields(const LibmsiRecord *a, const LibmsiRecord *b,
 }
 
 
+G_GNUC_PURE
 bool _libmsi_record_compare(const LibmsiRecord *a, const LibmsiRecord *b)
 {
     unsigned i;

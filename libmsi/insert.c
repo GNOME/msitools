@@ -333,6 +333,7 @@ static const LibmsiViewOps insert_ops =
     NULL,
 };
 
+G_GNUC_PURE
 static unsigned count_column_info( const column_info *ci )
 {
     unsigned n = 0;

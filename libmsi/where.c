@@ -680,6 +680,7 @@ static void add_to_array( JOINTABLE **array, JOINTABLE *elem )
         *array = elem;
 }
 
+G_GNUC_PURE
 static bool in_array( JOINTABLE **array, JOINTABLE *elem )
 {
     while (*array && *array != elem)

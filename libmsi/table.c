@@ -467,6 +467,7 @@ void free_cached_tables( LibmsiDatabase *db )
     }
 }
 
+G_GNUC_PURE
 static LibmsiTable *find_cached_table( LibmsiDatabase *db, const char *name )
 {
     LibmsiTable *t;

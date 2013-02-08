@@ -165,6 +165,7 @@ static int st_find_free_entry( string_table *st )
     return st->freeslot;
 }
 
+G_GNUC_PURE
 static int find_insert_index( const string_table *st, unsigned string_id )
 {
     int i, c, low = 0, high = st->sortcount - 1;
@@ -335,6 +336,7 @@ int _libmsi_add_string( string_table *st, const char *data, int len, uint16_t re
 }
 
 /* find the string identified by an id - return null if there's none */
+G_GNUC_PURE
 const char *msi_string_lookup_id( const string_table *st, unsigned id )
 {
     if( id == 0 )
@@ -672,6 +674,7 @@ err:
     return ret;
 }
 
+G_GNUC_PURE
 unsigned msi_get_string_table_codepage( const string_table *st )
 {
     return st->codepage;
