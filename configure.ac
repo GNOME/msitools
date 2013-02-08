@@ -44,7 +44,6 @@ AM_GNU_GETTEXT_VERSION([0.18])
 AM_GLIB_GNU_GETTEXT
 
 gl_MANYWARN_ALL_GCC([warnings])
-
 nw=
 nw="$nw -Wsystem-headers"       # Don't let system headers trigger warnings
 nw="$nw -Wundef"                # All compiler preprocessors support #if UNDEF

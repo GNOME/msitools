@@ -160,7 +160,8 @@ static const char isIdChar[] = {
 ** -1 if the token is (or might be) incomplete.  Store the token
 ** type in *tokenType before returning.
 */
-int sql_get_token(const char *z, int *tokenType, int *skip){
+int sql_get_token(const char *zz, int *tokenType, int *skip){
+  guint8 *z = (guint8*)zz;
   int i;
 
   *skip = 0;
@@ -251,7 +252,7 @@ int sql_get_token(const char *z, int *tokenType, int *skip){
         break;
       }
       for(i=1; isIdChar[z[i]]; i++){}
-      *tokenType = sqlite_find_keyword(z, i);
+      *tokenType = sqlite_find_keyword(zz, i);
       if( *tokenType == TK_ID && z[i] == '`' ) *skip = 1;
       return i;
   }

@@ -43,9 +43,9 @@ enum
 
 G_DEFINE_TYPE (LibmsiDatabase, libmsi_database, G_TYPE_OBJECT);
 
-const char clsid_msi_transform[16] = { 0x82, 0x10, 0x0c, 0x00, 0x00, 0x00, 0x00, 0x00, 0xc0,0x00, 0x00,0x00,0x00,0x00,0x00,0x46 };
-const char clsid_msi_database[16] = { 0x84, 0x10, 0x0c, 0x00, 0x00, 0x00, 0x00, 0x00, 0xc0,0x00, 0x00,0x00,0x00,0x00,0x00,0x46 };
-const char clsid_msi_patch[16] = { 0x86, 0x10, 0x0c, 0x00, 0x00, 0x00, 0x00, 0x00, 0xc0,0x00, 0x00,0x00,0x00,0x00,0x00,0x46 };
+const guint8 clsid_msi_transform[16] = { 0x82, 0x10, 0x0c, 0x00, 0x00, 0x00, 0x00, 0x00, 0xc0,0x00, 0x00,0x00,0x00,0x00,0x00,0x46 };
+const guint8 clsid_msi_database[16] = { 0x84, 0x10, 0x0c, 0x00, 0x00, 0x00, 0x00, 0x00, 0xc0,0x00, 0x00,0x00,0x00,0x00,0x00,0x46 };
+const guint8 clsid_msi_patch[16] = { 0x86, 0x10, 0x0c, 0x00, 0x00, 0x00, 0x00, 0x00, 0xc0,0x00, 0x00,0x00,0x00,0x00,0x00,0x46 };
 
 /*
  *  .MSI  file format
@@ -356,7 +356,7 @@ unsigned write_raw_stream_data( LibmsiDatabase *db, const char *stname,
 {
     unsigned ret = LIBMSI_RESULT_FUNCTION_FAILED;
     GsfInput *stm = NULL;
-    char *mem;
+    guint8 *mem;
     LibmsiStream *stream;
 
     if (db->flags & LIBMSI_DB_FLAGS_READONLY)
@@ -466,6 +466,7 @@ unsigned msi_enum_db_storages(LibmsiDatabase *db,
     return LIBMSI_RESULT_SUCCESS;
 }
 
+static
 unsigned clone_infile_stream( LibmsiDatabase *db, const char *name, GsfInput **stm )
 {
     GsfInput *stream;
@@ -1315,7 +1316,7 @@ static LibmsiResult msi_export_summaryinfo (LibmsiDatabase *db, int fd, GError *
             gchar *val = summary_info_as_string (si, i);
             if (!val)
                 goto end;
-            gchar *str = g_strdup_printf ("%d\t%s\r\n", i, val);
+            str = g_strdup_printf ("%d\t%s\r\n", i, val);
             sz = strlen (str);
             if (write (fd, str, sz) != sz)
                 goto end;
@@ -1607,28 +1608,18 @@ static char *get_key_value(LibmsiQuery *view, const char *key, LibmsiRecord *rec
 static char *create_diff_row_query(LibmsiDatabase *merge, LibmsiQuery *view,
                                     char *table, LibmsiRecord *rec)
 {
-    char *query = NULL;
-    char *clause = NULL;
+    GString *query;
     char *val;
-    const char *setptr;
     const char *key;
-    unsigned size, oldsize;
     LibmsiRecord *keys;
     unsigned r, i, count;
-
-    static const char keyset[] = "`%s` = %s AND";
-    static const char lastkeyset[] = "`%s` = %s ";
-    static const char fmt[] = "SELECT * FROM %s WHERE %s";
 
     r = _libmsi_database_get_primary_keys(merge, table, &keys);
     if (r != LIBMSI_RESULT_SUCCESS)
         return NULL;
 
-    clause = msi_alloc_zero(sizeof(char));
-    if (!clause)
-        goto done;
-
-    size = 1;
+    query = g_string_sized_new(256);
+    g_string_printf (query, "SELECT * FROM %s WHERE ", table);
     count = libmsi_record_get_field_count(keys);
     for (i = 1; i <= count; i++)
     {
@@ -1636,34 +1627,13 @@ static char *create_diff_row_query(LibmsiDatabase *merge, LibmsiQuery *view,
         val = get_key_value(view, key, rec);
 
         if (i == count)
-            setptr = lastkeyset;
+            g_string_append_printf (query, "`%s` = %s", key, val);
         else
-            setptr = keyset;
-
-        oldsize = size;
-        size += strlen(setptr) + strlen(key) + strlen(val) - 4;
-        clause = msi_realloc(clause, size * sizeof (char));
-        if (!clause)
-        {
-            msi_free(val);
-            goto done;
-        }
-
-        sprintf(clause + oldsize - 1, setptr, key, val);
-        msi_free(val);
+            g_string_append_printf (query, "`%s` = %s AND ", key, val);
     }
 
-    size = strlen(fmt) + strlen(table) + strlen(clause) + 1;
-    query = msi_alloc(size * sizeof(char));
-    if (!query)
-        goto done;
-
-    sprintf(query, fmt, table, clause);
-
-done:
-    msi_free(clause);
     g_object_unref(keys);
-    return query;
+    return  g_string_free (query, FALSE);
 }
 
 static unsigned merge_diff_row(LibmsiRecord *rec, void *param)
@@ -2068,7 +2038,7 @@ libmsi_database_merge (LibmsiDatabase *db,
     bool conflicts;
     unsigned r;
 
-    TRACE("(%d, %d, %s)\n", db, merge,
+    TRACE("(%p, %p, %s)\n", db, merge,
           debugstr_a(tablename));
 
     g_return_val_if_fail (LIBMSI_IS_DATABASE (db), FALSE);
@@ -2104,7 +2074,7 @@ libmsi_database_merge (LibmsiDatabase *db,
 
     LIST_FOR_EACH_SAFE(item, cursor, &tabledata)
     {
-        MERGETABLE *table = LIST_ENTRY(item, MERGETABLE, entry);
+        table = LIST_ENTRY(item, MERGETABLE, entry);
         list_remove(&table->entry);
         free_merge_table(table);
     }
@@ -2149,14 +2119,15 @@ static void cache_infile_structure( LibmsiDatabase *db )
     for (i = 0; i < n; i++)
     {
         GsfInput *in = gsf_infile_child_by_index(db->infile, i);
-        const uint8_t *name = (const uint8_t *) gsf_input_name(in);
+        const char* name = gsf_input_name(in);
+        const uint8_t *name8 = (const uint8_t *)name;
 
         /* table streams are not in the _Streams table */
         if (!GSF_IS_INFILE(in) || gsf_infile_num_children(GSF_INFILE(in)) == -1) {
             /* UTF-8 encoding of 0x4840.  */
-            if (name[0] == 0xe4 && name[1] == 0xa1 && name[2] == 0x80)
+            if (name8[0] == 0xe4 && name8[1] == 0xa1 && name8[2] == 0x80)
             {
-                decode_streamname( name + 3, decname );
+                decode_streamname(name + 3, decname);
                 if ( !strcmp( decname, szStringPool ) ||
                      !strcmp( decname, szStringData ) )
                     continue;
@@ -2541,7 +2512,7 @@ libmsi_database_get_primary_keys (LibmsiDatabase *db,
     LibmsiRecord *rec;
     unsigned r;
 
-    TRACE("%d %s\n", db, debugstr_a(table));
+    TRACE("%p %s\n", db, debugstr_a(table));
 
     g_return_val_if_fail (LIBMSI_IS_DATABASE (db), NULL);
     g_return_val_if_fail (table != NULL, NULL);
@@ -2585,7 +2556,8 @@ libmsi_database_is_table_persistent (LibmsiDatabase *db, const char *table,
         g_set_error (error, LIBMSI_RESULT_ERROR, LIBMSI_RESULT_INVALID_TABLE,
                      "The table is unknown");
     else if (r == LIBMSI_CONDITION_ERROR)
-        g_set_error (error, LIBMSI_RESULT_ERROR, LIBMSI_RESULT_FUNCTION_FAILED, "");
+        g_set_error (error, LIBMSI_RESULT_ERROR, LIBMSI_RESULT_FUNCTION_FAILED,
+                     "Error");
 
     return r == LIBMSI_CONDITION_TRUE;
 }

@@ -563,10 +563,11 @@ unsigned _libmsi_open_table( LibmsiDatabase *db, const char *name, bool encoded 
 {
     char decname[0x40];
     LibmsiTable *table;
+    guint8 *name8 = (guint8*)name;
 
     if (encoded)
     {
-        assert(name[0] == 0xe4 && name[1] == 0xa1 && name[2] == 0x80);
+        assert(name8[0] == 0xe4 && name8[1] == 0xa1 && name8[2] == 0x80);
         decode_streamname( name + 1, decname );
         name = decname;
     }
@@ -2453,13 +2454,13 @@ static unsigned msi_table_load_transform( LibmsiDatabase *db, GsfInfile *stg,
         if (rec)
         {
             char table[32];
-            unsigned sz = 32;
             unsigned number = LIBMSI_NULL_INT;
             unsigned row = 0;
 
             if (!strcmp( name, szColumns ))
             {
-                _libmsi_record_get_string( rec, 1, table, &sz );
+                unsigned tablesz = 32;
+                _libmsi_record_get_string( rec, 1, table, &tablesz );
                 number = libmsi_record_get_int( rec, 2 );
 
                 /*
@@ -2568,7 +2569,7 @@ unsigned msi_table_apply_transform( LibmsiDatabase *db, GsfInfile *stg )
         if ( encname[0] != 0xe4 || encname[1] != 0xa1 || encname[2] != 0x80)
             continue;
 
-        decode_streamname( encname, name );
+        decode_streamname( (char*)encname, name );
         if ( !strcmp( name+3, szStringPool ) ||
              !strcmp( name+3, szStringData ) )
             continue;

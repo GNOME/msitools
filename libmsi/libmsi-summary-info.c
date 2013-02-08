@@ -181,6 +181,9 @@ static unsigned get_type( unsigned uiProperty )
     case LIBMSI_PROPERTY_SECURITY:
     case LIBMSI_PROPERTY_VERSION:
          return OLEVT_I4;
+
+    default:
+        g_warn_if_reached ();
     }
     return OLEVT_EMPTY;
 }
@@ -316,7 +319,7 @@ static void read_properties_from_data( LibmsiOLEVariant *prop, const uint8_t *da
     for( i = 0; i < cProperties; i++ )
     {
         int propid = read_dword(data, &idofs);
-        int dwOffset = read_dword(data, &idofs);
+        unsigned dwOffset = read_dword(data, &idofs);
         int proptype;
 
         if( propid >= MSI_MAX_PROPS )
@@ -374,6 +377,8 @@ static void read_properties_from_data( LibmsiOLEVariant *prop, const uint8_t *da
             memcpy( str, &data[dwOffset], len-1 );
             str[ len - 1 ] = 0;
             break;
+        default:
+            g_warn_if_reached ();
         }
 
         /* check the type is the same as we expect */
@@ -516,6 +521,8 @@ static unsigned write_property_to_data( const LibmsiOLEVariant *prop, uint8_t *d
     case OLEVT_LPSTR:
         sz += write_string( data, sz, prop->strval );
         break;
+    default:
+        g_warn_if_reached ();
     }
     return sz;
 }
@@ -680,7 +687,8 @@ static void _summary_info_get_property (LibmsiSummaryInfo *si, unsigned uiProper
             if (szValueBuf)
                 strcpyn (szValueBuf, prop->strval, *pcchValueBuf);
             if (len >= *pcchValueBuf)
-                g_set_error (error, LIBMSI_RESULT_ERROR, LIBMSI_RESULT_MORE_DATA, "");
+                g_set_error (error, LIBMSI_RESULT_ERROR, LIBMSI_RESULT_MORE_DATA,
+                             "The given string is too small");
             *pcchValueBuf = len;
         }
         break;
@@ -827,6 +835,8 @@ static LibmsiResult _libmsi_summary_info_set_property( LibmsiSummaryInfo *si, un
         prop->strval = msi_alloc( len );
         strcpy( prop->strval, szValue );
         break;
+    default:
+        g_warn_if_reached ();
     }
 
     ret = LIBMSI_RESULT_SUCCESS;

@@ -190,28 +190,19 @@ unsigned _libmsi_query_open( LibmsiDatabase *db, LibmsiQuery **view, const char 
 {
     GError *err = NULL;
     unsigned r = LIBMSI_RESULT_SUCCESS;
-    int size = 100, res;
     char *query;
+    va_list va;
 
-    /* construct the string */
-    for (;;)
-    {
-        va_list va;
-        query = msi_alloc( size*sizeof(char) );
-        va_start(va, fmt);
-        res = vsnprintf(query, size, fmt, va);
-        va_end(va);
-        if (res == -1) size *= 2;
-        else if (res >= size) size = res + 1;
-        else break;
-        msi_free( query );
-    }
-    /* perform the query */
+    va_start(va, fmt);
+    query = g_strdup_vprintf(fmt, va);
+    va_end(va);
+
     *view = libmsi_query_new (db, query, &err);
     if (err)
         r = err->code;
     g_clear_error (&err);
-    msi_free(query);
+
+    g_free(query);
     return r;
 }
 
@@ -263,29 +254,19 @@ LibmsiRecord *_libmsi_query_get_record( LibmsiDatabase *db, const char *fmt, ...
     LibmsiRecord *rec = NULL;
     LibmsiQuery *view = NULL;
     unsigned r;
-    int size = 100, res;
+    va_list va;
     char *query;
     GError *error = NULL; // FIXME: move error to caller
 
-    /* construct the string */
-    for (;;)
-    {
-        va_list va;
-        query = msi_alloc( size*sizeof(char) );
-        va_start(va, fmt);
-        res = vsnprintf(query, size, fmt, va);
-        va_end(va);
-        if (res == -1) size *= 2;
-        else if (res >= size) size = res + 1;
-        else break;
-        msi_free( query );
-    }
-    /* perform the query */
+    va_start(va, fmt);
+    query = g_strdup_vprintf(fmt, va);
+    va_end(va);
+
     view = libmsi_query_new (db, query, &error);
     if (error)
         r = error->code;
     g_clear_error (&error);
-    msi_free(query);
+    g_free(query);
 
     if( r == LIBMSI_RESULT_SUCCESS )
     {

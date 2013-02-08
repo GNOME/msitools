@@ -26,13 +26,15 @@
 #include <string.h>
 #include <glib.h>
 
+#include "sqldelim.h"
+
 /*
 ** All the keywords of the SQL language are stored as in a hash
 ** table composed of instances of the following structure.
 */
 typedef struct Keyword Keyword;
 struct Keyword {
-    const uint8_t *zName;      /* The keyword name */
+    const char *zName;      /* The keyword name */
 };
 
 #define MAX_TOKEN_LEN 11
@@ -59,7 +61,7 @@ static const Keyword aKeywordTable[] = {
 static int sql_compare_keyword(const void *m1, const void *m2){
     const uint8_t *p = m1;
     const Keyword *k = m2;
-    const uint8_t *q = k->zName;
+    const char *q = k->zName;
 
     for (; *p; p++, q++) {
         uint8_t c;
@@ -179,7 +181,7 @@ static int sql_skip_token(const char **p, bool *cont)
             return true;
         }
         while (isIdChar[z[i]]) i++;
-        if (get_keyword && sqlite_find_keyword(z, i)) {
+        if (get_keyword && sqlite_find_keyword(*p, i)) {
             return true;
         } else {
             /* Do not recognize a keyword at the beginning of the next chunk.  */

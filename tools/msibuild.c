@@ -128,7 +128,6 @@ static LibmsiDatabase *db;
 static gboolean import_table(char *table, GError **error)
 {
     gboolean success = TRUE;
-    char dir[PATH_MAX];
 
     if (!libmsi_database_import(db, table, error))
     {

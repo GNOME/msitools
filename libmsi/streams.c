@@ -278,6 +278,9 @@ static unsigned streams_view_get_column_info( LibmsiView *view, unsigned n, cons
         if (name) *name = szData;
         if (type) *type = MSITYPE_STRING | MSITYPE_VALID | MSITYPE_NULLABLE;
         break;
+
+    default:
+        g_warn_if_reached ();
     }
     if (table_name) *table_name = szStreams;
     if (temporary) *temporary = false;

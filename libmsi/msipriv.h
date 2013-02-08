@@ -309,9 +309,9 @@ struct _LibmsiSummaryInfo
 
 typedef struct _LibmsiIStream LibmsiIStream;
 
-extern const char clsid_msi_transform[16];
-extern const char clsid_msi_database[16];
-extern const char clsid_msi_patch[16];
+extern const guint8 clsid_msi_transform[16];
+extern const guint8 clsid_msi_database[16];
+extern const guint8 clsid_msi_patch[16];
 
 /* handle unicode/ascii output in the Msi* API functions */
 typedef struct {
@@ -464,7 +464,7 @@ static void *msi_realloc_zero( void *mem, size_t oldlen, size_t len ) G_GNUC_ALL
 static inline void *msi_realloc_zero( void *mem, size_t oldlen, size_t len )
 {
     mem = realloc( mem, len );
-    memset(mem + oldlen, 0, len - oldlen);
+    memset((char*)mem + oldlen, 0, len - oldlen);
     return mem;
 }
 

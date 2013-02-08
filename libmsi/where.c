@@ -306,7 +306,6 @@ static unsigned where_view_set_row( LibmsiView *view, unsigned row, LibmsiRecord
     do
     {
         const unsigned col_count = table->col_count;
-        unsigned i;
         LibmsiRecord *reduced;
         unsigned reduced_mask = (mask >> offset) & ((1 << col_count) - 1);
 

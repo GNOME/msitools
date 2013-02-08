@@ -34,8 +34,6 @@
 #include <fcntl.h>
 #include <limits.h>
 
-static const char *program_name;
-
 struct Command {
     const char *cmd;
     const char *desc;
@@ -47,27 +45,11 @@ struct Command {
 
 static struct Command cmds[];
 
-static char *get_basename(char *path)
-{
-    char *p;
-    if (!path || !*path) {
-        return ".";
-    }
-    p = path + strlen(path);
-    while (p > path && *p != '/' && *p != '\\') {
-        p--;
-    }
-    if (p > path) {
-        p++;
-    }
-    return p;
-}
-
 static void usage(FILE *out)
 {
     int i;
 
-    fprintf(out, "Usage: %s SUBCOMMAND COMMAND-OPTIONS...\n\n", program_name);
+    fprintf(out, "Usage: %s SUBCOMMAND COMMAND-OPTIONS...\n\n", g_get_prgname ());
     fprintf(out, "Options:\n");
     fprintf(out, "  -h, --help        Show program usage\n");
     fprintf(out, "  -v, --version     Display program version\n\n");
@@ -82,7 +64,7 @@ static void usage(FILE *out)
 
 static void cmd_usage(FILE *out, struct Command *cmd)
 {
-    fprintf(out, "%s %s %s\n\n%s.\n", program_name, cmd->cmd, cmd->opts,
+    fprintf(out, "%s %s %s\n\n%s.\n", g_get_prgname (), cmd->cmd, cmd->opts,
             cmd->desc);
 
     if (cmd->help) {
@@ -98,54 +80,56 @@ static void print_libmsi_error(LibmsiResultError r)
     case LIBMSI_RESULT_SUCCESS:
         abort();
     case LIBMSI_RESULT_CONTINUE:
-        fprintf(stderr, "%s: internal error (continue)\n", program_name);
+        fprintf(stderr, "%s: internal error (continue)\n", g_get_prgname ());
         exit(1);
     case LIBMSI_RESULT_MORE_DATA:
-        fprintf(stderr, "%s: internal error (more data)\n", program_name);
+        fprintf(stderr, "%s: internal error (more data)\n", g_get_prgname ());
         exit(1);
     case LIBMSI_RESULT_INVALID_HANDLE:
-        fprintf(stderr, "%s: internal error (invalid handle)\n", program_name);
+        fprintf(stderr, "%s: internal error (invalid handle)\n", g_get_prgname ());
         exit(1);
     case LIBMSI_RESULT_NOT_ENOUGH_MEMORY:
     case LIBMSI_RESULT_OUTOFMEMORY:
-        fprintf(stderr, "%s: out of memory\n", program_name);
+        fprintf(stderr, "%s: out of memory\n", g_get_prgname ());
         exit(1);
     case LIBMSI_RESULT_INVALID_DATA:
-        fprintf(stderr, "%s: invalid data\n", program_name);
+        fprintf(stderr, "%s: invalid data\n", g_get_prgname ());
         exit(1);
     case LIBMSI_RESULT_INVALID_PARAMETER:
-        fprintf(stderr, "%s: invalid parameter\n", program_name);
+        fprintf(stderr, "%s: invalid parameter\n", g_get_prgname ());
         exit(1);
     case LIBMSI_RESULT_OPEN_FAILED:
-        fprintf(stderr, "%s: open failed\n", program_name);
+        fprintf(stderr, "%s: open failed\n", g_get_prgname ());
         exit(1);
     case LIBMSI_RESULT_CALL_NOT_IMPLEMENTED:
-        fprintf(stderr, "%s: not implemented\n", program_name);
+        fprintf(stderr, "%s: not implemented\n", g_get_prgname ());
         exit(1);
     case LIBMSI_RESULT_NOT_FOUND:
-        fprintf(stderr, "%s: not found\n", program_name);
+        fprintf(stderr, "%s: not found\n", g_get_prgname ());
         exit(1);
     case LIBMSI_RESULT_UNKNOWN_PROPERTY:
-        fprintf(stderr, "%s: unknown property\n", program_name);
+        fprintf(stderr, "%s: unknown property\n", g_get_prgname ());
         exit(1);
     case LIBMSI_RESULT_BAD_QUERY_SYNTAX:
-        fprintf(stderr, "%s: bad query syntax\n", program_name);
+        fprintf(stderr, "%s: bad query syntax\n", g_get_prgname ());
         exit(1);
     case LIBMSI_RESULT_INVALID_FIELD:
-        fprintf(stderr, "%s: invalid field\n", program_name);
+        fprintf(stderr, "%s: invalid field\n", g_get_prgname ());
         exit(1);
     case LIBMSI_RESULT_FUNCTION_FAILED:
-        fprintf(stderr, "%s: internal error (function failed)\n", program_name);
+        fprintf(stderr, "%s: internal error (function failed)\n", g_get_prgname ());
         exit(1);
     case LIBMSI_RESULT_INVALID_TABLE:
-        fprintf(stderr, "%s: invalid table\n", program_name);
+        fprintf(stderr, "%s: invalid table\n", g_get_prgname ());
         exit(1);
     case LIBMSI_RESULT_DATATYPE_MISMATCH:
-        fprintf(stderr, "%s: datatype mismatch\n", program_name);
+        fprintf(stderr, "%s: datatype mismatch\n", g_get_prgname ());
         exit(1);
     case LIBMSI_RESULT_INVALID_DATATYPE:
-        fprintf(stderr, "%s: invalid datatype\n", program_name);
+        fprintf(stderr, "%s: invalid datatype\n", g_get_prgname ());
         exit(1);
+    default:
+        g_warn_if_reached ();
     }
 }
 
@@ -159,7 +143,7 @@ static struct Command *find_cmd(const char *s)
         }
     }
 
-    fprintf(stderr, "%s: Unrecognized command '%s'\n", program_name, s);
+    fprintf(stderr, "%s: Unrecognized command '%s'\n", g_get_prgname (), s);
     return NULL;
 }
 
@@ -263,11 +247,8 @@ static void print_suminfo(LibmsiSummaryInfo *si, int prop, const char *name)
     const gchar* str;
     int val;
     uint64_t valtime;
-    unsigned sz;
-    unsigned r;
     time_t t;
 
-    sz = 0;
     type = libmsi_summary_info_get_property_type(si, prop, &error);
     if (error)
         goto end;
@@ -375,7 +356,7 @@ static int cmd_extract(struct Command *cmd, int argc, char **argv, GError **erro
     GInputStream *in = NULL;
     int r = 1;
     char buffer[4096];
-    size_t n_read, n_written;
+    size_t n_read;
 
     if (argc != 3) {
         cmd_usage(stderr, cmd);
@@ -441,7 +422,6 @@ static gboolean export_create_table(const char *table,
     guint i, len;
     char size[20], extra[30];
     gchar *name, *type;
-    unsigned sz;
 
     if (!strcmp(table, "_Tables") ||
         !strcmp(table, "_Columns") ||
@@ -464,7 +444,7 @@ static gboolean export_create_table(const char *table,
         }
 
         extra[0] = '\0';
-        if (islower(type[0])) {
+        if (g_ascii_islower(type[0])) {
             strcat(extra, " NOT NULL");
         }
 
@@ -533,7 +513,6 @@ static gboolean export_insert(const char *table,
     guint num_columns = libmsi_record_get_field_count(names);
     gchar *name, *type;
     guint i;
-    unsigned sz;
     char *s;
 
     printf("INSERT INTO `%s` (", table);
@@ -543,7 +522,6 @@ static gboolean export_insert(const char *table,
             continue;
         }
 
-        sz = sizeof(name);
         name = libmsi_record_get_string(names, i);
         g_return_val_if_fail(name != NULL, FALSE);
 
@@ -565,7 +543,6 @@ static gboolean export_insert(const char *table,
             printf(", ");
         }
 
-        sz = sizeof(type);
         type = libmsi_record_get_string(types, i);
         g_return_val_if_fail(type != NULL, FALSE);
 
@@ -582,7 +559,7 @@ static gboolean export_insert(const char *table,
                 printf("%d", libmsi_record_get_int(vals, i));
                 break;
             case 'v': case 'V':
-                printf("''", s);
+                printf("''");
                 break;
             default:
                 abort();
@@ -634,7 +611,6 @@ static gboolean export_sql( LibmsiDatabase *db, const char *table, GError **erro
 
     /* write out row 4 onwards, the data */
     while ((rec = libmsi_query_fetch(query, &err))) {
-        unsigned size = PATH_MAX;
         success = export_insert(table, name, type, rec);
         g_object_unref(rec);
         if (!success) {
@@ -696,7 +672,7 @@ end:
 
 static int cmd_version(struct Command *cmd, int argc, char **argv, GError **error)
 {
-    printf("%s (%s) version %s\n", program_name, PACKAGE, VERSION);
+    printf("%s (%s) version %s\n", g_get_prgname (), PACKAGE, VERSION);
     return 0;
 }
 
@@ -779,8 +755,7 @@ int main(int argc, char **argv)
 #if !GLIB_CHECK_VERSION(2,35,1)
     g_type_init ();
 #endif
-
-    program_name = get_basename(argv[0]);
+    g_set_prgname ("msiinfo");
 
     if (argc == 1) {
         usage(stderr);
@@ -788,7 +763,7 @@ int main(int argc, char **argv)
 
     cmd = find_cmd(argv[1]);
     if (!cmd) {
-        fprintf(stderr, "%s: Unrecognized command\n", program_name);
+        fprintf(stderr, "%s: Unrecognized command\n", g_get_prgname ());
         usage(stderr);
     }
 

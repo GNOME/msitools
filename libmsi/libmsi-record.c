@@ -255,6 +255,8 @@ libmsi_record_get_int (const LibmsiRecord *rec, guint field)
         if( expr_int_from_string( rec->fields[field].u.szVal, &ret ) )
             return ret;
         return LIBMSI_NULL_INT;
+    default:
+        g_warn_if_reached ();
     }
 
     return LIBMSI_NULL_INT;
@@ -364,6 +366,8 @@ libmsi_record_get_string (const LibmsiRecord *self, guint field)
         return g_strdup (self->fields[field].u.szVal);
     case LIBMSI_FIELD_TYPE_NULL:
         return g_strdup ("");
+    default:
+        g_warn_if_reached ();
     }
 
     return NULL;
@@ -470,7 +474,7 @@ libmsi_record_set_string (LibmsiRecord *rec, unsigned field, const char *szValue
 static unsigned _libmsi_addstream_from_file(const char *szFile, GsfInput **pstm)
 {
     GsfInput *stm;
-    char *data;
+    guint8 *data;
     off_t sz;
 
     stm = gsf_input_stdio_new(szFile, NULL);
@@ -501,7 +505,7 @@ static unsigned _libmsi_addstream_from_file(const char *szFile, GsfInput **pstm)
     g_object_unref(G_OBJECT(stm));
     *pstm = gsf_input_memory_new(data, sz, true);
 
-    TRACE("read %s, %d bytes into GsfInput %p\n", debugstr_a(szFile), sz, *pstm);
+    TRACE("read %s, %ld bytes into GsfInput %p\n", debugstr_a(szFile), sz, *pstm);
 
     return LIBMSI_RESULT_SUCCESS;
 }
