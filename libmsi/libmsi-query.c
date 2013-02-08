@@ -253,7 +253,7 @@ LibmsiRecord *_libmsi_query_get_record( LibmsiDatabase *db, const char *fmt, ...
 {
     LibmsiRecord *rec = NULL;
     LibmsiQuery *view = NULL;
-    unsigned r;
+    unsigned r = LIBMSI_RESULT_SUCCESS;
     va_list va;
     char *query;
     GError *error = NULL; // FIXME: move error to caller

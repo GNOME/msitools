@@ -703,8 +703,7 @@ static void _summary_info_get_property (LibmsiSummaryInfo *si, unsigned uiProper
         type = LIBMSI_PROPERTY_TYPE_EMPTY;
         break;
     default:
-        g_warn_if_reached ();
-        break;
+        g_return_if_reached ();
     }
 
     if (puiDataType)

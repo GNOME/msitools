@@ -917,7 +917,7 @@ static unsigned msi_add_table_to_db(LibmsiDatabase *db, char **columns, char **t
 {
     unsigned r = LIBMSI_RESULT_OUTOFMEMORY;
     unsigned size;
-    LibmsiQuery *view;
+    LibmsiQuery *view = NULL;
     char *create_sql = NULL;
     char *prelude;
     char *columns_sql;
@@ -952,7 +952,8 @@ done:
         g_critical ("%s", error->message);
 
     g_clear_error (&error);
-    g_object_unref(view);
+    if (view)
+        g_object_unref(view);
     msi_free(prelude);
     msi_free(columns_sql);
     msi_free(postlude);

@@ -1227,7 +1227,7 @@ static unsigned _libmsi_add_stream( LibmsiDatabase *db, const char *name, GsfInp
         "INSERT INTO `_Streams`(`Name`, `Data`) VALUES (?, ?)";
     LibmsiQuery *query = NULL;
     LibmsiRecord *rec;
-    unsigned r;
+    unsigned r = LIBMSI_RESULT_SUCCESS;
 
     TRACE("%p %s %p\n", db, debugstr_a(name), data);
 
