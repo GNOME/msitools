@@ -14,6 +14,7 @@ BUILT_SOURCES = sql-parser.c sql-parser.h
 libmsi_la_SOURCES =				\
 	alter.c					\
 	create.c				\
+	debug.c					\
 	debug.h					\
 	delete.c				\
 	distinct.c				\
