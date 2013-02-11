@@ -8,7 +8,7 @@
           <File Id="fil75C15C827FBDF05115A68E7515421B89" KeyPath="yes" Source="$(var.SourceDir)/bin/libusbredirhost-1.dll"/>
         </Component>
         <Component Id="cmpE4FC3C3C7912197F97C49292AAEA17E2" Guid="*">
-          <File Id="fil2385B1BB5B07DEF6E0DECC06F5A2A45D" KeyPath="yes" Source="$(var.SourceDir)/bin/libusbredirparser-0.dll"/>
+          <File Id="fil2385B1BB5B07DEF6E0DECC06F5A2A45D" KeyPath="yes" Source="$(var.SourceDir)/bin/libusbredirparser-1.dll"/>
         </Component>
         </Directory>
     </DirectoryRef>
