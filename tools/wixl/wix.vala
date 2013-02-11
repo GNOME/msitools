@@ -484,6 +484,10 @@ namespace Wixl {
             ref_type = typeof (WixComponent);
         }
 
+        public override string full_path (WixResolver r) throws GLib.Error {
+            return (r.resolve<WixComponent> (this) as WixElement).full_path (r);
+        }
+
         public override void accept (WixNodeVisitor visitor) throws GLib.Error {
             visitor.visit_component_ref (this);
         }
@@ -493,6 +497,10 @@ namespace Wixl {
         static construct {
             name = "ComponentGroupRef";
             ref_type = typeof (WixComponentGroup);
+        }
+
+        public override string full_path (WixResolver r) throws GLib.Error {
+            return (r.resolve<WixComponentGroup> (this) as WixElement).full_path (r);
         }
 
         public override void accept (WixNodeVisitor visitor) throws GLib.Error {
@@ -1041,10 +1049,10 @@ namespace Wixl {
         //     ref_type = typeof (G);
         // }
 
+        // FIXME vala: G type doesn't seem to be set correctly...
         public override string full_path (WixResolver r) throws GLib.Error {
             return (r.resolve<G> (this) as WixElement).full_path (r);
         }
-
     }
 
     public class WixDirectoryRef: WixElementRef<WixDirectory> {
@@ -1056,6 +1064,10 @@ namespace Wixl {
                 typeof (WixDirectory),
                 typeof (WixComponent),
             });
+        }
+
+        public override string full_path (WixResolver r) throws GLib.Error {
+            return (r.resolve<WixDirectory> (this) as WixElement).full_path (r);
         }
     }
 
