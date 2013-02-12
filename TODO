@@ -1,4 +1,5 @@
 - document an easy way to hack on wixl, using WiX and msi diff
+- write a tool checking the Internal Consistency Evaluators - ICEs
 - verify gsf conversion, some tests fail on Windows but not POSIX?
 - make a SummaryInformation API that does not suck (including converting
   FILETIME usage to GDateTime)
