@@ -29,17 +29,14 @@ namespace Wixl {
             return variables.lookup (name);
         }
 
-        public string eval_variable (string str, File? file, bool needed = true) throws GLib.Error {
+        public string? eval_variable (string str, File? file) throws GLib.Error {
             var var = str.split (".", 2);
             if (var.length != 2)
                 throw new Wixl.Error.FAILED ("invalid variable %s", str);
 
             switch (var[0]) {
             case "var":
-                var val = lookup_variable (var[1]);
-                if (val == null && needed)
-                    throw new Wixl.Error.FAILED ("Undefined variable %s", var[1]);
-                return val;
+                return lookup_variable (var[1]);
             case "env":
                 return Environment.get_variable (var[1]);
             case "sys":
@@ -76,7 +73,10 @@ namespace Wixl {
                     var substring = remainder[1:closing];
                     if (substring.index_of ("(") != -1)
                         throw new Wixl.Error.FIXME ("unsupported function");
-                    result += eval_variable (substring, file);
+                    var val = eval_variable (substring, file);
+                    if (val == null)
+                        throw new Wixl.Error.FAILED ("Undefined variable %s", substring);
+                    result += val;
                     end += closing + 1;
                 }
             }
@@ -153,12 +153,12 @@ namespace Wixl {
                     case "ifdef":
                         ifstack.push_head (context);
                         var value = reader.const_value ().strip ();
-                        context = new IfContext (context.enabled && context.is_true, eval_variable (value, file, false) != null, IfContext.State.IF);
+                        context = new IfContext (context.enabled && context.is_true, eval_variable (value, file) != null, IfContext.State.IF);
                         break;
                     case "ifndef":
                         ifstack.push_head (context);
                         var value = reader.const_value ().strip ();
-                        context = new IfContext (context.enabled && context.is_true, eval_variable (value, file, false) == null, IfContext.State.IF);
+                        context = new IfContext (context.enabled && context.is_true, eval_variable (value, file) == null, IfContext.State.IF);
                         break;
                     case "else":
                         if (ifstack.is_empty ())
