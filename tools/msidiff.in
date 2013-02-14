@@ -142,8 +142,8 @@ done
 tmpdir=`mktemp -d ${TMPDIR:-/tmp}/msidiff.XXXXXX`
 
 mkdir "$tmpdir/old" "$tmpdir/new"
-msidump --tables --directory "$tmpdir/old" $1 >/dev/null
-msidump --tables --directory "$tmpdir/new" $2 >/dev/null
+msidump --signature --tables --directory "$tmpdir/old" $1 >/dev/null
+msidump --signature --tables --directory "$tmpdir/new" $2 >/dev/null
 if ${list:-false} || ${long:-false} ; then
   msiextract --directory "$tmpdir/old/files" $1 >/dev/null
   msiextract --directory "$tmpdir/new/files" $2 >/dev/null
