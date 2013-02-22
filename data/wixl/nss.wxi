@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="utf-8"?>
+<?require nspr.wxi?>
+<Include xmlns="http://schemas.microsoft.com/wix/2006/wi">
+  <Fragment>
+    <DirectoryRef Id="TARGETDIR">
+      <Directory Id="dir46E6D11E1F918BFC47FA013768D83337" Name="bin">
+        <Component Id="cmp901134AE979D2DF190AD405E36B9E315" Guid="*">
+          <File Id="filF3DA709DABBCB6A8EF3C8750C14CCD7F" KeyPath="yes" Source="$(var.SourceDir)/bin/certutil.exe"/>
+        </Component>
+        <Component Id="cmp6C58E80840CAD61AFEECB58BDEAD7113" Guid="*">
+          <File Id="filC7C799066E5EADD120908BE978F59422" KeyPath="yes" Source="$(var.SourceDir)/bin/cmsutil.exe"/>
+        </Component>
+        <Component Id="cmp54CB944FA13E66225E1C7526CB8B6783" Guid="*">
+          <File Id="fil227F10133339F0DD9E82FE28D3785C04" KeyPath="yes" Source="$(var.SourceDir)/bin/crlutil.exe"/>
+        </Component>
+        <Component Id="cmpB88856410E9E4B0B6A0DD081F5524994" Guid="*">
+          <File Id="filEAD7575E9DC7E971942831039917590E" KeyPath="yes" Source="$(var.SourceDir)/bin/freebl3.dll"/>
+        </Component>
+        <Component Id="cmp19B63C299F566B4C6FD6FDEA3D7E446E" Guid="*">
+          <File Id="fil8839D57A4C4457D3DE7411F01F99FD0A" KeyPath="yes" Source="$(var.SourceDir)/bin/modutil.exe"/>
+        </Component>
+        <Component Id="cmp3C5BF2290C3FDBA908FCD2275C56FD04" Guid="*">
+          <File Id="filD5FD1BC15BBBCF05A6987A581D71DA56" KeyPath="yes" Source="$(var.SourceDir)/bin/nss3.dll"/>
+        </Component>
+        <Component Id="cmp957CE9CEDAFB85D0DC339857B9B3887C" Guid="*">
+          <File Id="filCFC2D38933472EC04A5C25EEED68317D" KeyPath="yes" Source="$(var.SourceDir)/bin/nssckbi.dll"/>
+        </Component>
+        <Component Id="cmp70D0739B59F131CAE17D397EFC6F3FBE" Guid="*">
+          <File Id="filE18A51D89FC2F49C8396EFA50E852C1F" KeyPath="yes" Source="$(var.SourceDir)/bin/nssdbm3.dll"/>
+        </Component>
+        <Component Id="cmp5545646AAD45B317E5A63B5CA27298EA" Guid="*">
+          <File Id="fil4551AF690A4E337BF8D78A7EAA728508" KeyPath="yes" Source="$(var.SourceDir)/bin/nssutil3.dll"/>
+        </Component>
+        <Component Id="cmp899EB0F2AB77845049BCBCE454606BEA" Guid="*">
+          <File Id="fil23A99E2872515B146406D952847B6434" KeyPath="yes" Source="$(var.SourceDir)/bin/pk12util.exe"/>
+        </Component>
+        <Component Id="cmpABEF36EFD21DF5A3A0CC1B9BAECB94A4" Guid="*">
+          <File Id="fil55493C9C97C43A4E672514A17F2CD67B" KeyPath="yes" Source="$(var.SourceDir)/bin/signtool.exe"/>
+        </Component>
+        <Component Id="cmp683F418AAA618A58BF43910411C02329" Guid="*">
+          <File Id="fil445560875F7387DF3710BDBD2FA1630C" KeyPath="yes" Source="$(var.SourceDir)/bin/signver.exe"/>
+        </Component>
+        <Component Id="cmp7BFD5993783105272292C55D87BC2B7B" Guid="*">
+          <File Id="fil5E11261556C12E5D2C1C3C0A1524E44D" KeyPath="yes" Source="$(var.SourceDir)/bin/smime3.dll"/>
+        </Component>
+        <Component Id="cmpE2A6747532D045626A3EE0B7BFF34825" Guid="*">
+          <File Id="fil30B0FB8553131B9D608F9854CEE601D4" KeyPath="yes" Source="$(var.SourceDir)/bin/softokn3.dll"/>
+        </Component>
+        <Component Id="cmp1897D4C53C4ED91C49704D5570547946" Guid="*">
+          <File Id="fil08E7D8830FBDB60BBCBADB9F10118791" KeyPath="yes" Source="$(var.SourceDir)/bin/ssl3.dll"/>
+        </Component>
+        <Component Id="cmp195DDFDA8E7D7480C2BE2968B2DEE22E" Guid="*">
+          <File Id="fil8376938E82B413928FEDF9DC27D29587" KeyPath="yes" Source="$(var.SourceDir)/bin/ssltap.exe"/>
+        </Component>
+      </Directory>
+      <Directory Id="dir238450989E0536E1646A26BA216820CE" Name="etc">
+        <Directory Id="dirD1F4B69AAC41DA4D5866CFF3F23DDCA8" Name="pki">
+          <Directory Id="dir5DB33CB3C93F4C6A7684E26029C4372C" Name="nssdb">
+            <Component Id="cmp4D8727C826B964B4E03E015D1E29DA6B" Guid="*">
+              <File Id="fil00F257FB21EB5B0217288B2070E694B8" KeyPath="yes" Source="$(var.SourceDir)/etc/pki/nssdb/cert8.db"/>
+            </Component>
+            <Component Id="cmpA7CDDCA5411D79DA7792B9E77E01A944" Guid="*">
+              <File Id="fil60D959162BFE563EAEB6219268552BE1" KeyPath="yes" Source="$(var.SourceDir)/etc/pki/nssdb/key3.db"/>
+            </Component>
+            <Component Id="cmp983B1185C8526C740675955ED2253D86" Guid="*">
+              <File Id="fil3A3A63D59D014CE9EF7476BCE091BB91" KeyPath="yes" Source="$(var.SourceDir)/etc/pki/nssdb/secmod.db"/>
+            </Component>
+          </Directory>
+        </Directory>
+      </Directory>
+      <Directory Id="dirF6A6C531554C841C8B91C4B5F8D19F74" Name="lib">
+        <Component Id="cmp93A85719FCCD1FB54DF06B58B1D023A1" Guid="*">
+          <File Id="fil811F3900B817D3F902C1302F220E5027" KeyPath="yes" Source="$(var.SourceDir)/lib/libcrmf.a"/>
+        </Component>
+        <Component Id="cmpFBD9D4BBA20A5407B6D76775865607FF" Guid="*">
+          <File Id="fil7CC24E58CB9179F41DA4C66403EA2CFA" KeyPath="yes" Source="$(var.SourceDir)/lib/libnss3.dll.a"/>
+        </Component>
+        <Component Id="cmpDA8EC1A7F6610239AB35B9F16254EC84" Guid="*">
+          <File Id="filAC54BD7B63C71DEC017F19FDE9C974C5" KeyPath="yes" Source="$(var.SourceDir)/lib/libnssb.a"/>
+        </Component>
+        <Component Id="cmp04CB0B2079DAFFCF671C94D9A73282AD" Guid="*">
+          <File Id="fil267C2F331AC99D3977601AF23DFAA5FD" KeyPath="yes" Source="$(var.SourceDir)/lib/libnssckfw.a"/>
+        </Component>
+        <Component Id="cmpB625DAC4F871DD49899FC3525ED65B24" Guid="*">
+          <File Id="fil4D59750EEE39DB53A5FA18A99CE98D36" KeyPath="yes" Source="$(var.SourceDir)/lib/libnssdbm3.dll.a"/>
+        </Component>
+        <Component Id="cmpF04A71E7BB9A8BF194A80077673A12B4" Guid="*">
+          <File Id="filE2510B94B728215BA0E661A1C995A736" KeyPath="yes" Source="$(var.SourceDir)/lib/libnssutil3.dll.a"/>
+        </Component>
+        <Component Id="cmp7D8C93E1C117FFABEDF643296296A8D3" Guid="*">
+          <File Id="fil3D3FB62597C5D98DAD4BF6E1C550E4AC" KeyPath="yes" Source="$(var.SourceDir)/lib/libsmime3.dll.a"/>
+        </Component>
+        <Component Id="cmp0E9787E28147A2E344105F7E97B848E6" Guid="*">
+          <File Id="fil8309A1C84DEF4532B66653A2997B06F6" KeyPath="yes" Source="$(var.SourceDir)/lib/libsoftokn3.dll.a"/>
+        </Component>
+        <Component Id="cmp2D9CBDE04A0B8935221B48CAD5AD1E85" Guid="*">
+          <File Id="filAEEF408E3402252EFBAC1DB7F0EE94FD" KeyPath="yes" Source="$(var.SourceDir)/lib/libssl3.dll.a"/>
+        </Component>
+        <Directory Id="dirDC0FE1A3DB64D2E85485FDE22CE45358" Name="nss">
+          <Component Id="cmp9600721979BC6A73701F4D9F72B0D143" Guid="*">
+            <File Id="fil50F52BE84B7E9246A768414DBFA4931A" KeyPath="yes" Source="$(var.SourceDir)/lib/nss/atob.exe"/>
+          </Component>
+          <Component Id="cmpF6F2B7089CCE2CAE40C02BBD4BAE4493" Guid="*">
+            <File Id="filA89EC42B736674E323E69CA8F8705661" KeyPath="yes" Source="$(var.SourceDir)/lib/nss/btoa.exe"/>
+          </Component>
+          <Component Id="cmpFF762FBA9D4E1CB9B1B7360AF93C448A" Guid="*">
+            <File Id="fil6F102CE161436489429765F1B2FC5A5C" KeyPath="yes" Source="$(var.SourceDir)/lib/nss/derdump.exe"/>
+          </Component>
+          <Component Id="cmpA4B99E3802ECE9FFAD75354127AD376A" Guid="*">
+            <File Id="fil868113C63FA4B6D888B5796C994086E4" KeyPath="yes" Source="$(var.SourceDir)/lib/nss/ocspclnt.exe"/>
+          </Component>
+          <Component Id="cmp1A3E388100934F5F5954ECC503EA279D" Guid="*">
+            <File Id="fil640D7AD343AE61644F6510B34992A445" KeyPath="yes" Source="$(var.SourceDir)/lib/nss/pp.exe"/>
+          </Component>
+          <Component Id="cmpBA518B05EA14228096417D4F003E9313" Guid="*">
+            <File Id="fil68BB4C3AC023FE17EB5FA71EBB2F957F" KeyPath="yes" Source="$(var.SourceDir)/lib/nss/selfserv.exe"/>
+          </Component>
+          <Component Id="cmpB2021DDFE2944C1477A98CC89618F783" Guid="*">
+            <File Id="filDC2256A22208B20998D4C24704957937" KeyPath="yes" Source="$(var.SourceDir)/lib/nss/shlibsign.exe"/>
+          </Component>
+          <Component Id="cmp58A5E9AB6679BFD6471C0D68F517D1FB" Guid="*">
+            <File Id="filEAA641299983F94F34F33C92A2E87AB1" KeyPath="yes" Source="$(var.SourceDir)/lib/nss/strsclnt.exe"/>
+          </Component>
+          <Component Id="cmp0E58F11D5FAA5CA2599D20EB0C216EF9" Guid="*">
+            <File Id="fil8A73BF77F13E58016B0FE8A401A43DA1" KeyPath="yes" Source="$(var.SourceDir)/lib/nss/symkeyutil.exe"/>
+          </Component>
+          <Component Id="cmpD840BC75078752A13DA58975914DFE4F" Guid="*">
+            <File Id="fil4FEA6E616D8FFD6E6C4386B11E50E0C6" KeyPath="yes" Source="$(var.SourceDir)/lib/nss/tstclnt.exe"/>
+          </Component>
+          <Component Id="cmpC630A95AF47DF3E4E2FC88934B7B9B78" Guid="*">
+            <File Id="fil6F53C91779089D99D5A80F9EC8A143A2" KeyPath="yes" Source="$(var.SourceDir)/lib/nss/vfychain.exe"/>
+          </Component>
+          <Component Id="cmpF24C92ABA84FF6364C814DB720414FBE" Guid="*">
+            <File Id="filA72B95F62E3B5E6595DFA87FEF895199" KeyPath="yes" Source="$(var.SourceDir)/lib/nss/vfyserv.exe"/>
+          </Component>
+        </Directory>
+      </Directory>
+    </DirectoryRef>
+  </Fragment>
+  <Fragment>
+    <ComponentGroup Id="CG.nss">
+      <ComponentRef Id="cmp901134AE979D2DF190AD405E36B9E315"/>
+      <ComponentRef Id="cmp6C58E80840CAD61AFEECB58BDEAD7113"/>
+      <ComponentRef Id="cmp54CB944FA13E66225E1C7526CB8B6783"/>
+      <ComponentRef Id="cmpB88856410E9E4B0B6A0DD081F5524994"/>
+      <ComponentRef Id="cmp19B63C299F566B4C6FD6FDEA3D7E446E"/>
+      <ComponentRef Id="cmp3C5BF2290C3FDBA908FCD2275C56FD04"/>
+      <ComponentRef Id="cmp957CE9CEDAFB85D0DC339857B9B3887C"/>
+      <ComponentRef Id="cmp70D0739B59F131CAE17D397EFC6F3FBE"/>
+      <ComponentRef Id="cmp5545646AAD45B317E5A63B5CA27298EA"/>
+      <ComponentRef Id="cmp899EB0F2AB77845049BCBCE454606BEA"/>
+      <ComponentRef Id="cmpABEF36EFD21DF5A3A0CC1B9BAECB94A4"/>
+      <ComponentRef Id="cmp683F418AAA618A58BF43910411C02329"/>
+      <ComponentRef Id="cmp7BFD5993783105272292C55D87BC2B7B"/>
+      <ComponentRef Id="cmpE2A6747532D045626A3EE0B7BFF34825"/>
+      <ComponentRef Id="cmp1897D4C53C4ED91C49704D5570547946"/>
+      <ComponentRef Id="cmp195DDFDA8E7D7480C2BE2968B2DEE22E"/>
+      <ComponentRef Id="cmp4D8727C826B964B4E03E015D1E29DA6B"/>
+      <ComponentRef Id="cmpA7CDDCA5411D79DA7792B9E77E01A944"/>
+      <ComponentRef Id="cmp983B1185C8526C740675955ED2253D86"/>
+      <ComponentRef Id="cmp93A85719FCCD1FB54DF06B58B1D023A1"/>
+      <ComponentRef Id="cmpFBD9D4BBA20A5407B6D76775865607FF"/>
+      <ComponentRef Id="cmpDA8EC1A7F6610239AB35B9F16254EC84"/>
+      <ComponentRef Id="cmp04CB0B2079DAFFCF671C94D9A73282AD"/>
+      <ComponentRef Id="cmpB625DAC4F871DD49899FC3525ED65B24"/>
+      <ComponentRef Id="cmpF04A71E7BB9A8BF194A80077673A12B4"/>
+      <ComponentRef Id="cmp7D8C93E1C117FFABEDF643296296A8D3"/>
+      <ComponentRef Id="cmp0E9787E28147A2E344105F7E97B848E6"/>
+      <ComponentRef Id="cmp2D9CBDE04A0B8935221B48CAD5AD1E85"/>
+      <ComponentRef Id="cmp9600721979BC6A73701F4D9F72B0D143"/>
+      <ComponentRef Id="cmpF6F2B7089CCE2CAE40C02BBD4BAE4493"/>
+      <ComponentRef Id="cmpFF762FBA9D4E1CB9B1B7360AF93C448A"/>
+      <ComponentRef Id="cmpA4B99E3802ECE9FFAD75354127AD376A"/>
+      <ComponentRef Id="cmp1A3E388100934F5F5954ECC503EA279D"/>
+      <ComponentRef Id="cmpBA518B05EA14228096417D4F003E9313"/>
+      <ComponentRef Id="cmpB2021DDFE2944C1477A98CC89618F783"/>
+      <ComponentRef Id="cmp58A5E9AB6679BFD6471C0D68F517D1FB"/>
+      <ComponentRef Id="cmp0E58F11D5FAA5CA2599D20EB0C216EF9"/>
+      <ComponentRef Id="cmpD840BC75078752A13DA58975914DFE4F"/>
+      <ComponentRef Id="cmpC630A95AF47DF3E4E2FC88934B7B9B78"/>
+      <ComponentRef Id="cmpF24C92ABA84FF6364C814DB720414FBE"/>
+    </ComponentGroup>
+  </Fragment>
+</Include>
