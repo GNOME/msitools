@@ -3,6 +3,7 @@ NULL =
 wxidir = $(datadir)/wixl-$(VERSION)/include
 
 dist_wxi_DATA =					\
+	wixl/SDL.wxi				\
 	wixl/atk.wxi				\
 	wixl/cairo.wxi				\
 	wixl/celt051.wxi			\
@@ -18,11 +19,12 @@ dist_wxi_DATA =					\
 	wixl/gstreamer-plugins-base.wxi		\
 	wixl/gstreamer-plugins-good.wxi		\
 	wixl/gstreamer.wxi			\
-	wixl/gtk2.wxi				\
 	wixl/gtk-vnc.wxi			\
+	wixl/gtk2.wxi				\
 	wixl/gvnc.wxi				\
 	wixl/hicolor-icon-theme.wxi		\
 	wixl/jasper.wxi				\
+	wixl/libcacard.wxi			\
 	wixl/libffi.wxi				\
 	wixl/libgcrypt.wxi			\
 	wixl/libgpg-error.wxi			\
@@ -38,6 +40,8 @@ dist_wxi_DATA =					\
 	wixl/libvirt.wxi			\
 	wixl/libvorbis.wxi			\
 	wixl/libxml2.wxi			\
+	wixl/nspr.wxi				\
+	wixl/nss.wxi				\
 	wixl/openssl.wxi			\
 	wixl/orc.wxi				\
 	wixl/p11-kit.wxi			\
@@ -46,7 +50,6 @@ dist_wxi_DATA =					\
 	wixl/portablexdr.wxi			\
 	wixl/pthreads.wxi			\
 	wixl/readline.wxi			\
-	wixl/SDL.wxi				\
 	wixl/spice-glib.wxi			\
 	wixl/spice-gtk.wxi			\
 	wixl/termcap.wxi			\
