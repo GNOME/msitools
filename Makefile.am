@@ -180,6 +180,7 @@ dist-hook:
 	    echo cp -fpR $(srcdir)/$$file "$(distdir)$$dir"; \
 	    cp -fpR $(srcdir)/$$file "$(distdir)$$dir" || exit 1; \
 	done
+	@echo $(VERSION) > $(distdir)/.tarball-version
 
 
 $(srcdir)/tests/testsuite: tests/testsuite.at tests/wixl.at tests/package.m4
@@ -187,4 +188,15 @@ $(srcdir)/tests/testsuite: tests/testsuite.at tests/wixl.at tests/package.m4
 		$(AUTOM4TE) --language=autotest -o testsuite.tmp testsuite.at && \
 		mv testsuite.tmp testsuite
 
-EXTRA_DIST += msitools.doap build-aux/move-if-change autogen.sh
+EXTRA_DIST +=					\
+	$(top_srcdir)/.version			\
+	NEWS					\
+	autogen.sh				\
+	build-aux/git-version-gen		\
+	build-aux/move-if-change		\
+	msitools.doap				\
+	$(NULL)
+
+BUILT_SOURCES = $(top_srcdir)/.version
+$(top_srcdir)/.version:
+	@echo $(VERSION) > $@-t && mv $@-t $@
