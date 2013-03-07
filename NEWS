@@ -1,0 +1,28 @@
+v0.92
+=====
+
+- msidump & msidiff added
+- Add nss/nspr/libcacard wxi
+- Some i18 support, thanks to all translators
+- Build clean-ups
+- Misc bug fixes
+
+v0.91
+=====
+
+- msiextract added, a tool to extract the archived files
+- wixl now uses stable UUID, has learned to deal with services and
+  custom actions.
+- Build fixes to satisify RHEL6
+
+v0.90
+=====
+
+- wixl added, a simple WiX-like tool
+- libmsi is now fully GIR friendly
+
+v0.01
+=====
+
+- Initial release
+- msibuild & msiinfo tools provided
