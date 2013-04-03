@@ -35,12 +35,17 @@
         <Component Id="cmp641F505793C8C044C76414CB6C791C85" Guid="*">
           <File Id="filA257891410A87696A3ADE5852462FBDE" KeyPath="yes" Source="$(var.SourceDir)/bin/gsettings.exe"/>
         </Component>
+
+        <!-- FIXME: perhaps not correct to share component id for two
+        versions here, but we lack condition expression evaluation.
+        Also, see GLib bug 697156 to remove that unnecessary kludge -->
         <Component Id="cmp6D51B76EDAC50E07576738CC967DF2B8" Guid="*">
-          <File Id="fil4EE00EB97025D93A2059F8C6CE6CE4DF" KeyPath="yes" Source="$(var.SourceDir)/bin/gspawn-win32-helper-console.exe"/>
+          <File Id="fil4EE00EB97025D93A2059F8C6CE6CE4DF" KeyPath="yes" Source="$(var.SourceDir)/bin/gspawn-$(env.GLIB_ARCH)-helper-console.exe"/>
         </Component>
         <Component Id="cmpD2B981C370CD6226A814AE8B4C124DDE" Guid="*">
-          <File Id="filEE7F8F0A2194C97E113C07E0A1CD6E6E" KeyPath="yes" Source="$(var.SourceDir)/bin/gspawn-win32-helper.exe"/>
+          <File Id="filEE7F8F0A2194C97E113C07E0A1CD6E6E" KeyPath="yes" Source="$(var.SourceDir)/bin/gspawn-$(env.GLIB_ARCH)-helper.exe"/>
         </Component>
+
         <Component Id="cmp4A6A2B5ACA14940BF3D57B9FF19C9689" Guid="*">
           <File Id="filE25C44314299AD6EE8F900723C732123" KeyPath="yes" Source="$(var.SourceDir)/bin/libgio-2.0-0.dll"/>
         </Component>
