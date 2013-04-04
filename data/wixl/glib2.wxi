@@ -96,9 +96,6 @@
             </Component>
           </Directory>
           <Directory Id="dirDC91424A11A0F53C9A234A9B2AE16588" Name="gettext">
-            <Component Id="cmp27894D46045118E880E9597C49163940" Guid="*">
-              <File Id="filF8B4A439C2FC8E3413F1690ADA673BDF" KeyPath="yes" Source="$(var.SourceDir)/share/glib-2.0/gettext/mkinstalldirs"/>
-            </Component>
             <Directory Id="dir6DED64F8CABFCE4F4C1904B8B3920654" Name="po">
               <Component Id="cmp814A5CAB037A06029EF1E9006457A3AE" Guid="*">
                 <File Id="fil6F68985D09F4207CCD55C90C0BBDC38C" KeyPath="yes" Source="$(var.SourceDir)/share/glib-2.0/gettext/po/Makefile.in.in"/>
@@ -804,7 +801,6 @@
       <ComponentRef Id="cmp058ABAE3E4BE796474C695380BAE5224"/>
       <ComponentRef Id="cmpDA64D053823C9BB47669A576DFD79865"/>
       <ComponentRef Id="cmp2C44A4EB3A7F3E66A8A1DE7FED951A85"/>
-      <ComponentRef Id="cmp27894D46045118E880E9597C49163940"/>
       <ComponentRef Id="cmp814A5CAB037A06029EF1E9006457A3AE"/>
       <ComponentRef Id="cmpF88FF5AF54096E3F6FB53DF45E40A219"/>
       <ComponentRef Id="cmpCF8F003E2F7DB70E0B9D552C18C1D6E9"/>
