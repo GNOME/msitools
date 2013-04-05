@@ -1,0 +1,101 @@
+# Tajik translation for msitools.
+# Copyright (C) 2013 msitools's COPYRIGHT HOLDER
+# This file is distributed under the same license as the msitools package.
+# Victor Ibragimov <victor.ibragimov@gmail.com>, 2013.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: msitools master\n"
+"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
+"product=msitools&keywords=I18N+L10N&component=general\n"
+"POT-Creation-Date: 2013-04-04 12:39+0000\n"
+"PO-Revision-Date: 2013-04-05 15:32+0500\n"
+"Last-Translator: Victor Ibragimov <victor.ibragimov@gmail.com>\n"
+"Language-Team: Tajik <tg@li.org>\n"
+"Language: tg\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.5.4\n"
+
+#: ../tools/msiextract.vala:10 ../tools/wixl/wixl.vala:20
+msgid "Display version number"
+msgstr "Намоиш додани рақами версия"
+
+#: ../tools/msiextract.vala:11
+msgid "Extract to directory"
+msgstr "Баровардан ба директория"
+
+#: ../tools/msiextract.vala:12
+msgid "List files only"
+msgstr "Танҳо рӯйхати файлҳо"
+
+#: ../tools/msiextract.vala:13
+msgid "MSI_FILE..."
+msgstr "ФАЙЛИ_MSI..."
+
+#: ../tools/msiextract.vala:126
+msgid "- a msi files extracting tool"
+msgstr "- абзори барориши файлҳои msi"
+
+#: ../tools/msiextract.vala:146 ../tools/wixl/wixl.vala:63
+#, c-format
+msgid "Please specify input files.\n"
+msgstr "Лутфан, файлҳои вурудиро муайян кунед.\n"
+
+#: ../tools/wixl/wixl-heat.vala:11
+msgid "Directory Ref"
+msgstr "Истиноди директория"
+
+#: ../tools/wixl/wixl-heat.vala:12
+msgid "Component Group"
+msgstr "Гурӯҳи компонент"
+
+#: ../tools/wixl/wixl-heat.vala:13
+msgid "Variable for source dir"
+msgstr "Тағйирёбанда барои директорияи манбаъ"
+
+#: ../tools/wixl/wixl-heat.vala:14
+msgid "Prefix"
+msgstr "Префикс"
+
+#: ../tools/wixl/wixl-heat.vala:15
+msgid "Exclude prefix"
+msgstr "Истисно кардани префикс"
+
+#: ../tools/wixl/wixl.vala:21
+msgid "Verbose output"
+msgstr "Барориши ботафсил"
+
+#: ../tools/wixl/wixl.vala:22
+msgid "Output file"
+msgstr "Файли барориш"
+
+#: ../tools/wixl/wixl.vala:23
+msgid "Define variable"
+msgstr "Тағйирёбандаи муайян"
+
+#: ../tools/wixl/wixl.vala:24
+msgid "Include directory"
+msgstr "Илова кардани директория"
+
+#: ../tools/wixl/wixl.vala:25
+msgid "System include directory"
+msgstr "Система дорои директория мебошад"
+
+#: ../tools/wixl/wixl.vala:26
+msgid "Stop after the preprocessing stage"
+msgstr "Истодан баъд аз дараҷаи пeшпаpдoзӣ"
+
+#: ../tools/wixl/wixl.vala:27
+msgid "INPUT_FILE..."
+msgstr "_ФАЙЛИ ВУРУДӢ..."
+
+#: ../tools/wixl/wixl.vala:37
+msgid "- a msi building tool"
+msgstr "- абзори сохти msi"
+
+#: ../tools/wixl/wixl.vala:71
+#, c-format
+msgid "Please specify the output file.\n"
+msgstr "Лутфан, файлҳои бароришро муайян кунед.\n"
