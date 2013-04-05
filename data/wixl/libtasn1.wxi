@@ -4,7 +4,7 @@
     <DirectoryRef Id="INSTALLDIR">
       <Directory Id="dir353068C57C7655EF0641549FDAAB3898" Name="bin">
         <Component Id="cmpA0ECA72D4779635FA3B2FDA40876FCC3" Guid="*">
-          <File Id="fil4B149CE82CDBC6A91851CD63D11A682E" KeyPath="yes" Source="$(var.SourceDir)/bin/libtasn1-3.dll"/>
+          <File Id="fil4B149CE82CDBC6A91851CD63D11A682E" KeyPath="yes" Source="$(var.SourceDir)/bin/libtasn1-6.dll"/>
         </Component>
         </Directory>
     </DirectoryRef>

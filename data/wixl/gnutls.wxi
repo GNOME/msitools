@@ -7,7 +7,7 @@
     <DirectoryRef Id="INSTALLDIR">
       <Directory Id="dir6A4BB80DC22241BD2E3AE9ECF3DB60D5" Name="bin">
         <Component Id="cmp845933D5BF01B8450C766D545EF5F537" Guid="*">
-          <File Id="fil9C333DD6A36336E25CD821B997A40BC9" KeyPath="yes" Source="$(var.SourceDir)/bin/libgnutls-26.dll"/>
+          <File Id="fil9C333DD6A36336E25CD821B997A40BC9" KeyPath="yes" Source="$(var.SourceDir)/bin/libgnutls-28.dll"/>
         </Component>
       </Directory>
     </DirectoryRef>
