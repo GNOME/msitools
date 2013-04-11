@@ -1,17 +1,31 @@
 namespace Wixl {
 
+    enum Arch {
+        X86 = 0,
+        INTEL = 0,
+        IA64 = 1,
+        INTEL64 = 1,
+        X64;
+
+        public static Arch from_string(string s) throws GLib.Error {
+            return enum_from_string<Arch> (s);
+        }
+    }
+
     class WixBuilder: WixNodeVisitor, WixResolver {
 
-        public WixBuilder (string[] includedirs) {
+        public WixBuilder (string[] includedirs, Arch arch) {
             add_path (".");
             foreach (var i in includedirs)
                 this.includedirs.append (File.new_for_path (i));
+            this.arch = arch;
         }
 
         WixRoot root;
         MsiDatabase db;
         HashTable<string, string> variables;
         List<File> includedirs;
+        Arch arch;
 
         construct {
             variables = new HashTable<string, string> (str_hash, str_equal);

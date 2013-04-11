@@ -15,18 +15,30 @@ namespace Wixl {
 
     static string[] includedirs;
     static string wxidir;
+    static Arch arch = Arch.X86;
 
     private const OptionEntry[] options = {
         { "version", 0, 0, OptionArg.NONE, ref version, N_("Display version number"), null },
         { "verbose", 'v', 0, OptionArg.NONE, ref verbose, N_("Verbose output"), null },
         { "output", 'o', 0, OptionArg.FILENAME, ref output, N_("Output file"), null },
         { "define", 'D', 0, OptionArg.STRING_ARRAY, ref defines, N_("Define variable"), null },
+        { "arch", 'a', 0, OptionArg.CALLBACK, (void*)parse_arch, N_("Target architecture"), null },
         { "includedir", 'I', 0, OptionArg.STRING_ARRAY, ref opt_includedirs, N_("Include directory"), null },
         { "wxidir", 0, 0, OptionArg.STRING, ref wxidir, N_("System include directory"), null },
         { "only-preproc", 'E', 0, OptionArg.NONE, ref preproc, N_("Stop after the preprocessing stage"), null },
         { "", 0, 0, OptionArg.FILENAME_ARRAY, ref files, null, N_("INPUT_FILE...") },
         { null }
     };
+
+    bool parse_arch (string option_name, string value, void *data) throws OptionError {
+        try {
+            arch = Arch.from_string (value);
+        } catch (GLib.Error e) {
+            throw new OptionError.BAD_VALUE (_("arch of type '%s' is not supported").printf (value));
+        }
+
+        return true;
+    }
 
     int main (string[] args) {
         Intl.bindtextdomain (Config.GETTEXT_PACKAGE, Config.LOCALEDIR);
@@ -44,7 +56,7 @@ namespace Wixl {
         try {
             opt_context.parse (ref args);
         } catch (OptionError.BAD_VALUE err) {
-            GLib.stdout.printf (opt_context.get_help (true, null));
+            GLib.stderr.printf (err.message + "\n");
             exit (1);
         } catch (OptionError error) {
             warning (error.message);
@@ -74,7 +86,7 @@ namespace Wixl {
         }
 
         try {
-            var builder = new WixBuilder (includedirs);
+            var builder = new WixBuilder (includedirs, arch);
 
             foreach (var d in defines) {
                 var def = d.split ("=", 2);
