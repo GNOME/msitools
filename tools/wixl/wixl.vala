@@ -97,7 +97,7 @@ namespace Wixl {
 
             foreach (var arg in files) {
                 if (verbose)
-                    print ("Loading %s...\n", arg);
+                    print (_("Loading %s...\n"), arg);
                 var file = File.new_for_commandline_arg (arg);
                 builder.load_file (file, preproc);
                 builder.add_path (file.get_parent ().get_path ());
@@ -107,10 +107,10 @@ namespace Wixl {
                 return 0;
 
             if (verbose)
-                print ("Building %s...\n", output);
+                print (_("Building %s...\n"), output);
             var msi = builder.build ();
             if (verbose)
-                print ("Writing %s...\n", output);
+                print (_("Writing %s...\n"), output);
             msi.build (output);
         } catch (GLib.Error error) {
             printerr (error.message + "\n");
