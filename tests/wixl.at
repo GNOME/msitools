@@ -115,12 +115,12 @@ AT_CLEANUP
 AT_SETUP([System include directory])
 AT_DATA([include.wxs], [<?xml version='1.0' encoding='windows-1252'?>
 <Wix xmlns='http://schemas.microsoft.com/wix/2006/wi'>
-  <?include gtk2.wxi ?>
+  <?include zlib.wxi ?>
 </Wix>
 ])
 
 AT_CHECK_WIXL([-E include.wxs -D SourceDir=foo], [0], [stdout])
-AT_CHECK([grep -F gtk-demo.exe stdout], [0], [ignore])
+AT_CHECK([grep -F zlib1.dll stdout], [0], [ignore])
 AT_CLEANUP
 
 AT_SETUP([ARP example])
