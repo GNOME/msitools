@@ -404,10 +404,10 @@ unsigned msi_open_storage( LibmsiDatabase *db, const char *stname );
 void msi_destroy_storage( LibmsiDatabase *db, const char *stname );
 extern unsigned msi_enum_db_storages(LibmsiDatabase *, unsigned (*fn)(const char *, GsfInfile *, void *), void *);
 extern unsigned _libmsi_database_open_query(LibmsiDatabase *, const char *, LibmsiQuery **);
-extern unsigned _libmsi_query_open( LibmsiDatabase *, LibmsiQuery **, const char *, ... );
+extern unsigned _libmsi_query_open( LibmsiDatabase *, LibmsiQuery **, const char *, ... ) G_GNUC_PRINTF(3,4);
 typedef unsigned (*record_func)( LibmsiRecord *, void *);
 extern unsigned _libmsi_query_iterate_records( LibmsiQuery *, unsigned *, record_func, void *);
-extern LibmsiRecord *_libmsi_query_get_record( LibmsiDatabase *db, const char *query, ... );
+extern LibmsiRecord *_libmsi_query_get_record( LibmsiDatabase *db, const char *query, ... ) G_GNUC_PRINTF(2,3);
 extern unsigned _libmsi_database_get_primary_keys( LibmsiDatabase *, const char *, LibmsiRecord **);
 
 /* view internals */

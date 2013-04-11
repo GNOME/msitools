@@ -28,9 +28,7 @@
 #include <stdio.h>
 #include <glib.h>
 
-#ifdef __cplusplus
-extern "C" {
-#endif
+G_BEGIN_DECLS
 
 /*
  * Internal definitions (do not use these directly)
@@ -59,7 +57,7 @@ static inline const char *wine_dbgstr_an( const char * s, int n )
     return s;
 }
 
-const char *wine_dbg_sprintf( const char *format, ...);
+const char *wine_dbg_sprintf( const char *format, ...) G_GNUC_PRINTF (1, 2);;
 
 #define wine_dbg_printf(format,...) (printf(format, ## __VA_ARGS__), fflush(stdout))
 #define WINE_DPRINTF(class, function, format, ...) \
@@ -100,8 +98,6 @@ static inline const char *debugstr_a( const char *s )  { return wine_dbgstr_an( 
   }                                             \
 }G_STMT_END
 
-#ifdef __cplusplus
-}
-#endif
+G_END_DECLS
 
 #endif  /* __WINE_WINE_DEBUG_H */

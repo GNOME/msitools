@@ -311,7 +311,7 @@ static void read_properties_from_data( LibmsiOLEVariant *prop, const uint8_t *da
     unsigned i;
     LibmsiOLEVariant *property;
     uint32_t idofs, len;
-    char *str;
+    char *str = NULL;
 
     idofs = 8;
 
@@ -387,6 +387,7 @@ static void read_properties_from_data( LibmsiOLEVariant *prop, const uint8_t *da
         else if (type == proptype)
            ;
         else if( proptype == OLEVT_LPSTR) {
+            g_return_if_fail(str != NULL);
             if( type == OLEVT_I2 || type == OLEVT_I4) {
                 property->intval = atoi( str );
             } else if( type == OLEVT_FILETIME) {

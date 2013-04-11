@@ -115,7 +115,7 @@ static unsigned alter_add_column(LibmsiAlterView *av)
         return LIBMSI_RESULT_BAD_QUERY_SYNTAX;
     }
 
-    r = _libmsi_query_open(av->db, &view, query, av->colinfo->table, av->colinfo->column);
+    r = _libmsi_query_open(av->db, &view, query, av->colinfo->table);
     if (r == LIBMSI_RESULT_SUCCESS)
     {
         r = _libmsi_query_iterate_records(view, NULL, count_iter, &colnum);
