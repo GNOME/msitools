@@ -673,6 +673,8 @@ namespace Wixl {
     }
 
     class MsiDatabase: Object {
+        public Arch arch { get; construct set; }
+
         public MsiSummaryInfo info;
         public MsiTableProperty table_property;
         public MsiTableIcon table_icon;
@@ -701,6 +703,13 @@ namespace Wixl {
 
         public HashTable<string, MsiTable> tables;
 
+        int get_default_version () {
+            if (arch == Arch.X86)
+                return 100;
+            else
+                return 200;
+        }
+
         construct {
             info = new MsiSummaryInfo ();
             try {
@@ -713,7 +722,7 @@ namespace Wixl {
                                    time_to_filetime (now ()));
                 info.set_property (Libmsi.Property.LASTSAVED_TM,
                                    time_to_filetime (now ()));
-                info.set_property (Libmsi.Property.VERSION, 100);
+                info.set_property (Libmsi.Property.VERSION, get_default_version ());
                 info.set_property (Libmsi.Property.SOURCE, 2);
                 info.set_property (Libmsi.Property.APPNAME, Config.PACKAGE_STRING);
                 info.set_property (Libmsi.Property.SECURITY, 2);
@@ -779,8 +788,8 @@ namespace Wixl {
             }
         }
 
-        public MsiDatabase () {
-            // empty ctor
+        public MsiDatabase (Arch arch) {
+            Object (arch: arch);
         }
 
         public void build (string filename) throws GLib.Error {

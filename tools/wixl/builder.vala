@@ -239,7 +239,7 @@ namespace Wixl {
         }
 
         public MsiDatabase build () throws GLib.Error {
-            db = new MsiDatabase ();
+            db = new MsiDatabase (arch);
 
             foreach (var r in roots) {
                 root = r;
@@ -281,8 +281,14 @@ namespace Wixl {
             if (package.Keywords != null)
                 db.info.set_keywords (package.Keywords);
 
-            if (package.InstallerVersion != null)
-                db.info.set_property (Libmsi.Property.VERSION, int.parse (package.InstallerVersion));
+            if (package.InstallerVersion != null) {
+                var version = int.parse (package.InstallerVersion);
+
+                if (arch != Arch.X86 && version < 200)
+                    warning ("InstallerVersion >= 200 required for !x86 builds");
+
+                db.info.set_property (Libmsi.Property.VERSION, version);
+            }
 
         }
 
@@ -349,7 +355,7 @@ namespace Wixl {
             var cs = new Checksum (ChecksumType.SHA1);
             uint8 buffer[20];
             size_t buflen = buffer.length;
-            
+
             cs.update (uuid_namespace.data, 16);
             cs.update (s.data, s.length);
             cs.get_digest (buffer, ref buflen);
