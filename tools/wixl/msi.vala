@@ -718,11 +718,19 @@ namespace Wixl {
                 return 200;
         }
 
+        string get_arch_template () {
+            if (arch == Arch.X86)
+                return "Intel";
+            else
+                return "x64";
+        }
+
         construct {
             info = new MsiSummaryInfo ();
             try {
                 info.set_property (Libmsi.Property.TITLE, "Installation Database");
-                info.set_property (Libmsi.Property.TEMPLATE, "Intel;1033");
+                info.set_property (Libmsi.Property.TEMPLATE,
+                                   "%s;1033".printf (get_arch_template ()));
                 info.set_property (Libmsi.Property.KEYWORDS, "Installer");
                 info.set_property (Libmsi.Property.CODEPAGE, 1252);
                 info.set_property (Libmsi.Property.UUID, get_uuid ("*"));
