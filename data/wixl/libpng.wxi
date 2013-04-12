@@ -4,7 +4,7 @@
   <Fragment>
     <DirectoryRef Id="INSTALLDIR">
       <Directory Id="dir4F037DA059A1304DD8B0E91921F03295" Name="bin">
-        <Component Id="cmp71CA8B05415501F69863A36302EE1D4F" Guid="*">
+        <Component Win64="$(var.Win64)" Id="cmp71CA8B05415501F69863A36302EE1D4F" Guid="*">
           <File Id="fil61969A4C9C2629AE404A707620CF5AED" KeyPath="yes" Source="$(var.SourceDir)/bin/libpng15-15.dll"/>
         </Component>
       </Directory>

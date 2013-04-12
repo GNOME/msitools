@@ -7,13 +7,13 @@
   <Fragment>
     <DirectoryRef Id="INSTALLDIR">
       <Directory Id="dir0C707FE57D1835D36676DC503C89282A" Name="bin">
-        <Component Id="cmpC9A10C197D135A61A3FC2CA016DE26E6" Guid="*">
+        <Component Win64="$(var.Win64)" Id="cmpC9A10C197D135A61A3FC2CA016DE26E6" Guid="*">
           <File Id="filCF9796638D750D06CA04C01E5A5F30E6" KeyPath="yes" Source="$(var.SourceDir)/bin/libcairo-2.dll"/>
         </Component>
-        <Component Id="cmp2FEBFD1B33A65C29917E2B6F3F20EEBE" Guid="*">
+        <Component Win64="$(var.Win64)" Id="cmp2FEBFD1B33A65C29917E2B6F3F20EEBE" Guid="*">
           <File Id="fil013083177D49ECAD9D651BE7DCF04B4E" KeyPath="yes" Source="$(var.SourceDir)/bin/libcairo-gobject-2.dll"/>
         </Component>
-        <Component Id="cmp933B5D951CF1E2D1F6384212D1930A75" Guid="*">
+        <Component Win64="$(var.Win64)" Id="cmp933B5D951CF1E2D1F6384212D1930A75" Guid="*">
           <File Id="fil9779538448D9D47320A67B9985126DF1" KeyPath="yes" Source="$(var.SourceDir)/bin/libcairo-script-interpreter-2.dll"/>
         </Component>
         </Directory>

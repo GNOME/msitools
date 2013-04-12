@@ -3,7 +3,7 @@
   <Fragment>
     <DirectoryRef Id="INSTALLDIR">
       <Directory Id="dir7F336A2C4B5DA9E2D6A824B7A9A79979" Name="bin">
-        <Component Id="cmp3807A1C7915A2A7EFF8C88382DB67C3C" Guid="*">
+        <Component Win64="$(var.Win64)" Id="cmp3807A1C7915A2A7EFF8C88382DB67C3C" Guid="*">
           <File Id="fil0B4ECF3732A0BB456B9212EECD25CF37" KeyPath="yes" Source="$(var.SourceDir)/bin/iconv.dll"/>
         </Component>
       </Directory>

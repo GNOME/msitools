@@ -4,7 +4,7 @@
   <Fragment>
     <DirectoryRef Id="INSTALLDIR">
       <Directory Id="dirBBB2DE8E8B5E7A934B840E6BDE8EE865" Name="bin">
-        <Component Id="cmpAB304E617DA059E0A52EC5BF43346A01" Guid="*">
+        <Component Win64="$(var.Win64)" Id="cmpAB304E617DA059E0A52EC5BF43346A01" Guid="*">
           <File Id="fil3887CE3C6978DEAEF194F74409A51F95" KeyPath="yes" Source="$(var.SourceDir)/bin/libintl-8.dll"/>
         </Component>
       </Directory>

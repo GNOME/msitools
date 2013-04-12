@@ -4,7 +4,7 @@
   <Fragment>
     <DirectoryRef Id="INSTALLDIR">
       <Directory Id="dirC16C6EB947CCB2995093F61566A156D0" Name="bin">
-        <Component Id="cmpE62B6BBD3A238B97A2947D35EA1404D3" Guid="*">
+        <Component Win64="$(var.Win64)" Id="cmpE62B6BBD3A238B97A2947D35EA1404D3" Guid="*">
           <File Id="fil033FB4919B55C60B6E7D9DA3EC993D79" KeyPath="yes" Source="$(var.SourceDir)/bin/SDL.dll"/>
         </Component>
       </Directory>

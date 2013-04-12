@@ -3,13 +3,13 @@
   <Fragment>
     <DirectoryRef Id="INSTALLDIR">
       <Directory Id="dir006398F7A521B81D29988CF8A884A523" Name="bin">
-        <Component Id="cmp79A4376EB016D4E6DCF0F0A3ECCB227C" Guid="*">
+        <Component Win64="$(var.Win64)" Id="cmp79A4376EB016D4E6DCF0F0A3ECCB227C" Guid="*">
           <File Id="fil84DDEC7A89972760CD4AB236D6D9C5BD" KeyPath="yes" Source="$(var.SourceDir)/bin/libvorbis-0.dll"/>
         </Component>
-        <Component Id="cmpDE9F467369F0967388B374FBB7855227" Guid="*">
+        <Component Win64="$(var.Win64)" Id="cmpDE9F467369F0967388B374FBB7855227" Guid="*">
           <File Id="fil5AA8CD64FB3397A5879CD05E8ACFEE9D" KeyPath="yes" Source="$(var.SourceDir)/bin/libvorbisenc-2.dll"/>
         </Component>
-        <Component Id="cmp5AE62240861BF88A419E10060A0A41FB" Guid="*">
+        <Component Win64="$(var.Win64)" Id="cmp5AE62240861BF88A419E10060A0A41FB" Guid="*">
           <File Id="filFB9BBEDE49B7F7E91BDE5AFF583DADC5" KeyPath="yes" Source="$(var.SourceDir)/bin/libvorbisfile-3.dll"/>
         </Component>
       </Directory>

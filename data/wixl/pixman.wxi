@@ -3,7 +3,7 @@
   <Fragment>
     <DirectoryRef Id="INSTALLDIR">
       <Directory Id="dir0DA8D564D18965B8526583810328A91E" Name="bin">
-        <Component Id="cmp2E74A346D62E4FE48906B9C60A265509" Guid="*">
+        <Component Win64="$(var.Win64)" Id="cmp2E74A346D62E4FE48906B9C60A265509" Guid="*">
           <File Id="fil0398313055277B7191372D120964170D" KeyPath="yes" Source="$(var.SourceDir)/bin/libpixman-1-0.dll"/>
         </Component>
       </Directory>

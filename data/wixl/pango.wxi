@@ -5,25 +5,25 @@
   <Fragment>
     <DirectoryRef Id="INSTALLDIR">
       <Directory Id="dir0F15244834A4142CC7FBD4F5CFCF7FA0" Name="bin">
-        <Component Id="cmp1FE5988884F4A6E5F9B935E26F7CA89E" Guid="*">
+        <Component Win64="$(var.Win64)" Id="cmp1FE5988884F4A6E5F9B935E26F7CA89E" Guid="*">
           <File Id="filEEE5FCA0FBBDE782D9B70C7AEA64843C" KeyPath="yes" Source="$(var.SourceDir)/bin/libpango-1.0-0.dll"/>
         </Component>
-        <Component Id="cmpB85AF8036B232EAA090D687374559306" Guid="*">
+        <Component Win64="$(var.Win64)" Id="cmpB85AF8036B232EAA090D687374559306" Guid="*">
           <File Id="filA1FB038A531D269931DE63F5AC02DC16" KeyPath="yes" Source="$(var.SourceDir)/bin/libpangocairo-1.0-0.dll"/>
         </Component>
-        <Component Id="cmp79E5CAC364D0F87C611C24DBEC44D777" Guid="*">
+        <Component Win64="$(var.Win64)" Id="cmp79E5CAC364D0F87C611C24DBEC44D777" Guid="*">
           <File Id="fil4E5ABBF5D47C302D9D303788878E3ED2" KeyPath="yes" Source="$(var.SourceDir)/bin/libpangoft2-1.0-0.dll"/>
         </Component>
-        <Component Id="cmpBE35A7ACCA3D48A17EAAE6CE108ED9D2" Guid="*">
+        <Component Win64="$(var.Win64)" Id="cmpBE35A7ACCA3D48A17EAAE6CE108ED9D2" Guid="*">
           <File Id="filC5D15BDBA79F0D71CE744741B659F15B" KeyPath="yes" Source="$(var.SourceDir)/bin/libpangowin32-1.0-0.dll"/>
         </Component>
-        <Component Id="cmpE489E2AA2EF92767EE6A77F8CD4AB54E" Guid="*">
+        <Component Win64="$(var.Win64)" Id="cmpE489E2AA2EF92767EE6A77F8CD4AB54E" Guid="*">
           <File Id="fil10B67BAEF698F2F32D5C732C99D53996" KeyPath="yes" Source="$(var.SourceDir)/bin/pango-view.exe"/>
         </Component>
       </Directory>
       <Directory Id="dir290F3EDFCBD17C2FB653F92345AE43C2" Name="etc">
         <Directory Id="dirC8E22B975C9AD79D4FF2DF38AA97450A" Name="pango">
-          <Component Id="cmp2A1203CE7D514D8CDBA3347C16D9489E" Guid="*">
+          <Component Win64="$(var.Win64)" Id="cmp2A1203CE7D514D8CDBA3347C16D9489E" Guid="*">
             <File Id="fil9B09672AEB78239BE3531865A5E4F670" KeyPath="yes" Source="$(var.SourceDir)/etc/pango/pango.modules"/>
           </Component>
         </Directory>
@@ -32,13 +32,13 @@
         <Directory Id="dir04335E203DF7834584E01FCC287FBC6F" Name="pango">
           <Directory Id="dirA10F39BC178C734A5B3BC45EAD0FECD1" Name="1.8.0">
             <Directory Id="dir55C150623B66ACEFE3A5E0559B4757A3" Name="modules">
-              <Component Id="cmpA493C8A5E3C0A89C7D8833CF8EDF5314" Guid="*">
+              <Component Win64="$(var.Win64)" Id="cmpA493C8A5E3C0A89C7D8833CF8EDF5314" Guid="*">
                 <File Id="fil62F567741562F4447911A7ED0E28626E" KeyPath="yes" Source="$(var.SourceDir)/lib/pango/1.8.0/modules/pango-arabic-lang.dll"/>
               </Component>
-              <Component Id="cmp870B222F1B7F934EBDB971DEFE25E638" Guid="*">
+              <Component Win64="$(var.Win64)" Id="cmp870B222F1B7F934EBDB971DEFE25E638" Guid="*">
                 <File Id="filC07C20D528105DAD74F5DCC10710EB50" KeyPath="yes" Source="$(var.SourceDir)/lib/pango/1.8.0/modules/pango-basic-fc.dll"/>
               </Component>
-              <Component Id="cmp85559409AE9C798D4294C448136D8E8B" Guid="*">
+              <Component Win64="$(var.Win64)" Id="cmp85559409AE9C798D4294C448136D8E8B" Guid="*">
                 <File Id="fil016068A194090613A726946B398327EE" KeyPath="yes" Source="$(var.SourceDir)/lib/pango/1.8.0/modules/pango-indic-lang.dll"/>
               </Component>
             </Directory>

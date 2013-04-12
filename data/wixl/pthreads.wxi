@@ -3,10 +3,10 @@
   <Fragment>
     <DirectoryRef Id="INSTALLDIR">
       <Directory Id="dir878989759FF40709F1E57A1AA271CD64" Name="bin">
-        <Component Id="cmpC7F5F9657618731FC790A2D04A0B82F1" Guid="*">
+        <Component Win64="$(var.Win64)" Id="cmpC7F5F9657618731FC790A2D04A0B82F1" Guid="*">
           <File Id="fil574EDF9AF37AA0BBEBAD8BE3343CCFFB" KeyPath="yes" Source="$(var.SourceDir)/bin/pthreadGC2.dll"/>
         </Component>
-        <Component Id="cmp0FAF3F8B19D8199505D11EC82E3A2040" Guid="*">
+        <Component Win64="$(var.Win64)" Id="cmp0FAF3F8B19D8199505D11EC82E3A2040" Guid="*">
           <File Id="fil92009A98E71AC037270825D4B31CD0B3" KeyPath="yes" Source="$(var.SourceDir)/bin/pthreadGCE2.dll"/>
         </Component>
         </Directory>

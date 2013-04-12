@@ -10,27 +10,27 @@
   <Fragment>
     <DirectoryRef Id="INSTALLDIR">
       <Directory Id="dir775DA6245305AB2120C733A9480577AA" Name="bin">
-        <Component Id="cmp102591AAF331792A897FB24554275832" Guid="*">
+        <Component Win64="$(var.Win64)" Id="cmp102591AAF331792A897FB24554275832" Guid="*">
           <File Id="fil35FAB81A77DA2E800C66E4D946F97031" KeyPath="yes" Source="$(var.SourceDir)/bin/libspice-client-glib-2.0-8.dll"/>
         </Component>
-        <Component Id="cmpD9079AE5EA50B2FAF0D89AA30A612B73" Guid="*">
+        <Component Win64="$(var.Win64)" Id="cmpD9079AE5EA50B2FAF0D89AA30A612B73" Guid="*">
           <File Id="fil8CEB7404BB93577C36D980F7AA6DEADD" KeyPath="yes" Source="$(var.SourceDir)/bin/libspice-controller-0.dll"/>
         </Component>
 
         <!-- gst-plugins-base -->
-        <Component Id="cmp4A56F2FEAA3A575F3561BD6E960B6B47" Guid="*">
+        <Component Win64="$(var.Win64)" Id="cmp4A56F2FEAA3A575F3561BD6E960B6B47" Guid="*">
           <File Id="fil60CEAFA762E3AB07FF6EC739BEB587FB" KeyPath="yes" Source="$(var.SourceDir)/bin/libgstapp-0.10-0.dll"/>
         </Component>
-        <Component Id="cmp692250298EA7C7B39477952B28CF34CF" Guid="*">
+        <Component Win64="$(var.Win64)" Id="cmp692250298EA7C7B39477952B28CF34CF" Guid="*">
           <File Id="fil20A96479CCB28BE5A94C376458E3BB67" KeyPath="yes" Source="$(var.SourceDir)/bin/libgstpbutils-0.10-0.dll"/>
         </Component>
-        <Component Id="cmp18ED35739242986000DC9D69D40BC8BC" Guid="*">
+        <Component Win64="$(var.Win64)" Id="cmp18ED35739242986000DC9D69D40BC8BC" Guid="*">
           <File Id="fil73C0890E2997DE8152078F436FCAE6A1" KeyPath="yes" Source="$(var.SourceDir)/bin/libgstaudio-0.10-0.dll"/>
         </Component>
-        <Component Id="cmpF62FD2E4C8B2A5D7B1A253E0A362547A" Guid="*">
+        <Component Win64="$(var.Win64)" Id="cmpF62FD2E4C8B2A5D7B1A253E0A362547A" Guid="*">
           <File Id="fil0428CA794533DA28023C7BB25A833F0D" KeyPath="yes" Source="$(var.SourceDir)/bin/libgstfft-0.10-0.dll"/>
         </Component>
-        <Component Id="cmp60C1666B2D158B51EF557B7AC0CBFD17" Guid="*">
+        <Component Win64="$(var.Win64)" Id="cmp60C1666B2D158B51EF557B7AC0CBFD17" Guid="*">
           <File Id="fil8F44D4A88DCAED76FF48B6B918C712AE" KeyPath="yes" Source="$(var.SourceDir)/bin/libgstinterfaces-0.10-0.dll"/>
         </Component>
 
@@ -39,28 +39,28 @@
       <!-- some gst plugins -->
       <Directory Id="dirBC17AF922D3411ED4A9D4C99935C17A5" Name="lib">
         <Directory Id="dir4607888FD87E10C13B6C7B6A267E34C8" Name="gstreamer-0.10">
-          <Component Id="cmpF37CEFDBBF229DA58F7F7CB5184FF340" Guid="*">
+          <Component Win64="$(var.Win64)" Id="cmpF37CEFDBBF229DA58F7F7CB5184FF340" Guid="*">
             <File Id="filB3CFDD94EFC066BCD24E922EDD11D48E" KeyPath="yes" Source="$(var.SourceDir)/lib/gstreamer-0.10/libgstcoreelements.dll"/>
           </Component>
-          <Component Id="cmpD7CA28D01407886511D335391289C0F2" Guid="*">
+          <Component Win64="$(var.Win64)" Id="cmpD7CA28D01407886511D335391289C0F2" Guid="*">
             <File Id="fil0C50E69E6D444FBA9BCCF651326EF18B" KeyPath="yes" Source="$(var.SourceDir)/lib/gstreamer-0.10/libgstapp.dll"/>
           </Component>
-          <Component Id="cmp30AFF452AB17BA179E4CF4E3AEB06266" Guid="*">
+          <Component Win64="$(var.Win64)" Id="cmp30AFF452AB17BA179E4CF4E3AEB06266" Guid="*">
             <File Id="fil628CF80A245D1633C3485F3C2A09AEC1" KeyPath="yes" Source="$(var.SourceDir)/lib/gstreamer-0.10/libgstaudioconvert.dll"/>
           </Component>
-          <Component Id="cmp32FD27BDAAA418E095B90F4713482B31" Guid="*">
+          <Component Win64="$(var.Win64)" Id="cmp32FD27BDAAA418E095B90F4713482B31" Guid="*">
             <File Id="filAAF73B550FCA9164EABA33662F62E907" KeyPath="yes" Source="$(var.SourceDir)/lib/gstreamer-0.10/libgstaudiorate.dll"/>
           </Component>
-          <Component Id="cmp7B8B76C0A51A510E42C69FBD2AFEE720" Guid="*">
+          <Component Win64="$(var.Win64)" Id="cmp7B8B76C0A51A510E42C69FBD2AFEE720" Guid="*">
             <File Id="filC72E0A8067C3BEBCE8601317876DD8E1" KeyPath="yes" Source="$(var.SourceDir)/lib/gstreamer-0.10/libgstaudioresample.dll"/>
           </Component>
-          <Component Id="cmp53C421F37AE73DB2870712D406E4F3E0" Guid="*">
+          <Component Win64="$(var.Win64)" Id="cmp53C421F37AE73DB2870712D406E4F3E0" Guid="*">
             <File Id="fil4A75377A7BE277F915A5023DB03B5C79" KeyPath="yes" Source="$(var.SourceDir)/lib/gstreamer-0.10/libgstautodetect.dll"/>
           </Component>
-          <Component Id="cmp6E8C6F4DF3C3B92A048B56F3F66C3EE3" Guid="*">
+          <Component Win64="$(var.Win64)" Id="cmp6E8C6F4DF3C3B92A048B56F3F66C3EE3" Guid="*">
             <File Id="fil6E2A53710E8DE771899D8C8CD7D31DD7" KeyPath="yes" Source="$(var.SourceDir)/lib/gstreamer-0.10/libgstdirectsoundsink.dll"/>
           </Component>
-          <Component Id="cmp1033FE4037888321EF58A3A3483D33DF" Guid="*">
+          <Component Win64="$(var.Win64)" Id="cmp1033FE4037888321EF58A3A3483D33DF" Guid="*">
             <File Id="filD9DFB6EF45F3D820B16F4DE1E743E69E" KeyPath="yes" Source="$(var.SourceDir)/lib/gstreamer-0.10/libgstdirectsoundsrc.dll"/>
           </Component>
         </Directory>
@@ -70,7 +70,7 @@
         <Directory Id="dirD59C138F8E9B90842CC4CED5FC7BD02A" Name="locale">
           <Directory Id="dir4139E4773AD5EB9A8D4AB3DD8E6A6950" Name="fr">
             <Directory Id="dir31BD4803F911B98815ACA9949C094C83" Name="LC_MESSAGES">
-              <Component Id="cmpF49F1DE553A3EB7F69C116932A799ADF" Guid="*">
+              <Component Win64="$(var.Win64)" Id="cmpF49F1DE553A3EB7F69C116932A799ADF" Guid="*">
                 <File Id="fil4D74AF1F1422513DD91D3C49AEB85A70" KeyPath="yes" Source="$(var.SourceDir)/share/locale/fr/LC_MESSAGES/spice-gtk.mo"/>
               </Component>
             </Directory>

@@ -7,7 +7,7 @@
   <Fragment>
     <DirectoryRef Id="INSTALLDIR">
       <Directory Id="dir228046DAD8E98D16E9275D1D5B2A4070" Name="bin">
-        <Component Id="cmpD17DE7BDBF0C5DD49F836AC69F4B3B5F" Guid="*">
+        <Component Win64="$(var.Win64)" Id="cmpD17DE7BDBF0C5DD49F836AC69F4B3B5F" Guid="*">
           <File Id="filC09E7BC3640F1C5BE2A36213327D902F" KeyPath="yes" Source="$(var.SourceDir)/bin/libcurl-4.dll"/>
         </Component>
         </Directory>

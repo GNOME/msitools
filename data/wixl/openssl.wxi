@@ -4,10 +4,10 @@
   <Fragment>
     <DirectoryRef Id="INSTALLDIR">
       <Directory Id="dirFB106BD26A5512624D152E1AE91311A5" Name="bin">
-        <Component Id="cmp180069515EEF84E3D64434B53E32E2EF" Guid="*">
+        <Component Win64="$(var.Win64)" Id="cmp180069515EEF84E3D64434B53E32E2EF" Guid="*">
           <File Id="filF246A0BB8301C4720D03942B4C7BA289" KeyPath="yes" Source="$(var.SourceDir)/bin/libcrypto-10.dll"/>
         </Component>
-        <Component Id="cmp78BC9637069A326E7860F7EDB381EF4C" Guid="*">
+        <Component Win64="$(var.Win64)" Id="cmp78BC9637069A326E7860F7EDB381EF4C" Guid="*">
           <File Id="fil1A5B56C61D6C2137CE2B9BF16C510048" KeyPath="yes" Source="$(var.SourceDir)/bin/libssl-10.dll"/>
         </Component>
       </Directory>
@@ -17,37 +17,37 @@
           </Directory>
           <Directory Id="dir5C44C4BF436F189C06A91A4660678A24" Name="tls">
             <Directory Id="dirD45DE9E9CAB4BE5E63AD4D04F6806229" Name="certs">
-              <Component Id="cmpF4AC5E1C8B8F52A9E82B6D444415195E" Guid="*">
+              <Component Win64="$(var.Win64)" Id="cmpF4AC5E1C8B8F52A9E82B6D444415195E" Guid="*">
                 <File Id="fil92C36E70F9FD6288DBB69D80F59DCFD3" KeyPath="yes" Source="$(var.SourceDir)/etc/pki/tls/certs/Makefile"/>
               </Component>
-              <Component Id="cmp51EE25AA42FF1DCF63BC0701D92F38DF" Guid="*">
+              <Component Win64="$(var.Win64)" Id="cmp51EE25AA42FF1DCF63BC0701D92F38DF" Guid="*">
                 <File Id="fil4ECDE8BF72A4B179006F58175D500678" KeyPath="yes" Source="$(var.SourceDir)/etc/pki/tls/certs/make-dummy-cert"/>
               </Component>
             </Directory>
             <Directory Id="dir41A7BA1ECA217B267001D6C667CDA303" Name="misc">
-              <Component Id="cmpC79B3522CE340E81091DFF33CE2D4F52" Guid="*">
+              <Component Win64="$(var.Win64)" Id="cmpC79B3522CE340E81091DFF33CE2D4F52" Guid="*">
                 <File Id="filFE341124787DB99FE63D7FE53F069F33" KeyPath="yes" Source="$(var.SourceDir)/etc/pki/tls/misc/CA"/>
               </Component>
-              <Component Id="cmpF3B98883A02530C5B7BE078B77A99EDD" Guid="*">
+              <Component Win64="$(var.Win64)" Id="cmpF3B98883A02530C5B7BE078B77A99EDD" Guid="*">
                 <File Id="fil3371D8AAA32C7E5720A6BFDB1FA157D3" KeyPath="yes" Source="$(var.SourceDir)/etc/pki/tls/misc/CA.pl"/>
               </Component>
-              <Component Id="cmp190CBC844CCD760C7D16A8E9394F990E" Guid="*">
+              <Component Win64="$(var.Win64)" Id="cmp190CBC844CCD760C7D16A8E9394F990E" Guid="*">
                 <File Id="fil56573F782B198F089006988E56A2FDC8" KeyPath="yes" Source="$(var.SourceDir)/etc/pki/tls/misc/c_hash"/>
               </Component>
-              <Component Id="cmp10823BB121D6DE4B1D37550D1F26F019" Guid="*">
+              <Component Win64="$(var.Win64)" Id="cmp10823BB121D6DE4B1D37550D1F26F019" Guid="*">
                 <File Id="filE2605C9FD1B54943EB75E918E5AAAF3F" KeyPath="yes" Source="$(var.SourceDir)/etc/pki/tls/misc/c_info"/>
               </Component>
-              <Component Id="cmp538527FD8935FED93D2E66881FFEBDEE" Guid="*">
+              <Component Win64="$(var.Win64)" Id="cmp538527FD8935FED93D2E66881FFEBDEE" Guid="*">
                 <File Id="filD6292C99C5FA763F88632B21325F09B2" KeyPath="yes" Source="$(var.SourceDir)/etc/pki/tls/misc/c_issuer"/>
               </Component>
-              <Component Id="cmp1914CA413F712D03ECF9A7AF1F97E0E9" Guid="*">
+              <Component Win64="$(var.Win64)" Id="cmp1914CA413F712D03ECF9A7AF1F97E0E9" Guid="*">
                 <File Id="filEB3FDB654D06431F28296F4D99F065C4" KeyPath="yes" Source="$(var.SourceDir)/etc/pki/tls/misc/c_name"/>
               </Component>
-              <Component Id="cmp227F1DE4BB99FCD6BCF1AE825C00875B" Guid="*">
+              <Component Win64="$(var.Win64)" Id="cmp227F1DE4BB99FCD6BCF1AE825C00875B" Guid="*">
                 <File Id="fil9FDCC7B3E5AD0709F2E5CBA6544A552F" KeyPath="yes" Source="$(var.SourceDir)/etc/pki/tls/misc/tsget"/>
               </Component>
             </Directory>
-            <Component Id="cmp2E54F8C4A1D93038E7927F172A186E21" Guid="*">
+            <Component Win64="$(var.Win64)" Id="cmp2E54F8C4A1D93038E7927F172A186E21" Guid="*">
               <File Id="filAFADD415BCA270CA348E8FA906B3CD04" KeyPath="yes" Source="$(var.SourceDir)/etc/pki/tls/openssl.cnf"/>
             </Component>
             <Directory Id="dirCD184D71C8F8D24F893B9EAC344B61A8" Name="private">

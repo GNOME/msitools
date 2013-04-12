@@ -4,7 +4,7 @@
   <Fragment>
     <DirectoryRef Id="INSTALLDIR">
       <Directory Id="dir064043D40E77DC44421D58671372D5DB" Name="bin">
-        <Component Id="cmpEE42CB652174B969C39CF95DFE7C4795" Guid="*">
+        <Component Win64="$(var.Win64)" Id="cmpEE42CB652174B969C39CF95DFE7C4795" Guid="*">
           <File Id="fil5263FC7525E4BF3618E45072353DC03A" KeyPath="yes" Source="$(var.SourceDir)/bin/libssh2-1.dll"/>
         </Component>
         </Directory>

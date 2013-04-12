@@ -9,7 +9,7 @@
   <Fragment>
     <DirectoryRef Id="INSTALLDIR">
       <Directory Id="dir615937A89C5B617DFFB49761804B9993" Name="bin">
-        <Component Id="cmpC2D69C49EDF7C662A9FD5B1B743346D0" Guid="*">
+        <Component Win64="$(var.Win64)" Id="cmpC2D69C49EDF7C662A9FD5B1B743346D0" Guid="*">
           <File Id="fil39C3966D7E7DEBAB82B994B5A93484C4" KeyPath="yes" Source="$(var.SourceDir)/bin/libgvnc-1.0-0.dll"/>
         </Component>
       </Directory>

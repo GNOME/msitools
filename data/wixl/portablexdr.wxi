@@ -3,7 +3,7 @@
   <Fragment>
     <DirectoryRef Id="INSTALLDIR">
       <Directory Id="dir7C303E1CF4227C4EEED3DF9B384A5920" Name="bin">
-        <Component Id="cmp71C30D312561CF1E41637E013EB57148" Guid="*">
+        <Component Win64="$(var.Win64)" Id="cmp71C30D312561CF1E41637E013EB57148" Guid="*">
           <File Id="fil1F98D5AC7BB937F51DE8B64953358EA4" KeyPath="yes" Source="$(var.SourceDir)/bin/libportablexdr-0.dll"/>
         </Component>
       </Directory>

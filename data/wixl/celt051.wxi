@@ -15,7 +15,7 @@
   <Fragment>
     <DirectoryRef Id="INSTALLDIR">
       <Directory Id="dirDC1C691F531D46C718020066C3909F20" Name="bin">
-        <Component Id="cmp81CDD846C962D3ED3E6AB12F6555421F" Guid="*">
+        <Component Win64="$(var.Win64)" Id="cmp81CDD846C962D3ED3E6AB12F6555421F" Guid="*">
           <File Id="filC3F74D9F5B11B0C760638C18F0F4BBB1" KeyPath="yes" Source="$(var.SourceDir)/bin/libcelt051-0.dll"/>
         </Component>
       </Directory>

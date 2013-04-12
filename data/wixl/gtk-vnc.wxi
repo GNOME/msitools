@@ -5,7 +5,7 @@
   <Fragment>
     <DirectoryRef Id="INSTALLDIR">
       <Directory Id="dir930887BA64BEEADF8C4BDD6643955FB1" Name="bin">
-        <Component Id="cmp08CD6A7CE1C3DDF17FB986BB91D9F619" Guid="*">
+        <Component Win64="$(var.Win64)" Id="cmp08CD6A7CE1C3DDF17FB986BB91D9F619" Guid="*">
           <File Id="fil6E45FD3801FF93B32DCC9224C2C95159" KeyPath="yes" Source="$(var.SourceDir)/bin/libgtk-vnc-1.0-0.dll"/>
         </Component>
       </Directory>
@@ -13,252 +13,252 @@
         <Directory Id="dirC381105C5FA19A544A69CC4AD861D158" Name="locale">
           <Directory Id="dirF74266D58797CE9C18FD4BDE2E2973EA" Name="ca">
             <Directory Id="dir8E899CE943DC2AFCB24BCAA480CD9571" Name="LC_MESSAGES">
-              <Component Id="cmp6A26742082918AE50C704CC120B6ECBD" Guid="*">
+              <Component Win64="$(var.Win64)" Id="cmp6A26742082918AE50C704CC120B6ECBD" Guid="*">
                 <File Id="fil794125B2D4E7556558863B844EA7B58C" KeyPath="yes" Source="$(var.SourceDir)/share/locale/ca/LC_MESSAGES/gtk-vnc.mo"/>
               </Component>
             </Directory>
           </Directory>
           <Directory Id="dir6E489793EDF9DBBAF0173F1FC8B70453" Name="ca@valencia">
             <Directory Id="dir04AA46754A5282714B194CAAEF01BFA0" Name="LC_MESSAGES">
-              <Component Id="cmpC47318F1BD41FA7B516677DE920ADC1C" Guid="*">
+              <Component Win64="$(var.Win64)" Id="cmpC47318F1BD41FA7B516677DE920ADC1C" Guid="*">
                 <File Id="fil17D94E85421DEB4B4651183B237E4DD6" KeyPath="yes" Source="$(var.SourceDir)/share/locale/ca@valencia/LC_MESSAGES/gtk-vnc.mo"/>
               </Component>
             </Directory>
           </Directory>
           <Directory Id="dirA6DD7C346CEBAC96B005BDBF272084BC" Name="cs">
             <Directory Id="dir2249C41B5D898E8CAA272BC04E8E1EB4" Name="LC_MESSAGES">
-              <Component Id="cmp1BEECE2FF563F5EC63180C9CECAC7224" Guid="*">
+              <Component Win64="$(var.Win64)" Id="cmp1BEECE2FF563F5EC63180C9CECAC7224" Guid="*">
                 <File Id="filFB3415E91C6E3A6CC0ABB8F44B68367C" KeyPath="yes" Source="$(var.SourceDir)/share/locale/cs/LC_MESSAGES/gtk-vnc.mo"/>
               </Component>
             </Directory>
           </Directory>
           <Directory Id="dirBDFD842BD148BDA3E43AA6C5E9DC1D50" Name="da">
             <Directory Id="dir16A5F96CD5E7ABCE303F961FF9EC1676" Name="LC_MESSAGES">
-              <Component Id="cmpA249E913FC09E4B60BD7A9517305CEC2" Guid="*">
+              <Component Win64="$(var.Win64)" Id="cmpA249E913FC09E4B60BD7A9517305CEC2" Guid="*">
                 <File Id="filEDFAA3D02F103CF97365E670EB9AC510" KeyPath="yes" Source="$(var.SourceDir)/share/locale/da/LC_MESSAGES/gtk-vnc.mo"/>
               </Component>
             </Directory>
           </Directory>
           <Directory Id="dirEE3916D5509BC4ABD8FC5E1D865FF080" Name="de">
             <Directory Id="dirE291EB94DCCE90A2213DB4F7143140FA" Name="LC_MESSAGES">
-              <Component Id="cmp8C1A5449DD4BDC3CFB44D131B76B854D" Guid="*">
+              <Component Win64="$(var.Win64)" Id="cmp8C1A5449DD4BDC3CFB44D131B76B854D" Guid="*">
                 <File Id="filFABA38E68BCDAC3CB78082A0BF9C8ECE" KeyPath="yes" Source="$(var.SourceDir)/share/locale/de/LC_MESSAGES/gtk-vnc.mo"/>
               </Component>
             </Directory>
           </Directory>
           <Directory Id="dir3216F7623F1B8D01D0F11AECDF671336" Name="el">
             <Directory Id="dirA9949370E450E98FF46F34C5E0CC89D7" Name="LC_MESSAGES">
-              <Component Id="cmp74EBE7B6E4A49BE3AC35A89D1DF68A86" Guid="*">
+              <Component Win64="$(var.Win64)" Id="cmp74EBE7B6E4A49BE3AC35A89D1DF68A86" Guid="*">
                 <File Id="fil9BBDBF0A502AB59E09CADAD6E4315650" KeyPath="yes" Source="$(var.SourceDir)/share/locale/el/LC_MESSAGES/gtk-vnc.mo"/>
               </Component>
             </Directory>
           </Directory>
           <Directory Id="dir4D59DCEA68045B24BE26F31677471596" Name="en_GB">
             <Directory Id="dirEC33969E3E0CBCA2CFC22723A23C75BF" Name="LC_MESSAGES">
-              <Component Id="cmpAB454C618DFDE82212C1A0092C43A8F0" Guid="*">
+              <Component Win64="$(var.Win64)" Id="cmpAB454C618DFDE82212C1A0092C43A8F0" Guid="*">
                 <File Id="fil8349FEBCBE499C672B80B780151D46C9" KeyPath="yes" Source="$(var.SourceDir)/share/locale/en_GB/LC_MESSAGES/gtk-vnc.mo"/>
               </Component>
             </Directory>
           </Directory>
           <Directory Id="dir345FEE66B510200AA713682CEE0A4B45" Name="eo">
             <Directory Id="dir2A719786054589033100B5ED6B0E0BD7" Name="LC_MESSAGES">
-              <Component Id="cmp1915763BC3111467BA73BEC54EA18E00" Guid="*">
+              <Component Win64="$(var.Win64)" Id="cmp1915763BC3111467BA73BEC54EA18E00" Guid="*">
                 <File Id="fil74940F30F282F6DBFA6F4C0553002DAF" KeyPath="yes" Source="$(var.SourceDir)/share/locale/eo/LC_MESSAGES/gtk-vnc.mo"/>
               </Component>
             </Directory>
           </Directory>
           <Directory Id="dir94AE1EEF0F940A977719E3224A2A19D6" Name="es">
             <Directory Id="dirFD9DE7E5DD98D8A5986C28782251B65E" Name="LC_MESSAGES">
-              <Component Id="cmpF73E37F45BBE83C70A0DF671DBA338B4" Guid="*">
+              <Component Win64="$(var.Win64)" Id="cmpF73E37F45BBE83C70A0DF671DBA338B4" Guid="*">
                 <File Id="filB68F7C0D3324B63812C522ED78F22DCD" KeyPath="yes" Source="$(var.SourceDir)/share/locale/es/LC_MESSAGES/gtk-vnc.mo"/>
               </Component>
             </Directory>
           </Directory>
           <Directory Id="dir0328DCE0226B42500AFDC95C9836BC80" Name="eu">
             <Directory Id="dirE5A183D9AD1AB9A2A1AC6B0A944D61C1" Name="LC_MESSAGES">
-              <Component Id="cmp5A0A5687C2DA77D1DE2D24B60629E630" Guid="*">
+              <Component Win64="$(var.Win64)" Id="cmp5A0A5687C2DA77D1DE2D24B60629E630" Guid="*">
                 <File Id="fil9F4E89C769037D7DD5EE7191C19A46E6" KeyPath="yes" Source="$(var.SourceDir)/share/locale/eu/LC_MESSAGES/gtk-vnc.mo"/>
               </Component>
             </Directory>
           </Directory>
           <Directory Id="dir1E16597C70FA063A05CD0AA0801D4E6F" Name="fr">
             <Directory Id="dirE12E373286A768F76B365D44340C01E3" Name="LC_MESSAGES">
-              <Component Id="cmpBB3794BEBC5E048CC3783FE861A57DF6" Guid="*">
+              <Component Win64="$(var.Win64)" Id="cmpBB3794BEBC5E048CC3783FE861A57DF6" Guid="*">
                 <File Id="fil63175FBF06D0A8129712BCAC76028D12" KeyPath="yes" Source="$(var.SourceDir)/share/locale/fr/LC_MESSAGES/gtk-vnc.mo"/>
               </Component>
             </Directory>
           </Directory>
           <Directory Id="dir2C7E3F9362995D84463CD3D039A22B5A" Name="gl">
             <Directory Id="dir5D0808B53369C7973440E8C3F0DABD46" Name="LC_MESSAGES">
-              <Component Id="cmpF3F26B44D512C959134CEFA818DC841F" Guid="*">
+              <Component Win64="$(var.Win64)" Id="cmpF3F26B44D512C959134CEFA818DC841F" Guid="*">
                 <File Id="fil8EF1CFAA5708C49C50019D2D55750304" KeyPath="yes" Source="$(var.SourceDir)/share/locale/gl/LC_MESSAGES/gtk-vnc.mo"/>
               </Component>
             </Directory>
           </Directory>
           <Directory Id="dir150796E415F3A8B5BD582D6200F20ED2" Name="hu">
             <Directory Id="dir3B076BEB0DCDA2C0248B9AC50156BE12" Name="LC_MESSAGES">
-              <Component Id="cmp0E0ED6CBB74D096314FEE3B29F796C55" Guid="*">
+              <Component Win64="$(var.Win64)" Id="cmp0E0ED6CBB74D096314FEE3B29F796C55" Guid="*">
                 <File Id="fil717F0C183500DA51747DE79F9483A31C" KeyPath="yes" Source="$(var.SourceDir)/share/locale/hu/LC_MESSAGES/gtk-vnc.mo"/>
               </Component>
             </Directory>
           </Directory>
           <Directory Id="dirCEF60C5D04EB948937A72E5A8595550D" Name="id">
             <Directory Id="dirCB98B0C36ADD9A9D3A858EC4B5009D71" Name="LC_MESSAGES">
-              <Component Id="cmpE0095B5A56F8BB21FAD60084F811CA13" Guid="*">
+              <Component Win64="$(var.Win64)" Id="cmpE0095B5A56F8BB21FAD60084F811CA13" Guid="*">
                 <File Id="filDA665AA2382FE0ADAA0ED15FBEFD627A" KeyPath="yes" Source="$(var.SourceDir)/share/locale/id/LC_MESSAGES/gtk-vnc.mo"/>
               </Component>
             </Directory>
           </Directory>
           <Directory Id="dirA13AC36775C7B531FA1FC00428B20F6D" Name="it">
             <Directory Id="dirF2EB10E15C5A6FBFFA5703DC236C24FF" Name="LC_MESSAGES">
-              <Component Id="cmpA87B3C5EC737F37E7AAF57809320FD5A" Guid="*">
+              <Component Win64="$(var.Win64)" Id="cmpA87B3C5EC737F37E7AAF57809320FD5A" Guid="*">
                 <File Id="fil4A256A87AE845754346B411D6CE0B253" KeyPath="yes" Source="$(var.SourceDir)/share/locale/it/LC_MESSAGES/gtk-vnc.mo"/>
               </Component>
             </Directory>
           </Directory>
           <Directory Id="dir38B3A1BB1E978888341F102C02F91CB7" Name="ja">
             <Directory Id="dirA60FEF46D7E206D4E0190D915EE42EBE" Name="LC_MESSAGES">
-              <Component Id="cmpD0109D7DE8CC7C33A8190113EF8983A9" Guid="*">
+              <Component Win64="$(var.Win64)" Id="cmpD0109D7DE8CC7C33A8190113EF8983A9" Guid="*">
                 <File Id="fil9BE99B1E0AC1D74691562970E8A66FC1" KeyPath="yes" Source="$(var.SourceDir)/share/locale/ja/LC_MESSAGES/gtk-vnc.mo"/>
               </Component>
             </Directory>
           </Directory>
           <Directory Id="dirDFCAA1E17029784360BF3B6563898719" Name="ko">
             <Directory Id="dir141BEB6DBE48DC028C3706393DCF61AF" Name="LC_MESSAGES">
-              <Component Id="cmp49127B3F5238F615525B06089CD03153" Guid="*">
+              <Component Win64="$(var.Win64)" Id="cmp49127B3F5238F615525B06089CD03153" Guid="*">
                 <File Id="fil59EE569F16B8BE7E17521A98FD84D871" KeyPath="yes" Source="$(var.SourceDir)/share/locale/ko/LC_MESSAGES/gtk-vnc.mo"/>
               </Component>
             </Directory>
           </Directory>
           <Directory Id="dirE79A097E2E63A623981C77079D7989B3" Name="lt">
             <Directory Id="dirDB968D93DC2D1C94E8A4F699691FB6BA" Name="LC_MESSAGES">
-              <Component Id="cmp20300903E0BD563D98237B13954FF7FE" Guid="*">
+              <Component Win64="$(var.Win64)" Id="cmp20300903E0BD563D98237B13954FF7FE" Guid="*">
                 <File Id="fil2D5C24371E2A235C8117AAD023BFCC9D" KeyPath="yes" Source="$(var.SourceDir)/share/locale/lt/LC_MESSAGES/gtk-vnc.mo"/>
               </Component>
             </Directory>
           </Directory>
           <Directory Id="dir5BF6F5DBD4C025DC22CE6B5039C7D505" Name="lv">
             <Directory Id="dirB78CDC03E5666A19D3886B3168F2349F" Name="LC_MESSAGES">
-              <Component Id="cmp2BF3985377934F55A4FB2FB4E801D9B7" Guid="*">
+              <Component Win64="$(var.Win64)" Id="cmp2BF3985377934F55A4FB2FB4E801D9B7" Guid="*">
                 <File Id="filE021E7D5CAC349DF37619407EBEEE6C0" KeyPath="yes" Source="$(var.SourceDir)/share/locale/lv/LC_MESSAGES/gtk-vnc.mo"/>
               </Component>
             </Directory>
           </Directory>
           <Directory Id="dir191122D0C8458A0C8784BB2FECF91C03" Name="nb">
             <Directory Id="dir6326B43B6D89F8906E2990D76E289BA3" Name="LC_MESSAGES">
-              <Component Id="cmpFF30284E3044F2813FBF37018BC166F9" Guid="*">
+              <Component Win64="$(var.Win64)" Id="cmpFF30284E3044F2813FBF37018BC166F9" Guid="*">
                 <File Id="filA8E5E519FAD9D7EBFF206AA8A8D0DDFF" KeyPath="yes" Source="$(var.SourceDir)/share/locale/nb/LC_MESSAGES/gtk-vnc.mo"/>
               </Component>
             </Directory>
           </Directory>
           <Directory Id="dirB15362AD995B73B8277AB39F000D7337" Name="nds">
             <Directory Id="dir3460DF3D7123D7594EA9217783A77B0B" Name="LC_MESSAGES">
-              <Component Id="cmpDC0BB5163D3C987987D5201812D1E431" Guid="*">
+              <Component Win64="$(var.Win64)" Id="cmpDC0BB5163D3C987987D5201812D1E431" Guid="*">
                 <File Id="fil22F56DCA888E92CAF18B161D7558E672" KeyPath="yes" Source="$(var.SourceDir)/share/locale/nds/LC_MESSAGES/gtk-vnc.mo"/>
               </Component>
             </Directory>
           </Directory>
           <Directory Id="dir31FE86DFB3D9D612DC39E4347A66A439" Name="pa">
             <Directory Id="dir64AB2AF3EF5AA96219E9C78BE446D65A" Name="LC_MESSAGES">
-              <Component Id="cmpBB7F5A10BD43FED93BB1067B112A8810" Guid="*">
+              <Component Win64="$(var.Win64)" Id="cmpBB7F5A10BD43FED93BB1067B112A8810" Guid="*">
                 <File Id="fil7DF155F36D0028693A145022D53C03A4" KeyPath="yes" Source="$(var.SourceDir)/share/locale/pa/LC_MESSAGES/gtk-vnc.mo"/>
               </Component>
             </Directory>
           </Directory>
           <Directory Id="dir9A8169A14120FF4A6BCC94C6BCEEA284" Name="pl">
             <Directory Id="dirA83B0DB9228D8FCF38D113BDF2EB04E7" Name="LC_MESSAGES">
-              <Component Id="cmp797FF417E61BE5CBF40215C8481E6124" Guid="*">
+              <Component Win64="$(var.Win64)" Id="cmp797FF417E61BE5CBF40215C8481E6124" Guid="*">
                 <File Id="filDC556602A61737F41B8B168918F452DB" KeyPath="yes" Source="$(var.SourceDir)/share/locale/pl/LC_MESSAGES/gtk-vnc.mo"/>
               </Component>
             </Directory>
           </Directory>
           <Directory Id="dirE6408230CE354C7CF9DDB072C47E7B68" Name="pt">
             <Directory Id="dirAC8C7A512694A421ECEC51847E806683" Name="LC_MESSAGES">
-              <Component Id="cmpF581B42F4CB339EEB97F2D145FC0FA4C" Guid="*">
+              <Component Win64="$(var.Win64)" Id="cmpF581B42F4CB339EEB97F2D145FC0FA4C" Guid="*">
                 <File Id="fil7C4707236420CD6C0E83A869A10DA1B1" KeyPath="yes" Source="$(var.SourceDir)/share/locale/pt/LC_MESSAGES/gtk-vnc.mo"/>
               </Component>
             </Directory>
           </Directory>
           <Directory Id="dir9F3E90A5F0DBE822022C04D633CB9204" Name="pt_BR">
             <Directory Id="dirDA5A01C8956B8B8873562D2DAA549385" Name="LC_MESSAGES">
-              <Component Id="cmp646509F5E2432EEA55C42DD89A0D5668" Guid="*">
+              <Component Win64="$(var.Win64)" Id="cmp646509F5E2432EEA55C42DD89A0D5668" Guid="*">
                 <File Id="filBD73B8B3C9B18C645906D31460D0137A" KeyPath="yes" Source="$(var.SourceDir)/share/locale/pt_BR/LC_MESSAGES/gtk-vnc.mo"/>
               </Component>
             </Directory>
           </Directory>
           <Directory Id="dirB04ECDAFE33BB8DB651F4D4CC418E72B" Name="ro">
             <Directory Id="dirAA9D971D1C02DD95BB33CED4C3CF1C77" Name="LC_MESSAGES">
-              <Component Id="cmpE20743AD4613D59767E426761D60CBC3" Guid="*">
+              <Component Win64="$(var.Win64)" Id="cmpE20743AD4613D59767E426761D60CBC3" Guid="*">
                 <File Id="filDC73F85AB8EB244D8469F168A38D1D95" KeyPath="yes" Source="$(var.SourceDir)/share/locale/ro/LC_MESSAGES/gtk-vnc.mo"/>
               </Component>
             </Directory>
           </Directory>
           <Directory Id="dir3832A8B6E734666ADA5545CC811F400E" Name="ru">
             <Directory Id="dir84CEA2F78BA04A1D40772A02E1231C47" Name="LC_MESSAGES">
-              <Component Id="cmp6117B8B1BA09FF517D9052CBD9EED829" Guid="*">
+              <Component Win64="$(var.Win64)" Id="cmp6117B8B1BA09FF517D9052CBD9EED829" Guid="*">
                 <File Id="filA32640381F1C01A37F835D37C0C9C2E9" KeyPath="yes" Source="$(var.SourceDir)/share/locale/ru/LC_MESSAGES/gtk-vnc.mo"/>
               </Component>
             </Directory>
           </Directory>
           <Directory Id="dirA3FE37B9A273FBB12AAB58AFC34A16A0" Name="sk">
             <Directory Id="dir310BBBD877DB4D44225CCB0410C43FDF" Name="LC_MESSAGES">
-              <Component Id="cmpE15CCDD1271576DEB661CB61B2BF3C5D" Guid="*">
+              <Component Win64="$(var.Win64)" Id="cmpE15CCDD1271576DEB661CB61B2BF3C5D" Guid="*">
                 <File Id="filD47CBE10FA62E771C9389BF20D143E08" KeyPath="yes" Source="$(var.SourceDir)/share/locale/sk/LC_MESSAGES/gtk-vnc.mo"/>
               </Component>
             </Directory>
           </Directory>
           <Directory Id="dir35CDF078468FD0FEEDB4141AB6EE108C" Name="sl">
             <Directory Id="dir8BAB7ECAAF894901E9426A22F75E1178" Name="LC_MESSAGES">
-              <Component Id="cmp108D16FC36C4AFC96197469A996F0A29" Guid="*">
+              <Component Win64="$(var.Win64)" Id="cmp108D16FC36C4AFC96197469A996F0A29" Guid="*">
                 <File Id="fil779381B542C3F1E777D168DA65A06946" KeyPath="yes" Source="$(var.SourceDir)/share/locale/sl/LC_MESSAGES/gtk-vnc.mo"/>
               </Component>
             </Directory>
           </Directory>
           <Directory Id="dir1FEE203A6ADDEC8A7C6333D98040C71D" Name="sv">
             <Directory Id="dir05000DF88ABE712D89DB9861B801C72A" Name="LC_MESSAGES">
-              <Component Id="cmpA334025706DA03018D0EA1D8917FB8C6" Guid="*">
+              <Component Win64="$(var.Win64)" Id="cmpA334025706DA03018D0EA1D8917FB8C6" Guid="*">
                 <File Id="fil87F65A90F00388DFD3565E7C0BFC74DD" KeyPath="yes" Source="$(var.SourceDir)/share/locale/sv/LC_MESSAGES/gtk-vnc.mo"/>
               </Component>
             </Directory>
           </Directory>
           <Directory Id="dir6F281BBBD29CCD3E6F4032E2646E9CC5" Name="th">
             <Directory Id="dir795DA9C7AD20EDDBF45BCF04AB3993CA" Name="LC_MESSAGES">
-              <Component Id="cmp6F66FD70E14969E61DAE722FF4D8A477" Guid="*">
+              <Component Win64="$(var.Win64)" Id="cmp6F66FD70E14969E61DAE722FF4D8A477" Guid="*">
                 <File Id="fil11ECCE615FC8D30A1687563F54B6931B" KeyPath="yes" Source="$(var.SourceDir)/share/locale/th/LC_MESSAGES/gtk-vnc.mo"/>
               </Component>
             </Directory>
           </Directory>
           <Directory Id="dirDD92256628CAC5C3122BAF62588BB2E8" Name="tr">
             <Directory Id="dirA654C988AD18BAEA9B080EC4DAA368D9" Name="LC_MESSAGES">
-              <Component Id="cmp79E173E4D40F51A808A2893361E99E2D" Guid="*">
+              <Component Win64="$(var.Win64)" Id="cmp79E173E4D40F51A808A2893361E99E2D" Guid="*">
                 <File Id="fil0A013E3379A46CF4D5778B36CAD1CDC7" KeyPath="yes" Source="$(var.SourceDir)/share/locale/tr/LC_MESSAGES/gtk-vnc.mo"/>
               </Component>
             </Directory>
           </Directory>
           <Directory Id="dir0AAFD90718EEA78832478919EB8D0778" Name="uk">
             <Directory Id="dir70E45FFBFA1C13F1E2E46DB943B0EE9B" Name="LC_MESSAGES">
-              <Component Id="cmp27E547FDC52528243487966242686465" Guid="*">
+              <Component Win64="$(var.Win64)" Id="cmp27E547FDC52528243487966242686465" Guid="*">
                 <File Id="filF9655FD801200032431F1CB5847F8877" KeyPath="yes" Source="$(var.SourceDir)/share/locale/uk/LC_MESSAGES/gtk-vnc.mo"/>
               </Component>
             </Directory>
           </Directory>
           <Directory Id="dir2876B5AC7794CE5F447E5111A35CD7FF" Name="zh_CN">
             <Directory Id="dir8F4178116B8E967CFB0450F0BF99215C" Name="LC_MESSAGES">
-              <Component Id="cmp8D49DA96AD13DFDDB4B02E736386533A" Guid="*">
+              <Component Win64="$(var.Win64)" Id="cmp8D49DA96AD13DFDDB4B02E736386533A" Guid="*">
                 <File Id="fil2AF79884D725EAEFD9A560B1632AD241" KeyPath="yes" Source="$(var.SourceDir)/share/locale/zh_CN/LC_MESSAGES/gtk-vnc.mo"/>
               </Component>
             </Directory>
           </Directory>
           <Directory Id="dir06B173EB2646A8CDA1B3534CEA744453" Name="zh_HK">
             <Directory Id="dirF4D0126C75BAADD2B7BE396960BE1707" Name="LC_MESSAGES">
-              <Component Id="cmpB7A99E3C6D13071CB4F7129B2A905470" Guid="*">
+              <Component Win64="$(var.Win64)" Id="cmpB7A99E3C6D13071CB4F7129B2A905470" Guid="*">
                 <File Id="filD489510916D965D5D96135F186BA3ABA" KeyPath="yes" Source="$(var.SourceDir)/share/locale/zh_HK/LC_MESSAGES/gtk-vnc.mo"/>
               </Component>
             </Directory>
           </Directory>
           <Directory Id="dir0C32A14E5280F1EE30D3EEE9D74C6904" Name="zh_TW">
             <Directory Id="dir0A76CAB063FADB72A9EC61FD43C26AF2" Name="LC_MESSAGES">
-              <Component Id="cmp9D5EDDC7665DB2F29D539B8EC2BA8AB5" Guid="*">
+              <Component Win64="$(var.Win64)" Id="cmp9D5EDDC7665DB2F29D539B8EC2BA8AB5" Guid="*">
                 <File Id="fil69F44C042D33364B0848317BB46D4E4A" KeyPath="yes" Source="$(var.SourceDir)/share/locale/zh_TW/LC_MESSAGES/gtk-vnc.mo"/>
               </Component>
               </Directory>

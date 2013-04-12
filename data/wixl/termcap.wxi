@@ -3,25 +3,25 @@
   <Fragment>
     <DirectoryRef Id="INSTALLDIR">
       <Directory Id="dir82348ACDD011B24CD0AB7EC4901B8B0A" Name="bin">
-        <Component Id="cmpA0D327363AF82697B9D7965344A8DE86" Guid="*">
+        <Component Win64="$(var.Win64)" Id="cmpA0D327363AF82697B9D7965344A8DE86" Guid="*">
           <File Id="fil58FD1F40CF9E60EB8D574EEDEAB04588" KeyPath="yes" Source="$(var.SourceDir)/bin/libtermcap-0.dll"/>
         </Component>
       </Directory>
       <Directory Id="dir422C4332D2A5B4B402F23ED6785F634E" Name="share">
         <Directory Id="dir27098E48891E2AB945F9C550F5ACDAC5" Name="info">
-          <Component Id="cmp39A92964A7E9650E9961A3E70A67CB38" Guid="*">
+          <Component Win64="$(var.Win64)" Id="cmp39A92964A7E9650E9961A3E70A67CB38" Guid="*">
             <File Id="fil9B467902A737946589A3DF86AD5A453A" KeyPath="yes" Source="$(var.SourceDir)/share/info/termcap.info"/>
           </Component>
-          <Component Id="cmp9EF169C38057AED70A54203660445E66" Guid="*">
+          <Component Win64="$(var.Win64)" Id="cmp9EF169C38057AED70A54203660445E66" Guid="*">
             <File Id="filBBA9CED431819F25647B5B956FCE089C" KeyPath="yes" Source="$(var.SourceDir)/share/info/termcap.info-1"/>
           </Component>
-          <Component Id="cmp58859B4A10130710EE987A3720B193C3" Guid="*">
+          <Component Win64="$(var.Win64)" Id="cmp58859B4A10130710EE987A3720B193C3" Guid="*">
             <File Id="fil0D84F0F94F7E841E80571171CF485F24" KeyPath="yes" Source="$(var.SourceDir)/share/info/termcap.info-2"/>
           </Component>
-          <Component Id="cmp060896FEFF3AA4A106A0438B33FE2FD6" Guid="*">
+          <Component Win64="$(var.Win64)" Id="cmp060896FEFF3AA4A106A0438B33FE2FD6" Guid="*">
             <File Id="fil9F85D437F9B4B251FC943A825DC09D09" KeyPath="yes" Source="$(var.SourceDir)/share/info/termcap.info-3"/>
           </Component>
-          <Component Id="cmp05F8591E6BCCB544F2B82DF56841E371" Guid="*">
+          <Component Win64="$(var.Win64)" Id="cmp05F8591E6BCCB544F2B82DF56841E371" Guid="*">
             <File Id="fil6E98EB3858F8B63CA74EA7F68345DF3F" KeyPath="yes" Source="$(var.SourceDir)/share/info/termcap.info-4"/>
           </Component>
           </Directory>

@@ -3,7 +3,7 @@
   <Fragment>
     <DirectoryRef Id="INSTALLDIR">
       <Directory Id="dirAC85520501B87043EB28CD162BD23775" Name="bin">
-        <Component Id="cmp599803EA845A59EB223BCE67450D325A" Guid="*">
+        <Component Win64="$(var.Win64)" Id="cmp599803EA845A59EB223BCE67450D325A" Guid="*">
           <File Id="filAC0876ADABB24D68E4983EFE44EC2427" KeyPath="yes" Source="$(var.SourceDir)/bin/libusb-1.0.dll"/>
         </Component>
         </Directory>

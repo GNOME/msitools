@@ -3,7 +3,7 @@
   <Fragment>
     <DirectoryRef Id="INSTALLDIR">
       <Directory Id="dir3CFD43682C1788DBFD46DC34DB2039D6" Name="bin">
-        <Component Id="cmpB1F3CB665BDAE47C21EB2D4428C393A8" Guid="*">
+        <Component Win64="$(var.Win64)" Id="cmpB1F3CB665BDAE47C21EB2D4428C393A8" Guid="*">
           <File Id="fil89E1033995109E600C010C603C398C0F" KeyPath="yes" Source="$(var.SourceDir)/bin/libogg-0.dll"/>
         </Component>
       </Directory>

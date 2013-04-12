@@ -122,7 +122,7 @@ AT_DATA([include.wxs], [<?xml version='1.0' encoding='windows-1252'?>
 </Wix>
 ])
 
-AT_CHECK_WIXL([-E include.wxs -D SourceDir=foo], [0], [stdout])
+AT_CHECK_WIXL([-E include.wxs -D SourceDir=foo -D Win64=no], [0], [stdout])
 AT_CHECK([grep -F zlib1.dll stdout], [0], [ignore])
 AT_CLEANUP
 
