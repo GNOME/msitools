@@ -647,7 +647,7 @@ namespace Wixl {
                 critical ("Unhandled property type");
         }
 
-            public void save (Libmsi.Database db) throws GLib.Error {
+        public void save (Libmsi.Database db) throws GLib.Error {
             properties.save (db);
         }
 

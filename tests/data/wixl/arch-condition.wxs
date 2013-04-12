@@ -1,0 +1,13 @@
+<?xml version='1.0' encoding='windows-1252'?>
+<Wix xmlns='http://schemas.microsoft.com/wix/2006/wi'>
+  <?if $(var.Arch) = x64 ?>
+    <?define ArchString = "(64 bit)" ?>
+    <?define Win64 = "yes" ?>
+    <?define ProgramFilesFolder = "ProgramFiles64Folder" ?>
+  <?else ?>
+    <?define ArchString = "" ?>
+    <?define Win64 = "no" ?>
+    <?define ProgramFilesFolder = "ProgramFilesFolder" ?>
+  <?endif ?>
+  <?warning $(var.Win64)?>
+</Wix>

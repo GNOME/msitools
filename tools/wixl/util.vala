@@ -104,6 +104,10 @@ namespace Wixl {
         return prefix + hash[0:32].up ();
     }
 
+    public string yesno (bool yes) {
+        return yes ? "yes" : "no";
+    }
+
     public bool parse_yesno (string? str, bool default = false) {
         if (str == null)
             return default;
