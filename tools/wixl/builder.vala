@@ -259,7 +259,7 @@ namespace Wixl {
             if (product.Codepage != null)
                 db.info.set_codepage (int.parse (product.Codepage));
 
-            if (product.Name != null)
+            if (product.Name != null && db.info.get_subject () == null)
                 db.info.set_subject (product.Name);
 
             db.info.set_author (product.Manufacturer);

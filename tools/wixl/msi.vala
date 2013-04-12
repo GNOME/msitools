@@ -667,6 +667,14 @@ namespace Wixl {
             set_property (Libmsi.Property.SUBJECT, value);
         }
 
+        public string? get_subject () {
+            try {
+                return properties.get_string (Libmsi.Property.SUBJECT);
+            } catch (GLib.Error err) {
+                return null;
+            }
+        }
+
         public void set_comments (string value) throws GLib.Error {
             set_property (Libmsi.Property.COMMENTS, value);
         }
