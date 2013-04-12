@@ -10,8 +10,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: msitools\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-02-01 21:13+0100\n"
-"PO-Revision-Date: 2013-02-01 21:14+0100\n"
+"POT-Creation-Date: 2013-04-12 21:54+0200\n"
+"PO-Revision-Date: 2013-04-12 21:55+0200\n"
 "Last-Translator: Piotr Drąg <piotrdrag@gmail.com>\n"
 "Language-Team: Polish <gnomepl@aviary.pl>\n"
 "Language: pl\n"
@@ -23,7 +23,7 @@ msgstr ""
 "X-Poedit-Language: Polish\n"
 "X-Poedit-Country: Poland\n"
 
-#: ../tools/msiextract.vala:10 ../tools/wixl/wixl.vala:20
+#: ../tools/msiextract.vala:10 ../tools/wixl/wixl.vala:21
 msgid "Display version number"
 msgstr "Wyświetla numer wersji"
 
@@ -43,7 +43,7 @@ msgstr "PLIK_MSI..."
 msgid "- a msi files extracting tool"
 msgstr "- narzędzie do rozpakowywania plików MSI"
 
-#: ../tools/msiextract.vala:146 ../tools/wixl/wixl.vala:63
+#: ../tools/msiextract.vala:146 ../tools/wixl/wixl.vala:75
 #, c-format
 msgid "Please specify input files.\n"
 msgstr "Proszę podać pliki wejściowe.\n"
@@ -68,39 +68,63 @@ msgstr "Przedrostek"
 msgid "Exclude prefix"
 msgstr "Wyklucza przedrostek"
 
-#: ../tools/wixl/wixl.vala:21
+#: ../tools/wixl/wixl.vala:22
 msgid "Verbose output"
 msgstr "Więcej komunikatów"
 
-#: ../tools/wixl/wixl.vala:22
+#: ../tools/wixl/wixl.vala:23
 msgid "Output file"
 msgstr "Plik wyjściowy"
 
-#: ../tools/wixl/wixl.vala:23
+#: ../tools/wixl/wixl.vala:24
 msgid "Define variable"
 msgstr "Podaje zmienną"
 
-#: ../tools/wixl/wixl.vala:24
+#: ../tools/wixl/wixl.vala:25
+msgid "Target architecture"
+msgstr "Architektura docelowa"
+
+#: ../tools/wixl/wixl.vala:26
 msgid "Include directory"
 msgstr "Dołącza katalog"
 
-#: ../tools/wixl/wixl.vala:25
+#: ../tools/wixl/wixl.vala:27
 msgid "System include directory"
 msgstr "Katalog systemowych dyrektyw dołączenia"
 
-#: ../tools/wixl/wixl.vala:26
+#: ../tools/wixl/wixl.vala:28
 msgid "Stop after the preprocessing stage"
 msgstr "Zatrzymuje po etapie wczesnego przetwarzania"
 
-#: ../tools/wixl/wixl.vala:27
+#: ../tools/wixl/wixl.vala:29
 msgid "INPUT_FILE..."
 msgstr "PLIK_WEJŚCIOWY..."
 
 #: ../tools/wixl/wixl.vala:37
+#, c-format
+msgid "arch of type '%s' is not supported"
+msgstr "architektura typu \"%s\" nie jest obsługiwana"
+
+#: ../tools/wixl/wixl.vala:49
 msgid "- a msi building tool"
 msgstr "- narzędzie do budowania plików MSI"
 
-#: ../tools/wixl/wixl.vala:71
+#: ../tools/wixl/wixl.vala:83
 #, c-format
 msgid "Please specify the output file.\n"
 msgstr "Proszę podać plik wyjściowy.\n"
+
+#: ../tools/wixl/wixl.vala:100
+#, c-format
+msgid "Loading %s...\n"
+msgstr "Wczytywanie %s...\n"
+
+#: ../tools/wixl/wixl.vala:110
+#, c-format
+msgid "Building %s...\n"
+msgstr "Budowanie %s...\n"
+
+#: ../tools/wixl/wixl.vala:113
+#, c-format
+msgid "Writing %s...\n"
+msgstr "Zapisywanie %s...\n"
