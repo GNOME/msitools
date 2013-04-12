@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+<?require gcc.wxi?>
 <?require libtasn1.wxi?>
 <?require readline.wxi?>
 <?require p11-kit.wxi?>
@@ -14,6 +15,7 @@
   </Fragment>
   <Fragment>
     <ComponentGroup Id="CG.gnutls">
+      <ComponentGroupRef Id="CG.gcc"/>
       <ComponentGroupRef Id="CG.libtasn1"/>
       <ComponentGroupRef Id="CG.readline"/>
       <ComponentGroupRef Id="CG.p11-kit"/>

@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+<?require gcc.wxi?>
 <?require glib2.wxi?>
 <?require libpng.wxi?>
 <?require pixman.wxi?>
@@ -21,6 +22,7 @@
   </Fragment>
   <Fragment>
     <ComponentGroup Id="CG.cairo">
+      <ComponentGroupRef Id="CG.gcc"/>
       <ComponentGroupRef Id="CG.glib2"/>
       <ComponentGroupRef Id="CG.libpng"/>
       <ComponentGroupRef Id="CG.pixman"/>

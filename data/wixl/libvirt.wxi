@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+<?require gcc.wxi?>
 <?require curl.wxi?>
 <?require gnutls.wxi?>
 <?require gettext.wxi?>
@@ -635,6 +636,7 @@
   </Fragment>
   <Fragment>
     <ComponentGroup Id="CG.libvirt">
+      <ComponentGroupRef Id="CG.gcc"/>
       <ComponentGroupRef Id="CG.curl"/>
       <ComponentGroupRef Id="CG.gettext"/>
       <ComponentGroupRef Id="CG.portablexdr"/>

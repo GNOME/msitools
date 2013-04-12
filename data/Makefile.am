@@ -11,6 +11,7 @@ dist_wxi_DATA =					\
 	wixl/expat.wxi				\
 	wixl/fontconfig.wxi			\
 	wixl/freetype.wxi			\
+	wixl/gcc.wxi				\
 	wixl/gdk-pixbuf.wxi			\
 	wixl/gettext.wxi			\
 	wixl/glib2.wxi				\

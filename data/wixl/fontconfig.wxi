@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+<?require gcc.wxi?>
 <?require freetype.wxi?>
 <Include xmlns="http://schemas.microsoft.com/wix/2006/wi">
   <Fragment>
@@ -184,6 +185,7 @@
   </Fragment>
   <Fragment>
     <ComponentGroup Id="CG.fontconfig">
+      <ComponentGroupRef Id="CG.gcc"/>
       <ComponentGroupRef Id="CG.freetype"/>
       <ComponentRef Id="cmpA1344055E0C9AC8865ADD41B7CAAC269"/>
       <ComponentRef Id="cmp702EA469CAE49C6E1E50DF18A433D8F9"/>

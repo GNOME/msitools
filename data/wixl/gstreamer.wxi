@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+<?require gcc.wxi?>
 <?require glib2.wxi?>
 <Include xmlns="http://schemas.microsoft.com/wix/2006/wi">
   <Fragment>
@@ -330,6 +331,7 @@
   </Fragment>
   <Fragment>
     <ComponentGroup Id="CG.gstreamer">
+      <ComponentGroupRef Id="CG.gcc"/>
       <ComponentGroupRef Id="CG.glib2"/>
       <ComponentRef Id="cmpFADD48213C312FDF38DBDAC806C1C602"/>
       <ComponentRef Id="cmp057BDD3A0F4E1D0B34E9B1552D91E4A7"/>
