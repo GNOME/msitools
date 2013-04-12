@@ -1,3 +1,11 @@
+v0.93
+=====
+
+- Add preprocessor condition evaluation
+- Add 64-bit msi build support
+- Build clean-ups
+- Translations
+
 v0.92
 =====
 
