@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: msitools master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=msitoo"
 "ls&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2013-03-07 20:25+0000\n"
-"PO-Revision-Date: 2013-03-12 15:31+0300\n"
+"POT-Creation-Date: 2013-04-12 03:25+0000\n"
+"PO-Revision-Date: 2013-04-12 09:21+0300\n"
 "Last-Translator: Dimitris Spingos (Δημήτρης Σπίγγος) <dmtrs32@gmail.com>\n"
 "Language-Team: team@gnome.gr\n"
 "Language: el\n"
@@ -20,7 +20,7 @@ msgstr ""
 "X-Generator: Virtaal 0.7.1\n"
 "X-Project-Style: gnome\n"
 
-#: ../tools/msiextract.vala:10 ../tools/wixl/wixl.vala:20
+#: ../tools/msiextract.vala:10 ../tools/wixl/wixl.vala:21
 msgid "Display version number"
 msgstr "Εμφάνιση αριθμού έκδοσης"
 
@@ -40,7 +40,7 @@ msgstr "MSI_FILE..."
 msgid "- a msi files extracting tool"
 msgstr "- ένα εργαλείο εξαγωγής αρχείων msi"
 
-#: ../tools/msiextract.vala:146 ../tools/wixl/wixl.vala:63
+#: ../tools/msiextract.vala:146 ../tools/wixl/wixl.vala:75
 #, c-format
 msgid "Please specify input files.\n"
 msgstr "Παρακαλώ ορίστε αρχεία εισόδου.\n"
@@ -65,39 +65,63 @@ msgstr "Πρόθεμα"
 msgid "Exclude prefix"
 msgstr "Αποκλεισμός προθέματος"
 
-#: ../tools/wixl/wixl.vala:21
+#: ../tools/wixl/wixl.vala:22
 msgid "Verbose output"
 msgstr "Αναλυτική έξοδος"
 
-#: ../tools/wixl/wixl.vala:22
+#: ../tools/wixl/wixl.vala:23
 msgid "Output file"
 msgstr "Αρχείο εξόδου"
 
-#: ../tools/wixl/wixl.vala:23
+#: ../tools/wixl/wixl.vala:24
 msgid "Define variable"
 msgstr "Ορισμός μεταβλητής"
 
-#: ../tools/wixl/wixl.vala:24
+#: ../tools/wixl/wixl.vala:25
+msgid "Target architecture"
+msgstr "Αρχιτεκτονική προορισμού"
+
+#: ../tools/wixl/wixl.vala:26
 msgid "Include directory"
 msgstr "Να περιλαμβάνεται ο κατάλογος"
 
-#: ../tools/wixl/wixl.vala:25
+#: ../tools/wixl/wixl.vala:27
 msgid "System include directory"
 msgstr "Το σύστημα να περιλαμβάνει τον κατάλογο"
 
-#: ../tools/wixl/wixl.vala:26
+#: ../tools/wixl/wixl.vala:28
 msgid "Stop after the preprocessing stage"
 msgstr "Στάση μετά το στάδιο της προεπεξεργασίας"
 
-#: ../tools/wixl/wixl.vala:27
+#: ../tools/wixl/wixl.vala:29
 msgid "INPUT_FILE..."
 msgstr "INPUT_FILE..."
 
 #: ../tools/wixl/wixl.vala:37
+#, c-format
+msgid "arch of type '%s' is not supported"
+msgstr "η αρχιτεκτονική του τύπου '%s' δεν υποστηρίζεται"
+
+#: ../tools/wixl/wixl.vala:49
 msgid "- a msi building tool"
 msgstr "- ένα εργαλείο δόμησης msi"
 
-#: ../tools/wixl/wixl.vala:71
+#: ../tools/wixl/wixl.vala:83
 #, c-format
 msgid "Please specify the output file.\n"
 msgstr "Παρακαλώ ορίστε το αρχείο εξόδου.\n"
+
+#: ../tools/wixl/wixl.vala:100
+#, c-format
+msgid "Loading %s...\n"
+msgstr "Φορτώνεται το %s...\n"
+
+#: ../tools/wixl/wixl.vala:110
+#, c-format
+msgid "Building %s...\n"
+msgstr "Δομείται το %s...\n"
+
+#: ../tools/wixl/wixl.vala:113
+#, c-format
+msgid "Writing %s...\n"
+msgstr "Γράφεται το %s...\n"
