@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <?require gcc.wxi?>
+<?require gmp.wxi?>
 <?require libtasn1.wxi?>
+<?require nettle.wxi?>
 <?require readline.wxi?>
 <?require p11-kit.wxi?>
+
 <Include xmlns="http://schemas.microsoft.com/wix/2006/wi">
   <Fragment>
     <DirectoryRef Id="INSTALLDIR">
@@ -16,7 +19,9 @@
   <Fragment>
     <ComponentGroup Id="CG.gnutls">
       <ComponentGroupRef Id="CG.gcc"/>
+      <ComponentGroupRef Id="CG.gmp"/>
       <ComponentGroupRef Id="CG.libtasn1"/>
+      <ComponentGroupRef Id="CG.nettle"/>
       <ComponentGroupRef Id="CG.readline"/>
       <ComponentGroupRef Id="CG.p11-kit"/>
       <ComponentRef Id="cmp845933D5BF01B8450C766D545EF5F537"/>

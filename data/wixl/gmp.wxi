@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<?require gcc.wxi?>
+
+<Include xmlns="http://schemas.microsoft.com/wix/2006/wi">
+  <Fragment>
+    <DirectoryRef Id="INSTALLDIR">
+      <Directory Id="dirEC46AD626BCD898D01A0DEE1610DCD27" Name="bin">
+        <Component Win64="$(var.Win64)" Id="cmp0EE51670A82496B36B97670C3C0E50BA" Guid="*">
+          <File Id="filD5351501BA31874AFFFA329B749B82CB" KeyPath="yes" Source="$(var.SourceDir)/bin/libgmp-10.dll"/>
+        </Component>
+        <Component Win64="$(var.Win64)" Id="cmpEBB0E822D6A0A44090A16AD807348C4D" Guid="*">
+          <File Id="filB894F508D3E14768CA6FD1CE5457E6CA" KeyPath="yes" Source="$(var.SourceDir)/bin/libmp-3.dll"/>
+        </Component>
+      </Directory>
+    </DirectoryRef>
+  </Fragment>
+  <Fragment>
+    <ComponentGroup Id="CG.gmp">
+      <ComponentGroupRef Id="CG.gcc"/>
+      <ComponentRef Id="cmp0EE51670A82496B36B97670C3C0E50BA"/>
+      <ComponentRef Id="cmpEBB0E822D6A0A44090A16AD807348C4D"/>
+    </ComponentGroup>
+  </Fragment>
+</Include>

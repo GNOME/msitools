@@ -15,6 +15,7 @@ dist_wxi_DATA =					\
 	wixl/gdk-pixbuf.wxi			\
 	wixl/gettext.wxi			\
 	wixl/glib2.wxi				\
+	wixl/gmp.wxi				\
 	wixl/gnutls.wxi				\
 	wixl/gstreamer-plugins-bad-free.wxi	\
 	wixl/gstreamer-plugins-base.wxi		\
@@ -41,6 +42,7 @@ dist_wxi_DATA =					\
 	wixl/libvirt.wxi			\
 	wixl/libvorbis.wxi			\
 	wixl/libxml2.wxi			\
+	wixl/nettle.wxi				\
 	wixl/nspr.wxi				\
 	wixl/nss.wxi				\
 	wixl/openssl.wxi			\

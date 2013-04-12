@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<?require gmp.wxi?>
+
+<Include xmlns="http://schemas.microsoft.com/wix/2006/wi">
+  <Fragment>
+    <DirectoryRef Id="INSTALLDIR">
+      <Directory Id="dir19005F9CD7DD75239BC27524467D3B5F" Name="bin">
+        <Component Win64="$(var.Win64)" Id="cmp7D1D6558DB49C65F87ABAA8ABC549490" Guid="*">
+          <File Id="fil7D9A5BA189964756C558D780557F3FE3" KeyPath="yes" Source="$(var.SourceDir)/bin/libhogweed-2-3.dll"/>
+        </Component>
+        <Component Win64="$(var.Win64)" Id="cmp26E1104F7A73A1758041DD848846050E" Guid="*">
+          <File Id="fil556F58E4223E3D0E4D47703DE0ADA463" KeyPath="yes" Source="$(var.SourceDir)/bin/libnettle-4-5.dll"/>
+        </Component>
+        <Component Win64="$(var.Win64)" Id="cmp9FC667D34859E0C1F4AAF3B30562A147" Guid="*">
+          <File Id="fil049533F7D47445344E752E04CDFF43EF" KeyPath="yes" Source="$(var.SourceDir)/bin/nettle-hash.exe"/>
+        </Component>
+        <Component Win64="$(var.Win64)" Id="cmpA4DD6D111AE0612995C2CDB5F5B5D7D8" Guid="*">
+          <File Id="filBA1CCAD51240CA545C51C42F9C8F3705" KeyPath="yes" Source="$(var.SourceDir)/bin/nettle-lfib-stream.exe"/>
+        </Component>
+        <Component Win64="$(var.Win64)" Id="cmp0B468FEC1961B8353377BF2AC881CCB5" Guid="*">
+          <File Id="fil1C7E34D4442FCB2E286047F2D190EFB6" KeyPath="yes" Source="$(var.SourceDir)/bin/pkcs1-conv.exe"/>
+        </Component>
+        <Component Win64="$(var.Win64)" Id="cmp15113D7FD0A03234112DF7A60B8E9881" Guid="*">
+          <File Id="fil10A334FEA6E072613A846160386A55FA" KeyPath="yes" Source="$(var.SourceDir)/bin/sexp-conv.exe"/>
+        </Component>
+      </Directory>
+    </DirectoryRef>
+  </Fragment>
+  <Fragment>
+    <ComponentGroup Id="CG.nettle">
+      <ComponentGroupRef Id="CG.gmp"/>
+      <ComponentRef Id="cmp7D1D6558DB49C65F87ABAA8ABC549490"/>
+      <ComponentRef Id="cmp26E1104F7A73A1758041DD848846050E"/>
+      <ComponentRef Id="cmp9FC667D34859E0C1F4AAF3B30562A147"/>
+      <ComponentRef Id="cmpA4DD6D111AE0612995C2CDB5F5B5D7D8"/>
+      <ComponentRef Id="cmp0B468FEC1961B8353377BF2AC881CCB5"/>
+      <ComponentRef Id="cmp15113D7FD0A03234112DF7A60B8E9881"/>
+    </ComponentGroup>
+  </Fragment>
+</Include>
