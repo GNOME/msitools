@@ -40,10 +40,10 @@
         versions here, but we lack condition expression evaluation.
         Also, see GLib bug 697156 to remove that unnecessary kludge -->
         <Component Win64="$(var.Win64)" Id="cmp6D51B76EDAC50E07576738CC967DF2B8" Guid="*">
-          <File Id="fil4EE00EB97025D93A2059F8C6CE6CE4DF" KeyPath="yes" Source="$(var.SourceDir)/bin/gspawn-$(env.GLIB_ARCH)-helper-console.exe"/>
+          <File Id="fil4EE00EB97025D93A2059F8C6CE6CE4DF" KeyPath="yes" Source="$(var.SourceDir)/bin/gspawn-$(var.GLIB_ARCH)-helper-console.exe"/>
         </Component>
         <Component Win64="$(var.Win64)" Id="cmpD2B981C370CD6226A814AE8B4C124DDE" Guid="*">
-          <File Id="filEE7F8F0A2194C97E113C07E0A1CD6E6E" KeyPath="yes" Source="$(var.SourceDir)/bin/gspawn-$(env.GLIB_ARCH)-helper.exe"/>
+          <File Id="filEE7F8F0A2194C97E113C07E0A1CD6E6E" KeyPath="yes" Source="$(var.SourceDir)/bin/gspawn-$(var.GLIB_ARCH)-helper.exe"/>
         </Component>
 
         <Component Win64="$(var.Win64)" Id="cmp4A6A2B5ACA14940BF3D57B9FF19C9689" Guid="*">
