@@ -273,7 +273,8 @@ namespace Wixl {
         }
 
         public override void visit_package (WixPackage package) throws GLib.Error {
-            db.info.set_comments (package.Comments);
+            if (package.Comments != null)
+                db.info.set_comments (package.Comments);
 
             if (package.Description != null)
                 db.info.set_subject (package.Description);
