@@ -575,15 +575,16 @@ namespace Wixl {
         static construct {
             name = "CustomAction";
             sql_create = "CREATE TABLE `CustomAction` (`Action` CHAR(72) NOT NULL, `Type` INT NOT NULL, `Source` CHAR(72), `Target` CHAR(255), `ExtendedType` LONG PRIMARY KEY `Action`)";
-            sql_insert = "INSERT INTO `CustomAction` (`Action`, `Type`, `Source`, `Target`) VALUES (?, ?, ?, ?)";
+            sql_insert = "INSERT INTO `CustomAction` (`Action`, `Type`, `Source`, `Target`, `ExtendedType`) VALUES (?, ?, ?, ?, ?)";
         }
 
-        public void add (string Action, int Type, string Source, string Target) throws GLib.Error {
-            var rec = new Libmsi.Record (4);
+        public void add (string Action, int Type, string Source, string Target, int? ExtendedType = null) throws GLib.Error {
+            var rec = new Libmsi.Record (5);
             if (!rec.set_string (1, Action) ||
                 !rec.set_int (2, Type) ||
                 !rec.set_string (3, Source) ||
-                !rec.set_string (4, Target))
+                !rec.set_string (4, Target) ||
+                (ExtendedType != null && !rec.set_int (5, ExtendedType)))
                 throw new Wixl.Error.FAILED ("failed to add record");
 
             records.append (rec);
