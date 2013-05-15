@@ -1019,8 +1019,13 @@ namespace Wixl {
         }
 
         public override void visit_custom_action (WixCustomAction action) throws GLib.Error {
+            CustomActionType type;
+
             // FIXME: so many missing things here...
-            var type = CustomActionType.EXE_PROPERTY;
+            if (action.DllEntry != null)
+                type = CustomActionType.DLL_BINARY;
+            else
+                type = CustomActionType.EXE_PROPERTY;
 
             if (action.Return == "ignore")
                 type |= CustomActionType.CONTINUE;
@@ -1029,7 +1034,10 @@ namespace Wixl {
             if (!parse_yesno (action.Impersonate))
                 type |= CustomActionType.NO_IMPERSONATE;
 
-            db.table_custom_action.add (action.Id, type, action.Property, action.ExeCommand);
+            string source = action.Property ?? action.BinaryKey;
+            string target = action.ExeCommand ?? action.DllEntry;
+
+            db.table_custom_action.add (action.Id, type, source, target);
         }
 
         public override void visit_binary (WixBinary binary) throws GLib.Error {
