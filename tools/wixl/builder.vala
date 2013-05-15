@@ -1031,6 +1031,13 @@ namespace Wixl {
 
             db.table_custom_action.add (action.Id, type, action.Property, action.ExeCommand);
         }
+
+        public override void visit_binary (WixBinary binary) throws GLib.Error {
+            FileInfo info;
+
+            binary.file = find_file (binary.SourceFile, out info);
+            db.table_binary.add (binary.Id, binary.file.get_path ());
+        }
     }
 
 } // Wixl
