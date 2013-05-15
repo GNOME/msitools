@@ -134,6 +134,14 @@ AT_CHECK_WIXL([-o out.msi test-arp.wxs], [0], [ignore], [ignore])
 AT_CHECK([test -f out.msi], [0])
 AT_CLEANUP
 
+AT_SETUP([Binary/CustomAction])
+AT_WIXLDATA([binary.wxs])
+AT_WIXLDATA([Foo.dll])
+AT_CHECK_WIXL([-o out.msi binary.wxs], [0], [ignore], [ignore])
+# FIXME: add tons of tests on out.msi
+AT_CHECK([test -f out.msi], [0])
+AT_CLEANUP
+
 AT_BANNER([wixl-heat])
 
 AT_SETUP([Heat])
