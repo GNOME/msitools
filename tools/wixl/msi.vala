@@ -38,6 +38,24 @@ namespace Wixl {
         }
     }
 
+    class MsiTableBinary: MsiTable {
+        static construct {
+            name = "Binary";
+            sql_create = "CREATE TABLE `Binary` (`Name` CHAR(72) NOT NULL, `Data` OBJECT NOT NULL PRIMARY KEY `Name`)";
+            sql_insert = "INSERT INTO `Binary` (`Name`, `Data`) VALUES (?, ?)";
+        }
+
+        public void add (string id, string filename) throws GLib.Error {
+            var rec = new Libmsi.Record (2);
+
+            if (!rec.set_string (1, id) ||
+                !rec.load_stream (2, filename))
+                throw new Wixl.Error.FAILED ("failed to add record");
+
+            records.append (rec);
+        }
+    }
+
     public abstract class MsiTableSequence: MsiTable {
         public class MSIDefault.ActionFlags flags;
 
@@ -686,6 +704,7 @@ namespace Wixl {
         public MsiSummaryInfo info;
         public MsiTableProperty table_property;
         public MsiTableIcon table_icon;
+        public MsiTableBinary table_binary;
         public MsiTableMedia table_media;
         public MsiTableDirectory table_directory;
         public MsiTableComponent table_component;
@@ -749,6 +768,7 @@ namespace Wixl {
             tables = new HashTable<string, MsiTable> (str_hash, str_equal);
             table_property = new MsiTableProperty ();
             table_icon = new MsiTableIcon ();
+            table_binary = new MsiTableBinary ();
             table_media = new MsiTableMedia ();
             table_directory = new MsiTableDirectory ();
             table_component = new MsiTableComponent ();
@@ -782,6 +802,7 @@ namespace Wixl {
                     table_media,
                     table_property,
                     table_icon,
+                    table_binary,
                     table_component,
                     table_feature,
                     table_feature_components,
