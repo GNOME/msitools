@@ -1020,12 +1020,23 @@ namespace Wixl {
 
         public override void visit_custom_action (WixCustomAction action) throws GLib.Error {
             CustomActionType type;
+            string source, target;
 
             // FIXME: so many missing things here...
-            if (action.DllEntry != null)
+            if (action.DllEntry != null) {
                 type = CustomActionType.DLL_BINARY;
-            else
+                source = action.BinaryKey;
+                target = action.DllEntry;
+            } else if (action.JScriptCall != null) {
+                type = CustomActionType.JSCRIPT_BINARY;
+                source = action.BinaryKey;
+                target = action.JScriptCall;
+            } else if (action.ExeCommand != null) {
                 type = CustomActionType.EXE_PROPERTY;
+                source = action.Property;
+                target = action.ExeCommand;
+            } else
+                throw new Wixl.Error.FAILED ("Unsupported CustomAction");
 
             if (action.Return == "ignore")
                 type |= CustomActionType.CONTINUE;
@@ -1033,9 +1044,6 @@ namespace Wixl {
                 type |= CustomActionType.IN_SCRIPT;
             if (!parse_yesno (action.Impersonate))
                 type |= CustomActionType.NO_IMPERSONATE;
-
-            string source = action.Property ?? action.BinaryKey;
-            string target = action.ExeCommand ?? action.DllEntry;
 
             db.table_custom_action.add (action.Id, type, source, target);
         }

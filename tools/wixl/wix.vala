@@ -916,6 +916,7 @@ namespace Wixl {
         public string BinaryKey { get; set; }
         public string DllEntry { get; set; }
         public string HideTarget { get; set; }
+        public string JScriptCall { get; set; }
 
         public override void accept (WixNodeVisitor visitor) throws GLib.Error {
             visitor.visit_custom_action (this);
