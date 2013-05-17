@@ -1,0 +1,128 @@
+# Russian translation for msitools.
+# Copyright (C) 2013 msitools's COPYRIGHT HOLDER
+# This file is distributed under the same license as the msitools package.
+# sds <dseregin@59.ru>, 2013.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: msitools master\n"
+"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=msitools&keywords=I18N+L10N&component=general\n"
+"POT-Creation-Date: 2013-04-12 03:25+0000\n"
+"PO-Revision-Date: 2013-05-17 22:06+0300\n"
+"Last-Translator: Yuri Myasoedov <omerta13@yandex.ru>\n"
+"Language-Team: Russian <gnome-cyr@gnome.org>\n"
+"Language: ru\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"X-Generator: Poedit 1.5.5\n"
+
+#: ../tools/msiextract.vala:10
+#: ../tools/wixl/wixl.vala:21
+msgid "Display version number"
+msgstr "Показать номер версии"
+
+#: ../tools/msiextract.vala:11
+msgid "Extract to directory"
+msgstr "Извлечь в папку"
+
+#: ../tools/msiextract.vala:12
+msgid "List files only"
+msgstr "Вывести только список файлов"
+
+#: ../tools/msiextract.vala:13
+msgid "MSI_FILE..."
+msgstr "MSI_ФАЙЛ..."
+
+#: ../tools/msiextract.vala:126
+msgid "- a msi files extracting tool"
+msgstr "— утилита распаковки файлов msi"
+
+#: ../tools/msiextract.vala:146
+#: ../tools/wixl/wixl.vala:75
+#, c-format
+msgid "Please specify input files.\n"
+msgstr "Укажите входные файлы.\n"
+
+#: ../tools/wixl/wixl-heat.vala:11
+msgid "Directory Ref"
+msgstr "Ссылка на каталог"
+
+#: ../tools/wixl/wixl-heat.vala:12
+msgid "Component Group"
+msgstr "Группа компонентов"
+
+#: ../tools/wixl/wixl-heat.vala:13
+msgid "Variable for source dir"
+msgstr "Переменная для каталога источника"
+
+#: ../tools/wixl/wixl-heat.vala:14
+msgid "Prefix"
+msgstr "Префикс"
+
+#: ../tools/wixl/wixl-heat.vala:15
+msgid "Exclude prefix"
+msgstr "Исключить префикс"
+
+#: ../tools/wixl/wixl.vala:22
+msgid "Verbose output"
+msgstr "Подробный вывод"
+
+#: ../tools/wixl/wixl.vala:23
+msgid "Output file"
+msgstr "Выходной файл"
+
+#: ../tools/wixl/wixl.vala:24
+msgid "Define variable"
+msgstr "Определить переменную"
+
+#: ../tools/wixl/wixl.vala:25
+msgid "Target architecture"
+msgstr "Целевая архитектура"
+
+#: ../tools/wixl/wixl.vala:26
+msgid "Include directory"
+msgstr "Каталог включаемых файлов"
+
+#: ../tools/wixl/wixl.vala:27
+msgid "System include directory"
+msgstr "Каталог системных включаемых файлов"
+
+#: ../tools/wixl/wixl.vala:28
+msgid "Stop after the preprocessing stage"
+msgstr "Остановить после этапа предварительной обработки"
+
+#: ../tools/wixl/wixl.vala:29
+msgid "INPUT_FILE..."
+msgstr "ВХОДНОЙ_ФАЙЛ..."
+
+#: ../tools/wixl/wixl.vala:37
+#, c-format
+msgid "arch of type '%s' is not supported"
+msgstr "архитектура «%s» не поддерживается"
+
+#: ../tools/wixl/wixl.vala:49
+msgid "- a msi building tool"
+msgstr "— утилита создания файлов msi"
+
+#: ../tools/wixl/wixl.vala:83
+#, c-format
+msgid "Please specify the output file.\n"
+msgstr "Укажите выходной файл.\n"
+
+#: ../tools/wixl/wixl.vala:100
+#, c-format
+msgid "Loading %s...\n"
+msgstr "Загрузка %s…\n"
+
+#: ../tools/wixl/wixl.vala:110
+#, c-format
+msgid "Building %s...\n"
+msgstr "Сборка %s…\n"
+
+#: ../tools/wixl/wixl.vala:113
+#, c-format
+msgid "Writing %s...\n"
+msgstr "Запись %s…\n"
+
