@@ -171,6 +171,7 @@ static unsigned get_type( unsigned uiProperty )
     case LIBMSI_PROPERTY_TITLE:
          return OLEVT_LPSTR;
 
+    case LIBMSI_PROPERTY_EDITTIME:
     case LIBMSI_PROPERTY_LASTPRINTED:
     case LIBMSI_PROPERTY_CREATED_TM:
     case LIBMSI_PROPERTY_LASTSAVED_TM:
