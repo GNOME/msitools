@@ -12,6 +12,10 @@ Provided tools include:
 
 - msibuild, a low-level tool to create MSI files
 
+- msidiff, compares contents of two MSI files with diff
+
+- msidump, dumps raw MSI tables and stream content
+
 - msiextract, to inspect and extract the files of an MSI file
 
 - wixl, a WiX-like tool, that builds Windows Installer (MSI) packages
