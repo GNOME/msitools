@@ -519,9 +519,9 @@ namespace Wixl {
 
             string[] dirs = {};
             dirs += name;
-            dirs += loc.file.get_parent ().get_child (name).get_path ();
             foreach (var dir in includedirs)
                 dirs += dir.get_child (name).get_path ();
+            dirs += loc.file.get_parent ().get_child (name).get_path ();
 
             foreach (var inc in dirs) {
                 success = include_try (inc, writer);
