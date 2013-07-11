@@ -11,6 +11,9 @@
           <File Id="filDC11F2B0D7B6BE3CCA2B5003E81CC8F1" KeyPath="yes" Source="$(var.SourceDir)/bin/libgcc_s_sjlj-1.dll"/>
 <?endif?>
         </Component>
+        <Component Win64="$(var.Win64)" Id="cmp94EF633C9D64EF2F94885691030F7EB7" Guid="*">
+          <File Id="fil78209D8C742B610E236DE62A5F452A14" KeyPath="yes" Source="$(var.SourceDir)/bin/libssp-0.dll"/>
+        </Component>
       </Directory>
     </DirectoryRef>
   </Fragment>
