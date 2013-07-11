@@ -65,6 +65,7 @@ namespace Wixl {
         public abstract void visit_custom_action (WixCustomAction action) throws GLib.Error;
         public abstract void visit_binary (WixBinary binary) throws GLib.Error;
         public abstract void visit_major_upgrade (WixMajorUpgrade major) throws GLib.Error;
+        public abstract void visit_media_template (WixMediaTemplate media) throws GLib.Error;
     }
 
     public abstract class WixNode: Object {
@@ -950,6 +951,18 @@ namespace Wixl {
         }
     }
 
+    public class WixMediaTemplate: WixElement {
+        static construct {
+            name = "MediaTemplate";
+        }
+
+        public string EmbedCab { get; set; }
+
+        public override void accept (WixNodeVisitor visitor) throws GLib.Error {
+            visitor.visit_media_template (this);
+        }
+    }
+
     public class WixProduct: WixElement {
         static construct {
             name = "Product";
@@ -972,6 +985,7 @@ namespace Wixl {
                 typeof (WixCustomAction),
                 typeof (WixBinary),
                 typeof (WixMajorUpgrade),
+                typeof (WixMediaTemplate),
             });
         }
 

@@ -194,9 +194,9 @@ namespace Wixl {
             table.add_sorted_actions ();
         }
 
+        List<WixMedia> medias;
         private void build_cabinet () throws GLib.Error {
             var sequence = 0;
-            var medias = get_elements<WixMedia> ();
 
             foreach (var m in medias) {
                 var folder = new GCab.Folder (GCab.Compression.MSZIP);
@@ -324,6 +324,7 @@ namespace Wixl {
 
             var rec = db.table_media.add (media.Id, media.DiskPrompt, cabinet);
             media.record = rec;
+            medias.append (media);
         }
 
         public override void visit_directory (WixDirectory dir) throws GLib.Error {
@@ -1089,6 +1090,13 @@ namespace Wixl {
             node.add_dep (table.get_action ("InstallValidate"));
         }
 
+        public override void visit_media_template (WixMediaTemplate tmpl) throws GLib.Error {
+            var media = new WixMedia ();
+            media.EmbedCab = tmpl.EmbedCab;
+            media.Cabinet = "cab1.cab";
+            media.Id = "1";
+            visit_media (media);
+        }
     }
 
 } // Wixl
