@@ -20,6 +20,32 @@ namespace Wixl {
         }
     }
 
+#if 0
+    class MsiTableFileHash: MsiTable {
+        static construct {
+            name = "MsiFileHash";
+            sql_create = "CREATE TABLE `MsiFileHash` (`File_` CHAR(72) NOT NULL, `Options` INT NOT NULL, `HashPart1` LONG NOT NULL, `HashPart2` LONG NOT NULL, `HashPart3` LONG NOT NULL, `HashPart4` LONG NOT NULL PRIMARY KEY `File_`)";
+            sql_insert = "INSERT INTO `MsiFileHash` (`File_`, `Options`, `HashPart1`, `HashPart2`, `HashPart3`, `HashPart4`) VALUES (?, ?, ?, ?, ?, ?)";
+        }
+
+        public void add (string file,
+                         int hash1, int hash2, int hash3, int hash4,
+                         int? options = 0) throws GLib.Error {
+            var rec = new Libmsi.Record (6);
+
+            if (!rec.set_string (1, file) ||
+                !rec.set_int (2, options) ||
+                !rec.set_int (3, hash1) ||
+                !rec.set_int (4, hash2) ||
+                !rec.set_int (5, hash3) ||
+                !rec.set_int (6, hash4))
+                throw new Wixl.Error.FAILED ("failed to add record");
+
+            records.append (rec);
+        }
+    }
+#endif
+
     class MsiTableIcon: MsiTable {
         static construct {
             name = "Icon";
