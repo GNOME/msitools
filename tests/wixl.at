@@ -28,6 +28,14 @@ AT_CHECK_WIXL([-o out.msi SampleFirst.wxs], [0], [ignore], [ignore])
 AT_CHECK([test -f out.msi], [0])
 AT_CLEANUP
 
+AT_SETUP([SampleUser])
+AT_WIXLDATA([SampleUser.wxs])
+AT_WIXLDATA([FoobarAppl10.exe])
+AT_CHECK_WIXL([-o out.msi SampleUser.wxs], [0], [ignore], [ignore])
+# FIXME: add tons of tests on out.msi
+AT_CHECK([test -f out.msi], [0])
+AT_CLEANUP
+
 AT_SETUP([Stable component GUIDs])
 AT_WIXLDATA([ComponentGUID.wxs])
 AT_WIXLDATA([FoobarAppl10.exe])
