@@ -272,6 +272,8 @@ namespace Wixl {
                 db.info.set_subject (product.Name);
 
             db.info.set_author (product.Manufacturer);
+            if (db.info.get_comments () == null)
+                db.info.set_comments ("This installer database contains the logic and data required to install %s.".printf (product.Name));
 
             db.table_property.add ("Manufacturer", product.Manufacturer);
             db.table_property.add ("ProductLanguage", product.Language);

@@ -740,6 +740,14 @@ namespace Wixl {
         public void set_comments (string value) throws GLib.Error {
             set_property (Libmsi.Property.COMMENTS, value);
         }
+
+        public string? get_comments () {
+            try {
+                return properties.get_string (Libmsi.Property.COMMENTS);
+            } catch (GLib.Error err) {
+                return null;
+            }
+        }
     }
 
     class MsiDatabase: Object {
