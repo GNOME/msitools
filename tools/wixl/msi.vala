@@ -237,7 +237,7 @@ namespace Wixl {
             sql_insert = "INSERT INTO `File` (`File`, `Component_`, `FileName`, `FileSize`, `Attributes`, `Sequence`) VALUES (?, ?, ?, ?, ?, ?)";
         }
 
-        public Libmsi.Record add (string File, string Component, string FileName, int FileSize, int Attributes, int Sequence = 0) throws GLib.Error {
+        public Libmsi.Record add (string File, string Component, string FileName, int FileSize, int Attributes, int Sequence = 1) throws GLib.Error {
             var rec = new Libmsi.Record (6);
 
             if (!rec.set_string (1, File) ||
