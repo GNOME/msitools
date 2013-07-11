@@ -397,7 +397,7 @@ namespace Wixl {
             if (comp.key is WixRegistryValue)
                 attr |= ComponentAttribute.REGISTRY_KEY_PATH;
 
-            var parent = resolve<WixDirectory> (comp.parent);
+            var dir = get_directory (comp);
             string uuid;
 
             // FIXME: stable uuid generation based on ns/dir/path
@@ -409,7 +409,7 @@ namespace Wixl {
             if (parse_yesno (comp.Win64))
                 attr |= ComponentAttribute.64BIT;
 
-            db.table_component.add (comp.Id, uuid, parent.Id, attr,
+            db.table_component.add (comp.Id, uuid, dir.Id, attr,
                                     comp.key != null ? comp.key.Id : null);
 
         }
@@ -514,10 +514,20 @@ namespace Wixl {
             }
         }
 
+        WixDirectory get_directory (WixComponent comp) throws GLib.Error {
+            if (comp.parent is WixComponentGroup) {
+                var group = comp.parent as WixComponentGroup;
+                return find_element<WixDirectory> (group.Directory);
+            } else if (comp.parent is WixDirectory || comp.parent is WixDirectoryRef) {
+                return resolve<WixDirectory> (comp.parent);
+            } else
+                error ("unhandled parent type %s", comp.parent.name);
+        }
+
         public override void visit_remove_folder (WixRemoveFolder rm) throws GLib.Error {
             var on = InstallMode.from_string (rm.On);
             var comp = rm.parent as WixComponent;
-            var dir = resolve<WixDirectory> (comp.parent);
+            WixDirectory dir = get_directory (comp);
 
             db.table_remove_file.add (rm.Id, comp.Id, dir.Id, on);
         }

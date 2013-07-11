@@ -264,6 +264,9 @@ namespace Wixl {
                 typeof (WixComponentGroupRef),
             });
         }
+
+        public string Directory { get; set; }
+
     }
 
     public class WixFragment: WixElement {
