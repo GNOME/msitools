@@ -2,7 +2,8 @@ v0.93
 =====
 
 - Add preprocessor condition evaluation
-- Add 64-bit msi build support
+- Add 64-bit and per-user msi build support
+- Add some CustomAction, MajorUpgrade support
 - Build clean-ups
 - Translations
 
