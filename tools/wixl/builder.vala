@@ -332,7 +332,7 @@ namespace Wixl {
         public override void visit_directory (WixDirectory dir) throws GLib.Error {
             var defaultdir = dir.Name ?? ".";
 
-            if (dir.parent is WixProduct) {
+            if (dir.parent is WixProduct || dir.parent is WixFragment) {
                 if (dir.Id != "TARGETDIR")
                     throw new Wixl.Error.FAILED ("Invalid root directory");
                 db.table_directory.add (dir.Id, null, defaultdir);

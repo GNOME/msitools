@@ -260,6 +260,7 @@ namespace Wixl {
             name = "ComponentGroup";
 
             add_child_types (child_types, {
+                typeof (WixComponent),
                 typeof (WixComponentRef),
                 typeof (WixComponentGroupRef),
             });
