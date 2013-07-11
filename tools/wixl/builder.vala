@@ -144,8 +144,10 @@ namespace Wixl {
             add (MSIDefault.Action.PublishFeatures);
             add (MSIDefault.Action.PublishProduct);
             add (MSIDefault.Action.InstallFinalize);
-            if (db.table_upgrade.records.length () > 0)
+            if (db.table_upgrade.records.length () > 0) {
                 add (MSIDefault.Action.FindRelatedProducts);
+                add (MSIDefault.Action.MigrateFeatureStates);
+            }
             if (db.table_launch_condition.records.length () > 0)
                 add (MSIDefault.Action.LaunchConditions);
             if (db.table_registry.records.length () > 0) {
@@ -178,8 +180,10 @@ namespace Wixl {
             add (MSIDefault.Action.FileCost);
             add (MSIDefault.Action.CostFinalize);
             add (MSIDefault.Action.ExecuteAction);
-            if (db.table_upgrade.records.length () > 0)
+            if (db.table_upgrade.records.length () > 0) {
                 add (MSIDefault.Action.FindRelatedProducts);
+                add (MSIDefault.Action.MigrateFeatureStates);
+            }
             if (db.table_launch_condition.records.length () > 0)
                 add (MSIDefault.Action.LaunchConditions);
             table.add_sorted_actions ();
@@ -1054,6 +1058,29 @@ namespace Wixl {
             binary.file = find_file (binary.SourceFile, out info);
             db.table_binary.add (binary.Id, binary.file.get_path ());
         }
+
+        public override void visit_major_upgrade (WixMajorUpgrade major) throws GLib.Error {
+            var product = major.parent as WixProduct;
+
+            var property = "WIX_DOWNGRADE_DETECTED";
+            db.table_upgrade.add (get_uuid (product.UpgradeCode), product.Version, "", 2, property);
+
+            secureProperties += property;
+
+            property = "WIX_UPGRADE_DETECTED";
+            db.table_upgrade.add (get_uuid (product.UpgradeCode), "", product.Version, 1, property);
+            secureProperties += property;
+
+            if (major.DowngradeErrorMessage != null) {
+                db.table_launch_condition.add ("NOT WIX_DOWNGRADE_DETECTED", major.DowngradeErrorMessage);
+            }
+
+            var table = db.table_install_execute_sequence;
+            var node = table.get_action ("RemoveExistingProducts");
+            warn_if_fail (node.action == null);
+            node.add_dep (table.get_action ("InstallValidate"));
+        }
+
     }
 
 } // Wixl
