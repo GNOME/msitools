@@ -335,6 +335,7 @@ namespace Wixl {
         public string SummaryCodepage { get; set; }
         public string Comments { get; set; }
         public string Description { get; set; }
+        public string InstallScope { get; set; }
 
         public override void accept (WixNodeVisitor visitor) throws GLib.Error {
             base.accept (visitor);

@@ -283,6 +283,14 @@ namespace Wixl {
             db.table_property.add ("UpgradeCode", add_braces (product.UpgradeCode));
         }
 
+        [Flags]
+        enum SourceFlags {
+            SHORT_NAMES,
+            COMPRESSED,
+            ADMIN,
+            NO_PRIVILEGES,
+        }
+
         public override void visit_package (WixPackage package) throws GLib.Error {
             if (package.Comments != null)
                 db.info.set_comments (package.Comments);
@@ -302,6 +310,16 @@ namespace Wixl {
                 db.info.set_property (Libmsi.Property.VERSION, version);
             }
 
+            int source = SourceFlags.COMPRESSED;
+            if (package.InstallScope != null) {
+                if (package.InstallScope == "perUser")
+                    source |= SourceFlags.NO_PRIVILEGES;
+                else if (package.InstallScope == "perMachine")
+                    source |= 0;
+                else
+                    error ("invalid InstallScope value: %s", package.InstallScope);
+            }
+            db.info.set_property (Libmsi.Property.SOURCE, source);
         }
 
         public override void visit_icon (WixIcon icon) throws GLib.Error {

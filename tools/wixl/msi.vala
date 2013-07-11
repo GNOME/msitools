@@ -811,7 +811,6 @@ namespace Wixl {
                 info.set_property (Libmsi.Property.LASTSAVED_TM,
                                    time_to_filetime (now ()));
                 info.set_property (Libmsi.Property.VERSION, get_default_version ());
-                info.set_property (Libmsi.Property.SOURCE, 2);
                 info.set_property (Libmsi.Property.APPNAME, Config.PACKAGE_STRING);
                 info.set_property (Libmsi.Property.SECURITY, 2);
             } catch (GLib.Error error) {
