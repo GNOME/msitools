@@ -1025,6 +1025,7 @@ namespace Wixl {
             name = "Component";
 
             add_child_types (child_types, {
+                typeof (WixCreateFolder),
                 typeof (WixRemoveFolder),
                 typeof (WixRegistryValue),
                 typeof (WixFile),

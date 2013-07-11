@@ -171,6 +171,11 @@ namespace Wixl {
             }
             if (db.table_service_install.records.length () > 0)
                 add (MSIDefault.Action.InstallServices);
+            if (db.table_create_folder.records.length () > 0) {
+                add (MSIDefault.Action.RemoveFolders);
+                add (MSIDefault.Action.CreateFolders);
+            }
+
             table.add_sorted_actions ();
 
             // InstallUISequence
@@ -828,6 +833,9 @@ namespace Wixl {
         }
 
         public override void visit_create_folder (WixCreateFolder folder) throws GLib.Error {
+            var component = folder.parent as WixComponent;
+            var dir = get_directory (component);
+            db.table_create_folder.add (dir.Id, component.Id);
         }
 
         public override void visit_fragment (WixFragment fragment) throws GLib.Error {

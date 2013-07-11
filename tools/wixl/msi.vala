@@ -489,6 +489,23 @@ namespace Wixl {
         }
     }
 
+    class MsiTableCreateFolder: MsiTable {
+        static construct {
+            name = "CreateFolder";
+            sql_create = "CREATE TABLE `CreateFolder` (`Directory_` CHAR(72) NOT NULL, `Component_` CHAR(72) NOT NULL PRIMARY KEY `Directory_`, `Component_`)";
+            sql_insert = "INSERT INTO `CreateFolder` (`Directory_`, `Component_`) VALUES (?, ?)";
+        }
+
+        public void add (string Directory, string Component) throws GLib.Error {
+            var rec = new Libmsi.Record (2);
+            if (!rec.set_string (1, Directory) ||
+                !rec.set_string (2, Component))
+                throw new Wixl.Error.FAILED ("failed to add record");
+
+            records.append (rec);
+        }
+    }
+
     class MsiTableRemoveFile: MsiTable {
         static construct {
             name = "RemoveFile";
@@ -754,6 +771,7 @@ namespace Wixl {
         public MsiTableAppSearch table_app_search;
         public MsiTableCustomAction table_custom_action;
         public MsiTableRegLocator table_reg_locator;
+        public MsiTableCreateFolder table_create_folder;
 
         public HashTable<string, MsiTable> tables;
 
@@ -818,6 +836,7 @@ namespace Wixl {
             table_app_search = new MsiTableAppSearch ();
             table_custom_action = new MsiTableCustomAction ();
             table_reg_locator = new MsiTableRegLocator ();
+            table_create_folder = new MsiTableCreateFolder ();
 
             foreach (var t in new MsiTable[] {
                     table_admin_execute_sequence,
@@ -845,6 +864,7 @@ namespace Wixl {
                     table_app_search,
                     table_custom_action,
                     table_reg_locator,
+                    table_create_folder,
                     new MsiTableError (),
                     new MsiTableValidation ()
                 }) {
