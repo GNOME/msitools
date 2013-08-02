@@ -5,10 +5,9 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: msitools master\n"
-"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=msitoo"
-"ls&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2013-03-23 19:32+0000\n"
-"PO-Revision-Date: 2013-03-25 00:05+0200\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2013-08-02 12:25+0200\n"
+"PO-Revision-Date: 2013-08-02 12:26+0200\n"
 "Last-Translator: Fran Dieguez <frandieguez@gnome.org>\n"
 "Language-Team: gnome-l10n-gl@gnome.org\n"
 "Language: gl\n"
@@ -19,7 +18,7 @@ msgstr ""
 "X-Generator: Virtaal 0.7.1\n"
 "X-Project-Style: gnome\n"
 
-#: ../tools/msiextract.vala:10 ../tools/wixl/wixl.vala:20
+#: ../tools/msiextract.vala:10 ../tools/wixl/wixl.vala:21
 msgid "Display version number"
 msgstr "Mostrar o número de versión"
 
@@ -39,7 +38,7 @@ msgstr "FICHEIRO_MSI…"
 msgid "- a msi files extracting tool"
 msgstr "- unha ferramenta para extraer ficheiros msi"
 
-#: ../tools/msiextract.vala:146 ../tools/wixl/wixl.vala:63
+#: ../tools/msiextract.vala:146 ../tools/wixl/wixl.vala:75
 #, c-format
 msgid "Please specify input files.\n"
 msgstr "Especifique os ficheiros de entrada.\n"
@@ -64,39 +63,63 @@ msgstr "Prefixo"
 msgid "Exclude prefix"
 msgstr "Prefixo de exclusión"
 
-#: ../tools/wixl/wixl.vala:21
+#: ../tools/wixl/wixl.vala:22
 msgid "Verbose output"
 msgstr "Saída detallada"
 
-#: ../tools/wixl/wixl.vala:22
+#: ../tools/wixl/wixl.vala:23
 msgid "Output file"
 msgstr "Ficheiro de saída"
 
-#: ../tools/wixl/wixl.vala:23
+#: ../tools/wixl/wixl.vala:24
 msgid "Define variable"
 msgstr "Definir variábel"
 
-#: ../tools/wixl/wixl.vala:24
+#: ../tools/wixl/wixl.vala:25
+msgid "Target architecture"
+msgstr "Arquitectura obxectivo"
+
+#: ../tools/wixl/wixl.vala:26
 msgid "Include directory"
 msgstr "Incluír directorio"
 
-#: ../tools/wixl/wixl.vala:25
+#: ../tools/wixl/wixl.vala:27
 msgid "System include directory"
 msgstr "O sistema inclúe o directorio"
 
-#: ../tools/wixl/wixl.vala:26
+#: ../tools/wixl/wixl.vala:28
 msgid "Stop after the preprocessing stage"
 msgstr "Deter despois da fase de preprocesado"
 
-#: ../tools/wixl/wixl.vala:27
+#: ../tools/wixl/wixl.vala:29
 msgid "INPUT_FILE..."
 msgstr "FICHEIRO_ENTRADA…"
 
 #: ../tools/wixl/wixl.vala:37
+#, c-format
+msgid "arch of type '%s' is not supported"
+msgstr "Non se admite a arquitectura de tipo «%s»"
+
+#: ../tools/wixl/wixl.vala:49
 msgid "- a msi building tool"
 msgstr "- unha ferramenta para construir msi"
 
-#: ../tools/wixl/wixl.vala:71
+#: ../tools/wixl/wixl.vala:83
 #, c-format
 msgid "Please specify the output file.\n"
 msgstr "Especifique o ficheiro de saída.\n"
+
+#: ../tools/wixl/wixl.vala:100
+#, c-format
+msgid "Loading %s...\n"
+msgstr "Cargando %s…\n"
+
+#: ../tools/wixl/wixl.vala:110
+#, c-format
+msgid "Building %s...\n"
+msgstr "Construíndo %s…\n"
+
+#: ../tools/wixl/wixl.vala:113
+#, c-format
+msgid "Writing %s...\n"
+msgstr "Escribindo %s…\n"
