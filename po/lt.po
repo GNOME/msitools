@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: msitools master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=msitools&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2013-03-12 13:38+0000\n"
-"PO-Revision-Date: 2013-03-16 22:40+0200\n"
+"POT-Creation-Date: 2013-08-02 10:27+0000\n"
+"PO-Revision-Date: 2013-08-12 23:11+0300\n"
 "Last-Translator: Aurimas Černius <aurisc4@gmail.com>\n"
 "Language-Team: Lietuvių <gnome-lt@lists.akl.lt>\n"
 "Language: lt\n"
@@ -20,7 +20,7 @@ msgstr ""
 "%100<10 || n%100>=20) ? 1 : 2);\n"
 "X-Generator: Gtranslator 2.91.6\n"
 
-#: ../tools/msiextract.vala:10 ../tools/wixl/wixl.vala:20
+#: ../tools/msiextract.vala:10 ../tools/wixl/wixl.vala:21
 msgid "Display version number"
 msgstr "Rodyti versijos numerį"
 
@@ -40,7 +40,7 @@ msgstr "MSI_FAILAS..."
 msgid "- a msi files extracting tool"
 msgstr "- msi failų išskleidimo įrankis"
 
-#: ../tools/msiextract.vala:146 ../tools/wixl/wixl.vala:63
+#: ../tools/msiextract.vala:146 ../tools/wixl/wixl.vala:75
 #, c-format
 msgid "Please specify input files.\n"
 msgstr "Nurodykite įvesties failus.\n"
@@ -65,39 +65,63 @@ msgstr "Priešdėlis"
 msgid "Exclude prefix"
 msgstr "Išimčių priešdėlis"
 
-#: ../tools/wixl/wixl.vala:21
+#: ../tools/wixl/wixl.vala:22
 msgid "Verbose output"
 msgstr "Išsami išvestis"
 
-#: ../tools/wixl/wixl.vala:22
+#: ../tools/wixl/wixl.vala:23
 msgid "Output file"
 msgstr "Išvesties failas"
 
-#: ../tools/wixl/wixl.vala:23
+#: ../tools/wixl/wixl.vala:24
 msgid "Define variable"
 msgstr "Apibrėžti kintamąjį"
 
-#: ../tools/wixl/wixl.vala:24
+#: ../tools/wixl/wixl.vala:25
+msgid "Target architecture"
+msgstr "Paskirties architektūra"
+
+#: ../tools/wixl/wixl.vala:26
 msgid "Include directory"
 msgstr "Įtraukti aplanką"
 
-#: ../tools/wixl/wixl.vala:25
+#: ../tools/wixl/wixl.vala:27
 msgid "System include directory"
 msgstr "Įtraukti sisteminį aplanką"
 
-#: ../tools/wixl/wixl.vala:26
+#: ../tools/wixl/wixl.vala:28
 msgid "Stop after the preprocessing stage"
 msgstr "Sustoti po pirminio apdorojimo"
 
-#: ../tools/wixl/wixl.vala:27
+#: ../tools/wixl/wixl.vala:29
 msgid "INPUT_FILE..."
 msgstr "ĮVESTIES_FAILAS..."
 
 #: ../tools/wixl/wixl.vala:37
+#, c-format
+msgid "arch of type '%s' is not supported"
+msgstr "arch tipas „%s“ nepalaikomas"
+
+#: ../tools/wixl/wixl.vala:49
 msgid "- a msi building tool"
 msgstr "- msi kūrimo įrankis"
 
-#: ../tools/wixl/wixl.vala:71
+#: ../tools/wixl/wixl.vala:83
 #, c-format
 msgid "Please specify the output file.\n"
 msgstr "Nurodykite išvesties failą.\n"
+
+#: ../tools/wixl/wixl.vala:100
+#, c-format
+msgid "Loading %s...\n"
+msgstr "Įkeliama %s...\n"
+
+#: ../tools/wixl/wixl.vala:110
+#, c-format
+msgid "Building %s...\n"
+msgstr "Kuriama %s...\n"
+
+#: ../tools/wixl/wixl.vala:113
+#, c-format
+msgid "Writing %s...\n"
+msgstr "Rašomas %s...\n"
