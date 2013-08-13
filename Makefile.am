@@ -21,8 +21,9 @@ dist_libmsiinclude_HEADERS =			\
 	$(NULL)
 
 AM_CFLAGS = $(WARN_CFLAGS)
-AM_CPPFLAGS = -Iinclude -I$(srcdir)/include	\
-	$(GLIB_CFLAGS) $(GSF_CFLAGS) $(UUID_CFLAGS) \
+AM_CPPFLAGS =						\
+	-Iinclude -I$(srcdir)/include			\
+	$(GLIB_CFLAGS) $(GSF_CFLAGS) $(UUID_CFLAGS)	\
 	$(NULL)
 
 AM_LDFLAGS = -Llibmsi
@@ -81,6 +82,10 @@ libcommon_a_VALAFLAGS =				\
 	$(NULL)
 libcommon_a_CFLAGS = -w
 
+common.vapi libcommon.h: libcommon.a
+
+BUILT_SOURCES = common.vapi libcommon.h
+
 bin_PROGRAMS += wixl
 
 wixl_CFLAGS = -w
@@ -126,7 +131,11 @@ wixl_LDADD =					\
 	$(WIXL_LIBS)				\
 	$(NULL)
 
-wixl_DEPENDENCIES = libmsi/libmsi.la
+# FIXME -j: automake valagen doesn't seem to wait deps:
+wixl_DEPENDENCIES = libmsi/libmsi.la common.vapi
+
+# FIXME: workaround for a vala bug 
+BUILT_SOURCES += wixl.h
 
 # Wixl-heat
 
@@ -172,21 +181,26 @@ clean-local:
 	-$(SHELL) $(srcdir)/tests/testsuite --clean
 
 dist-hook:
-	@for file in `cd $(srcdir)/tests && \
+	@for file in `cd $(srcdir)/tests &&					    \
 		$(AUTOM4TE) --language=autotest --trace='AT_MSIDATA:tests/data/$$1' \
-			    testsuite.at`; do \
-	    dir=`echo "/$$file" | sed -e 's,/[^/]*$$,,'`; \
-	    $(MKDIR_P) "$(distdir)$$dir" || exit 1; \
-	    echo cp -fpR $(srcdir)/$$file "$(distdir)$$dir"; \
-	    cp -fpR $(srcdir)/$$file "$(distdir)$$dir" || exit 1; \
+			    testsuite.at`; do					    \
+	    dir=`echo "/$$file" | sed -e 's,/[^/]*$$,,'`;			    \
+	    $(MKDIR_P) "$(distdir)$$dir" || exit 1;				    \
+	    echo cp -fpR $(srcdir)/$$file "$(distdir)$$dir";			    \
+	    cp -fpR $(srcdir)/$$file "$(distdir)$$dir" || exit 1;		    \
 	done
 	@echo $(VERSION) > $(distdir)/.tarball-version
 
 
 $(srcdir)/tests/testsuite: tests/testsuite.at tests/wixl.at tests/package.m4
-	$(AM_V_GEN)cd $(srcdir)/tests && \
+	$(AM_V_GEN)cd $(srcdir)/tests &&					 \
 		$(AUTOM4TE) --language=autotest -o testsuite.tmp testsuite.at && \
 		mv testsuite.tmp testsuite
+
+MAINTAINERCLEANFILES =				\
+	$(srcdir)/tests/testsuite		\
+	$(srcdir)/tests/package.m4		\
+	$(NULL)
 
 EXTRA_DIST +=					\
 	$(top_srcdir)/.version			\
@@ -197,6 +211,15 @@ EXTRA_DIST +=					\
 	msitools.doap				\
 	$(NULL)
 
-BUILT_SOURCES = $(top_srcdir)/.version
+BUILT_SOURCES += $(top_srcdir)/.version
 $(top_srcdir)/.version:
 	@echo $(VERSION) > $@-t && mv $@-t $@
+
+MAINTAINERCLEANFILES +=					\
+	$(GITIGNORE_MAINTAINERCLEANFILES_TOPLEVEL)	\
+	$(GITIGNORE_MAINTAINERCLEANFILES_MAKEFILE_IN)	\
+	$(GITIGNORE_MAINTAINERCLEANFILES_M4_LIBTOOL)	\
+	m4/intltool.m4					\
+	$(NULL)
+
+-include $(top_srcdir)/git.mk

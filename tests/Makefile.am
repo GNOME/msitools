@@ -16,3 +16,5 @@ testdatabase_LDADD += -lole32
 testsuminfo_SOURCES = testsuminfo.c
 testsuminfo_LDADD = ../libmsi/libmsi.la -lole32
 endif
+
+-include $(top_srcdir)/git.mk

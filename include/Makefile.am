@@ -15,3 +15,5 @@ BUILT_SOURCES = $(ENUMS)
 EXTRA_DIST = libmsi-enums.h.etemplate
 
 
+
+-include $(top_srcdir)/git.mk

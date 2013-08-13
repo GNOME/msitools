@@ -61,3 +61,5 @@ dist_wxi_DATA =					\
 	wixl/zlib.wxi				\
 	$(NULL)
 
+
+-include $(top_srcdir)/git.mk

@@ -46,6 +46,7 @@ libmsi_la_LDFLAGS = -no-undefined -rpath $(libdir) \
 
 libmsi_la_LIBADD = $(GLIB_LIBS) $(GSF_LIBS) $(GOBJECT_LIBS)
 
+BUILT_SOURCES += libmsi-enums.c
 EXTRA_DIST = libmsi-enums.c.etemplate
 
 INTROSPECTION_SCANNER_ARGS = --warn-all
@@ -102,3 +103,5 @@ CLEANFILES += libmsi-1.0.vapi
 endif # VAPI
 
 endif # GIR
+
+-include $(top_srcdir)/git.mk
