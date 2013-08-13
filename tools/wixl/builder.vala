@@ -175,7 +175,8 @@ namespace Wixl {
                 add (MSIDefault.Action.RemoveFolders);
                 add (MSIDefault.Action.CreateFolders);
             }
-
+            if (db.table_app_search.records.length () > 0)
+                add (MSIDefault.Action.AppSearch);
             table.add_sorted_actions ();
 
             // InstallUISequence
@@ -191,6 +192,8 @@ namespace Wixl {
             }
             if (db.table_launch_condition.records.length () > 0)
                 add (MSIDefault.Action.LaunchConditions);
+            if (db.table_app_search.records.length () > 0)
+                add (MSIDefault.Action.AppSearch);
             table.add_sorted_actions ();
         }
 
