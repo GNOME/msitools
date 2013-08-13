@@ -597,6 +597,14 @@ namespace Wixl {
         }
     }
 
+    class MsiTableSignature : MsiTable {
+        static construct {
+            name = "Signature";
+
+            sql_create = "CREATE TABLE `Signature` (`Signature` CHAR(72) NOT NULL, `FileName` CHAR(255) NOT NULL, `MinVersion` CHAR(20), `MaxVersion` CHAR(20), `MinSize` LONG, `MaxSize` LONG, `MinDate` LONG, `MaxDate` LONG, `Languages` CHAR(255) PRIMARY KEY `Signature`)";
+        }
+    }
+
     class MsiTableAppSearch : MsiTable {
         static construct {
             name = "AppSearch";
@@ -780,6 +788,7 @@ namespace Wixl {
         public MsiTableCustomAction table_custom_action;
         public MsiTableRegLocator table_reg_locator;
         public MsiTableCreateFolder table_create_folder;
+        public MsiTableSignature table_signature;
 
         public HashTable<string, MsiTable> tables;
 
@@ -841,6 +850,7 @@ namespace Wixl {
             table_upgrade = new MsiTableUpgrade ();
             table_launch_condition = new MsiTableLaunchCondition ();
             table_app_search = new MsiTableAppSearch ();
+            table_signature = new MsiTableSignature ();
             table_custom_action = new MsiTableCustomAction ();
             table_reg_locator = new MsiTableRegLocator ();
             table_create_folder = new MsiTableCreateFolder ();
@@ -869,6 +879,7 @@ namespace Wixl {
                     table_upgrade,
                     table_launch_condition,
                     table_app_search,
+                    table_signature,
                     table_custom_action,
                     table_reg_locator,
                     table_create_folder,
