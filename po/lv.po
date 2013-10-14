@@ -1,0 +1,127 @@
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+#
+# Rūdolfs Mazurs <rudolfs.mazurs@gmail.com>, 2013.
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
+"product=msitools&keywords=I18N+L10N&component=general\n"
+"POT-Creation-Date: 2013-08-30 15:36+0000\n"
+"PO-Revision-Date: 2013-10-14 20:25+0300\n"
+"Last-Translator: Rūdolfs Mazurs <rudolfs.mazurs@gmail.com>\n"
+"Language-Team: Latvian <lata-l10n@googlegroups.com>\n"
+"Language: lv\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n != 0 ? 1 : "
+"2);\n"
+"X-Generator: Lokalize 1.5\n"
+
+#: ../tools/msiextract.vala:10 ../tools/wixl/wixl.vala:21
+msgid "Display version number"
+msgstr "Rādīt versijas numuru"
+
+#: ../tools/msiextract.vala:11
+msgid "Extract to directory"
+msgstr "Atspiest mapē"
+
+#: ../tools/msiextract.vala:12
+msgid "List files only"
+msgstr "Tikai rādīt datņu sarakstu"
+
+#: ../tools/msiextract.vala:13
+msgid "MSI_FILE..."
+msgstr "MSI_DATNE..."
+
+#: ../tools/msiextract.vala:126
+msgid "- a msi files extracting tool"
+msgstr "- msi datņu atspiešanas rīks"
+
+#: ../tools/msiextract.vala:146 ../tools/wixl/wixl.vala:75
+#, c-format
+msgid "Please specify input files.\n"
+msgstr "Lūdzu, norādiet ievades datnes.\n"
+
+#: ../tools/wixl/wixl-heat.vala:11
+msgid "Directory Ref"
+msgstr "Direktorijas norāde"
+
+#: ../tools/wixl/wixl-heat.vala:12
+msgid "Component Group"
+msgstr "Komponenšu grupa"
+
+#: ../tools/wixl/wixl-heat.vala:13
+msgid "Variable for source dir"
+msgstr "Mainīgais avota direktorijai"
+
+#: ../tools/wixl/wixl-heat.vala:14
+msgid "Prefix"
+msgstr "Prefikss"
+
+#: ../tools/wixl/wixl-heat.vala:15
+msgid "Exclude prefix"
+msgstr "Neiekļaut prefiksu"
+
+#: ../tools/wixl/wixl.vala:22
+msgid "Verbose output"
+msgstr "Detalizēta izvade"
+
+#: ../tools/wixl/wixl.vala:23
+msgid "Output file"
+msgstr "Izvades datne"
+
+#: ../tools/wixl/wixl.vala:24
+msgid "Define variable"
+msgstr "Definēt mainīgo"
+
+#: ../tools/wixl/wixl.vala:25
+msgid "Target architecture"
+msgstr "Mērķa arhitektūra"
+
+#: ../tools/wixl/wixl.vala:26
+msgid "Include directory"
+msgstr "Iekļaut direktoriju"
+
+#: ../tools/wixl/wixl.vala:27
+msgid "System include directory"
+msgstr "Sistēmā iekļaut direktoriju"
+
+#: ../tools/wixl/wixl.vala:28
+msgid "Stop after the preprocessing stage"
+msgstr "Apturēt pēc pirmsapstrādes posma"
+
+#: ../tools/wixl/wixl.vala:29
+msgid "INPUT_FILE..."
+msgstr "IEVADES_DATNE..."
+
+#: ../tools/wixl/wixl.vala:37
+#, c-format
+msgid "arch of type '%s' is not supported"
+msgstr "arka ar tipu “%s” nav atbalstīta"
+
+#: ../tools/wixl/wixl.vala:49
+msgid "- a msi building tool"
+msgstr "- msi būvēšanas rīks"
+
+#: ../tools/wixl/wixl.vala:83
+#, c-format
+msgid "Please specify the output file.\n"
+msgstr "Lūdzu, norādiet izvades datni.\n"
+
+#: ../tools/wixl/wixl.vala:100
+#, c-format
+msgid "Loading %s...\n"
+msgstr "Ielādē %s...\n"
+
+#: ../tools/wixl/wixl.vala:110
+#, c-format
+msgid "Building %s...\n"
+msgstr "Būvē %s...\n"
+
+#: ../tools/wixl/wixl.vala:113
+#, c-format
+msgid "Writing %s...\n"
+msgstr "Raksta %s...\n"
+
