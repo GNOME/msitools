@@ -95,7 +95,7 @@ public int main (string[] args) {
             last_path = path;
 
             if (!is_directory) {
-                var id = generate_id ("cmp", 1, line);
+                var id = generate_id ("cmp", 1, file);
                 cmpref.append (id);
                 stdout.printf (indent + "<Component Id=\"%s\" Guid=\"*\">\n".printf (id));
                 file = sourcedir + Path.DIR_SEPARATOR_S + file;
