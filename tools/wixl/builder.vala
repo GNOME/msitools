@@ -381,26 +381,6 @@ namespace Wixl {
             SHARED,
         }
 
-        /* Namespace UUID: {de73ba5a-ed96-4a66-ba1b-fbb44e659ad7} */
-        private static string uuid_namespace =
-            "\xde\x73\xba\x5a\xed\x96\x4a\x66\xba\x1b\xfb\xb4\x4e\x65\x9a\xd7";
-
-        private static string uuid_from_name(string s) {
-            var cs = new Checksum (ChecksumType.SHA1);
-            uint8 buffer[20];
-            size_t buflen = buffer.length;
-
-            cs.update (uuid_namespace.data, 16);
-            cs.update (s.data, s.length);
-            cs.get_digest (buffer, ref buflen);
-
-            return "{%02X%02X%02X%02X-%02X%02X-%02X%02X-%02X%02X-%02X%02X%02X%02X%02X%02X}".
-                printf(buffer[0], buffer[1], buffer[2], buffer[3],
-                        buffer[4], buffer[5], (buffer[6] & 15) | 0x50, buffer[7],
-                        (buffer[8] & 0x3F) | 0x80, buffer[9], buffer[10], buffer[11],
-                        buffer[12], buffer[13], buffer[14], buffer[15]);
-        }
-
         WixKeyElement? component_default_key = null;
         int            component_children_count;
 
