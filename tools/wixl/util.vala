@@ -88,7 +88,7 @@ namespace Wixl {
             i += 1;
         }
         var data = string.joinv ("|", args);
-        var hash = Checksum.compute_for_string (ChecksumType.MD5, data);
+        var hash = Checksum.compute_for_string (ChecksumType.SHA1, data);
         var str = prefix + hash[0:32].up ();
 
         return str;
@@ -99,7 +99,7 @@ namespace Wixl {
         for (var i = 0; i < 8; i++)
             data[i] = Random.next_int ();
 
-        var hash = Checksum.compute_for_data (ChecksumType.MD5, (uint8[])data);
+        var hash = Checksum.compute_for_data (ChecksumType.SHA1, (uint8[])data);
 
         return prefix + hash[0:32].up ();
     }
