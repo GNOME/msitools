@@ -20,6 +20,7 @@
   <Fragment>
     <ComponentGroup Id="CG.gcc">
       <ComponentRef Id="cmp23A396DF6DA34DEDBF531E5264BF86AA"/>
+      <ComponentRef Id="cmp94EF633C9D64EF2F94885691030F7EB7"/>
     </ComponentGroup>
   </Fragment>
 </Include>
