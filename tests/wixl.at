@@ -45,7 +45,7 @@ AT_CHECK_WIXL([-o out.msi ComponentGUID.wxs], [0], [ignore], [ignore])
 AT_CHECK([msiinfo export -s out.msi Component | sort | grep INSERT], [0],
 [INSERT INTO `Component` (`Component`, `ComponentId`, `Directory_`, `Attributes`, `KeyPath`) VALUES ('MainExecutable', '{824FE83A-F576-5626-8DB5-B460C2654825}', 'INSTALLDIR', 0, 'FoobarEXE')
 INSERT INTO `Component` (`Component`, `ComponentId`, `Directory_`, `Attributes`, `KeyPath`) VALUES ('Manual', '{8CC39238-0EA7-5D8F-8E38-6E97FC9E2B09}', 'INSTALLDIR', 0, 'Manual')
-INSERT INTO `Component` (`Component`, `ComponentId`, `Directory_`, `Attributes`, `KeyPath`) VALUES ('ProgramMenuDir', '{E3D82183-B8C9-5C35-A5F3-083D713C8CC2}', 'ProgramMenuDir', 4, 'reg5453B5C95074EA6F633E6D36318AFBF7')
+INSERT INTO `Component` (`Component`, `ComponentId`, `Directory_`, `Attributes`, `KeyPath`) VALUES ('ProgramMenuDir', '{E3D82183-B8C9-5C35-A5F3-083D713C8CC2}', 'ProgramMenuDir', 4, 'reg87D9EA4ADD3AB0EF9CE081917EDEAAF5')
 ])
 AT_CLEANUP
 
@@ -158,10 +158,10 @@ mkdir -p test/a/b test/c
 touch test/a/file test/c/file
 find test > list
 AT_CHECK([cat list | _wixl_heat -p test/ | grep File | sort], [0],
-[          <File Id="fil1C4ED87DDF872C3D730CE70E5F0B56D2" KeyPath="yes" Source="SourceDir/a/file"/>
-          <File Id="filA95C2C271801F96CC9C5D672A7E6CC66" KeyPath="yes" Source="SourceDir/c/file"/>
+[          <File Id="fil18D0F9984B0565992BE4B64E573B4237" KeyPath="yes" Source="SourceDir/a/file"/>
+          <File Id="filD6217F3B9CF0F6E4697D603E4E611F1C" KeyPath="yes" Source="SourceDir/c/file"/>
 ], [ignore])
 AT_CHECK([cat list | _wixl_heat -p test/ -x c | grep File | sort], [0],
-[          <File Id="fil1C4ED87DDF872C3D730CE70E5F0B56D2" KeyPath="yes" Source="SourceDir/a/file"/>
+[          <File Id="fil18D0F9984B0565992BE4B64E573B4237" KeyPath="yes" Source="SourceDir/a/file"/>
 ], [ignore])
 AT_CLEANUP
