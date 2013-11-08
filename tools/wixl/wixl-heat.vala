@@ -88,7 +88,8 @@ public int main (string[] args) {
                 }
             }
             for (; i < path.length; i++) {
-                stdout.printf (indent + "<Directory Id=\"%s\" Name=\"%s\">\n".printf (random_id ("dir"), path[i]));
+                last_path += path[i];
+                stdout.printf (indent + "<Directory Id=\"%s\" Name=\"%s\">\n".printf (generate_id("dir", 1, string.joinv("/", last_path)), path[i]));
                 indent += "  ";
             }
             last_path = path;
