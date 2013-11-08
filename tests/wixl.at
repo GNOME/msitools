@@ -43,9 +43,9 @@ AT_WIXLDATA([Manual.pdf])
 AT_CHECK_WIXL([-o out.msi ComponentGUID.wxs], [0], [ignore], [ignore])
 # FIXME: add tons of tests on out.msi
 AT_CHECK([msiinfo export -s out.msi Component | sort | grep INSERT], [0],
-[INSERT INTO `Component` (`Component`, `ComponentId`, `Directory_`, `Attributes`, `KeyPath`) VALUES ('MainExecutable', '{E92F36A4-7332-5803-B56D-B30AED211451}', 'INSTALLDIR', 0, 'FoobarEXE')
-INSERT INTO `Component` (`Component`, `ComponentId`, `Directory_`, `Attributes`, `KeyPath`) VALUES ('Manual', '{E44FE0D4-A612-50BF-B231-0662EB694E2F}', 'INSTALLDIR', 0, 'Manual')
-INSERT INTO `Component` (`Component`, `ComponentId`, `Directory_`, `Attributes`, `KeyPath`) VALUES ('ProgramMenuDir', '{6B979E1B-8F32-5150-AA04-6D7B8BCB1614}', 'ProgramMenuDir', 4, 'reg5453B5C95074EA6F633E6D36318AFBF7')
+[INSERT INTO `Component` (`Component`, `ComponentId`, `Directory_`, `Attributes`, `KeyPath`) VALUES ('MainExecutable', '{824FE83A-F576-5626-8DB5-B460C2654825}', 'INSTALLDIR', 0, 'FoobarEXE')
+INSERT INTO `Component` (`Component`, `ComponentId`, `Directory_`, `Attributes`, `KeyPath`) VALUES ('Manual', '{8CC39238-0EA7-5D8F-8E38-6E97FC9E2B09}', 'INSTALLDIR', 0, 'Manual')
+INSERT INTO `Component` (`Component`, `ComponentId`, `Directory_`, `Attributes`, `KeyPath`) VALUES ('ProgramMenuDir', '{E3D82183-B8C9-5C35-A5F3-083D713C8CC2}', 'ProgramMenuDir', 4, 'reg5453B5C95074EA6F633E6D36318AFBF7')
 ])
 AT_CLEANUP
 
