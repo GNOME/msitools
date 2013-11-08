@@ -401,7 +401,6 @@ namespace Wixl {
             var dir = get_directory (comp);
             string uuid;
 
-            // FIXME: stable uuid generation based on ns/dir/path
             if (comp.Guid == "*")
                 uuid = uuid_from_name (comp.full_path (this));
             else
