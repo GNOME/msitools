@@ -1072,7 +1072,7 @@ namespace Wixl {
             if (key == null)
                 throw new Wixl.Error.FAILED("a child is needed to generate a component GUID");
 
-            return parent.full_path (r) + "/" + key.path_name ();
+            return base.full_path (r) + "/" + key.path_name ();
         }
 
     }
