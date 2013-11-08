@@ -200,6 +200,8 @@ static void insert_string_sorted( string_table *st, unsigned string_id )
 
 static void set_st_entry( string_table *st, unsigned n, char *str, uint16_t refcount, enum StringPersistence persistence )
 {
+    g_return_if_fail(str != NULL);
+
     if (persistence == StringPersistent)
     {
         st->strings[n].persistent_refcount = refcount;
@@ -253,6 +255,7 @@ static int msi_addstring( string_table *st, unsigned n, const char *data, int le
     size_t sz;
     int codepage;
     GIConv cpconv;
+    GError *err = NULL;
 
     if( !data )
         return 0;
@@ -288,10 +291,14 @@ static int msi_addstring( string_table *st, unsigned n, const char *data, int le
     /* allocate a new string */
     codepage = st->codepage ? st->codepage : gsf_msole_iconv_win_codepage();
     cpconv = gsf_msole_iconv_open_for_import(codepage);
-    str = g_convert_with_iconv(data, len, cpconv, NULL, &sz, NULL);
+    str = g_convert_with_iconv(data, len, cpconv, NULL, &sz, &err);
     g_iconv_close(cpconv);
-
-    set_st_entry( st, n, str, refcount, persistence );
+    if (err) {
+        g_warning("iconv failed: %s", err->message);
+        g_clear_error(&err);
+    } else {
+        set_st_entry( st, n, str, refcount, persistence);
+    }
 
     return n;
 }
