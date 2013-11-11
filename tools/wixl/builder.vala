@@ -198,6 +198,17 @@ namespace Wixl {
         }
 
         List<WixMedia> medias;
+        private void hash_files () throws GLib.Error {
+            foreach (var rec in db.table_file.records) {
+                var f = rec.get_data<WixFile> ("wixfile");
+                var component = f.parent as WixComponent;
+                if (component.in_feature.length () == 0)
+                    continue;
+
+                db.table_file_hash.add_with_file (f.Id, f.file);
+            }
+        }
+
         private void build_cabinet () throws GLib.Error {
             var sequence = 0;
 
@@ -262,6 +273,7 @@ namespace Wixl {
             property_update ();
             shortcut_target ();
             sequence_actions ();
+            hash_files ();
             build_cabinet ();
 
             return db;

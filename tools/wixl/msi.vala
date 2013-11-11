@@ -20,7 +20,6 @@ namespace Wixl {
         }
     }
 
-#if 0
     class MsiTableFileHash: MsiTable {
         static construct {
             name = "MsiFileHash";
@@ -43,8 +42,14 @@ namespace Wixl {
 
             records.append (rec);
         }
+
+        public void add_with_file (string FileId, File file) throws GLib.Error {
+            int hash1 = 0, hash2 = 0, hash3 = 0, hash4 = 0;
+
+            compute_md5 (file, ref hash1, ref hash2, ref hash3, ref hash4);
+            add (FileId, hash1, hash2, hash3, hash4);
+        }
     }
-#endif
 
     class MsiTableIcon: MsiTable {
         static construct {
@@ -789,6 +794,7 @@ namespace Wixl {
         public MsiTableRegLocator table_reg_locator;
         public MsiTableCreateFolder table_create_folder;
         public MsiTableSignature table_signature;
+        public MsiTableFileHash table_file_hash;
 
         public HashTable<string, MsiTable> tables;
 
@@ -854,6 +860,7 @@ namespace Wixl {
             table_custom_action = new MsiTableCustomAction ();
             table_reg_locator = new MsiTableRegLocator ();
             table_create_folder = new MsiTableCreateFolder ();
+            table_file_hash = new MsiTableFileHash ();
 
             foreach (var t in new MsiTable[] {
                     table_admin_execute_sequence,
@@ -883,6 +890,7 @@ namespace Wixl {
                     table_custom_action,
                     table_reg_locator,
                     table_create_folder,
+                    table_file_hash,
                     new MsiTableError (),
                     new MsiTableValidation ()
                 }) {

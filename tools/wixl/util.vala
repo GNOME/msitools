@@ -168,6 +168,25 @@ namespace Wixl {
         return -1;
     }
 
+    public void compute_md5 (File file, ref int hash1, ref int hash2, ref int hash3, ref int hash4) throws GLib.Error {
+        var checksum = new Checksum (ChecksumType.MD5);
+        var stream = file.read ();
+        uint8 fbuf[4096];
+        size_t size;
+
+        while ((size = stream.read (fbuf)) > 0) {
+            checksum.update (fbuf, size);
+        }
+
+        int buffer[4];
+        size_t buflen = 16;
+        checksum.get_digest ((uint8[])buffer, ref buflen);
+        hash1 = buffer[0];
+        hash2 = buffer[1];
+        hash3 = buffer[2];
+        hash4 = buffer[3];
+    }
+
     public class UnixInputStream : GLib.InputStream {
         public int fd { get; set construct; }
 
