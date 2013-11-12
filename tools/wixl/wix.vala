@@ -419,7 +419,7 @@ namespace Wixl {
         public File file;
 
         public override string path_name () throws GLib.Error {
-            return Name;
+            return Name ?? Path.get_basename (Source);
         }
 
         public override void accept (WixNodeVisitor visitor) throws GLib.Error {
@@ -1092,6 +1092,17 @@ namespace Wixl {
         public override void accept (WixNodeVisitor visitor) throws GLib.Error {
             base.accept (visitor);
             visitor.visit_directory (this);
+        }
+
+        public string path_name () {
+            return Name ?? Id;
+        }
+
+        public override string full_path (WixResolver r) throws GLib.Error {
+            if (parent != null && (parent is WixDirectory || parent is WixDirectoryRef))
+                return parent.full_path (r) + "/" + path_name ();
+            else
+                return path_name ();
         }
     }
 

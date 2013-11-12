@@ -675,12 +675,7 @@ namespace Wixl {
             file.DiskId = file.DiskId ?? "1";
             return_if_fail (file.DiskId == "1");
 
-            var name = file.Id;
-            if (file.Name != null)
-                name = file.Name;
-            else if (file.Source != null)
-                name = Path.get_basename (file.Source);
-
+            var name = file.path_name ();
             var source = file.Source ?? name;
             var comp = file.parent as WixComponent;
             FileInfo info;
