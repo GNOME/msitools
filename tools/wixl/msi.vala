@@ -560,7 +560,7 @@ namespace Wixl {
             sql_insert = "INSERT INTO `ServiceControl` (`ServiceControl`, `Name`, `Event`, `Arguments`, `Wait`, `Component_`) VALUES (?, ?, ?, ?, ?, ?)";
         }
 
-        public void add (string ServiceControl, string Name, int Event, string? Arguments = null, bool? Wait = null, string Component) throws GLib.Error {
+        public void add (string ServiceControl, string Name, int Event, string? Arguments, bool? Wait, string Component) throws GLib.Error {
             var rec = new Libmsi.Record (6);
             if (!rec.set_string (1, ServiceControl) ||
                 !rec.set_string (2, Name) ||
@@ -581,7 +581,7 @@ namespace Wixl {
             sql_insert = "INSERT INTO `ServiceInstall` (`ServiceInstall`, `Name`, `DisplayName`, `ServiceType`, `StartType`, `ErrorControl`, `LoadOrderGroup`, `Dependencies`, `StartName`, `Password`, `Arguments`, `Component_`, `Description`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         }
 
-        public void add (string ServiceInstall, string Name, string? DisplayName = null, int ServiceType, int StartType, int ErrorControl, string? LoadOrderGroup = null, string? Dependencies = null, string? StartName = null, string? Password = null, string? Arguments = null, string Component, string? Description = null) throws GLib.Error {
+        public void add (string ServiceInstall, string Name, string? DisplayName, int ServiceType, int StartType, int ErrorControl, string? LoadOrderGroup, string? Dependencies, string? StartName, string? Password, string? Arguments, string Component, string? Description = null) throws GLib.Error {
             var rec = new Libmsi.Record (13);
             if (!rec.set_string (1, ServiceInstall) ||
                 !rec.set_string (2, Name) ||
