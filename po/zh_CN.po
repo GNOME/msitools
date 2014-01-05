@@ -1,0 +1,124 @@
+# Chinese (China) translation for msitools.
+# Copyright (C) 2014 msitools's COPYRIGHT HOLDER
+# This file is distributed under the same license as the msitools package.
+# Wylmer Wang <wantinghard@gmail.com>, 2014.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: msitools master\n"
+"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
+"product=msitools&keywords=I18N+L10N&component=general\n"
+"POT-Creation-Date: 2013-12-19 15:26+0000\n"
+"PO-Revision-Date: 2014-01-05 15:39+0800\n"
+"Last-Translator: Wylmer Wang <wantinghard@gmail.com>\n"
+"Language-Team: Chinese (Simplified) <i18n-zh@googlegroups.com>\n"
+"Language: zh_CN\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ../tools/msiextract.vala:10 ../tools/wixl/wixl.vala:21
+msgid "Display version number"
+msgstr "显示版本号"
+
+#: ../tools/msiextract.vala:11
+msgid "Extract to directory"
+msgstr "提取到目录"
+
+#: ../tools/msiextract.vala:12
+msgid "List files only"
+msgstr "只列出文件"
+
+#: ../tools/msiextract.vala:13
+msgid "MSI_FILE..."
+msgstr "MSI_FILE..."
+
+#: ../tools/msiextract.vala:126
+msgid "- a msi files extracting tool"
+msgstr "- 一款 msi 文件提取工具"
+
+#: ../tools/msiextract.vala:146 ../tools/wixl/wixl.vala:75
+#, c-format
+msgid "Please specify input files.\n"
+msgstr "请指定输入文件。\n"
+
+#: ../tools/wixl/wixl-heat.vala:11
+msgid "Directory Ref"
+msgstr "目录引用"
+
+#: ../tools/wixl/wixl-heat.vala:12
+msgid "Component Group"
+msgstr "组件分组"
+
+#: ../tools/wixl/wixl-heat.vala:13
+msgid "Variable for source dir"
+msgstr "源目录 变量"
+
+#: ../tools/wixl/wixl-heat.vala:14
+msgid "Prefix"
+msgstr "前缀"
+
+#: ../tools/wixl/wixl-heat.vala:15
+msgid "Exclude prefix"
+msgstr "排除前缀"
+
+#: ../tools/wixl/wixl.vala:22
+msgid "Verbose output"
+msgstr "详尽输出"
+
+#: ../tools/wixl/wixl.vala:23
+msgid "Output file"
+msgstr "输出文件"
+
+#: ../tools/wixl/wixl.vala:24
+msgid "Define variable"
+msgstr "定义变量"
+
+#: ../tools/wixl/wixl.vala:25
+msgid "Target architecture"
+msgstr "目标架构"
+
+#: ../tools/wixl/wixl.vala:26
+msgid "Include directory"
+msgstr "include 目录"
+
+#: ../tools/wixl/wixl.vala:27
+msgid "System include directory"
+msgstr "系统 include 目录"
+
+#: ../tools/wixl/wixl.vala:28
+msgid "Stop after the preprocessing stage"
+msgstr "在预处理阶段之后停止"
+
+#: ../tools/wixl/wixl.vala:29
+msgid "INPUT_FILE..."
+msgstr "INPUT_FILE..."
+
+#: ../tools/wixl/wixl.vala:37
+#, c-format
+msgid "arch of type '%s' is not supported"
+msgstr "不支持“%s”类型的架构"
+
+#: ../tools/wixl/wixl.vala:49
+msgid "- a msi building tool"
+msgstr "- 一款 msi 创建工具"
+
+#: ../tools/wixl/wixl.vala:83
+#, c-format
+msgid "Please specify the output file.\n"
+msgstr "请指定输出文件。\n"
+
+#: ../tools/wixl/wixl.vala:100
+#, c-format
+msgid "Loading %s...\n"
+msgstr "正在加载 %s...\n"
+
+#: ../tools/wixl/wixl.vala:110
+#, c-format
+msgid "Building %s...\n"
+msgstr "正在创建 %s...\n"
+
+#: ../tools/wixl/wixl.vala:113
+#, c-format
+msgid "Writing %s...\n"
+msgstr "正在写入 %s...\n"
