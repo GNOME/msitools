@@ -6,6 +6,7 @@
 <?require portablexdr.wxi?>
 <?require readline.wxi?>
 <?require libxml2.wxi?>
+<?require winpthreads.wxi?>
 
 <Include xmlns="http://schemas.microsoft.com/wix/2006/wi">
   <Fragment>
@@ -16,6 +17,9 @@
         </Component>
         <Component Win64="$(var.Win64)" Id="cmpB6F6993161E17654F77AA88C3F185130" Guid="*">
           <File Id="fil2C76D30B4A96A710A4816162D63D871C" KeyPath="yes" Source="$(var.SourceDir)/bin/libvirt-qemu-0.dll"/>
+        </Component>
+	<Component Win64="$(var.Win64)" Id="cmpE285D1D7089CBDBA1061BBD4A7AF1000" Guid="*">
+          <File Id="filF27DB6482D9739ABAEAEE61F69076E20" KeyPath="yes" Source="$(var.SourceDir)/bin/libvirt-lxc-0.dll"/>
         </Component>
         <Component Win64="$(var.Win64)" Id="cmp41746D5296A8554D60E68588090F6113" Guid="*">
           <File Id="filBB3B1264C58072C7D963EE71C7C8B360" KeyPath="yes" Source="$(var.SourceDir)/bin/virsh.exe"/>
@@ -642,8 +646,11 @@
       <ComponentGroupRef Id="CG.portablexdr"/>
       <ComponentGroupRef Id="CG.readline"/>
       <ComponentGroupRef Id="CG.libxml2"/>
+      <ComponentGroupRef Id="CG.winpthreads"/>
       <ComponentRef Id="cmpB962DB3CF88FF4B22CD95DDD142C563A"/>
       <ComponentRef Id="cmpB6F6993161E17654F77AA88C3F185130"/>
+      <ComponentRef Id="cmpE285D1D7089CBDBA1061BBD4A7AF1000"/>
+      <ComponentRef Id="cmp5648F8ED8EFC91809ECF3B09E70ECFC7"/>
       <ComponentRef Id="cmp41746D5296A8554D60E68588090F6113"/>
       <ComponentRef Id="cmp349E5CE6DC8EFE5DB1F8F7D9EE65D794"/>
       <ComponentRef Id="cmp5A64F65084C4A2F5C65AD2B52DA889C9"/>
