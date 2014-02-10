@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Include xmlns="http://schemas.microsoft.com/wix/2006/wi">
+  <Fragment>
+    <DirectoryRef Id="INSTALLDIR">
+      <Directory Id="dir3A52CE780950D4D969792A2559CD519D" Name="bin">
+        <Component Win64="$(var.Win64)" Id="cmp5648F8ED8EFC91809ECF3B09E70ECFC7" Guid="*">
+          <File Id="fil5A70AA822BB510BC0A33CDF7FC2B380A" KeyPath="yes" Source="$(var.SourceDir)/bin/libwinpthread-1.dll"/>
+        </Component>
+      </Directory>
+    </DirectoryRef>
+  </Fragment>
+  <Fragment>
+    <ComponentGroup Id="CG.winpthreads">
+      <ComponentRef Id="cmp5648F8ED8EFC91809ECF3B09E70ECFC7"/>
+    </ComponentGroup>
+  </Fragment>
+</Include>

@@ -59,6 +59,7 @@ dist_wxi_DATA =					\
 	wixl/usbredir.wxi			\
 	wixl/win-iconv.wxi			\
 	wixl/zlib.wxi				\
+	wixl/winpthreads.wxi			\
 	$(NULL)
 
 
