@@ -46,6 +46,7 @@ dist_wxi_DATA =					\
 	wixl/nspr.wxi				\
 	wixl/nss.wxi				\
 	wixl/openssl.wxi			\
+	wixl/opus.wxi				\
 	wixl/orc.wxi				\
 	wixl/p11-kit.wxi			\
 	wixl/pango.wxi				\
