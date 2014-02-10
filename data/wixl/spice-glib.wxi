@@ -5,6 +5,7 @@
 <?require pixman.wxi?>
 <?require libjpeg-turbo.wxi?>
 <?require celt051.wxi?>
+<?require opus.wxi?>
 <?require hicolor-icon-theme.wxi?>
 <Include xmlns="http://schemas.microsoft.com/wix/2006/wi">
   <Fragment>
@@ -87,6 +88,7 @@
       <ComponentGroupRef Id="CG.pixman"/>
       <ComponentGroupRef Id="CG.libjpeg-turbo"/>
       <ComponentGroupRef Id="CG.celt051"/>
+      <ComponentGroupRef Id="CG.opus"/>
       <ComponentGroupRef Id="CG.hicolor-icon-theme"/>
       <ComponentRef Id="cmp102591AAF331792A897FB24554275832"/>
       <ComponentRef Id="cmpD9079AE5EA50B2FAF0D89AA30A612B73"/>
