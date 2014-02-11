@@ -56,6 +56,7 @@ dist_wxi_DATA =					\
 	wixl/readline.wxi			\
 	wixl/spice-glib.wxi			\
 	wixl/spice-gtk.wxi			\
+	wixl/sqlite.wxi				\
 	wixl/termcap.wxi			\
 	wixl/usbredir.wxi			\
 	wixl/win-iconv.wxi			\
