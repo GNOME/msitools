@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <?require libffi.wxi?>
 <?require gettext.wxi?>
+<?require zlib.wxi?>
 <Include xmlns="http://schemas.microsoft.com/wix/2006/wi">
   <Fragment>
     <DirectoryRef Id="INSTALLDIR">
@@ -775,6 +776,7 @@
     <ComponentGroup Id="CG.glib2">
       <ComponentGroupRef Id="CG.libffi"/>
       <ComponentGroupRef Id="CG.gettext"/>
+      <ComponentGroupRef Id="CG.zlib"/>
       <ComponentRef Id="cmpB8A671D3D3CC219C78B3A53D2759C83D"/>
       <ComponentRef Id="cmp98E508D7B2C36F345744654DB9FC1B3B"/>
       <ComponentRef Id="cmpF1C96DC6EE20030A64EE3B32CBA20326"/>
