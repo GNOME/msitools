@@ -1,0 +1,124 @@
+# French translation for msitools.
+# Copyright (C) 2013 msitools's COPYRIGHT HOLDER
+# This file is distributed under the same license as the msitools package.
+# Yoann Fievez <yoann.fievez@gmail.com>, 2013.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: msitools master\n"
+"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
+"product=msitools&keywords=I18N+L10N&component=general\n"
+"POT-Creation-Date: 2014-01-05 07:41+0000\n"
+"PO-Revision-Date: 2014-03-16 16:58+0100\n"
+"Last-Translator: Fievez Yoann <yoann.fievez@gmail.com>\n"
+"Language-Team: French <gnomefr@traduc.org>\n"
+"Language: fr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"X-Generator: Poedit 1.5.7\n"
+
+#: ../tools/msiextract.vala:10 ../tools/wixl/wixl.vala:21
+msgid "Display version number"
+msgstr "Affiche le numéro de version"
+
+#: ../tools/msiextract.vala:11
+msgid "Extract to directory"
+msgstr "Extrait vers le répertoire"
+
+#: ../tools/msiextract.vala:12
+msgid "List files only"
+msgstr "Liste les fichiers uniquement"
+
+#: ../tools/msiextract.vala:13
+msgid "MSI_FILE..."
+msgstr "MSI_FILE..."
+
+#: ../tools/msiextract.vala:126
+msgid "- a msi files extracting tool"
+msgstr "- un outil d'extraction de fichiers MSI"
+
+#: ../tools/msiextract.vala:146 ../tools/wixl/wixl.vala:75
+msgid "Please specify input files.\n"
+msgstr "Veuillez spécifier les fichiers d'entrée. \n"
+
+#: ../tools/wixl/wixl-heat.vala:11
+msgid "Directory Ref"
+msgstr "Référence du répertoire"
+
+#: ../tools/wixl/wixl-heat.vala:12
+msgid "Component Group"
+msgstr "Groupe de composants"
+
+#: ../tools/wixl/wixl-heat.vala:13
+msgid "Variable for source dir"
+msgstr "Variable pour le répertoire source"
+
+#: ../tools/wixl/wixl-heat.vala:14
+msgid "Prefix"
+msgstr "Préfixe"
+
+#: ../tools/wixl/wixl-heat.vala:15
+msgid "Exclude prefix"
+msgstr "Exclut un préfixe"
+
+#: ../tools/wixl/wixl.vala:22
+msgid "Verbose output"
+msgstr "Mode bavard"
+
+#: ../tools/wixl/wixl.vala:23
+msgid "Output file"
+msgstr "Fichier de sortie"
+
+#: ../tools/wixl/wixl.vala:24
+msgid "Define variable"
+msgstr "Définit une variable"
+
+#: ../tools/wixl/wixl.vala:25
+msgid "Target architecture"
+msgstr "Architecture cible"
+
+#: ../tools/wixl/wixl.vala:26
+msgid "Include directory"
+msgstr "Répertoire de fragments"
+
+#: ../tools/wixl/wixl.vala:27
+msgid "System include directory"
+msgstr "Répertoire avec les fragments du système"
+
+#: ../tools/wixl/wixl.vala:28
+msgid "Stop after the preprocessing stage"
+msgstr "Arréte après l'étape de prétraitement"
+
+#: ../tools/wixl/wixl.vala:29
+msgid "INPUT_FILE..."
+msgstr "INPUT_FILE..."
+
+#: ../tools/wixl/wixl.vala:37
+#, c-format
+msgid "arch of type '%s' is not supported"
+msgstr "L'architecture de type « %s » n'est pas prise en charge."
+
+#: ../tools/wixl/wixl.vala:49
+msgid "- a msi building tool"
+msgstr "- un outil de construction msi"
+
+#: ../tools/wixl/wixl.vala:83
+msgid "Please specify the output file.\n"
+msgstr "Veuillez spécifier le fichier de sortie.\n"
+
+#: ../tools/wixl/wixl.vala:100
+#, c-format
+msgid "Loading %s...\n"
+msgstr "Chargement de %s...\n"
+
+#: ../tools/wixl/wixl.vala:110
+#, c-format
+msgid "Building %s...\n"
+msgstr "Contruction de %s...\n"
+
+#: ../tools/wixl/wixl.vala:113
+#, c-format
+msgid "Writing %s...\n"
+msgstr "Écriture de %s...\n"
