@@ -5,13 +5,16 @@
          xmlns="http://usefulinc.com/ns/doap#">
 
   <name xml:lang="en">msitools</name>
-  <shortdesc xml:lang="en">tools and library to manipulate MSI file</shortdesc>
+  <shortdesc xml:lang="en">Tools and a library to manipulate MSI files</shortdesc>
   <description>
 msitools is a set of programs to inspect and build Windows Installer
 (.MSI) files.  It is based on libmsi, a portable library to read and
 write .MSI files.  libmsi in turn is a port of (and a subset of) Wine's
 implementation of the Windows Installer.
   </description>
+  <homepage rdf:resource="https://wiki.gnome.org/msitools" />
+  <download-page rdf:resource="http://download.gnome.org/sources/msitools/" />
+  <bug-database rdf:resource="https://bugzilla.gnome.org/browse.cgi?product=msitools" />
 
   <maintainer>
     <foaf:Person>
