@@ -1813,8 +1813,10 @@ static unsigned table_view_remove_column(LibmsiView *view, const char *table, un
     libmsi_record_set_int(rec, 2, number);
 
     r = table_view_create(tv->db, szColumns, &columns);
-    if (r != LIBMSI_RESULT_SUCCESS)
+    if (r != LIBMSI_RESULT_SUCCESS) {
+        g_object_unref(rec);
         return r;
+    }
 
     r = msi_table_find_row((LibmsiTableView *)columns, rec, &row, NULL);
     if (r != LIBMSI_RESULT_SUCCESS)
@@ -1935,8 +1937,10 @@ static unsigned table_view_drop(LibmsiView *view)
     libmsi_record_set_string(rec, 1, tv->name);
 
     r = table_view_create(tv->db, szTables, &tables);
-    if (r != LIBMSI_RESULT_SUCCESS)
+    if (r != LIBMSI_RESULT_SUCCESS) {
+        g_object_unref(rec);
         return r;
+    }
 
     r = msi_table_find_row((LibmsiTableView *)tables, rec, &row, NULL);
     if (r != LIBMSI_RESULT_SUCCESS)
