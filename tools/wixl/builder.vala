@@ -327,12 +327,13 @@ namespace Wixl {
 
             int source = SourceFlags.COMPRESSED;
             if (package.InstallScope != null) {
-                if (package.InstallScope == "perUser")
+                if (package.InstallScope == "perUser") {
                     source |= SourceFlags.NO_PRIVILEGES;
-                else if (package.InstallScope == "perMachine")
-                    source |= 0;
-                else
+                } else if (package.InstallScope == "perMachine") {
+                    db.table_property.add ("ALLUSERS", "1");
+                } else {
                     error ("invalid InstallScope value: %s", package.InstallScope);
+                }
             }
             db.info.set_property (Libmsi.Property.SOURCE, source);
         }

@@ -4,6 +4,9 @@ AT_BANNER([wixl])
 m4_define([AT_CHECK_WIXL], [
 AT_CHECK([_wixl ]$@)])
 
+m4_define([AT_CHECK_MSIINFO], [
+AT_CHECK([_msiinfo ]$@)])
+
 # AT_WIXLDATA - copy data file from source tree
 m4_define([AT_WIXLDATA], [AT_MSIDATA([wixl/$1], [m4_default([$2], [$1])])])
 
@@ -34,6 +37,13 @@ AT_WIXLDATA([FoobarAppl10.exe])
 AT_CHECK_WIXL([-o out.msi SampleUser.wxs], [0], [ignore], [ignore])
 # FIXME: add tons of tests on out.msi
 AT_CHECK([test -f out.msi], [0])
+AT_CLEANUP
+
+AT_SETUP([SampleMachine])
+AT_WIXLDATA([SampleMachine.wxs])
+AT_WIXLDATA([FoobarAppl10.exe])
+AT_CHECK_WIXL([-o out.msi SampleMachine.wxs], [0], [ignore], [ignore])
+AT_CHECK_MSIINFO([export out.msi Property | grep -q 'ALLUSERS	1'], [0])
 AT_CLEANUP
 
 AT_SETUP([Stable component GUIDs])

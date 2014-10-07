@@ -1,0 +1,59 @@
+<?xml version='1.0' encoding='windows-1252'?>
+<Wix xmlns='http://schemas.microsoft.com/wix/2006/wi'>
+
+  <?define VERSION="0.0.0.0"?>
+
+  <Product
+    Id="*"
+    Name="Sample App"
+    Language="1033"
+    Version="$(var.VERSION)"
+    Manufacturer="Example"
+    UpgradeCode="44a869b4-5dd4-44b0-938b-399f41611658"
+  >
+    <Package
+      Description="Sample App"
+      Manufacturer="Example"
+      InstallerVersion="200"
+      Compressed="yes"
+      InstallScope="perMachine"
+    />
+
+    <MajorUpgrade DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
+    <MediaTemplate EmbedCab="yes" />
+
+    <Icon Id="Icon.exe" SourceFile="FoobarAppl10.exe" />
+    <Property Id="ARPPRODUCTICON" Value="Icon.exe" />
+    <Property Id="ARPHELPLINK" Value="http://www.example.com/" />
+
+    <Feature Id="ProductFeature" Title="SampleApp" Level="1">
+      <ComponentGroupRef Id="ProductComponents" />
+    </Feature>
+  </Product>
+
+  <Fragment>
+    <Directory Id="TARGETDIR" Name="SourceDir">
+      <Directory Id="LocalAppDataFolder">
+        <Directory Id="INSTALLFOLDER" Name="SampleApp" />
+      </Directory>
+    </Directory>
+  </Fragment>
+
+  <Fragment>
+    <ComponentGroup Id="ProductComponents" Directory="INSTALLFOLDER">
+      <Component Id="ProductComponent" Guid="262eca3a-9ab0-4706-ab39-55c89819506a">
+
+        <RegistryKey Root="HKCU" Key="Software\Example\SampleApp">
+          <RegistryValue Name="Version" Value="[ProductVersion]" Type="string" KeyPath="yes" />
+        </RegistryKey>
+
+        <CreateFolder />
+        <RemoveFolder Id="RemoveAppRootDirectory" On="uninstall" />
+
+        <File Id="SampleApp.exe" Source="FoobarAppl10.exe"/>
+
+      </Component>
+    </ComponentGroup>
+  </Fragment>
+
+</Wix>
