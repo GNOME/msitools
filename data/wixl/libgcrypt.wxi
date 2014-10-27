@@ -5,7 +5,7 @@
     <DirectoryRef Id="INSTALLDIR">
       <Directory Id="dir8D95A98280E1A4395CEA99E084CF7DBF" Name="bin">
         <Component Win64="$(var.Win64)" Id="cmp62E6A98D1545A50FDD03A0868E255359" Guid="*">
-          <File Id="filEADB779B803E35614D5C3A8C9930DE5D" KeyPath="yes" Source="$(var.SourceDir)/bin/libgcrypt-11.dll"/>
+          <File Id="filEADB779B803E35614D5C3A8C9930DE5D" KeyPath="yes" Source="$(var.SourceDir)/bin/libgcrypt-20.dll"/>
         </Component>
       </Directory>
     </DirectoryRef>
