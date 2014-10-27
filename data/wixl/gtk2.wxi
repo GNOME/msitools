@@ -20,9 +20,6 @@
         <Component Win64="$(var.Win64)" Id="cmp68FE822507EF51CE5455A22DD57ABAFA" Guid="*">
           <File Id="fil0FB0A34B063AD3D463C6893716BB3BC0" KeyPath="yes" Source="$(var.SourceDir)/bin/gtk-update-icon-cache.exe"/>
         </Component>
-        <Component Win64="$(var.Win64)" Id="cmp7C9E4CA6AA0E58BA69037E644206DE8E" Guid="*">
-          <File Id="filC05A5C762F5D680C7984E1C41EE6C33C" KeyPath="yes" Source="$(var.SourceDir)/bin/gtk-update-icon-cache.exe.manifest"/>
-        </Component>
         <Component Win64="$(var.Win64)" Id="cmp6F04FAA23CC3F1AFAEE774B8D3A8E682" Guid="*">
           <File Id="fil2A1FE07E6CBD6170C092C6980A6CA16A" KeyPath="yes" Source="$(var.SourceDir)/bin/libgailutil-18.dll"/>
         </Component>
@@ -1362,7 +1359,6 @@
       <ComponentRef Id="cmpC54FF9AB2744E5DCD405BB3768D082C5"/>
       <ComponentRef Id="cmpB7FB5145ED6182A2B73550E3AEDFADE8"/>
       <ComponentRef Id="cmp68FE822507EF51CE5455A22DD57ABAFA"/>
-      <ComponentRef Id="cmp7C9E4CA6AA0E58BA69037E644206DE8E"/>
       <ComponentRef Id="cmp6F04FAA23CC3F1AFAEE774B8D3A8E682"/>
       <ComponentRef Id="cmpB7C6CC227529C8D5E959CF10038EB0D5"/>
       <ComponentRef Id="cmp2D105E692AB6A8304DA254B372F83DB9"/>
