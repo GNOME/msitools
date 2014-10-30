@@ -6,6 +6,7 @@ static string prefix;
 static string vardir;
 [CCode (array_length = false, array_null_terminated = true)]
 static string[] exclude;
+static bool win64;
 
 private const OptionEntry[] options = {
     { "directory-ref", 0, 0, OptionArg.STRING, ref dr, N_("Directory Ref"), null },
@@ -13,6 +14,7 @@ private const OptionEntry[] options = {
     { "var", 0, 0, OptionArg.STRING, ref vardir, N_("Variable for source dir"), null },
     { "prefix", 'p', 0, OptionArg.STRING, ref prefix, N_("Prefix"), null },
     { "exclude", 'x', 0, OptionArg.STRING_ARRAY, ref exclude, N_("Exclude prefix"), null },
+    { "win64", 0, 0, OptionArg.NONE, ref win64, N_("Add Win64 Component"), null },
     { null }
 };
 
@@ -97,7 +99,10 @@ public int main (string[] args) {
             if (!is_directory) {
                 var id = generate_id ("cmp", 1, file);
                 cmpref.append (id);
-                stdout.printf (indent + "<Component Id=\"%s\" Guid=\"*\">\n".printf (id));
+                if (win64)
+                    stdout.printf (indent + "<Component Win64=\"$(var.Win64)\" Id=\"%s\" Guid=\"*\">\n".printf (id));
+                else
+                    stdout.printf (indent + "<Component Id=\"%s\" Guid=\"*\">\n".printf (id));
                 file = sourcedir + Path.DIR_SEPARATOR_S + file;
                 stdout.printf (indent + "  <File Id=\"%s\" KeyPath=\"yes\" Source=\"%s\"/>\n".printf (generate_id ("fil", 1, file), file));
                 stdout.printf (indent + "</Component>\n");
