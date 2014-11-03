@@ -966,6 +966,7 @@ static unsigned parse_prop( const char *prop, const char *value, unsigned *pid, 
         *int_value = atoi( value );
         break;
 
+    case LIBMSI_PROPERTY_EDITTIME:
     case LIBMSI_PROPERTY_LASTPRINTED:
     case LIBMSI_PROPERTY_CREATED_TM:
     case LIBMSI_PROPERTY_LASTSAVED_TM:
