@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<?require gvnc.wxi?>
+<?require gtk3.wxi?>
+<Include xmlns="http://schemas.microsoft.com/wix/2006/wi">
+  <Fragment>
+    <DirectoryRef Id="INSTALLDIR">
+      <Directory Id="dirA328C1BE3DC91FF9B2C9624F66FF04DE" Name="bin">
+        <Component Win64="$(var.Win64)" Id="cmp0905D4995CA8AD4CF3E5A6DFABE24CEF" Guid="*">
+          <File Id="filDE0BAB3EDC4BA1BEC52466F1369A051C" KeyPath="yes" Source="$(var.SourceDir)/bin/libgtk-vnc-2.0-0.dll"/>
+        </Component>
+        </Directory>
+    </DirectoryRef>
+  </Fragment>
+  <Fragment>
+    <ComponentGroup Id="CG.gtk-vnc2">
+      <ComponentGroupRef Id="CG.gtk3"/>
+      <ComponentGroupRef Id="CG.gvnc"/>
+      <ComponentRef Id="cmp0905D4995CA8AD4CF3E5A6DFABE24CEF"/>
+    </ComponentGroup>
+  </Fragment>
+</Include>

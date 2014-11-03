@@ -22,6 +22,7 @@ dist_wxi_DATA =					\
 	wixl/gstreamer-plugins-good.wxi		\
 	wixl/gstreamer.wxi			\
 	wixl/gtk-vnc.wxi			\
+	wixl/gtk-vnc2.wxi			\
 	wixl/gtk2.wxi				\
 	wixl/gtk3.wxi				\
 	wixl/gvnc.wxi				\
