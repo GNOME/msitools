@@ -23,6 +23,7 @@ dist_wxi_DATA =					\
 	wixl/gstreamer.wxi			\
 	wixl/gtk-vnc.wxi			\
 	wixl/gtk2.wxi				\
+	wixl/gtk3.wxi				\
 	wixl/gvnc.wxi				\
 	wixl/hicolor-icon-theme.wxi		\
 	wixl/jasper.wxi				\
