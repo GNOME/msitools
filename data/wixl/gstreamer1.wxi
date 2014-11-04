@@ -1,0 +1,813 @@
+<?xml version="1.0" encoding="utf-8"?>
+<?require gcc.wxi?>
+<?require glib2.wxi?>
+<Include xmlns="http://schemas.microsoft.com/wix/2006/wi">
+  <Fragment>
+    <DirectoryRef Id="INSTALLDIR">
+      <Directory Id="dir7EBDD3C5637C995332BEB438F9C4CF1E" Name="bin">
+        <Component Win64="$(var.Win64)" Id="cmp0D8CF9997EEC93FBB904414012FB4514" Guid="*">
+          <File Id="fil2776266507ACD87669D39C8D97965A8D" KeyPath="yes" Source="$(var.SourceDir)/bin/gst-inspect-1.0.exe"/>
+        </Component>
+        <Component Win64="$(var.Win64)" Id="cmpAA88D52F01E4D004D1666D5988A184B8" Guid="*">
+          <File Id="fil286E2FC3FA049090890F807ED55D71BA" KeyPath="yes" Source="$(var.SourceDir)/bin/gst-launch-1.0.exe"/>
+        </Component>
+        <Component Win64="$(var.Win64)" Id="cmp0AE24116E8CA4DF1492716F8BF94F181" Guid="*">
+          <File Id="filDB995BFDCA537B45D1BE44A777ECF72E" KeyPath="yes" Source="$(var.SourceDir)/bin/gst-typefind-1.0.exe"/>
+        </Component>
+        <Component Win64="$(var.Win64)" Id="cmp5458F1BAFDD11BA51E75AE9CC48E9B4B" Guid="*">
+          <File Id="filCA4D8C059B2CA43ACDB0588FE9F71E51" KeyPath="yes" Source="$(var.SourceDir)/bin/libgstbase-1.0-0.dll"/>
+        </Component>
+        <Component Win64="$(var.Win64)" Id="cmp46DB6990FC2740672B3421145559C9BD" Guid="*">
+          <File Id="fil228A5FF83031EA3E2CB04976B51C4379" KeyPath="yes" Source="$(var.SourceDir)/bin/libgstcontroller-1.0-0.dll"/>
+        </Component>
+        <Component Win64="$(var.Win64)" Id="cmp5AEB3111ED36D8DF9A4732D4FCD9FB54" Guid="*">
+          <File Id="filB252FF392DC91849889B7FB6078F3F57" KeyPath="yes" Source="$(var.SourceDir)/bin/libgstnet-1.0-0.dll"/>
+        </Component>
+        <Component Win64="$(var.Win64)" Id="cmp9D35809C95F77B45F174A9DAB67E9D04" Guid="*">
+          <File Id="filA2FDE854CD554DFD05120ACD7E86E234" KeyPath="yes" Source="$(var.SourceDir)/bin/libgstreamer-1.0-0.dll"/>
+        </Component>
+      </Directory>
+      <Directory Id="dir9FCB921D2B34F68C886AF6823E2EF2B2" Name="include">
+        <Directory Id="dirDE4E4E52B3468600A3ABD080E20C0703" Name="gstreamer-1.0">
+          <Directory Id="dirE4265BCA8A823EB626E1D3C7C6076453" Name="gst">
+            <Directory Id="dir819040D61A84EBAAC150BEE589EB6451" Name="base">
+              <Component Win64="$(var.Win64)" Id="cmpC18C7B84C5690703CE76151247703176" Guid="*">
+                <File Id="fil04961D7DEF65FB1A29EC8D7DE28B48D5" KeyPath="yes" Source="$(var.SourceDir)/include/gstreamer-1.0/gst/base/base.h"/>
+              </Component>
+              <Component Win64="$(var.Win64)" Id="cmpD904C9593DA3C2E6CF430C5E65237A49" Guid="*">
+                <File Id="fil63083A6187111AA90D68F7200DA341F3" KeyPath="yes" Source="$(var.SourceDir)/include/gstreamer-1.0/gst/base/gstadapter.h"/>
+              </Component>
+              <Component Win64="$(var.Win64)" Id="cmp11253E32428BC1968BC5A8EE8F98299E" Guid="*">
+                <File Id="filCC5BF056DC338352D3B302D4E5619166" KeyPath="yes" Source="$(var.SourceDir)/include/gstreamer-1.0/gst/base/gstbaseparse.h"/>
+              </Component>
+              <Component Win64="$(var.Win64)" Id="cmp5F78EF204F6776E8391227CB943B7D62" Guid="*">
+                <File Id="filEC48C7D1613CE3187E3B355A845AB473" KeyPath="yes" Source="$(var.SourceDir)/include/gstreamer-1.0/gst/base/gstbasesink.h"/>
+              </Component>
+              <Component Win64="$(var.Win64)" Id="cmp859C424F4B2FBCB8FABE8A315FED2803" Guid="*">
+                <File Id="filE775D2BFDECB72C79B480322800F6813" KeyPath="yes" Source="$(var.SourceDir)/include/gstreamer-1.0/gst/base/gstbasesrc.h"/>
+              </Component>
+              <Component Win64="$(var.Win64)" Id="cmp395EE9309C38A4D41EAE83E291C6629A" Guid="*">
+                <File Id="fil814B6AD5CAC3078C59EEBBEB1F462EAA" KeyPath="yes" Source="$(var.SourceDir)/include/gstreamer-1.0/gst/base/gstbasetransform.h"/>
+              </Component>
+              <Component Win64="$(var.Win64)" Id="cmpAE5B66CDFA4E7071F0FF15F8E1E6273F" Guid="*">
+                <File Id="filEA4BF408BA1AE01D94003D7B14BB3832" KeyPath="yes" Source="$(var.SourceDir)/include/gstreamer-1.0/gst/base/gstbitreader.h"/>
+              </Component>
+              <Component Win64="$(var.Win64)" Id="cmpE8B96D441A0A1B5F2E5D2E14CAC1520F" Guid="*">
+                <File Id="filB9A448F56E287F3DD292A63D870217B4" KeyPath="yes" Source="$(var.SourceDir)/include/gstreamer-1.0/gst/base/gstbytereader.h"/>
+              </Component>
+              <Component Win64="$(var.Win64)" Id="cmp59E1A8412C474CC579299478807FDA94" Guid="*">
+                <File Id="fil7578908178A23DC0B7A3591A0245E268" KeyPath="yes" Source="$(var.SourceDir)/include/gstreamer-1.0/gst/base/gstbytewriter.h"/>
+              </Component>
+              <Component Win64="$(var.Win64)" Id="cmp6AC4FA80B331D9BE535B3493C6A8C9B2" Guid="*">
+                <File Id="filE0B0BE0A41B5192C47A641539733C4CB" KeyPath="yes" Source="$(var.SourceDir)/include/gstreamer-1.0/gst/base/gstcollectpads.h"/>
+              </Component>
+              <Component Win64="$(var.Win64)" Id="cmpD6154FDC2AA82EC4A298B406C3123718" Guid="*">
+                <File Id="filD2704DDD879196684AA4BB81234B32B3" KeyPath="yes" Source="$(var.SourceDir)/include/gstreamer-1.0/gst/base/gstdataqueue.h"/>
+              </Component>
+              <Component Win64="$(var.Win64)" Id="cmp88A0D7D74497B1B189FADA653C21ADDB" Guid="*">
+                <File Id="fil3D8D942592EB4DD556E2B5A4728F6E05" KeyPath="yes" Source="$(var.SourceDir)/include/gstreamer-1.0/gst/base/gstflowcombiner.h"/>
+              </Component>
+              <Component Win64="$(var.Win64)" Id="cmpBCA8AEE10E9048047282BA12464636CF" Guid="*">
+                <File Id="fil825077D74D1652D4C27BCC263D45C064" KeyPath="yes" Source="$(var.SourceDir)/include/gstreamer-1.0/gst/base/gstpushsrc.h"/>
+              </Component>
+              <Component Win64="$(var.Win64)" Id="cmpF712CB445E53BCF5E8BED92B35D5635A" Guid="*">
+                <File Id="fil3CFB603270DA722C88644EFEEDE43202" KeyPath="yes" Source="$(var.SourceDir)/include/gstreamer-1.0/gst/base/gstqueuearray.h"/>
+              </Component>
+              <Component Win64="$(var.Win64)" Id="cmpEBB65FC2C20B8C64E651BFB379129E81" Guid="*">
+                <File Id="fil30CFCF521F6934A08C2CB7EA730478E7" KeyPath="yes" Source="$(var.SourceDir)/include/gstreamer-1.0/gst/base/gsttypefindhelper.h"/>
+              </Component>
+            </Directory>
+            <Directory Id="dir0ABA5AE6A5384A68B4D70868870388F7" Name="controller">
+              <Component Win64="$(var.Win64)" Id="cmp3B8D4188EBB45DFAFB19566D85632AA1" Guid="*">
+                <File Id="filA60F8AD470E3F1C18B2CAB9E24E911ED" KeyPath="yes" Source="$(var.SourceDir)/include/gstreamer-1.0/gst/controller/controller.h"/>
+              </Component>
+              <Component Win64="$(var.Win64)" Id="cmp1E0BEE384BAAEFE220DA843DCCBCE610" Guid="*">
+                <File Id="fil4F4B5511FF8A4B2C294DAC72104DA3DF" KeyPath="yes" Source="$(var.SourceDir)/include/gstreamer-1.0/gst/controller/gstargbcontrolbinding.h"/>
+              </Component>
+              <Component Win64="$(var.Win64)" Id="cmpCDDB503C7B4B61C393A45DE4600E3C3F" Guid="*">
+                <File Id="fil4EAB3DFD344233877A849D0E582F2458" KeyPath="yes" Source="$(var.SourceDir)/include/gstreamer-1.0/gst/controller/gstdirectcontrolbinding.h"/>
+              </Component>
+              <Component Win64="$(var.Win64)" Id="cmp10E8EE4E533FC6B31E7C53F73D19B21C" Guid="*">
+                <File Id="fil584FA0CC380B4CCE70A7E84B75EC1D71" KeyPath="yes" Source="$(var.SourceDir)/include/gstreamer-1.0/gst/controller/gstinterpolationcontrolsource.h"/>
+              </Component>
+              <Component Win64="$(var.Win64)" Id="cmpEA30F305F5945FAC1232BD8D6CB3AF65" Guid="*">
+                <File Id="fil79471A006AD419563BAE0D941E48C62A" KeyPath="yes" Source="$(var.SourceDir)/include/gstreamer-1.0/gst/controller/gstlfocontrolsource.h"/>
+              </Component>
+              <Component Win64="$(var.Win64)" Id="cmp9782C40ABEAEB495FD922A97DF45C0E1" Guid="*">
+                <File Id="fil14568ECB7FAD59718656FB93008CBBCB" KeyPath="yes" Source="$(var.SourceDir)/include/gstreamer-1.0/gst/controller/gsttimedvaluecontrolsource.h"/>
+              </Component>
+              <Component Win64="$(var.Win64)" Id="cmp4840D8C0A581CEC8A217733D4B2223A9" Guid="*">
+                <File Id="fil7523A3F46C9B25D382F5A86892D535B9" KeyPath="yes" Source="$(var.SourceDir)/include/gstreamer-1.0/gst/controller/gsttriggercontrolsource.h"/>
+              </Component>
+            </Directory>
+            <Component Win64="$(var.Win64)" Id="cmp37DA461DA25E92E4F98C6FF757EA2BF6" Guid="*">
+              <File Id="filD9011497806F2DEF875DA2D47771982E" KeyPath="yes" Source="$(var.SourceDir)/include/gstreamer-1.0/gst/glib-compat.h"/>
+            </Component>
+            <Component Win64="$(var.Win64)" Id="cmpF510F8F11F1C6FDF24E39E70BD2E882D" Guid="*">
+              <File Id="fil133996C124400B2BABEB59D6CF092B11" KeyPath="yes" Source="$(var.SourceDir)/include/gstreamer-1.0/gst/gst.h"/>
+            </Component>
+            <Component Win64="$(var.Win64)" Id="cmpEC7A1716EC7E6E39C5B02CE3D8011858" Guid="*">
+              <File Id="fil0C11E19BC2EAEED4F538BD968A32E93E" KeyPath="yes" Source="$(var.SourceDir)/include/gstreamer-1.0/gst/gstallocator.h"/>
+            </Component>
+            <Component Win64="$(var.Win64)" Id="cmpA0F8D01C9FBDF529CB3E0710E4826592" Guid="*">
+              <File Id="fil12B5B721DA1D4783E42E6B879B045568" KeyPath="yes" Source="$(var.SourceDir)/include/gstreamer-1.0/gst/gstatomicqueue.h"/>
+            </Component>
+            <Component Win64="$(var.Win64)" Id="cmpFBD729D5CB41BDDD46FBF5A81F80CF82" Guid="*">
+              <File Id="filE3BEBCCF31B984B880D9658E753789F5" KeyPath="yes" Source="$(var.SourceDir)/include/gstreamer-1.0/gst/gstbin.h"/>
+            </Component>
+            <Component Win64="$(var.Win64)" Id="cmpB732BF4BEBD16B12A74DB49559C9F1F8" Guid="*">
+              <File Id="filEAB71ED79B3E8887583A5E94DDFDB682" KeyPath="yes" Source="$(var.SourceDir)/include/gstreamer-1.0/gst/gstbuffer.h"/>
+            </Component>
+            <Component Win64="$(var.Win64)" Id="cmp9142931D7E060A6B59CF57DB6EB14B08" Guid="*">
+              <File Id="fil9A4179DA95EB10AB8C6CCEFE0F66772E" KeyPath="yes" Source="$(var.SourceDir)/include/gstreamer-1.0/gst/gstbufferlist.h"/>
+            </Component>
+            <Component Win64="$(var.Win64)" Id="cmp9773D5159C8869858227DE905EB7D224" Guid="*">
+              <File Id="fil0CD5D7E2D785F3FAB82BC649C2782EDC" KeyPath="yes" Source="$(var.SourceDir)/include/gstreamer-1.0/gst/gstbufferpool.h"/>
+            </Component>
+            <Component Win64="$(var.Win64)" Id="cmp5795AE1204E1822D96380CC05DB92D34" Guid="*">
+              <File Id="fil7F072FF5730692950313A65192900359" KeyPath="yes" Source="$(var.SourceDir)/include/gstreamer-1.0/gst/gstbus.h"/>
+            </Component>
+            <Component Win64="$(var.Win64)" Id="cmp3254C424BBB979691AFED822082A64DB" Guid="*">
+              <File Id="fil5BC4BAD1DA183FE2B56C1644259512E4" KeyPath="yes" Source="$(var.SourceDir)/include/gstreamer-1.0/gst/gstcaps.h"/>
+            </Component>
+            <Component Win64="$(var.Win64)" Id="cmpE924ADF9BD28F5A54B1CA84C08657E10" Guid="*">
+              <File Id="fil5D83339E72F2B6D148840415CA7666E4" KeyPath="yes" Source="$(var.SourceDir)/include/gstreamer-1.0/gst/gstcapsfeatures.h"/>
+            </Component>
+            <Component Win64="$(var.Win64)" Id="cmp6E5C3E672B1B04EB8B55F1D3E993D3ED" Guid="*">
+              <File Id="fil8AD6D14496BE72FA6E5887E76DAEC9C6" KeyPath="yes" Source="$(var.SourceDir)/include/gstreamer-1.0/gst/gstchildproxy.h"/>
+            </Component>
+            <Component Win64="$(var.Win64)" Id="cmp8BFDF515B59BF89BE0CCABE53CCCD23D" Guid="*">
+              <File Id="filBE85DCB0C9C7E9B67562C6CCA1F5AEA0" KeyPath="yes" Source="$(var.SourceDir)/include/gstreamer-1.0/gst/gstclock.h"/>
+            </Component>
+            <Component Win64="$(var.Win64)" Id="cmpB4333F838F112BB6CE21A93BDBD4D0E5" Guid="*">
+              <File Id="filD153F8F4BBA096EB1C6A4B674AD31DBA" KeyPath="yes" Source="$(var.SourceDir)/include/gstreamer-1.0/gst/gstcompat.h"/>
+            </Component>
+            <Component Win64="$(var.Win64)" Id="cmp7BD92D8B5065FD53C1E5B6E19FDBA6AC" Guid="*">
+              <File Id="fil94D808C77FE9448CC67B8E04E3629ABB" KeyPath="yes" Source="$(var.SourceDir)/include/gstreamer-1.0/gst/gstconfig.h"/>
+            </Component>
+            <Component Win64="$(var.Win64)" Id="cmp5FB9A1EB58D9E81FF68A9E79C0B74B0C" Guid="*">
+              <File Id="filEFA8995F3696C2687904A6A1E30E02F7" KeyPath="yes" Source="$(var.SourceDir)/include/gstreamer-1.0/gst/gstcontext.h"/>
+            </Component>
+            <Component Win64="$(var.Win64)" Id="cmp82F9320F874B3EA72A3B0A3697049464" Guid="*">
+              <File Id="filD58906F4034159280EC574AC4F7A7E07" KeyPath="yes" Source="$(var.SourceDir)/include/gstreamer-1.0/gst/gstcontrolbinding.h"/>
+            </Component>
+            <Component Win64="$(var.Win64)" Id="cmp5A60B06707F5C28DF5F8FCE7AF1DF46B" Guid="*">
+              <File Id="filD60AB85C4CDA1627E01010003C043BA1" KeyPath="yes" Source="$(var.SourceDir)/include/gstreamer-1.0/gst/gstcontrolsource.h"/>
+            </Component>
+            <Component Win64="$(var.Win64)" Id="cmp43AC1F3286DF73F46895EA6EFE320EC8" Guid="*">
+              <File Id="fil719F60BE7A021F9F70AC5A3DE099A4EC" KeyPath="yes" Source="$(var.SourceDir)/include/gstreamer-1.0/gst/gstdatetime.h"/>
+            </Component>
+            <Component Win64="$(var.Win64)" Id="cmp5AB85E6C63622E09CF50DFBD19AE5875" Guid="*">
+              <File Id="filB4D599C6F7C808D028B2B4BEEDE38C54" KeyPath="yes" Source="$(var.SourceDir)/include/gstreamer-1.0/gst/gstdebugutils.h"/>
+            </Component>
+            <Component Win64="$(var.Win64)" Id="cmp8F05C7BF411B908DF2F98C54600B6A44" Guid="*">
+              <File Id="fil543B2811544E0D398976383EC5BF292C" KeyPath="yes" Source="$(var.SourceDir)/include/gstreamer-1.0/gst/gstdevice.h"/>
+            </Component>
+            <Component Win64="$(var.Win64)" Id="cmp93879B6BB84799B93ADE86428EF0CC05" Guid="*">
+              <File Id="filF721FAD34C98929034782E5E52AA88DB" KeyPath="yes" Source="$(var.SourceDir)/include/gstreamer-1.0/gst/gstdevicemonitor.h"/>
+            </Component>
+            <Component Win64="$(var.Win64)" Id="cmp5C1089E748D868227B5A8C2716143A0C" Guid="*">
+              <File Id="fil5039C875E64E362AA31C01B496E87B67" KeyPath="yes" Source="$(var.SourceDir)/include/gstreamer-1.0/gst/gstdeviceprovider.h"/>
+            </Component>
+            <Component Win64="$(var.Win64)" Id="cmp168DB1D425869FE66A9813F43991282E" Guid="*">
+              <File Id="fil1DE1A9310D0E9F5FF13A7A4555FAA707" KeyPath="yes" Source="$(var.SourceDir)/include/gstreamer-1.0/gst/gstdeviceproviderfactory.h"/>
+            </Component>
+            <Component Win64="$(var.Win64)" Id="cmpA805F5C30A4DBFF8EBB6A064E87C90CC" Guid="*">
+              <File Id="fil3ACF19B44B39BA4C9A70819FFCA45EBC" KeyPath="yes" Source="$(var.SourceDir)/include/gstreamer-1.0/gst/gstelement.h"/>
+            </Component>
+            <Component Win64="$(var.Win64)" Id="cmp8F8EBACF3915CCF4DDC0AC8967780482" Guid="*">
+              <File Id="fil41B621F91117816C373777D74EAAAF93" KeyPath="yes" Source="$(var.SourceDir)/include/gstreamer-1.0/gst/gstelementfactory.h"/>
+            </Component>
+            <Component Win64="$(var.Win64)" Id="cmp27D099DEB4CE68485528E4ECAFDB7E5A" Guid="*">
+              <File Id="fil66BBA756C5C8CAA741203C24F913535F" KeyPath="yes" Source="$(var.SourceDir)/include/gstreamer-1.0/gst/gstelementmetadata.h"/>
+            </Component>
+            <Component Win64="$(var.Win64)" Id="cmpA69AFF5B5CB1A063C835F2E0CA756780" Guid="*">
+              <File Id="fil5AD4443E9461EBB5D9AA9E0C6B7A07BB" KeyPath="yes" Source="$(var.SourceDir)/include/gstreamer-1.0/gst/gstenumtypes.h"/>
+            </Component>
+            <Component Win64="$(var.Win64)" Id="cmp0ADDFEEFC9DAE77E676E9414886243A7" Guid="*">
+              <File Id="fil8E6C57202A1A34841841BDC731157711" KeyPath="yes" Source="$(var.SourceDir)/include/gstreamer-1.0/gst/gsterror.h"/>
+            </Component>
+            <Component Win64="$(var.Win64)" Id="cmpFC5F7897C7462EC877E59F9F87E66CA7" Guid="*">
+              <File Id="fil7CC15B3B94A04A750ED049E5733EBF5B" KeyPath="yes" Source="$(var.SourceDir)/include/gstreamer-1.0/gst/gstevent.h"/>
+            </Component>
+            <Component Win64="$(var.Win64)" Id="cmp1CBDC672E25EF16C7A185465C0DA6AB4" Guid="*">
+              <File Id="fil55E7D7CE4FF64DFEC04C15927D0A2FDB" KeyPath="yes" Source="$(var.SourceDir)/include/gstreamer-1.0/gst/gstformat.h"/>
+            </Component>
+            <Component Win64="$(var.Win64)" Id="cmp5DC8ABE9F23E8A86DBEA7B40F0CC3308" Guid="*">
+              <File Id="filEEC0318A2E6B59EB229851B679F9B31C" KeyPath="yes" Source="$(var.SourceDir)/include/gstreamer-1.0/gst/gstghostpad.h"/>
+            </Component>
+            <Component Win64="$(var.Win64)" Id="cmp9B07C6C4D8913603357175EE5247A170" Guid="*">
+              <File Id="fil569E7EBD85A7B86C0A2293C926F371CB" KeyPath="yes" Source="$(var.SourceDir)/include/gstreamer-1.0/gst/gstinfo.h"/>
+            </Component>
+            <Component Win64="$(var.Win64)" Id="cmp55C6759941297993353804759ECD1E52" Guid="*">
+              <File Id="filC54CC3B0C2ADE86C18FFA6FE312BE2B8" KeyPath="yes" Source="$(var.SourceDir)/include/gstreamer-1.0/gst/gstiterator.h"/>
+            </Component>
+            <Component Win64="$(var.Win64)" Id="cmp8CDE8DDADDDDA9F339039818AA37F712" Guid="*">
+              <File Id="fil42675C53F7BEDD11BB1827D65EB1BE02" KeyPath="yes" Source="$(var.SourceDir)/include/gstreamer-1.0/gst/gstmacros.h"/>
+            </Component>
+            <Component Win64="$(var.Win64)" Id="cmpA07CD50A1F9141803438B755FA68C105" Guid="*">
+              <File Id="fil925FB2B8A740121571323C78508577F5" KeyPath="yes" Source="$(var.SourceDir)/include/gstreamer-1.0/gst/gstmemory.h"/>
+            </Component>
+            <Component Win64="$(var.Win64)" Id="cmpEE3FB57A8A46D7F283AB9BB54559FA3E" Guid="*">
+              <File Id="fil029FCD20064558D413CA7C46F3AF67A8" KeyPath="yes" Source="$(var.SourceDir)/include/gstreamer-1.0/gst/gstmessage.h"/>
+            </Component>
+            <Component Win64="$(var.Win64)" Id="cmp6AF3350D720E0FB6E2275BD479A18D6E" Guid="*">
+              <File Id="filF14B481CD76152EEEF9EA11E4F27130C" KeyPath="yes" Source="$(var.SourceDir)/include/gstreamer-1.0/gst/gstmeta.h"/>
+            </Component>
+            <Component Win64="$(var.Win64)" Id="cmpBAA41755192F912B68AABC9F91DCC3AF" Guid="*">
+              <File Id="filBE0D4F07740DC20A7CA9A3B483DD8750" KeyPath="yes" Source="$(var.SourceDir)/include/gstreamer-1.0/gst/gstminiobject.h"/>
+            </Component>
+            <Component Win64="$(var.Win64)" Id="cmpA7C11372F525310D25275C4A107D8207" Guid="*">
+              <File Id="fil563B4F87ABC9DD910FB14C1C2502B253" KeyPath="yes" Source="$(var.SourceDir)/include/gstreamer-1.0/gst/gstobject.h"/>
+            </Component>
+            <Component Win64="$(var.Win64)" Id="cmp043FB58BEB665C3C433DF7E8CB83B559" Guid="*">
+              <File Id="fil1AAA3608085AE76905107E3C2696758E" KeyPath="yes" Source="$(var.SourceDir)/include/gstreamer-1.0/gst/gstpad.h"/>
+            </Component>
+            <Component Win64="$(var.Win64)" Id="cmp27E0642E6CBC6D38DFF79093F9D9C0EA" Guid="*">
+              <File Id="fil7D098968FC026549AD6D48CBCC41D2D0" KeyPath="yes" Source="$(var.SourceDir)/include/gstreamer-1.0/gst/gstpadtemplate.h"/>
+            </Component>
+            <Component Win64="$(var.Win64)" Id="cmp1C1D1475DA48DFA27890FFB6A3BB73A2" Guid="*">
+              <File Id="filE08957D870EE5B2E88298A623EE48B78" KeyPath="yes" Source="$(var.SourceDir)/include/gstreamer-1.0/gst/gstparamspecs.h"/>
+            </Component>
+            <Component Win64="$(var.Win64)" Id="cmp9543D67326E4CB748ACB7F76D70B6AD4" Guid="*">
+              <File Id="fil4BE805FC9B7CF7B1F521E0DE6F7563DB" KeyPath="yes" Source="$(var.SourceDir)/include/gstreamer-1.0/gst/gstparse.h"/>
+            </Component>
+            <Component Win64="$(var.Win64)" Id="cmp119BFBB371FE79D7EDF0652FA9CC5E67" Guid="*">
+              <File Id="filD34637F688755353C2106CCBA30030A1" KeyPath="yes" Source="$(var.SourceDir)/include/gstreamer-1.0/gst/gstpipeline.h"/>
+            </Component>
+            <Component Win64="$(var.Win64)" Id="cmpF4D3AD2D15F1A5F6A56059A4CB8A0BB4" Guid="*">
+              <File Id="filD074A795EED2B9BF58C93B22F0CCDA12" KeyPath="yes" Source="$(var.SourceDir)/include/gstreamer-1.0/gst/gstplugin.h"/>
+            </Component>
+            <Component Win64="$(var.Win64)" Id="cmp9E28C636136A08B28A23AC1EA84BBCC7" Guid="*">
+              <File Id="filA3401623706674EAC1C509F6E6D1F512" KeyPath="yes" Source="$(var.SourceDir)/include/gstreamer-1.0/gst/gstpluginfeature.h"/>
+            </Component>
+            <Component Win64="$(var.Win64)" Id="cmp4C1E24670E3D04CE2C4B2E19B29220F9" Guid="*">
+              <File Id="filAD84F03AFA07BEE1D69AE935F5524FF2" KeyPath="yes" Source="$(var.SourceDir)/include/gstreamer-1.0/gst/gstpoll.h"/>
+            </Component>
+            <Component Win64="$(var.Win64)" Id="cmpC4FD57D8C10BBF27D2D87F1EC94B0182" Guid="*">
+              <File Id="fil9F56572A6A7559EC08C099CA67180B0C" KeyPath="yes" Source="$(var.SourceDir)/include/gstreamer-1.0/gst/gstpreset.h"/>
+            </Component>
+            <Component Win64="$(var.Win64)" Id="cmpA092DE82D9E15079D720D137DCAAF224" Guid="*">
+              <File Id="fil7B9725B47D7C61714BFD7FCF5A551702" KeyPath="yes" Source="$(var.SourceDir)/include/gstreamer-1.0/gst/gstquery.h"/>
+            </Component>
+            <Component Win64="$(var.Win64)" Id="cmp0D663B661A9C1A8973422A533ED2FB54" Guid="*">
+              <File Id="fil54223E94939F6B7DDCCA49AD4BFC21AF" KeyPath="yes" Source="$(var.SourceDir)/include/gstreamer-1.0/gst/gstregistry.h"/>
+            </Component>
+            <Component Win64="$(var.Win64)" Id="cmp7C8870BF5565BBD3697E8242D0F4F1BC" Guid="*">
+              <File Id="fil6F6190839B39310FCC8AA0C39A315A22" KeyPath="yes" Source="$(var.SourceDir)/include/gstreamer-1.0/gst/gstsample.h"/>
+            </Component>
+            <Component Win64="$(var.Win64)" Id="cmp7842EF73522FE21C9761EAA50746865D" Guid="*">
+              <File Id="fil27FE6A96FD89EB93C241BA301C1CFBED" KeyPath="yes" Source="$(var.SourceDir)/include/gstreamer-1.0/gst/gstsegment.h"/>
+            </Component>
+            <Component Win64="$(var.Win64)" Id="cmp6FB674A6A7D26F7C3A4DC686B0F26C85" Guid="*">
+              <File Id="fil0F850AFCA45A2B5FD66F85349C2B741D" KeyPath="yes" Source="$(var.SourceDir)/include/gstreamer-1.0/gst/gststructure.h"/>
+            </Component>
+            <Component Win64="$(var.Win64)" Id="cmp394BA580E4EFD412AC0E79A5EE4D850D" Guid="*">
+              <File Id="fil1E026A6117EA3BCCD0178450E3F492F8" KeyPath="yes" Source="$(var.SourceDir)/include/gstreamer-1.0/gst/gstsystemclock.h"/>
+            </Component>
+            <Component Win64="$(var.Win64)" Id="cmp625E4ED49FAFFB6FD611BB7AF3D31AE3" Guid="*">
+              <File Id="fil8DB30E978B206BB15B544F1EE5651A00" KeyPath="yes" Source="$(var.SourceDir)/include/gstreamer-1.0/gst/gsttaglist.h"/>
+            </Component>
+            <Component Win64="$(var.Win64)" Id="cmpFB201C2DCA34F14A84081EB4589F4733" Guid="*">
+              <File Id="fil3026F4BF4BCC75DA60CA947E752581FF" KeyPath="yes" Source="$(var.SourceDir)/include/gstreamer-1.0/gst/gsttagsetter.h"/>
+            </Component>
+            <Component Win64="$(var.Win64)" Id="cmp196A0B6EF5D14ED206D7043E65FB2934" Guid="*">
+              <File Id="filF3C28E3FA2F77C7925095FE5501610BE" KeyPath="yes" Source="$(var.SourceDir)/include/gstreamer-1.0/gst/gsttask.h"/>
+            </Component>
+            <Component Win64="$(var.Win64)" Id="cmp6A510AB8327ECCB96B2BE3872D5FA32E" Guid="*">
+              <File Id="filFB1EB033CA35F1DAEBE0E0615ACF61C4" KeyPath="yes" Source="$(var.SourceDir)/include/gstreamer-1.0/gst/gsttaskpool.h"/>
+            </Component>
+            <Component Win64="$(var.Win64)" Id="cmpB6A0D99F8A82E76DBD9F9221D922E159" Guid="*">
+              <File Id="fil6E7EDC5C73DD48945B38FFBAAD4B0FAE" KeyPath="yes" Source="$(var.SourceDir)/include/gstreamer-1.0/gst/gsttoc.h"/>
+            </Component>
+            <Component Win64="$(var.Win64)" Id="cmpBA1421A8015E7883711AB02674D6B2F5" Guid="*">
+              <File Id="fil5CE42DFF368B4360B2DBAD7C0DD1E00D" KeyPath="yes" Source="$(var.SourceDir)/include/gstreamer-1.0/gst/gsttocsetter.h"/>
+            </Component>
+            <Component Win64="$(var.Win64)" Id="cmpAA3A628F0B1BFEDA1C4AAC12E7206AD7" Guid="*">
+              <File Id="fil9A888BE1D661E130DCD2EE2A2397EB47" KeyPath="yes" Source="$(var.SourceDir)/include/gstreamer-1.0/gst/gsttypefind.h"/>
+            </Component>
+            <Component Win64="$(var.Win64)" Id="cmp8420CE4284A7BEAE704C8DA0CB6168C3" Guid="*">
+              <File Id="filBD9E107311728F14A88A940829CB52B2" KeyPath="yes" Source="$(var.SourceDir)/include/gstreamer-1.0/gst/gsttypefindfactory.h"/>
+            </Component>
+            <Component Win64="$(var.Win64)" Id="cmp8A68F56C577A36FCFBFACF1A5C65829D" Guid="*">
+              <File Id="fil54B918E9834CB9F686A10A2D16C6E8A8" KeyPath="yes" Source="$(var.SourceDir)/include/gstreamer-1.0/gst/gsturi.h"/>
+            </Component>
+            <Component Win64="$(var.Win64)" Id="cmpDF678EA13FAD5B490BC5290C7C103F49" Guid="*">
+              <File Id="fil42FC5BEC29FB4435170632D2E797E6E4" KeyPath="yes" Source="$(var.SourceDir)/include/gstreamer-1.0/gst/gstutils.h"/>
+            </Component>
+            <Component Win64="$(var.Win64)" Id="cmp18BB38C349B323A9B9E9B6A24A988F6E" Guid="*">
+              <File Id="filCEB9890060ED03E61D6F5075FB87674B" KeyPath="yes" Source="$(var.SourceDir)/include/gstreamer-1.0/gst/gstvalue.h"/>
+            </Component>
+            <Component Win64="$(var.Win64)" Id="cmp88FFB7A66A951D258F67447E20DC54B2" Guid="*">
+              <File Id="fil8EDB989C288673A421703D5FCCF8DB30" KeyPath="yes" Source="$(var.SourceDir)/include/gstreamer-1.0/gst/gstversion.h"/>
+            </Component>
+            <Component Win64="$(var.Win64)" Id="cmp080F957B65A1DDE58B7F327A82A9B95D" Guid="*">
+              <File Id="fil8CC411623EE398255DF49D240CE67BC4" KeyPath="yes" Source="$(var.SourceDir)/include/gstreamer-1.0/gst/math-compat.h"/>
+            </Component>
+            <Directory Id="dir9266CCC19AE256D67F8994A765EB0D27" Name="net">
+              <Component Win64="$(var.Win64)" Id="cmpB5F279DBA5D521A5E36EC2FA2D139323" Guid="*">
+                <File Id="filE073650112AC1261DB98A62129442D52" KeyPath="yes" Source="$(var.SourceDir)/include/gstreamer-1.0/gst/net/gstnet.h"/>
+              </Component>
+              <Component Win64="$(var.Win64)" Id="cmpD4A4F96E44DE0FD4E494532AE4B73743" Guid="*">
+                <File Id="fil0EE3B98CDC58E0BE784242F51E112B4F" KeyPath="yes" Source="$(var.SourceDir)/include/gstreamer-1.0/gst/net/gstnetaddressmeta.h"/>
+              </Component>
+              <Component Win64="$(var.Win64)" Id="cmpF7E9D3745DDD2BC54245BCA601FE0334" Guid="*">
+                <File Id="fil47642918F57BB5E2C302A26FA131B1B0" KeyPath="yes" Source="$(var.SourceDir)/include/gstreamer-1.0/gst/net/gstnetclientclock.h"/>
+              </Component>
+              <Component Win64="$(var.Win64)" Id="cmp1280D2BA920E86DBC16983EC2FB97C7F" Guid="*">
+                <File Id="fil27B18AF68E5985954D44C6AD63111D0E" KeyPath="yes" Source="$(var.SourceDir)/include/gstreamer-1.0/gst/net/gstnettimepacket.h"/>
+              </Component>
+              <Component Win64="$(var.Win64)" Id="cmpD094098F2480FDBE5550745B407A87A0" Guid="*">
+                <File Id="fil2F844B44025F483629529E4DE7650439" KeyPath="yes" Source="$(var.SourceDir)/include/gstreamer-1.0/gst/net/gstnettimeprovider.h"/>
+              </Component>
+              <Component Win64="$(var.Win64)" Id="cmp2D8C704951F3E44C0178AB43198CAE9C" Guid="*">
+                <File Id="fil57AF081F8B1F5451DF18E57721DF03B5" KeyPath="yes" Source="$(var.SourceDir)/include/gstreamer-1.0/gst/net/net.h"/>
+              </Component>
+            </Directory>
+          </Directory>
+        </Directory>
+      </Directory>
+      <Directory Id="dirB2F735D32F69742F9CCB1F5A8907C042" Name="lib">
+        <Directory Id="dir60BBD2533BA0D419152D3355E05AC9E4" Name="gstreamer-1.0">
+          <Component Win64="$(var.Win64)" Id="cmp0ACFE00C63B8A3232D2DEB869037D87C" Guid="*">
+            <File Id="fil114D395327F4D6569AC02A39DFB1971E" KeyPath="yes" Source="$(var.SourceDir)/lib/gstreamer-1.0/libgstcoreelements.dll"/>
+          </Component>
+        </Directory>
+        <Component Win64="$(var.Win64)" Id="cmp5310617B4E5592F042A284F9ED91AC01" Guid="*">
+          <File Id="fil377A6F093312B330ECF1BCED7EB248DC" KeyPath="yes" Source="$(var.SourceDir)/lib/libgstbase-1.0.dll.a"/>
+        </Component>
+        <Component Win64="$(var.Win64)" Id="cmp26B53EBEDD788C5D5A759AD98F7C413B" Guid="*">
+          <File Id="filF207C72D574C0022CE538EDE6F24E369" KeyPath="yes" Source="$(var.SourceDir)/lib/libgstcontroller-1.0.dll.a"/>
+        </Component>
+        <Component Win64="$(var.Win64)" Id="cmpB69EA3D2D0C0BD777516828E327033A3" Guid="*">
+          <File Id="fil8D3E5A6F186EAB60780048A46EFFF5CD" KeyPath="yes" Source="$(var.SourceDir)/lib/libgstnet-1.0.dll.a"/>
+        </Component>
+        <Component Win64="$(var.Win64)" Id="cmp6B544E455B30A2FD416CE78DDB0FB50A" Guid="*">
+          <File Id="filE872C0EE3395FE9D202DE70A15860D49" KeyPath="yes" Source="$(var.SourceDir)/lib/libgstreamer-1.0.dll.a"/>
+        </Component>
+        <Directory Id="dir5490F3017DE69C6A8FD6A4D1F957086B" Name="pkgconfig">
+          <Component Win64="$(var.Win64)" Id="cmp158EC6DE304F2CD6985461574DCEB4C7" Guid="*">
+            <File Id="fil6E57C6D4E9C414B0599BEA4F5E66153E" KeyPath="yes" Source="$(var.SourceDir)/lib/pkgconfig/gstreamer-1.0.pc"/>
+          </Component>
+          <Component Win64="$(var.Win64)" Id="cmpE2617CAF42CA4B7B297557F4C4517E59" Guid="*">
+            <File Id="fil4A1528BA2727C6486DEC4EE383556E62" KeyPath="yes" Source="$(var.SourceDir)/lib/pkgconfig/gstreamer-base-1.0.pc"/>
+          </Component>
+          <Component Win64="$(var.Win64)" Id="cmp0801223DD80EEAC7131080D4F3452C35" Guid="*">
+            <File Id="filA60FA32258F3BFD8D97713E8B2A93E30" KeyPath="yes" Source="$(var.SourceDir)/lib/pkgconfig/gstreamer-controller-1.0.pc"/>
+          </Component>
+          <Component Win64="$(var.Win64)" Id="cmp3897E00DA0C5CB35FFA71D6B82245C82" Guid="*">
+            <File Id="fil96E937B2AA7DB563DB3E63BED78F9163" KeyPath="yes" Source="$(var.SourceDir)/lib/pkgconfig/gstreamer-net-1.0.pc"/>
+          </Component>
+        </Directory>
+      </Directory>
+      <Directory Id="dir1EBE474684D1CA6D6957A950C9672D67" Name="libexec">
+        <Directory Id="dir3248D276B500675FA6695124351B1529" Name="gstreamer-1.0">
+          <Component Win64="$(var.Win64)" Id="cmp3694FB7C618F9AA6A8199B5908839EED" Guid="*">
+            <File Id="fil90E25DCAD861049A2C91C41BE5374EBF" KeyPath="yes" Source="$(var.SourceDir)/libexec/gstreamer-1.0/gst-plugin-scanner.exe"/>
+          </Component>
+        </Directory>
+      </Directory>
+      <Directory Id="dir2D493EC0C690AE59F6E7BF562D9B2E1D" Name="share">
+        <Directory Id="dir1D2293355B054FBF921B7909B2909240" Name="aclocal">
+          <Component Win64="$(var.Win64)" Id="cmp453A7B102CA0C641D11AA1D797111983" Guid="*">
+            <File Id="filFEAD87C5BA0A19A4174FEB4D851A0C04" KeyPath="yes" Source="$(var.SourceDir)/share/aclocal/gst-element-check-1.0.m4"/>
+          </Component>
+        </Directory>
+        <Directory Id="dir969A2801596DDEFF774EFAA74EA00028" Name="locale">
+          <Directory Id="dir87D0A17FA85B6970D3EB3BFF6242212C" Name="af">
+            <Directory Id="dir6CB4635253DEB0988689D3C917BE4A54" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmpA4D7E136426B5975933DC66C5BCBE09E" Guid="*">
+                <File Id="fil896C993CE10319EB1D46694BA5468F6F" KeyPath="yes" Source="$(var.SourceDir)/share/locale/af/LC_MESSAGES/gstreamer-1.0.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dirCD97EF9F507E890C86DF3933BEE2AFBE" Name="az">
+            <Directory Id="dir59BE409952EE5BED46694170895AB181" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp537C4EB805A22DEF6624E00A2C355A53" Guid="*">
+                <File Id="fil48F096D7288F791224E6C0D5154D7539" KeyPath="yes" Source="$(var.SourceDir)/share/locale/az/LC_MESSAGES/gstreamer-1.0.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dirCD6BD6ED533B4B422B4CAD3B0CD7BD7E" Name="be">
+            <Directory Id="dirAE6208D4AF35C0DA46CF6E08D6A6D02E" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp0A425B426C8444F795CC04F51737818D" Guid="*">
+                <File Id="filBB3EAF123A4F1F40CBF565971686C4CD" KeyPath="yes" Source="$(var.SourceDir)/share/locale/be/LC_MESSAGES/gstreamer-1.0.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir6311F92A072268D2D07ACC8BFCD575CE" Name="bg">
+            <Directory Id="dir1E8EF29660EE78E39C1CC582ACB312C3" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp1E2B89E4231BB828CB8D3AAE7991BA93" Guid="*">
+                <File Id="fil9CDEF657AFF9A2A4350ED9FCAF377870" KeyPath="yes" Source="$(var.SourceDir)/share/locale/bg/LC_MESSAGES/gstreamer-1.0.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir5737A451317CAC690FBFD80BBD6B33D8" Name="ca">
+            <Directory Id="dirBE30B777FE5CAED06991D773A22D3819" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp558BB7DB4EE48DD11AE2D138BB688C02" Guid="*">
+                <File Id="fil253657990A241199BD24F5B976525F3C" KeyPath="yes" Source="$(var.SourceDir)/share/locale/ca/LC_MESSAGES/gstreamer-1.0.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir79C9EC6F5F2EEED3EFFE787DDD35D277" Name="cs">
+            <Directory Id="dir6AD0ADC0592C7B8574C5B0ADEA223BA2" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp69737864FFEB8F7EEE779B85E04038C0" Guid="*">
+                <File Id="fil72826C2D3396CEC465532D1C5D51D048" KeyPath="yes" Source="$(var.SourceDir)/share/locale/cs/LC_MESSAGES/gstreamer-1.0.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir294B9A1639B2512F34589C8B2F8C540D" Name="da">
+            <Directory Id="dir7267CC3E82F3A57A68216C967CC5CDE9" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp157256CDCD7F94C2CDD9BC8FC74771B9" Guid="*">
+                <File Id="fil4476CBFE7ABB7EE52286E0CE24262C27" KeyPath="yes" Source="$(var.SourceDir)/share/locale/da/LC_MESSAGES/gstreamer-1.0.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir8B2789A765F4550792CE3A4466CD4D60" Name="de">
+            <Directory Id="dir5FDBD92D4E84897EEF395A9FBC07E355" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmpD63E76DAE6DD2AE11F1AE822C5F1BABF" Guid="*">
+                <File Id="filED6AB9DB7AE498AEAA3BE42306F681DD" KeyPath="yes" Source="$(var.SourceDir)/share/locale/de/LC_MESSAGES/gstreamer-1.0.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir7DDE0C2747D23372842B071327A65240" Name="el">
+            <Directory Id="dir7DA651ECBA29E23574592FC73FA091B9" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmpC356B4C8C837127CE93A32ED56DE0041" Guid="*">
+                <File Id="filE8966D67BE19C9CFB09A9EAF8E822A03" KeyPath="yes" Source="$(var.SourceDir)/share/locale/el/LC_MESSAGES/gstreamer-1.0.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dirF1715E1037401D886F3A7EF71FAADD06" Name="en_GB">
+            <Directory Id="dir6221D2F089F26A685594D848B81C6180" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp79BF6BC04DD554DCEB1B16F97540A409" Guid="*">
+                <File Id="filDE4C6B29C5E2616E6F749AE32A90EDFC" KeyPath="yes" Source="$(var.SourceDir)/share/locale/en_GB/LC_MESSAGES/gstreamer-1.0.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dirFCE7FD3014344CFC79EEB6CE4254D158" Name="eo">
+            <Directory Id="dirA1028AEA10D75FDF88D36BEC6C2152E8" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp5A0768A58D676E5859C19147E8844B22" Guid="*">
+                <File Id="fil607EEB57BE4FD30256A0465182582394" KeyPath="yes" Source="$(var.SourceDir)/share/locale/eo/LC_MESSAGES/gstreamer-1.0.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir6D6418B4F273492FE2086B9AE4AC124C" Name="es">
+            <Directory Id="dir73E539982F8D51BFBD64C464E1073E11" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp7121D061A0BE62FA563D971B7DEAE9F6" Guid="*">
+                <File Id="fil0D189E4C6F2CA75427716014430E9173" KeyPath="yes" Source="$(var.SourceDir)/share/locale/es/LC_MESSAGES/gstreamer-1.0.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dirF6D100BA91945A4950A787433DC789EF" Name="eu">
+            <Directory Id="dirBD35E3C3C5B861905D80DB5BD4F62C5A" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp563C8EF17FF7F2BE2900FFB1A3454C27" Guid="*">
+                <File Id="filB0533EBC2B2FFDA4B2A4EA9112088040" KeyPath="yes" Source="$(var.SourceDir)/share/locale/eu/LC_MESSAGES/gstreamer-1.0.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dirA628585E0EE2AE72DB2F360499DC85A2" Name="fi">
+            <Directory Id="dir49B3CA4F6B66EFAA4D0E57410CC90CC7" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp10506DCA3B15E81FACF8EB922CDF1AA4" Guid="*">
+                <File Id="fil0A9901C78CD448CB6E401E6EF7CD480F" KeyPath="yes" Source="$(var.SourceDir)/share/locale/fi/LC_MESSAGES/gstreamer-1.0.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dirFCCA22056E53B5D59428AB7476DF4657" Name="fr">
+            <Directory Id="dir28876CBDE5ABD2BF82B3825E6292E67F" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp76B582737FB9482A8A7D4FD5CAFFABA9" Guid="*">
+                <File Id="filEB46F424B647C292741335AAC62D717E" KeyPath="yes" Source="$(var.SourceDir)/share/locale/fr/LC_MESSAGES/gstreamer-1.0.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dirF458E38E8694882573D395F8C502614A" Name="gl">
+            <Directory Id="dirBFC3143F8379328941E9AEC795F6055A" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp7EE39D72DA6F80EC82F83029AEB70C27" Guid="*">
+                <File Id="filB31244B52B08FB5020A0AD7435FD8513" KeyPath="yes" Source="$(var.SourceDir)/share/locale/gl/LC_MESSAGES/gstreamer-1.0.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir7A4230F7B2167324E805E23E2AC3E3B2" Name="hr">
+            <Directory Id="dirE88A511B757F5946A377151A274767C5" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp4917B2B082082B81458EEF07F0C07562" Guid="*">
+                <File Id="fil32FC5A42BDD289881E1BCCCA9D65C5DB" KeyPath="yes" Source="$(var.SourceDir)/share/locale/hr/LC_MESSAGES/gstreamer-1.0.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir4140E9B3BF09F5095BFE8CEFD93ACF7E" Name="hu">
+            <Directory Id="dirD9DF9DB9BF20467367EC21435E4512F6" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp0684B9B3261F80969148C1B74FD27B32" Guid="*">
+                <File Id="fil19D43FEE923914B056271C799F53C1DE" KeyPath="yes" Source="$(var.SourceDir)/share/locale/hu/LC_MESSAGES/gstreamer-1.0.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dirEC5F9EB21FFC12366AF89F9B6A4D314E" Name="id">
+            <Directory Id="dirC9B6342B681580EF986E84A37CEE2FF5" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp08EC05FDAA7C1B0F5A33559F76876803" Guid="*">
+                <File Id="filB3CCE40EAF4ED685894745C8A20FBC38" KeyPath="yes" Source="$(var.SourceDir)/share/locale/id/LC_MESSAGES/gstreamer-1.0.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir5543172F161B121833DA849DF31DA291" Name="it">
+            <Directory Id="dir74A68D42E719986DA953C7AA018861BD" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp5E5D61E5583E43EFEDCCA3282B9EB491" Guid="*">
+                <File Id="fil50C45C9BC7896795F5540C250B4A0EB5" KeyPath="yes" Source="$(var.SourceDir)/share/locale/it/LC_MESSAGES/gstreamer-1.0.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir57694BEE8F514E3C24ED4A662B4C5D17" Name="ja">
+            <Directory Id="dir278DF18CBC9FB8897CBEBA6F391EA9B2" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp2D8DD82A022C3AF733496EEE1736E8A0" Guid="*">
+                <File Id="filFE4AE315F35B582BE2565A163C774424" KeyPath="yes" Source="$(var.SourceDir)/share/locale/ja/LC_MESSAGES/gstreamer-1.0.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dirA517C75583E03BCD3DF395BACE6278B1" Name="lt">
+            <Directory Id="dirAA638840B03182463FD363541514C9EB" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp650684BFEFB7FE3E3741276942E95F00" Guid="*">
+                <File Id="filABD87674D62F4459752EA702B500053B" KeyPath="yes" Source="$(var.SourceDir)/share/locale/lt/LC_MESSAGES/gstreamer-1.0.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dirEB16BBDF31807187F5064D710E58767C" Name="nb">
+            <Directory Id="dir98454F1B5D6E8312AE45653EF55CF851" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmpDC4B788706771B133FB2FDBE7A865489" Guid="*">
+                <File Id="fil49C956A7D82B19AABC96A064ADD5BBDE" KeyPath="yes" Source="$(var.SourceDir)/share/locale/nb/LC_MESSAGES/gstreamer-1.0.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir3EB1CF01839618A8D79D72CB71B5A1E6" Name="nl">
+            <Directory Id="dir2FA7211686BE0077C1477E08ED8D79AA" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmpD82DC8F2DACA41388EF441739FBFCDFE" Guid="*">
+                <File Id="fil9D9EC80DB49C5AEBB33E38ED7666F277" KeyPath="yes" Source="$(var.SourceDir)/share/locale/nl/LC_MESSAGES/gstreamer-1.0.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir8ED23194D411DA31B06A394CE59C64D1" Name="pl">
+            <Directory Id="dirEDA4F465255F45815B7FC23CDA5B3AE0" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp9BF8F4E397B08F99E442C257FC5480EF" Guid="*">
+                <File Id="fil34FB61170820F9CD45122D86329E3918" KeyPath="yes" Source="$(var.SourceDir)/share/locale/pl/LC_MESSAGES/gstreamer-1.0.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir8C123E5FF315A6747170EA4F89002DE9" Name="pt_BR">
+            <Directory Id="dir5970A113500A6C898C855542C223DE01" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmpCC2D569788B61E5EDFBC791BFA2E5E9C" Guid="*">
+                <File Id="fil799626A2D719A1850D7F72971447277D" KeyPath="yes" Source="$(var.SourceDir)/share/locale/pt_BR/LC_MESSAGES/gstreamer-1.0.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir415C1A7AA7CB3587C4097D8B294E9071" Name="ro">
+            <Directory Id="dir2F7AC3C93BDEF83D30D80AE0EA915C87" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp02CF6C83648A167BFACDD845D429295A" Guid="*">
+                <File Id="filBDB8D840CC6403069D36DD182CF9B559" KeyPath="yes" Source="$(var.SourceDir)/share/locale/ro/LC_MESSAGES/gstreamer-1.0.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dirBE98ED0BCDD6812BD18346165AE8B772" Name="ru">
+            <Directory Id="dir762825BA97A9F257135474AF888633FA" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp16C854040788383694E6F149DBB02EC7" Guid="*">
+                <File Id="fil58E24B4A38F746500714643E0E4515E4" KeyPath="yes" Source="$(var.SourceDir)/share/locale/ru/LC_MESSAGES/gstreamer-1.0.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir61CE0C89671BE72AE538A53952983E4D" Name="rw">
+            <Directory Id="dir07EB90D2732266D9F4F9AAA4ACC58273" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp84AE4F0B3E93E397E33C6B4F367A9CB3" Guid="*">
+                <File Id="filF6382D1E575CF2BCDE029A886AF76058" KeyPath="yes" Source="$(var.SourceDir)/share/locale/rw/LC_MESSAGES/gstreamer-1.0.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir43BF4D064E48DF8751D46540C65664BA" Name="sk">
+            <Directory Id="dir44F4A1ED7777BA30C63DA1667053C715" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp34E3C26B820505C597394233E48035BB" Guid="*">
+                <File Id="fil32DF170A1F36EC7D9965A1D8010A5C68" KeyPath="yes" Source="$(var.SourceDir)/share/locale/sk/LC_MESSAGES/gstreamer-1.0.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir0DBA2C1AB832829E091234C3F5B08E8E" Name="sl">
+            <Directory Id="dir839994DCC2F797149A4A830D4F0425F5" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp6E05B2F38EC187AD73FA371DCE0035C0" Guid="*">
+                <File Id="fil76F8DBAAF024ABCE8C38920A73E4C67D" KeyPath="yes" Source="$(var.SourceDir)/share/locale/sl/LC_MESSAGES/gstreamer-1.0.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir6F4DFB481BE71EF54DFC025AE15BDD45" Name="sq">
+            <Directory Id="dir4B2D1A98D1BA6F7FBC5D4773C3917C5F" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp717ADAE327A5A91D9732D72B80F3370B" Guid="*">
+                <File Id="filAEA2D55D1CF224DCEB8B47ED272D4D66" KeyPath="yes" Source="$(var.SourceDir)/share/locale/sq/LC_MESSAGES/gstreamer-1.0.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dirF2A4866847C920C338C37A7B44AF6A59" Name="sr">
+            <Directory Id="dir63854A4476FA52CCE9CAB47C4CCDDD73" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp127A5ED5CF67DD19DE5942BFF70A2740" Guid="*">
+                <File Id="fil659545CE85BA78100AA8595C3A54FEDD" KeyPath="yes" Source="$(var.SourceDir)/share/locale/sr/LC_MESSAGES/gstreamer-1.0.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir83555D80A4098BB72B42E9BE8E8D7433" Name="sv">
+            <Directory Id="dir0AE41D766DCBF83B1977E0EF677AB923" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp62A6BF0D159307D274270ED32D18CDB6" Guid="*">
+                <File Id="filA3BCF424360BB3C87414A0DF9A93C3A2" KeyPath="yes" Source="$(var.SourceDir)/share/locale/sv/LC_MESSAGES/gstreamer-1.0.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dirEB0C75C3D9E54F355BF3E3B7D75EB5F5" Name="tr">
+            <Directory Id="dir01466BF25E45E9E265BCC0633F9E3347" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp6016BE6BE1F9CBB893BA64988C992C9B" Guid="*">
+                <File Id="fil201B3D9FBA7610EB8D2A132C999AF380" KeyPath="yes" Source="$(var.SourceDir)/share/locale/tr/LC_MESSAGES/gstreamer-1.0.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dirCFEA54CF09B2C9642091E0AEA9B3892E" Name="uk">
+            <Directory Id="dirD44FFF5020A192AE7C2E84122B59827E" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp5AF3C000E0617AAFA46ABAD09528B814" Guid="*">
+                <File Id="filA0A93E8911709B438878A582E5A0B7D5" KeyPath="yes" Source="$(var.SourceDir)/share/locale/uk/LC_MESSAGES/gstreamer-1.0.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir19CF716DA72953BCEA85D32C754F86AB" Name="vi">
+            <Directory Id="dir02DF0BE9332992CC005A8E2E233D0B12" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp640437CD605F13C49FE962982466981C" Guid="*">
+                <File Id="filB420FD3B2EFD41552261ADB863594FF7" KeyPath="yes" Source="$(var.SourceDir)/share/locale/vi/LC_MESSAGES/gstreamer-1.0.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir49E2C2C0323621DEA8713277DE1F82D2" Name="zh_CN">
+            <Directory Id="dir76CE00A5D119724E9BDB4004C26D77C8" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmpAA5F14D1F02E2679E79AB018156ADA02" Guid="*">
+                <File Id="filD827B1E4532FD336D31EC1B9F47B033B" KeyPath="yes" Source="$(var.SourceDir)/share/locale/zh_CN/LC_MESSAGES/gstreamer-1.0.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir8FC256B748A522EF2CB260D4561732E9" Name="zh_TW">
+            <Directory Id="dir741BAAE135706353E3660BD1A5B0B4DE" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp4AD0399BB35367F79F7DD41107DA8DB0" Guid="*">
+                <File Id="filBC5DC7E36933FC6725C09BE4D2044E88" KeyPath="yes" Source="$(var.SourceDir)/share/locale/zh_TW/LC_MESSAGES/gstreamer-1.0.mo"/>
+              </Component>
+              </Directory>
+            </Directory>
+          </Directory>
+        </Directory>
+    </DirectoryRef>
+  </Fragment>
+  <Fragment>
+    <ComponentGroup Id="CG.gstreamer1">
+      <ComponentGroupRef Id="CG.gcc"/>
+      <ComponentGroupRef Id="CG.glib2"/>
+      <ComponentRef Id="cmp0D8CF9997EEC93FBB904414012FB4514"/>
+      <ComponentRef Id="cmpAA88D52F01E4D004D1666D5988A184B8"/>
+      <ComponentRef Id="cmp0AE24116E8CA4DF1492716F8BF94F181"/>
+      <ComponentRef Id="cmp5458F1BAFDD11BA51E75AE9CC48E9B4B"/>
+      <ComponentRef Id="cmp46DB6990FC2740672B3421145559C9BD"/>
+      <ComponentRef Id="cmp5AEB3111ED36D8DF9A4732D4FCD9FB54"/>
+      <ComponentRef Id="cmp9D35809C95F77B45F174A9DAB67E9D04"/>
+      <ComponentRef Id="cmpC18C7B84C5690703CE76151247703176"/>
+      <ComponentRef Id="cmpD904C9593DA3C2E6CF430C5E65237A49"/>
+      <ComponentRef Id="cmp11253E32428BC1968BC5A8EE8F98299E"/>
+      <ComponentRef Id="cmp5F78EF204F6776E8391227CB943B7D62"/>
+      <ComponentRef Id="cmp859C424F4B2FBCB8FABE8A315FED2803"/>
+      <ComponentRef Id="cmp395EE9309C38A4D41EAE83E291C6629A"/>
+      <ComponentRef Id="cmpAE5B66CDFA4E7071F0FF15F8E1E6273F"/>
+      <ComponentRef Id="cmpE8B96D441A0A1B5F2E5D2E14CAC1520F"/>
+      <ComponentRef Id="cmp59E1A8412C474CC579299478807FDA94"/>
+      <ComponentRef Id="cmp6AC4FA80B331D9BE535B3493C6A8C9B2"/>
+      <ComponentRef Id="cmpD6154FDC2AA82EC4A298B406C3123718"/>
+      <ComponentRef Id="cmp88A0D7D74497B1B189FADA653C21ADDB"/>
+      <ComponentRef Id="cmpBCA8AEE10E9048047282BA12464636CF"/>
+      <ComponentRef Id="cmpF712CB445E53BCF5E8BED92B35D5635A"/>
+      <ComponentRef Id="cmpEBB65FC2C20B8C64E651BFB379129E81"/>
+      <ComponentRef Id="cmp3B8D4188EBB45DFAFB19566D85632AA1"/>
+      <ComponentRef Id="cmp1E0BEE384BAAEFE220DA843DCCBCE610"/>
+      <ComponentRef Id="cmpCDDB503C7B4B61C393A45DE4600E3C3F"/>
+      <ComponentRef Id="cmp10E8EE4E533FC6B31E7C53F73D19B21C"/>
+      <ComponentRef Id="cmpEA30F305F5945FAC1232BD8D6CB3AF65"/>
+      <ComponentRef Id="cmp9782C40ABEAEB495FD922A97DF45C0E1"/>
+      <ComponentRef Id="cmp4840D8C0A581CEC8A217733D4B2223A9"/>
+      <ComponentRef Id="cmp37DA461DA25E92E4F98C6FF757EA2BF6"/>
+      <ComponentRef Id="cmpF510F8F11F1C6FDF24E39E70BD2E882D"/>
+      <ComponentRef Id="cmpEC7A1716EC7E6E39C5B02CE3D8011858"/>
+      <ComponentRef Id="cmpA0F8D01C9FBDF529CB3E0710E4826592"/>
+      <ComponentRef Id="cmpFBD729D5CB41BDDD46FBF5A81F80CF82"/>
+      <ComponentRef Id="cmpB732BF4BEBD16B12A74DB49559C9F1F8"/>
+      <ComponentRef Id="cmp9142931D7E060A6B59CF57DB6EB14B08"/>
+      <ComponentRef Id="cmp9773D5159C8869858227DE905EB7D224"/>
+      <ComponentRef Id="cmp5795AE1204E1822D96380CC05DB92D34"/>
+      <ComponentRef Id="cmp3254C424BBB979691AFED822082A64DB"/>
+      <ComponentRef Id="cmpE924ADF9BD28F5A54B1CA84C08657E10"/>
+      <ComponentRef Id="cmp6E5C3E672B1B04EB8B55F1D3E993D3ED"/>
+      <ComponentRef Id="cmp8BFDF515B59BF89BE0CCABE53CCCD23D"/>
+      <ComponentRef Id="cmpB4333F838F112BB6CE21A93BDBD4D0E5"/>
+      <ComponentRef Id="cmp7BD92D8B5065FD53C1E5B6E19FDBA6AC"/>
+      <ComponentRef Id="cmp5FB9A1EB58D9E81FF68A9E79C0B74B0C"/>
+      <ComponentRef Id="cmp82F9320F874B3EA72A3B0A3697049464"/>
+      <ComponentRef Id="cmp5A60B06707F5C28DF5F8FCE7AF1DF46B"/>
+      <ComponentRef Id="cmp43AC1F3286DF73F46895EA6EFE320EC8"/>
+      <ComponentRef Id="cmp5AB85E6C63622E09CF50DFBD19AE5875"/>
+      <ComponentRef Id="cmp8F05C7BF411B908DF2F98C54600B6A44"/>
+      <ComponentRef Id="cmp93879B6BB84799B93ADE86428EF0CC05"/>
+      <ComponentRef Id="cmp5C1089E748D868227B5A8C2716143A0C"/>
+      <ComponentRef Id="cmp168DB1D425869FE66A9813F43991282E"/>
+      <ComponentRef Id="cmpA805F5C30A4DBFF8EBB6A064E87C90CC"/>
+      <ComponentRef Id="cmp8F8EBACF3915CCF4DDC0AC8967780482"/>
+      <ComponentRef Id="cmp27D099DEB4CE68485528E4ECAFDB7E5A"/>
+      <ComponentRef Id="cmpA69AFF5B5CB1A063C835F2E0CA756780"/>
+      <ComponentRef Id="cmp0ADDFEEFC9DAE77E676E9414886243A7"/>
+      <ComponentRef Id="cmpFC5F7897C7462EC877E59F9F87E66CA7"/>
+      <ComponentRef Id="cmp1CBDC672E25EF16C7A185465C0DA6AB4"/>
+      <ComponentRef Id="cmp5DC8ABE9F23E8A86DBEA7B40F0CC3308"/>
+      <ComponentRef Id="cmp9B07C6C4D8913603357175EE5247A170"/>
+      <ComponentRef Id="cmp55C6759941297993353804759ECD1E52"/>
+      <ComponentRef Id="cmp8CDE8DDADDDDA9F339039818AA37F712"/>
+      <ComponentRef Id="cmpA07CD50A1F9141803438B755FA68C105"/>
+      <ComponentRef Id="cmpEE3FB57A8A46D7F283AB9BB54559FA3E"/>
+      <ComponentRef Id="cmp6AF3350D720E0FB6E2275BD479A18D6E"/>
+      <ComponentRef Id="cmpBAA41755192F912B68AABC9F91DCC3AF"/>
+      <ComponentRef Id="cmpA7C11372F525310D25275C4A107D8207"/>
+      <ComponentRef Id="cmp043FB58BEB665C3C433DF7E8CB83B559"/>
+      <ComponentRef Id="cmp27E0642E6CBC6D38DFF79093F9D9C0EA"/>
+      <ComponentRef Id="cmp1C1D1475DA48DFA27890FFB6A3BB73A2"/>
+      <ComponentRef Id="cmp9543D67326E4CB748ACB7F76D70B6AD4"/>
+      <ComponentRef Id="cmp119BFBB371FE79D7EDF0652FA9CC5E67"/>
+      <ComponentRef Id="cmpF4D3AD2D15F1A5F6A56059A4CB8A0BB4"/>
+      <ComponentRef Id="cmp9E28C636136A08B28A23AC1EA84BBCC7"/>
+      <ComponentRef Id="cmp4C1E24670E3D04CE2C4B2E19B29220F9"/>
+      <ComponentRef Id="cmpC4FD57D8C10BBF27D2D87F1EC94B0182"/>
+      <ComponentRef Id="cmpA092DE82D9E15079D720D137DCAAF224"/>
+      <ComponentRef Id="cmp0D663B661A9C1A8973422A533ED2FB54"/>
+      <ComponentRef Id="cmp7C8870BF5565BBD3697E8242D0F4F1BC"/>
+      <ComponentRef Id="cmp7842EF73522FE21C9761EAA50746865D"/>
+      <ComponentRef Id="cmp6FB674A6A7D26F7C3A4DC686B0F26C85"/>
+      <ComponentRef Id="cmp394BA580E4EFD412AC0E79A5EE4D850D"/>
+      <ComponentRef Id="cmp625E4ED49FAFFB6FD611BB7AF3D31AE3"/>
+      <ComponentRef Id="cmpFB201C2DCA34F14A84081EB4589F4733"/>
+      <ComponentRef Id="cmp196A0B6EF5D14ED206D7043E65FB2934"/>
+      <ComponentRef Id="cmp6A510AB8327ECCB96B2BE3872D5FA32E"/>
+      <ComponentRef Id="cmpB6A0D99F8A82E76DBD9F9221D922E159"/>
+      <ComponentRef Id="cmpBA1421A8015E7883711AB02674D6B2F5"/>
+      <ComponentRef Id="cmpAA3A628F0B1BFEDA1C4AAC12E7206AD7"/>
+      <ComponentRef Id="cmp8420CE4284A7BEAE704C8DA0CB6168C3"/>
+      <ComponentRef Id="cmp8A68F56C577A36FCFBFACF1A5C65829D"/>
+      <ComponentRef Id="cmpDF678EA13FAD5B490BC5290C7C103F49"/>
+      <ComponentRef Id="cmp18BB38C349B323A9B9E9B6A24A988F6E"/>
+      <ComponentRef Id="cmp88FFB7A66A951D258F67447E20DC54B2"/>
+      <ComponentRef Id="cmp080F957B65A1DDE58B7F327A82A9B95D"/>
+      <ComponentRef Id="cmpB5F279DBA5D521A5E36EC2FA2D139323"/>
+      <ComponentRef Id="cmpD4A4F96E44DE0FD4E494532AE4B73743"/>
+      <ComponentRef Id="cmpF7E9D3745DDD2BC54245BCA601FE0334"/>
+      <ComponentRef Id="cmp1280D2BA920E86DBC16983EC2FB97C7F"/>
+      <ComponentRef Id="cmpD094098F2480FDBE5550745B407A87A0"/>
+      <ComponentRef Id="cmp2D8C704951F3E44C0178AB43198CAE9C"/>
+      <ComponentRef Id="cmp0ACFE00C63B8A3232D2DEB869037D87C"/>
+      <ComponentRef Id="cmp5310617B4E5592F042A284F9ED91AC01"/>
+      <ComponentRef Id="cmp26B53EBEDD788C5D5A759AD98F7C413B"/>
+      <ComponentRef Id="cmpB69EA3D2D0C0BD777516828E327033A3"/>
+      <ComponentRef Id="cmp6B544E455B30A2FD416CE78DDB0FB50A"/>
+      <ComponentRef Id="cmp158EC6DE304F2CD6985461574DCEB4C7"/>
+      <ComponentRef Id="cmpE2617CAF42CA4B7B297557F4C4517E59"/>
+      <ComponentRef Id="cmp0801223DD80EEAC7131080D4F3452C35"/>
+      <ComponentRef Id="cmp3897E00DA0C5CB35FFA71D6B82245C82"/>
+      <ComponentRef Id="cmp3694FB7C618F9AA6A8199B5908839EED"/>
+      <ComponentRef Id="cmp453A7B102CA0C641D11AA1D797111983"/>
+      <ComponentRef Id="cmpA4D7E136426B5975933DC66C5BCBE09E"/>
+      <ComponentRef Id="cmp537C4EB805A22DEF6624E00A2C355A53"/>
+      <ComponentRef Id="cmp0A425B426C8444F795CC04F51737818D"/>
+      <ComponentRef Id="cmp1E2B89E4231BB828CB8D3AAE7991BA93"/>
+      <ComponentRef Id="cmp558BB7DB4EE48DD11AE2D138BB688C02"/>
+      <ComponentRef Id="cmp69737864FFEB8F7EEE779B85E04038C0"/>
+      <ComponentRef Id="cmp157256CDCD7F94C2CDD9BC8FC74771B9"/>
+      <ComponentRef Id="cmpD63E76DAE6DD2AE11F1AE822C5F1BABF"/>
+      <ComponentRef Id="cmpC356B4C8C837127CE93A32ED56DE0041"/>
+      <ComponentRef Id="cmp79BF6BC04DD554DCEB1B16F97540A409"/>
+      <ComponentRef Id="cmp5A0768A58D676E5859C19147E8844B22"/>
+      <ComponentRef Id="cmp7121D061A0BE62FA563D971B7DEAE9F6"/>
+      <ComponentRef Id="cmp563C8EF17FF7F2BE2900FFB1A3454C27"/>
+      <ComponentRef Id="cmp10506DCA3B15E81FACF8EB922CDF1AA4"/>
+      <ComponentRef Id="cmp76B582737FB9482A8A7D4FD5CAFFABA9"/>
+      <ComponentRef Id="cmp7EE39D72DA6F80EC82F83029AEB70C27"/>
+      <ComponentRef Id="cmp4917B2B082082B81458EEF07F0C07562"/>
+      <ComponentRef Id="cmp0684B9B3261F80969148C1B74FD27B32"/>
+      <ComponentRef Id="cmp08EC05FDAA7C1B0F5A33559F76876803"/>
+      <ComponentRef Id="cmp5E5D61E5583E43EFEDCCA3282B9EB491"/>
+      <ComponentRef Id="cmp2D8DD82A022C3AF733496EEE1736E8A0"/>
+      <ComponentRef Id="cmp650684BFEFB7FE3E3741276942E95F00"/>
+      <ComponentRef Id="cmpDC4B788706771B133FB2FDBE7A865489"/>
+      <ComponentRef Id="cmpD82DC8F2DACA41388EF441739FBFCDFE"/>
+      <ComponentRef Id="cmp9BF8F4E397B08F99E442C257FC5480EF"/>
+      <ComponentRef Id="cmpCC2D569788B61E5EDFBC791BFA2E5E9C"/>
+      <ComponentRef Id="cmp02CF6C83648A167BFACDD845D429295A"/>
+      <ComponentRef Id="cmp16C854040788383694E6F149DBB02EC7"/>
+      <ComponentRef Id="cmp84AE4F0B3E93E397E33C6B4F367A9CB3"/>
+      <ComponentRef Id="cmp34E3C26B820505C597394233E48035BB"/>
+      <ComponentRef Id="cmp6E05B2F38EC187AD73FA371DCE0035C0"/>
+      <ComponentRef Id="cmp717ADAE327A5A91D9732D72B80F3370B"/>
+      <ComponentRef Id="cmp127A5ED5CF67DD19DE5942BFF70A2740"/>
+      <ComponentRef Id="cmp62A6BF0D159307D274270ED32D18CDB6"/>
+      <ComponentRef Id="cmp6016BE6BE1F9CBB893BA64988C992C9B"/>
+      <ComponentRef Id="cmp5AF3C000E0617AAFA46ABAD09528B814"/>
+      <ComponentRef Id="cmp640437CD605F13C49FE962982466981C"/>
+      <ComponentRef Id="cmpAA5F14D1F02E2679E79AB018156ADA02"/>
+      <ComponentRef Id="cmp4AD0399BB35367F79F7DD41107DA8DB0"/>
+    </ComponentGroup>
+  </Fragment>
+</Include>
