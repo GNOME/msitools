@@ -4,14 +4,14 @@
 # pomóc w jego rozwijaniu i pielęgnowaniu, napisz do nas:
 # gnomepl@aviary.pl
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
-# Piotr Drąg <piotrdrag@gmail.com>, 2013.
-# Aviary.pl <gnomepl@aviary.pl>, 2013.
+# Piotr Drąg <piotrdrag@gmail.com>, 2013-2014.
+# Aviary.pl <gnomepl@aviary.pl>, 2013-2014.
 msgid ""
 msgstr ""
 "Project-Id-Version: msitools\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-04-12 21:54+0200\n"
-"PO-Revision-Date: 2013-04-12 21:55+0200\n"
+"POT-Creation-Date: 2014-11-05 14:10+0100\n"
+"PO-Revision-Date: 2014-11-05 14:11+0100\n"
 "Last-Translator: Piotr Drąg <piotrdrag@gmail.com>\n"
 "Language-Team: Polish <gnomepl@aviary.pl>\n"
 "Language: pl\n"
@@ -44,29 +44,32 @@ msgid "- a msi files extracting tool"
 msgstr "- narzędzie do rozpakowywania plików MSI"
 
 #: ../tools/msiextract.vala:146 ../tools/wixl/wixl.vala:75
-#, c-format
 msgid "Please specify input files.\n"
 msgstr "Proszę podać pliki wejściowe.\n"
 
-#: ../tools/wixl/wixl-heat.vala:11
+#: ../tools/wixl/wixl-heat.vala:12
 msgid "Directory Ref"
 msgstr "Odniesienie katalogu"
 
-#: ../tools/wixl/wixl-heat.vala:12
+#: ../tools/wixl/wixl-heat.vala:13
 msgid "Component Group"
 msgstr "Grupa składnika"
 
-#: ../tools/wixl/wixl-heat.vala:13
+#: ../tools/wixl/wixl-heat.vala:14
 msgid "Variable for source dir"
 msgstr "Zmienna dla katalogu źródłowego"
 
-#: ../tools/wixl/wixl-heat.vala:14
+#: ../tools/wixl/wixl-heat.vala:15
 msgid "Prefix"
 msgstr "Przedrostek"
 
-#: ../tools/wixl/wixl-heat.vala:15
+#: ../tools/wixl/wixl-heat.vala:16
 msgid "Exclude prefix"
 msgstr "Wyklucza przedrostek"
+
+#: ../tools/wixl/wixl-heat.vala:17
+msgid "Add Win64 Component"
+msgstr "Dodaje składnik Win64"
 
 #: ../tools/wixl/wixl.vala:22
 msgid "Verbose output"
@@ -110,7 +113,6 @@ msgid "- a msi building tool"
 msgstr "- narzędzie do budowania plików MSI"
 
 #: ../tools/wixl/wixl.vala:83
-#, c-format
 msgid "Please specify the output file.\n"
 msgstr "Proszę podać plik wyjściowy.\n"
 
