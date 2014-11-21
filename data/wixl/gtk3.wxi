@@ -26,9 +26,6 @@
         <Component Win64="$(var.Win64)" Id="cmpBC2BAAD14EF5402464E949E915CE5F45" Guid="*">
           <File Id="filA63111E0F5EC56CF5BF4E98AEB5E82B7" KeyPath="yes" Source="$(var.SourceDir)/bin/gtk3-icon-browser.exe"/>
         </Component>
-        <Component Win64="$(var.Win64)" Id="cmp8890809DF468629DF0DAC15F6686DD52" Guid="*">
-          <File Id="filF4AD8CB298FEBED8D3E3EF07FA4EDECF" KeyPath="yes" Source="$(var.SourceDir)/bin/gtk3-widget-factory.exe"/>
-        </Component>
         <Component Win64="$(var.Win64)" Id="cmpC9962B6D4D6D6E322382AC6BDB0FBEAD" Guid="*">
           <File Id="fil99C1AD05A1A2BC0D6365DA083F4148FA" KeyPath="yes" Source="$(var.SourceDir)/bin/libgailutil-3-0.dll"/>
         </Component>
@@ -1254,7 +1251,6 @@
       <ComponentRef Id="cmpCE23DE8E4F711CE6DFC25F79BF8C7C86"/>
       <ComponentRef Id="cmp1BF9F752D68E2DDF8EC1A63020EBDB18"/>
       <ComponentRef Id="cmpBC2BAAD14EF5402464E949E915CE5F45"/>
-      <ComponentRef Id="cmp8890809DF468629DF0DAC15F6686DD52"/>
       <ComponentRef Id="cmpC9962B6D4D6D6E322382AC6BDB0FBEAD"/>
       <ComponentRef Id="cmpC5BC32F79EFCBD409B6E1D2CE4E60E62"/>
       <ComponentRef Id="cmpB612F3B3AC592DEDB8BA081AD8423C85"/>
