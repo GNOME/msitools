@@ -67,6 +67,9 @@
             <Component Win64="$(var.Win64)" Id="cmp1474604124E92D0424373C749EA51695" Guid="*">
               <File Id="fil5D242AAD37C2A51CAC371CC27D43F3DB" KeyPath="yes" Source="$(var.SourceDir)/share/glib-2.0/schemas/org.gtk.exampleapp.gschema.xml"/>
             </Component>
+            <Component Win64="$(var.Win64)" Id="cmp031B4F45E31205F8C271CE884D43F17A" Guid="*">
+              <File Id="filDB122D7CBE5FDC90B6F2ABCFE78881D3" KeyPath="yes" Source="$(var.SourceDir)/share/glib-2.0/schemas/gschema.dtd"/>
+            </Component>
           </Directory>
         </Directory>
         <Directory Id="dirF659AD7C977AC574C90FE2E53E3F256A" Name="gtk-3.0">
@@ -1259,6 +1262,7 @@
       <ComponentRef Id="cmpF23128B9129B261CEC39944980D4E691"/>
       <ComponentRef Id="cmpA7F39B0DD966BD54FAB65BE15A526107"/>
       <ComponentRef Id="cmp1474604124E92D0424373C749EA51695"/>
+      <ComponentRef Id="cmp031B4F45E31205F8C271CE884D43F17A"/>
       <ComponentRef Id="cmp012376212D9A466EACE8BA6B4DB128AA"/>
       <ComponentRef Id="cmp106D8A93B5A7A883DB81AF72B4D6EAA4"/>
       <ComponentRef Id="cmp7DC05996A2036E1C26CD2E45C15B5BEC"/>
