@@ -8,9 +8,6 @@
   <Fragment>
     <DirectoryRef Id="INSTALLDIR">
       <Directory Id="dir87531B68F0D027FDC2F5EF26BF02B3A4" Name="bin">
-        <Component Win64="$(var.Win64)" Id="cmp5B0B4010899B64A2609BC1B2C822E80B" Guid="*">
-          <File Id="filE44390E822E96E9A7E057A766812DB64" KeyPath="yes" Source="$(var.SourceDir)/bin/gtk-encode-symbolic-svg.exe"/>
-        </Component>
         <Component Win64="$(var.Win64)" Id="cmpC9962B6D4D6D6E322382AC6BDB0FBEAD" Guid="*">
           <File Id="fil99C1AD05A1A2BC0D6365DA083F4148FA" KeyPath="yes" Source="$(var.SourceDir)/bin/libgailutil-3-0.dll"/>
         </Component>
@@ -1230,7 +1227,6 @@
       <ComponentGroupRef Id="CG.gdk-pixbuf"/>
       <ComponentGroupRef Id="CG.glib2"/>
       <ComponentGroupRef Id="CG.pango"/>
-      <ComponentRef Id="cmp5B0B4010899B64A2609BC1B2C822E80B"/>
       <ComponentRef Id="cmpC9962B6D4D6D6E322382AC6BDB0FBEAD"/>
       <ComponentRef Id="cmpC5BC32F79EFCBD409B6E1D2CE4E60E62"/>
       <ComponentRef Id="cmpB612F3B3AC592DEDB8BA081AD8423C85"/>
