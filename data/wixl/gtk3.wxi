@@ -20,9 +20,6 @@
         <Component Win64="$(var.Win64)" Id="cmpCE23DE8E4F711CE6DFC25F79BF8C7C86" Guid="*">
           <File Id="fil9D07885ED0A80E69A2A18ABFB9BDBB03" KeyPath="yes" Source="$(var.SourceDir)/bin/gtk3-demo-application.exe"/>
         </Component>
-        <Component Win64="$(var.Win64)" Id="cmp1BF9F752D68E2DDF8EC1A63020EBDB18" Guid="*">
-          <File Id="fil7DCFD0C64BFF7ADD9F842E57ED36301A" KeyPath="yes" Source="$(var.SourceDir)/bin/gtk3-demo.exe"/>
-        </Component>
         <Component Win64="$(var.Win64)" Id="cmpC9962B6D4D6D6E322382AC6BDB0FBEAD" Guid="*">
           <File Id="fil99C1AD05A1A2BC0D6365DA083F4148FA" KeyPath="yes" Source="$(var.SourceDir)/bin/libgailutil-3-0.dll"/>
         </Component>
@@ -1246,7 +1243,6 @@
       <ComponentRef Id="cmp353082B3FDA7628A59EE4E942A2A1965"/>
       <ComponentRef Id="cmp6BA48727979044B389CD37488AC58284"/>
       <ComponentRef Id="cmpCE23DE8E4F711CE6DFC25F79BF8C7C86"/>
-      <ComponentRef Id="cmp1BF9F752D68E2DDF8EC1A63020EBDB18"/>
       <ComponentRef Id="cmpC9962B6D4D6D6E322382AC6BDB0FBEAD"/>
       <ComponentRef Id="cmpC5BC32F79EFCBD409B6E1D2CE4E60E62"/>
       <ComponentRef Id="cmpB612F3B3AC592DEDB8BA081AD8423C85"/>
