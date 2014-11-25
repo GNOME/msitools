@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Include xmlns="http://schemas.microsoft.com/wix/2006/wi">
+<?require libsoup.wxi?>
+<?require libxml2.wxi?>
+  <Fragment>
+    <DirectoryRef Id="INSTALLDIR">
+      <Directory Id="dir4A31AEEAB55BAF1E190CBA5DCD4EB053" Name="bin">
+        <Component Win64="$(var.Win64)" Id="cmp6BAAF263DE7CA46F7B13DE9438870EF5" Guid="*">
+          <File Id="fil37D67CFF5D25DAD4B2C5AB2BDD01E732" KeyPath="yes" Source="$(var.SourceDir)/bin/librest-0.7-0.dll"/>
+        </Component>
+        <Component Win64="$(var.Win64)" Id="cmp48EA4E8957F9A5285EEA41D823BB7247" Guid="*">
+          <File Id="fil435492ABA49D1AAA3B17CA207ED4643D" KeyPath="yes" Source="$(var.SourceDir)/bin/librest-extras-0.7-0.dll"/>
+        </Component>
+        </Directory>
+    </DirectoryRef>
+  </Fragment>
+  <Fragment>
+    <ComponentGroup Id="CG.rest">
+      <ComponentGroupRef Id="CG.libsoup"/>
+      <ComponentGroupRef Id="CG.libxml2"/>
+      <ComponentRef Id="cmp6BAAF263DE7CA46F7B13DE9438870EF5"/>
+      <ComponentRef Id="cmp48EA4E8957F9A5285EEA41D823BB7247"/>
+    </ComponentGroup>
+  </Fragment>
+</Include>
