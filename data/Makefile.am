@@ -33,6 +33,7 @@ dist_wxi_DATA =					\
 	wixl/libffi.wxi				\
 	wixl/libgcrypt.wxi			\
 	wixl/libgpg-error.wxi			\
+	wixl/libgovirt.wxi			\
 	wixl/libidn.wxi				\
 	wixl/libjpeg-turbo.wxi			\
 	wixl/libogg.wxi				\
