@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <?require glib2.wxi?>
+<?require glib-networking.wxi?>
 <?require sqlite.wxi?>
 <?require libxml2.wxi?>
 <Include xmlns="http://schemas.microsoft.com/wix/2006/wi">
@@ -386,6 +387,7 @@
   <Fragment>
     <ComponentGroup Id="CG.libsoup">
       <ComponentGroupRef Id="CG.glib2"/>
+      <ComponentGroupRef Id="CG.glib-networking"/>
       <ComponentGroupRef Id="CG.sqlite"/>
       <ComponentGroupRef Id="CG.libxml2"/>
       <ComponentRef Id="cmpE0095401FA3CB98EFD660E75EDDFE4A1"/>
