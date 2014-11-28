@@ -1,0 +1,521 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Include xmlns="http://schemas.microsoft.com/wix/2006/wi">
+  <Fragment>
+    <DirectoryRef Id="INSTALLDIR">
+      <Directory Id="dirE637B44C3534BDA086DF970303B32A29" Name="lib">
+        <Directory Id="dir5972A5979259CDDEF9CD0FA637A8DAB8" Name="gio">
+          <Directory Id="dirCA8E71E7BA69A859D61EDB7B22B96342" Name="modules">
+            <Component Win64="$(var.Win64)" Id="cmpCD94B8BC5279DED6AA0535512CF9F77F" Guid="*">
+              <File Id="filB7A3D6157489DB9FE4E5EC7F1DB352D8" KeyPath="yes" Source="$(var.SourceDir)/lib/gio/modules/libgiognutls.dll"/>
+            </Component>
+          </Directory>
+        </Directory>
+      </Directory>
+      <Directory Id="dirFFA3AD42A51E204C06FA50578D9460BB" Name="share">
+        <Directory Id="dir7F621AACD2E8A7A06308CC24487D9DAD" Name="locale">
+          <Directory Id="dirE1E5ABDADCE90D932D7EED928E34F6CD" Name="an">
+            <Directory Id="dir87D51596A3A548E7E981928AF19DDA37" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmpC43485D6DED6223ACAE9A1A77620DDEE" Guid="*">
+                <File Id="fil7DF9749B0DACD77A6669F1DA61BF07C3" KeyPath="yes" Source="$(var.SourceDir)/share/locale/an/LC_MESSAGES/glib-networking.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir15384C957248519E5DBC909AF770F911" Name="ar">
+            <Directory Id="dir41DF87D10BAD8BC1795A60EE13BE1543" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmpA4755E383A415852D4327CE43C266424" Guid="*">
+                <File Id="fil1471AEA15B7F43C88A786F5747D28EB5" KeyPath="yes" Source="$(var.SourceDir)/share/locale/ar/LC_MESSAGES/glib-networking.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dirCD5F491FE0C96A4764D80F4C20B4A6EA" Name="as">
+            <Directory Id="dirF8E43E6F066BE0B00264725C26DC8453" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp068E54D948616FD9EB38EF501863E689" Guid="*">
+                <File Id="filDEB05ABC9527B665EC72F54CECF0FD00" KeyPath="yes" Source="$(var.SourceDir)/share/locale/as/LC_MESSAGES/glib-networking.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir9EA3924BD53CAD748D3DAE2B1BAA4739" Name="be">
+            <Directory Id="dir6C098FDAB7B79DDFF6BDC1F93773F997" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmpB5FB0083962948E1D2869A246463BE0B" Guid="*">
+                <File Id="filBC607A02B2E4E68272F3861C1247802C" KeyPath="yes" Source="$(var.SourceDir)/share/locale/be/LC_MESSAGES/glib-networking.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir035ABEBD2BD8FD34D46089F9FB831A57" Name="bg">
+            <Directory Id="dirA3B7DE5E33DB05D7F6D1B043583A1326" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp111C5362928BDD11338B8FAB6F75EC18" Guid="*">
+                <File Id="filED168DB4A2CCBC1597F34A2847A13E33" KeyPath="yes" Source="$(var.SourceDir)/share/locale/bg/LC_MESSAGES/glib-networking.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dirAA26284F0A52C9A9A4C61AAD53CB7CBF" Name="bn_IN">
+            <Directory Id="dirF0ECF22C347960360138F3501A1FE385" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmpC5CDC0C65163C5A157CA8B1D2612CFD4" Guid="*">
+                <File Id="fil970F50E3846F80689FCC1AA60B40635A" KeyPath="yes" Source="$(var.SourceDir)/share/locale/bn_IN/LC_MESSAGES/glib-networking.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dirD1C3C66F1F787A4A93933E0794983B04" Name="ca">
+            <Directory Id="dir8F0CCFCA5106BF4AAAA07F60ACCB2F31" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmpBAFE669F9A2FBDAB2453BCC668BA9B70" Guid="*">
+                <File Id="fil6B5B9D37D34E4CB50C0EAB55D23A89CB" KeyPath="yes" Source="$(var.SourceDir)/share/locale/ca/LC_MESSAGES/glib-networking.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir9EA96021213D4557472F4EF9680F3C40" Name="ca@valencia">
+            <Directory Id="dir3D0DD7874B0D295A002247676DDDC096" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmpA9FC68BBFE0F6FA6253E4379BF326C02" Guid="*">
+                <File Id="filE8E6CA0127E4E2B8402D0A61F8631A3F" KeyPath="yes" Source="$(var.SourceDir)/share/locale/ca@valencia/LC_MESSAGES/glib-networking.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dirBDAAD37AD57C3328E3F12F51435BEE50" Name="cs">
+            <Directory Id="dir51B7341F37E8327F2EA9BECB1DE99DA9" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp199020BD52912ADA0565B4ADC61663F7" Guid="*">
+                <File Id="fil1454A5A8BA5D1EFD80D0C23ED37F7B41" KeyPath="yes" Source="$(var.SourceDir)/share/locale/cs/LC_MESSAGES/glib-networking.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir286E193EA52E6236E166DC92E41E454A" Name="da">
+            <Directory Id="dir632494353D751BCCF1FA78CA157F7918" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmpB06591BF1F082890DDD89965C636E9EA" Guid="*">
+                <File Id="filBE67670BA73679E48DB36755E566450A" KeyPath="yes" Source="$(var.SourceDir)/share/locale/da/LC_MESSAGES/glib-networking.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir7B3C16F6C231F0BA8CE7030AF032F4AF" Name="de">
+            <Directory Id="dirEA3B02BF00D2A0872C6AB0189C9F7A2A" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp8934061AC254696E875017FF58F24D8B" Guid="*">
+                <File Id="filCAD5BDDBF5CFC4C5C1E1D31B152C7127" KeyPath="yes" Source="$(var.SourceDir)/share/locale/de/LC_MESSAGES/glib-networking.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir8C4EF129DF034B62034A7F5147CE6C80" Name="el">
+            <Directory Id="dir7FA68320B9620D69B210F416C691DFCE" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmpC5F49CC52D794A19443442B26A6439A7" Guid="*">
+                <File Id="fil1D5DA17BC0DDC1BA52F5242B2D80C7D4" KeyPath="yes" Source="$(var.SourceDir)/share/locale/el/LC_MESSAGES/glib-networking.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir1E10EB39D76F675C2CA17FE2C09F8FD4" Name="en_CA">
+            <Directory Id="dir60108B0FC0719CA31CAB63EB0F9DC9F7" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmpAAF1A6FA2ECD5D5600E9B573F86600D8" Guid="*">
+                <File Id="filC81F10CC18DC41B8F1D003A5DEA32440" KeyPath="yes" Source="$(var.SourceDir)/share/locale/en_CA/LC_MESSAGES/glib-networking.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir1D5363632D917D2355E688B572CDAC84" Name="en_GB">
+            <Directory Id="dirDDA7B05EC920CB1AF9EA2AC3BAB10D0F" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmpCCF0BF37DF264B8FE77905677D47CAC1" Guid="*">
+                <File Id="filA80A51455407D2250B6E91C54BEB3B36" KeyPath="yes" Source="$(var.SourceDir)/share/locale/en_GB/LC_MESSAGES/glib-networking.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir6981A22FFC032821B7463D9BB8FF74CC" Name="eo">
+            <Directory Id="dirE9354A0561761E6AE75E1E2C3C173E5D" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp8FFE841A95E50C9873FA01B14CD1E1CD" Guid="*">
+                <File Id="fil89D8CC8986EEC287D2D6F0A21A21C772" KeyPath="yes" Source="$(var.SourceDir)/share/locale/eo/LC_MESSAGES/glib-networking.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir23763521CF8FBA1121C66EC6AAE557F3" Name="es">
+            <Directory Id="dir070D256793D8BB12960E803FCCD2A4D7" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmpB3070F744752A375D3B4F048B3B42E21" Guid="*">
+                <File Id="fil44669FCEE17EA98D13E4D8A32A0BB878" KeyPath="yes" Source="$(var.SourceDir)/share/locale/es/LC_MESSAGES/glib-networking.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir168A09F4584B0CB2AC27F9CD4854C925" Name="et">
+            <Directory Id="dirFA0659A8CD39ECEA83162F237327E6C1" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp3BC9847F943B9D57055EF6D2F1D4B49C" Guid="*">
+                <File Id="fil67251A29D33D35D5FAFDB2372CF993CB" KeyPath="yes" Source="$(var.SourceDir)/share/locale/et/LC_MESSAGES/glib-networking.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir7F06031B68A32FE3B5414C67F9FFC7B3" Name="eu">
+            <Directory Id="dir5A8F60BA1733A5449E252896B1E18ECD" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp01733091BD2A73C12F2DA3683D70865F" Guid="*">
+                <File Id="fil2BDDFE816D3A39CBF779BECFA41E288F" KeyPath="yes" Source="$(var.SourceDir)/share/locale/eu/LC_MESSAGES/glib-networking.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir97432FBA174DA4F8893E4C6174525A49" Name="fa">
+            <Directory Id="dir68913673F58345D5FB7F28D7345D4AC7" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmpC36846BA2544CEB12035F2391F27117F" Guid="*">
+                <File Id="filE2351BD63F0C6D3DC62BCAD4E68F3A93" KeyPath="yes" Source="$(var.SourceDir)/share/locale/fa/LC_MESSAGES/glib-networking.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir95903C982DA946D2710B73065D90FDED" Name="fi">
+            <Directory Id="dirDC8AC3FB6E4E1A393B6C577280419EB5" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp708DA5B1EBD10307B75562BAEE3BD55A" Guid="*">
+                <File Id="filC76D59FF64113D7C54AEE9FFAEF1BAC6" KeyPath="yes" Source="$(var.SourceDir)/share/locale/fi/LC_MESSAGES/glib-networking.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir5B4E9B276BAC67F60669C601481AFE5A" Name="fr">
+            <Directory Id="dir14E47AC4ED3DF4D68AEB4DD9BA458721" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp94E9B6C397D2F5595DD313A4CB12213A" Guid="*">
+                <File Id="filCF22AC82FABD3FB4356F04709AC83201" KeyPath="yes" Source="$(var.SourceDir)/share/locale/fr/LC_MESSAGES/glib-networking.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dirF3FDA31EDB76EBA1A7C644245C2EF61E" Name="fur">
+            <Directory Id="dir373B25823D5F5497CD6C462F1F109980" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmpF369F21B81A8671DA828ACF135410422" Guid="*">
+                <File Id="filF1CDBDD0D2CB709905EAEC0DE90AB99A" KeyPath="yes" Source="$(var.SourceDir)/share/locale/fur/LC_MESSAGES/glib-networking.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dirC48C3B27811CE8A34AB2D94FA25FBEC3" Name="gl">
+            <Directory Id="dir381432FD7D28DA8887889D20DAE619B3" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmpEC8FA1FBCABD01FFF2671C6ACCF5D162" Guid="*">
+                <File Id="fil903F3A51F6EECD50214519AA93A38370" KeyPath="yes" Source="$(var.SourceDir)/share/locale/gl/LC_MESSAGES/glib-networking.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir08D461C08F62EE899B5F460E24A35582" Name="gu">
+            <Directory Id="dir5163CD45EA85F85EB55B65EE965A9897" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp6A89DD584965C730E8F66838B69695D8" Guid="*">
+                <File Id="filA14D82926989F048F50A743B09689B8C" KeyPath="yes" Source="$(var.SourceDir)/share/locale/gu/LC_MESSAGES/glib-networking.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dirA12453F77CA8556A07193AF0E317A33B" Name="he">
+            <Directory Id="dir8C8CB96563934D59A924CE4A51CA7DDA" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp434DFE3B6C2FCCDCBCF3925A65FE98FD" Guid="*">
+                <File Id="filF66F29F498FFF1E29C53145F665FB16E" KeyPath="yes" Source="$(var.SourceDir)/share/locale/he/LC_MESSAGES/glib-networking.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir863F7A0A1579CD32247A17B2024654DD" Name="hi">
+            <Directory Id="dir222D24B0D8746B93A877B427D0C95033" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmpCCC99BF5D0EFB473D37EE1FE773C987F" Guid="*">
+                <File Id="fil59FAFCF563D5D8C4958EFA4692C68EDE" KeyPath="yes" Source="$(var.SourceDir)/share/locale/hi/LC_MESSAGES/glib-networking.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir5C67E1047106D49720C7CA9218F58DA4" Name="hu">
+            <Directory Id="dir2E9FBDECDD218905A1DF929C38A67C9A" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp44B603FC48C01287D0E4AE324B94C041" Guid="*">
+                <File Id="filBD8609F55CD812BD5ED21C454A6BB4FB" KeyPath="yes" Source="$(var.SourceDir)/share/locale/hu/LC_MESSAGES/glib-networking.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir78AAE609CB12DC51BBDCC75DB3286E17" Name="id">
+            <Directory Id="dirE5016F9C290E426C291055696C597169" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp9D12386644AB89127B990ECD80B806BC" Guid="*">
+                <File Id="filC6538874B71E42B2A6F99B0956AE1544" KeyPath="yes" Source="$(var.SourceDir)/share/locale/id/LC_MESSAGES/glib-networking.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dirD5196545ED024678E369AF899D6BC064" Name="it">
+            <Directory Id="dirBAFFACB2C014433B02861F4C7B7EF71E" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp3211A6B43943F771D3F92FE4F361277C" Guid="*">
+                <File Id="filF29C05640624472588ACD9D9002BE52B" KeyPath="yes" Source="$(var.SourceDir)/share/locale/it/LC_MESSAGES/glib-networking.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dirAF4CC7CF7A297E60AD04152F222F5E30" Name="ja">
+            <Directory Id="dir00B4EFB4C2555F59C860BE8588B9202F" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmpF96873B9E0D8A0EDF486C8994B546AFD" Guid="*">
+                <File Id="filF9F052008BB39C5B257F73B8177D060D" KeyPath="yes" Source="$(var.SourceDir)/share/locale/ja/LC_MESSAGES/glib-networking.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir13B907BF7D1B161B9446D87A4E0CF323" Name="km">
+            <Directory Id="dir0E686B146432FC6600FE35054EC6D98E" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp61AF8F721B0BA6DA8869BAB5A946DAB0" Guid="*">
+                <File Id="fil6E9E06952A985068A7638BB57CF56E28" KeyPath="yes" Source="$(var.SourceDir)/share/locale/km/LC_MESSAGES/glib-networking.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dirF6CF4A07DE02F1A7E56FFE7689ACE953" Name="kn">
+            <Directory Id="dir8C213F1B7C1CDB43767A2432375D3195" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp7F495A82C3ECBC90A143600788AEE70B" Guid="*">
+                <File Id="filD95F6604D86A3DF7F1DDB35B73A2E85F" KeyPath="yes" Source="$(var.SourceDir)/share/locale/kn/LC_MESSAGES/glib-networking.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir861FEA1D91F53616ED83E0E66CC045AB" Name="ko">
+            <Directory Id="dirF44BCB77DBA849F410B98A393196A9D1" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmpDAB087D7056E1614CB2FBDFD4785A5D7" Guid="*">
+                <File Id="filD7D0C5EA1E073611A0B4B7B8263B634B" KeyPath="yes" Source="$(var.SourceDir)/share/locale/ko/LC_MESSAGES/glib-networking.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dirF1711661F3846DD2FEDABF9B1577A695" Name="lt">
+            <Directory Id="dirEB3E76494219A1D8BA89BFE0D2769EE6" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp170E8C65D26B7449D13E8A916E7606E7" Guid="*">
+                <File Id="fil6A820E32933B7CCD630A2879CBEE69C6" KeyPath="yes" Source="$(var.SourceDir)/share/locale/lt/LC_MESSAGES/glib-networking.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dirE3491923A49F82966191CE39537A59EA" Name="lv">
+            <Directory Id="dirBD140C339F49D858034B085E624D65BE" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp7355351A091EBDFA6ACE17B409E1C1B4" Guid="*">
+                <File Id="fil7C11F7A24FDEB15D568450D2AF51C673" KeyPath="yes" Source="$(var.SourceDir)/share/locale/lv/LC_MESSAGES/glib-networking.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir13AC03FFCA3DF7CF19953332ABE4D6FE" Name="ml">
+            <Directory Id="dirE77FD724278BEF070712B7ECC766788E" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmpABEDB1C9AE4922FCE92740C759A6A714" Guid="*">
+                <File Id="fil0DDEE682B42276D0D041E8B862173FE1" KeyPath="yes" Source="$(var.SourceDir)/share/locale/ml/LC_MESSAGES/glib-networking.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir4454733603240F6E6109D5630F99B65B" Name="mr">
+            <Directory Id="dir3D46B96E2B8C4F6B222D25F0A3DBD9E6" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp28B784E835D4E5148C32D1623E4E3AD8" Guid="*">
+                <File Id="filD79B6A0E282EE7B3B8CCC74D711859D0" KeyPath="yes" Source="$(var.SourceDir)/share/locale/mr/LC_MESSAGES/glib-networking.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir2E7623F05640AF90B1509BD1A3642C44" Name="nb">
+            <Directory Id="dirD6F09B4186A9F8392F3CAC709A31C351" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp01A0AF6C7F0DC76D546E4C6CB933D1D6" Guid="*">
+                <File Id="fil704CB1967BE1A80A6B72A28A1371B5AD" KeyPath="yes" Source="$(var.SourceDir)/share/locale/nb/LC_MESSAGES/glib-networking.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir67EF4A162D5349C6DFEA757837F6EC25" Name="nl">
+            <Directory Id="dir99CAB32D10284E7A375D2B416091308A" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp40E6EBF9620212E6AB0F07D4A2B9F0C4" Guid="*">
+                <File Id="fil77F4634FF4BD15DFA51166CB94CA87A2" KeyPath="yes" Source="$(var.SourceDir)/share/locale/nl/LC_MESSAGES/glib-networking.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir1551BF7AE11066110204BD2B650AD490" Name="or">
+            <Directory Id="dir62E90DA800CA724B3786BB9B9716D917" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp43AC6B8BB346E0F8E1074829C9250EF5" Guid="*">
+                <File Id="fil35B4A193603CF69241B07DFAAF254C8A" KeyPath="yes" Source="$(var.SourceDir)/share/locale/or/LC_MESSAGES/glib-networking.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir97384ADF559EA8B2BF85530D3939585A" Name="pa">
+            <Directory Id="dir9EB5A9C59AFB472735490C5A60CF79B9" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp8C56C822FBA256D9DDCD8F2DA29275CC" Guid="*">
+                <File Id="fil2AC3FD83C93160187A07A3216637DEA9" KeyPath="yes" Source="$(var.SourceDir)/share/locale/pa/LC_MESSAGES/glib-networking.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir262CC2AA44E5A6CA612FE731827B0E33" Name="pl">
+            <Directory Id="dir5DD33A33BDF70ED482E64B478D1A13F5" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp7BBE6E43A41F95D2A328D4859AAFEE8C" Guid="*">
+                <File Id="fil199D53709B00B0EF3CD88F9E0C036EE9" KeyPath="yes" Source="$(var.SourceDir)/share/locale/pl/LC_MESSAGES/glib-networking.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir63D1D20234FE38068FB7A4B975D8D045" Name="pt">
+            <Directory Id="dirB8F3E4EB18C0C76A31842B0CB18FEB8B" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmpF5164936C02198ADA8C5312A8E711898" Guid="*">
+                <File Id="filBDC5656DC5E6615C9DF687525F218237" KeyPath="yes" Source="$(var.SourceDir)/share/locale/pt/LC_MESSAGES/glib-networking.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dirD774FB2409CDA8A0703C69B02EBE226B" Name="pt_BR">
+            <Directory Id="dir734AC5F0360E6CBDBDA5246B74A25424" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmpECED6660B8AE2FD832AC0D2A43A01DC0" Guid="*">
+                <File Id="filA56927F05471DEEFFD81AA6F8B5B7C23" KeyPath="yes" Source="$(var.SourceDir)/share/locale/pt_BR/LC_MESSAGES/glib-networking.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir9DAA786FE1A16E0E0ADD52BE6C80511D" Name="ro">
+            <Directory Id="dir45A4053294178782DCE24C9B4FDBBA92" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp11F6FC8AF38690A6561E8E4A2105A2AA" Guid="*">
+                <File Id="fil6C7ED76BE9F5E16087EFF3698AD63467" KeyPath="yes" Source="$(var.SourceDir)/share/locale/ro/LC_MESSAGES/glib-networking.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir63AFD1E0FB6AC29770289F128197F4DC" Name="ru">
+            <Directory Id="dirF53A592E886A79C82ECA40BF5D050A84" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp81102327D0EF0E3948279966503DBBB3" Guid="*">
+                <File Id="fil10D830FF49A40EC651DF533F2390AA1A" KeyPath="yes" Source="$(var.SourceDir)/share/locale/ru/LC_MESSAGES/glib-networking.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dirA4F6A6A608F3AAA1966008286146D6B6" Name="sk">
+            <Directory Id="dir3D8876537E68965B2DA488B0C4C63F9E" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp2DB64FE62F1A875363F1BE405E935E6F" Guid="*">
+                <File Id="filDA182B6C4C32623D5365628790B58139" KeyPath="yes" Source="$(var.SourceDir)/share/locale/sk/LC_MESSAGES/glib-networking.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dirAC407458A876E50DA54BEAEEAF915646" Name="sl">
+            <Directory Id="dir80503779DD68A50508F38C03B0AE68FC" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmpCB778799A4B576934491FAEDF81E99EC" Guid="*">
+                <File Id="fil75D61B93B57182199B596A4F0E2E326C" KeyPath="yes" Source="$(var.SourceDir)/share/locale/sl/LC_MESSAGES/glib-networking.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dirB92E16675F24770055C9D9852D793C69" Name="sr">
+            <Directory Id="dirE1E1ED5274ED45EFAE611B7C2E85D881" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp5B15EA9CB87B20A91EC7117A8B55B52F" Guid="*">
+                <File Id="fil6AF0E03E1A4ED717ED37FF78651E38AC" KeyPath="yes" Source="$(var.SourceDir)/share/locale/sr/LC_MESSAGES/glib-networking.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dirDBFD6DAF4899AF88F02A39BFC6B03E0F" Name="sr@latin">
+            <Directory Id="dir8EE726BFA87AC7BD956D4FC3DA05A525" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp898C8A12E09EC11B473E59C76C1F1703" Guid="*">
+                <File Id="filE0360F5303C50E6A6DD069F6528585B9" KeyPath="yes" Source="$(var.SourceDir)/share/locale/sr@latin/LC_MESSAGES/glib-networking.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir7554E5559FC3CEDE65D306FAA819DF74" Name="sv">
+            <Directory Id="dir983F0DEEADFBE01FD30A37F69455941E" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmpBA975DAD8B3084BDE5741CADFF6B278A" Guid="*">
+                <File Id="fil72400FC9FB916F30E1490C9F0B094F14" KeyPath="yes" Source="$(var.SourceDir)/share/locale/sv/LC_MESSAGES/glib-networking.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir1078A0C959115E9CDC6B1F04CCA534CC" Name="ta">
+            <Directory Id="dirCE6C15D588198B1E101C4C528BAB500D" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp15FA54D6D3A16DBA9D5496D68C735E3F" Guid="*">
+                <File Id="fil46ADB7CF388C0FCA7C67F89579D0A946" KeyPath="yes" Source="$(var.SourceDir)/share/locale/ta/LC_MESSAGES/glib-networking.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir0D2CDF15F473903005108C4DF94A43B0" Name="te">
+            <Directory Id="dirD4CAF2CF85415157F1DA8114E6111A37" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp8E1C8603DFA3AE16CE39C5FC3C88D6C1" Guid="*">
+                <File Id="fil074E2E0802D98357DD754EE63E714BB6" KeyPath="yes" Source="$(var.SourceDir)/share/locale/te/LC_MESSAGES/glib-networking.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir8583F1C09C39FED3C170FBF83894FC19" Name="tg">
+            <Directory Id="dirAEAFC4DE0222CBB0E61A2B00293DFFF2" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmpDB866B97AB83F63FCC80B7FED217D648" Guid="*">
+                <File Id="fil0A34702C8976D670F6C1D9F6CC628F40" KeyPath="yes" Source="$(var.SourceDir)/share/locale/tg/LC_MESSAGES/glib-networking.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir47DC7036AB0A0E8407338F9CFDA9A81B" Name="th">
+            <Directory Id="dir360FA8D5A7799405DF84E6B749C96A74" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp2213EA09442807BD20F9AF1366A2DFF7" Guid="*">
+                <File Id="fil2B3B00477769440F7F21E555BD9D77B9" KeyPath="yes" Source="$(var.SourceDir)/share/locale/th/LC_MESSAGES/glib-networking.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dirE9AB345FF2457A77BE05F236493E31B1" Name="tr">
+            <Directory Id="dir9F4F40DA82710F3D3EFF254B80D30673" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmpD2F56923B7C9218102BF1DB539F1FB2E" Guid="*">
+                <File Id="fil24F7AE8755D22B5552F7C48859EEA937" KeyPath="yes" Source="$(var.SourceDir)/share/locale/tr/LC_MESSAGES/glib-networking.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir2CEDF6F8D0E26A95C4FF68710AC9BD2A" Name="ug">
+            <Directory Id="dir32D4FB87998228DFE60F133DE2F32B98" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp039F977AAEE9907A3E06885320A89865" Guid="*">
+                <File Id="fil56092E44DD2C91756AF9D9EBA65DF9AC" KeyPath="yes" Source="$(var.SourceDir)/share/locale/ug/LC_MESSAGES/glib-networking.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dirCEC11105D72D5B9C5DEEE536BA2EE896" Name="uk">
+            <Directory Id="dir5BA4639AB5F0B4578B3574E2061E68E1" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp1C7ED200C9D445C5DB9F0BDAF0311823" Guid="*">
+                <File Id="filFE6B1E8DBAE30F194A9F84A9C0A2C078" KeyPath="yes" Source="$(var.SourceDir)/share/locale/uk/LC_MESSAGES/glib-networking.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dirB64BB9AF1E6532B52C771CC14BED0FC5" Name="vi">
+            <Directory Id="dir72557DE8C6C16D75F5132CA99EE0B1FE" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmpD5D66EB6053E364F8C34766ABB9349ED" Guid="*">
+                <File Id="fil1516E9661DDFF8DCDA37F1215988F0FC" KeyPath="yes" Source="$(var.SourceDir)/share/locale/vi/LC_MESSAGES/glib-networking.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir2D9CA84D9644B246DB388478D4B1E10A" Name="zh_CN">
+            <Directory Id="dir90867764746E93D3F13A43F75A169C8A" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp3128B4B1D280A8212BE490B512CC325F" Guid="*">
+                <File Id="fil641F09BB985CC6F40A160C9CADDACA64" KeyPath="yes" Source="$(var.SourceDir)/share/locale/zh_CN/LC_MESSAGES/glib-networking.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir019FF4272829211BD0C597BC9E834453" Name="zh_HK">
+            <Directory Id="dir7BA23ACF8016B0DC8E52104608F47947" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp759FF7C0FC9F142193755EADC5766272" Guid="*">
+                <File Id="filFB4C73D62959E4E68288B0CE240BE5B5" KeyPath="yes" Source="$(var.SourceDir)/share/locale/zh_HK/LC_MESSAGES/glib-networking.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir7C137D2F6BD17BFF506D7A9D78834C3A" Name="zh_TW">
+            <Directory Id="dirD6D3016EDE5322775EEC00F7902F8283" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp49388A1DCD8B94A4DBE52008DFBF15AC" Guid="*">
+                <File Id="filC202303C7162E8B4DB6CA8C39A27D6F4" KeyPath="yes" Source="$(var.SourceDir)/share/locale/zh_TW/LC_MESSAGES/glib-networking.mo"/>
+              </Component>
+              </Directory>
+            </Directory>
+          </Directory>
+        </Directory>
+    </DirectoryRef>
+  </Fragment>
+  <Fragment>
+    <ComponentGroup Id="CG.glib-networking">
+      <ComponentRef Id="cmpCD94B8BC5279DED6AA0535512CF9F77F"/>
+      <ComponentRef Id="cmpC43485D6DED6223ACAE9A1A77620DDEE"/>
+      <ComponentRef Id="cmpA4755E383A415852D4327CE43C266424"/>
+      <ComponentRef Id="cmp068E54D948616FD9EB38EF501863E689"/>
+      <ComponentRef Id="cmpB5FB0083962948E1D2869A246463BE0B"/>
+      <ComponentRef Id="cmp111C5362928BDD11338B8FAB6F75EC18"/>
+      <ComponentRef Id="cmpC5CDC0C65163C5A157CA8B1D2612CFD4"/>
+      <ComponentRef Id="cmpBAFE669F9A2FBDAB2453BCC668BA9B70"/>
+      <ComponentRef Id="cmpA9FC68BBFE0F6FA6253E4379BF326C02"/>
+      <ComponentRef Id="cmp199020BD52912ADA0565B4ADC61663F7"/>
+      <ComponentRef Id="cmpB06591BF1F082890DDD89965C636E9EA"/>
+      <ComponentRef Id="cmp8934061AC254696E875017FF58F24D8B"/>
+      <ComponentRef Id="cmpC5F49CC52D794A19443442B26A6439A7"/>
+      <ComponentRef Id="cmpAAF1A6FA2ECD5D5600E9B573F86600D8"/>
+      <ComponentRef Id="cmpCCF0BF37DF264B8FE77905677D47CAC1"/>
+      <ComponentRef Id="cmp8FFE841A95E50C9873FA01B14CD1E1CD"/>
+      <ComponentRef Id="cmpB3070F744752A375D3B4F048B3B42E21"/>
+      <ComponentRef Id="cmp3BC9847F943B9D57055EF6D2F1D4B49C"/>
+      <ComponentRef Id="cmp01733091BD2A73C12F2DA3683D70865F"/>
+      <ComponentRef Id="cmpC36846BA2544CEB12035F2391F27117F"/>
+      <ComponentRef Id="cmp708DA5B1EBD10307B75562BAEE3BD55A"/>
+      <ComponentRef Id="cmp94E9B6C397D2F5595DD313A4CB12213A"/>
+      <ComponentRef Id="cmpF369F21B81A8671DA828ACF135410422"/>
+      <ComponentRef Id="cmpEC8FA1FBCABD01FFF2671C6ACCF5D162"/>
+      <ComponentRef Id="cmp6A89DD584965C730E8F66838B69695D8"/>
+      <ComponentRef Id="cmp434DFE3B6C2FCCDCBCF3925A65FE98FD"/>
+      <ComponentRef Id="cmpCCC99BF5D0EFB473D37EE1FE773C987F"/>
+      <ComponentRef Id="cmp44B603FC48C01287D0E4AE324B94C041"/>
+      <ComponentRef Id="cmp9D12386644AB89127B990ECD80B806BC"/>
+      <ComponentRef Id="cmp3211A6B43943F771D3F92FE4F361277C"/>
+      <ComponentRef Id="cmpF96873B9E0D8A0EDF486C8994B546AFD"/>
+      <ComponentRef Id="cmp61AF8F721B0BA6DA8869BAB5A946DAB0"/>
+      <ComponentRef Id="cmp7F495A82C3ECBC90A143600788AEE70B"/>
+      <ComponentRef Id="cmpDAB087D7056E1614CB2FBDFD4785A5D7"/>
+      <ComponentRef Id="cmp170E8C65D26B7449D13E8A916E7606E7"/>
+      <ComponentRef Id="cmp7355351A091EBDFA6ACE17B409E1C1B4"/>
+      <ComponentRef Id="cmpABEDB1C9AE4922FCE92740C759A6A714"/>
+      <ComponentRef Id="cmp28B784E835D4E5148C32D1623E4E3AD8"/>
+      <ComponentRef Id="cmp01A0AF6C7F0DC76D546E4C6CB933D1D6"/>
+      <ComponentRef Id="cmp40E6EBF9620212E6AB0F07D4A2B9F0C4"/>
+      <ComponentRef Id="cmp43AC6B8BB346E0F8E1074829C9250EF5"/>
+      <ComponentRef Id="cmp8C56C822FBA256D9DDCD8F2DA29275CC"/>
+      <ComponentRef Id="cmp7BBE6E43A41F95D2A328D4859AAFEE8C"/>
+      <ComponentRef Id="cmpF5164936C02198ADA8C5312A8E711898"/>
+      <ComponentRef Id="cmpECED6660B8AE2FD832AC0D2A43A01DC0"/>
+      <ComponentRef Id="cmp11F6FC8AF38690A6561E8E4A2105A2AA"/>
+      <ComponentRef Id="cmp81102327D0EF0E3948279966503DBBB3"/>
+      <ComponentRef Id="cmp2DB64FE62F1A875363F1BE405E935E6F"/>
+      <ComponentRef Id="cmpCB778799A4B576934491FAEDF81E99EC"/>
+      <ComponentRef Id="cmp5B15EA9CB87B20A91EC7117A8B55B52F"/>
+      <ComponentRef Id="cmp898C8A12E09EC11B473E59C76C1F1703"/>
+      <ComponentRef Id="cmpBA975DAD8B3084BDE5741CADFF6B278A"/>
+      <ComponentRef Id="cmp15FA54D6D3A16DBA9D5496D68C735E3F"/>
+      <ComponentRef Id="cmp8E1C8603DFA3AE16CE39C5FC3C88D6C1"/>
+      <ComponentRef Id="cmpDB866B97AB83F63FCC80B7FED217D648"/>
+      <ComponentRef Id="cmp2213EA09442807BD20F9AF1366A2DFF7"/>
+      <ComponentRef Id="cmpD2F56923B7C9218102BF1DB539F1FB2E"/>
+      <ComponentRef Id="cmp039F977AAEE9907A3E06885320A89865"/>
+      <ComponentRef Id="cmp1C7ED200C9D445C5DB9F0BDAF0311823"/>
+      <ComponentRef Id="cmpD5D66EB6053E364F8C34766ABB9349ED"/>
+      <ComponentRef Id="cmp3128B4B1D280A8212BE490B512CC325F"/>
+      <ComponentRef Id="cmp759FF7C0FC9F142193755EADC5766272"/>
+      <ComponentRef Id="cmp49388A1DCD8B94A4DBE52008DFBF15AC"/>
+    </ComponentGroup>
+  </Fragment>
+</Include>

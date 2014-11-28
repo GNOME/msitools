@@ -15,6 +15,7 @@ dist_wxi_DATA =					\
 	wixl/gdk-pixbuf.wxi			\
 	wixl/gettext.wxi			\
 	wixl/glib2.wxi				\
+	wixl/glib-networking.wxi		\
 	wixl/gmp.wxi				\
 	wixl/gnutls.wxi				\
 	wixl/gstreamer-plugins-bad-free.wxi	\
