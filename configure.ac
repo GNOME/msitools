@@ -7,7 +7,7 @@ AC_CONFIG_HEADERS([config.h])
 AC_CONFIG_AUX_DIR([build-aux])
 AC_CONFIG_MACRO_DIR([m4])
 AC_CONFIG_SRCDIR([libmsi/sql-parser.y])
-AM_INIT_AUTOMAKE([foreign -Wno-portability dist-xz])
+AM_INIT_AUTOMAKE([foreign -Wno-portability dist-xz subdir-objects])
 AM_MAINTAINER_MODE([enable])
 
 AC_CANONICAL_HOST
