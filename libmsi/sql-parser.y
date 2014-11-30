@@ -73,7 +73,7 @@ static struct expr * build_expr_wildcard( void *info );
 
 %}
 
-%define api.prefix "sql_"
+%define api.prefix {sql_}
 %lex-param {void *info}
 %parse-param {void *info}
 %pure-parser
