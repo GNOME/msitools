@@ -669,7 +669,7 @@ static unsigned get_tablecolumns( LibmsiDatabase *db, const char *szTableName, L
     /* Note: _Columns table doesn't have non-persistent data */
 
     /* if maxcount is non-zero, assume it's exactly right for this table */
-    memset( colinfo, 0, maxcount * sizeof(*colinfo) );
+    if (colinfo) memset( colinfo, 0, maxcount * sizeof(*colinfo) );
     count = table->row_count;
     for (i = 0; i < count; i++)
     {
@@ -682,7 +682,7 @@ static unsigned get_tablecolumns( LibmsiDatabase *db, const char *szTableName, L
             /* check the column number is in range */
             if (col < 1 || col > maxcount)
             {
-                g_critical("column %d out of range\n", col);
+                g_critical("column %d out of range (maxcount: %d)\n", col, maxcount);
                 continue;
             }
             /* check if this column was already set */
