@@ -2,15 +2,15 @@
 # Copyright (C) 2013 msitools's COPYRIGHT HOLDER
 # This file is distributed under the same license as the msitools package.
 #
-# Matej Urbančič <mateju@svn.gnome.org>, 2013.
+# Matej Urbančič <mateju@svn.gnome.org>, 2013-2014.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: msitools master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=msitools&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2013-04-12 03:25+0000\n"
-"PO-Revision-Date: 2013-04-16 19:58+0100\n"
+"POT-Creation-Date: 2014-12-25 10:56+0000\n"
+"PO-Revision-Date: 2014-12-25 20:00+0100\n"
 "Last-Translator: Matej Urbančič <mateju@svn.gnome.org>\n"
 "Language-Team: Slovenian <gnome-si@googlegroups.com>\n"
 "Language: sl\n"
@@ -42,29 +42,32 @@ msgid "- a msi files extracting tool"
 msgstr "- orodje za odpakiranje datotek iz arhiva msi"
 
 #: ../tools/msiextract.vala:146 ../tools/wixl/wixl.vala:75
-#, c-format
 msgid "Please specify input files.\n"
 msgstr "Navesti je treba vhodne datoteke.\n"
 
-#: ../tools/wixl/wixl-heat.vala:11
+#: ../tools/wixl/wixl-heat.vala:12
 msgid "Directory Ref"
 msgstr "Sklic mape"
 
-#: ../tools/wixl/wixl-heat.vala:12
+#: ../tools/wixl/wixl-heat.vala:13
 msgid "Component Group"
 msgstr "Skupina izrezkov"
 
-#: ../tools/wixl/wixl-heat.vala:13
+#: ../tools/wixl/wixl-heat.vala:14
 msgid "Variable for source dir"
 msgstr "Spremenljivka izvorne mape"
 
-#: ../tools/wixl/wixl-heat.vala:14
+#: ../tools/wixl/wixl-heat.vala:15
 msgid "Prefix"
 msgstr "Predpona"
 
-#: ../tools/wixl/wixl-heat.vala:15
+#: ../tools/wixl/wixl-heat.vala:16
 msgid "Exclude prefix"
 msgstr "Prezri predpono"
+
+#: ../tools/wixl/wixl-heat.vala:17
+msgid "Add Win64 Component"
+msgstr "Dodaj komponente Win64"
 
 #: ../tools/wixl/wixl.vala:22
 msgid "Verbose output"
@@ -108,7 +111,6 @@ msgid "- a msi building tool"
 msgstr "- orodje za izgradnjo msi"
 
 #: ../tools/wixl/wixl.vala:83
-#, c-format
 msgid "Please specify the output file.\n"
 msgstr "Določiti je treba izhodno datoteko.\n"
 
