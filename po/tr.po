@@ -2,22 +2,24 @@
 # Copyright (C) 2014 msitools's COPYRIGHT HOLDER
 # This file is distributed under the same license as the msitools package.
 # Muhammet Kara <muhammetk@gmail.com>, 2014.
+# Necdet Yücel <necdetyucel@gmail.com>, 2014.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: msitools master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=msitools&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2014-12-11 10:52+0000\n"
-"PO-Revision-Date: 2014-12-11 17:46+0200\n"
-"Last-Translator: Muhammet Kara <muhammetk@gmail.com>\n"
+"POT-Creation-Date: 2014-12-22 22:53+0000\n"
+"PO-Revision-Date: 2014-12-22 23:36+0000\n"
+"Last-Translator: Necdet Yücel <necdetyucel@gmail.com>\n"
 "Language-Team: Türkçe <gnome-turk@gnome.org>\n"
 "Language: tr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Gtranslator 2.91.6\n"
+"X-Generator: Pootle 2.5.1.1\n"
+"X-POOTLE-MTIME: 1419291416.000000\n"
 
 #: ../tools/msiextract.vala:10 ../tools/wixl/wixl.vala:21
 msgid "Display version number"
@@ -45,7 +47,7 @@ msgstr "Lütfen girdi dosyalarını belirtin.\n"
 
 #: ../tools/wixl/wixl-heat.vala:12
 msgid "Directory Ref"
-msgstr ""
+msgstr "Dizin Başvurusu"
 
 #: ../tools/wixl/wixl-heat.vala:13
 msgid "Component Group"
@@ -53,7 +55,7 @@ msgstr "Bileşen Grubu"
 
 #: ../tools/wixl/wixl-heat.vala:14
 msgid "Variable for source dir"
-msgstr ""
+msgstr "Kaynak dizini için değişken"
 
 #: ../tools/wixl/wixl-heat.vala:15
 msgid "Prefix"
@@ -61,11 +63,11 @@ msgstr "Önek"
 
 #: ../tools/wixl/wixl-heat.vala:16
 msgid "Exclude prefix"
-msgstr ""
+msgstr "Öneki hariç tut"
 
 #: ../tools/wixl/wixl-heat.vala:17
 msgid "Add Win64 Component"
-msgstr ""
+msgstr "Win64 Bileşeni Ekle"
 
 #: ../tools/wixl/wixl.vala:22
 msgid "Verbose output"
@@ -85,15 +87,15 @@ msgstr "Hedef mimari"
 
 #: ../tools/wixl/wixl.vala:26
 msgid "Include directory"
-msgstr ""
+msgstr "Dizini dahil et"
 
 #: ../tools/wixl/wixl.vala:27
 msgid "System include directory"
-msgstr ""
+msgstr "Sistem içerme dizini"
 
 #: ../tools/wixl/wixl.vala:28
 msgid "Stop after the preprocessing stage"
-msgstr ""
+msgstr "Ön işleme durumundan sonra dur"
 
 #: ../tools/wixl/wixl.vala:29
 msgid "INPUT_FILE..."
