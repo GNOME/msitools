@@ -88,9 +88,6 @@
             <Component Win64="$(var.Win64)" Id="cmp216B1FCC374A06427A76816AAFD57899" Guid="*">
               <File Id="fil867A6518157E9B8D12408586C7FB97D0" KeyPath="yes" Source="$(var.SourceDir)/share/libvirt/schemas/secret.rng"/>
             </Component>
-            <Component Win64="$(var.Win64)" Id="cmp7155B338EB0A57526D094C88C12DBD20" Guid="*">
-              <File Id="fil2F812173D9ED9A34CBA8F87627BAD997" KeyPath="yes" Source="$(var.SourceDir)/share/libvirt/schemas/storageencryption.rng"/>
-            </Component>
             <Component Win64="$(var.Win64)" Id="cmpECA559285A41600FB62EA60E8D841C43" Guid="*">
               <File Id="fil00DE9D758124F172981E0D41F5CB232D" KeyPath="yes" Source="$(var.SourceDir)/share/libvirt/schemas/storagepool.rng"/>
             </Component>
@@ -670,7 +667,6 @@
       <ComponentRef Id="cmpADB73CBD962904A2BFF44D65FCDA01C7"/>
       <ComponentRef Id="cmp09314B718D7501E43F74D85871FC17CC"/>
       <ComponentRef Id="cmp216B1FCC374A06427A76816AAFD57899"/>
-      <ComponentRef Id="cmp7155B338EB0A57526D094C88C12DBD20"/>
       <ComponentRef Id="cmpECA559285A41600FB62EA60E8D841C43"/>
       <ComponentRef Id="cmp15330F42078AB746FC3608E9834126B6"/>
       <ComponentRef Id="cmpF1E70F4C1B88F26F66283471155BB334"/>
