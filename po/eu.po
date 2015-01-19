@@ -1,13 +1,16 @@
+# Basque translation for msitools.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 #
-# Iñaki Larrañaga Murgoitio <dooteo@zundan.com>, 2013.
+# Iñaki Larrañaga Murgoitio <dooteo@zundan.com>, 2013, 2015.
+#
 msgid ""
 msgstr ""
-"Project-Id-Version: \n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-08-30 17:35+0200\n"
-"PO-Revision-Date: 2013-08-30 17:34+0200\n"
+"Project-Id-Version: msitools master\n"
+"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
+"product=msitools&keywords=I18N+L10N&component=general\n"
+"POT-Creation-Date: 2015-01-19 21:37+0100\n"
+"PO-Revision-Date: 2015-01-19 21:37+0100\n"
 "Last-Translator: Iñaki Larrañaga Murgoitio <dooteo@zundan.com>\n"
 "Language-Team: Basque <librezale@librezale.org>\n"
 "Language: eu\n"
@@ -38,28 +41,33 @@ msgid "- a msi files extracting tool"
 msgstr "- msi paketea erauzteko tresna"
 
 #: ../tools/msiextract.vala:146 ../tools/wixl/wixl.vala:75
+#, c-format
 msgid "Please specify input files.\n"
 msgstr "Zehaztu sarrerako fitxategiak.\n"
 
-#: ../tools/wixl/wixl-heat.vala:11
+#: ../tools/wixl/wixl-heat.vala:12
 msgid "Directory Ref"
 msgstr "Direktorioaren erref."
 
-#: ../tools/wixl/wixl-heat.vala:12
+#: ../tools/wixl/wixl-heat.vala:13
 msgid "Component Group"
 msgstr "Osagaiaren taldea"
 
-#: ../tools/wixl/wixl-heat.vala:13
+#: ../tools/wixl/wixl-heat.vala:14
 msgid "Variable for source dir"
 msgstr "Iturburuko direktorioaren aldagaia"
 
-#: ../tools/wixl/wixl-heat.vala:14
+#: ../tools/wixl/wixl-heat.vala:15
 msgid "Prefix"
 msgstr "Aurrizkia"
 
-#: ../tools/wixl/wixl-heat.vala:15
+#: ../tools/wixl/wixl-heat.vala:16
 msgid "Exclude prefix"
 msgstr "Baztertu aurrizkia"
+
+#: ../tools/wixl/wixl-heat.vala:17
+msgid "Add Win64 Component"
+msgstr "Gehitu Win64 osagaia"
 
 #: ../tools/wixl/wixl.vala:22
 msgid "Verbose output"
@@ -103,6 +111,7 @@ msgid "- a msi building tool"
 msgstr "- msi paketea eraikitzeko tresna"
 
 #: ../tools/wixl/wixl.vala:83
+#, c-format
 msgid "Please specify the output file.\n"
 msgstr "Zehaztu irteerako fitxategia.\n"
 
@@ -120,3 +129,4 @@ msgstr "%s eraikitzen...\n"
 #, c-format
 msgid "Writing %s...\n"
 msgstr "%s idazten...\n"
+
