@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
+<?require winpthreads.wxi?>
+
 <Include xmlns="http://schemas.microsoft.com/wix/2006/wi">
   <Fragment>
     <DirectoryRef Id="INSTALLDIR">
@@ -19,6 +21,7 @@
   </Fragment>
   <Fragment>
     <ComponentGroup Id="CG.gcc">
+      <ComponentGroupRef Id="CG.winpthreads"/>
       <ComponentRef Id="cmp23A396DF6DA34DEDBF531E5264BF86AA"/>
       <ComponentRef Id="cmp94EF633C9D64EF2F94885691030F7EB7"/>
     </ComponentGroup>
