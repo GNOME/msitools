@@ -125,9 +125,9 @@ public int main (string[] args) {
             stdout.printf ("      <ComponentRef Id=\"%s\"/>\n".printf (id));
         stdout.printf ("    </ComponentGroup>\n");
         stdout.printf ("  </Fragment>\n");
-        stdout.printf ("</Wix>\n");
     }
 
+    stdout.printf ("</Wix>\n");
     stdout.printf ("<!-- generated with %s -->\n", Config.PACKAGE_STRING);
     stdout.printf ("<!-- %s -->\n", cmdline.replace ("--", "-"));
     return 0;
