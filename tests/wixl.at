@@ -52,10 +52,10 @@ AT_WIXLDATA([FoobarAppl10.exe])
 AT_WIXLDATA([Manual.pdf])
 AT_CHECK_WIXL([-o out.msi ComponentGUID.wxs], [0], [ignore], [ignore])
 # FIXME: add tons of tests on out.msi
-AT_CHECK([msiinfo export -s out.msi Component | sort | grep INSERT], [0],
+AT_CHECK([msiinfo export -s out.msi Component | sed 's/reg\w*'// | sort | grep INSERT], [0],
 [INSERT INTO `Component` (`Component`, `ComponentId`, `Directory_`, `Attributes`, `KeyPath`) VALUES ('MainExecutable', '{0E066A5A-AE0E-5F43-B984-F6C685AF13F0}', 'INSTALLDIR', 0, 'FoobarEXE')
 INSERT INTO `Component` (`Component`, `ComponentId`, `Directory_`, `Attributes`, `KeyPath`) VALUES ('Manual', '{BE256176-257D-5ACD-902D-801F8E305172}', 'INSTALLDIR', 0, 'Manual')
-INSERT INTO `Component` (`Component`, `ComponentId`, `Directory_`, `Attributes`, `KeyPath`) VALUES ('ProgramMenuDir', '{F47E26A5-C6A8-57BA-B6B5-CB2AE74E5256}', 'ProgramMenuDir', 4, 'reg87D9EA4ADD3AB0EF9CE081917EDEAAF5')
+INSERT INTO `Component` (`Component`, `ComponentId`, `Directory_`, `Attributes`, `KeyPath`) VALUES ('ProgramMenuDir', '{F47E26A5-C6A8-57BA-B6B5-CB2AE74E5256}', 'ProgramMenuDir', 4, '')
 ])
 AT_CLEANUP
 
