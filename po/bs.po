@@ -1,0 +1,128 @@
+# Bosnian translation for bosnianuniversetranslation
+# Copyright (c) 2014 Rosetta Contributors and Canonical Ltd 2014
+# This file is distributed under the same license as the bosnianuniversetranslation package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2014.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: bosnianuniversetranslation\n"
+"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
+"product=msitools&keywords=I18N+L10N&component=general\n"
+"POT-Creation-Date: 2015-02-26 23:14+0000\n"
+"PO-Revision-Date: 2015-02-27 10:25+0100\n"
+"Last-Translator: Samir Ribic <samir.ribic@etf.unsa.ba>\n"
+"Language-Team: Bosnian <bs@li.org>\n"
+"Language: bs\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Launchpad-Export-Date: 2015-02-05 07:07+0000\n"
+"X-Generator: Launchpad (build 17331)\n"
+
+#: ../tools/msiextract.vala:10 ../tools/wixl/wixl.vala:21
+msgid "Display version number"
+msgstr "Prikaz broja verzije"
+
+#: ../tools/msiextract.vala:11
+msgid "Extract to directory"
+msgstr "Raspakuj u direktorij"
+
+#: ../tools/msiextract.vala:12
+msgid "List files only"
+msgstr "Prikaži samo fajlove"
+
+#: ../tools/msiextract.vala:13
+msgid "MSI_FILE..."
+msgstr "MSI_FAJL..."
+
+#: ../tools/msiextract.vala:126
+msgid "- a msi files extracting tool"
+msgstr "- alat za ekstraktovanje msi fajlova"
+
+#: ../tools/msiextract.vala:146 ../tools/wixl/wixl.vala:75
+msgid "Please specify input files.\n"
+msgstr "Molimo vas da navedete ulazne datoteke.\n"
+
+#: ../tools/wixl/wixl-heat.vala:12
+msgid "Directory Ref"
+msgstr "Direktorij Ref"
+
+#: ../tools/wixl/wixl-heat.vala:13
+msgid "Component Group"
+msgstr "Komponentna grupa"
+
+#: ../tools/wixl/wixl-heat.vala:14
+msgid "Variable for source dir"
+msgstr "Varijabla za izvor dir"
+
+#: ../tools/wixl/wixl-heat.vala:15
+msgid "Prefix"
+msgstr "Prefiks"
+
+#: ../tools/wixl/wixl-heat.vala:16
+msgid "Exclude prefix"
+msgstr "Isključi prefiks"
+
+#: ../tools/wixl/wixl-heat.vala:17
+msgid "Add Win64 Component"
+msgstr "Dodaj Win64 komponentu"
+
+#: ../tools/wixl/wixl.vala:22
+msgid "Verbose output"
+msgstr "Preopširan izlaz"
+
+#: ../tools/wixl/wixl.vala:23
+msgid "Output file"
+msgstr "Izlazni fajl"
+
+#: ../tools/wixl/wixl.vala:24
+msgid "Define variable"
+msgstr "Definiraj varijablu"
+
+#: ../tools/wixl/wixl.vala:25
+msgid "Target architecture"
+msgstr "Ciljna arhitektura"
+
+#: ../tools/wixl/wixl.vala:26
+msgid "Include directory"
+msgstr "Uključi direktorij"
+
+#: ../tools/wixl/wixl.vala:27
+msgid "System include directory"
+msgstr "Sistem uključuje direktorij"
+
+#: ../tools/wixl/wixl.vala:28
+msgid "Stop after the preprocessing stage"
+msgstr "Zaustavi nakon faze predobrade"
+
+#: ../tools/wixl/wixl.vala:29
+msgid "INPUT_FILE..."
+msgstr "ULAZNA_DATOTEKA..."
+
+#: ../tools/wixl/wixl.vala:37
+#, c-format
+msgid "arch of type '%s' is not supported"
+msgstr "svod tipa '%s' nije podržan"
+
+#: ../tools/wixl/wixl.vala:49
+msgid "- a msi building tool"
+msgstr "- msi razvojni alat"
+
+#: ../tools/wixl/wixl.vala:83
+msgid "Please specify the output file.\n"
+msgstr "Molimo vas specificirajte izlazni fajl.\n"
+
+#: ../tools/wixl/wixl.vala:100
+#, c-format
+msgid "Loading %s...\n"
+msgstr "Učitava se %s...\n"
+
+#: ../tools/wixl/wixl.vala:110
+#, c-format
+msgid "Building %s...\n"
+msgstr "Izgrađujem %s...\n"
+
+#: ../tools/wixl/wixl.vala:113
+#, c-format
+msgid "Writing %s...\n"
+msgstr "Upisujem %s...\n"
