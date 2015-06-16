@@ -1,3 +1,38 @@
+v0.94
+=====
+- Add support for Signature table
+- Add support for scheduling AppSearch
+- Add support for MsiFileHash table
+- Update libpng wxi
+- Add winpthreads wxi
+- Update libvirt wxi
+- Add opus wxi
+- Add spice-glib wxi
+- Update libffi wxi
+- Update glib2 wxi
+- Update libsoup wxi
+- Add sqlite
+- Update nettle wxi
+- Update gtk2 wxi
+- Update libgcrypt wxi
+- Add option to make packages win64-aware
+- Treat EDITTIME property as filetime in parse_prop
+- Add gtk3 wxi
+- Add spice-gtk3 wxi
+- Add gtk-vnc2 wxi
+- Add rest wxi
+- Add libgovirt wxi
+- Add gstreamer1 exi
+- Add gstreamer1-plugins-base wxi
+- Add gstreamer1-plugins-good wxi
+- Add gstreamer1-plugins-bad-free wxi
+- Update spice-glib wxi
+- Update gcc wxi
+- Fix wix close tag when no component groups are specified (wixl-heat)
+- Build clean-ups
+- Misc bug fixes
+- Translations
+
 v0.93
 =====
 
