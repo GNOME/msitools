@@ -3,6 +3,7 @@
 <?require cairo.wxi?>
 <?require gdk-pixbuf.wxi?>
 <?require glib2.wxi?>
+<?require libepoxy.wxi?>
 <?require pango.wxi?>
 <Include xmlns="http://schemas.microsoft.com/wix/2006/wi">
   <Fragment>
@@ -1226,6 +1227,7 @@
       <ComponentGroupRef Id="CG.cairo"/>
       <ComponentGroupRef Id="CG.gdk-pixbuf"/>
       <ComponentGroupRef Id="CG.glib2"/>
+      <ComponentGroupRef Id="CG.libepoxy"/>
       <ComponentGroupRef Id="CG.pango"/>
       <ComponentRef Id="cmpC9962B6D4D6D6E322382AC6BDB0FBEAD"/>
       <ComponentRef Id="cmpC5BC32F79EFCBD409B6E1D2CE4E60E62"/>
