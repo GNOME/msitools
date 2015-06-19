@@ -34,6 +34,7 @@ dist_wxi_DATA =					\
 	wixl/hicolor-icon-theme.wxi		\
 	wixl/jasper.wxi				\
 	wixl/libcacard.wxi			\
+	wixl/libepoxy.wxi			\
 	wixl/libffi.wxi				\
 	wixl/libgcrypt.wxi			\
 	wixl/libgpg-error.wxi			\
