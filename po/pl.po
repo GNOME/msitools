@@ -4,14 +4,14 @@
 # pomóc w jego rozwijaniu i pielęgnowaniu, napisz do nas:
 # gnomepl@aviary.pl
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
-# Piotr Drąg <piotrdrag@gmail.com>, 2013-2014.
-# Aviary.pl <gnomepl@aviary.pl>, 2013-2014.
+# Piotr Drąg <piotrdrag@gmail.com>, 2013-2015.
+# Aviary.pl <gnomepl@aviary.pl>, 2013-2015.
 msgid ""
 msgstr ""
 "Project-Id-Version: msitools\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-11-05 14:10+0100\n"
-"PO-Revision-Date: 2014-11-05 14:11+0100\n"
+"POT-Creation-Date: 2015-08-31 01:49+0200\n"
+"PO-Revision-Date: 2015-08-31 01:50+0200\n"
 "Last-Translator: Piotr Drąg <piotrdrag@gmail.com>\n"
 "Language-Team: Polish <gnomepl@aviary.pl>\n"
 "Language: pl\n"
@@ -37,11 +37,11 @@ msgstr "Wyświetla tylko listę plików"
 
 #: ../tools/msiextract.vala:13
 msgid "MSI_FILE..."
-msgstr "PLIK_MSI..."
+msgstr "PLIK_MSI…"
 
 #: ../tools/msiextract.vala:126
 msgid "- a msi files extracting tool"
-msgstr "- narzędzie do rozpakowywania plików MSI"
+msgstr "— narzędzie do rozpakowywania plików MSI"
 
 #: ../tools/msiextract.vala:146 ../tools/wixl/wixl.vala:75
 msgid "Please specify input files.\n"
@@ -101,16 +101,16 @@ msgstr "Zatrzymuje po etapie wczesnego przetwarzania"
 
 #: ../tools/wixl/wixl.vala:29
 msgid "INPUT_FILE..."
-msgstr "PLIK_WEJŚCIOWY..."
+msgstr "PLIK_WEJŚCIOWY…"
 
 #: ../tools/wixl/wixl.vala:37
 #, c-format
 msgid "arch of type '%s' is not supported"
-msgstr "architektura typu \"%s\" nie jest obsługiwana"
+msgstr "architektura typu „%s” nie jest obsługiwana"
 
 #: ../tools/wixl/wixl.vala:49
 msgid "- a msi building tool"
-msgstr "- narzędzie do budowania plików MSI"
+msgstr "— narzędzie do budowania plików MSI"
 
 #: ../tools/wixl/wixl.vala:83
 msgid "Please specify the output file.\n"
@@ -119,14 +119,14 @@ msgstr "Proszę podać plik wyjściowy.\n"
 #: ../tools/wixl/wixl.vala:100
 #, c-format
 msgid "Loading %s...\n"
-msgstr "Wczytywanie %s...\n"
+msgstr "Wczytywanie %s…\n"
 
 #: ../tools/wixl/wixl.vala:110
 #, c-format
 msgid "Building %s...\n"
-msgstr "Budowanie %s...\n"
+msgstr "Budowanie %s…\n"
 
 #: ../tools/wixl/wixl.vala:113
 #, c-format
 msgid "Writing %s...\n"
-msgstr "Zapisywanie %s...\n"
+msgstr "Zapisywanie %s…\n"
