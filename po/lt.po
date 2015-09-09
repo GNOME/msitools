@@ -1,15 +1,15 @@
 # Lithuanian translation for msitools.
 # Copyright (C) 2013 msitools's COPYRIGHT HOLDER
 # This file is distributed under the same license as the msitools package.
-# Aurimas Černius <aurisc4@gmail.com>, 2013.
+# Aurimas Černius <aurisc4@gmail.com>, 2013, 2015.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: msitools master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=msitools&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2013-08-02 10:27+0000\n"
-"PO-Revision-Date: 2013-08-12 23:11+0300\n"
+"POT-Creation-Date: 2014-11-03 14:11+0000\n"
+"PO-Revision-Date: 2015-09-09 17:20+0300\n"
 "Last-Translator: Aurimas Černius <aurisc4@gmail.com>\n"
 "Language-Team: Lietuvių <gnome-lt@lists.akl.lt>\n"
 "Language: lt\n"
@@ -18,7 +18,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n"
 "%100<10 || n%100>=20) ? 1 : 2);\n"
-"X-Generator: Gtranslator 2.91.6\n"
+"X-Generator: Gtranslator 2.91.7\n"
 
 #: ../tools/msiextract.vala:10 ../tools/wixl/wixl.vala:21
 msgid "Display version number"
@@ -41,29 +41,32 @@ msgid "- a msi files extracting tool"
 msgstr "- msi failų išskleidimo įrankis"
 
 #: ../tools/msiextract.vala:146 ../tools/wixl/wixl.vala:75
-#, c-format
 msgid "Please specify input files.\n"
 msgstr "Nurodykite įvesties failus.\n"
 
-#: ../tools/wixl/wixl-heat.vala:11
+#: ../tools/wixl/wixl-heat.vala:12
 msgid "Directory Ref"
 msgstr "Aplanko nuoroda"
 
-#: ../tools/wixl/wixl-heat.vala:12
+#: ../tools/wixl/wixl-heat.vala:13
 msgid "Component Group"
 msgstr "Komponento grupė"
 
-#: ../tools/wixl/wixl-heat.vala:13
+#: ../tools/wixl/wixl-heat.vala:14
 msgid "Variable for source dir"
 msgstr "Kintamasis šaltinio aplankui"
 
-#: ../tools/wixl/wixl-heat.vala:14
+#: ../tools/wixl/wixl-heat.vala:15
 msgid "Prefix"
 msgstr "Priešdėlis"
 
-#: ../tools/wixl/wixl-heat.vala:15
+#: ../tools/wixl/wixl-heat.vala:16
 msgid "Exclude prefix"
 msgstr "Išimčių priešdėlis"
+
+#: ../tools/wixl/wixl-heat.vala:17
+msgid "Add Win64 Component"
+msgstr "Pridėti Win64 komponentą"
 
 #: ../tools/wixl/wixl.vala:22
 msgid "Verbose output"
@@ -107,7 +110,6 @@ msgid "- a msi building tool"
 msgstr "- msi kūrimo įrankis"
 
 #: ../tools/wixl/wixl.vala:83
-#, c-format
 msgid "Please specify the output file.\n"
 msgstr "Nurodykite išvesties failą.\n"
 
