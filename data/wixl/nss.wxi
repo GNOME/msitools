@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <?require nspr.wxi?>
+<?require sqlite.wxi?>
 <Include xmlns="http://schemas.microsoft.com/wix/2006/wi">
   <Fragment>
     <DirectoryRef Id="TARGETDIR">
@@ -139,6 +140,8 @@
   </Fragment>
   <Fragment>
     <ComponentGroup Id="CG.nss">
+      <ComponentGroupRef Id="CG.nspr"/>
+      <ComponentGroupRef Id="CG.sqlite"/>
       <ComponentRef Id="cmp901134AE979D2DF190AD405E36B9E315"/>
       <ComponentRef Id="cmp6C58E80840CAD61AFEECB58BDEAD7113"/>
       <ComponentRef Id="cmp54CB944FA13E66225E1C7526CB8B6783"/>
