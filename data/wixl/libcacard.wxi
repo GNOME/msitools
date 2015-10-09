@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
+<?require nss.wxi?>
+<?require gcc.wxi?>
 <Include xmlns="http://schemas.microsoft.com/wix/2006/wi">
   <Fragment>
     <DirectoryRef Id="TARGETDIR">
@@ -11,6 +13,8 @@
   </Fragment>
   <Fragment>
     <ComponentGroup Id="CG.libcacard">
+      <ComponentGroupRef Id="CG.nss"/>
+      <ComponentGroupRef Id="CG.gcc"/>
       <ComponentRef Id="cmp1E9217C2F2568ADBB306BDD776F6798B"/>
     </ComponentGroup>
   </Fragment>
