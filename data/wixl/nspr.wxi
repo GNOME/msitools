@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Include xmlns="http://schemas.microsoft.com/wix/2006/wi">
   <Fragment>
-    <DirectoryRef Id="TARGETDIR">
+    <DirectoryRef Id="INSTALLDIR">
       <Directory Id="dir2AA90C08CFF39C61E53BB12D6D582979" Name="bin">
         <Component Win64="$(var.Win64)" Id="cmp22A2DEFE509A234A8BFAF3D0B8ABD7D2" Guid="*">
           <File Id="filF98C8175A5228F46C266818E7560CCDB" KeyPath="yes" Source="$(var.SourceDir)/bin/libnspr4.dll"/>
