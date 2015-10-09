@@ -3,7 +3,7 @@
 <?require gcc.wxi?>
 <Include xmlns="http://schemas.microsoft.com/wix/2006/wi">
   <Fragment>
-    <DirectoryRef Id="TARGETDIR">
+    <DirectoryRef Id="INSTALLDIR">
       <Directory Id="dir468EA76D8638FD6FD3EA70A70BFB95D5" Name="bin">
         <Component Win64="$(var.Win64)" Id="cmp1E9217C2F2568ADBB306BDD776F6798B" Guid="*">
           <File Id="fil156CF17180422C5B90BC292B06A3AF74" KeyPath="yes" Source="$(var.SourceDir)/bin/libcacard-0.dll"/>
