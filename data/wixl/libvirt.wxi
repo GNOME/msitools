@@ -97,20 +97,6 @@
           </Directory>
         </Directory>
         <Directory Id="dir7B039A7AA6D28042486D7A807F91CF56" Name="locale">
-          <Directory Id="dir4CF7CBE5239677CC8332D6BDF19E2603" Name="af">
-            <Directory Id="dirF20C36E9C9C780827A6C557B9B14723A" Name="LC_MESSAGES">
-              <Component Win64="$(var.Win64)" Id="cmpF1E70F4C1B88F26F66283471155BB334" Guid="*">
-                <File Id="fil666E9354AC3C8C549996F9CFCA812EFB" KeyPath="yes" Source="$(var.SourceDir)/share/locale/af/LC_MESSAGES/libvirt.mo"/>
-              </Component>
-            </Directory>
-          </Directory>
-          <Directory Id="dir92DD1D3A8482FD9EFD3C1CE822B9D8C4" Name="am">
-            <Directory Id="dirA8551F4C64E7EEE911AA8ADAAA438B77" Name="LC_MESSAGES">
-              <Component Win64="$(var.Win64)" Id="cmp9E897A738134B16E51A1A53DFA29E93B" Guid="*">
-                <File Id="filCB6838C4D8B4BFF88797CDF6B84E7CF5" KeyPath="yes" Source="$(var.SourceDir)/share/locale/am/LC_MESSAGES/libvirt.mo"/>
-              </Component>
-            </Directory>
-          </Directory>
           <Directory Id="dir9B4832BE5C43E7355BDE4DEF7E492379" Name="ar">
             <Directory Id="dirFB711D459E482DBCCAF0EABAFF41FA17" Name="LC_MESSAGES">
               <Component Win64="$(var.Win64)" Id="cmp25D64463F8C1AD54949C1C7ED2DF6338" Guid="*">
@@ -122,13 +108,6 @@
             <Directory Id="dirD3ED2DC8F2B163DA6AB588DF3E2C4A42" Name="LC_MESSAGES">
               <Component Win64="$(var.Win64)" Id="cmp6A7B42668EC869869A112431C4D52C6E" Guid="*">
                 <File Id="filEF2D078B35CE623891915B8CEE456922" KeyPath="yes" Source="$(var.SourceDir)/share/locale/as/LC_MESSAGES/libvirt.mo"/>
-              </Component>
-            </Directory>
-          </Directory>
-          <Directory Id="dirD60B80B275E0C3267B9245AE07588E86" Name="be">
-            <Directory Id="dirF12F784AC050076F2C9C18991181D516" Name="LC_MESSAGES">
-              <Component Win64="$(var.Win64)" Id="cmp7FE989514C2001DA8A38243DEED39378" Guid="*">
-                <File Id="fil7690E7C10D492186462C613A81A5E99B" KeyPath="yes" Source="$(var.SourceDir)/share/locale/be/LC_MESSAGES/libvirt.mo"/>
               </Component>
             </Directory>
           </Directory>
@@ -223,20 +202,6 @@
               </Component>
             </Directory>
           </Directory>
-          <Directory Id="dir5C1AC53AADE1ACD6B14598D8DE6EE37C" Name="eu_ES">
-            <Directory Id="dir20B174F349893415E7ECFCD22164ED23" Name="LC_MESSAGES">
-              <Component Win64="$(var.Win64)" Id="cmp4B548AEB6EE9BA69B81136A5CBA72143" Guid="*">
-                <File Id="fil50341033D1A01DD5D95D5CACC415DB0C" KeyPath="yes" Source="$(var.SourceDir)/share/locale/eu_ES/LC_MESSAGES/libvirt.mo"/>
-              </Component>
-            </Directory>
-          </Directory>
-          <Directory Id="dirF3735F5373D452504E8945F6C5D9B3F4" Name="fa">
-            <Directory Id="dir47468A1392D8764D98E530763DB7AF0C" Name="LC_MESSAGES">
-              <Component Win64="$(var.Win64)" Id="cmpCBD47C04CDAE57664D373905F09033BB" Guid="*">
-                <File Id="filBA7DFDF08BD708C0A0C2428EAAF0D723" KeyPath="yes" Source="$(var.SourceDir)/share/locale/fa/LC_MESSAGES/libvirt.mo"/>
-              </Component>
-            </Directory>
-          </Directory>
           <Directory Id="dirF66ABAFD59395F98CF71D24DF4B06039" Name="fi">
             <Directory Id="dir50AB3B4CC0CDB0B1644410218050787C" Name="LC_MESSAGES">
               <Component Win64="$(var.Win64)" Id="cmp2600A73C63130E0BD2564E5A8FE4FBA1" Guid="*">
@@ -279,24 +244,10 @@
               </Component>
             </Directory>
           </Directory>
-          <Directory Id="dirBA37DFECECA7C8D28517C2247BA0A745" Name="hr">
-            <Directory Id="dirC400A827221BFFED6B0EADEFFC9EDB91" Name="LC_MESSAGES">
-              <Component Win64="$(var.Win64)" Id="cmpEC6B28B05471E3085CA014447EA3FC4B" Guid="*">
-                <File Id="fil8082778B92C3694186A5C7F3A598F902" KeyPath="yes" Source="$(var.SourceDir)/share/locale/hr/LC_MESSAGES/libvirt.mo"/>
-              </Component>
-            </Directory>
-          </Directory>
           <Directory Id="dirC6859FE7B51DAF5B75B8CBC9D8166E00" Name="hu">
             <Directory Id="dirE9F877254A2562B6ADE41A787AC6B002" Name="LC_MESSAGES">
               <Component Win64="$(var.Win64)" Id="cmpA37EADDED97FA3BBF58E818F514DF24C" Guid="*">
                 <File Id="fil492AE491CADDAEF705F571603EB51912" KeyPath="yes" Source="$(var.SourceDir)/share/locale/hu/LC_MESSAGES/libvirt.mo"/>
-              </Component>
-            </Directory>
-          </Directory>
-          <Directory Id="dir1BD16D41BC2DB241363011511FFF8694" Name="hy">
-            <Directory Id="dirB59B20C0E9E09E4AE4037EB973ADB5DB" Name="LC_MESSAGES">
-              <Component Win64="$(var.Win64)" Id="cmp05B5E70C7A740636DACFFEF14F6E8B61" Guid="*">
-                <File Id="fil0E0A0E0B4AADC121A2D9601AE96C4689" KeyPath="yes" Source="$(var.SourceDir)/share/locale/hy/LC_MESSAGES/libvirt.mo"/>
               </Component>
             </Directory>
           </Directory>
@@ -349,20 +300,6 @@
               </Component>
             </Directory>
           </Directory>
-          <Directory Id="dirE5F47BC27051DBDECD7B3126AFFCA65E" Name="ku">
-            <Directory Id="dir21D72F4BA6BEDF5C665C9CF5500076EF" Name="LC_MESSAGES">
-              <Component Win64="$(var.Win64)" Id="cmp1B311CF2744CDF22F5493F5C08AE39D2" Guid="*">
-                <File Id="filB8A23677E7AAD77F605D21B20F12FB1A" KeyPath="yes" Source="$(var.SourceDir)/share/locale/ku/LC_MESSAGES/libvirt.mo"/>
-              </Component>
-            </Directory>
-          </Directory>
-          <Directory Id="dirA3ED035FF5B2BF6CECBEA50FB8AAD7D1" Name="lo">
-            <Directory Id="dir1F8925772EC65ABB8CA75843CFE30417" Name="LC_MESSAGES">
-              <Component Win64="$(var.Win64)" Id="cmp7DC8663F9B62EDA9C73EABD55CB44D3E" Guid="*">
-                <File Id="fil94F06C65B92049C17CE36EE0C0C2E48C" KeyPath="yes" Source="$(var.SourceDir)/share/locale/lo/LC_MESSAGES/libvirt.mo"/>
-              </Component>
-            </Directory>
-          </Directory>
           <Directory Id="dir5AA77F254ABD0FCC96EE9B45385906B9" Name="lt">
             <Directory Id="dir9DE9A5F1F7F4C0DF6E1E404626701DCE" Name="LC_MESSAGES">
               <Component Win64="$(var.Win64)" Id="cmp0E06CC43E903C84E0339F8A1D563DF20" Guid="*">
@@ -402,13 +339,6 @@
             <Directory Id="dirE0B801A3EB1919E51A6DDF430AB89BC7" Name="LC_MESSAGES">
               <Component Win64="$(var.Win64)" Id="cmp01E5AF2CDD78A7E4BFCF74B132B81B17" Guid="*">
                 <File Id="fil900838031737ED85460771FC240065D6" KeyPath="yes" Source="$(var.SourceDir)/share/locale/ms/LC_MESSAGES/libvirt.mo"/>
-              </Component>
-            </Directory>
-          </Directory>
-          <Directory Id="dir8A216C3B65FBC7513EA2F635E20389AF" Name="my">
-            <Directory Id="dirCC0404439C684BD2DDA8CCF8B90E66B8" Name="LC_MESSAGES">
-              <Component Win64="$(var.Win64)" Id="cmp172181E5DDD47AC8782D11F76C77FA08" Guid="*">
-                <File Id="fil70635068BB42CDE46E0ED7FEC6C03C32" KeyPath="yes" Source="$(var.SourceDir)/share/locale/my/LC_MESSAGES/libvirt.mo"/>
               </Component>
             </Directory>
           </Directory>
@@ -587,13 +517,6 @@
               </Component>
             </Directory>
           </Directory>
-          <Directory Id="dir92C73CE739AEB3683FEA77C9B91FEF8A" Name="vi_VN">
-            <Directory Id="dir6F85A38618C20C3AA8110AD1C5058385" Name="LC_MESSAGES">
-              <Component Win64="$(var.Win64)" Id="cmp6A8B44295BEB2F80266960361A9F07EB" Guid="*">
-                <File Id="fil73979AA6796BE3AEB15178DDD035D233" KeyPath="yes" Source="$(var.SourceDir)/share/locale/vi_VN/LC_MESSAGES/libvirt.mo"/>
-              </Component>
-            </Directory>
-          </Directory>
           <Directory Id="dir0A3591E850C4696646C45561ED1C1AE1" Name="zh_CN">
             <Directory Id="dir512C7ABF229465156A62C85EC7E20323" Name="LC_MESSAGES">
               <Component Win64="$(var.Win64)" Id="cmpCF6935EB7E43940C2B058228BD14EEE2" Guid="*">
@@ -669,11 +592,8 @@
       <ComponentRef Id="cmp216B1FCC374A06427A76816AAFD57899"/>
       <ComponentRef Id="cmpECA559285A41600FB62EA60E8D841C43"/>
       <ComponentRef Id="cmp15330F42078AB746FC3608E9834126B6"/>
-      <ComponentRef Id="cmpF1E70F4C1B88F26F66283471155BB334"/>
-      <ComponentRef Id="cmp9E897A738134B16E51A1A53DFA29E93B"/>
       <ComponentRef Id="cmp25D64463F8C1AD54949C1C7ED2DF6338"/>
       <ComponentRef Id="cmp6A7B42668EC869869A112431C4D52C6E"/>
-      <ComponentRef Id="cmp7FE989514C2001DA8A38243DEED39378"/>
       <ComponentRef Id="cmp53B6EEC856CEC8D3F8E6031ECFCDE465"/>
       <ComponentRef Id="cmp1083755EDD4EDB5F6DE749D288E02FDC"/>
       <ComponentRef Id="cmpB88BD0C9926E10192C6604151E479817"/>
@@ -687,17 +607,13 @@
       <ComponentRef Id="cmp4097A30F9200911EB7E1A944ECADDB17"/>
       <ComponentRef Id="cmpAFF49BD34DC2F41522CF247DA3C7DB1E"/>
       <ComponentRef Id="cmpB2BD4A34DEB7955C13109FDE5753CDD5"/>
-      <ComponentRef Id="cmp4B548AEB6EE9BA69B81136A5CBA72143"/>
-      <ComponentRef Id="cmpCBD47C04CDAE57664D373905F09033BB"/>
       <ComponentRef Id="cmp2600A73C63130E0BD2564E5A8FE4FBA1"/>
       <ComponentRef Id="cmp01C8E991692EA4BFF12F0AC0DBD3B536"/>
       <ComponentRef Id="cmp3E314C89DB8FFEE53C732136137CD84B"/>
       <ComponentRef Id="cmp4137F7310322BC67DAB9FA075F5C3EF5"/>
       <ComponentRef Id="cmpE0E1338180A3ECECA1E5367016D48316"/>
       <ComponentRef Id="cmp90E06CE92071B37400F2E4C7672F488F"/>
-      <ComponentRef Id="cmpEC6B28B05471E3085CA014447EA3FC4B"/>
       <ComponentRef Id="cmpA37EADDED97FA3BBF58E818F514DF24C"/>
-      <ComponentRef Id="cmp05B5E70C7A740636DACFFEF14F6E8B61"/>
       <ComponentRef Id="cmpD89B030C8DB620DD692F792206C78E60"/>
       <ComponentRef Id="cmp3E42D715B5A8A6D6E89D919FA9B5C08D"/>
       <ComponentRef Id="cmpAE743BD36DBC5A4CF0D93D8D7AD05E98"/>
@@ -705,15 +621,12 @@
       <ComponentRef Id="cmp77C6E349CA8167207D61A00CBE090FE7"/>
       <ComponentRef Id="cmp409FBFBE4A15910E2E1ACD018E2AC446"/>
       <ComponentRef Id="cmpD95E9CFD9518121AAB268801C36AC1B5"/>
-      <ComponentRef Id="cmp1B311CF2744CDF22F5493F5C08AE39D2"/>
-      <ComponentRef Id="cmp7DC8663F9B62EDA9C73EABD55CB44D3E"/>
       <ComponentRef Id="cmp0E06CC43E903C84E0339F8A1D563DF20"/>
       <ComponentRef Id="cmp0CAF179658DC0C99556AF1AF2A677CCC"/>
       <ComponentRef Id="cmpE2B25E38419FF4DD2663AC57F1A790C3"/>
       <ComponentRef Id="cmpA78BDDB41CC73BABF7F286CCCBB8C3B3"/>
       <ComponentRef Id="cmp7A641A3F3ABD781C805EAFC281509582"/>
       <ComponentRef Id="cmp01E5AF2CDD78A7E4BFCF74B132B81B17"/>
-      <ComponentRef Id="cmp172181E5DDD47AC8782D11F76C77FA08"/>
       <ComponentRef Id="cmp9C35E07BB0F131656646B7AF32820038"/>
       <ComponentRef Id="cmp424BB8733909F999573DCA6A34B51C90"/>
       <ComponentRef Id="cmp12BF2FA883C157F39666994392CFA9CF"/>
@@ -739,7 +652,6 @@
       <ComponentRef Id="cmp21CD05BF28D3F543C36838FBD993F4AB"/>
       <ComponentRef Id="cmp604FB417EA67ED25AFDA2DDC8C4B5D39"/>
       <ComponentRef Id="cmpAC4701506A1ED595DC3B8E1A2717C42F"/>
-      <ComponentRef Id="cmp6A8B44295BEB2F80266960361A9F07EB"/>
       <ComponentRef Id="cmpCF6935EB7E43940C2B058228BD14EEE2"/>
       <ComponentRef Id="cmpE61B51B6BDA11E44B42C1316C61A08DA"/>
       <ComponentRef Id="cmp2D5844F1D4A9F507665D2AF8E50689CF"/>
