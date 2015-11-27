@@ -64,6 +64,9 @@
             <Component Win64="$(var.Win64)" Id="cmp2E0117774DAF52384B56F8D79110C7C6" Guid="*">
               <File Id="filE9B439340CE61622847BEA0FFA289DEC" KeyPath="yes" Source="$(var.SourceDir)/share/libvirt/schemas/domain.rng"/>
             </Component>
+            <Component Win64="$(var.Win64)" Id="cmp26C1A426E9119559ED16E37C516CAFD4" Guid="*">
+              <File Id="filF7EFEE0FE2A892E5844D71B14DD80711" KeyPath="yes" Source="$(var.SourceDir)/share/libvirt/schemas/domaincaps.rng"/>
+            </Component>
             <Component Win64="$(var.Win64)" Id="cmp421D485FC5A696C778DBD9BC6B028681" Guid="*">
               <File Id="filDE7E694400FA4E97339DD492C34B51D2" KeyPath="yes" Source="$(var.SourceDir)/share/libvirt/schemas/domaincommon.rng"/>
             </Component>
@@ -87,6 +90,9 @@
             </Component>
             <Component Win64="$(var.Win64)" Id="cmp216B1FCC374A06427A76816AAFD57899" Guid="*">
               <File Id="fil867A6518157E9B8D12408586C7FB97D0" KeyPath="yes" Source="$(var.SourceDir)/share/libvirt/schemas/secret.rng"/>
+            </Component>
+            <Component Win64="$(var.Win64)" Id="cmp2BCEDCEC546C15E2542AD438FC60FA26" Guid="*">
+              <File Id="fil2A002A711C33A00876658B2D09F1497F" KeyPath="yes" Source="$(var.SourceDir)/share/libvirt/schemas/storagecommon.rng"/>
             </Component>
             <Component Win64="$(var.Win64)" Id="cmpECA559285A41600FB62EA60E8D841C43" Guid="*">
               <File Id="fil00DE9D758124F172981E0D41F5CB232D" KeyPath="yes" Source="$(var.SourceDir)/share/libvirt/schemas/storagepool.rng"/>
@@ -582,6 +588,7 @@
       <ComponentRef Id="cmpE862AF29C99A212EADB63915785585FE"/>
       <ComponentRef Id="cmp4F8200B1C77A38E8AC2D0FCAADC1566F"/>
       <ComponentRef Id="cmp2E0117774DAF52384B56F8D79110C7C6"/>
+      <ComponentRef Id="cmp26C1A426E9119559ED16E37C516CAFD4"/>
       <ComponentRef Id="cmp421D485FC5A696C778DBD9BC6B028681"/>
       <ComponentRef Id="cmpFF3455205061737D19CB16030514AA70"/>
       <ComponentRef Id="cmpD27D0B9F6FADA360369DB634BCAB2C0F"/>
@@ -590,6 +597,7 @@
       <ComponentRef Id="cmpADB73CBD962904A2BFF44D65FCDA01C7"/>
       <ComponentRef Id="cmp09314B718D7501E43F74D85871FC17CC"/>
       <ComponentRef Id="cmp216B1FCC374A06427A76816AAFD57899"/>
+      <ComponentRef Id="cmp2BCEDCEC546C15E2542AD438FC60FA26"/>
       <ComponentRef Id="cmpECA559285A41600FB62EA60E8D841C43"/>
       <ComponentRef Id="cmp15330F42078AB746FC3608E9834126B6"/>
       <ComponentRef Id="cmp25D64463F8C1AD54949C1C7ED2DF6338"/>
