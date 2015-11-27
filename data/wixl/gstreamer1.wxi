@@ -142,9 +142,6 @@
             <Component Win64="$(var.Win64)" Id="cmpB4333F838F112BB6CE21A93BDBD4D0E5" Guid="*">
               <File Id="filD153F8F4BBA096EB1C6A4B674AD31DBA" KeyPath="yes" Source="$(var.SourceDir)/include/gstreamer-1.0/gst/gstcompat.h"/>
             </Component>
-            <Component Win64="$(var.Win64)" Id="cmp7BD92D8B5065FD53C1E5B6E19FDBA6AC" Guid="*">
-              <File Id="fil94D808C77FE9448CC67B8E04E3629ABB" KeyPath="yes" Source="$(var.SourceDir)/include/gstreamer-1.0/gst/gstconfig.h"/>
-            </Component>
             <Component Win64="$(var.Win64)" Id="cmp5FB9A1EB58D9E81FF68A9E79C0B74B0C" Guid="*">
               <File Id="filEFA8995F3696C2687904A6A1E30E02F7" KeyPath="yes" Source="$(var.SourceDir)/include/gstreamer-1.0/gst/gstcontext.h"/>
             </Component>
@@ -234,9 +231,6 @@
             </Component>
             <Component Win64="$(var.Win64)" Id="cmp119BFBB371FE79D7EDF0652FA9CC5E67" Guid="*">
               <File Id="filD34637F688755353C2106CCBA30030A1" KeyPath="yes" Source="$(var.SourceDir)/include/gstreamer-1.0/gst/gstpipeline.h"/>
-            </Component>
-            <Component Win64="$(var.Win64)" Id="cmpF4D3AD2D15F1A5F6A56059A4CB8A0BB4" Guid="*">
-              <File Id="filD074A795EED2B9BF58C93B22F0CCDA12" KeyPath="yes" Source="$(var.SourceDir)/include/gstreamer-1.0/gst/gstplugin.h"/>
             </Component>
             <Component Win64="$(var.Win64)" Id="cmp9E28C636136A08B28A23AC1EA84BBCC7" Guid="*">
               <File Id="filA3401623706674EAC1C509F6E6D1F512" KeyPath="yes" Source="$(var.SourceDir)/include/gstreamer-1.0/gst/gstpluginfeature.h"/>
@@ -698,7 +692,6 @@
       <ComponentRef Id="cmp6E5C3E672B1B04EB8B55F1D3E993D3ED"/>
       <ComponentRef Id="cmp8BFDF515B59BF89BE0CCABE53CCCD23D"/>
       <ComponentRef Id="cmpB4333F838F112BB6CE21A93BDBD4D0E5"/>
-      <ComponentRef Id="cmp7BD92D8B5065FD53C1E5B6E19FDBA6AC"/>
       <ComponentRef Id="cmp5FB9A1EB58D9E81FF68A9E79C0B74B0C"/>
       <ComponentRef Id="cmp82F9320F874B3EA72A3B0A3697049464"/>
       <ComponentRef Id="cmp5A60B06707F5C28DF5F8FCE7AF1DF46B"/>
@@ -729,7 +722,6 @@
       <ComponentRef Id="cmp1C1D1475DA48DFA27890FFB6A3BB73A2"/>
       <ComponentRef Id="cmp9543D67326E4CB748ACB7F76D70B6AD4"/>
       <ComponentRef Id="cmp119BFBB371FE79D7EDF0652FA9CC5E67"/>
-      <ComponentRef Id="cmpF4D3AD2D15F1A5F6A56059A4CB8A0BB4"/>
       <ComponentRef Id="cmp9E28C636136A08B28A23AC1EA84BBCC7"/>
       <ComponentRef Id="cmp4C1E24670E3D04CE2C4B2E19B29220F9"/>
       <ComponentRef Id="cmpC4FD57D8C10BBF27D2D87F1EC94B0182"/>
