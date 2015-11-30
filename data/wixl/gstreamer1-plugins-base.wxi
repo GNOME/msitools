@@ -109,39 +109,6 @@
             <File Id="fil19144BD28AF088CE3568C7C3E3DFB1E6" KeyPath="yes" Source="$(var.SourceDir)/lib/gstreamer-1.0/libgstvorbis.dll"/>
           </Component>
         </Directory>
-        <Component Win64="$(var.Win64)" Id="cmp4A3B27009D394F9360920CF0C9BD7D14" Guid="*">
-          <File Id="fil83DBE23AF9381B154654E6D58A84C9F1" KeyPath="yes" Source="$(var.SourceDir)/lib/libgstallocators-1.0.dll.a"/>
-        </Component>
-        <Component Win64="$(var.Win64)" Id="cmpB8E624BF9A60600823E66B91545764C7" Guid="*">
-          <File Id="fil568DBBE4514D3E98C6B6BC2D3EF69E66" KeyPath="yes" Source="$(var.SourceDir)/lib/libgstapp-1.0.dll.a"/>
-        </Component>
-        <Component Win64="$(var.Win64)" Id="cmpFBFE747E17412F8CDDF36E0ED7274F12" Guid="*">
-          <File Id="filB38249AAC3A3C781F469DBEF07A79AD7" KeyPath="yes" Source="$(var.SourceDir)/lib/libgstaudio-1.0.dll.a"/>
-        </Component>
-        <Component Win64="$(var.Win64)" Id="cmp8F0875ADD2396809166AE91CDB32C884" Guid="*">
-          <File Id="fil9D4805EC742EDA4D069E5A6E341C4A27" KeyPath="yes" Source="$(var.SourceDir)/lib/libgstfft-1.0.dll.a"/>
-        </Component>
-        <Component Win64="$(var.Win64)" Id="cmp73C38F41A5092ACB0F0FB317E1EE6BC7" Guid="*">
-          <File Id="fil0E0A674E8F5B595C9C64F72509597B54" KeyPath="yes" Source="$(var.SourceDir)/lib/libgstpbutils-1.0.dll.a"/>
-        </Component>
-        <Component Win64="$(var.Win64)" Id="cmp4216B191A83074AFDDC99F6640C1F637" Guid="*">
-          <File Id="filA050B37FF7427B5BFBED9103846D2717" KeyPath="yes" Source="$(var.SourceDir)/lib/libgstriff-1.0.dll.a"/>
-        </Component>
-        <Component Win64="$(var.Win64)" Id="cmp7E3D90C450AA4DE052DD526EE32F3D1A" Guid="*">
-          <File Id="filDB9064246D50EB0D51F125D141A0DE9D" KeyPath="yes" Source="$(var.SourceDir)/lib/libgstrtp-1.0.dll.a"/>
-        </Component>
-        <Component Win64="$(var.Win64)" Id="cmpFB4AA21F190311AC8F62464D41A98DE6" Guid="*">
-          <File Id="filE329CA36AD693C7DAF38FEA8C88583A3" KeyPath="yes" Source="$(var.SourceDir)/lib/libgstrtsp-1.0.dll.a"/>
-        </Component>
-        <Component Win64="$(var.Win64)" Id="cmp327CE6F70953F2606223C87955AD584B" Guid="*">
-          <File Id="filBEB2448AA0B185A15202568F2C437FDC" KeyPath="yes" Source="$(var.SourceDir)/lib/libgstsdp-1.0.dll.a"/>
-        </Component>
-        <Component Win64="$(var.Win64)" Id="cmp4456D3FA54C01116B67C644D8ED11577" Guid="*">
-          <File Id="fil4551D33182E0851EEE60BE4B75F8ACF4" KeyPath="yes" Source="$(var.SourceDir)/lib/libgsttag-1.0.dll.a"/>
-        </Component>
-        <Component Win64="$(var.Win64)" Id="cmpAD9242E6806D89332749D69023EA8B22" Guid="*">
-          <File Id="fil9A1EF1B9A4A8EDAF6545837A8C16A200" KeyPath="yes" Source="$(var.SourceDir)/lib/libgstvideo-1.0.dll.a"/>
-        </Component>
         <Directory Id="dir4E8D325820FAD41BC2CB103327B3B184" Name="pkgconfig">
           <Component Win64="$(var.Win64)" Id="cmp3A632D935E598CAE76E46873FB00DDED" Guid="*">
             <File Id="fil0FF6E7A153DD3487F757E5B68CA09DFF" KeyPath="yes" Source="$(var.SourceDir)/lib/pkgconfig/gstreamer-allocators-1.0.pc"/>
@@ -497,17 +464,6 @@
       <ComponentRef Id="cmp256474F9561CF046B2E8D62461AAE748"/>
       <ComponentRef Id="cmp1ADDA32E2430CC624791D894B52532FB"/>
       <ComponentRef Id="cmp57B84B5CF0B18E3AA6C1032C62BE91F7"/>
-      <ComponentRef Id="cmp4A3B27009D394F9360920CF0C9BD7D14"/>
-      <ComponentRef Id="cmpB8E624BF9A60600823E66B91545764C7"/>
-      <ComponentRef Id="cmpFBFE747E17412F8CDDF36E0ED7274F12"/>
-      <ComponentRef Id="cmp8F0875ADD2396809166AE91CDB32C884"/>
-      <ComponentRef Id="cmp73C38F41A5092ACB0F0FB317E1EE6BC7"/>
-      <ComponentRef Id="cmp4216B191A83074AFDDC99F6640C1F637"/>
-      <ComponentRef Id="cmp7E3D90C450AA4DE052DD526EE32F3D1A"/>
-      <ComponentRef Id="cmpFB4AA21F190311AC8F62464D41A98DE6"/>
-      <ComponentRef Id="cmp327CE6F70953F2606223C87955AD584B"/>
-      <ComponentRef Id="cmp4456D3FA54C01116B67C644D8ED11577"/>
-      <ComponentRef Id="cmpAD9242E6806D89332749D69023EA8B22"/>
       <ComponentRef Id="cmp3A632D935E598CAE76E46873FB00DDED"/>
       <ComponentRef Id="cmpCCE39B61EE63E2A0B9098BD7EC33AD5C"/>
       <ComponentRef Id="cmpCBB8720769577B97735E41E838E8385B"/>
