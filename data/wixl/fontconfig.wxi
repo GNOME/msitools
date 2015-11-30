@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <?require gcc.wxi?>
 <?require freetype.wxi?>
+<?require expat.wxi?>
 <Include xmlns="http://schemas.microsoft.com/wix/2006/wi">
   <Fragment>
     <DirectoryRef Id="INSTALLDIR">
@@ -187,6 +188,7 @@
     <ComponentGroup Id="CG.fontconfig">
       <ComponentGroupRef Id="CG.gcc"/>
       <ComponentGroupRef Id="CG.freetype"/>
+      <ComponentGroupRef Id="CG.expat"/>
       <ComponentRef Id="cmpA1344055E0C9AC8865ADD41B7CAAC269"/>
       <ComponentRef Id="cmp702EA469CAE49C6E1E50DF18A433D8F9"/>
       <ComponentRef Id="cmp8F17BE79180AEE1311E85F0BD4F8B5FF"/>
