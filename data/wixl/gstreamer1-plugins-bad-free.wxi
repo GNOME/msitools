@@ -220,23 +220,6 @@
             <File Id="fil29987D20608A2FEDB9A32963DD604590" KeyPath="yes" Source="$(var.SourceDir)/lib/gstreamer-1.0/libgstyadif.dll"/>
           </Component>
         </Directory>
-        <Directory Id="dir5306E4C2392920FA379177335E03875F" Name="pkgconfig">
-          <Component Win64="$(var.Win64)" Id="cmpD6F6278FD2BB4ABCA6AA11388E4DE79A" Guid="*">
-            <File Id="fil21A3596243BF34C6400150C2814E6BE3" KeyPath="yes" Source="$(var.SourceDir)/lib/pkgconfig/gstreamer-codecparsers-1.0.pc"/>
-          </Component>
-          <Component Win64="$(var.Win64)" Id="cmpAA7F5D5820E4320D4302B823A8306B3D" Guid="*">
-            <File Id="fil040AFD7F9640CC9460312847CDDBFB73" KeyPath="yes" Source="$(var.SourceDir)/lib/pkgconfig/gstreamer-gl-1.0.pc"/>
-          </Component>
-          <Component Win64="$(var.Win64)" Id="cmp211D8E42A612326CBDFCD4ABB69BA0F3" Guid="*">
-            <File Id="fil0B103E8C6E976CD9C29E54BBC91C8574" KeyPath="yes" Source="$(var.SourceDir)/lib/pkgconfig/gstreamer-insertbin-1.0.pc"/>
-          </Component>
-          <Component Win64="$(var.Win64)" Id="cmp73D8D2326D97DE65C549D678CB812975" Guid="*">
-            <File Id="fil17F605108D65DF99752AFFE6D2ED415B" KeyPath="yes" Source="$(var.SourceDir)/lib/pkgconfig/gstreamer-mpegts-1.0.pc"/>
-          </Component>
-          <Component Win64="$(var.Win64)" Id="cmpC8F8EED0EB0E11E8FDC2845698A72B43" Guid="*">
-            <File Id="filF063B857015471A4169757923A7B80FB" KeyPath="yes" Source="$(var.SourceDir)/lib/pkgconfig/gstreamer-plugins-bad-1.0.pc"/>
-          </Component>
-        </Directory>
       </Directory>
       <Directory Id="dir14817211F18360C7084B253DE4EA6968" Name="share">
         <Directory Id="dirF902352DB7085E02397F7DDE229C4CA9" Name="locale">
@@ -597,11 +580,6 @@
       <ComponentRef Id="cmpFEE2216B50BA31DFF5764437AD124B4B"/>
       <ComponentRef Id="cmp5CF73AEA20BA7CA3C8E57BF0B598376D"/>
       <ComponentRef Id="cmp03E4257DBD437EED77ADC36F26D13C18"/>
-      <ComponentRef Id="cmpD6F6278FD2BB4ABCA6AA11388E4DE79A"/>
-      <ComponentRef Id="cmpAA7F5D5820E4320D4302B823A8306B3D"/>
-      <ComponentRef Id="cmp211D8E42A612326CBDFCD4ABB69BA0F3"/>
-      <ComponentRef Id="cmp73D8D2326D97DE65C549D678CB812975"/>
-      <ComponentRef Id="cmpC8F8EED0EB0E11E8FDC2845698A72B43"/>
       <ComponentRef Id="cmp8087692860F18BC0AF4A7E42D2B9BC5B"/>
       <ComponentRef Id="cmp2043CAC739EF592EE26EFBE74D87EC68"/>
       <ComponentRef Id="cmp3398072EF8D836C5D7975126A8318A35"/>
