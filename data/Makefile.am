@@ -5,6 +5,7 @@ wxidir = $(datadir)/wixl-$(VERSION)/include
 dist_wxi_DATA =					\
 	wixl/SDL.wxi				\
 	wixl/atk.wxi				\
+	wixl/bzip2.wxi				\
 	wixl/cairo.wxi				\
 	wixl/celt051.wxi			\
 	wixl/curl.wxi				\

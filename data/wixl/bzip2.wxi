@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Include xmlns="http://schemas.microsoft.com/wix/2006/wi">
+  <Fragment>
+    <DirectoryRef Id="INSTALLDIR">
+      <Directory Id="dir64E7888498031746A1102943B8FCD902" Name="bin">
+        <Component Win64="$(var.Win64)" Id="cmp883CA6FC909A0EC8BA007E2598B955E7" Guid="*">
+          <File Id="fil6899A4C36BA547E4206998FCABAF9CBB" KeyPath="yes" Source="$(var.SourceDir)/bin/libbz2-1.dll"/>
+        </Component>
+        </Directory>
+    </DirectoryRef>
+  </Fragment>
+  <Fragment>
+    <ComponentGroup Id="CG.bzip2">
+      <ComponentRef Id="cmp883CA6FC909A0EC8BA007E2598B955E7"/>
+    </ComponentGroup>
+  </Fragment>
+</Include>
