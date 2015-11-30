@@ -33,20 +33,6 @@
             <File Id="fil114D395327F4D6569AC02A39DFB1971E" KeyPath="yes" Source="$(var.SourceDir)/lib/gstreamer-1.0/libgstcoreelements.dll"/>
           </Component>
         </Directory>
-        <Directory Id="dir5490F3017DE69C6A8FD6A4D1F957086B" Name="pkgconfig">
-          <Component Win64="$(var.Win64)" Id="cmp158EC6DE304F2CD6985461574DCEB4C7" Guid="*">
-            <File Id="fil6E57C6D4E9C414B0599BEA4F5E66153E" KeyPath="yes" Source="$(var.SourceDir)/lib/pkgconfig/gstreamer-1.0.pc"/>
-          </Component>
-          <Component Win64="$(var.Win64)" Id="cmpE2617CAF42CA4B7B297557F4C4517E59" Guid="*">
-            <File Id="fil4A1528BA2727C6486DEC4EE383556E62" KeyPath="yes" Source="$(var.SourceDir)/lib/pkgconfig/gstreamer-base-1.0.pc"/>
-          </Component>
-          <Component Win64="$(var.Win64)" Id="cmp0801223DD80EEAC7131080D4F3452C35" Guid="*">
-            <File Id="filA60FA32258F3BFD8D97713E8B2A93E30" KeyPath="yes" Source="$(var.SourceDir)/lib/pkgconfig/gstreamer-controller-1.0.pc"/>
-          </Component>
-          <Component Win64="$(var.Win64)" Id="cmp3897E00DA0C5CB35FFA71D6B82245C82" Guid="*">
-            <File Id="fil96E937B2AA7DB563DB3E63BED78F9163" KeyPath="yes" Source="$(var.SourceDir)/lib/pkgconfig/gstreamer-net-1.0.pc"/>
-          </Component>
-        </Directory>
       </Directory>
       <Directory Id="dir1EBE474684D1CA6D6957A950C9672D67" Name="libexec">
         <Directory Id="dir3248D276B500675FA6695124351B1529" Name="gstreamer-1.0">
@@ -351,10 +337,6 @@
       <ComponentRef Id="cmp5AEB3111ED36D8DF9A4732D4FCD9FB54"/>
       <ComponentRef Id="cmp9D35809C95F77B45F174A9DAB67E9D04"/>
       <ComponentRef Id="cmp0ACFE00C63B8A3232D2DEB869037D87C"/>
-      <ComponentRef Id="cmp158EC6DE304F2CD6985461574DCEB4C7"/>
-      <ComponentRef Id="cmpE2617CAF42CA4B7B297557F4C4517E59"/>
-      <ComponentRef Id="cmp0801223DD80EEAC7131080D4F3452C35"/>
-      <ComponentRef Id="cmp3897E00DA0C5CB35FFA71D6B82245C82"/>
       <ComponentRef Id="cmp3694FB7C618F9AA6A8199B5908839EED"/>
       <ComponentRef Id="cmp453A7B102CA0C641D11AA1D797111983"/>
       <ComponentRef Id="cmpA4D7E136426B5975933DC66C5BCBE09E"/>
