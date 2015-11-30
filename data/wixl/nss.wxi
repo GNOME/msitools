@@ -70,33 +70,6 @@
         </Directory>
       </Directory>
       <Directory Id="dirF6A6C531554C841C8B91C4B5F8D19F74" Name="lib">
-        <Component Win64="$(var.Win64)" Id="cmp93A85719FCCD1FB54DF06B58B1D023A1" Guid="*">
-          <File Id="fil811F3900B817D3F902C1302F220E5027" KeyPath="yes" Source="$(var.SourceDir)/lib/libcrmf.a"/>
-        </Component>
-        <Component Win64="$(var.Win64)" Id="cmpFBD9D4BBA20A5407B6D76775865607FF" Guid="*">
-          <File Id="fil7CC24E58CB9179F41DA4C66403EA2CFA" KeyPath="yes" Source="$(var.SourceDir)/lib/libnss3.dll.a"/>
-        </Component>
-        <Component Win64="$(var.Win64)" Id="cmpDA8EC1A7F6610239AB35B9F16254EC84" Guid="*">
-          <File Id="filAC54BD7B63C71DEC017F19FDE9C974C5" KeyPath="yes" Source="$(var.SourceDir)/lib/libnssb.a"/>
-        </Component>
-        <Component Win64="$(var.Win64)" Id="cmp04CB0B2079DAFFCF671C94D9A73282AD" Guid="*">
-          <File Id="fil267C2F331AC99D3977601AF23DFAA5FD" KeyPath="yes" Source="$(var.SourceDir)/lib/libnssckfw.a"/>
-        </Component>
-        <Component Win64="$(var.Win64)" Id="cmpB625DAC4F871DD49899FC3525ED65B24" Guid="*">
-          <File Id="fil4D59750EEE39DB53A5FA18A99CE98D36" KeyPath="yes" Source="$(var.SourceDir)/lib/libnssdbm3.dll.a"/>
-        </Component>
-        <Component Win64="$(var.Win64)" Id="cmpF04A71E7BB9A8BF194A80077673A12B4" Guid="*">
-          <File Id="filE2510B94B728215BA0E661A1C995A736" KeyPath="yes" Source="$(var.SourceDir)/lib/libnssutil3.dll.a"/>
-        </Component>
-        <Component Win64="$(var.Win64)" Id="cmp7D8C93E1C117FFABEDF643296296A8D3" Guid="*">
-          <File Id="fil3D3FB62597C5D98DAD4BF6E1C550E4AC" KeyPath="yes" Source="$(var.SourceDir)/lib/libsmime3.dll.a"/>
-        </Component>
-        <Component Win64="$(var.Win64)" Id="cmp0E9787E28147A2E344105F7E97B848E6" Guid="*">
-          <File Id="fil8309A1C84DEF4532B66653A2997B06F6" KeyPath="yes" Source="$(var.SourceDir)/lib/libsoftokn3.dll.a"/>
-        </Component>
-        <Component Win64="$(var.Win64)" Id="cmp2D9CBDE04A0B8935221B48CAD5AD1E85" Guid="*">
-          <File Id="filAEEF408E3402252EFBAC1DB7F0EE94FD" KeyPath="yes" Source="$(var.SourceDir)/lib/libssl3.dll.a"/>
-        </Component>
         <Directory Id="dirDC0FE1A3DB64D2E85485FDE22CE45358" Name="nss">
           <Component Win64="$(var.Win64)" Id="cmp9600721979BC6A73701F4D9F72B0D143" Guid="*">
             <File Id="fil50F52BE84B7E9246A768414DBFA4931A" KeyPath="yes" Source="$(var.SourceDir)/lib/nss/atob.exe"/>
@@ -161,15 +134,6 @@
       <ComponentRef Id="cmp4D8727C826B964B4E03E015D1E29DA6B"/>
       <ComponentRef Id="cmpA7CDDCA5411D79DA7792B9E77E01A944"/>
       <ComponentRef Id="cmp983B1185C8526C740675955ED2253D86"/>
-      <ComponentRef Id="cmp93A85719FCCD1FB54DF06B58B1D023A1"/>
-      <ComponentRef Id="cmpFBD9D4BBA20A5407B6D76775865607FF"/>
-      <ComponentRef Id="cmpDA8EC1A7F6610239AB35B9F16254EC84"/>
-      <ComponentRef Id="cmp04CB0B2079DAFFCF671C94D9A73282AD"/>
-      <ComponentRef Id="cmpB625DAC4F871DD49899FC3525ED65B24"/>
-      <ComponentRef Id="cmpF04A71E7BB9A8BF194A80077673A12B4"/>
-      <ComponentRef Id="cmp7D8C93E1C117FFABEDF643296296A8D3"/>
-      <ComponentRef Id="cmp0E9787E28147A2E344105F7E97B848E6"/>
-      <ComponentRef Id="cmp2D9CBDE04A0B8935221B48CAD5AD1E85"/>
       <ComponentRef Id="cmp9600721979BC6A73701F4D9F72B0D143"/>
       <ComponentRef Id="cmpF6F2B7089CCE2CAE40C02BBD4BAE4493"/>
       <ComponentRef Id="cmpFF762FBA9D4E1CB9B1B7360AF93C448A"/>
