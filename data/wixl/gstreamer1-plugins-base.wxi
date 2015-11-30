@@ -109,44 +109,6 @@
             <File Id="fil19144BD28AF088CE3568C7C3E3DFB1E6" KeyPath="yes" Source="$(var.SourceDir)/lib/gstreamer-1.0/libgstvorbis.dll"/>
           </Component>
         </Directory>
-        <Directory Id="dir4E8D325820FAD41BC2CB103327B3B184" Name="pkgconfig">
-          <Component Win64="$(var.Win64)" Id="cmp3A632D935E598CAE76E46873FB00DDED" Guid="*">
-            <File Id="fil0FF6E7A153DD3487F757E5B68CA09DFF" KeyPath="yes" Source="$(var.SourceDir)/lib/pkgconfig/gstreamer-allocators-1.0.pc"/>
-          </Component>
-          <Component Win64="$(var.Win64)" Id="cmpCCE39B61EE63E2A0B9098BD7EC33AD5C" Guid="*">
-            <File Id="filD53D418809E001F3FD26B298F2C1D004" KeyPath="yes" Source="$(var.SourceDir)/lib/pkgconfig/gstreamer-app-1.0.pc"/>
-          </Component>
-          <Component Win64="$(var.Win64)" Id="cmpCBB8720769577B97735E41E838E8385B" Guid="*">
-            <File Id="fil63FDBB3569733F5B5381485B6D21573E" KeyPath="yes" Source="$(var.SourceDir)/lib/pkgconfig/gstreamer-audio-1.0.pc"/>
-          </Component>
-          <Component Win64="$(var.Win64)" Id="cmp3373B615ECB132C63F9261C348D294F6" Guid="*">
-            <File Id="fil31DBBD66C69D7F019C66DCA60BF1A797" KeyPath="yes" Source="$(var.SourceDir)/lib/pkgconfig/gstreamer-fft-1.0.pc"/>
-          </Component>
-          <Component Win64="$(var.Win64)" Id="cmp512F0D73BD979FA89F2C4AA71FB1B562" Guid="*">
-            <File Id="fil22B08D71A46F343F27D56D7A5033CC17" KeyPath="yes" Source="$(var.SourceDir)/lib/pkgconfig/gstreamer-pbutils-1.0.pc"/>
-          </Component>
-          <Component Win64="$(var.Win64)" Id="cmp21D04C8E22E1EC3BF2F6FC22395EC7E6" Guid="*">
-            <File Id="filA0A732C70366BBA13611EDFACF07BC68" KeyPath="yes" Source="$(var.SourceDir)/lib/pkgconfig/gstreamer-plugins-base-1.0.pc"/>
-          </Component>
-          <Component Win64="$(var.Win64)" Id="cmpD63AE303BC28812557BF9244F64D9916" Guid="*">
-            <File Id="filB05D54EA6B52F90EFE77E6FAF28EF375" KeyPath="yes" Source="$(var.SourceDir)/lib/pkgconfig/gstreamer-riff-1.0.pc"/>
-          </Component>
-          <Component Win64="$(var.Win64)" Id="cmp23EAED2A4F513A79F699D94BBF422D5B" Guid="*">
-            <File Id="filFF883746F4401F2B6744E2F8535D4981" KeyPath="yes" Source="$(var.SourceDir)/lib/pkgconfig/gstreamer-rtp-1.0.pc"/>
-          </Component>
-          <Component Win64="$(var.Win64)" Id="cmpA6D0D0CD5B458F1CAC67F7993C91ED10" Guid="*">
-            <File Id="fil6E66A47FBD74A65D310D963D32FF9B56" KeyPath="yes" Source="$(var.SourceDir)/lib/pkgconfig/gstreamer-rtsp-1.0.pc"/>
-          </Component>
-          <Component Win64="$(var.Win64)" Id="cmpB788822D297EEF64370B2DE25E4836D6" Guid="*">
-            <File Id="filEEFFE6D35B553FBDB0662662A3789F4B" KeyPath="yes" Source="$(var.SourceDir)/lib/pkgconfig/gstreamer-sdp-1.0.pc"/>
-          </Component>
-          <Component Win64="$(var.Win64)" Id="cmp8B197959F285B4D28EFCB9D0E999004E" Guid="*">
-            <File Id="filA59F7AB8933D19C904989208AE34C411" KeyPath="yes" Source="$(var.SourceDir)/lib/pkgconfig/gstreamer-tag-1.0.pc"/>
-          </Component>
-          <Component Win64="$(var.Win64)" Id="cmpA7B866D17D4FE53A6FB61B729299B469" Guid="*">
-            <File Id="filECC25388958325FF992DD60A621E47C0" KeyPath="yes" Source="$(var.SourceDir)/lib/pkgconfig/gstreamer-video-1.0.pc"/>
-          </Component>
-        </Directory>
       </Directory>
 
       <Directory Id="dirD78538F1FCC5DA55808D48E2CF8DF50A" Name="share">
@@ -464,18 +426,6 @@
       <ComponentRef Id="cmp256474F9561CF046B2E8D62461AAE748"/>
       <ComponentRef Id="cmp1ADDA32E2430CC624791D894B52532FB"/>
       <ComponentRef Id="cmp57B84B5CF0B18E3AA6C1032C62BE91F7"/>
-      <ComponentRef Id="cmp3A632D935E598CAE76E46873FB00DDED"/>
-      <ComponentRef Id="cmpCCE39B61EE63E2A0B9098BD7EC33AD5C"/>
-      <ComponentRef Id="cmpCBB8720769577B97735E41E838E8385B"/>
-      <ComponentRef Id="cmp3373B615ECB132C63F9261C348D294F6"/>
-      <ComponentRef Id="cmp512F0D73BD979FA89F2C4AA71FB1B562"/>
-      <ComponentRef Id="cmp21D04C8E22E1EC3BF2F6FC22395EC7E6"/>
-      <ComponentRef Id="cmpD63AE303BC28812557BF9244F64D9916"/>
-      <ComponentRef Id="cmp23EAED2A4F513A79F699D94BBF422D5B"/>
-      <ComponentRef Id="cmpA6D0D0CD5B458F1CAC67F7993C91ED10"/>
-      <ComponentRef Id="cmpB788822D297EEF64370B2DE25E4836D6"/>
-      <ComponentRef Id="cmp8B197959F285B4D28EFCB9D0E999004E"/>
-      <ComponentRef Id="cmpA7B866D17D4FE53A6FB61B729299B469"/>
       <ComponentRef Id="cmpFDC9AB836FA757756C00DA5738D0CD65"/>
       <ComponentRef Id="cmp23ADDEB3FA6E060D51D929E78F8F4433"/>
       <ComponentRef Id="cmp374EA0F2F1EB285B7C41F86ECC30424F"/>
