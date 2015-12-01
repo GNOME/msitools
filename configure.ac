@@ -65,6 +65,7 @@ done
 gl_WARN_ADD([-Wno-sign-compare])
 gl_WARN_ADD([-Wno-unused-parameter])
 gl_WARN_ADD([-Wno-missing-field-initializers])
+gl_WARN_ADD([-Wno-bad-function-cast]) # g_once_init_enter seems to trigger this
 
 m4_ifdef([AM_SILENT_RULES],[AM_SILENT_RULES([yes])])
 
