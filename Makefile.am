@@ -134,9 +134,6 @@ wixl_LDADD =					\
 # FIXME -j: automake valagen doesn't seem to wait deps:
 wixl_DEPENDENCIES = libmsi/libmsi.la common.vapi
 
-# FIXME: workaround for a vala bug 
-BUILT_SOURCES += wixl.h
-
 # Wixl-heat
 
 bin_PROGRAMS += wixl-heat
