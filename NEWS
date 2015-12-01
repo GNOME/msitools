@@ -1,3 +1,23 @@
+v0.95
+=====
+
+- Add libepoxy.wxi
+- Update gtk3.wxi
+- Update libcacad.wxi
+- Update nss.wxi
+- Update nspr.wxi
+- Update pango.wxi
+- Update gnutls.wxi
+- Update nettle.wxi
+- Update libvirt.wxi
+- Update fontconfig.wxi
+- Add bzip2.wxi
+- Update freetype.wxi
+- Update gstreamer1.wxi
+- Update gstreamer1-plugins-base.wxi
+- Update gstreamer1-plugins-bad-free.wxi
+- Translations
+
 v0.94
 =====
 
