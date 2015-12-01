@@ -34,12 +34,11 @@
 #endif
 
 #include <libmsi.h>
+#include <glib/gstdio.h>
 
 #include "test.h"
 
-#ifdef _WIN32
-#define mkdir(dir, mode) mkdir(dir)
-#else
+#ifndef _WIN32
 typedef uint16_t WCHAR;
 #define O_BINARY 0
 #endif
