@@ -1,5 +1,6 @@
 v0.94
 =====
+
 - Add support for Signature table
 - Add support for scheduling AppSearch
 - Add support for MsiFileHash table
