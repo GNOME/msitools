@@ -50,6 +50,7 @@ dist_wxi_DATA =					\
 	wixl/libtiff.wxi			\
 	wixl/libusbx.wxi			\
 	wixl/libvirt.wxi			\
+	wixl/libvirt-glib.wxi			\
 	wixl/libvorbis.wxi			\
 	wixl/libxml2.wxi			\
 	wixl/nettle.wxi				\
