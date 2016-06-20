@@ -62,6 +62,7 @@ dist_wxi_DATA =					\
 	wixl/orc.wxi				\
 	wixl/p11-kit.wxi			\
 	wixl/pango.wxi				\
+	wixl/pcre.wxi				\
 	wixl/pixman.wxi				\
 	wixl/portablexdr.wxi			\
 	wixl/pthreads.wxi			\

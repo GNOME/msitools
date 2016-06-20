@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Include xmlns="http://schemas.microsoft.com/wix/2006/wi">
+  <Fragment>
+    <DirectoryRef Id="INSTALLDIR">
+      <Directory Id="dir4A4C83474C1A3D8CEDC68EA1295BB260" Name="bin">
+        <Component Win64="$(var.Win64)" Id="cmp668040CFC18C80B20F14D55591D45E09" Guid="*">
+          <File Id="fil6733DC96AE40F90A1E2035E09A37F088" KeyPath="yes" Source="$(var.SourceDir)/bin/libpcre-1.dll"/>
+        </Component>
+        <Component Win64="$(var.Win64)" Id="cmp72BE68106F35943B29E99A283AD288F6" Guid="*">
+          <File Id="fil967778920F5897928123D4F15FB31FA5" KeyPath="yes" Source="$(var.SourceDir)/bin/libpcre16-0.dll"/>
+        </Component>
+        <Component Win64="$(var.Win64)" Id="cmp36BA2F946E5595ED0FFF72D90FF8FAD3" Guid="*">
+          <File Id="fil80AEC6CC662C27A25F652036948F8DCA" KeyPath="yes" Source="$(var.SourceDir)/bin/libpcre32-0.dll"/>
+        </Component>
+        <Component Win64="$(var.Win64)" Id="cmp5634365CD8AE1666A9D7D4833E635917" Guid="*">
+          <File Id="fil11EC64118C1D4B67643A496EF4D9F23F" KeyPath="yes" Source="$(var.SourceDir)/bin/libpcrecpp-0.dll"/>
+        </Component>
+        <Component Win64="$(var.Win64)" Id="cmpC84CAF3683ED7167C2BAF0CF2B8AC7F0" Guid="*">
+          <File Id="fil5994922B7023A117653B0C3430D4E0A9" KeyPath="yes" Source="$(var.SourceDir)/bin/libpcreposix-0.dll"/>
+        </Component>
+        <Component Win64="$(var.Win64)" Id="cmp82C47C102767D87083200390B6830572" Guid="*">
+          <File Id="filF5ED59AA06DE45F567AF06933E594CFA" KeyPath="yes" Source="$(var.SourceDir)/bin/pcregrep.exe"/>
+        </Component>
+        </Directory>
+    </DirectoryRef>
+  </Fragment>
+  <Fragment>
+    <ComponentGroup Id="CG.pcre">
+      <ComponentRef Id="cmp668040CFC18C80B20F14D55591D45E09"/>
+      <ComponentRef Id="cmp72BE68106F35943B29E99A283AD288F6"/>
+      <ComponentRef Id="cmp36BA2F946E5595ED0FFF72D90FF8FAD3"/>
+      <ComponentRef Id="cmp5634365CD8AE1666A9D7D4833E635917"/>
+      <ComponentRef Id="cmpC84CAF3683ED7167C2BAF0CF2B8AC7F0"/>
+      <ComponentRef Id="cmp82C47C102767D87083200390B6830572"/>
+    </ComponentGroup>
+  </Fragment>
+</Include>
