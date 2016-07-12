@@ -6,7 +6,7 @@
     <DirectoryRef Id="INSTALLDIR">
       <Directory Id="dirF3B61B20E2250498456FBB66DD63E154" Name="bin">
         <Component Win64="$(var.Win64)" Id="cmpA1DABC2491D8FFEDE1B305115701456D" Guid="*">
-          <File Id="filF15A4CFCF3F047C36D3A6592CDAC3D33" KeyPath="yes" Source="$(var.SourceDir)/bin/libspice-client-gtk-3.0-4.dll"/>
+          <File Id="filF15A4CFCF3F047C36D3A6592CDAC3D33" KeyPath="yes" Source="$(var.SourceDir)/bin/libspice-client-gtk-3.0-5.dll"/>
         </Component>
       </Directory>
     </DirectoryRef>
