@@ -24,9 +24,6 @@
         <Component Win64="$(var.Win64)" Id="cmp41746D5296A8554D60E68588090F6113" Guid="*">
           <File Id="filBB3B1264C58072C7D963EE71C7C8B360" KeyPath="yes" Source="$(var.SourceDir)/bin/virsh.exe"/>
         </Component>
-        <Component Win64="$(var.Win64)" Id="cmp349E5CE6DC8EFE5DB1F8F7D9EE65D794" Guid="*">
-          <File Id="fil12D96923CA9400FBFED124C2D897F9DF" KeyPath="yes" Source="$(var.SourceDir)/bin/virt-host-validate.exe"/>
-        </Component>
         <Component Win64="$(var.Win64)" Id="cmp5A64F65084C4A2F5C65AD2B52DA889C9" Guid="*">
           <File Id="filB82EDAFC45823931FE9E1B33F0966ABE" KeyPath="yes" Source="$(var.SourceDir)/bin/virt-pki-validate"/>
         </Component>
@@ -550,9 +547,6 @@
             <Component Win64="$(var.Win64)" Id="cmp411074C83ED9B03503D446F63E1FD21D" Guid="*">
               <File Id="fil7E5E0AEF0705F2825E26E24FE1C48786" KeyPath="yes" Source="$(var.SourceDir)/share/man/man1/virsh.1"/>
             </Component>
-            <Component Win64="$(var.Win64)" Id="cmpCF1E90E9E2A73FB28E5D9C24212575C5" Guid="*">
-              <File Id="filAE4DACFF6DEB6CE8F796838B8078B5D4" KeyPath="yes" Source="$(var.SourceDir)/share/man/man1/virt-host-validate.1"/>
-            </Component>
             <Component Win64="$(var.Win64)" Id="cmpD5C9CC47BA794FB929F50E8A2D9B6E80" Guid="*">
               <File Id="fil4C67F8E54FB3AB1E7168532DFD91E0B5" KeyPath="yes" Source="$(var.SourceDir)/share/man/man1/virt-pki-validate.1"/>
             </Component>
@@ -578,7 +572,6 @@
       <ComponentRef Id="cmpE285D1D7089CBDBA1061BBD4A7AF1000"/>
       <ComponentRef Id="cmp5648F8ED8EFC91809ECF3B09E70ECFC7"/>
       <ComponentRef Id="cmp41746D5296A8554D60E68588090F6113"/>
-      <ComponentRef Id="cmp349E5CE6DC8EFE5DB1F8F7D9EE65D794"/>
       <ComponentRef Id="cmp5A64F65084C4A2F5C65AD2B52DA889C9"/>
       <ComponentRef Id="cmp7B9E754936DA15F9743D74A8E94C70D8"/>
       <ComponentRef Id="cmp7A4376FBC4EFADFC0221F3A660481650"/>
@@ -664,7 +657,6 @@
       <ComponentRef Id="cmpE61B51B6BDA11E44B42C1316C61A08DA"/>
       <ComponentRef Id="cmp2D5844F1D4A9F507665D2AF8E50689CF"/>
       <ComponentRef Id="cmp411074C83ED9B03503D446F63E1FD21D"/>
-      <ComponentRef Id="cmpCF1E90E9E2A73FB28E5D9C24212575C5"/>
       <ComponentRef Id="cmpD5C9CC47BA794FB929F50E8A2D9B6E80"/>
       <ComponentRef Id="cmp183D5C9781080F8645308209417E5FE3"/>
     </ComponentGroup>
