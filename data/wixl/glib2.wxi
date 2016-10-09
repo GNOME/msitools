@@ -79,22 +79,22 @@
         <Directory Id="dir8DF6DB0D95533CE863B3A1DC7C17B0C3" Name="glib-2.0">
           <Directory Id="dir2BADD2E15A33B1BB92ABDD834AC7211C" Name="gdb">
             <Component Win64="$(var.Win64)" Id="cmpEF5C294574A1582C391C2E2A004F341B" Guid="*">
-              <File Id="fil11A2F5D07F583AE7A5FA4AD40DC9D49E" KeyPath="yes" Source="$(var.SourceDir)/share/glib-2.0/gdb/glib.py"/>
+              <File Id="fil11A2F5D07F583AE7A5FA4AD40DC9D49E" KeyPath="yes" Source="$(var.SourceDir)/share/glib-2.0/gdb/glib_gdb.py"/>
             </Component>
             <Component Win64="$(var.Win64)" Id="cmp1A59B35AEB09B1BA9E50D0D0E9353895" Guid="*">
-              <File Id="fil6BAEB6AEE38E0188386E1707E2AA5FA3" KeyPath="yes" Source="$(var.SourceDir)/share/glib-2.0/gdb/glib.pyc"/>
+              <File Id="fil6BAEB6AEE38E0188386E1707E2AA5FA3" KeyPath="yes" Source="$(var.SourceDir)/share/glib-2.0/gdb/glib_gdb.pyc"/>
             </Component>
             <Component Win64="$(var.Win64)" Id="cmp7623CB02924F5F1ED8085EFA586A3C9C" Guid="*">
-              <File Id="filBE94785095A550EECA39206BF25F0FF0" KeyPath="yes" Source="$(var.SourceDir)/share/glib-2.0/gdb/glib.pyo"/>
+              <File Id="filBE94785095A550EECA39206BF25F0FF0" KeyPath="yes" Source="$(var.SourceDir)/share/glib-2.0/gdb/glib_gdb.pyo"/>
             </Component>
             <Component Win64="$(var.Win64)" Id="cmp058ABAE3E4BE796474C695380BAE5224" Guid="*">
-              <File Id="filD089D91479107702C0FC81B3C10FDB2E" KeyPath="yes" Source="$(var.SourceDir)/share/glib-2.0/gdb/gobject.py"/>
+              <File Id="filD089D91479107702C0FC81B3C10FDB2E" KeyPath="yes" Source="$(var.SourceDir)/share/glib-2.0/gdb/gobject_gdb.py"/>
             </Component>
             <Component Win64="$(var.Win64)" Id="cmpDA64D053823C9BB47669A576DFD79865" Guid="*">
-              <File Id="fil8AA7D6398B65BD09C89AF876F0399F81" KeyPath="yes" Source="$(var.SourceDir)/share/glib-2.0/gdb/gobject.pyc"/>
+              <File Id="fil8AA7D6398B65BD09C89AF876F0399F81" KeyPath="yes" Source="$(var.SourceDir)/share/glib-2.0/gdb/gobject_gdb.pyc"/>
             </Component>
             <Component Win64="$(var.Win64)" Id="cmp2C44A4EB3A7F3E66A8A1DE7FED951A85" Guid="*">
-              <File Id="filF07D1A73599E6071A4E25FAC0B6E7EA0" KeyPath="yes" Source="$(var.SourceDir)/share/glib-2.0/gdb/gobject.pyo"/>
+              <File Id="filF07D1A73599E6071A4E25FAC0B6E7EA0" KeyPath="yes" Source="$(var.SourceDir)/share/glib-2.0/gdb/gobject_gdb.pyo"/>
             </Component>
           </Directory>
           <Directory Id="dirDC91424A11A0F53C9A234A9B2AE16588" Name="gettext">
