@@ -1,3 +1,29 @@
+v0.96
+=====
+
+- Add libvirt-glib.wxi
+- Update nettle to 3.2.1
+- Fix implicit declaration of mkdir in the testdatabase
+- Disable -Wbad-function-cast (build-sys)
+- Removed unneeded workaround (build-sys)
+- Remove non-existent libvirt-glib translations
+- Fix translations's path for libvirt-glib
+- Add adwaita-icon-theme.wxi
+- Add pcre.wxi
+- Add pcre as glib2 dependency
+- Remove virt-host-validade (libvirt.wxi)
+- Update libspice-client-gtk dll version
+- Add support to external cab handling (msiextract)
+- Update adwaita and glib for f25
+- Update git.mk
+- Fix "make -j"
+- Update gstreamer1 to 1.10.0
+- Update gstreamer1-plugins-bad-free to 1.10.0
+- Drop spice-gtk.wxi (spice-gtk2)
+- Updade nettle to 3.3
+- Remove libidn's locale data
+- Translations
+
 v0.95
 =====
 
