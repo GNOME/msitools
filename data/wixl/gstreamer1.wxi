@@ -11,6 +11,9 @@
         <Component Win64="$(var.Win64)" Id="cmpAA88D52F01E4D004D1666D5988A184B8" Guid="*">
           <File Id="fil286E2FC3FA049090890F807ED55D71BA" KeyPath="yes" Source="$(var.SourceDir)/bin/gst-launch-1.0.exe"/>
         </Component>
+        <Component Win64="$(var.Win64)" Id="cmp3D98DB8757060DE1828A4E23B9E811B3" Guid="*">
+          <File Id="fil870D88BE5ABD2EE186C4EDB5A0435801" KeyPath="yes" Source="$(var.SourceDir)/bin/gst-stats-1.0.exe"/>
+        </Component>
         <Component Win64="$(var.Win64)" Id="cmp0AE24116E8CA4DF1492716F8BF94F181" Guid="*">
           <File Id="filDB995BFDCA537B45D1BE44A777ECF72E" KeyPath="yes" Source="$(var.SourceDir)/bin/gst-typefind-1.0.exe"/>
         </Component>
@@ -31,6 +34,9 @@
         <Directory Id="dir60BBD2533BA0D419152D3355E05AC9E4" Name="gstreamer-1.0">
           <Component Win64="$(var.Win64)" Id="cmp0ACFE00C63B8A3232D2DEB869037D87C" Guid="*">
             <File Id="fil114D395327F4D6569AC02A39DFB1971E" KeyPath="yes" Source="$(var.SourceDir)/lib/gstreamer-1.0/libgstcoreelements.dll"/>
+          </Component>
+          <Component Win64="$(var.Win64)" Id="cmp811F5C25B1348DD7A6FFE318E33B2F72" Guid="*">
+            <File Id="filAC3D4D4F8DCE84F82D66194E5E5A9EE1" KeyPath="yes" Source="$(var.SourceDir)/lib/gstreamer-1.0/libgstcoretracers.dll"/>
           </Component>
         </Directory>
       </Directory>
@@ -331,12 +337,14 @@
       <ComponentGroupRef Id="CG.glib2"/>
       <ComponentRef Id="cmp0D8CF9997EEC93FBB904414012FB4514"/>
       <ComponentRef Id="cmpAA88D52F01E4D004D1666D5988A184B8"/>
+      <ComponentRef Id="cmp3D98DB8757060DE1828A4E23B9E811B3"/>
       <ComponentRef Id="cmp0AE24116E8CA4DF1492716F8BF94F181"/>
       <ComponentRef Id="cmp5458F1BAFDD11BA51E75AE9CC48E9B4B"/>
       <ComponentRef Id="cmp46DB6990FC2740672B3421145559C9BD"/>
       <ComponentRef Id="cmp5AEB3111ED36D8DF9A4732D4FCD9FB54"/>
       <ComponentRef Id="cmp9D35809C95F77B45F174A9DAB67E9D04"/>
       <ComponentRef Id="cmp0ACFE00C63B8A3232D2DEB869037D87C"/>
+      <ComponentRef Id="cmp811F5C25B1348DD7A6FFE318E33B2F72"/>
       <ComponentRef Id="cmp3694FB7C618F9AA6A8199B5908839EED"/>
       <ComponentRef Id="cmp453A7B102CA0C641D11AA1D797111983"/>
       <ComponentRef Id="cmpA4D7E136426B5975933DC66C5BCBE09E"/>
