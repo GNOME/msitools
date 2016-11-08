@@ -84,7 +84,7 @@ libcommon_a_CFLAGS = -w
 
 common.vapi libcommon.h: libcommon.a
 
-BUILT_SOURCES = common.vapi libcommon.h
+BUILT_SOURCES = common.vapi libcommon.h wixl.h
 
 bin_PROGRAMS += wixl
 
