@@ -84,7 +84,7 @@ libcommon_a_CFLAGS = -w
 
 common.vapi libcommon.h: libcommon.a
 
-BUILT_SOURCES = common.vapi libcommon.h wixl.h
+BUILT_SOURCES = common.vapi libcommon.h
 
 bin_PROGRAMS += wixl
 
@@ -197,6 +197,7 @@ $(srcdir)/tests/testsuite: tests/testsuite.at tests/wixl.at tests/package.m4
 MAINTAINERCLEANFILES =				\
 	$(srcdir)/tests/testsuite		\
 	$(srcdir)/tests/package.m4		\
+	wixl.h					\
 	$(NULL)
 
 EXTRA_DIST +=					\
