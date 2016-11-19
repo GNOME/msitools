@@ -84,10 +84,8 @@ public string? get_directory_name (Libmsi.Record rec) throws GLib.Error {
     // only by intuition...
     if (rec.get_string (1) == "ProgramFilesFolder")
         return "Program Files";
-    else if (name == ".")
+    else if (name == "." || name == "SourceDir")
         return "";
-    else if (name == "SourceDir")
-        return null;
 
     return name;
 }
