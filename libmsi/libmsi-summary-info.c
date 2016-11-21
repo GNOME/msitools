@@ -273,7 +273,7 @@ static void parse_filetime( const char *str, guint64 *ft )
 
     while ( *p == ' ' || *p == '\t' ) p++;
 
-    tm.tm_year = strtol( p, &end, 10 );
+    tm.tm_year = strtol( p, &end, 10 ) - 1900;
     if (*end != '/') return;
     p = end + 1;
 
