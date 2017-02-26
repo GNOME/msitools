@@ -24,7 +24,7 @@ msgstr "Vis versionsnummer"
 
 #: ../tools/msiextract.vala:11
 msgid "Extract to directory"
-msgstr "Udtr??k til mappe"
+msgstr "Udtræk til mappe"
 
 #: ../tools/msiextract.vala:12
 msgid "List files only"
@@ -36,7 +36,7 @@ msgstr "MSI_FIL ..."
 
 #: ../tools/msiextract.vala:156
 msgid "- a msi files extracting tool"
-msgstr "- et udtr??kningsv??rkt??j for msi-filer"
+msgstr "- et udtrækningsværktøj for msi-filer"
 
 #: ../tools/msiextract.vala:176 ../tools/wixl/wixl.vala:75
 msgid "Please specify input files.\n"
@@ -56,15 +56,15 @@ msgstr "Variabel for kildemappe"
 
 #: ../tools/wixl/wixl-heat.vala:15
 msgid "Prefix"
-msgstr "Pr??fiks"
+msgstr "Præfiks"
 
 #: ../tools/wixl/wixl-heat.vala:16
 msgid "Exclude prefix"
-msgstr "Udelad pr??fix"
+msgstr "Udelad præfix"
 
 #: ../tools/wixl/wixl-heat.vala:17
 msgid "Add Win64 Component"
-msgstr "Tilf??j Win64-komponent"
+msgstr "Tilføj Win64-komponent"
 
 #: ../tools/wixl/wixl.vala:22
 msgid "Verbose output"
@@ -80,7 +80,7 @@ msgstr "Definer variabel"
 
 #: ../tools/wixl/wixl.vala:25
 msgid "Target architecture"
-msgstr "M??larkitektur"
+msgstr "Målarkitektur"
 
 #: ../tools/wixl/wixl.vala:26
 msgid "Include directory"
@@ -92,7 +92,7 @@ msgstr "Inkluderingsmappe for systemet"
 
 #: ../tools/wixl/wixl.vala:28
 msgid "Stop after the preprocessing stage"
-msgstr "Stop efter forbr??ndertrinet"
+msgstr "Stop efter forbrændertrinet"
 
 #: ../tools/wixl/wixl.vala:29
 msgid "INPUT_FILE..."
@@ -101,11 +101,11 @@ msgstr "INDDATA_FIL ..."
 #: ../tools/wixl/wixl.vala:37
 #, c-format
 msgid "arch of type '%s' is not supported"
-msgstr "arkitektur af typen \"%s\" er ikke underst??ttet"
+msgstr "arkitektur af typen \"%s\" er ikke understøttet"
 
 #: ../tools/wixl/wixl.vala:49
 msgid "- a msi building tool"
-msgstr "- et msi-kompileringsv??rkt??j"
+msgstr "- et msi-kompileringsværktøj"
 
 #: ../tools/wixl/wixl.vala:83
 msgid "Please specify the output file.\n"
@@ -114,7 +114,7 @@ msgstr "Angiv venligst uddatafilen.\n"
 #: ../tools/wixl/wixl.vala:100
 #, c-format
 msgid "Loading %s...\n"
-msgstr "Indl??ser %s ...\n"
+msgstr "Indlæser %s ...\n"
 
 #: ../tools/wixl/wixl.vala:110
 #, c-format
