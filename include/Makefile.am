@@ -8,7 +8,7 @@ ENUMS =						\
 	$(NULL)
 
 $(ENUMS): %: %.etemplate $(ENUMS_FILES)
-	$(AM_V_GEN)$(GLIB_MKENUMS) --template $^ > $@
+	$(AM_V_GEN)glib-mkenums --template $^ > $@
 
 BUILT_SOURCES = $(ENUMS)
 

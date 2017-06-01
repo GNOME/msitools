@@ -5,6 +5,6 @@ test -n "$srcdir" || srcdir=.
 (
   cd "$srcdir" &&
   mkdir -p m4 &&
-  AUTOPOINT='intltoolize --automake --copy' autoreconf -fiv -Wall
+  autoreconf -fiv -Wall
 ) || exit
 test -n "$NOCONFIGURE" || "$srcdir/configure" "$@"
