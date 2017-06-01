@@ -115,6 +115,7 @@ public int main (string[] args) {
         warning (error.message);
     }
 
+    indent = indent[0:-2];
     foreach (var l in last_path) {
       stdout.printf (indent + "</Directory>\n");
       indent = indent[0:-2];
