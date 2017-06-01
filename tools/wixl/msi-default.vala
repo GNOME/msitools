@@ -92,7 +92,7 @@ namespace Wixl {
             WriteRegistryValues,
         }
 
-        static const ActionInfo[] actions = {
+        const ActionInfo[] actions = {
             { "InstallInitialize", null, 1500, ActionFlags.ADMIN_EXECUTE_SEQUENCE|ActionFlags.ADVT_EXECUTE_SEQUENCE|ActionFlags.INSTALL_EXECUTE_SEQUENCE },
             { "InstallExecute", "NOT Installed", 6500, ActionFlags.INSTALL_EXECUTE_SEQUENCE },
             { "InstallExecuteAgain", "NOT Installed", 6550, ActionFlags.INSTALL_EXECUTE_SEQUENCE },

@@ -77,7 +77,7 @@ namespace Wixl {
     }
 
     /* Namespace UUID: {de73ba5a-ed96-4a66-ba1b-fbb44e659ad7} */
-    static const string uuid_namespace =
+    const string uuid_namespace =
         "\xde\x73\xba\x5a\xed\x96\x4a\x66\xba\x1b\xfb\xb4\x4e\x65\x9a\xd7";
 
     public static string uuid_from_name(string s) {
