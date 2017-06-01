@@ -26,6 +26,10 @@ bool filtered (string file) {
     return false;
 }
 
+string escape_filename(string filename) {
+    return filename.replace("$", "$$");
+}
+
 public int main (string[] args) {
 
     var cmdline = string.joinv (" ", args);
@@ -103,7 +107,7 @@ public int main (string[] args) {
                 else
                     stdout.printf (indent + "<Component Id=\"%s\" Guid=\"*\">\n".printf (id));
                 file = sourcedir + Path.DIR_SEPARATOR_S + file;
-                stdout.printf (indent + "  <File Id=\"%s\" KeyPath=\"yes\" Source=\"%s\"/>\n".printf (generate_id ("fil", 1, file), file));
+                stdout.printf (indent + "  <File Id=\"%s\" KeyPath=\"yes\" Source=\"%s\"/>\n".printf (generate_id ("fil", 1, file), escape_filename(file)));
                 stdout.printf (indent + "</Component>\n");
             }
         }
