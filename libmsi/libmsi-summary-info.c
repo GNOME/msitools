@@ -313,12 +313,14 @@ static void read_properties_from_data( LibmsiOLEVariant *prop, const uint8_t *da
     LibmsiOLEVariant *property;
     uint32_t idofs, len;
     char *str = NULL;
+    gboolean valid;
 
     idofs = 8;
 
     /* now set all the properties */
     for( i = 0; i < cProperties; i++ )
     {
+        valid = TRUE;
         int propid = read_dword(data, &idofs);
         unsigned dwOffset = read_dword(data, &idofs);
         int proptype;
@@ -362,6 +364,7 @@ static void read_properties_from_data( LibmsiOLEVariant *prop, const uint8_t *da
             if( dwOffset + 8 > sz )
             {
                 g_critical("not enough data for type %d %d \n", dwOffset, sz);
+                valid = FALSE;
                 break;
             }
             property->filetime = read_dword(data, &dwOffset);
@@ -372,6 +375,7 @@ static void read_properties_from_data( LibmsiOLEVariant *prop, const uint8_t *da
             if( dwOffset + len > sz )
             {
                 g_critical("not enough data for type %d %d %d \n", dwOffset, len, sz);
+                valid = FALSE;
                 break;
             }
             str = msi_alloc( len );
@@ -380,6 +384,10 @@ static void read_properties_from_data( LibmsiOLEVariant *prop, const uint8_t *da
             break;
         default:
             g_warn_if_reached ();
+        }
+
+        if (valid == FALSE) {
+            break;
         }
 
         /* check the type is the same as we expect */
