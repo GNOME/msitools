@@ -353,7 +353,6 @@ static void read_properties_from_data( LibmsiOLEVariant *prop, const uint8_t *da
             break;
         }
 
-        property->vt = proptype;
         switch(proptype)
         {
         case OLEVT_I2:
@@ -409,6 +408,9 @@ static void read_properties_from_data( LibmsiOLEVariant *prop, const uint8_t *da
             g_critical("invalid type \n");
             break;
         }
+
+        /* Now we now the type is valid, store it */
+        property->vt = proptype;
     }
 }
 
