@@ -106,8 +106,8 @@ public int main (string[] args) {
                     stdout.printf (indent + "<Component Win64=\"$(var.Win64)\" Id=\"%s\" Guid=\"*\">\n".printf (id));
                 else
                     stdout.printf (indent + "<Component Id=\"%s\" Guid=\"*\">\n".printf (id));
-                file = sourcedir + Path.DIR_SEPARATOR_S + file;
-                stdout.printf (indent + "  <File Id=\"%s\" KeyPath=\"yes\" Source=\"%s\"/>\n".printf (generate_id ("fil", 1, file), escape_filename(file)));
+                file = sourcedir + Path.DIR_SEPARATOR_S + escape_filename(file);
+                stdout.printf (indent + "  <File Id=\"%s\" KeyPath=\"yes\" Source=\"%s\"/>\n".printf (generate_id ("fil", 1, file), file));
                 stdout.printf (indent + "</Component>\n");
             }
         }
