@@ -6,6 +6,7 @@
 <?require libjpeg-turbo.wxi?>
 <?require celt051.wxi?>
 <?require opus.wxi?>
+<?require orc.wxi?>
 <?require hicolor-icon-theme.wxi?>
 <Include xmlns="http://schemas.microsoft.com/wix/2006/wi">
   <Fragment>
@@ -34,6 +35,9 @@
         </Component>
         <Component Win64="$(var.Win64)" Id="cmp93FAE555B2F925E239C97B777E49DB05" Guid="*">
           <File Id="fil99891F7CDB47EF478CE6AD8F7FE84996" KeyPath="yes" Source="$(var.SourceDir)/bin/libgsttag-1.0-0.dll"/>
+        </Component>
+        <Component Win64="$(var.Win64)" Id="cmp64B9B34C8CDDC860E1091D916AD18974" Guid="*">
+          <File Id="filD084197A284B069DC169CC8A9FB52E1B" KeyPath="yes" Source="$(var.SourceDir)/bin/libgstvideo-1.0-0.dll"/>
         </Component>
 
         <!-- gst-plugins-good -->
@@ -100,9 +104,6 @@
       <ComponentRef Id="cmpD9079AE5EA50B2FAF0D89AA30A612B73"/>
       <ComponentRef Id="cmpF49F1DE553A3EB7F69C116932A799ADF"/>
 
-      <!-- from gstreamer1 (lib) -->
-      <ComponentRef Id="cmp0ACFE00C63B8A3232D2DEB869037D87C"/>
-
       <!-- from gstreamer1-plugins-base (bin) -->
       <ComponentRef Id="cmp41BC989F8EA49BB2E49028C69193B3BB"/>
       <ComponentRef Id="cmpD6B03E1492CA64AF46E4C18AEFBDC51E"/>
@@ -111,10 +112,12 @@
       <ComponentRef Id="cmp93FAE555B2F925E239C97B777E49DB05"/>
 
       <!-- from gstreamer1-plugins-base (lib) -->
+      <ComponentGroupRef Id="CG.orc"/>
       <ComponentRef Id="cmpDBE70B8247EC74A22BC700164134F68A"/>
       <ComponentRef Id="cmp4B0C983D765E7C44897E9143F454A027"/>
       <ComponentRef Id="cmp8F07634CD23193CA1415D2F0F473FDC3"/>
       <ComponentRef Id="cmp577891EDF25587C451F9CD9ADEC17950"/>
+      <ComponentRef Id="cmp64B9B34C8CDDC860E1091D916AD18974"/>
 
       <!-- from gstreamer1-plugins-good (lib) -->
       <ComponentRef Id="cmp6E40650EE781D7A31FD8621801955090"/>
