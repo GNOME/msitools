@@ -1,3 +1,14 @@
+v0.97
+=====
+
+- fix potential crash in read_properties
+- fix double-frees in libmsi_summary_info_finalize
+- wixl-heat: escape $ in filename, bgo#756904
+- correctly parse dates, bgo#752860
+- msiextract: fix extracting to SourceDir, bgo#773935
+- wix updates: glib2, jasper, adwaita
+- translation updates, build-sys fixes
+
 v0.96
 =====
 
