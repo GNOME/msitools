@@ -526,15 +526,14 @@ string_table *msi_load_string_table( GsfInfile *stg, unsigned *bytes_per_strref 
 
         /*
          * If a string is over 64k, the previous string entry is made null
-         * and the high word of the length is inserted in the null string's
-         * reference count field (i.e. mixed endian).
+         * and the high word of the length is inserted in the string's
+         * reference count field.
          *
          * TODO: add testcase
          */
         if (len == 0)
         {
-            len = (refs << 16) | pool[i*4] | (pool[i*4+1] << 8);
-            refs = pool[i*4+2] | (pool[i*4+3] << 8);
+            len = pool[i*4] | (pool[i*4+1] << 8) | (pool[i*4+2] << 16) | (pool[i*4+3] << 24);
             i++;
         }
 
