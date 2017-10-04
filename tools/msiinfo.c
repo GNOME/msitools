@@ -420,8 +420,8 @@ static gboolean export_create_table(const char *table,
     guint num_columns = libmsi_record_get_field_count(names);
     guint num_keys = libmsi_record_get_field_count(keys);
     guint i, len;
-    char size[20], extra[30];
-    gchar *name, *type;
+    char extra[30];
+    gchar *name, *type, *typesql;
 
     if (!strcmp(table, "_Tables") ||
         !strcmp(table, "_Columns") ||
@@ -454,26 +454,26 @@ static gboolean export_create_table(const char *table,
                 strcat(extra, " LOCALIZABLE");
                 /* fall through */
             case 's': case 'S':
-                strcpy(size, type+1);
-                sprintf(type, "CHAR(%s)", size);
+                typesql = g_strdup_printf("CHAR(%s)", type+1);
                 break;
             case 'i': case 'I':
                 len = atol(type + 1);
                 if (len <= 2)
-                    strcpy(type, "INT");
+                    typesql = g_strdup("INT");
                 else if (len == 4)
-                    strcpy(type, "LONG");
+                    typesql = g_strdup("LONG");
                 else
                     abort();
                 break;
             case 'v': case 'V':
-                strcpy(type, "OBJECT");
+                typesql = g_strdup("OBJECT");
                 break;
             default:
                 abort();
         }
 
-        printf("`%s` %s%s", name, type, extra);
+        printf("`%s` %s%s", name, typesql, extra);
+        g_free(typesql);
         g_free(name);
         g_free(type);
     }
