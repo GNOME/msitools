@@ -143,6 +143,10 @@ public void extract (string filename) throws GLib.Error {
     query.execute ();
     while ((rec = query.fetch ()) != null) {
         var cab = rec.get_string (4);
+        if (cab == "") {
+            // Ignore empty cab names
+            continue;
+        }
         extract_cab (db, cab, cab_to_name);
     }
 }
