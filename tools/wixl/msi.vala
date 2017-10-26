@@ -451,11 +451,11 @@ namespace Wixl {
         static construct {
             name = "Shortcut";
             sql_create = "CREATE TABLE `Shortcut` (`Shortcut` CHAR(72) NOT NULL, `Directory_` CHAR(72) NOT NULL, `Name` CHAR(128) NOT NULL LOCALIZABLE, `Component_` CHAR(72) NOT NULL, `Target` CHAR(72) NOT NULL, `Arguments` CHAR(255), `Description` CHAR(255) LOCALIZABLE, `Hotkey` INT, `Icon_` CHAR(72), `IconIndex` INT, `ShowCmd` INT, `WkDir` CHAR(72), `DisplayResourceDLL` CHAR(255), `DisplayResourceId` INT, `DescriptionResourceDLL` CHAR(255), `DescriptionResourceId` INT PRIMARY KEY `Shortcut`)";
-            sql_insert = "INSERT INTO `Shortcut` (`Shortcut`, `Directory_`, `Name`, `Component_`, `Target`, `Icon_`, `IconIndex`, `WkDir`, `Description`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            sql_insert = "INSERT INTO `Shortcut` (`Shortcut`, `Directory_`, `Name`, `Component_`, `Target`, `Icon_`, `IconIndex`, `WkDir`, `Description`, `Arguments`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         }
 
         public Libmsi.Record add (string Shortcut, string Directory, string Name, string Component) throws GLib.Error {
-            var rec = new Libmsi.Record (9);
+            var rec = new Libmsi.Record (10);
 
             if (!rec.set_string (1, Shortcut) ||
                 !rec.set_string (2, Directory) ||
@@ -490,6 +490,11 @@ namespace Wixl {
 
         public static void set_description (Libmsi.Record rec, string Description) throws GLib.Error {
             if (!rec.set_string (9, Description))
+                throw new Wixl.Error.FAILED ("failed to set record");
+        }
+
+        public static void set_arguments (Libmsi.Record rec, string Arguments) throws GLib.Error {
+            if (!rec.set_string (10, Arguments))
                 throw new Wixl.Error.FAILED ("failed to set record");
         }
     }

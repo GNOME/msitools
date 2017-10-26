@@ -715,6 +715,8 @@ namespace Wixl {
                 MsiTableShortcut.set_target (rec, shortcut.Target);
             if (shortcut.Description != null)
                 MsiTableShortcut.set_description (rec, shortcut.Description);
+            if (shortcut.Arguments != null)
+                MsiTableShortcut.set_arguments (rec, shortcut.Arguments);
         }
 
         public override void visit_sequence (WixSequence sequence) throws GLib.Error {
