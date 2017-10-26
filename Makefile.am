@@ -39,7 +39,7 @@ msibuild_LDADD = -lmsi $(GLIB_LIBS) $(GSF_LIBS) $(UUID_LIBS)
 msibuild_DEPENDENCIES = libmsi/libmsi.la
 
 msiinfo_SOURCES = tools/msiinfo.c
-msiinfo_LDADD = -lmsi $(GLIB_LIBS) $(GSF_LIBS)
+msiinfo_LDADD = -lmsi $(GLIB_LIBS) $(GSF_LIBS) $(GOBJECT_LIBS)
 msiinfo_DEPENDENCIES = libmsi/libmsi.la
 
 # msiextract
