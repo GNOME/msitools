@@ -135,7 +135,7 @@ static void test_suminfo(void)
     g_object_unref(hsuminfo);
 
     /* try again with a higher update count */
-    hsuminfo = libmsi_summary_info_new(hdb, 10, NULl);
+    hsuminfo = libmsi_summary_info_new(hdb, 10, NULL);
     ok(hsuminfo, "libmsi_database_get_summary_info failed\n");
 
     libmsi_summary_info_set_string(hsuminfo, LIBMSI_PROPERTY_TITLE, "JungAh", &error);
@@ -167,7 +167,7 @@ static void test_suminfo(void)
     hdb = libmsi_database_new(msifile, LIBMSI_DB_OPEN_TRANSACT, NULL);
     ok(hdb, "libmsi_database_new failed\n");
 
-    hsuminfo = libmsi_summary_info_new(hdb, 1, NULl);
+    hsuminfo = libmsi_summary_info_new(hdb, 1, NULL);
     ok(hsuminfo, "libmsi_database_get_summary_info failed\n");
 
     r = libmsi_summary_info_set_string(hsuminfo, LIBMSI_PROPERTY_AUTHOR, "Mike", error);
@@ -331,7 +331,7 @@ static void test_summary_binary(void)
     ok( INVALID_FILE_ATTRIBUTES != GetFileAttributes(msifile), "file doesn't exist!\n");
 
     /* just libmsi_database_new should not create a file */
-    hdb = libmsi_database_new(msifile, LIBMSI_DB_OPEN_READONLY, NULl);
+    hdb = libmsi_database_new(msifile, LIBMSI_DB_OPEN_READONLY, NULL);
     ok(hdb, "libmsi_database_new failed\n");
 
     hsuminfo = libmsi_summary_info_new(hdb, 0, NULL);
