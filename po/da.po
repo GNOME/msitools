@@ -6,9 +6,9 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: msitools master\n"
-"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
+"Report-Msgid-Bugs-To: https://bugzilla.gnome.org/enter_bug.cgi?"
 "product=msitools&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2016-12-20 09:34+0000\n"
+"POT-Creation-Date: 2017-06-01 14:23+0000\n"
 "PO-Revision-Date: 2017-12-25 09:34+0000\n"
 "Last-Translator: Joe Hansen <joedalton2@yahoo.dk>\n"
 "Language-Team: Danish <dansk@dansk-gruppen.dk>\n"
@@ -18,110 +18,110 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: ../tools/msiextract.vala:10 ../tools/wixl/wixl.vala:21
+#: tools/msiextract.vala:10 tools/wixl/wixl.vala:21
 msgid "Display version number"
 msgstr "Vis versionsnummer"
 
-#: ../tools/msiextract.vala:11
+#: tools/msiextract.vala:11
 msgid "Extract to directory"
 msgstr "Udtræk til mappe"
 
-#: ../tools/msiextract.vala:12
+#: tools/msiextract.vala:12
 msgid "List files only"
 msgstr "Vis kun filer"
 
-#: ../tools/msiextract.vala:13
+#: tools/msiextract.vala:13
 msgid "MSI_FILE..."
-msgstr "MSI_FIL ..."
+msgstr "MSI_FIL …"
 
-#: ../tools/msiextract.vala:156
+#: tools/msiextract.vala:156
 msgid "- a msi files extracting tool"
 msgstr "- et udtrækningsværktøj for msi-filer"
 
-#: ../tools/msiextract.vala:176 ../tools/wixl/wixl.vala:75
+#: tools/msiextract.vala:176 tools/wixl/wixl.vala:75
 msgid "Please specify input files.\n"
 msgstr "Angiv venligst inddatafiler.\n"
 
-#: ../tools/wixl/wixl-heat.vala:12
+#: tools/wixl/wixl-heat.vala:12
 msgid "Directory Ref"
 msgstr "Mapperef."
 
-#: ../tools/wixl/wixl-heat.vala:13
+#: tools/wixl/wixl-heat.vala:13
 msgid "Component Group"
 msgstr "Komponentgruppe"
 
-#: ../tools/wixl/wixl-heat.vala:14
+#: tools/wixl/wixl-heat.vala:14
 msgid "Variable for source dir"
 msgstr "Variabel for kildemappe"
 
-#: ../tools/wixl/wixl-heat.vala:15
+#: tools/wixl/wixl-heat.vala:15
 msgid "Prefix"
 msgstr "Præfiks"
 
-#: ../tools/wixl/wixl-heat.vala:16
+#: tools/wixl/wixl-heat.vala:16
 msgid "Exclude prefix"
 msgstr "Udelad præfix"
 
-#: ../tools/wixl/wixl-heat.vala:17
+#: tools/wixl/wixl-heat.vala:17
 msgid "Add Win64 Component"
 msgstr "Tilføj Win64-komponent"
 
-#: ../tools/wixl/wixl.vala:22
+#: tools/wixl/wixl.vala:22
 msgid "Verbose output"
 msgstr "Uddybende uddata"
 
-#: ../tools/wixl/wixl.vala:23
+#: tools/wixl/wixl.vala:23
 msgid "Output file"
 msgstr "Uddatafil"
 
-#: ../tools/wixl/wixl.vala:24
+#: tools/wixl/wixl.vala:24
 msgid "Define variable"
 msgstr "Definer variabel"
 
-#: ../tools/wixl/wixl.vala:25
+#: tools/wixl/wixl.vala:25
 msgid "Target architecture"
 msgstr "Målarkitektur"
 
-#: ../tools/wixl/wixl.vala:26
+#: tools/wixl/wixl.vala:26
 msgid "Include directory"
 msgstr "Inkluderingsmappe"
 
-#: ../tools/wixl/wixl.vala:27
+#: tools/wixl/wixl.vala:27
 msgid "System include directory"
 msgstr "Inkluderingsmappe for systemet"
 
-#: ../tools/wixl/wixl.vala:28
+#: tools/wixl/wixl.vala:28
 msgid "Stop after the preprocessing stage"
 msgstr "Stop efter forbrændertrinet"
 
-#: ../tools/wixl/wixl.vala:29
+#: tools/wixl/wixl.vala:29
 msgid "INPUT_FILE..."
-msgstr "INDDATA_FIL ..."
+msgstr "INDDATA_FIL …"
 
-#: ../tools/wixl/wixl.vala:37
+#: tools/wixl/wixl.vala:37
 #, c-format
 msgid "arch of type '%s' is not supported"
-msgstr "arkitektur af typen \"%s\" er ikke understøttet"
+msgstr "arkitektur af typen “%s” er ikke understøttet"
 
-#: ../tools/wixl/wixl.vala:49
+#: tools/wixl/wixl.vala:49
 msgid "- a msi building tool"
 msgstr "- et msi-kompileringsværktøj"
 
-#: ../tools/wixl/wixl.vala:83
+#: tools/wixl/wixl.vala:83
 msgid "Please specify the output file.\n"
 msgstr "Angiv venligst uddatafilen.\n"
 
-#: ../tools/wixl/wixl.vala:100
+#: tools/wixl/wixl.vala:100
 #, c-format
 msgid "Loading %s...\n"
-msgstr "Indlæser %s ...\n"
+msgstr "Indlæser %s …\n"
 
-#: ../tools/wixl/wixl.vala:110
+#: tools/wixl/wixl.vala:110
 #, c-format
 msgid "Building %s...\n"
-msgstr "Kompilerer %s ...\n"
+msgstr "Kompilerer %s …\n"
 
-#: ../tools/wixl/wixl.vala:113
+#: tools/wixl/wixl.vala:113
 #, c-format
 msgid "Writing %s...\n"
-msgstr "Skriver %s ...\n"
+msgstr "Skriver %s …\n"
