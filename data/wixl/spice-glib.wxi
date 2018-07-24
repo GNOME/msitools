@@ -16,9 +16,6 @@
         <Component Win64="$(var.Win64)" Id="cmp102591AAF331792A897FB24554275832" Guid="*">
           <File Id="fil35FAB81A77DA2E800C66E4D946F97031" KeyPath="yes" Source="$(var.SourceDir)/bin/libspice-client-glib-2.0-8.dll"/>
         </Component>
-        <Component Win64="$(var.Win64)" Id="cmpD9079AE5EA50B2FAF0D89AA30A612B73" Guid="*">
-          <File Id="fil8CEB7404BB93577C36D980F7AA6DEADD" KeyPath="yes" Source="$(var.SourceDir)/bin/libspice-controller-0.dll"/>
-        </Component>
 
         <!-- gst-plugins-base -->
         <Component Win64="$(var.Win64)" Id="cmp41BC989F8EA49BB2E49028C69193B3BB" Guid="*">
@@ -85,6 +82,13 @@
               </Component>
             </Directory>
           </Directory>
+          <Directory Id="dir50DD1EBDF579EE6487456373F137ABB2" Name="it">
+            <Directory Id="dir81043D1F5F43FC42FC6D788BA66C1F28" Name="LC_MESSAGES">
+              <Component Id="cmp92AC500333CC2974C2B5C30CABAC37D5" Guid="*">
+                <File Id="fil121EDAFB31A98C457123C79924B6DB34" KeyPath="yes" Source="$(var.SourceDir)/share/locale/it/LC_MESSAGES/spice-gtk.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
         </Directory>
       </Directory>
     </DirectoryRef>
@@ -101,8 +105,8 @@
       <ComponentGroupRef Id="CG.hicolor-icon-theme"/>
       <!-- from spice -->
       <ComponentRef Id="cmp102591AAF331792A897FB24554275832"/>
-      <ComponentRef Id="cmpD9079AE5EA50B2FAF0D89AA30A612B73"/>
       <ComponentRef Id="cmpF49F1DE553A3EB7F69C116932A799ADF"/>
+      <ComponentRef Id="cmp92AC500333CC2974C2B5C30CABAC37D5"/>
 
       <!-- from gstreamer1-plugins-base (bin) -->
       <ComponentRef Id="cmp41BC989F8EA49BB2E49028C69193B3BB"/>
