@@ -43,8 +43,8 @@
           <Component Win64="$(var.Win64)" Id="cmpF033710BE63B739E13B44221A5DED0A5" Guid="*">
             <File Id="fil041882166D4CCC663F5D5CE521BEC461" KeyPath="yes" Source="$(var.SourceDir)/lib/gstreamer-1.0/libgstdeinterlace.dll"/>
           </Component>
-          <Component Win64="$(var.Win64)" Id="cmp574F320DE2435719116E0CEF13B93217" Guid="*">
-            <File Id="fil87705B6D7F276AC7CECB0A7A7BF03BAE" KeyPath="yes" Source="$(var.SourceDir)/lib/gstreamer-1.0/libgstdirectsoundsink.dll"/>
+          <Component Win64="$(var.Win64)" Id="cmpEE8AD0322820C368BE403D5588B6C5A3" Guid="*">
+            <File Id="filA999BEB07C46CC2A776985F40270F7ED" KeyPath="yes" Source="$(var.SourceDir)/lib/gstreamer-1.0/libgstdirectsound.dll"/>
           </Component>
           <Component Win64="$(var.Win64)" Id="cmpD7D77FFEFB59A7B7FD684142023FB242" Guid="*">
             <File Id="fil0FDBDA02738B9406CE612AF88A642E32" KeyPath="yes" Source="$(var.SourceDir)/lib/gstreamer-1.0/libgstdtmf.dll"/>
@@ -127,8 +127,8 @@
           <Component Win64="$(var.Win64)" Id="cmpDF8BDDC555A7538AB9092E4D3F41C332" Guid="*">
             <File Id="fil11DB7B09CD583698212C9E0B5695C5C7" KeyPath="yes" Source="$(var.SourceDir)/lib/gstreamer-1.0/libgstsmpte.dll"/>
           </Component>
-          <Component Win64="$(var.Win64)" Id="cmpA09E5A54B3907F987FBD19A428FFCB8B" Guid="*">
-            <File Id="fil7DA571649CC6DAE81C522095A6BB832B" KeyPath="yes" Source="$(var.SourceDir)/lib/gstreamer-1.0/libgstsouphttpsrc.dll"/>
+          <Component Win64="$(var.Win64)" Id="cmp05E66A8D38A6820B15079121E4CD258A" Guid="*">
+            <File Id="fil2DC920E91882120CF5576B5D09492016" KeyPath="yes" Source="$(var.SourceDir)/lib/gstreamer-1.0/libgstsoup.dll"/>
           </Component>
           <Component Win64="$(var.Win64)" Id="cmp8E3833050F1D6D3920E57F3C8622FB68" Guid="*">
             <File Id="fil090E5F4D96A6C858F98440B486B679A1" KeyPath="yes" Source="$(var.SourceDir)/lib/gstreamer-1.0/libgstspectrum.dll"/>
@@ -151,8 +151,8 @@
           <Component Win64="$(var.Win64)" Id="cmpAF7ABE3D8D687E472649345B3DE221F4" Guid="*">
             <File Id="fil23568D394DA7A852FD2A3D9DF3CFD62C" KeyPath="yes" Source="$(var.SourceDir)/lib/gstreamer-1.0/libgstvideomixer.dll"/>
           </Component>
-          <Component Win64="$(var.Win64)" Id="cmp36ADB34674CE5E2AE9E0512E6DF9C66C" Guid="*">
-            <File Id="filEB7C1B6BA7106AF7D625C070476211D5" KeyPath="yes" Source="$(var.SourceDir)/lib/gstreamer-1.0/libgstwaveformsink.dll"/>
+          <Component Win64="$(var.Win64)" Id="cmpFF51BF00E9B82B85A9F3E97CF1E277DC" Guid="*">
+            <File Id="filB51E179EE537954889BB132284FC8A67" KeyPath="yes" Source="$(var.SourceDir)/lib/gstreamer-1.0/libgstwaveform.dll"/>
           </Component>
           <Component Win64="$(var.Win64)" Id="cmp57AEB4334645E2A9B914C79C8AE48683" Guid="*">
             <File Id="fil29CD46540668B6BDEE9CE544453409BD" KeyPath="yes" Source="$(var.SourceDir)/lib/gstreamer-1.0/libgstwavenc.dll"/>
@@ -265,6 +265,13 @@
             <Directory Id="dir521943EF5E579856EA69296D44ACD244" Name="LC_MESSAGES">
               <Component Win64="$(var.Win64)" Id="cmp63B6E4089B2A0A07CF6C614A3C29AE87" Guid="*">
                 <File Id="fil15E3F72F00E5D7DA652E7E4F135502BA" KeyPath="yes" Source="$(var.SourceDir)/share/locale/fr/LC_MESSAGES/gst-plugins-good-1.0.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dirA520DAF6BE8FCD29897A6DAEC25B2B4C" Name="fur">
+            <Directory Id="dir70423DAB4E5FA1A90FF2640480ED4E88" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp3FDAEC98326DBA9005D25DA860EDD776" Guid="*">
+                <File Id="filDD1C77C3F4D4E21DCC9D10EBE5D1FEDD" KeyPath="yes" Source="$(var.SourceDir)/share/locale/fur/LC_MESSAGES/gst-plugins-good-1.0.mo"/>
               </Component>
             </Directory>
           </Directory>
@@ -476,7 +483,7 @@
       <ComponentRef Id="cmpAF99CC562D5A1E53B16C742F4B1E9F64"/>
       <ComponentRef Id="cmp233EC1214C13DF5568253D9B145B8A06"/>
       <ComponentRef Id="cmpF033710BE63B739E13B44221A5DED0A5"/>
-      <ComponentRef Id="cmp574F320DE2435719116E0CEF13B93217"/>
+      <ComponentRef Id="cmpEE8AD0322820C368BE403D5588B6C5A3"/>
       <ComponentRef Id="cmpD7D77FFEFB59A7B7FD684142023FB242"/>
       <ComponentRef Id="cmpEAABF388FAEAB3EBF469AAC39837D70E"/>
       <ComponentRef Id="cmpC6209DFCCF6E7E1C2E2ACE5BF750D685"/>
@@ -504,7 +511,7 @@
       <ComponentRef Id="cmpD60960E10461A99B806CB90A4DBCF7AB"/>
       <ComponentRef Id="cmp5BBFE92A225FEC425609EB3018DC9F56"/>
       <ComponentRef Id="cmpDF8BDDC555A7538AB9092E4D3F41C332"/>
-      <ComponentRef Id="cmpA09E5A54B3907F987FBD19A428FFCB8B"/>
+      <ComponentRef Id="cmp05E66A8D38A6820B15079121E4CD258A"/>
       <ComponentRef Id="cmp8E3833050F1D6D3920E57F3C8622FB68"/>
       <ComponentRef Id="cmp957A1AAC125D62923D3343D99E897F94"/>
       <ComponentRef Id="cmp8369B36C43C24E68E98745AB65FEFE8D"/>
@@ -512,7 +519,7 @@
       <ComponentRef Id="cmpE4BC5B937835D5C708F30E5D661EF581"/>
       <ComponentRef Id="cmpC62D96C3164E32D3B4FF5A2F197CED92"/>
       <ComponentRef Id="cmpAF7ABE3D8D687E472649345B3DE221F4"/>
-      <ComponentRef Id="cmp36ADB34674CE5E2AE9E0512E6DF9C66C"/>
+      <ComponentRef Id="cmpFF51BF00E9B82B85A9F3E97CF1E277DC"/>
       <ComponentRef Id="cmp57AEB4334645E2A9B914C79C8AE48683"/>
       <ComponentRef Id="cmp633A89E0DC09914F60D645D44549D75D"/>
       <ComponentRef Id="cmp96D958A4505FA26181D3BC9CDE6B5E2B"/>
@@ -531,6 +538,7 @@
       <ComponentRef Id="cmp3AFC75AF4E61924D7FABFBAE2833D430"/>
       <ComponentRef Id="cmp8394690AA38A7821B0E3E63A80EE5AA8"/>
       <ComponentRef Id="cmp63B6E4089B2A0A07CF6C614A3C29AE87"/>
+      <ComponentRef Id="cmp3FDAEC98326DBA9005D25DA860EDD776"/>
       <ComponentRef Id="cmpD47708EE6BFC3E7573CD5DA7104D4CC4"/>
       <ComponentRef Id="cmp3B9C87E5046445D2235207ECF04094DD"/>
       <ComponentRef Id="cmpFED9486D6CBDBC4CE7E77BD745B3F5E7"/>
