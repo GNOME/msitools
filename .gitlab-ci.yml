@@ -1,0 +1,19 @@
+image: fedora:latest
+
+variables:
+  DEPENDENCIES: dnf-command(builddep) intltool
+                glib2-devel gobject-introspection-devel
+                libuuid-devel vala libgsf-devel
+                libgcab1-devel git libtool make
+                redhat-rpm-config byacc
+                bison bison-devel bison-runtime
+
+build_stable:
+  before_script:
+    - dnf update -y --nogpgcheck
+    - dnf install -y --nogpgcheck $DEPENDENCIES
+    - dnf builddep -y --nogpgcheck msitools
+  script:
+      - ./autogen.sh
+      - make
+      - make check
