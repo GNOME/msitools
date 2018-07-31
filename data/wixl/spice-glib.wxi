@@ -62,11 +62,11 @@
           <Component Win64="$(var.Win64)" Id="cmp6E40650EE781D7A31FD8621801955090" Guid="*">
               <File Id="fil5FE981BB233522C4A80C71349DDCDC94" KeyPath="yes" Source="$(var.SourceDir)/lib/gstreamer-1.0/libgstautodetect.dll"/>
           </Component>
-          <Component Win64="$(var.Win64)" Id="cmp574F320DE2435719116E0CEF13B93217" Guid="*">
-              <File Id="fil87705B6D7F276AC7CECB0A7A7BF03BAE" KeyPath="yes" Source="$(var.SourceDir)/lib/gstreamer-1.0/libgstdirectsoundsink.dll"/>
+          <Component Win64="$(var.Win64)" Id="cmpEE8AD0322820C368BE403D5588B6C5A3" Guid="*">
+              <File Id="filA999BEB07C46CC2A776985F40270F7ED" KeyPath="yes" Source="$(var.SourceDir)/lib/gstreamer-1.0/libgstdirectsound.dll"/>
           </Component>
 
-          <!-- gstreamer1-plugins-bad -->
+          <!-- gstreamer1-plugins-bad-free -->
           <Component Win64="$(var.Win64)" Id="cmp83B339398D5E5381DD1E992E16858015" Guid="*">
               <File Id="filF556FED35C41B9063691FFEB1488F4EF" KeyPath="yes" Source="$(var.SourceDir)/lib/gstreamer-1.0/libgstdirectsoundsrc.dll"/>
           </Component>
@@ -125,7 +125,7 @@
 
       <!-- from gstreamer1-plugins-good (lib) -->
       <ComponentRef Id="cmp6E40650EE781D7A31FD8621801955090"/>
-      <ComponentRef Id="cmp574F320DE2435719116E0CEF13B93217"/>
+      <ComponentRef Id="cmpEE8AD0322820C368BE403D5588B6C5A3"/>
 
       <!-- from gstreamer1-plugins-bad-free (lib) -->
       <ComponentRef Id="cmp83B339398D5E5381DD1E992E16858015"/>
