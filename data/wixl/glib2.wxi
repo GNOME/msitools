@@ -13,14 +13,17 @@
         <Component Win64="$(var.Win64)" Id="cmp98E508D7B2C36F345744654DB9FC1B3B" Guid="*">
           <File Id="filB9F78D9880E017F98454A23C6F69B810" KeyPath="yes" Source="$(var.SourceDir)/bin/gio-querymodules.exe"/>
         </Component>
+        <Component Win64="$(var.Win64)" Id="cmp64861BD24667CC0C22F4882CF2001E01" Guid="*">
+          <File Id="fil22D4AA8317E1DD749402516DC724D109" KeyPath="yes" Source="$(var.SourceDir)/bin/gio.exe"/>
+        </Component>
         <Component Win64="$(var.Win64)" Id="cmpF1C96DC6EE20030A64EE3B32CBA20326" Guid="*">
           <File Id="fil50FB1F6D2D94C9A7C6759ACE81AC0460" KeyPath="yes" Source="$(var.SourceDir)/bin/glib-compile-resources.exe"/>
         </Component>
         <Component Win64="$(var.Win64)" Id="cmpF5DF8A6D8D31479D9F16C542980A2834" Guid="*">
           <File Id="filCD5489D55FB39463DB4BB2B59E26129C" KeyPath="yes" Source="$(var.SourceDir)/bin/glib-compile-schemas.exe"/>
         </Component>
-        <Component Win64="$(var.Win64)" Id="cmpF8BC88DF0620A4D119092AF51421994F" Guid="*">
-          <File Id="filD4F7775B5AC0C4CF880C4EB1114A183A" KeyPath="yes" Source="$(var.SourceDir)/bin/glib-genmarshal.exe"/>
+        <Component Win64="$(var.Win64)" Id="cmpA2B8B3769437395F2AAF6F0B6E0E1A0D" Guid="*">
+          <File Id="fil686F655D5B32BDE1C2108B7E13FCB981" KeyPath="yes" Source="$(var.SourceDir)/bin/glib-genmarshal"/>
         </Component>
         <Component Win64="$(var.Win64)" Id="cmp7254E2D860B18C89A412D424EB64C98D" Guid="*">
           <File Id="filC92315E0403AD4DB7CC89E785D18D1AC" KeyPath="yes" Source="$(var.SourceDir)/bin/glib-gettextize"/>
@@ -79,6 +82,11 @@
               <File Id="filCBD4561437D582EAC7D91EB189DA7A5E" KeyPath="yes" Source="$(var.SourceDir)/share/glib-2.0/schemas/gschema.dtd"/>
             </Component>
           </Directory>
+          <Directory Id="dir81C7ED0429C08C30549E72F264D72C4B" Name="valgrind">
+            <Component Win64="$(var.Win64)"  Id="cmp6F07303B4A9C4F0E85AF1C18960AF040" Guid="*">
+              <File Id="filEE8AB471AB8D0FD841F7BB93C72214BD" KeyPath="yes" Source="$(var.SourceDir)/share/glib-2.0/valgrind/glib.supp"/>
+            </Component>
+          </Directory>
         </Directory>
         <Directory Id="dir527C2C31726405647895115ACC997601" Name="locale">
           <Directory Id="dir8FB01A46B0ECD9B29BFE4D78EDA6C728" Name="af">
@@ -92,6 +100,13 @@
             <Directory Id="dir8A5F43AA077F2815C4AD812251068675" Name="LC_MESSAGES">
               <Component Win64="$(var.Win64)" Id="cmp233753F0C15ED82D10045826743CA2D5" Guid="*">
                 <File Id="filD3A1EC0E1D082C7C74AF4A654721B99A" KeyPath="yes" Source="$(var.SourceDir)/share/locale/am/LC_MESSAGES/glib20.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir94FBDF1B6C3285E161A2F0393EDF65CC" Name="an">
+            <Directory Id="dir397F3FC220F3BF3F932D074AA4F3B67D" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp83D6C4B73287A3C8D4CA5F0901441426" Guid="*">
+                <File Id="fil900161841D78188D8497B0CC5920A05E" KeyPath="yes" Source="$(var.SourceDir)/share/locale/an/LC_MESSAGES/glib20.mo"/>
               </Component>
             </Directory>
           </Directory>
@@ -291,10 +306,24 @@
               </Component>
             </Directory>
           </Directory>
+          <Directory Id="dir837AD4D8650529113C02C19EDC4A6F51" Name="fur">
+            <Directory Id="dirFB2B2A5869FA36D7BA0BAEAF0030025A" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)"  Id="cmpE3034EA2428DDD4AA9FFFD67FD018ED5" Guid="*">
+                <File Id="fil88B2F991DE734DFC818F9FC8D87C9F88" KeyPath="yes" Source="$(var.SourceDir)/share/locale/fur/LC_MESSAGES/glib20.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
           <Directory Id="dirFA92025DE227D93722C6769B5158A6A8" Name="ga">
             <Directory Id="dirCFE452E93FC56BD6A28959F98B2BE68B" Name="LC_MESSAGES">
               <Component Win64="$(var.Win64)" Id="cmpC79C1455CCD3177C08CFB32CA04619EB" Guid="*">
                 <File Id="fil002620134F2DA6B344467B76E985519E" KeyPath="yes" Source="$(var.SourceDir)/share/locale/ga/LC_MESSAGES/glib20.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir256C0F22C345137BEE403243C29983CA" Name="gd">
+            <Directory Id="dir03486466925C3E65E64253F52D862FAC" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmpD53F00CC275A67351D017B2BF77DBBE9" Guid="*">
+                <File Id="filB8CE4A163FE3384C3A073DC826D056FF" KeyPath="yes" Source="$(var.SourceDir)/share/locale/gd/LC_MESSAGES/glib20.mo"/>
               </Component>
             </Directory>
           </Directory>
@@ -648,6 +677,13 @@
               </Component>
             </Directory>
           </Directory>
+          <Directory Id="dirD82BB0B8A21F426B4065DB72C2BC0874" Name="tg">
+            <Directory Id="dir97530B0D4781870AAB9B5F70B97DDBD7" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp8FD92E6B23FB085ED6800B41744C6038" Guid="*">
+                <File Id="filD806D1CC8446C07097E07B66A24676ED" KeyPath="yes" Source="$(var.SourceDir)/share/locale/tg/LC_MESSAGES/glib20.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
           <Directory Id="dir889EC4738EF0C78063C7C8DAD5FD8B0D" Name="th">
             <Directory Id="dir6A7C6C050F3AB9F626325E4379E28BC9" Name="LC_MESSAGES">
               <Component Win64="$(var.Win64)" Id="cmp6816FB9F3075BF0448CF15812AB50F28" Guid="*">
@@ -751,9 +787,10 @@
       <ComponentGroupRef Id="CG.zlib"/>
       <ComponentRef Id="cmpB8A671D3D3CC219C78B3A53D2759C83D"/>
       <ComponentRef Id="cmp98E508D7B2C36F345744654DB9FC1B3B"/>
+      <ComponentRef Id="cmp64861BD24667CC0C22F4882CF2001E01"/>
       <ComponentRef Id="cmpF1C96DC6EE20030A64EE3B32CBA20326"/>
       <ComponentRef Id="cmpF5DF8A6D8D31479D9F16C542980A2834"/>
-      <ComponentRef Id="cmpF8BC88DF0620A4D119092AF51421994F"/>
+      <ComponentRef Id="cmpA2B8B3769437395F2AAF6F0B6E0E1A0D"/>
       <ComponentRef Id="cmp7254E2D860B18C89A412D424EB64C98D"/>
       <ComponentRef Id="cmp78785270721DC61571F889E284142176"/>
       <ComponentRef Id="cmp19A8ABF07201E3EF77A3E4360F3C48D4"/>
@@ -769,8 +806,10 @@
       <ComponentRef Id="cmpEF5C294574A1582C391C2E2A004F341B"/>
       <ComponentRef Id="cmp058ABAE3E4BE796474C695380BAE5224"/>
       <ComponentRef Id="cmpF88FF5AF54096E3F6FB53DF45E40A219"/>
+      <ComponentRef Id="cmp6F07303B4A9C4F0E85AF1C18960AF040"/>
       <ComponentRef Id="cmpCF8F003E2F7DB70E0B9D552C18C1D6E9"/>
       <ComponentRef Id="cmp233753F0C15ED82D10045826743CA2D5"/>
+      <ComponentRef Id="cmp83D6C4B73287A3C8D4CA5F0901441426"/>
       <ComponentRef Id="cmp55C778A9F7441FE44159ABE72660678A"/>
       <ComponentRef Id="cmpB08BA5A8E444999B13BA58BA0A954E17"/>
       <ComponentRef Id="cmp5C97B5C6F39C0F84A11B89A773E437B6"/>
@@ -799,7 +838,9 @@
       <ComponentRef Id="cmp54CEA59F81A8354056774926548ED9BF"/>
       <ComponentRef Id="cmp18CB41F4026424CD449245C24135FD98"/>
       <ComponentRef Id="cmp7A371BFA0F9D1F527F822D615FFF737F"/>
+      <ComponentRef Id="cmpE3034EA2428DDD4AA9FFFD67FD018ED5"/>
       <ComponentRef Id="cmpC79C1455CCD3177C08CFB32CA04619EB"/>
+      <ComponentRef Id="cmpD53F00CC275A67351D017B2BF77DBBE9"/>
       <ComponentRef Id="cmp4E4868A3DEA6AD9F47E7FD44714875F7"/>
       <ComponentRef Id="cmpB4097B5CB320E77572EF48BD12D16CC0"/>
       <ComponentRef Id="cmpFA7AA22C50C24702B6B9BEF862210ECB"/>
@@ -850,6 +891,7 @@
       <ComponentRef Id="cmp5B52779BB44EA4199942CD09409E258D"/>
       <ComponentRef Id="cmpABAA65665DC80532DCD803084E0070FC"/>
       <ComponentRef Id="cmpA22576D173F0A26EB0FBB15F2F06CEC4"/>
+      <ComponentRef Id="cmp8FD92E6B23FB085ED6800B41744C6038"/>
       <ComponentRef Id="cmp6816FB9F3075BF0448CF15812AB50F28"/>
       <ComponentRef Id="cmpA07EF75692BC8E80987D3252D6544B94"/>
       <ComponentRef Id="cmp988D83A50A11EA06CA467A7EA9959D5F"/>
