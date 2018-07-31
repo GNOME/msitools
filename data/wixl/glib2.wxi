@@ -65,17 +65,6 @@
         </Component>
       </Directory>
       <Directory Id="dirBE1C76429066C2B019324C2D1D4B7F62" Name="share">
-        <Directory Id="dir3628C535C1ABC82C07CD851D77996813" Name="aclocal">
-          <Component Win64="$(var.Win64)" Id="cmpE82D9487B97C0EF8983DDA27C840462D" Guid="*">
-            <File Id="fil700FE1A6C76A01605731066590A2B7D4" KeyPath="yes" Source="$(var.SourceDir)/share/aclocal/glib-2.0.m4"/>
-          </Component>
-          <Component Win64="$(var.Win64)" Id="cmpC2A754C3619110E66D14F14081014E6D" Guid="*">
-            <File Id="filF6D39C09F1E37261BA6D26C0170057D4" KeyPath="yes" Source="$(var.SourceDir)/share/aclocal/glib-gettext.m4"/>
-          </Component>
-          <Component Win64="$(var.Win64)" Id="cmpF88669DC5E06951FE3284903B7770CEC" Guid="*">
-            <File Id="fil71AED17F36BC4DA8F6B0C83AC76114B5" KeyPath="yes" Source="$(var.SourceDir)/share/aclocal/gsettings.m4"/>
-          </Component>
-        </Directory>
         <Directory Id="dir8DF6DB0D95533CE863B3A1DC7C17B0C3" Name="glib-2.0">
           <Directory Id="dir2BADD2E15A33B1BB92ABDD834AC7211C" Name="gdb">
             <Component Win64="$(var.Win64)" Id="cmpEF5C294574A1582C391C2E2A004F341B" Guid="*">
@@ -84,13 +73,6 @@
             <Component Win64="$(var.Win64)" Id="cmp058ABAE3E4BE796474C695380BAE5224" Guid="*">
               <File Id="filD089D91479107702C0FC81B3C10FDB2E" KeyPath="yes" Source="$(var.SourceDir)/share/glib-2.0/gdb/gobject_gdb.py"/>
             </Component>
-          </Directory>
-          <Directory Id="dirDC91424A11A0F53C9A234A9B2AE16588" Name="gettext">
-            <Directory Id="dir6DED64F8CABFCE4F4C1904B8B3920654" Name="po">
-              <Component Win64="$(var.Win64)" Id="cmp814A5CAB037A06029EF1E9006457A3AE" Guid="*">
-                <File Id="fil6F68985D09F4207CCD55C90C0BBDC38C" KeyPath="yes" Source="$(var.SourceDir)/share/glib-2.0/gettext/po/Makefile.in.in"/>
-              </Component>
-            </Directory>
           </Directory>
           <Directory Id="dir307586C93F0178D008A0F0B6CAE39A24" Name="schemas">
             <Component Win64="$(var.Win64)" Id="cmpF88FF5AF54096E3F6FB53DF45E40A219" Guid="*">
@@ -784,12 +766,8 @@
       <ComponentRef Id="cmp138B684B4CD66FF60E9C99AE51C8F6AC"/>
       <ComponentRef Id="cmp8EE5F4C9CE2553DF32D6BDF41F892F50"/>
       <ComponentRef Id="cmp699A229A66EA68B2E5BC51927C2397FF"/>
-      <ComponentRef Id="cmpE82D9487B97C0EF8983DDA27C840462D"/>
-      <ComponentRef Id="cmpC2A754C3619110E66D14F14081014E6D"/>
-      <ComponentRef Id="cmpF88669DC5E06951FE3284903B7770CEC"/>
       <ComponentRef Id="cmpEF5C294574A1582C391C2E2A004F341B"/>
       <ComponentRef Id="cmp058ABAE3E4BE796474C695380BAE5224"/>
-      <ComponentRef Id="cmp814A5CAB037A06029EF1E9006457A3AE"/>
       <ComponentRef Id="cmpF88FF5AF54096E3F6FB53DF45E40A219"/>
       <ComponentRef Id="cmpCF8F003E2F7DB70E0B9D552C18C1D6E9"/>
       <ComponentRef Id="cmp233753F0C15ED82D10045826743CA2D5"/>
