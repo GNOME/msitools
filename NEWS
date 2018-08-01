@@ -1,3 +1,14 @@
+v0.98
+=====
+- Update gcc.wxi to 7.3.0
+- Update glib2.wxi to 2.54.1
+- Update expat.wxi to 2.2.4
+- Update fontconfig.wxi to 2.12.6
+- Update spice-glib.wxi to 0.35 and include gstvideo
+- Update wxi form gstreamer1 commponents to 1.14.1 stable release
+- Fix error on msiextract while opening empty cab files
+- translation updates, build-sys improvements
+
 v0.97
 =====
 
