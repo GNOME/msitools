@@ -12,7 +12,7 @@
   </Fragment>
   <Fragment>
     <ComponentGroup Id="CG.SDL">
-      <ComponentGroupRef Id="CG.win-iconv">
+      <ComponentGroupRef Id="CG.win-iconv"/>
       <ComponentRef Id="cmpE62B6BBD3A238B97A2947D35EA1404D3"/>
     </ComponentGroup>
   </Fragment>
