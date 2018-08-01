@@ -16,9 +16,6 @@
         <Component Win64="$(var.Win64)" Id="cmp102591AAF331792A897FB24554275832" Guid="*">
           <File Id="fil35FAB81A77DA2E800C66E4D946F97031" KeyPath="yes" Source="$(var.SourceDir)/bin/libspice-client-glib-2.0-8.dll"/>
         </Component>
-        <Component Win64="$(var.Win64)" Id="cmpD9079AE5EA50B2FAF0D89AA30A612B73" Guid="*">
-          <File Id="fil8CEB7404BB93577C36D980F7AA6DEADD" KeyPath="yes" Source="$(var.SourceDir)/bin/libspice-controller-0.dll"/>
-        </Component>
 
         <!-- gst-plugins-base -->
         <Component Win64="$(var.Win64)" Id="cmp41BC989F8EA49BB2E49028C69193B3BB" Guid="*">
@@ -65,11 +62,11 @@
           <Component Win64="$(var.Win64)" Id="cmp6E40650EE781D7A31FD8621801955090" Guid="*">
               <File Id="fil5FE981BB233522C4A80C71349DDCDC94" KeyPath="yes" Source="$(var.SourceDir)/lib/gstreamer-1.0/libgstautodetect.dll"/>
           </Component>
-          <Component Win64="$(var.Win64)" Id="cmp574F320DE2435719116E0CEF13B93217" Guid="*">
-              <File Id="fil87705B6D7F276AC7CECB0A7A7BF03BAE" KeyPath="yes" Source="$(var.SourceDir)/lib/gstreamer-1.0/libgstdirectsoundsink.dll"/>
+          <Component Win64="$(var.Win64)" Id="cmpEE8AD0322820C368BE403D5588B6C5A3" Guid="*">
+              <File Id="filA999BEB07C46CC2A776985F40270F7ED" KeyPath="yes" Source="$(var.SourceDir)/lib/gstreamer-1.0/libgstdirectsound.dll"/>
           </Component>
 
-          <!-- gstreamer1-plugins-bad -->
+          <!-- gstreamer1-plugins-bad-free -->
           <Component Win64="$(var.Win64)" Id="cmp83B339398D5E5381DD1E992E16858015" Guid="*">
               <File Id="filF556FED35C41B9063691FFEB1488F4EF" KeyPath="yes" Source="$(var.SourceDir)/lib/gstreamer-1.0/libgstdirectsoundsrc.dll"/>
           </Component>
@@ -82,6 +79,13 @@
             <Directory Id="dir31BD4803F911B98815ACA9949C094C83" Name="LC_MESSAGES">
               <Component Win64="$(var.Win64)" Id="cmpF49F1DE553A3EB7F69C116932A799ADF" Guid="*">
                 <File Id="fil4D74AF1F1422513DD91D3C49AEB85A70" KeyPath="yes" Source="$(var.SourceDir)/share/locale/fr/LC_MESSAGES/spice-gtk.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir50DD1EBDF579EE6487456373F137ABB2" Name="it">
+            <Directory Id="dir81043D1F5F43FC42FC6D788BA66C1F28" Name="LC_MESSAGES">
+              <Component Id="cmp92AC500333CC2974C2B5C30CABAC37D5" Guid="*">
+                <File Id="fil121EDAFB31A98C457123C79924B6DB34" KeyPath="yes" Source="$(var.SourceDir)/share/locale/it/LC_MESSAGES/spice-gtk.mo"/>
               </Component>
             </Directory>
           </Directory>
@@ -101,8 +105,8 @@
       <ComponentGroupRef Id="CG.hicolor-icon-theme"/>
       <!-- from spice -->
       <ComponentRef Id="cmp102591AAF331792A897FB24554275832"/>
-      <ComponentRef Id="cmpD9079AE5EA50B2FAF0D89AA30A612B73"/>
       <ComponentRef Id="cmpF49F1DE553A3EB7F69C116932A799ADF"/>
+      <ComponentRef Id="cmp92AC500333CC2974C2B5C30CABAC37D5"/>
 
       <!-- from gstreamer1-plugins-base (bin) -->
       <ComponentRef Id="cmp41BC989F8EA49BB2E49028C69193B3BB"/>
@@ -121,7 +125,7 @@
 
       <!-- from gstreamer1-plugins-good (lib) -->
       <ComponentRef Id="cmp6E40650EE781D7A31FD8621801955090"/>
-      <ComponentRef Id="cmp574F320DE2435719116E0CEF13B93217"/>
+      <ComponentRef Id="cmpEE8AD0322820C368BE403D5588B6C5A3"/>
 
       <!-- from gstreamer1-plugins-bad-free (lib) -->
       <ComponentRef Id="cmp83B339398D5E5381DD1E992E16858015"/>

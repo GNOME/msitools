@@ -42,6 +42,9 @@
       </Directory>
       <Directory Id="dir1EBE474684D1CA6D6957A950C9672D67" Name="libexec">
         <Directory Id="dir3248D276B500675FA6695124351B1529" Name="gstreamer-1.0">
+          <Component Win64="$(var.Win64)" Id="cmp85DC8930FFA4E885EF30CE382A3F6F9D" Guid="*">
+            <File Id="filC544651B7E39B30E1D1FFEDDE1B13E89" KeyPath="yes" Source="$(var.SourceDir)/libexec/gstreamer-1.0/gst-completion-helper.exe"/>
+          </Component>
           <Component Win64="$(var.Win64)" Id="cmp3694FB7C618F9AA6A8199B5908839EED" Guid="*">
             <File Id="fil90E25DCAD861049A2C91C41BE5374EBF" KeyPath="yes" Source="$(var.SourceDir)/libexec/gstreamer-1.0/gst-plugin-scanner.exe"/>
           </Component>
@@ -58,6 +61,13 @@
             <Directory Id="dir6CB4635253DEB0988689D3C917BE4A54" Name="LC_MESSAGES">
               <Component Win64="$(var.Win64)" Id="cmpA4D7E136426B5975933DC66C5BCBE09E" Guid="*">
                 <File Id="fil896C993CE10319EB1D46694BA5468F6F" KeyPath="yes" Source="$(var.SourceDir)/share/locale/af/LC_MESSAGES/gstreamer-1.0.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir5584933D8E20294F06F6CC13C228FA8B" Name="ast">
+            <Directory Id="dirA78573BABC1DD4B85D5FE1DCA68AD048" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmpB90F5D9A90498563029B703ED62FD1D6" Guid="*">
+                <File Id="fil6AC8F86FAB773256F7C8C9462968EF1C" KeyPath="yes" Source="$(var.SourceDir)/share/locale/ast/LC_MESSAGES/gstreamer-1.0.mo"/>
               </Component>
             </Directory>
           </Directory>
@@ -156,6 +166,13 @@
             <Directory Id="dir28876CBDE5ABD2BF82B3825E6292E67F" Name="LC_MESSAGES">
               <Component Win64="$(var.Win64)" Id="cmp76B582737FB9482A8A7D4FD5CAFFABA9" Guid="*">
                 <File Id="filEB46F424B647C292741335AAC62D717E" KeyPath="yes" Source="$(var.SourceDir)/share/locale/fr/LC_MESSAGES/gstreamer-1.0.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dirAF56DC65E84C8E7A3E748EF8F4484EFA" Name="fur">
+            <Directory Id="dirEB8A96B5FDF0CC7AF41B0AB892944089" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp70F367ED0817CC7D60FF88F09A2AE0F1" Guid="*">
+                <File Id="fil913C1BC82D81D074AD78C5BD78EE3301" KeyPath="yes" Source="$(var.SourceDir)/share/locale/fur/LC_MESSAGES/gstreamer-1.0.mo"/>
               </Component>
             </Directory>
           </Directory>
@@ -345,9 +362,11 @@
       <ComponentRef Id="cmp9D35809C95F77B45F174A9DAB67E9D04"/>
       <ComponentRef Id="cmp0ACFE00C63B8A3232D2DEB869037D87C"/>
       <ComponentRef Id="cmp811F5C25B1348DD7A6FFE318E33B2F72"/>
+      <ComponentRef Id="cmp85DC8930FFA4E885EF30CE382A3F6F9D"/>
       <ComponentRef Id="cmp3694FB7C618F9AA6A8199B5908839EED"/>
       <ComponentRef Id="cmp453A7B102CA0C641D11AA1D797111983"/>
       <ComponentRef Id="cmpA4D7E136426B5975933DC66C5BCBE09E"/>
+      <ComponentRef Id="cmpB90F5D9A90498563029B703ED62FD1D6"/>
       <ComponentRef Id="cmp537C4EB805A22DEF6624E00A2C355A53"/>
       <ComponentRef Id="cmp0A425B426C8444F795CC04F51737818D"/>
       <ComponentRef Id="cmp1E2B89E4231BB828CB8D3AAE7991BA93"/>
@@ -362,6 +381,7 @@
       <ComponentRef Id="cmp563C8EF17FF7F2BE2900FFB1A3454C27"/>
       <ComponentRef Id="cmp10506DCA3B15E81FACF8EB922CDF1AA4"/>
       <ComponentRef Id="cmp76B582737FB9482A8A7D4FD5CAFFABA9"/>
+      <ComponentRef Id="cmp70F367ED0817CC7D60FF88F09A2AE0F1"/>
       <ComponentRef Id="cmp7EE39D72DA6F80EC82F83029AEB70C27"/>
       <ComponentRef Id="cmp4917B2B082082B81458EEF07F0C07562"/>
       <ComponentRef Id="cmp0684B9B3261F80969148C1B74FD27B32"/>

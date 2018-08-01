@@ -27,6 +27,9 @@
         <Component Win64="$(var.Win64)" Id="cmp28C1C4EB756E79B2B5A94A7AFE4F5E76" Guid="*">
           <File Id="fil7E42C3DB2624E6FBBC983C3C296E13F6" KeyPath="yes" Source="$(var.SourceDir)/bin/fc-scan.exe"/>
         </Component>
+        <Component Win64="$(var.Win64)" Id="cmp469F67A0BBD8BB7E440C84D1219E8117" Guid="*">
+          <File Id="fil82A292554A2DDD9E12E8A7840BF6380B" KeyPath="yes" Source="$(var.SourceDir)/bin/fc-validate.exe"/>
+        </Component>
         <Component Win64="$(var.Win64)" Id="cmpA7FD19B830058A8EE7B8A2661C7F419F" Guid="*">
           <File Id="filD5265434F87915B230933239FEB7DEB9" KeyPath="yes" Source="$(var.SourceDir)/bin/libfontconfig-1.dll"/>
         </Component>
@@ -34,17 +37,23 @@
       <Directory Id="dir560A610AC17E441BDB0A03629B28D302" Name="etc">
         <Directory Id="dir5801E3727D56E66B7E42D30610548113" Name="fonts">
           <Directory Id="dir54538CF0483974BFF4A32E27EF143D69" Name="conf.d">
+            <Component Win64="$(var.Win64)" Id="cmp6DA2ADCA389AFAC1301D1ADC134885C3" Guid="*">
+              <File Id="fil51D42FBEAF8936BB5B1D57CEDE6D975D" KeyPath="yes" Source="$(var.SourceDir)/etc/fonts/conf.d/10-hinting-slight.conf"/>
+            </Component>
+            <Component Win64="$(var.Win64)" Id="cmp6D72B032E8888DA597B9F4162F169A74" Guid="*">
+              <File Id="filC4B0A0AF5FB511534D8FAE158861B274" KeyPath="yes" Source="$(var.SourceDir)/etc/fonts/conf.d/10-scale-bitmap-fonts.conf"/>
+            </Component>
             <Component Win64="$(var.Win64)" Id="cmpF9B2F9D7A967B083EDF916C0D9B2A379" Guid="*">
               <File Id="fil646016A8C3263E138C5BE348245ABFE6" KeyPath="yes" Source="$(var.SourceDir)/etc/fonts/conf.d/20-unhint-small-vera.conf"/>
             </Component>
             <Component Win64="$(var.Win64)" Id="cmp37DEE8729D68A9DD947448A59B314355" Guid="*">
               <File Id="fil8F78356669A83B8E83A77B0D9E3DAF19" KeyPath="yes" Source="$(var.SourceDir)/etc/fonts/conf.d/30-metric-aliases.conf"/>
             </Component>
-            <Component Win64="$(var.Win64)" Id="cmpA4EE1EDACB2E204779C686BFD65D6D41" Guid="*">
-              <File Id="fil71EC252BBAFBA69119AE9A7FDA1B8740" KeyPath="yes" Source="$(var.SourceDir)/etc/fonts/conf.d/30-urw-aliases.conf"/>
-            </Component>
             <Component Win64="$(var.Win64)" Id="cmpEA64A3A1046E29D51E542E46681A30C2" Guid="*">
               <File Id="fil1A6ABDCE71A3F7871EF29F750E297A62" KeyPath="yes" Source="$(var.SourceDir)/etc/fonts/conf.d/40-nonlatin.conf"/>
+            </Component>
+            <Component Win64="$(var.Win64)" Id="cmp4BC58C9561DE366BB07A613AB0230DF9" Guid="*">
+              <File Id="fil6E8E2CC2F8B971E862CF3306C7E0B6B2" KeyPath="yes" Source="$(var.SourceDir)/etc/fonts/conf.d/45-generic.conf"/>
             </Component>
             <Component Win64="$(var.Win64)" Id="cmpBFF05A22E6EB5D550C1D6AA2D93F6CE2" Guid="*">
               <File Id="fil7F46DE48AA43CB06AF7E19C8B120336F" KeyPath="yes" Source="$(var.SourceDir)/etc/fonts/conf.d/45-latin.conf"/>
@@ -57,6 +66,9 @@
             </Component>
             <Component Win64="$(var.Win64)" Id="cmpEF974488C9FDCB4A323A8F1A0104F746" Guid="*">
               <File Id="filB8EE4D730192FB28B1E5F4610003E079" KeyPath="yes" Source="$(var.SourceDir)/etc/fonts/conf.d/51-local.conf"/>
+            </Component>
+            <Component Win64="$(var.Win64)" Id="cmp0C5AA78F42D51F2329C2DCFD9D210101" Guid="*">
+              <File Id="filCCCB367D855189703F53DD457A165B16" KeyPath="yes" Source="$(var.SourceDir)/etc/fonts/conf.d/60-generic.conf"/>
             </Component>
             <Component Win64="$(var.Win64)" Id="cmp0D096560305BA853F3196C7C344AF83C" Guid="*">
               <File Id="filF066E7CC9399A06578AEAD7C3C8839FB" KeyPath="yes" Source="$(var.SourceDir)/etc/fonts/conf.d/60-latin.conf"/>
@@ -91,8 +103,23 @@
             <Component Win64="$(var.Win64)" Id="cmp3BDB202059B54551F48D9631C898E5EF" Guid="*">
               <File Id="fil79433DC5331065C0B47B5A47BF048531" KeyPath="yes" Source="$(var.SourceDir)/share/fontconfig/conf.avail/10-autohint.conf"/>
             </Component>
+            <Component Win64="$(var.Win64)" Id="cmp944CBA1A6AADD7DC4CF8B2621DC24228" Guid="*">
+              <File Id="fil89B8A02BF1CB808D54FC3AC19973964D" KeyPath="yes" Source="$(var.SourceDir)/share/fontconfig/conf.avail/10-hinting-full.conf"/>
+            </Component>
+            <Component Win64="$(var.Win64)" Id="cmp556DE895ECC553A764C88FC8B1F6912A" Guid="*">
+              <File Id="filDBDE5768D0CC244BC29A01F43F11719D" KeyPath="yes" Source="$(var.SourceDir)/share/fontconfig/conf.avail/10-hinting-medium.conf"/>
+            </Component>
+            <Component Win64="$(var.Win64)" Id="cmp4DCB306764725C151B3F5E25356DA949" Guid="*">
+              <File Id="fil14CB4E740C823545537E9E0A7EF81D95" KeyPath="yes" Source="$(var.SourceDir)/share/fontconfig/conf.avail/10-hinting-none.conf"/>
+            </Component>
+            <Component Win64="$(var.Win64)" Id="cmpE8017A3E2AC7CF25AC447680479BB53C" Guid="*">
+              <File Id="fil6C0D520B2E53631A3BCF01A06A17DD7F" KeyPath="yes" Source="$(var.SourceDir)/share/fontconfig/conf.avail/10-hinting-slight.conf"/>
+            </Component>
             <Component Win64="$(var.Win64)" Id="cmpCB585CEA486212461E85830B10319BC7" Guid="*">
               <File Id="fil5D1F8CCCEFDD520A061143E0FFAFCC4E" KeyPath="yes" Source="$(var.SourceDir)/share/fontconfig/conf.avail/10-no-sub-pixel.conf"/>
+            </Component>
+            <Component Win64="$(var.Win64)" Id="cmp71694A71D61E39FF376E9E4B8F719E95" Guid="*">
+              <File Id="fil51072109920F9F59F1BD32CCA2EEB1A1" KeyPath="yes" Source="$(var.SourceDir)/share/fontconfig/conf.avail/10-scale-bitmap-fonts.conf"/>
             </Component>
             <Component Win64="$(var.Win64)" Id="cmp28DBA930CDA4A476999835C1E590EB0A" Guid="*">
               <File Id="fil127CA7DA3AC6FE3A87D57C5A6F1C1F0A" KeyPath="yes" Source="$(var.SourceDir)/share/fontconfig/conf.avail/10-sub-pixel-bgr.conf"/>
@@ -127,11 +154,11 @@
             <Component Win64="$(var.Win64)" Id="cmpB7414D5D360628FBD66A903806BF021E" Guid="*">
               <File Id="fil64742AE07E257E583A87150929868886" KeyPath="yes" Source="$(var.SourceDir)/share/fontconfig/conf.avail/30-metric-aliases.conf"/>
             </Component>
-            <Component Win64="$(var.Win64)" Id="cmpD481552CA8C2C757B04EF86145EBEA07" Guid="*">
-              <File Id="fil703C85C326C4B77E00CD6794F7E7737D" KeyPath="yes" Source="$(var.SourceDir)/share/fontconfig/conf.avail/30-urw-aliases.conf"/>
-            </Component>
             <Component Win64="$(var.Win64)" Id="cmpBBA7970F545E6714B55C67BCE34F9CD9" Guid="*">
               <File Id="fil8A891D1EA1C1C1214734F8439A1D1A38" KeyPath="yes" Source="$(var.SourceDir)/share/fontconfig/conf.avail/40-nonlatin.conf"/>
+            </Component>
+            <Component Win64="$(var.Win64)" Id="cmp475A2CD0F13C6D60DEF3A6DB64326F9A" Guid="*">
+              <File Id="fil3D4C656817964AC04D5586F2AA090A0B" KeyPath="yes" Source="$(var.SourceDir)/share/fontconfig/conf.avail/45-generic.conf"/>
             </Component>
             <Component Win64="$(var.Win64)" Id="cmpD9E2D94ED9E60541C8B537646D8D837B" Guid="*">
               <File Id="fil587F952FAC6E4D65A34F2E41EBCC60B0" KeyPath="yes" Source="$(var.SourceDir)/share/fontconfig/conf.avail/45-latin.conf"/>
@@ -144,6 +171,9 @@
             </Component>
             <Component Win64="$(var.Win64)" Id="cmp7E940F8092C416BB0968466CF50A76CF" Guid="*">
               <File Id="filD5885E6E9E6DB44508A2B05DB5CDEA83" KeyPath="yes" Source="$(var.SourceDir)/share/fontconfig/conf.avail/51-local.conf"/>
+            </Component>
+            <Component Win64="$(var.Win64)" Id="cmp709A5151BF11FAAD5503B3BBAF23F41F" Guid="*">
+              <File Id="filB7E2C1308718CD3DAA5C5D4701A747EA" KeyPath="yes" Source="$(var.SourceDir)/share/fontconfig/conf.avail/60-generic.conf"/>
             </Component>
             <Component Win64="$(var.Win64)" Id="cmp24BD6897F28BC29DD88D5816A19D4CED" Guid="*">
               <File Id="filFAA8F92FB0459D8BE3792F375F7E4DC5" KeyPath="yes" Source="$(var.SourceDir)/share/fontconfig/conf.avail/60-latin.conf"/>
@@ -196,15 +226,19 @@
       <ComponentRef Id="cmp2BD54AA90D8B5674CF99A5BA1A0E2E3A"/>
       <ComponentRef Id="cmpA5F11628374399783A62C7B7C38E38EB"/>
       <ComponentRef Id="cmp28C1C4EB756E79B2B5A94A7AFE4F5E76"/>
+      <ComponentRef Id="cmp469F67A0BBD8BB7E440C84D1219E8117"/>
       <ComponentRef Id="cmpA7FD19B830058A8EE7B8A2661C7F419F"/>
+      <ComponentRef Id="cmp6DA2ADCA389AFAC1301D1ADC134885C3"/>
+      <ComponentRef Id="cmp6D72B032E8888DA597B9F4162F169A74"/>
       <ComponentRef Id="cmpF9B2F9D7A967B083EDF916C0D9B2A379"/>
       <ComponentRef Id="cmp37DEE8729D68A9DD947448A59B314355"/>
-      <ComponentRef Id="cmpA4EE1EDACB2E204779C686BFD65D6D41"/>
       <ComponentRef Id="cmpEA64A3A1046E29D51E542E46681A30C2"/>
+      <ComponentRef Id="cmp4BC58C9561DE366BB07A613AB0230DF9"/>
       <ComponentRef Id="cmpBFF05A22E6EB5D550C1D6AA2D93F6CE2"/>
       <ComponentRef Id="cmp1A4B683F74CAE59CCCABF7C5807E0368"/>
       <ComponentRef Id="cmpF0E59D73A218F34A7A7C2B1497D3AA6A"/>
       <ComponentRef Id="cmpEF974488C9FDCB4A323A8F1A0104F746"/>
+      <ComponentRef Id="cmp0C5AA78F42D51F2329C2DCFD9D210101"/>
       <ComponentRef Id="cmp0D096560305BA853F3196C7C344AF83C"/>
       <ComponentRef Id="cmp9E4BBA4CC2C27B2955D362BA8C369B8C"/>
       <ComponentRef Id="cmp46B69AAE7ABCA86DA701984F3DBD7FDC"/>
@@ -214,7 +248,12 @@
       <ComponentRef Id="cmp6F8891D5C800105917C52D0056460468"/>
       <ComponentRef Id="cmp351801DB4A507F2B89FC2B6685274A35"/>
       <ComponentRef Id="cmp3BDB202059B54551F48D9631C898E5EF"/>
+      <ComponentRef Id="cmp944CBA1A6AADD7DC4CF8B2621DC24228"/>
+      <ComponentRef Id="cmp556DE895ECC553A764C88FC8B1F6912A"/>
+      <ComponentRef Id="cmp4DCB306764725C151B3F5E25356DA949"/>
+      <ComponentRef Id="cmpE8017A3E2AC7CF25AC447680479BB53C"/>
       <ComponentRef Id="cmpCB585CEA486212461E85830B10319BC7"/>
+      <ComponentRef Id="cmp71694A71D61E39FF376E9E4B8F719E95"/>
       <ComponentRef Id="cmp28DBA930CDA4A476999835C1E590EB0A"/>
       <ComponentRef Id="cmpB6ECB0D4EB648A1667C7D0BD20254265"/>
       <ComponentRef Id="cmpB6AC1467745B5120AC3EDABAF0489CA2"/>
@@ -226,12 +265,13 @@
       <ComponentRef Id="cmpF7FB583F667DDB0C0C1489D4DD5BC0AD"/>
       <ComponentRef Id="cmpE310E663F61AFC8DA9129510E7A83C8F"/>
       <ComponentRef Id="cmpB7414D5D360628FBD66A903806BF021E"/>
-      <ComponentRef Id="cmpD481552CA8C2C757B04EF86145EBEA07"/>
       <ComponentRef Id="cmpBBA7970F545E6714B55C67BCE34F9CD9"/>
+      <ComponentRef Id="cmp475A2CD0F13C6D60DEF3A6DB64326F9A"/>
       <ComponentRef Id="cmpD9E2D94ED9E60541C8B537646D8D837B"/>
       <ComponentRef Id="cmp22874616717E74A055EF992FD3A8AE15"/>
       <ComponentRef Id="cmpE5885EF70AC1A4F2B7A27511AAF85293"/>
       <ComponentRef Id="cmp7E940F8092C416BB0968466CF50A76CF"/>
+      <ComponentRef Id="cmp709A5151BF11FAAD5503B3BBAF23F41F"/>
       <ComponentRef Id="cmp24BD6897F28BC29DD88D5816A19D4CED"/>
       <ComponentRef Id="cmp3A229CDA039940E57030E158641A3CD4"/>
       <ComponentRef Id="cmpE0B1EDA2300B009CABC8B236AE329B2A"/>
