@@ -5,6 +5,9 @@
   <Fragment>
     <DirectoryRef Id="INSTALLDIR">
       <Directory Id="dir4920EE8CC0DF53D7912686315C7AFEB4" Name="bin">
+        <Component Win64="$(var.Win64)" Id="cmp18F9A5E0E9FB59B43E7A81C8321A21A7" Guid="*">
+          <File Id="fil8038EECE8F410991E66B7F2D8F1D11AA" KeyPath="yes" Source="$(var.SourceDir)/bin/libatomic-1.dll"/>
+        </Component>
         <Component Win64="$(var.Win64)" Id="cmp23A396DF6DA34DEDBF531E5264BF86AA" Guid="*">
 <!-- gcc 4.8 uses SEH -->
 <?if $(var.Win64) = "yes"?>
@@ -22,6 +25,7 @@
   <Fragment>
     <ComponentGroup Id="CG.gcc">
       <ComponentGroupRef Id="CG.winpthreads"/>
+      <ComponentRef Id="cmp18F9A5E0E9FB59B43E7A81C8321A21A7"/>
       <ComponentRef Id="cmp23A396DF6DA34DEDBF531E5264BF86AA"/>
       <ComponentRef Id="cmp94EF633C9D64EF2F94885691030F7EB7"/>
     </ComponentGroup>
