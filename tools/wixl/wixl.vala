@@ -26,7 +26,7 @@ namespace Wixl {
         { "includedir", 'I', 0, OptionArg.STRING_ARRAY, ref opt_includedirs, N_("Include directory"), null },
         { "wxidir", 0, 0, OptionArg.STRING, ref wxidir, N_("System include directory"), null },
         { "only-preproc", 'E', 0, OptionArg.NONE, ref preproc, N_("Stop after the preprocessing stage"), null },
-        { "", 0, 0, OptionArg.FILENAME_ARRAY, ref files, null, N_("INPUT_FILE...") },
+        { "", 0, 0, OptionArg.FILENAME_ARRAY, ref files, null, N_("INPUT_FILE1 [INPUT_FILE2]...") },
         { null }
     };
 
