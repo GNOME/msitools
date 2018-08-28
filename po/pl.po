@@ -1,15 +1,15 @@
 # Polish translation for msitools.
-# Copyright © 2013-2015 the msitools authors.
+# Copyright © 2013-2018 the msitools authors.
 # This file is distributed under the same license as the msitools package.
-# Piotr Drąg <piotrdrag@gmail.com>, 2013-2015.
-# Aviary.pl <community-poland@mozilla.org>, 2013-2015.
+# Piotr Drąg <piotrdrag@gmail.com>, 2013-2018.
+# Aviary.pl <community-poland@mozilla.org>, 2013-2018.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: msitools\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-08-21 15:51+0200\n"
-"PO-Revision-Date: 2015-08-31 01:50+0200\n"
+"Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/msitools/issues\n"
+"POT-Creation-Date: 2018-08-28 09:32+0000\n"
+"PO-Revision-Date: 2018-08-28 19:45+0200\n"
 "Last-Translator: Piotr Drąg <piotrdrag@gmail.com>\n"
 "Language-Team: Polish <community-poland@mozilla.org>\n"
 "Language: pl\n"
@@ -19,110 +19,110 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 "
 "|| n%100>=20) ? 1 : 2;\n"
 
-#: ../tools/msiextract.vala:10 ../tools/wixl/wixl.vala:21
+#: tools/msiextract.vala:10 tools/wixl/wixl.vala:21
 msgid "Display version number"
 msgstr "Wyświetla numer wersji"
 
-#: ../tools/msiextract.vala:11
+#: tools/msiextract.vala:11
 msgid "Extract to directory"
 msgstr "Rozpakowuje do katalogu"
 
-#: ../tools/msiextract.vala:12
+#: tools/msiextract.vala:12
 msgid "List files only"
 msgstr "Wyświetla tylko listę plików"
 
-#: ../tools/msiextract.vala:13
+#: tools/msiextract.vala:13
 msgid "MSI_FILE..."
 msgstr "PLIK_MSI…"
 
-#: ../tools/msiextract.vala:126
+#: tools/msiextract.vala:160
 msgid "- a msi files extracting tool"
 msgstr "— narzędzie do rozpakowywania plików MSI"
 
-#: ../tools/msiextract.vala:146 ../tools/wixl/wixl.vala:75
+#: tools/msiextract.vala:180 tools/wixl/wixl.vala:75
 msgid "Please specify input files.\n"
 msgstr "Proszę podać pliki wejściowe.\n"
 
-#: ../tools/wixl/wixl-heat.vala:12
+#: tools/wixl/wixl-heat.vala:12
 msgid "Directory Ref"
 msgstr "Odniesienie katalogu"
 
-#: ../tools/wixl/wixl-heat.vala:13
+#: tools/wixl/wixl-heat.vala:13
 msgid "Component Group"
 msgstr "Grupa składnika"
 
-#: ../tools/wixl/wixl-heat.vala:14
+#: tools/wixl/wixl-heat.vala:14
 msgid "Variable for source dir"
 msgstr "Zmienna dla katalogu źródłowego"
 
-#: ../tools/wixl/wixl-heat.vala:15
+#: tools/wixl/wixl-heat.vala:15
 msgid "Prefix"
 msgstr "Przedrostek"
 
-#: ../tools/wixl/wixl-heat.vala:16
+#: tools/wixl/wixl-heat.vala:16
 msgid "Exclude prefix"
 msgstr "Wyklucza przedrostek"
 
-#: ../tools/wixl/wixl-heat.vala:17
+#: tools/wixl/wixl-heat.vala:17
 msgid "Add Win64 Component"
 msgstr "Dodaje składnik Win64"
 
-#: ../tools/wixl/wixl.vala:22
+#: tools/wixl/wixl.vala:22
 msgid "Verbose output"
 msgstr "Więcej komunikatów"
 
-#: ../tools/wixl/wixl.vala:23
+#: tools/wixl/wixl.vala:23
 msgid "Output file"
 msgstr "Plik wyjściowy"
 
-#: ../tools/wixl/wixl.vala:24
+#: tools/wixl/wixl.vala:24
 msgid "Define variable"
 msgstr "Podaje zmienną"
 
-#: ../tools/wixl/wixl.vala:25
+#: tools/wixl/wixl.vala:25
 msgid "Target architecture"
 msgstr "Architektura docelowa"
 
-#: ../tools/wixl/wixl.vala:26
+#: tools/wixl/wixl.vala:26
 msgid "Include directory"
 msgstr "Dołącza katalog"
 
-#: ../tools/wixl/wixl.vala:27
+#: tools/wixl/wixl.vala:27
 msgid "System include directory"
 msgstr "Katalog systemowych dyrektyw dołączenia"
 
-#: ../tools/wixl/wixl.vala:28
+#: tools/wixl/wixl.vala:28
 msgid "Stop after the preprocessing stage"
 msgstr "Zatrzymuje po etapie wczesnego przetwarzania"
 
-#: ../tools/wixl/wixl.vala:29
-msgid "INPUT_FILE..."
-msgstr "PLIK_WEJŚCIOWY…"
+#: tools/wixl/wixl.vala:29
+msgid "INPUT_FILE1 [INPUT_FILE2]..."
+msgstr "PLIK_WEJŚCIOWY1 [PLIK_WEJŚCIOWY2]…"
 
-#: ../tools/wixl/wixl.vala:37
+#: tools/wixl/wixl.vala:37
 #, c-format
 msgid "arch of type '%s' is not supported"
 msgstr "architektura typu „%s” nie jest obsługiwana"
 
-#: ../tools/wixl/wixl.vala:49
+#: tools/wixl/wixl.vala:49
 msgid "- a msi building tool"
 msgstr "— narzędzie do budowania plików MSI"
 
-#: ../tools/wixl/wixl.vala:83
+#: tools/wixl/wixl.vala:83
 msgid "Please specify the output file.\n"
 msgstr "Proszę podać plik wyjściowy.\n"
 
-#: ../tools/wixl/wixl.vala:100
+#: tools/wixl/wixl.vala:100
 #, c-format
 msgid "Loading %s...\n"
 msgstr "Wczytywanie %s…\n"
 
-#: ../tools/wixl/wixl.vala:110
+#: tools/wixl/wixl.vala:110
 #, c-format
 msgid "Building %s...\n"
 msgstr "Budowanie %s…\n"
 
-#: ../tools/wixl/wixl.vala:113
+#: tools/wixl/wixl.vala:113
 #, c-format
 msgid "Writing %s...\n"
 msgstr "Zapisywanie %s…\n"
