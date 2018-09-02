@@ -1,16 +1,15 @@
 # Swedish translation for msitools.
-# Copyright © 2015 msitools's COPYRIGHT HOLDER
+# Copyright © 2015-2018 msitools's COPYRIGHT HOLDER
 # This file is distributed under the same license as the msitools package.
-# Anders Jonsson <anders.jonsson@norsjovallen.se>, 2015.
+# Anders Jonsson <anders.jonsson@norsjovallen.se>, 2015, 2018.
 # Josef Andersson <josef.andersson@fripost.org>, 2015.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: msitools master\n"
-"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
-"product=msitools&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2015-07-15 10:51+0000\n"
-"PO-Revision-Date: 2015-07-03 22:09+0100\n"
+"Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/msitools/issues\n"
+"POT-Creation-Date: 2018-08-28 09:32+0000\n"
+"PO-Revision-Date: 2018-09-02 22:18+0200\n"
 "Last-Translator: Anders Jonsson <anders.jonsson@norsjovallen.se>\n"
 "Language-Team: Swedish <tp-sv@listor.tp-sv.se>\n"
 "Language: sv\n"
@@ -18,112 +17,112 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 1.8.1\n"
+"X-Generator: Poedit 2.1.1\n"
 
-#: ../tools/msiextract.vala:10 ../tools/wixl/wixl.vala:21
+#: tools/msiextract.vala:10 tools/wixl/wixl.vala:21
 msgid "Display version number"
 msgstr "Visa versionsnummer"
 
-#: ../tools/msiextract.vala:11
+#: tools/msiextract.vala:11
 msgid "Extract to directory"
 msgstr "Extrahera till katalog"
 
-#: ../tools/msiextract.vala:12
+#: tools/msiextract.vala:12
 msgid "List files only"
 msgstr "Lista enbart filer"
 
-#: ../tools/msiextract.vala:13
+#: tools/msiextract.vala:13
 msgid "MSI_FILE..."
 msgstr "MSI-FIL…"
 
-#: ../tools/msiextract.vala:126
+#: tools/msiextract.vala:160
 msgid "- a msi files extracting tool"
 msgstr "- ett extraheringsverktyg för msi-filer"
 
-#: ../tools/msiextract.vala:146 ../tools/wixl/wixl.vala:75
+#: tools/msiextract.vala:180 tools/wixl/wixl.vala:75
 msgid "Please specify input files.\n"
 msgstr "Ange indatafiler.\n"
 
-#: ../tools/wixl/wixl-heat.vala:12
+#: tools/wixl/wixl-heat.vala:12
 msgid "Directory Ref"
 msgstr "Katalogreferens"
 
-#: ../tools/wixl/wixl-heat.vala:13
+#: tools/wixl/wixl-heat.vala:13
 msgid "Component Group"
 msgstr "Komponentgrupp"
 
-#: ../tools/wixl/wixl-heat.vala:14
+#: tools/wixl/wixl-heat.vala:14
 msgid "Variable for source dir"
 msgstr "Variabel för källkatalog"
 
-#: ../tools/wixl/wixl-heat.vala:15
+#: tools/wixl/wixl-heat.vala:15
 msgid "Prefix"
 msgstr "Prefix"
 
-#: ../tools/wixl/wixl-heat.vala:16
+#: tools/wixl/wixl-heat.vala:16
 msgid "Exclude prefix"
 msgstr "Exkluderingsprefix"
 
-#: ../tools/wixl/wixl-heat.vala:17
+#: tools/wixl/wixl-heat.vala:17
 msgid "Add Win64 Component"
 msgstr "Lägg till Win64-komponent"
 
-#: ../tools/wixl/wixl.vala:22
+#: tools/wixl/wixl.vala:22
 msgid "Verbose output"
 msgstr "Informativ utmatning"
 
-#: ../tools/wixl/wixl.vala:23
+#: tools/wixl/wixl.vala:23
 msgid "Output file"
 msgstr "Utdatafil"
 
-#: ../tools/wixl/wixl.vala:24
+#: tools/wixl/wixl.vala:24
 msgid "Define variable"
 msgstr "Definiera variabel"
 
-#: ../tools/wixl/wixl.vala:25
+#: tools/wixl/wixl.vala:25
 msgid "Target architecture"
 msgstr "Målarkitektur"
 
-#: ../tools/wixl/wixl.vala:26
+#: tools/wixl/wixl.vala:26
 msgid "Include directory"
 msgstr "Include-katalog"
 
-#: ../tools/wixl/wixl.vala:27
+#: tools/wixl/wixl.vala:27
 msgid "System include directory"
 msgstr "Systemets include-katalog"
 
-#: ../tools/wixl/wixl.vala:28
+#: tools/wixl/wixl.vala:28
 msgid "Stop after the preprocessing stage"
 msgstr "Stoppa efter förbehandlingssteget"
 
-#: ../tools/wixl/wixl.vala:29
-msgid "INPUT_FILE..."
-msgstr "INDATAFIL…"
+#: tools/wixl/wixl.vala:29
+msgid "INPUT_FILE1 [INPUT_FILE2]..."
+msgstr "INDATAFIL1 [INDATAFIL2]…"
 
-#: ../tools/wixl/wixl.vala:37
+#: tools/wixl/wixl.vala:37
 #, c-format
 msgid "arch of type '%s' is not supported"
 msgstr "arkitektur av typen '%s' stöds inte"
 
-#: ../tools/wixl/wixl.vala:49
+#: tools/wixl/wixl.vala:49
 msgid "- a msi building tool"
 msgstr "- ett verktyg för att bygga msi"
 
-#: ../tools/wixl/wixl.vala:83
+#: tools/wixl/wixl.vala:83
 msgid "Please specify the output file.\n"
 msgstr "Ange utdatafilen.\n"
 
-#: ../tools/wixl/wixl.vala:100
+#: tools/wixl/wixl.vala:100
 #, c-format
 msgid "Loading %s...\n"
 msgstr "Läser in %s…\n"
 
-#: ../tools/wixl/wixl.vala:110
+#: tools/wixl/wixl.vala:110
 #, c-format
 msgid "Building %s...\n"
 msgstr "Bygger %s…\n"
 
-#: ../tools/wixl/wixl.vala:113
+#: tools/wixl/wixl.vala:113
 #, c-format
 msgid "Writing %s...\n"
 msgstr "Skriver %s…\n"
