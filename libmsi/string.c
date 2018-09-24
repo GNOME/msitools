@@ -484,7 +484,7 @@ string_table *msi_load_string_table( GsfInfile *stg, unsigned *bytes_per_strref 
 {
     string_table *st = NULL;
     char *data = NULL;
-    uint8_t *pool = NULL;
+    uint16_t *pool = NULL;
     unsigned r, datasize = 0, poolsize = 0, codepage;
     unsigned i, count, offset, len, n, refs;
 
@@ -495,47 +495,51 @@ string_table *msi_load_string_table( GsfInfile *stg, unsigned *bytes_per_strref 
     if( r != LIBMSI_RESULT_SUCCESS)
         goto end;
 
-    if ( (poolsize > 4) && (pool[3] & 0x80) )
+    if ( (poolsize > 4) && (pool[1] & 0x8000) )
         *bytes_per_strref = LONG_STR_BYTES;
     else
         *bytes_per_strref = sizeof(uint16_t);
 
-    /* All data is little-endian.  */
+    count = poolsize/4;
     if( poolsize > 4 )
-        codepage = pool[0] | (pool[1] << 8) | (pool[2] << 16) | ((pool[3] & ~0x80) << 24);
+        codepage = pool[0] | ( (pool[1] & ~0x8000) << 16 );
     else
         codepage = CP_ACP;
 
-    count = poolsize/4;
     st = init_stringtable( count, codepage );
     if (!st)
         goto end;
 
     offset = 0;
+    n = 1;
     i = 1;
-    for (n = 1; i<count ; n++)
+    while ( i<count )
     {
         /* the string reference count is always the second word */
-        len = pool[i*4] | (pool[i*4+1] << 8);
-        refs = pool[i*4+2] | (pool[i*4+3] << 8);
-        i++;
+        refs = pool[i*2+1];
 
         /* empty entries have two zeros, still have a string id */
-        if (len == 0 && refs == 0)
+        if (pool[i*2] == 0 && refs == 0)
+        {
+            i++;
+            n++;
             continue;
+        }
 
         /*
          * If a string is over 64k, the previous string entry is made null
          * and the high word of the length is inserted in the null string's
-         * reference count field (i.e. mixed endian).
-         *
-         * TODO: add testcase
+         * reference count field.
          */
-        if (len == 0)
+        if (pool[i*2] == 0)
         {
-            len = (refs << 16) | pool[i*4] | (pool[i*4+1] << 8);
-            refs = pool[i*4+2] | (pool[i*4+3] << 8);
-            i++;
+            len = (pool[i*2+3] << 16) + pool[i*2+2];
+            i += 2;
+        }
+        else
+        {
+            len = pool[i*2];
+            i += 1;
         }
 
         if ( (offset + len) > datasize )
@@ -547,6 +551,7 @@ string_table *msi_load_string_table( GsfInfile *stg, unsigned *bytes_per_strref 
         r = msi_addstring( st, n, data+offset, len, refs, StringPersistent );
         if( r != n )
             g_critical("Failed to add string %d\n", n );
+        n++;
         offset += len;
     }
 
