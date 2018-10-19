@@ -2,15 +2,14 @@
 # Copyright (C) 2013 msitools's COPYRIGHT HOLDER
 # This file is distributed under the same license as the msitools package.
 #
-# Matej Urbančič <mateju@svn.gnome.org>, 2013-2014.
+# Matej Urbančič <mateju@svn.gnome.org>, 2013–2018.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: msitools master\n"
-"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
-"product=msitools&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2014-12-25 10:56+0000\n"
-"PO-Revision-Date: 2014-12-25 20:00+0100\n"
+"Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/msitools/issues\n"
+"POT-Creation-Date: 2018-09-28 08:21+0000\n"
+"PO-Revision-Date: 2018-10-19 18:01+0200\n"
 "Last-Translator: Matej Urbančič <mateju@svn.gnome.org>\n"
 "Language-Team: Slovenian <gnome-si@googlegroups.com>\n"
 "Language: sl\n"
@@ -19,112 +18,112 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=4; plural=(n%100==1 ? 1 : n%100==2 ? 2 : n%100==3 || n"
 "%100==4 ? 3 : 0);\n"
-"X-Generator: Poedit 1.5.4\n"
+"X-Generator: Poedit 2.1.1\n"
 
-#: ../tools/msiextract.vala:10 ../tools/wixl/wixl.vala:21
+#: tools/msiextract.vala:10 tools/wixl/wixl.vala:21
 msgid "Display version number"
 msgstr "Pokaži številko različice"
 
-#: ../tools/msiextract.vala:11
+#: tools/msiextract.vala:11
 msgid "Extract to directory"
 msgstr "Razširi v mapo"
 
-#: ../tools/msiextract.vala:12
+#: tools/msiextract.vala:12
 msgid "List files only"
 msgstr "Izpiše le datoteke"
 
-#: ../tools/msiextract.vala:13
+#: tools/msiextract.vala:13
 msgid "MSI_FILE..."
 msgstr "DATOTEKA_MSI ..."
 
-#: ../tools/msiextract.vala:126
+#: tools/msiextract.vala:160
 msgid "- a msi files extracting tool"
-msgstr "- orodje za odpakiranje datotek iz arhiva msi"
+msgstr "– orodje za odpakiranje datotek iz arhiva msi"
 
-#: ../tools/msiextract.vala:146 ../tools/wixl/wixl.vala:75
+#: tools/msiextract.vala:180 tools/wixl/wixl.vala:75
 msgid "Please specify input files.\n"
 msgstr "Navesti je treba vhodne datoteke.\n"
 
-#: ../tools/wixl/wixl-heat.vala:12
+#: tools/wixl/wixl-heat.vala:12
 msgid "Directory Ref"
 msgstr "Sklic mape"
 
-#: ../tools/wixl/wixl-heat.vala:13
+#: tools/wixl/wixl-heat.vala:13
 msgid "Component Group"
 msgstr "Skupina izrezkov"
 
-#: ../tools/wixl/wixl-heat.vala:14
+#: tools/wixl/wixl-heat.vala:14
 msgid "Variable for source dir"
 msgstr "Spremenljivka izvorne mape"
 
-#: ../tools/wixl/wixl-heat.vala:15
+#: tools/wixl/wixl-heat.vala:15
 msgid "Prefix"
 msgstr "Predpona"
 
-#: ../tools/wixl/wixl-heat.vala:16
+#: tools/wixl/wixl-heat.vala:16
 msgid "Exclude prefix"
 msgstr "Prezri predpono"
 
-#: ../tools/wixl/wixl-heat.vala:17
+#: tools/wixl/wixl-heat.vala:17
 msgid "Add Win64 Component"
 msgstr "Dodaj komponente Win64"
 
-#: ../tools/wixl/wixl.vala:22
+#: tools/wixl/wixl.vala:22
 msgid "Verbose output"
 msgstr "Podroben izpis"
 
-#: ../tools/wixl/wixl.vala:23
+#: tools/wixl/wixl.vala:23
 msgid "Output file"
 msgstr "Izhodna datoteka"
 
-#: ../tools/wixl/wixl.vala:24
+#: tools/wixl/wixl.vala:24
 msgid "Define variable"
 msgstr "Določitev spremenljivke"
 
-#: ../tools/wixl/wixl.vala:25
+#: tools/wixl/wixl.vala:25
 msgid "Target architecture"
 msgstr "Ciljno okolje"
 
-#: ../tools/wixl/wixl.vala:26
+#: tools/wixl/wixl.vala:26
 msgid "Include directory"
 msgstr "Vključi mapo"
 
-#: ../tools/wixl/wixl.vala:27
+#: tools/wixl/wixl.vala:27
 msgid "System include directory"
 msgstr "Vključena sistemska mapa"
 
-#: ../tools/wixl/wixl.vala:28
+#: tools/wixl/wixl.vala:28
 msgid "Stop after the preprocessing stage"
 msgstr "Zaustavi po opravilu obdelave"
 
-#: ../tools/wixl/wixl.vala:29
-msgid "INPUT_FILE..."
-msgstr "VHODNA_DATOTEKA ..."
+#: tools/wixl/wixl.vala:29
+msgid "INPUT_FILE1 [INPUT_FILE2]..."
+msgstr "VHODNA_DATOTEKA1 [VHODNA_DATOTEKA2] ..."
 
-#: ../tools/wixl/wixl.vala:37
+#: tools/wixl/wixl.vala:37
 #, c-format
 msgid "arch of type '%s' is not supported"
-msgstr "Okolje vrste '%s' ni podprto ..."
+msgstr "Okolje vrste »%s« ni podprto ..."
 
-#: ../tools/wixl/wixl.vala:49
+#: tools/wixl/wixl.vala:49
 msgid "- a msi building tool"
-msgstr "- orodje za izgradnjo msi"
+msgstr "– orodje za izgradnjo msi"
 
-#: ../tools/wixl/wixl.vala:83
+#: tools/wixl/wixl.vala:83
 msgid "Please specify the output file.\n"
 msgstr "Določiti je treba izhodno datoteko.\n"
 
-#: ../tools/wixl/wixl.vala:100
+#: tools/wixl/wixl.vala:100
 #, c-format
 msgid "Loading %s...\n"
 msgstr "Poteka nalaganje %s ...\n"
 
-#: ../tools/wixl/wixl.vala:110
+#: tools/wixl/wixl.vala:110
 #, c-format
 msgid "Building %s...\n"
 msgstr "Poteka izgradnja %s ...\n"
 
-#: ../tools/wixl/wixl.vala:113
+#: tools/wixl/wixl.vala:113
 #, c-format
 msgid "Writing %s...\n"
 msgstr "Poteka zapisovanje %s ...\n"
