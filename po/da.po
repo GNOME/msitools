@@ -6,17 +6,17 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: msitools master\n"
-"Report-Msgid-Bugs-To: https://bugzilla.gnome.org/enter_bug.cgi?"
-"product=msitools&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2017-06-01 14:23+0000\n"
-"PO-Revision-Date: 2017-12-25 09:34+0000\n"
-"Last-Translator: Joe Hansen <joedalton2@yahoo.dk>\n"
+"Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/msitools/issues\n"
+"POT-Creation-Date: 2018-08-28 09:32+0000\n"
+"PO-Revision-Date: 2018-10-28 16:10+0100\n"
+"Last-Translator: Alan Mortensen <alanmortensen.am@gmail.com>\n"
 "Language-Team: Danish <dansk@dansk-gruppen.dk>\n"
 "Language: da\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Poedit 2.0.6\n"
 
 #: tools/msiextract.vala:10 tools/wixl/wixl.vala:21
 msgid "Display version number"
@@ -34,11 +34,11 @@ msgstr "Vis kun filer"
 msgid "MSI_FILE..."
 msgstr "MSI_FIL …"
 
-#: tools/msiextract.vala:156
+#: tools/msiextract.vala:160
 msgid "- a msi files extracting tool"
 msgstr "- et udtrækningsværktøj for msi-filer"
 
-#: tools/msiextract.vala:176 tools/wixl/wixl.vala:75
+#: tools/msiextract.vala:180 tools/wixl/wixl.vala:75
 msgid "Please specify input files.\n"
 msgstr "Angiv venligst inddatafiler.\n"
 
@@ -95,8 +95,8 @@ msgid "Stop after the preprocessing stage"
 msgstr "Stop efter forbrændertrinet"
 
 #: tools/wixl/wixl.vala:29
-msgid "INPUT_FILE..."
-msgstr "INDDATA_FIL …"
+msgid "INPUT_FILE1 [INPUT_FILE2]..."
+msgstr "INDDATA_FIL1 [INDDATA_FIL2] …"
 
 #: tools/wixl/wixl.vala:37
 #, c-format
