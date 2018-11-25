@@ -1,15 +1,14 @@
 # Lithuanian translation for msitools.
 # Copyright (C) 2013 msitools's COPYRIGHT HOLDER
 # This file is distributed under the same license as the msitools package.
-# Aurimas Černius <aurisc4@gmail.com>, 2013, 2015.
+# Aurimas Černius <aurisc4@gmail.com>, 2013-2018.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: msitools master\n"
-"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
-"product=msitools&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2014-11-03 14:11+0000\n"
-"PO-Revision-Date: 2015-09-09 17:20+0300\n"
+"Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/msitools/issues\n"
+"POT-Creation-Date: 2018-08-28 09:32+0000\n"
+"PO-Revision-Date: 2018-11-25 18:50+0200\n"
 "Last-Translator: Aurimas Černius <aurisc4@gmail.com>\n"
 "Language-Team: Lietuvių <gnome-lt@lists.akl.lt>\n"
 "Language: lt\n"
@@ -18,112 +17,113 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n"
 "%100<10 || n%100>=20) ? 1 : 2);\n"
-"X-Generator: Gtranslator 2.91.7\n"
+"X-Generator: Gtranslator 3.30.1\n"
 
-#: ../tools/msiextract.vala:10 ../tools/wixl/wixl.vala:21
+#: tools/msiextract.vala:10 tools/wixl/wixl.vala:21
 msgid "Display version number"
 msgstr "Rodyti versijos numerį"
 
-#: ../tools/msiextract.vala:11
+#: tools/msiextract.vala:11
 msgid "Extract to directory"
 msgstr "Išskleisti į aplanką"
 
-#: ../tools/msiextract.vala:12
+#: tools/msiextract.vala:12
 msgid "List files only"
 msgstr "Tik išvardinti failus"
 
-#: ../tools/msiextract.vala:13
+#: tools/msiextract.vala:13
 msgid "MSI_FILE..."
 msgstr "MSI_FAILAS..."
 
-#: ../tools/msiextract.vala:126
+#: tools/msiextract.vala:160
 msgid "- a msi files extracting tool"
 msgstr "- msi failų išskleidimo įrankis"
 
-#: ../tools/msiextract.vala:146 ../tools/wixl/wixl.vala:75
+#: tools/msiextract.vala:180 tools/wixl/wixl.vala:75
 msgid "Please specify input files.\n"
 msgstr "Nurodykite įvesties failus.\n"
 
-#: ../tools/wixl/wixl-heat.vala:12
+#: tools/wixl/wixl-heat.vala:12
 msgid "Directory Ref"
 msgstr "Aplanko nuoroda"
 
-#: ../tools/wixl/wixl-heat.vala:13
+#: tools/wixl/wixl-heat.vala:13
 msgid "Component Group"
 msgstr "Komponento grupė"
 
-#: ../tools/wixl/wixl-heat.vala:14
+#: tools/wixl/wixl-heat.vala:14
 msgid "Variable for source dir"
 msgstr "Kintamasis šaltinio aplankui"
 
-#: ../tools/wixl/wixl-heat.vala:15
+#: tools/wixl/wixl-heat.vala:15
 msgid "Prefix"
 msgstr "Priešdėlis"
 
-#: ../tools/wixl/wixl-heat.vala:16
+#: tools/wixl/wixl-heat.vala:16
 msgid "Exclude prefix"
 msgstr "Išimčių priešdėlis"
 
-#: ../tools/wixl/wixl-heat.vala:17
+#: tools/wixl/wixl-heat.vala:17
 msgid "Add Win64 Component"
 msgstr "Pridėti Win64 komponentą"
 
-#: ../tools/wixl/wixl.vala:22
+#: tools/wixl/wixl.vala:22
 msgid "Verbose output"
 msgstr "Išsami išvestis"
 
-#: ../tools/wixl/wixl.vala:23
+#: tools/wixl/wixl.vala:23
 msgid "Output file"
 msgstr "Išvesties failas"
 
-#: ../tools/wixl/wixl.vala:24
+#: tools/wixl/wixl.vala:24
 msgid "Define variable"
 msgstr "Apibrėžti kintamąjį"
 
-#: ../tools/wixl/wixl.vala:25
+#: tools/wixl/wixl.vala:25
 msgid "Target architecture"
 msgstr "Paskirties architektūra"
 
-#: ../tools/wixl/wixl.vala:26
+#: tools/wixl/wixl.vala:26
 msgid "Include directory"
 msgstr "Įtraukti aplanką"
 
-#: ../tools/wixl/wixl.vala:27
+#: tools/wixl/wixl.vala:27
 msgid "System include directory"
 msgstr "Įtraukti sisteminį aplanką"
 
-#: ../tools/wixl/wixl.vala:28
+#: tools/wixl/wixl.vala:28
 msgid "Stop after the preprocessing stage"
 msgstr "Sustoti po pirminio apdorojimo"
 
-#: ../tools/wixl/wixl.vala:29
-msgid "INPUT_FILE..."
-msgstr "ĮVESTIES_FAILAS..."
+#: tools/wixl/wixl.vala:29
+#| msgid "INPUT_FILE..."
+msgid "INPUT_FILE1 [INPUT_FILE2]..."
+msgstr "ĮVESTIES_FAILAS1 [ĮVESTIES_FAILAS2]..."
 
-#: ../tools/wixl/wixl.vala:37
+#: tools/wixl/wixl.vala:37
 #, c-format
 msgid "arch of type '%s' is not supported"
 msgstr "arch tipas „%s“ nepalaikomas"
 
-#: ../tools/wixl/wixl.vala:49
+#: tools/wixl/wixl.vala:49
 msgid "- a msi building tool"
 msgstr "- msi kūrimo įrankis"
 
-#: ../tools/wixl/wixl.vala:83
+#: tools/wixl/wixl.vala:83
 msgid "Please specify the output file.\n"
 msgstr "Nurodykite išvesties failą.\n"
 
-#: ../tools/wixl/wixl.vala:100
+#: tools/wixl/wixl.vala:100
 #, c-format
 msgid "Loading %s...\n"
 msgstr "Įkeliama %s...\n"
 
-#: ../tools/wixl/wixl.vala:110
+#: tools/wixl/wixl.vala:110
 #, c-format
 msgid "Building %s...\n"
 msgstr "Kuriama %s...\n"
 
-#: ../tools/wixl/wixl.vala:113
+#: tools/wixl/wixl.vala:113
 #, c-format
 msgid "Writing %s...\n"
 msgstr "Rašomas %s...\n"
