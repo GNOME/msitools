@@ -471,8 +471,9 @@ namespace Wixl {
             }
 
             string? parent = (feature.parent is WixFeature) ? feature.parent.Id : null;
+            int level = feature.Level != null ? int.parse (feature.Level) : 1;
 
-            db.table_feature.add (feature.Id, display, int.parse (feature.Level), 0, parent, feature.Title, feature.Description, feature.ConfigurableDirectory);
+            db.table_feature.add (feature.Id, display, level, 0, parent, feature.Title, feature.Description, feature.ConfigurableDirectory);
 
         }
 
