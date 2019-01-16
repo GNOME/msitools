@@ -4,9 +4,9 @@
 <?require openssl.wxi?>
 <?require pixman.wxi?>
 <?require libjpeg-turbo.wxi?>
-<?require celt051.wxi?>
 <?require opus.wxi?>
 <?require orc.wxi?>
+<?require json-glib.wxi?>
 <?require hicolor-icon-theme.wxi?>
 <Include xmlns="http://schemas.microsoft.com/wix/2006/wi">
   <Fragment>
@@ -62,13 +62,9 @@
           <Component Win64="$(var.Win64)" Id="cmp6E40650EE781D7A31FD8621801955090" Guid="*">
               <File Id="fil5FE981BB233522C4A80C71349DDCDC94" KeyPath="yes" Source="$(var.SourceDir)/lib/gstreamer-1.0/libgstautodetect.dll"/>
           </Component>
-          <Component Win64="$(var.Win64)" Id="cmpEE8AD0322820C368BE403D5588B6C5A3" Guid="*">
-              <File Id="filA999BEB07C46CC2A776985F40270F7ED" KeyPath="yes" Source="$(var.SourceDir)/lib/gstreamer-1.0/libgstdirectsound.dll"/>
-          </Component>
 
-          <!-- gstreamer1-plugins-bad-free -->
-          <Component Win64="$(var.Win64)" Id="cmp83B339398D5E5381DD1E992E16858015" Guid="*">
-              <File Id="filF556FED35C41B9063691FFEB1488F4EF" KeyPath="yes" Source="$(var.SourceDir)/lib/gstreamer-1.0/libgstdirectsoundsrc.dll"/>
+          <Component Win64="$(var.Win64)" Id="cmpEE8AD0322820C368BE403D5588B6C5A3" Guid="*">
+              <File Id="FIL887859C95D334F8EAF8A10FAEC6F7CE9" KeyPath="yes" Source="$(var.SourceDir)/lib/gstreamer-1.0/libgstwasapi.dll"/>
           </Component>
         </Directory>
       </Directory> <!-- INSTALLDIR/lib -->
@@ -100,8 +96,8 @@
       <ComponentGroupRef Id="CG.openssl"/>
       <ComponentGroupRef Id="CG.pixman"/>
       <ComponentGroupRef Id="CG.libjpeg-turbo"/>
-      <ComponentGroupRef Id="CG.celt051"/>
       <ComponentGroupRef Id="CG.opus"/>
+      <ComponentGroupRef Id="CG.json-glib"/>
       <ComponentGroupRef Id="CG.hicolor-icon-theme"/>
       <!-- from spice -->
       <ComponentRef Id="cmp102591AAF331792A897FB24554275832"/>
@@ -126,9 +122,6 @@
       <!-- from gstreamer1-plugins-good (lib) -->
       <ComponentRef Id="cmp6E40650EE781D7A31FD8621801955090"/>
       <ComponentRef Id="cmpEE8AD0322820C368BE403D5588B6C5A3"/>
-
-      <!-- from gstreamer1-plugins-bad-free (lib) -->
-      <ComponentRef Id="cmp83B339398D5E5381DD1E992E16858015"/>
     </ComponentGroup>
   </Fragment>
 </Include>

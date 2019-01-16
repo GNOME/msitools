@@ -4,13 +4,13 @@
     <DirectoryRef Id="INSTALLDIR">
       <Directory Id="dir2D5CA9C21426E527BC8B9FD68858C67C" Name="bin">
         <Component Win64="$(var.Win64)" Id="cmp005FB795284130F682F44FA733170184" Guid="*">
-          <File Id="fil95D8B997A825793363F155E03E367FDF" KeyPath="yes" Source="$(var.SourceDir)/bin/libidn-11.dll"/>
+          <File Id="FIL0F1BBCD0306C47DE8856F22FFB1DFD65" KeyPath="yes" Source="$(var.SourceDir)/bin/libidn2-0.dll"/>
         </Component>
       </Directory>
     </DirectoryRef>
   </Fragment>
   <Fragment>
-    <ComponentGroup Id="CG.libidn">
+    <ComponentGroup Id="CG.libidn2">
       <ComponentGroupRef Id="CG.gettext"/>
       <ComponentRef Id="cmp005FB795284130F682F44FA733170184"/>
     </ComponentGroup>

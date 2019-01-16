@@ -35,13 +35,14 @@ dist_wxi_DATA =					\
 	wixl/gvnc.wxi				\
 	wixl/hicolor-icon-theme.wxi		\
 	wixl/jasper.wxi				\
+	wixl/json-glib.wxi			\
 	wixl/libcacard.wxi			\
 	wixl/libepoxy.wxi			\
 	wixl/libffi.wxi				\
 	wixl/libgcrypt.wxi			\
 	wixl/libgpg-error.wxi			\
 	wixl/libgovirt.wxi			\
-	wixl/libidn.wxi				\
+	wixl/libidn2.wxi			\
 	wixl/libjpeg-turbo.wxi			\
 	wixl/libogg.wxi				\
 	wixl/libpng.wxi				\

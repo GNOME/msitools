@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <?require libssh2.wxi?>
-<?require libidn.wxi?>
+<?require libidn2.wxi?>
 <?require zlib.wxi?>
 <?require openssl.wxi?>
 <Include xmlns="http://schemas.microsoft.com/wix/2006/wi">
@@ -16,7 +16,7 @@
   <Fragment>
     <ComponentGroup Id="CG.curl">
       <ComponentGroupRef Id="CG.libssh2"/>
-      <ComponentGroupRef Id="CG.libidn"/>
+      <ComponentGroupRef Id="CG.libidn2"/>
       <ComponentGroupRef Id="CG.zlib"/>
       <ComponentGroupRef Id="CG.openssl"/>
       <ComponentRef Id="cmpD17DE7BDBF0C5DD49F836AC69F4B3B5F"/>
