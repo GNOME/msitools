@@ -5,7 +5,7 @@ variables:
                 glib2-devel gobject-introspection-devel
                 libuuid-devel vala libgsf-devel
                 libgcab1-devel git libtool make
-                redhat-rpm-config byacc
+                redhat-rpm-config
                 bison bison-devel bison-runtime
 
 build_stable:
