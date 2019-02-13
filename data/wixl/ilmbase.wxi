@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<?require gcc-c++.wxi?>
+<Include xmlns="http://schemas.microsoft.com/wix/2006/wi">
+  <Fragment>
+    <DirectoryRef Id="INSTALLDIR">
+      <Directory Id="dirFEE7741CD6956C044C54657F0DD3C9C6" Name="bin">
+        <Component Win64="$(var.Win64)" Id="cmp8841D4AC98BB4E355DEE95693C106E5B" Guid="*">
+          <File Id="fil382657303208BFBA98F9C3DE9CB8C5D0" KeyPath="yes" Source="$(var.SourceDir)/bin/libHalf-12.dll"/>
+        </Component>
+        <Component Win64="$(var.Win64)" Id="cmpEC4003EB0BAB5B71778B265B6FE8D5E6" Guid="*">
+          <File Id="fil50B918F718DFACCC85E1977288C940EB" KeyPath="yes" Source="$(var.SourceDir)/bin/libIex-2_2-12.dll"/>
+        </Component>
+        <Component Win64="$(var.Win64)" Id="cmp08C10599C5D28DC6E93BADB2E08B4759" Guid="*">
+          <File Id="fil3ED3E5ADDD2D4B102259ED171F7949FE" KeyPath="yes" Source="$(var.SourceDir)/bin/libIexMath-2_2-12.dll"/>
+        </Component>
+        <Component Win64="$(var.Win64)" Id="cmpD45077DA5966C826352D469D3D67A369" Guid="*">
+          <File Id="fil90E18D2986B4B955393BA9BA853F2C1C" KeyPath="yes" Source="$(var.SourceDir)/bin/libIlmThread-2_2-12.dll"/>
+        </Component>
+        <Component Win64="$(var.Win64)" Id="cmp4F1AA02BD44B255C23DE60651C7E4E96" Guid="*">
+          <File Id="fil372983D1CA835F65581D8AED56538FD7" KeyPath="yes" Source="$(var.SourceDir)/bin/libImath-2_2-12.dll"/>
+        </Component>
+      </Directory>
+    </DirectoryRef>
+  </Fragment>
+  <Fragment>
+    <ComponentGroup Id="CG.ilmbase">
+      <ComponentGroupRef Id="CG.gcc-c++"/>
+      <ComponentRef Id="cmp8841D4AC98BB4E355DEE95693C106E5B"/>
+      <ComponentRef Id="cmpEC4003EB0BAB5B71778B265B6FE8D5E6"/>
+      <ComponentRef Id="cmp08C10599C5D28DC6E93BADB2E08B4759"/>
+      <ComponentRef Id="cmpD45077DA5966C826352D469D3D67A369"/>
+      <ComponentRef Id="cmp4F1AA02BD44B255C23DE60651C7E4E96"/>
+    </ComponentGroup>
+  </Fragment>
+</Include>
