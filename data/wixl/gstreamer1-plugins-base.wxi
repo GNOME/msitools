@@ -43,10 +43,18 @@
           <File Id="filD084197A284B069DC169CC8A9FB52E1B" KeyPath="yes" Source="$(var.SourceDir)/bin/libgstvideo-1.0-0.dll"/>
         </Component>
         <Component Win64="$(var.Win64)" Id="cmpBBA417A37BD78445680FF8B465BF2973" Guid="*">
-          <File Id="fil5830E2E96130728F825D2CEE3C961889" KeyPath="yes" Source="$(var.SourceDir)/bin/x86_64-w64-mingw32-gst-device-monitor-1.0.exe"/>
+          <?if $(var.Win64) = "yes"?>
+            <File Id="fil5830E2E96130728F825D2CEE3C961889" KeyPath="yes" Source="$(var.SourceDir)/bin/x86_64-w64-mingw32-gst-device-monitor-1.0.exe"/>
+          <?else?>
+            <File Id="fil5830E2E96130728F825D2CEE3C961889" KeyPath="yes" Source="$(var.SourceDir)/bin/i686-w64-mingw32-gst-device-monitor-1.0.exe"/>
+          <?endif?>
         </Component>
         <Component Win64="$(var.Win64)" Id="cmpDDBB0DA81122B9A9ED43F16BD05A9EA8" Guid="*">
-          <File Id="fil19157EDBA14F9D94E025AF5BB75D2645" KeyPath="yes" Source="$(var.SourceDir)/bin/x86_64-w64-mingw32-gst-play-1.0.exe"/>
+          <?if $(var.Win64) = "yes"?>
+            <File Id="fil19157EDBA14F9D94E025AF5BB75D2645" KeyPath="yes" Source="$(var.SourceDir)/bin/x86_64-w64-mingw32-gst-play-1.0.exe"/>
+          <?else?>
+            <File Id="fil19157EDBA14F9D94E025AF5BB75D2645" KeyPath="yes" Source="$(var.SourceDir)/bin/i686-w64-mingw32-gst-play-1.0.exe"/>
+          <?endif?>
         </Component>
       </Directory>
       <Directory Id="dir8F8E08157F02A6A8C67E14F692417771" Name="lib">
