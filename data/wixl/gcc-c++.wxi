@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<?require gcc.wxi?>
+<?require winpthreads.wxi?>
+<Include xmlns="http://schemas.microsoft.com/wix/2006/wi">
+  <Fragment>
+    <DirectoryRef Id="INSTALLDIR">
+      <Directory Id="dir50936D179070696F6C634E6B323E4DF3" Name="bin">
+        <Component Win64="$(var.Win64)" Id="cmp73A1E6AC563894B36E1EB1A457728AE0" Guid="*">
+          <File Id="fil8D85BBE6CE048A6F56BB6D71F18FB9B7" KeyPath="yes" Source="$(var.SourceDir)/bin/libstdc++-6.dll"/>
+        </Component>
+      </Directory>
+    </DirectoryRef>
+  </Fragment>
+  <Fragment>
+    <ComponentGroup Id="CG.gcc-c++">
+      <ComponentGroupRef Id="CG.gcc"/>
+      <ComponentGroupRef Id="CG.winpthreads"/>
+      <ComponentRef Id="cmp73A1E6AC563894B36E1EB1A457728AE0"/>
+    </ComponentGroup>
+  </Fragment>
+</Include>
