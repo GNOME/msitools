@@ -1,4 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
+<?require gcc-c++.wxi?>
+<?require libjpeg-turbo.wxi?>
+<?require zlib.wxi?>
 <Include xmlns="http://schemas.microsoft.com/wix/2006/wi">
   <Fragment>
     <DirectoryRef Id="INSTALLDIR">
@@ -14,6 +17,9 @@
   </Fragment>
   <Fragment>
     <ComponentGroup Id="CG.libtiff">
+      <ComponentGroupRef Id="CG.gcc-c++"/>
+      <ComponentGroupRef Id="CG.libjpeg-turbo"/>
+      <ComponentGroupRef Id="CG.zlib"/>
       <ComponentRef Id="cmp8D382588B7F7DD3EF2B6D88927913BA5"/>
       <ComponentRef Id="cmp1E73886068B760FB1A37062110040830"/>
     </ComponentGroup>

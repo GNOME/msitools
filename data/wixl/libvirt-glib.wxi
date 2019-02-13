@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
+<?require glib2.wxi?>
+<?require libvirt.wxi?>
 <Include xmlns="http://schemas.microsoft.com/wix/2006/wi">
   <Fragment>
     <DirectoryRef Id="INSTALLDIR">
@@ -610,6 +612,8 @@
   </Fragment>
   <Fragment>
     <ComponentGroup Id="CG.libvirt-glib">
+      <ComponentGroupRef Id="CG.glib2"/>
+      <ComponentGroupRef Id="CG.libvirt"/>
       <ComponentRef Id="cmp5FCB8F3AE3F20A298819F67E64FBF317"/>
       <ComponentRef Id="cmp5C5B70DD5533CEFA333B56F9C014CB62"/>
       <ComponentRef Id="cmp13CF7D74B2B78A2F705C91302D938335"/>

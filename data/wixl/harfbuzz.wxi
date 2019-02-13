@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<?require cairo.wxi?>
+<?require freetype.wxi?>
+<?require icu.wxi?>
+<Include xmlns="http://schemas.microsoft.com/wix/2006/wi">
+  <Fragment>
+    <DirectoryRef Id="INSTALLDIR">
+      <Directory Id="dir2739BBB50CCDC7096EDFE2863FA4E126" Name="bin">
+        <Component Win64="$(var.Win64)" Id="cmp5730E3868448E02955418106B7D3FA24" Guid="*">
+          <File Id="fil7AF508B6AFEF229D1E3B5A52A0EFCCB7" KeyPath="yes" Source="$(var.SourceDir)/bin/hb-ot-shape-closure.exe"/>
+        </Component>
+        <Component Win64="$(var.Win64)" Id="cmpA818B1314F6536E10EBC57F0FF5B2F2D" Guid="*">
+          <File Id="fil229BC8CF47417462C1093A4846799221" KeyPath="yes" Source="$(var.SourceDir)/bin/hb-shape.exe"/>
+        </Component>
+        <Component Win64="$(var.Win64)" Id="cmp9AA1456DB9C31717DB339527C3F62A28" Guid="*">
+          <File Id="filDB1AB532E6E0EC7BE571775CC4E07E84" KeyPath="yes" Source="$(var.SourceDir)/bin/hb-subset.exe"/>
+        </Component>
+        <Component Win64="$(var.Win64)" Id="cmpE98106D964ED04BDE3481D0408199D5A" Guid="*">
+          <File Id="fil07EA6DD8ADD23D6B3713CEC2FCD83407" KeyPath="yes" Source="$(var.SourceDir)/bin/hb-view.exe"/>
+        </Component>
+        <Component Win64="$(var.Win64)" Id="cmp8B40339E5485DDF2385CD34B800BAF53" Guid="*">
+          <File Id="fil057096F2BAFB55595E44B645C136D6E9" KeyPath="yes" Source="$(var.SourceDir)/bin/libharfbuzz-0.dll"/>
+        </Component>
+        <Component Win64="$(var.Win64)" Id="cmpC38398BFF7BC6D85AE5335CE464AAF23" Guid="*">
+          <File Id="filDD2796B94D8141727EAFFBC98DABD37D" KeyPath="yes" Source="$(var.SourceDir)/bin/libharfbuzz-icu-0.dll"/>
+        </Component>
+        <Component Win64="$(var.Win64)" Id="cmp6544651C69DAA5579C6BEAEC841B2DD1" Guid="*">
+          <File Id="fil4A8A5F0AC6739D1C21219CADB6732E62" KeyPath="yes" Source="$(var.SourceDir)/bin/libharfbuzz-subset-0.dll"/>
+        </Component>
+      </Directory>
+    </DirectoryRef>
+  </Fragment>
+  <Fragment>
+    <ComponentGroup Id="CG.harfbuzz">
+      <ComponentGroupRef Id="CG.cairo"/>
+      <ComponentGroupRef Id="CG.freetype"/>
+      <ComponentGroupRef Id="CG.icu"/>
+      <ComponentRef Id="cmp5730E3868448E02955418106B7D3FA24"/>
+      <ComponentRef Id="cmpA818B1314F6536E10EBC57F0FF5B2F2D"/>
+      <ComponentRef Id="cmp9AA1456DB9C31717DB339527C3F62A28"/>
+      <ComponentRef Id="cmpE98106D964ED04BDE3481D0408199D5A"/>
+      <ComponentRef Id="cmp8B40339E5485DDF2385CD34B800BAF53"/>
+      <ComponentRef Id="cmpC38398BFF7BC6D85AE5335CE464AAF23"/>
+      <ComponentRef Id="cmp6544651C69DAA5579C6BEAEC841B2DD1"/>
+    </ComponentGroup>
+  </Fragment>
+</Include>

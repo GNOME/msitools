@@ -1,4 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
+<?require gstreamer1-plugins-base.wxi?>
+<?require gdk-pixbuf.wxi?>
+<?require libsoup.wxi?>
+<?require speex.wxi?>
+<?require wavpack.wxi?>
 <Include xmlns="http://schemas.microsoft.com/wix/2006/wi">
   <Fragment>
     <DirectoryRef Id="INSTALLDIR">
@@ -470,6 +475,11 @@
   </Fragment>
   <Fragment>
     <ComponentGroup Id="CG.gstreamer1-plugins-good">
+      <ComponentGroupRef Id="CG.gstreamer1-plugins-base"/>
+      <ComponentGroupRef Id="CG.gdk-pixbuf"/>
+      <ComponentGroupRef Id="CG.libsoup"/>
+      <ComponentGroupRef Id="CG.speex"/>
+      <ComponentGroupRef Id="CG.wavpack"/>
       <ComponentRef Id="cmpF8FE67B25637640E5CB8BE6D46D1C224"/>
       <ComponentRef Id="cmp7D8CE0D5E00E81505331851485CA580D"/>
       <ComponentRef Id="cmp6FBA8AA198BE210C228261A01654551B"/>

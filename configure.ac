@@ -16,7 +16,23 @@ AM_CONDITIONAL([WIN32], [test $win32 = yes])
 
 AC_USE_SYSTEM_EXTENSIONS
 AC_PROG_CC
-AC_PROG_YACC
+
+AC_CHECK_PROGS(YACC, 'bison -y')
+AC_ARG_VAR(YACC,
+           [The `Yet Another Compiler Compiler' implementation to use.
+	    Defaults to`bison -y'])
+
+AC_ARG_VAR(YFLAGS,
+           [The list of arguments that will be passed by default to $YACC.
+	    This script will default YFLAGS to the empty string to avoid
+	    a default value of `-d' given by some make applications.])
+
+if test -z "$YACC"
+then
+    AC_MSG_ERROR([bison is required to build msitools])
+fi
+
+AC_PATH_PROG(PERL, perl)
 
 PKG_CHECK_MODULES([GLIB], [glib-2.0 >= 2.12])
 PKG_CHECK_MODULES([GOBJECT], [gobject-2.0 gio-2.0 >= 2.14])

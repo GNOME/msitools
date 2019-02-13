@@ -6,7 +6,7 @@
         <Directory Id="dir8EF955C020E501D5CD6240128B80C6AD" Name="icons">
           <Directory Id="dir51B835413F1FC64DE74DEB85C02CA165" Name="hicolor">
             <Component Win64="$(var.Win64)" Id="cmpC25AB02DEE38E172F1402997BB4F02EA" Guid="*">
-              <File Id="fil1EB9F2F674AF9060404405F8B3AD7AFF" KeyPath="yes" Source="/usr/share/icons/hicolor/index.theme"/>
+              <File Id="fil1EB9F2F674AF9060404405F8B3AD7AFF" KeyPath="yes" Source="$(var.SourceDir)/share/icons/hicolor/index.theme"/>
             </Component>
           </Directory>
         </Directory>

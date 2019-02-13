@@ -1,4 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
+<?require gstreamer1.wxi?>
+<?require cairo.wxi?>
+<?require orc.wxi?>
+<?require pango.wxi?>
+<?require libjpeg-turbo.wxi?>
+<?require libtheora.wxi?>
+<?require libvorbis.wxi?>
 <Include xmlns="http://schemas.microsoft.com/wix/2006/wi">
   <Fragment>
     <DirectoryRef Id="INSTALLDIR">
@@ -425,6 +432,13 @@
   </Fragment>
   <Fragment>
     <ComponentGroup Id="CG.gstreamer1-plugins-base">
+      <ComponentGroupRef Id="CG.gstreamer1"/>
+      <ComponentGroupRef Id="CG.cairo"/>
+      <ComponentGroupRef Id="CG.orc"/>
+      <ComponentGroupRef Id="CG.pango"/>
+      <ComponentGroupRef Id="CG.libtheora"/>
+      <ComponentGroupRef Id="CG.libjpeg-turbo"/>
+      <ComponentGroupRef Id="CG.libvorbis"/>
       <ComponentRef Id="cmpB1B82A568DAEDDF49DEB42572093B712"/>
       <ComponentRef Id="cmp5312431B22ECEBFEB23D2F1A773AA137"/>
       <ComponentRef Id="cmp41BC989F8EA49BB2E49028C69193B3BB"/>

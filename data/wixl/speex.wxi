@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Include xmlns="http://schemas.microsoft.com/wix/2006/wi">
+  <Fragment>
+    <DirectoryRef Id="INSTALLDIR">
+      <Directory Id="dir67FC0FC76CF3AE6E2E270C9FDC3633DF" Name="bin">
+        <Component Win64="$(var.Win64)" Id="cmpDA747289BB4C3EE4BF1C70297CF60D12" Guid="*">
+          <File Id="filBAB9C0A1D6E791C5D15E59BEADDEBDAF" KeyPath="yes" Source="$(var.SourceDir)/bin/libspeex-1.dll"/>
+        </Component>
+      </Directory>
+    </DirectoryRef>
+  </Fragment>
+  <Fragment>
+    <ComponentGroup Id="CG.speex">
+      <ComponentRef Id="cmpDA747289BB4C3EE4BF1C70297CF60D12"/>
+    </ComponentGroup>
+  </Fragment>
+</Include>

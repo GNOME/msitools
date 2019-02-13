@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+<?require gcc.wxi?>
 <?require win-iconv.wxi?>
 <Include xmlns="http://schemas.microsoft.com/wix/2006/wi">
   <Fragment>
@@ -12,6 +13,7 @@
   </Fragment>
   <Fragment>
     <ComponentGroup Id="CG.SDL">
+      <ComponentGroupRef Id="CG.gcc"/>
       <ComponentGroupRef Id="CG.win-iconv"/>
       <ComponentRef Id="cmpE62B6BBD3A238B97A2947D35EA1404D3"/>
     </ComponentGroup>

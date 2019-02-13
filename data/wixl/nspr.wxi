@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+<?require gcc.wxi?>
 <Include xmlns="http://schemas.microsoft.com/wix/2006/wi">
   <Fragment>
     <DirectoryRef Id="INSTALLDIR">
@@ -17,6 +18,7 @@
   </Fragment>
   <Fragment>
     <ComponentGroup Id="CG.nspr">
+      <ComponentGroupRef Id="CG.gcc"/>
       <ComponentRef Id="cmp22A2DEFE509A234A8BFAF3D0B8ABD7D2"/>
       <ComponentRef Id="cmp49B31C531B672BB004CB42B27F61AB03"/>
       <ComponentRef Id="cmp22BFC894EE0607BA5D7505D052149CC4"/>

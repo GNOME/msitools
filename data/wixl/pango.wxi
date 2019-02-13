@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
+<?require cairo.wxi?>
 <?require freetype.wxi?>
 <?require fontconfig.wxi?>
+<?require harfbuzz.wxi?>
 <Include xmlns="http://schemas.microsoft.com/wix/2006/wi">
   <Fragment>
     <DirectoryRef Id="INSTALLDIR">
@@ -25,8 +27,10 @@
   </Fragment>
   <Fragment>
     <ComponentGroup Id="CG.pango">
+      <ComponentGroupRef Id="CG.cairo"/>
       <ComponentGroupRef Id="CG.freetype"/>
       <ComponentGroupRef Id="CG.fontconfig"/>
+      <ComponentGroupRef Id="CG.harfbuzz"/>
       <ComponentRef Id="cmp1FE5988884F4A6E5F9B935E26F7CA89E"/>
       <ComponentRef Id="cmpB85AF8036B232EAA090D687374559306"/>
       <ComponentRef Id="cmp79E5CAC364D0F87C611C24DBEC44D777"/>
