@@ -48,9 +48,6 @@
               <File Id="filB3D71391BE5CD07F796B9B1E9879CEB4" KeyPath="yes" Source="$(var.SourceDir)/share/libvirt/api/libvirt-qemu-api.xml"/>
             </Component>
           </Directory>
-          <Component Win64="$(var.Win64)" Id="cmpA8DCED740ED871E7D1A269566F20C7D0" Guid="*">
-            <File Id="fil20FADF94AB23B5CD9D32139A9681C1BD" KeyPath="yes" Source="$(var.SourceDir)/share/libvirt/cpu_map.xml"/>
-          </Component>
           <Directory Id="dir8C187E24AE199B94D942C1CD2DF56BFB" Name="schemas">
             <Component Win64="$(var.Win64)" Id="cmpE862AF29C99A212EADB63915785585FE" Guid="*">
               <File Id="fil4959C77CBD26E88883B7C9217D493494" KeyPath="yes" Source="$(var.SourceDir)/share/libvirt/schemas/basictypes.rng"/>
