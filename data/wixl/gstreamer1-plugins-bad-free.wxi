@@ -1,4 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
+<?require gstreamer1-plugins-base.wxi?>
+<?require OpenEXR.wxi?>
+<?require gcc-c++.wxi?>
+<?require libxml2.wxi?>
+<?require nettle.wxi?>
+<?require openssl.wxi?>
+<?require opus.wxi?>
+<?require gsm.wxi?>
 <Include xmlns="http://schemas.microsoft.com/wix/2006/wi">
   <Fragment>
     <DirectoryRef Id="INSTALLDIR">
@@ -561,6 +569,14 @@
   </Fragment>
   <Fragment>
     <ComponentGroup Id="CG.gstreamer1-plugins-bad-free">
+      <ComponentGroupRef Id="CG.gstreamer1-plugins-base"/>
+      <ComponentGroupRef Id="CG.OpenEXR"/>
+      <ComponentGroupRef Id="CG.gcc-c++"/>
+      <ComponentGroupRef Id="CG.libxml2"/>
+      <ComponentGroupRef Id="CG.nettle"/>
+      <ComponentGroupRef Id="CG.openssl"/>
+      <ComponentGroupRef Id="CG.opus"/>
+      <ComponentGroupRef Id="CG.gsm"/>
       <ComponentRef Id="cmpE39DF1299C0BDC69E6FF0EDB21C2B44C"/>
       <ComponentRef Id="cmp705F0A830103CB63E5311A0F5D856051"/>
       <ComponentRef Id="cmpCF0950505CA3AAD329BD2CE5D1B4608A"/>

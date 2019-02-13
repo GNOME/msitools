@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+<?require glib2.wxi?>
 <Include xmlns="http://schemas.microsoft.com/wix/2006/wi">
   <Fragment>
     <DirectoryRef Id="INSTALLDIR">
@@ -438,6 +439,7 @@
   </Fragment>
   <Fragment>
     <ComponentGroup Id="CG.json-glib">
+      <ComponentGroupRef Id="CG.glib2"/>
       <ComponentRef Id="cmpB22C65EB18C45EE7EEC15BB62ABF151F"/>
       <ComponentRef Id="cmp7B62E6909CFDAB61D81B735937C94082"/>
       <ComponentRef Id="cmp139CB05C6FB19C67B172A8BFABC18233"/>

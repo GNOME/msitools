@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <?require gettext.wxi?>
+<?require libffi.wxi?>
 <?require openssl.wxi?>
 <Include xmlns="http://schemas.microsoft.com/wix/2006/wi">
   <Fragment>
@@ -24,6 +25,7 @@
   <Fragment>
     <ComponentGroup Id="CG.p11-kit">
       <ComponentGroupRef Id="CG.gettext"/>
+      <ComponentGroupRef Id="CG.libffi"/>
       <ComponentGroupRef Id="CG.openssl"/>
       <ComponentRef Id="cmp307E48A1EF0D19A304DE093AD0643335"/>
       <ComponentRef Id="cmp6F4A6C742079260754A22831F49D9280"/>

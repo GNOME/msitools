@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
+<?require glib2.wxi?>
+<?require gnutls.wxi?>
 <Include xmlns="http://schemas.microsoft.com/wix/2006/wi">
   <Fragment>
     <DirectoryRef Id="INSTALLDIR">
@@ -453,6 +455,8 @@
   </Fragment>
   <Fragment>
     <ComponentGroup Id="CG.glib-networking">
+      <ComponentGroupRef Id="CG.glib2"/>
+      <ComponentGroupRef Id="CG.gnutls"/>
       <ComponentRef Id="cmpCD94B8BC5279DED6AA0535512CF9F77F"/>
       <ComponentRef Id="cmpC43485D6DED6223ACAE9A1A77620DDEE"/>
       <ComponentRef Id="cmpA4755E383A415852D4327CE43C266424"/>

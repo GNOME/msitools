@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+<?require gcc.wxi?>
 <?require zlib.wxi?>
 <Include xmlns="http://schemas.microsoft.com/wix/2006/wi">
   <Fragment>
@@ -12,6 +13,7 @@
   </Fragment>
   <Fragment>
     <ComponentGroup Id="CG.libpng">
+      <ComponentGroupRef Id="CG.gcc"/>
       <ComponentGroupRef Id="CG.zlib"/>
       <ComponentRef Id="cmp71CA8B05415501F69863A36302EE1D4F"/>
     </ComponentGroup>

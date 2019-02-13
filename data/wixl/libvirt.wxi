@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <?require gcc.wxi?>
 <?require curl.wxi?>
+<?require dlfcn.wxi?>
 <?require gnutls.wxi?>
 <?require gettext.wxi?>
 <?require portablexdr.wxi?>
@@ -559,7 +560,9 @@
     <ComponentGroup Id="CG.libvirt">
       <ComponentGroupRef Id="CG.gcc"/>
       <ComponentGroupRef Id="CG.curl"/>
+      <ComponentGroupRef Id="CG.dlfcn"/>
       <ComponentGroupRef Id="CG.gettext"/>
+      <ComponentGroupRef Id="CG.gnutls"/>
       <ComponentGroupRef Id="CG.portablexdr"/>
       <ComponentGroupRef Id="CG.readline"/>
       <ComponentGroupRef Id="CG.libxml2"/>

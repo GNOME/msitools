@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+<?require gcc.wxi?>
 <Include xmlns="http://schemas.microsoft.com/wix/2006/wi">
   <Fragment>
     <DirectoryRef Id="INSTALLDIR">
@@ -14,6 +15,7 @@
   </Fragment>
   <Fragment>
     <ComponentGroup Id="CG.sqlite">
+      <ComponentGroupRef Id="CG.gcc"/>
       <ComponentRef Id="cmpB490C74629FA32C393722CA47DF0D3CB"/>
       <ComponentRef Id="cmpDA4901A9813F7735DA9C843EE2352043"/>
     </ComponentGroup>

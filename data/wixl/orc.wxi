@@ -6,6 +6,9 @@
         <Component Win64="$(var.Win64)" Id="cmpD74B99A7894F2D6E2B1F93E5D403C0BB" Guid="*">
           <File Id="fil3152DFC6CBD8BB05A5A806FE595675D1" KeyPath="yes" Source="$(var.SourceDir)/bin/liborc-0.4-0.dll"/>
         </Component>
+        <Component Win64="$(var.Win64)" Id="cmp612780F96E22289C46DEF09D778D1CF4" Guid="*">
+          <File Id="filC89FFEC2D5B8DD05CC54D5456D608C7B" KeyPath="yes" Source="$(var.SourceDir)/bin/liborc-test-0.4-0.dll"/>
+        </Component>
         <Component Win64="$(var.Win64)" Id="cmp462AA8AF641AC020455E07D6D3EE94AC" Guid="*">
           <File Id="fil2534E81F2EE42A0A493B4169233E9CE3" KeyPath="yes" Source="$(var.SourceDir)/bin/orc-bugreport.exe"/>
         </Component>
@@ -15,6 +18,7 @@
   <Fragment>
     <ComponentGroup Id="CG.orc">
       <ComponentRef Id="cmpD74B99A7894F2D6E2B1F93E5D403C0BB"/>
+      <ComponentRef Id="cmp612780F96E22289C46DEF09D778D1CF4"/>
       <ComponentRef Id="cmp462AA8AF641AC020455E07D6D3EE94AC"/>
     </ComponentGroup>
   </Fragment>

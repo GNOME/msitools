@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <?require zlib.wxi?>
 <?require bzip2.wxi?>
+<?require libpng.wxi?>
 <Include xmlns="http://schemas.microsoft.com/wix/2006/wi">
   <Fragment>
     <DirectoryRef Id="INSTALLDIR">
@@ -25,6 +26,7 @@
     <ComponentGroup Id="CG.freetype">
       <ComponentGroupRef Id="CG.zlib"/>
       <ComponentGroupRef Id="CG.bzip2"/>
+      <ComponentGroupRef Id="CG.libpng"/>
       <ComponentRef Id="cmp7DA3DC54BBE4B60593CD317C4279F7F9"/>
       <ComponentRef Id="cmpF7131FB60E792D02C7BC8C64E5B69F31"/>
       <ComponentRef Id="cmp8A37F66595F5F762AB4F86BE3F6A1171"/>
