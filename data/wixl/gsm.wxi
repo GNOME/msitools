@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Include xmlns="http://schemas.microsoft.com/wix/2006/wi">
+  <Fragment>
+    <DirectoryRef Id="INSTALLDIR">
+      <Directory Id="dir9ED0697CE4EF23BA2DDA9255C7F21D86" Name="bin">
+        <Component Win64="$(var.Win64)" Id="cmp4740BB124A6ED380751E14D3248658AB" Guid="*">
+          <File Id="fil2D936557FB9CA92FFB74FF87041BA459" KeyPath="yes" Source="$(var.SourceDir)/bin/libgsm-1.dll"/>
+        </Component>
+      </Directory>
+    </DirectoryRef>
+  </Fragment>
+  <Fragment>
+    <ComponentGroup Id="CG.gsm">
+      <ComponentRef Id="cmp4740BB124A6ED380751E14D3248658AB"/>
+    </ComponentGroup>
+  </Fragment>
+</Include>

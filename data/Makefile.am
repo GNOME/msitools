@@ -20,6 +20,7 @@ dist_wxi_DATA =					\
 	wixl/glib-networking.wxi		\
 	wixl/gmp.wxi				\
 	wixl/gnutls.wxi				\
+	wixl/gsm.wxi				\
 	wixl/gstreamer-plugins-bad-free.wxi	\
 	wixl/gstreamer-plugins-base.wxi		\
 	wixl/gstreamer-plugins-good.wxi		\
