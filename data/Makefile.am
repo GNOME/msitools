@@ -2,6 +2,8 @@ NULL =
 
 wxidir = $(datadir)/wixl-$(VERSION)/include
 
+EXTRA_DIST = wxi-validate.pl
+
 dist_wxi_DATA =					\
 	wixl/SDL.wxi				\
 	wixl/OpenEXR.wxi			\
@@ -89,5 +91,15 @@ dist_wxi_DATA =					\
 	wixl/winpthreads.wxi			\
 	$(NULL)
 
+check-wxi-%:
+	$(AM_V_GEN)rpm -q mingw32-$* mingw64-$* 1>/dev/null 2>&1 ; \
+	if test $$? = 0 ; \
+	then \
+		$(PERL) $(srcdir)/wxi-validate.pl wixl/$*.wxi ; \
+	else \
+		echo "Skipping wixl/$*.wxi as mingw32-$* and/or mingw64-$* are not installed" ; \
+	fi
+
+check-wxi: $(dist_wxi_DATA:wixl/%.wxi=check-wxi-%)
 
 -include $(top_srcdir)/git.mk

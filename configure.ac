@@ -32,6 +32,8 @@ then
     AC_MSG_ERROR([bison is required to build msitools])
 fi
 
+AC_PATH_PROG(PERL, perl)
+
 PKG_CHECK_MODULES([GLIB], [glib-2.0 >= 2.12])
 PKG_CHECK_MODULES([GOBJECT], [gobject-2.0 gio-2.0 >= 2.14])
 PKG_CHECK_MODULES([GSF], [libgsf-1])
