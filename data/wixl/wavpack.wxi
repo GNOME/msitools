@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<?require gcc.wxi?>
+<Include xmlns="http://schemas.microsoft.com/wix/2006/wi">
+  <Fragment>
+    <DirectoryRef Id="INSTALLDIR">
+      <Directory Id="dirFE885C3CD39E38AAB61ED0EEBA85E8A3" Name="bin">
+        <Component Win64="$(var.Win64)" Id="cmpAFD4FD313D0329B4D71346E837D17271" Guid="*">
+          <File Id="filCD01104754889EE98C445298C95C3EC9" KeyPath="yes" Source="$(var.SourceDir)/bin/libwavpack-1.dll"/>
+        </Component>
+      </Directory>
+    </DirectoryRef>
+  </Fragment>
+  <Fragment>
+    <ComponentGroup Id="CG.wavpack">
+      <ComponentGroupRef Id="CG.gcc"/>
+      <ComponentRef Id="cmpAFD4FD313D0329B4D71346E837D17271"/>
+    </ComponentGroup>
+  </Fragment>
+</Include>

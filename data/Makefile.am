@@ -79,6 +79,7 @@ dist_wxi_DATA =					\
 	wixl/sqlite.wxi				\
 	wixl/termcap.wxi			\
 	wixl/usbredir.wxi			\
+	wixl/wavpack.wxi			\
 	wixl/win-iconv.wxi			\
 	wixl/zlib.wxi				\
 	wixl/winpthreads.wxi			\
