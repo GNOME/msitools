@@ -38,6 +38,7 @@ dist_wxi_DATA =					\
 	wixl/gtk3.wxi				\
 	wixl/gvnc.wxi				\
 	wixl/hicolor-icon-theme.wxi		\
+	wixl/icu.wxi				\
 	wixl/ilmbase.wxi			\
 	wixl/jasper.wxi				\
 	wixl/json-glib.wxi			\

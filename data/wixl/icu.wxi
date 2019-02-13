@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<?require gcc-c++.wxi?>
+<Include xmlns="http://schemas.microsoft.com/wix/2006/wi">
+  <Fragment>
+    <DirectoryRef Id="INSTALLDIR">
+      <Directory Id="dir166551AB36C60C517F0D8001F16F12AE" Name="bin">
+        <Component Win64="$(var.Win64)" Id="cmp5CFFEE5FCDA1047F64C7EE6AA0AE053C" Guid="*">
+          <File Id="fil30026524D9A8680155888DE1802A66CB" KeyPath="yes" Source="$(var.SourceDir)/bin/derb.exe"/>
+        </Component>
+        <Component Win64="$(var.Win64)" Id="cmp239F8F27EC5C9288251269FF0951E999" Guid="*">
+          <File Id="filFC8788BF6079B660836F5D1BA2D09049" KeyPath="yes" Source="$(var.SourceDir)/bin/genbrk.exe"/>
+        </Component>
+        <Component Win64="$(var.Win64)" Id="cmp45FDEB12B8205F306906268D979095A3" Guid="*">
+          <File Id="fil1B53D8F6EEB003D809CC53A2C919EB68" KeyPath="yes" Source="$(var.SourceDir)/bin/genccode.exe"/>
+        </Component>
+        <Component Win64="$(var.Win64)" Id="cmp38758B55566FB0E8790B8CBE1767F674" Guid="*">
+          <File Id="fil5DF827EBB1C6147FB6F8A5810AEAA66C" KeyPath="yes" Source="$(var.SourceDir)/bin/gencfu.exe"/>
+        </Component>
+        <Component Win64="$(var.Win64)" Id="cmpAB3206B105FA078E44D20820536EEE5B" Guid="*">
+          <File Id="fil39C2934E1E951EFE8D04D52B660CC8F9" KeyPath="yes" Source="$(var.SourceDir)/bin/gencmn.exe"/>
+        </Component>
+        <Component Win64="$(var.Win64)" Id="cmp16317627C6B3DB35C4EC9B8A33C1EE0D" Guid="*">
+          <File Id="fil28FEF93FF469A4079031970D94E35947" KeyPath="yes" Source="$(var.SourceDir)/bin/gencnval.exe"/>
+        </Component>
+        <Component Win64="$(var.Win64)" Id="cmpB4A3348C773E4F48D61CBB954647BD8E" Guid="*">
+          <File Id="fil02A65D5776E02350CC0F350EDCE4CC4C" KeyPath="yes" Source="$(var.SourceDir)/bin/gendict.exe"/>
+        </Component>
+        <Component Win64="$(var.Win64)" Id="cmpF38BEBF50009812E413D28DA79F253A1" Guid="*">
+          <File Id="fil0D29B5F8357F3F0DCB59353B44650FDE" KeyPath="yes" Source="$(var.SourceDir)/bin/gennorm2.exe"/>
+        </Component>
+        <Component Win64="$(var.Win64)" Id="cmp18D1C2B2BD4DC8719DA5B85EA32FB047" Guid="*">
+          <File Id="fil95BE9B082784D763EE99CDB53AA684C1" KeyPath="yes" Source="$(var.SourceDir)/bin/genrb.exe"/>
+        </Component>
+        <Component Win64="$(var.Win64)" Id="cmpEA210ADDBF0153D8B4279BC16085FCE0" Guid="*">
+          <File Id="filFA1A874154792C2AE819A040A89594E4" KeyPath="yes" Source="$(var.SourceDir)/bin/gensprep.exe"/>
+        </Component>
+        <Component Win64="$(var.Win64)" Id="cmp5151D54FD07613C1723B6E86D26A4A32" Guid="*">
+          <File Id="fil7AD01484FBED69DE0AAFBB7BADC1B07F" KeyPath="yes" Source="$(var.SourceDir)/bin/icudata57.dll"/>
+        </Component>
+        <Component Win64="$(var.Win64)" Id="cmp7A7CD630BC414FB91210BA663AE925B1" Guid="*">
+          <File Id="filDDC71BFB1B2D4DF24A95ED709F960A36" KeyPath="yes" Source="$(var.SourceDir)/bin/icui18n57.dll"/>
+        </Component>
+        <Component Win64="$(var.Win64)" Id="cmpF30CE166B516D3F059E889D43F178BF2" Guid="*">
+          <File Id="filFA5922182B8DAD7C4EDA2FC6AED8BFDA" KeyPath="yes" Source="$(var.SourceDir)/bin/icuinfo.exe"/>
+        </Component>
+        <Component Win64="$(var.Win64)" Id="cmp161AB16A685B07A6183B2A85700E0917" Guid="*">
+          <File Id="fil543236C22540D483CFFD533788A11A28" KeyPath="yes" Source="$(var.SourceDir)/bin/icuio57.dll"/>
+        </Component>
+        <Component Win64="$(var.Win64)" Id="cmp90E544A30EDB4BE18BE7A1C482880799" Guid="*">
+          <File Id="filDDEEE7A4C1E8757823E9EA70926370BB" KeyPath="yes" Source="$(var.SourceDir)/bin/icule57.dll"/>
+        </Component>
+        <Component Win64="$(var.Win64)" Id="cmpA0F86A8C7614A2E76A2F0471B87B32FC" Guid="*">
+          <File Id="fil22516DE70D6278AA7C5647430F3BB569" KeyPath="yes" Source="$(var.SourceDir)/bin/iculx57.dll"/>
+        </Component>
+        <Component Win64="$(var.Win64)" Id="cmp546D0F99610BC45592CFC2627A82E2B6" Guid="*">
+          <File Id="fil064186150829A3FB4F3E965880560C02" KeyPath="yes" Source="$(var.SourceDir)/bin/icupkg.exe"/>
+        </Component>
+        <Component Win64="$(var.Win64)" Id="cmp83D175990A71B760BAFC51F0D6B21271" Guid="*">
+          <File Id="fil2699B765CACC70075D3B44DE647DE0FA" KeyPath="yes" Source="$(var.SourceDir)/bin/icutest57.dll"/>
+        </Component>
+        <Component Win64="$(var.Win64)" Id="cmpDA137C0E47D54C5B397D3555F366D9D7" Guid="*">
+          <File Id="fil85F23DF461C47356249FEFC0614091BC" KeyPath="yes" Source="$(var.SourceDir)/bin/icutu57.dll"/>
+        </Component>
+        <Component Win64="$(var.Win64)" Id="cmpB9AB9FF2042B46D86D9A508063DC9F21" Guid="*">
+          <File Id="fil45B0D829FA9284D058DC29B59748BB84" KeyPath="yes" Source="$(var.SourceDir)/bin/icuuc57.dll"/>
+        </Component>
+        <Component Win64="$(var.Win64)" Id="cmpD66DA194B6906EEA355A32A3BE79675B" Guid="*">
+          <File Id="fil2B5E52280628A22C31F1222D9912B17F" KeyPath="yes" Source="$(var.SourceDir)/bin/makeconv.exe"/>
+        </Component>
+        <Component Win64="$(var.Win64)" Id="cmp9753332E689CC33398657A3EBE555820" Guid="*">
+          <File Id="filEEB20C336A9862B1FE6B22D364145D45" KeyPath="yes" Source="$(var.SourceDir)/bin/pkgdata.exe"/>
+        </Component>
+        <Component Win64="$(var.Win64)" Id="cmp5402843A4A815DCD2D0F259DAE521743" Guid="*">
+          <File Id="fil4DDA98B1D7A95E4BE83881C611BF96A4" KeyPath="yes" Source="$(var.SourceDir)/bin/uconv.exe"/>
+        </Component>
+      </Directory>
+    </DirectoryRef>
+  </Fragment>
+  <Fragment>
+    <ComponentGroup Id="CG.icu">
+      <ComponentGroupRef Id="CG.gcc-c++"/>
+      <ComponentRef Id="cmp5CFFEE5FCDA1047F64C7EE6AA0AE053C"/>
+      <ComponentRef Id="cmp239F8F27EC5C9288251269FF0951E999"/>
+      <ComponentRef Id="cmp45FDEB12B8205F306906268D979095A3"/>
+      <ComponentRef Id="cmp38758B55566FB0E8790B8CBE1767F674"/>
+      <ComponentRef Id="cmpAB3206B105FA078E44D20820536EEE5B"/>
+      <ComponentRef Id="cmp16317627C6B3DB35C4EC9B8A33C1EE0D"/>
+      <ComponentRef Id="cmpB4A3348C773E4F48D61CBB954647BD8E"/>
+      <ComponentRef Id="cmpF38BEBF50009812E413D28DA79F253A1"/>
+      <ComponentRef Id="cmp18D1C2B2BD4DC8719DA5B85EA32FB047"/>
+      <ComponentRef Id="cmpEA210ADDBF0153D8B4279BC16085FCE0"/>
+      <ComponentRef Id="cmp5151D54FD07613C1723B6E86D26A4A32"/>
+      <ComponentRef Id="cmp7A7CD630BC414FB91210BA663AE925B1"/>
+      <ComponentRef Id="cmpF30CE166B516D3F059E889D43F178BF2"/>
+      <ComponentRef Id="cmp161AB16A685B07A6183B2A85700E0917"/>
+      <ComponentRef Id="cmp90E544A30EDB4BE18BE7A1C482880799"/>
+      <ComponentRef Id="cmpA0F86A8C7614A2E76A2F0471B87B32FC"/>
+      <ComponentRef Id="cmp546D0F99610BC45592CFC2627A82E2B6"/>
+      <ComponentRef Id="cmp83D175990A71B760BAFC51F0D6B21271"/>
+      <ComponentRef Id="cmpDA137C0E47D54C5B397D3555F366D9D7"/>
+      <ComponentRef Id="cmpB9AB9FF2042B46D86D9A508063DC9F21"/>
+      <ComponentRef Id="cmpD66DA194B6906EEA355A32A3BE79675B"/>
+      <ComponentRef Id="cmp9753332E689CC33398657A3EBE555820"/>
+      <ComponentRef Id="cmp5402843A4A815DCD2D0F259DAE521743"/>
+    </ComponentGroup>
+  </Fragment>
+</Include>
