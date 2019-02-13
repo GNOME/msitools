@@ -11,6 +11,7 @@ dist_wxi_DATA =					\
 	wixl/cairo.wxi				\
 	wixl/celt051.wxi			\
 	wixl/curl.wxi				\
+	wixl/dlfcn.wxi				\
 	wixl/expat.wxi				\
 	wixl/fontconfig.wxi			\
 	wixl/freetype.wxi			\
