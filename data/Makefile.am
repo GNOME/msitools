@@ -37,6 +37,7 @@ dist_wxi_DATA =					\
 	wixl/gtk2.wxi				\
 	wixl/gtk3.wxi				\
 	wixl/gvnc.wxi				\
+	wixl/harfbuzz.wxi			\
 	wixl/hicolor-icon-theme.wxi		\
 	wixl/icu.wxi				\
 	wixl/ilmbase.wxi			\
