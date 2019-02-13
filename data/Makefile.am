@@ -74,6 +74,7 @@ dist_wxi_DATA =					\
 	wixl/pthreads.wxi			\
 	wixl/readline.wxi			\
 	wixl/rest.wxi				\
+	wixl/speex.wxi				\
 	wixl/spice-glib.wxi			\
 	wixl/spice-gtk3.wxi			\
 	wixl/sqlite.wxi				\
