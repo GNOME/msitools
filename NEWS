@@ -1,3 +1,18 @@
+v0.99
+=====
+- new wxi manifests for harfbuzz, icu, dlfcn, speex, wavpack, openexr,
+  ilmbase, gcc-c++, gsm & libtheora
+- update libidn2 to 2.0.4
+- update libvirt to 5.0
+- update openssl to 1.1.0h
+- update spice-gtk to 0.36
+- make spice-gtk ship with GStreamer WASAPI plugin instead DirectSound
+- various dependencies wxi fixes
+- wixl: fix crash when Feature.Level isn't specified
+- fix rhbz#1629516 "string table load failed!" on some MSI
+- add check-wxi: validation of wxi files on Fedora
+- translation updates, build-sys improvements
+
 v0.98
 =====
 - Update gcc.wxi to 7.3.0
