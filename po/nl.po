@@ -1,0 +1,127 @@
+# Dutch translation for msitools.
+# Copyright (C) 2019 msitools's COPYRIGHT HOLDER
+# This file is distributed under the same license as the msitools package.
+# Nathan Follens <nthn@unseen.is>, 2019.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: msitools master\n"
+"Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/msitools/issues\n"
+"POT-Creation-Date: 2019-01-16 18:59+0000\n"
+"PO-Revision-Date: 2019-01-20 09:45+0100\n"
+"Language-Team: Dutch <gnome-nl-list@gnome.org>\n"
+"Language: nl\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Last-Translator: Nathan Follens <nthn@unseen.is>\n"
+"X-Generator: Poedit 2.2\n"
+
+#: tools/msiextract.vala:10 tools/wixl/wixl.vala:21
+msgid "Display version number"
+msgstr "Versienummer weergeven"
+
+#: tools/msiextract.vala:11
+msgid "Extract to directory"
+msgstr "Uitpakken naar map"
+
+#: tools/msiextract.vala:12
+msgid "List files only"
+msgstr "Alleen inventariseren"
+
+#: tools/msiextract.vala:13
+msgid "MSI_FILE..."
+msgstr "MSI_BESTAND..."
+
+#: tools/msiextract.vala:160
+msgid "- a msi files extracting tool"
+msgstr "- een hulpprogramma voor het uitpakken van msi-bestanden"
+
+#: tools/msiextract.vala:180 tools/wixl/wixl.vala:75
+msgid "Please specify input files.\n"
+msgstr "Geef de invoerbestanden op.\n"
+
+#: tools/wixl/wixl-heat.vala:12
+msgid "Directory Ref"
+msgstr "Mapverwijzing"
+
+#: tools/wixl/wixl-heat.vala:13
+msgid "Component Group"
+msgstr "Componentgroep"
+
+#: tools/wixl/wixl-heat.vala:14
+msgid "Variable for source dir"
+msgstr "Variabele voor bronmap"
+
+#: tools/wixl/wixl-heat.vala:15
+msgid "Prefix"
+msgstr "Voorvoegsel"
+
+#: tools/wixl/wixl-heat.vala:16
+msgid "Exclude prefix"
+msgstr "Voorvoegsel uitsluiten"
+
+#: tools/wixl/wixl-heat.vala:17
+msgid "Add Win64 Component"
+msgstr "Win64-component toevoegen"
+
+#: tools/wixl/wixl.vala:22
+msgid "Verbose output"
+msgstr "Uitgebreide uitvoer"
+
+#: tools/wixl/wixl.vala:23
+msgid "Output file"
+msgstr "Uitvoerbestand"
+
+#: tools/wixl/wixl.vala:24
+msgid "Define variable"
+msgstr "Bepaal variabele"
+
+#: tools/wixl/wixl.vala:25
+msgid "Target architecture"
+msgstr "Doelarchitectuur"
+
+#: tools/wixl/wixl.vala:26
+msgid "Include directory"
+msgstr "Map opnemen"
+
+#: tools/wixl/wixl.vala:27
+msgid "System include directory"
+msgstr "Systeem - map opnemen"
+
+#: tools/wixl/wixl.vala:28
+msgid "Stop after the preprocessing stage"
+msgstr "Stop na de voorverwerkingsfase"
+
+#: tools/wixl/wixl.vala:29
+msgid "INPUT_FILE1 [INPUT_FILE2]..."
+msgstr "INVOERBESTAND1 [INVOERBESTAND2]..."
+
+#: tools/wixl/wixl.vala:37
+#, c-format
+msgid "arch of type '%s' is not supported"
+msgstr "archictectuur '%s' wordt niet ondersteund"
+
+#: tools/wixl/wixl.vala:49
+msgid "- a msi building tool"
+msgstr "- een hulpprogramma voor het compileren van msi-bestanden"
+
+#: tools/wixl/wixl.vala:83
+msgid "Please specify the output file.\n"
+msgstr "Geef het uitvoerbestand op.\n"
+
+#: tools/wixl/wixl.vala:100
+#, c-format
+msgid "Loading %s...\n"
+msgstr "Laden van %s...\n"
+
+#: tools/wixl/wixl.vala:110
+#, c-format
+msgid "Building %s...\n"
+msgstr "Compileren van %s...\n"
+
+#: tools/wixl/wixl.vala:113
+#, c-format
+msgid "Writing %s...\n"
+msgstr "Schrijven van %s...\n"
