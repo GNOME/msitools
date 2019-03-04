@@ -380,6 +380,7 @@ namespace Wixl {
         public string WorkingDirectory { get; set; }
         public string Icon { get; set; }
         public string Advertise { get; set; }
+        public string Arguments { get; set; }
         public string Description { get; set; }
         public string Target { get; set; }
 
