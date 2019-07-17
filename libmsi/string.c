@@ -22,6 +22,7 @@
 
 #include <stdarg.h>
 #include <assert.h>
+#include <endian.h>
 #include <gsf/gsf-msole-utils.h>
 
 #include "debug.h"
@@ -495,14 +496,14 @@ string_table *msi_load_string_table( GsfInfile *stg, unsigned *bytes_per_strref 
     if( r != LIBMSI_RESULT_SUCCESS)
         goto end;
 
-    if ( (poolsize > 4) && (pool[1] & 0x8000) )
+    if ( (poolsize > 4) && (le16toh(pool[1]) & 0x8000) )
         *bytes_per_strref = LONG_STR_BYTES;
     else
         *bytes_per_strref = sizeof(uint16_t);
 
     count = poolsize/4;
     if( poolsize > 4 )
-        codepage = pool[0] | ( (pool[1] & ~0x8000) << 16 );
+        codepage = le16toh(pool[0]) | ( (le16toh(pool[1]) & ~0x8000) << 16 );
     else
         codepage = CP_ACP;
 
@@ -516,10 +517,10 @@ string_table *msi_load_string_table( GsfInfile *stg, unsigned *bytes_per_strref 
     while ( i<count )
     {
         /* the string reference count is always the second word */
-        refs = pool[i*2+1];
+        refs = le16toh(pool[i*2+1]);
 
         /* empty entries have two zeros, still have a string id */
-        if (pool[i*2] == 0 && refs == 0)
+        if (le16toh(pool[i*2]) == 0 && refs == 0)
         {
             i++;
             n++;
@@ -531,14 +532,14 @@ string_table *msi_load_string_table( GsfInfile *stg, unsigned *bytes_per_strref 
          * and the high word of the length is inserted in the null string's
          * reference count field.
          */
-        if (pool[i*2] == 0)
+        if (le16toh(pool[i*2]) == 0)
         {
-            len = (pool[i*2+3] << 16) + pool[i*2+2];
+            len = (le16toh(pool[i*2+3]) << 16) + le16toh(pool[i*2+2]);
             i += 2;
         }
         else
         {
-            len = pool[i*2];
+            len = le16toh(pool[i*2]);
             i += 1;
         }
 
