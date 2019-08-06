@@ -178,7 +178,12 @@ build_stable:
     - dnf install -y --nogpgcheck $DEPENDENCIES
     - dnf builddep -y --nogpgcheck msitools
   script:
-      - ./autogen.sh
-      - make
-      - make check
-      - make -C data check-wxi
+    - ./autogen.sh
+    - make
+    - make check
+    - make -C data check-wxi
+  artifacts:
+    paths:
+      - testsuite.log
+      - testsuite.dir/
+    when: on_failure
