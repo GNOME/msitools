@@ -4,12 +4,12 @@
 <Include xmlns="http://schemas.microsoft.com/wix/2006/wi">
   <Fragment>
     <DirectoryRef Id="INSTALLDIR">
-      <Directory Id="dirD82453D760D75AFEACE0B4CFFB66E47F" Name="bin">
-        <Component Win64="$(var.Win64)" Id="cmp39DCE49DE4A353350AA34EBE151E9B49" Guid="*">
-          <File Id="fil94EEE61B3837913095A8CC538CFC1A79" KeyPath="yes" Source="$(var.SourceDir)/bin/libIlmImf-2_2-23.dll"/>
+      <Directory Id="dir4680656DB9802D746741DC629D130B18" Name="bin">
+        <Component Win64="$(var.Win64)" Id="cmpAF01A198C634A806766802238548688B" Guid="*">
+          <File Id="fil42091A46F9AA74BB113E15D274AED537" KeyPath="yes" Source="$(var.SourceDir)/bin/libIlmImf-2_3-24.dll"/>
         </Component>
-        <Component Win64="$(var.Win64)" Id="cmpBDB6207CD5F4526C7214BA5157BC89C1" Guid="*">
-          <File Id="fil67D61065DF8D7678ACFADDC20B009AAD" KeyPath="yes" Source="$(var.SourceDir)/bin/libIlmImfUtil-2_2-23.dll"/>
+        <Component Win64="$(var.Win64)" Id="cmp7FD83EB5B344D2CA1DE250C9877ABF62" Guid="*">
+          <File Id="fil0C364885851B102522705CC5D4F97F18" KeyPath="yes" Source="$(var.SourceDir)/bin/libIlmImfUtil-2_3-24.dll"/>
         </Component>
       </Directory>
     </DirectoryRef>
@@ -18,8 +18,8 @@
     <ComponentGroup Id="CG.OpenEXR">
       <ComponentGroupRef Id="CG.ilmbase"/>
       <ComponentGroupRef Id="CG.zlib"/>
-      <ComponentRef Id="cmp39DCE49DE4A353350AA34EBE151E9B49"/>
-      <ComponentRef Id="cmpBDB6207CD5F4526C7214BA5157BC89C1"/>
+      <ComponentRef Id="cmpAF01A198C634A806766802238548688B"/>
+      <ComponentRef Id="cmp7FD83EB5B344D2CA1DE250C9877ABF62"/>
     </ComponentGroup>
   </Fragment>
 </Include>
