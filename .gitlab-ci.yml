@@ -8,6 +8,7 @@ variables:
                 redhat-rpm-config
                 bison bison-devel bison-runtime
                 perl-XML-XPath
+                diffutils
                 mingw32-adwaita-icon-theme
                 mingw64-adwaita-icon-theme
                 mingw32-atk
