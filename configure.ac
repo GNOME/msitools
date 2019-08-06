@@ -1,6 +1,6 @@
 AC_INIT([msitools],
         m4_esyscmd([build-aux/git-version-gen .tarball-version]),
-        [https://bugzilla.gnome.org/enter_bug.cgi?product=msitools])
+        [https://gitlab.gnome.org/GNOME/msitools/issues])
 AC_PREREQ([2.64])
 
 AC_CONFIG_HEADERS([config.h])
