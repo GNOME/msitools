@@ -6,10 +6,10 @@
     <DirectoryRef Id="INSTALLDIR">
       <Directory Id="dirD82453D760D75AFEACE0B4CFFB66E47F" Name="bin">
         <Component Win64="$(var.Win64)" Id="cmp39DCE49DE4A353350AA34EBE151E9B49" Guid="*">
-          <File Id="fil94EEE61B3837913095A8CC538CFC1A79" KeyPath="yes" Source="$(var.SourceDir)/bin/libIlmImf-2_2-23.dll"/>
+          <File Id="fil94EEE61B3837913095A8CC538CFC1A79" KeyPath="yes" Source="$(var.SourceDir)/bin/libIlmImf-2_3-24.dll"/>
         </Component>
         <Component Win64="$(var.Win64)" Id="cmpBDB6207CD5F4526C7214BA5157BC89C1" Guid="*">
-          <File Id="fil67D61065DF8D7678ACFADDC20B009AAD" KeyPath="yes" Source="$(var.SourceDir)/bin/libIlmImfUtil-2_2-23.dll"/>
+          <File Id="fil67D61065DF8D7678ACFADDC20B009AAD" KeyPath="yes" Source="$(var.SourceDir)/bin/libIlmImfUtil-2_3-24.dll"/>
         </Component>
       </Directory>
     </DirectoryRef>
