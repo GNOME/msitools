@@ -3,21 +3,21 @@
 <Include xmlns="http://schemas.microsoft.com/wix/2006/wi">
   <Fragment>
     <DirectoryRef Id="INSTALLDIR">
-      <Directory Id="dirFEE7741CD6956C044C54657F0DD3C9C6" Name="bin">
-        <Component Win64="$(var.Win64)" Id="cmp8841D4AC98BB4E355DEE95693C106E5B" Guid="*">
-          <File Id="fil382657303208BFBA98F9C3DE9CB8C5D0" KeyPath="yes" Source="$(var.SourceDir)/bin/libHalf-12.dll"/>
+      <Directory Id="dirFCCA05C388D1EA765B51525266D31A85" Name="bin">
+        <Component Win64="$(var.Win64)" Id="cmp49032B593A9BDF7943A16C679B6064B2" Guid="*">
+          <File Id="fil787174B51DF1BE93A0239955863C72FF" KeyPath="yes" Source="$(var.SourceDir)/bin/libHalf-24.dll"/>
         </Component>
-        <Component Win64="$(var.Win64)" Id="cmpEC4003EB0BAB5B71778B265B6FE8D5E6" Guid="*">
-          <File Id="fil50B918F718DFACCC85E1977288C940EB" KeyPath="yes" Source="$(var.SourceDir)/bin/libIex-2_2-12.dll"/>
+        <Component Win64="$(var.Win64)" Id="cmpE94B4B037392585281516E3184369B52" Guid="*">
+          <File Id="filEA13CCB16F8A7A448980B093DC653D05" KeyPath="yes" Source="$(var.SourceDir)/bin/libIex-2_3-24.dll"/>
         </Component>
-        <Component Win64="$(var.Win64)" Id="cmp08C10599C5D28DC6E93BADB2E08B4759" Guid="*">
-          <File Id="fil3ED3E5ADDD2D4B102259ED171F7949FE" KeyPath="yes" Source="$(var.SourceDir)/bin/libIexMath-2_2-12.dll"/>
+        <Component Win64="$(var.Win64)" Id="cmp0054B3C0B8B7B470B50527958678189F" Guid="*">
+          <File Id="filFD41AFF06C58E24D166C1552FC612BE1" KeyPath="yes" Source="$(var.SourceDir)/bin/libIexMath-2_3-24.dll"/>
         </Component>
-        <Component Win64="$(var.Win64)" Id="cmpD45077DA5966C826352D469D3D67A369" Guid="*">
-          <File Id="fil90E18D2986B4B955393BA9BA853F2C1C" KeyPath="yes" Source="$(var.SourceDir)/bin/libIlmThread-2_2-12.dll"/>
+        <Component Win64="$(var.Win64)" Id="cmpCE5584F830B91965B9E59E141529BB0E" Guid="*">
+          <File Id="fil1852EFB6E5AEF1D07CAB79ED27F0DD74" KeyPath="yes" Source="$(var.SourceDir)/bin/libIlmThread-2_3-24.dll"/>
         </Component>
-        <Component Win64="$(var.Win64)" Id="cmp4F1AA02BD44B255C23DE60651C7E4E96" Guid="*">
-          <File Id="fil372983D1CA835F65581D8AED56538FD7" KeyPath="yes" Source="$(var.SourceDir)/bin/libImath-2_2-12.dll"/>
+        <Component Win64="$(var.Win64)" Id="cmp8510F7023D50444985A90AB94DFEDD96" Guid="*">
+          <File Id="filE53EBCCD25A262F9346BBF8E4A6AB74B" KeyPath="yes" Source="$(var.SourceDir)/bin/libImath-2_3-24.dll"/>
         </Component>
       </Directory>
     </DirectoryRef>
@@ -25,11 +25,11 @@
   <Fragment>
     <ComponentGroup Id="CG.ilmbase">
       <ComponentGroupRef Id="CG.gcc-c++"/>
-      <ComponentRef Id="cmp8841D4AC98BB4E355DEE95693C106E5B"/>
-      <ComponentRef Id="cmpEC4003EB0BAB5B71778B265B6FE8D5E6"/>
-      <ComponentRef Id="cmp08C10599C5D28DC6E93BADB2E08B4759"/>
-      <ComponentRef Id="cmpD45077DA5966C826352D469D3D67A369"/>
-      <ComponentRef Id="cmp4F1AA02BD44B255C23DE60651C7E4E96"/>
+      <ComponentRef Id="cmp49032B593A9BDF7943A16C679B6064B2"/>
+      <ComponentRef Id="cmpE94B4B037392585281516E3184369B52"/>
+      <ComponentRef Id="cmp0054B3C0B8B7B470B50527958678189F"/>
+      <ComponentRef Id="cmpCE5584F830B91965B9E59E141529BB0E"/>
+      <ComponentRef Id="cmp8510F7023D50444985A90AB94DFEDD96"/>
     </ComponentGroup>
   </Fragment>
 </Include>
