@@ -7467,7 +7467,7 @@ static void test_select_column_names(void)
     g_object_unref( hdb );
 }
 
-void main()
+int main()
 {
 #if !GLIB_CHECK_VERSION(2,35,1)
     g_type_init ();

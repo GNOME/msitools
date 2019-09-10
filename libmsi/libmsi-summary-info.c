@@ -27,6 +27,12 @@
 #include "debug.h"
 #include "libmsi.h"
 #include "msipriv.h"
+#include "config.h"
+
+#ifdef USE_GMTIME_S
+#   define gmtime_r(timep, result) gmtime_s(result, timep)
+#endif
+
 
 
 enum
