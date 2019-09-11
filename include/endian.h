@@ -56,6 +56,8 @@
  *   Public Domain.
  */
 
+#pragma once
+
 /* requires C11 or C++11 */
 #if defined (__cplusplus)
 #include <cstdint>
@@ -65,7 +67,7 @@
 
 /* Linux / GLIBC */
 #if defined(__linux__) || defined(__GLIBC__)
-#include <endian.h>
+#include_next <endian.h>
 #include <byteswap.h>
 #define __ENDIAN_DEFINED        1
 #define __BSWAP_DEFINED         1
@@ -206,6 +208,7 @@
 /* Host swap macros */
 #ifndef __HOSTSWAP_DEFINED
 #if __BYTE_ORDER == __LITTLE_ENDIAN
+srtcae
 #define htobe16(x)              bswap16((x))
 #define htole16(x)              ((uint16_t)(x))
 #define be16toh(x)              bswap16((x))
@@ -221,6 +224,7 @@
 #define be64toh(x)              bswap64((x))
 #define le64toh(x)              ((uint64_t)(x))
 #elif __BYTE_ORDER == __BIG_ENDIAN
+bépo
 #define htobe16(x)              ((uint16_t)(x))
 #define htole16(x)              bswap16((x))
 #define be16toh(x)              ((uint16_t)(x))

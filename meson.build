@@ -1,6 +1,6 @@
 
 project('msitools',
-  'c', 'cpp',
+  'c', 'cpp', 'vala',
   version: '0.99.18',
   default_options: [
     'warning_level=2',
@@ -63,10 +63,10 @@ glib    = dependency('glib-2.0', version: '>=2.12')
 gobject = dependency('gobject-2.0', version: '>=0.9.4')
 gio     = dependency('gio-2.0', version: '>=2.14')
 libgsf  = dependency('libgsf-1')
-# uuid    = dependency('uuid', version: '>=1.41.3')
+uuid    = dependency('uuid', version: '>=1.41.3', required: false)
 
 
-# libgcab = dependency('libgcab-2.0', version: '>=0.1.10')
+libgcab = dependency('libgcab-1.0', version: '>=0.1.10')
 # libxml  = dependency('libxml-2.0', version: '>=2.7')
 
 

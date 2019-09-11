@@ -27,10 +27,15 @@ libmsi_sources = files(
   'where.c',
 )
 
-libmsi_sources += gnome.mkenums('libmsi-enums',
+libmsi_enums_c = gnome.mkenums('libmsi-enums',
   c_template: 'libmsi-enums.c.etemplate',
   sources: libmsi_types_h,
 )
+
+libmsi_sources += [
+  libmsi_enums_h,
+  libmsi_enums_c,
+]
 
 libmsi_sources += custom_target('sql-parser',
   input : 'sql-parser.y',
@@ -57,5 +62,59 @@ libmsi = static_library('msi',
     gobject,
     libgsf,
   ],
+)
 
+
+
+libmsi_gir = gnome.generate_gir(libmsi,
+  namespace: 'Libmsi',
+  nsversion: '1.0',
+
+  export_packages: 'libmsi-1.0',
+
+  sources: [
+    introspectable_headers,
+
+    libmsi_enums_c,
+    'libmsi-database.c',
+    'libmsi-query.c',
+    'libmsi-record.c',
+    'libmsi-summary-info.c',
+
+  ],
+  dependencies: [
+
+  ],
+  includes: [
+    'GLib-2.0',
+    'GObject-2.0',
+    'Gio-2.0',
+  ],
+  extra_args: [
+    '--c-include=libmsi.h',
+  ],
+
+  install: true,
+)
+
+
+libmsi_vapi = custom_target('libmsi-1.0.vapi',
+  input: [
+    libmsi_gir[0],
+    'Libmsi-1.0.metadata',
+  ],
+  output: 'libmsi-1.0.vapi',
+
+  command: [
+    vapigen, '-q',
+    '--metadatadir=@0@'.format(meson.current_source_dir()),
+    '--vapidir=@0@'.format(meson.current_source_dir()),
+    '--directory=@0@'.format(meson.current_build_dir()),
+    '--library', 'libmsi-1.0',
+    '--pkg', 'gio-2.0',
+    '@INPUT0@',
+  ],
+
+  install: true,
+  install_dir: get_option('datadir') / 'vala' / 'vapi',
 )
