@@ -67,19 +67,19 @@ uuid    = dependency('uuid', version: '>=1.41.3', required: false)
 
 
 libgcab = dependency('libgcab-1.0', version: '>=0.1.10')
-# libxml  = dependency('libxml-2.0', version: '>=2.7')
+libxml  = dependency('libxml-2.0', version: '>=2.7')
 
 
 ###############################################################################
 
 rootInclude = include_directories('.')
 
-configure_file(
+config_h = configure_file(
   output: 'config.h',
   configuration: config,
 )
 
-vcs_tag(
+version_h = vcs_tag(
   input : 'version.h.in',
   output: 'version.h',
   command: [ 'bash', './build-aux/git-version-gen', '.tarball-version', ],

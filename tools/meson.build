@@ -58,7 +58,9 @@ msiextract = executable('msiextract',
   libmsi_enums_h,
 
   c_args: [
-    '-w',
+    '-DGETTEXT_PACKAGE="@0@"'.format(getttext_package),
+    '-DPACKAGE_VERSION="@0@"'.format(meson.project_version()),
+    '-DLOCALEDIR="@0@"'.format(get_option('prefix') / get_option('localedir')),
   ],
   include_directories: [
     rootInclude,
@@ -74,9 +76,11 @@ msiextract = executable('msiextract',
     '--vapidir=@0@'.format(meson.source_root()),
     '--vapidir=@0@'.format(meson.build_root() / 'libmsi'),
   ],
-  # link_with: libmsi_vala,
+  link_with: libmsi,
   dependencies: [
     glib,
     libgcab,
   ],
 )
+
+subdir('wixl')
