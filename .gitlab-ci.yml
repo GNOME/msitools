@@ -3,6 +3,7 @@ image: fedora:rawhide
 variables:
   DEPENDENCIES: dnf-command(builddep) intltool
                 glib2-devel gobject-introspection-devel
+                meson
                 libuuid-devel vala libgsf-devel
                 libgcab1-devel git libtool make
                 redhat-rpm-config
@@ -69,8 +70,6 @@ variables:
                 mingw64-gtk3
                 mingw32-gtk-vnc2
                 mingw64-gtk-vnc2
-                mingw32-gtk-vnc
-                mingw64-gtk-vnc
                 mingw32-gvnc
                 mingw64-gvnc
                 mingw32-harfbuzz
@@ -103,8 +102,6 @@ variables:
                 mingw64-libogg
                 mingw32-libpng
                 mingw64-libpng
-                mingw32-libsoup
-                mingw64-libsoup
                 mingw32-libssh2
                 mingw64-libssh2
                 mingw32-libtasn1
@@ -179,12 +176,11 @@ build_stable:
     - dnf install -y --nogpgcheck $DEPENDENCIES
     - dnf builddep -y --nogpgcheck msitools
   script:
-    - ./autogen.sh
-    - make
-    - make check
-    - make -C data check-wxi
-  artifacts:
-    paths:
-      - testsuite.log
-      - testsuite.dir/
-    when: on_failure
+    - meson _build
+    - ninja -C _build
+    - ninja -C _build test
+  # artifacts:
+  #   paths:
+  #     - testsuite.log
+  #     - testsuite.dir/
+  #   when: on_failure
