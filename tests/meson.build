@@ -2,6 +2,7 @@
 
 testrecord = executable('testrecord',
   'testrecord.c',
+  libmsi_enums_h,
   include_directories: [
     rootInclude,
     includeInclude,
@@ -14,6 +15,7 @@ testrecord = executable('testrecord',
 
 testdatabase = executable('testdatabase',
   'testdatabase.c',
+  libmsi_enums_h,
   include_directories: [
     rootInclude,
     includeInclude,
@@ -28,6 +30,7 @@ testdatabase = executable('testdatabase',
 if platform_windows
   testsuminfo = executable('testsuminfo',
     'testsuminfo.c',
+    libmsi_enums_h,
     include_directories: [
       rootInclude,
       includeInclude,
