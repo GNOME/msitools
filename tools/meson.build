@@ -57,11 +57,7 @@ msiextract = executable('msiextract',
   'msiextract.vala',
   libmsi_enums_h,
 
-  c_args: [
-    '-DGETTEXT_PACKAGE="@0@"'.format(getttext_package),
-    '-DPACKAGE_VERSION="@0@"'.format(meson.project_version()),
-    '-DLOCALEDIR="@0@"'.format(get_option('prefix') / get_option('localedir')),
-  ],
+  c_args: [ '-include', config_h.full_path(), ],
   include_directories: [
     rootInclude,
     includeInclude,

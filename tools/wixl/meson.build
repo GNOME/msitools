@@ -44,11 +44,7 @@ wixl = executable('wixl',
   ],
 
   c_args: [
-    '-DGETTEXT_PACKAGE="@0@"'.format(getttext_package),
-    '-DPACKAGE_VERSION="@0@"'.format(meson.project_version()),
-    '-DPACKAGE_STRING="@0@"'.format(meson.project_name()),
-    '-DPKGDATADIR="@0@"'.format(get_option('prefix') / get_option('datadir') / 'wixl-PACKAGE_VERSION' ),
-    '-DLOCALEDIR="@0@"'.format(get_option('prefix') / get_option('localedir')),
+    '-include', config_h.full_path(),
   ],
 
   include_directories: [
@@ -85,11 +81,7 @@ wixl_heat = executable('wixl-heat',
   ],
 
   c_args: [
-    '-DGETTEXT_PACKAGE="@0@"'.format(getttext_package),
-    '-DPACKAGE_VERSION="@0@"'.format(meson.project_version()),
-    '-DPACKAGE_STRING="@0@"'.format(meson.project_name()),
-    '-DPKGDATADIR="@0@"'.format(get_option('prefix') / get_option('datadir') / 'wixl-PACKAGE_VERSION' ),
-    '-DLOCALEDIR="@0@"'.format(get_option('prefix') / get_option('localedir')),
+    '-include', config_h.full_path(),
   ],
 
   include_directories: [

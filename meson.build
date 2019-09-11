@@ -7,20 +7,26 @@ project('msitools',
   ],
 )
 
-###############################################################################
-# Project configuration
-
-config = configuration_data()
-
 i18n = import('i18n')
 gnome = import('gnome')
 
+config = configuration_data()
+
+###############################################################################
+# Project configuration
+
 project_url = 'https://gitlab.gnome.org/GNOME/msitools'
+
 
 getttext_package = meson.project_name()
 
 config.set_quoted('PACKAGE', meson.project_name())
 config.set_quoted('GETTEXT_PACKAGE', getttext_package)
+
+config.set_quoted('VERSION',         '@VCS_TAG@')
+config.set_quoted('PACKAGE_VERSION', '@VCS_TAG@')
+
+config.set('PACKAGE_STRING', 'PACKAGE " " PACKAGE_VERSION')
 
 ###############################################################################
 # System detection
@@ -74,14 +80,20 @@ libxml  = dependency('libxml-2.0', version: '>=2.7')
 
 rootInclude = include_directories('.')
 
-config_h = configure_file(
-  output: 'config.h',
+config.set_quoted('LOCALEDIR', get_option('prefix') / get_option('localedir'))
+config.set('PKGDATADIR', '"@0@" @1@'.format(
+  get_option('prefix') / get_option('datadir') / '',
+  'PACKAGE_STRING'
+))
+
+config_h_in = configure_file(
+  output: 'config.h.in',
   configuration: config,
 )
 
-version_h = vcs_tag(
-  input : 'version.h.in',
-  output: 'version.h',
+config_h = vcs_tag(
+  input : config_h_in,
+  output: 'config.h',
   command: [ 'bash', './build-aux/git-version-gen', '.tarball-version', ],
 )
 

@@ -21,7 +21,6 @@
  */
 
 #include "config.h"
-#include "version.h"
 #include "libmsi.h"
 
 #include <glib.h>
