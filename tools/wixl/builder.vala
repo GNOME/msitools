@@ -1067,9 +1067,13 @@ namespace Wixl {
                 type = CustomActionType.JSCRIPT_BINARY;
                 source = action.BinaryKey;
                 target = action.JScriptCall;
-            } else if (action.ExeCommand != null) {
+            } else if (action.ExeCommand != null && action.FileKey == null) {
                 type = CustomActionType.EXE_PROPERTY;
                 source = action.Property;
+                target = action.ExeCommand;
+            } else if (action.ExeCommand != null && action.FileKey != null) {
+                type = CustomActionType.EXE_FILE;
+                source = action.FileKey;
                 target = action.ExeCommand;
             } else
                 throw new Wixl.Error.FAILED ("Unsupported CustomAction");
