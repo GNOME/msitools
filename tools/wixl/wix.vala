@@ -918,6 +918,7 @@ namespace Wixl {
 
         public string Property { get; set; }
         public string Execute { get; set; }
+        public string FileKey { get; set; }
         public string ExeCommand { get; set; }
         public string Impersonate { get; set; }
         public string Return { get; set; }
