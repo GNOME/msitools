@@ -34,7 +34,6 @@ dist_wxi_DATA =					\
 	wixl/gstreamer1-plugins-base.wxi	\
 	wixl/gstreamer1-plugins-good.wxi	\
 	wixl/gstreamer1.wxi			\
-	wixl/gtk-vnc.wxi			\
 	wixl/gtk-vnc2.wxi			\
 	wixl/gtk2.wxi				\
 	wixl/gtk3.wxi				\
