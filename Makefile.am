@@ -203,6 +203,7 @@ MAINTAINERCLEANFILES =				\
 EXTRA_DIST +=					\
 	$(top_srcdir)/.version			\
 	NEWS					\
+	README.md				\
 	autogen.sh				\
 	build-aux/git-version-gen		\
 	build-aux/move-if-change		\
