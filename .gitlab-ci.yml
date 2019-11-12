@@ -69,8 +69,6 @@ variables:
                 mingw64-gtk3
                 mingw32-gtk-vnc2
                 mingw64-gtk-vnc2
-                mingw32-gtk-vnc
-                mingw64-gtk-vnc
                 mingw32-gvnc
                 mingw64-gvnc
                 mingw32-harfbuzz

@@ -3,6 +3,7 @@
 <?require freetype.wxi?>
 <?require fontconfig.wxi?>
 <?require harfbuzz.wxi?>
+<?require fribidi.wxi?>
 <Include xmlns="http://schemas.microsoft.com/wix/2006/wi">
   <Fragment>
     <DirectoryRef Id="INSTALLDIR">
@@ -31,6 +32,7 @@
       <ComponentGroupRef Id="CG.freetype"/>
       <ComponentGroupRef Id="CG.fontconfig"/>
       <ComponentGroupRef Id="CG.harfbuzz"/>
+      <ComponentGroupRef Id="CG.fribidi"/>
       <ComponentRef Id="cmp1FE5988884F4A6E5F9B935E26F7CA89E"/>
       <ComponentRef Id="cmpB85AF8036B232EAA090D687374559306"/>
       <ComponentRef Id="cmp79E5CAC364D0F87C611C24DBEC44D777"/>

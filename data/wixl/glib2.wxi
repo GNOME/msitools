@@ -82,11 +82,6 @@
               <File Id="filCBD4561437D582EAC7D91EB189DA7A5E" KeyPath="yes" Source="$(var.SourceDir)/share/glib-2.0/schemas/gschema.dtd"/>
             </Component>
           </Directory>
-          <Directory Id="dir81C7ED0429C08C30549E72F264D72C4B" Name="valgrind">
-            <Component Win64="$(var.Win64)"  Id="cmp6F07303B4A9C4F0E85AF1C18960AF040" Guid="*">
-              <File Id="filEE8AB471AB8D0FD841F7BB93C72214BD" KeyPath="yes" Source="$(var.SourceDir)/share/glib-2.0/valgrind/glib.supp"/>
-            </Component>
-          </Directory>
         </Directory>
         <Directory Id="dir527C2C31726405647895115ACC997601" Name="locale">
           <Directory Id="dir8FB01A46B0ECD9B29BFE4D78EDA6C728" Name="af">
@@ -806,7 +801,6 @@
       <ComponentRef Id="cmpEF5C294574A1582C391C2E2A004F341B"/>
       <ComponentRef Id="cmp058ABAE3E4BE796474C695380BAE5224"/>
       <ComponentRef Id="cmpF88FF5AF54096E3F6FB53DF45E40A219"/>
-      <ComponentRef Id="cmp6F07303B4A9C4F0E85AF1C18960AF040"/>
       <ComponentRef Id="cmpCF8F003E2F7DB70E0B9D552C18C1D6E9"/>
       <ComponentRef Id="cmp233753F0C15ED82D10045826743CA2D5"/>
       <ComponentRef Id="cmp83D6C4B73287A3C8D4CA5F0901441426"/>
