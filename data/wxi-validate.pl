@@ -211,7 +211,7 @@ sub load {
 
             # gcc
             $msifile32 = undef if $msifile32 =~ /libgcc_s_seh-1\.dll/;
-            $msifile64 = undef if $msifile64 =~ /libgcc_s_sjlj-1.dll/;
+            $msifile64 = undef if $msifile64 =~ /libgcc_s_dw2-1.dll/;
 
             # openssl
             $msifile32 = undef if $msifile32 && $msifile32 =~ /lib(ssl|crypto)-[^-]+-x64.dll/;
