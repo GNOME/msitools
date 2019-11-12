@@ -1,3 +1,14 @@
+v0.100
+======
+- fix v0.99 regression on big-endian systems
+- wixl: Support use of FileKey in CustomAction
+- wixl: support Arguments attribute in shortcuts
+- new wxi manifests for brotli, fribidi, libpsl, libunistring
+- update wxi manifests fo icu, readline, nettle, adwaita-icon-theme,
+  gcc, OpenEXR, ilmbase
+- remove gtk-vnc manifest
+- translation updates, build-sys improvements
+
 v0.99
 =====
 - new wxi manifests for harfbuzz, icu, dlfcn, speex, wavpack, openexr,
