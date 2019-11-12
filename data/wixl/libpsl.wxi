@@ -1,4 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
+<?require win-iconv.wxi?>
+<?require libidn2.wxi?>
+<?require libunistring.wxi?>
 <Include xmlns="http://schemas.microsoft.com/wix/2006/wi">
   <Fragment>
     <DirectoryRef Id="INSTALLDIR">
@@ -17,6 +20,9 @@
   </Fragment>
   <Fragment>
     <ComponentGroup Id="CG.libpsl">
+      <ComponentGroupRef Id="CG.win-iconv"/>
+      <ComponentGroupRef Id="CG.libidn2"/>
+      <ComponentGroupRef Id="CG.libunistring"/>
       <ComponentRef Id="cmp623D47B2027F21474F47C1C4704368D4"/>
       <ComponentRef Id="cmp9D2AA8985E0A8850F26F59982EBA3778"/>
       <ComponentRef Id="cmpADBFD4F1CA5279BDCC1E889FA67D7A9D"/>

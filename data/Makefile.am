@@ -61,6 +61,7 @@ dist_wxi_DATA =					\
 	wixl/libssh2.wxi			\
 	wixl/libtasn1.wxi			\
 	wixl/libtiff.wxi			\
+	wixl/libunistring.wxi			\
 	wixl/libusbx.wxi			\
 	wixl/libvirt.wxi			\
 	wixl/libvirt-glib.wxi			\
