@@ -3,21 +3,23 @@
 <Include xmlns="http://schemas.microsoft.com/wix/2006/wi">
   <Fragment>
     <DirectoryRef Id="INSTALLDIR">
-      <Directory Id="dirE76CBF8BBA1F8574D226433F79EC6052" Name="bin">
-        <Component Win64="$(var.Win64)" Id="cmp7C7539F2ACE2AF31823E3A1B78156443" Guid="*">
-          <File Id="fil1A8355E221DF31D6C81BC0D370C0BD66" KeyPath="yes" Source="$(var.SourceDir)/bin/libhistory6.dll"/>
+      <Directory Id="dir31574ADD6F7C7F0498829586DDDA7A05" Name="bin">
+        <Component Win64="$(var.Win64)" Id="cmpDAF77C127888108A58D3975FEE05AB54" Guid="*">
+          <File Id="fil31C3001FF1624F032D073026DEEA3AA7" KeyPath="yes" Source="$(var.SourceDir)/bin/libhistory8.dll"/>
         </Component>
-        <Component Win64="$(var.Win64)" Id="cmpEF32E14B9685643E27AF514A96E080EB" Guid="*">
-          <File Id="filC39390DE90893D8C6E1D2FB055615A58" KeyPath="yes" Source="$(var.SourceDir)/bin/libreadline6.dll"/>
+        <Component Win64="$(var.Win64)" Id="cmpE5CE7E9C7DB9DC58E77E82DF9EA14BB0" Guid="*">
+          <File Id="fil11C4146AA9BAD411BA5A97FD907AE1CA" KeyPath="yes" Source="$(var.SourceDir)/bin/libreadline8.dll"/>
         </Component>
-        </Directory>
+      </Directory>
     </DirectoryRef>
   </Fragment>
   <Fragment>
     <ComponentGroup Id="CG.readline">
       <ComponentGroupRef Id="CG.termcap"/>
-      <ComponentRef Id="cmp7C7539F2ACE2AF31823E3A1B78156443"/>
-      <ComponentRef Id="cmpEF32E14B9685643E27AF514A96E080EB"/>
+      <ComponentRef Id="cmpDAF77C127888108A58D3975FEE05AB54"/>
+      <ComponentRef Id="cmpE5CE7E9C7DB9DC58E77E82DF9EA14BB0"/>
     </ComponentGroup>
   </Fragment>
 </Include>
+<!-- generated with msitools 0.99 -->
+<!-- wixl-heat -win64 -var var.SourceDir -p /usr/i686-w64-mingw32/sys-root/mingw/ -component-group CG.readline -directory-ref INSTALLDIR -->
