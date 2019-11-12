@@ -13,7 +13,7 @@
 <?if $(var.Win64) = "yes"?>
           <File Id="fil246F7D773B308C471E32C8FB3BE85730" KeyPath="yes" Source="$(var.SourceDir)/bin/libgcc_s_seh-1.dll"/>
 <?else?>
-          <File Id="filDC11F2B0D7B6BE3CCA2B5003E81CC8F1" KeyPath="yes" Source="$(var.SourceDir)/bin/libgcc_s_sjlj-1.dll"/>
+          <File Id="filDC11F2B0D7B6BE3CCA2B5003E81CC8F1" KeyPath="yes" Source="$(var.SourceDir)/bin/libgcc_s_dw2-1.dll"/>
 <?endif?>
         </Component>
         <Component Win64="$(var.Win64)" Id="cmp94EF633C9D64EF2F94885691030F7EB7" Guid="*">

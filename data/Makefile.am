@@ -17,6 +17,7 @@ dist_wxi_DATA =					\
 	wixl/expat.wxi				\
 	wixl/fontconfig.wxi			\
 	wixl/freetype.wxi			\
+	wixl/fribidi.wxi			\
 	wixl/gcc.wxi				\
 	wixl/gcc-c++.wxi			\
 	wixl/gdk-pixbuf.wxi			\
@@ -34,7 +35,6 @@ dist_wxi_DATA =					\
 	wixl/gstreamer1-plugins-base.wxi	\
 	wixl/gstreamer1-plugins-good.wxi	\
 	wixl/gstreamer1.wxi			\
-	wixl/gtk-vnc.wxi			\
 	wixl/gtk-vnc2.wxi			\
 	wixl/gtk2.wxi				\
 	wixl/gtk3.wxi				\
@@ -55,11 +55,13 @@ dist_wxi_DATA =					\
 	wixl/libjpeg-turbo.wxi			\
 	wixl/libogg.wxi				\
 	wixl/libpng.wxi				\
+	wixl/libpsl.wxi				\
 	wixl/libtheora.wxi			\
 	wixl/libsoup.wxi			\
 	wixl/libssh2.wxi			\
 	wixl/libtasn1.wxi			\
 	wixl/libtiff.wxi			\
+	wixl/libunistring.wxi			\
 	wixl/libusbx.wxi			\
 	wixl/libvirt.wxi			\
 	wixl/libvirt-glib.wxi			\

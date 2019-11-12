@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Include xmlns="http://schemas.microsoft.com/wix/2006/wi">
+  <Fragment>
+    <DirectoryRef Id="INSTALLDIR">
+      <Directory Id="dirD6DE5EE53EAC69C85D4723E67D18D7AD" Name="bin">
+        <Component Win64="$(var.Win64)" Id="cmpB336AC899DE387A813412D5D2C2C6CB8" Guid="*">
+          <File Id="fil0B31B0E7F00432B0ECED888858212B7E" KeyPath="yes" Source="$(var.SourceDir)/bin/brotli.exe"/>
+        </Component>
+        <Component Win64="$(var.Win64)" Id="cmpE91C930EC548A1F8EFBA853B5875B9DD" Guid="*">
+          <File Id="filD8C79A6706B907C99E9FFC29FF047AF0" KeyPath="yes" Source="$(var.SourceDir)/bin/libbrotlicommon.dll"/>
+        </Component>
+        <Component Win64="$(var.Win64)" Id="cmp283C38D965F9EF7F304458A8495E3B4E" Guid="*">
+          <File Id="filAA1A09F2669638ABB4B2AACBB3870989" KeyPath="yes" Source="$(var.SourceDir)/bin/libbrotlidec.dll"/>
+        </Component>
+        <Component Win64="$(var.Win64)" Id="cmp91DE05133FEDDE9752F704AB6E5805AD" Guid="*">
+          <File Id="filC470C4E5C88EDB60935E1B455E71B834" KeyPath="yes" Source="$(var.SourceDir)/bin/libbrotlienc.dll"/>
+        </Component>
+      </Directory>
+    </DirectoryRef>
+  </Fragment>
+  <Fragment>
+    <ComponentGroup Id="CG.brotli">
+      <ComponentRef Id="cmpB336AC899DE387A813412D5D2C2C6CB8"/>
+      <ComponentRef Id="cmpE91C930EC548A1F8EFBA853B5875B9DD"/>
+      <ComponentRef Id="cmp283C38D965F9EF7F304458A8495E3B4E"/>
+      <ComponentRef Id="cmp91DE05133FEDDE9752F704AB6E5805AD"/>
+    </ComponentGroup>
+  </Fragment>
+</Include>
+<!-- generated with msitools 0.99 -->
+<!-- wixl-heat -var var.SourceDir -p /usr/i686-w64-mingw32/sys-root/mingw/ -component-group CG.brotli -directory-ref INSTALLDIR -win64 -->

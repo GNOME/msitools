@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<?require win-iconv.wxi?>
+<?require libidn2.wxi?>
+<?require libunistring.wxi?>
+<Include xmlns="http://schemas.microsoft.com/wix/2006/wi">
+  <Fragment>
+    <DirectoryRef Id="INSTALLDIR">
+      <Directory Id="dir2D3098FFD34FC5EF4517BBB41996F5BA" Name="bin">
+        <Component Win64="$(var.Win64)" Id="cmp623D47B2027F21474F47C1C4704368D4" Guid="*">
+          <File Id="fil8042056BEA1D99C64675288045616E47" KeyPath="yes" Source="$(var.SourceDir)/bin/libpsl-5.dll"/>
+        </Component>
+        <Component Win64="$(var.Win64)" Id="cmp9D2AA8985E0A8850F26F59982EBA3778" Guid="*">
+          <File Id="fil4FF7104C50C8ADD542487D78E33ACE77" KeyPath="yes" Source="$(var.SourceDir)/bin/psl-make-dafsa"/>
+        </Component>
+        <Component Win64="$(var.Win64)" Id="cmpADBFD4F1CA5279BDCC1E889FA67D7A9D" Guid="*">
+          <File Id="fil9E9A7A96731B296133D0CB3C634687C8" KeyPath="yes" Source="$(var.SourceDir)/bin/psl.exe"/>
+        </Component>
+      </Directory>
+    </DirectoryRef>
+  </Fragment>
+  <Fragment>
+    <ComponentGroup Id="CG.libpsl">
+      <ComponentGroupRef Id="CG.win-iconv"/>
+      <ComponentGroupRef Id="CG.libidn2"/>
+      <ComponentGroupRef Id="CG.libunistring"/>
+      <ComponentRef Id="cmp623D47B2027F21474F47C1C4704368D4"/>
+      <ComponentRef Id="cmp9D2AA8985E0A8850F26F59982EBA3778"/>
+      <ComponentRef Id="cmpADBFD4F1CA5279BDCC1E889FA67D7A9D"/>
+    </ComponentGroup>
+  </Fragment>
+</Include>
+<!-- generated with msitools 0.99 -->
+<!-- wixl-heat -var var.SourceDir -p /usr/i686-w64-mingw32/sys-root/mingw/ -component-group CG.libpsl -directory-ref INSTALLDIR -win64 -->
