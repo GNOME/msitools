@@ -4,6 +4,7 @@
 <?require sqlite.wxi?>
 <?require libxml2.wxi?>
 <?require brotli.wxi?>
+<?require libpsl.wxi?>
 <Include xmlns="http://schemas.microsoft.com/wix/2006/wi">
   <Fragment>
     <DirectoryRef Id="INSTALLDIR">
@@ -392,6 +393,7 @@
       <ComponentGroupRef Id="CG.sqlite"/>
       <ComponentGroupRef Id="CG.libxml2"/>
       <ComponentGroupRef Id="CG.brotli"/>
+      <ComponentGroupRef Id="CG.libpsl"/>
       <ComponentRef Id="cmpE0095401FA3CB98EFD660E75EDDFE4A1"/>
       <ComponentRef Id="cmp8C10D6766D440291BEE1790C27EF3688"/>
       <ComponentRef Id="cmpCA3786BF3ADEC21C1C3A237A948F2236"/>

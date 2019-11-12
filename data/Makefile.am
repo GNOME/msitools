@@ -55,6 +55,7 @@ dist_wxi_DATA =					\
 	wixl/libjpeg-turbo.wxi			\
 	wixl/libogg.wxi				\
 	wixl/libpng.wxi				\
+	wixl/libpsl.wxi				\
 	wixl/libtheora.wxi			\
 	wixl/libsoup.wxi			\
 	wixl/libssh2.wxi			\
