@@ -1,27 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
 <?require gmp.wxi?>
-
 <Include xmlns="http://schemas.microsoft.com/wix/2006/wi">
   <Fragment>
     <DirectoryRef Id="INSTALLDIR">
-      <Directory Id="dir19005F9CD7DD75239BC27524467D3B5F" Name="bin">
-        <Component Win64="$(var.Win64)" Id="cmp7D1D6558DB49C65F87ABAA8ABC549490" Guid="*">
-          <File Id="fil7D9A5BA189964756C558D780557F3FE3" KeyPath="yes" Source="$(var.SourceDir)/bin/libhogweed-4.dll"/>
+      <Directory Id="dir5AEF56DC061A17E3A4B74AFC27ECF971" Name="bin">
+        <Component Win64="$(var.Win64)" Id="cmp0FCA4A1D4EBF049A68D5CDAE0F7D5E69" Guid="*">
+          <File Id="fil0409B66AE6C2A7113535F0A1884E08CF" KeyPath="yes" Source="$(var.SourceDir)/bin/libhogweed-5.dll"/>
         </Component>
-        <Component Win64="$(var.Win64)" Id="cmp26E1104F7A73A1758041DD848846050E" Guid="*">
-          <File Id="fil556F58E4223E3D0E4D47703DE0ADA463" KeyPath="yes" Source="$(var.SourceDir)/bin/libnettle-6.dll"/>
+        <Component Win64="$(var.Win64)" Id="cmpF597B02A6401FA9EE5BED98E55438C1D" Guid="*">
+          <File Id="fil0D87442097C12ABFCEF9D2D521F474BF" KeyPath="yes" Source="$(var.SourceDir)/bin/libnettle-7.dll"/>
         </Component>
-        <Component Win64="$(var.Win64)" Id="cmp9FC667D34859E0C1F4AAF3B30562A147" Guid="*">
-          <File Id="fil049533F7D47445344E752E04CDFF43EF" KeyPath="yes" Source="$(var.SourceDir)/bin/nettle-hash.exe"/>
+        <Component Win64="$(var.Win64)" Id="cmpEF03546E2EEC4BA072738E5368FF59F0" Guid="*">
+          <File Id="filDE93FA4F7B112BDD5504093ACBC386E7" KeyPath="yes" Source="$(var.SourceDir)/bin/nettle-hash.exe"/>
         </Component>
-        <Component Win64="$(var.Win64)" Id="cmpA4DD6D111AE0612995C2CDB5F5B5D7D8" Guid="*">
-          <File Id="filBA1CCAD51240CA545C51C42F9C8F3705" KeyPath="yes" Source="$(var.SourceDir)/bin/nettle-lfib-stream.exe"/>
+        <Component Win64="$(var.Win64)" Id="cmp0A7146E4FB4191207BDD017C139B11EB" Guid="*">
+          <File Id="fil653349F5515FE08ED09CE36A67BFEA27" KeyPath="yes" Source="$(var.SourceDir)/bin/nettle-lfib-stream.exe"/>
         </Component>
-        <Component Win64="$(var.Win64)" Id="cmp0B468FEC1961B8353377BF2AC881CCB5" Guid="*">
-          <File Id="fil1C7E34D4442FCB2E286047F2D190EFB6" KeyPath="yes" Source="$(var.SourceDir)/bin/pkcs1-conv.exe"/>
+        <Component Win64="$(var.Win64)" Id="cmpE7870C19FAED79F0ED2F9B1E51F39EC0" Guid="*">
+          <File Id="fil02E36AFE8EF0D6BDCDD6632DEA18E358" KeyPath="yes" Source="$(var.SourceDir)/bin/nettle-pbkdf2.exe"/>
         </Component>
-        <Component Win64="$(var.Win64)" Id="cmp15113D7FD0A03234112DF7A60B8E9881" Guid="*">
-          <File Id="fil10A334FEA6E072613A846160386A55FA" KeyPath="yes" Source="$(var.SourceDir)/bin/sexp-conv.exe"/>
+        <Component Win64="$(var.Win64)" Id="cmp5FF31A544AEE72A56F21D35ECFB66286" Guid="*">
+          <File Id="filA833AC7B8607EEEF4DC23006B70D2BD5" KeyPath="yes" Source="$(var.SourceDir)/bin/pkcs1-conv.exe"/>
+        </Component>
+        <Component Win64="$(var.Win64)" Id="cmpBDA2B3B5ED680D68F9F5B07694351C23" Guid="*">
+          <File Id="fil270103B7262DE21C71E242E2E197C544" KeyPath="yes" Source="$(var.SourceDir)/bin/sexp-conv.exe"/>
+        </Component>
+      </Directory>
+      <Directory Id="dir401FECDA42DC3BE0F5ABE07A930B9398" Name="lib">
+        <Component Win64="$(var.Win64)" Id="cmp9C64A170EC707605D0FB61578C9DB85E" Guid="*">
+          <File Id="filEAE3782951D25D90067D7BF2DDA8924F" KeyPath="yes" Source="$(var.SourceDir)/lib/libhogweed.dll.a"/>
+        </Component>
+        <Component Win64="$(var.Win64)" Id="cmp5481F4E542D2F1E25605EC05A6012509" Guid="*">
+          <File Id="fil0ED1EAA6E92FCF282FD75D3E2963C46F" KeyPath="yes" Source="$(var.SourceDir)/lib/libnettle.dll.a"/>
         </Component>
       </Directory>
     </DirectoryRef>
@@ -29,12 +39,17 @@
   <Fragment>
     <ComponentGroup Id="CG.nettle">
       <ComponentGroupRef Id="CG.gmp"/>
-      <ComponentRef Id="cmp7D1D6558DB49C65F87ABAA8ABC549490"/>
-      <ComponentRef Id="cmp26E1104F7A73A1758041DD848846050E"/>
-      <ComponentRef Id="cmp9FC667D34859E0C1F4AAF3B30562A147"/>
-      <ComponentRef Id="cmpA4DD6D111AE0612995C2CDB5F5B5D7D8"/>
-      <ComponentRef Id="cmp0B468FEC1961B8353377BF2AC881CCB5"/>
-      <ComponentRef Id="cmp15113D7FD0A03234112DF7A60B8E9881"/>
+      <ComponentRef Id="cmp0FCA4A1D4EBF049A68D5CDAE0F7D5E69"/>
+      <ComponentRef Id="cmpF597B02A6401FA9EE5BED98E55438C1D"/>
+      <ComponentRef Id="cmpEF03546E2EEC4BA072738E5368FF59F0"/>
+      <ComponentRef Id="cmp0A7146E4FB4191207BDD017C139B11EB"/>
+      <ComponentRef Id="cmpE7870C19FAED79F0ED2F9B1E51F39EC0"/>
+      <ComponentRef Id="cmp5FF31A544AEE72A56F21D35ECFB66286"/>
+      <ComponentRef Id="cmpBDA2B3B5ED680D68F9F5B07694351C23"/>
+      <ComponentRef Id="cmp9C64A170EC707605D0FB61578C9DB85E"/>
+      <ComponentRef Id="cmp5481F4E542D2F1E25605EC05A6012509"/>
     </ComponentGroup>
   </Fragment>
 </Include>
+<!-- generated with msitools 0.99 -->
+<!-- wixl-heat -win64 -var var.SourceDir -p /usr/i686-w64-mingw32/sys-root/mingw/ -component-group CG.nettle -directory-ref INSTALLDIR -->
