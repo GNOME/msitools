@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # -*- coding: utf-8 -*-
 
 # msidump - dump raw MSI tables and stream content
