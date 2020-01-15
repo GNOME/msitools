@@ -68,8 +68,6 @@ dist_wxi_DATA =					\
 	wixl/libvorbis.wxi			\
 	wixl/libxml2.wxi			\
 	wixl/nettle.wxi				\
-	wixl/nspr.wxi				\
-	wixl/nss.wxi				\
 	wixl/openssl.wxi			\
 	wixl/opus.wxi				\
 	wixl/orc.wxi				\
