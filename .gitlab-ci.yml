@@ -123,8 +123,6 @@ variables:
                 mingw64-libxml2
                 mingw32-nettle
                 mingw64-nettle
-                mingw32-nspr
-                mingw64-nspr
                 mingw32-OpenEXR
                 mingw64-OpenEXR
                 mingw32-openssl

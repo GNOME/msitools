@@ -8,6 +8,7 @@
 <?require readline.wxi?>
 <?require libxml2.wxi?>
 <?require winpthreads.wxi?>
+<?require glib2.wxi?>
 
 <Include xmlns="http://schemas.microsoft.com/wix/2006/wi">
   <Fragment>
@@ -567,6 +568,7 @@
       <ComponentGroupRef Id="CG.readline"/>
       <ComponentGroupRef Id="CG.libxml2"/>
       <ComponentGroupRef Id="CG.winpthreads"/>
+      <ComponentGroupRef Id="CG.glib2"/>
       <ComponentRef Id="cmpB962DB3CF88FF4B22CD95DDD142C563A"/>
       <ComponentRef Id="cmpB6F6993161E17654F77AA88C3F185130"/>
       <ComponentRef Id="cmpE285D1D7089CBDBA1061BBD4A7AF1000"/>
