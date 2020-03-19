@@ -1083,6 +1083,12 @@ namespace Wixl {
 
             if (action.Return == "ignore")
                 type |= CustomActionType.CONTINUE;
+            else if (action.Return == "asyncWait")
+                type |= CustomActionType.ASYNC;
+            else if (action.Return == "asyncNoWait") {
+                type |= CustomActionType.CONTINUE;
+                type |= CustomActionType.ASYNC;
+            }
             if (action.Execute == "deferred")
                 type |= CustomActionType.IN_SCRIPT;
             if (!parse_yesno (action.Impersonate))
