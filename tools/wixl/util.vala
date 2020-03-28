@@ -52,13 +52,11 @@ namespace Wixl {
         return uuid;
     }
 
-    public long now () {
-        var tv = TimeVal ();
-        tv.get_current_time ();
-        return tv.tv_sec;
+    public int64 now () {
+        return get_real_time() / TimeSpan.SECOND;
     }
 
-    public uint64 time_to_filetime (long t) {
+    public uint64 time_to_filetime (int64 t) {
         return (t + 134774ULL * 86400ULL) * 10000000ULL;
     }
 
