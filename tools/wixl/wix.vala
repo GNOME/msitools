@@ -144,7 +144,7 @@ namespace Wixl {
 
             foreach (var c in children) {
                 if (c is WixElement)
-                    array = (c as WixElement).add_elements<G> (array);
+                    array = ((WixElement)c).add_elements<G> (array);
                 else if (c.get_type ().is_a (type))
                     array += c;
             }
@@ -170,7 +170,7 @@ namespace Wixl {
 
             foreach (var c in children) {
                 if (c is WixElement) {
-                    var e = (c as WixElement).find_element<G> (Id);
+                    var e = ((WixElement)c).find_element<G> (Id);
                     if (e != null)
                         return e;
                 }
@@ -494,7 +494,7 @@ namespace Wixl {
         }
 
         public override string full_path (WixResolver r) throws GLib.Error {
-            return (r.resolve<WixComponent> (this) as WixElement).full_path (r);
+            return ((WixElement)r.resolve<WixComponent> (this)).full_path (r);
         }
 
         public override void accept (WixNodeVisitor visitor) throws GLib.Error {
@@ -509,7 +509,7 @@ namespace Wixl {
         }
 
         public override string full_path (WixResolver r) throws GLib.Error {
-            return (r.resolve<WixComponentGroup> (this) as WixElement).full_path (r);
+            return ((WixElement)r.resolve<WixComponentGroup> (this)).full_path (r);
         }
 
         public override void accept (WixNodeVisitor visitor) throws GLib.Error {
@@ -551,7 +551,7 @@ namespace Wixl {
         public string get_text() {
             foreach (var c in children) {
                 if (c is WixText) {
-                    return (c as WixText).Text;
+                    return ((WixText)c).Text;
                 }
             }
 
@@ -1119,7 +1119,7 @@ namespace Wixl {
 
         // FIXME vala: G type doesn't seem to be set correctly...
         public override string full_path (WixResolver r) throws GLib.Error {
-            return (r.resolve<G> (this) as WixElement).full_path (r);
+            return ((WixElement)r.resolve<G> (this)).full_path (r);
         }
     }
 
@@ -1135,7 +1135,7 @@ namespace Wixl {
         }
 
         public override string full_path (WixResolver r) throws GLib.Error {
-            return (r.resolve<WixDirectory> (this) as WixElement).full_path (r);
+            return ((WixElement)r.resolve<WixDirectory> (this)).full_path (r);
         }
     }
 
