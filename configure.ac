@@ -17,7 +17,7 @@ AM_CONDITIONAL([WIN32], [test $win32 = yes])
 AC_USE_SYSTEM_EXTENSIONS
 AC_PROG_CC
 
-AC_CHECK_PROGS(YACC, 'bison -y')
+AC_CHECK_PROGS(YACC, 'bison -y -Wno-yacc')
 AC_ARG_VAR(YACC,
            [The `Yet Another Compiler Compiler' implementation to use.
 	    Defaults to`bison -y'])
