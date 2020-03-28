@@ -51,7 +51,7 @@ namespace Wixl {
         opt_context.set_help_enabled (true);
         opt_context.add_main_entries (options, null);
 
-        wxidir = Config.PKGDATADIR + "/include";
+        wxidir = Path.build_filename (Config.DATADIR, "wixl-" + Config.PACKAGE_VERSION, "include");
 
         try {
             opt_context.parse (ref args);

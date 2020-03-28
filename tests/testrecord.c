@@ -35,7 +35,7 @@ static bool create_temp_file (char *name)
 {
     unsigned char buffer[26], i;
     int fd;
-    
+
     strcpy (name, "msitext-XXXXXX.tmp");
     fd = g_mkstemp (name);
     g_return_val_if_fail (fd != -1, FALSE);
@@ -433,7 +433,7 @@ static void test_fieldzero (void)
     unlink (msifile);
 }
 
-void main ()
+int main ()
 {
 #if !GLIB_CHECK_VERSION(2,35,1)
     g_type_init ();

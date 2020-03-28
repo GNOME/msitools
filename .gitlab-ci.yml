@@ -1,12 +1,11 @@
 image: fedora:rawhide
 
 variables:
-  DEPENDENCIES: dnf-command(builddep) intltool
-                glib2-devel gobject-introspection-devel
-                libuuid-devel vala libgsf-devel
-                libgcab1-devel git libtool make
-                redhat-rpm-config
+  DEPENDENCIES: dnf-command(builddep) meson git vala
                 bison bison-devel bison-runtime
+                glib2-devel gobject-introspection-devel
+                libgsf-devel libgcab1-devel
+                redhat-rpm-config
                 perl-XML-XPath
                 diffutils
                 mingw32-adwaita-icon-theme
@@ -174,13 +173,13 @@ build_stable:
     - dnf update -y --nogpgcheck
     - dnf install -y --nogpgcheck $DEPENDENCIES
     - dnf builddep -y --nogpgcheck msitools
+    - git submodule update --init --recursive
   script:
-    - ./autogen.sh
-    - make
-    - make check
-    - make -C data check-wxi
+    - meson _build -Dvalidate-wxi=true
+    - ninja -C _build
+    - ninja -C _build test
   artifacts:
     paths:
-      - testsuite.log
-      - testsuite.dir/
-    when: on_failure
+      - _build/meson-logs/*.txt
+    when: always
+    expire_in: 1 week

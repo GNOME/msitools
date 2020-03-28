@@ -1,0 +1,11 @@
+option('validate-wxi',
+  type: 'boolean',
+  value: false,
+  description: 'Check WXI against mingw RPM packages',
+)
+
+option('introspection',
+  type: 'boolean',
+  value: true,
+  description: 'generate GObject Introspection data',
+)
