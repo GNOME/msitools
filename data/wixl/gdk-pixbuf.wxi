@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <?require glib2.wxi?>
 <?require libpng.wxi?>
+<?require libtiff.wxi?>
 <?require jasper.wxi?>
 <?require gettext.wxi?>
 <Include xmlns="http://schemas.microsoft.com/wix/2006/wi">
@@ -742,6 +743,7 @@
     <ComponentGroup Id="CG.gdk-pixbuf">
       <ComponentGroupRef Id="CG.glib2"/>
       <ComponentGroupRef Id="CG.libpng"/>
+      <ComponentGroupRef Id="CG.libtiff"/>
       <ComponentGroupRef Id="CG.jasper"/>
       <ComponentGroupRef Id="CG.gettext"/>
       <ComponentRef Id="cmp4BF448B47E572302678F2495BDE525FC"/>
