@@ -245,19 +245,14 @@ static unsigned read_dword( const uint8_t *data, unsigned *ofs )
 
 static gchar* filetime_to_string (guint64 ft)
 {
-    struct tm tm;
-    time_t t;
+    g_autoptr(GDateTime) dt = NULL;
 
     ft /= 10000000ULL;
     ft -= 134774ULL * 86400ULL;
-    t = ft;
 
-    if (!gmtime_r (&t, &tm))
-        return NULL;
+    dt = g_date_time_new_from_unix_local(ft);
 
-    return g_strdup_printf ("%d/%d/%d %d:%d:%d",
-                            tm.tm_year + 1900, tm.tm_mon + 1, tm.tm_mday,
-                            tm.tm_hour, tm.tm_min, tm.tm_sec);
+    return g_date_time_format(dt, "%Y/%m/%d %H:%M:%S");
 }
 
 static void parse_filetime( const char *str, guint64 *ft )
