@@ -672,7 +672,7 @@ end:
 
 static int cmd_version(struct Command *cmd, int argc, char **argv, GError **error)
 {
-    printf("%s (%s) version %s\n", g_get_prgname (), PACKAGE, VERSION);
+    printf("%s (%s) version %s\n", g_get_prgname (), PACKAGE_NAME, PACKAGE_VERSION);
     return 0;
 }
 

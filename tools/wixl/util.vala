@@ -5,24 +5,6 @@ namespace Wixl {
         FIXME,
     }
 
-    namespace UUID {
-        [CCode (cname = "uuid_generate", cheader_filename = "uuid/uuid.h")]
-        internal extern static void generate ([CCode (array_length = false)] uchar[] uuid);
-        [CCode (cname = "uuid_unparse", cheader_filename = "uuid/uuid.h")]
-        internal extern static void unparse ([CCode (array_length = false)] uchar[] uuid,
-                                             [CCode (array_length = false)] uchar[] output);
-    }
-
-    public string uuid_generate () {
-        var udn = new uchar[50];
-        var id = new uchar[16];
-
-        UUID.generate (id);
-        UUID.unparse (id, udn);
-
-        return (string) udn;
-    }
-
     public G enum_from_string<G> (string str) throws GLib.Error {
         var k = (EnumClass)typeof(G).class_ref ();
         var v = k.get_value_by_nick (str);
@@ -45,20 +27,18 @@ namespace Wixl {
 
     public string get_uuid (owned string uuid) throws GLib.Error {
         if (uuid == "*")
-            uuid = uuid_generate ();
+            uuid = Uuid.string_random ();
         uuid = add_braces (uuid);
         uuid = uuid.up ();
         // FIXME: validate
         return uuid;
     }
 
-    public long now () {
-        var tv = TimeVal ();
-        tv.get_current_time ();
-        return tv.tv_sec;
+    public int64 now () {
+        return get_real_time() / TimeSpan.SECOND;
     }
 
-    public uint64 time_to_filetime (long t) {
+    public uint64 time_to_filetime (int64 t) {
         return (t + 134774ULL * 86400ULL) * 10000000ULL;
     }
 

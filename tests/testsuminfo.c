@@ -371,7 +371,7 @@ static void test_summary_binary(void)
     DeleteFile( msifile );
 }
 
-void main()
+int main()
 {
 #if !GLIB_CHECK_VERSION(2,35,1)
     g_type_init ();
