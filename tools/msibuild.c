@@ -26,14 +26,13 @@
 #include <sys/stat.h>
 #include <libmsi.h>
 #include <limits.h>
-#include <uuid.h>
 
 #include "sqldelim.h"
 
 static gboolean init_suminfo(LibmsiSummaryInfo *si, GError **error)
 {
-    uuid_t uu;
-    char uustr[40];
+    g_autofree char *uustr = NULL;
+    g_autoptr(GString) str = g_string_new("");
 
     if (!libmsi_summary_info_set_string(si, LIBMSI_PROPERTY_TITLE,
                                         "Installation Database", error))
@@ -63,12 +62,12 @@ static gboolean init_suminfo(LibmsiSummaryInfo *si, GError **error)
                                      0, error))
         return FALSE;
 
-    uuid_generate(uu);
-    uustr[0] = '{';
-    uuid_unparse_upper(uu, uustr + 1);
-    strcat(uustr, "}");
+    uustr = g_uuid_string_random();
+    g_string_printf(str, "{%s}", uustr);
+    g_string_ascii_up(str);
+
     if (!libmsi_summary_info_set_string(si, LIBMSI_PROPERTY_UUID,
-                                        uustr, error))
+                                        str->str, error))
         return FALSE;
 
     return TRUE;
