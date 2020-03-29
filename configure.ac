@@ -37,7 +37,6 @@ AC_PATH_PROG(PERL, perl)
 PKG_CHECK_MODULES([GLIB], [glib-2.0 >= 2.12])
 PKG_CHECK_MODULES([GOBJECT], [gobject-2.0 gio-2.0 >= 2.14])
 PKG_CHECK_MODULES([GSF], [libgsf-1])
-PKG_CHECK_MODULES([UUID], [uuid >= 1.41.3])
 
 LT_INIT([win32-dll disable-fast-install])
 GOBJECT_INTROSPECTION_CHECK([0.9.4])
@@ -50,7 +49,6 @@ AM_CONDITIONAL([VAPI], [test "x$VAPIGEN" != xno])
 
 PKG_CHECK_MODULES([WIXL], [gio-2.0 >= 0.23.0
                            libgcab-1.0 >= 0.1.10
-                           uuid >= 1.41.3
                            libxml-2.0 >= 2.7])
 
 GETTEXT_PACKAGE=AC_PACKAGE_TARNAME
