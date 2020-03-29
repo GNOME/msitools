@@ -1723,7 +1723,7 @@ static void test_suminfo_import(void)
     LibmsiSummaryInfo *hsi;
     LibmsiQuery *query = 0;
     const char *sql;
-    unsigned r, type;
+    unsigned r = 0, type;
     const char *str_value;
     int int_value;
     guint64 ft_value;
@@ -1817,7 +1817,7 @@ static void test_msiimport(void)
     LibmsiQuery *query;
     LibmsiRecord *rec;
     const char *sql;
-    unsigned r, count;
+    unsigned r = 0, count;
     signed int i;
 
     hdb = libmsi_database_new(msifile, LIBMSI_DB_FLAGS_CREATE, NULL, NULL);
@@ -2031,7 +2031,7 @@ static void test_binary_import(void)
     char buf[256];
     unsigned size;
     const char *sql;
-    unsigned r;
+    unsigned r = 0;
 
     /* create files to import */
     write_file("bin_import.idt", bin_import_dat,
@@ -2075,7 +2075,7 @@ static void test_markers(void)
     LibmsiDatabase *hdb;
     LibmsiRecord *rec;
     const char *sql;
-    unsigned r;
+    unsigned r = 0;
 
     hdb = create_db();
     ok( hdb, "failed to create db\n");
@@ -2261,7 +2261,7 @@ static void test_handle_limit(void)
     int i;
     LibmsiDatabase *hdb;
     LibmsiQuery *hqueries[MY_NQUERIES];
-    unsigned r;
+    unsigned r = 0;
 
     /* create an empty db */
     hdb = create_db();
@@ -2381,7 +2381,7 @@ static void generate_transform_manual(void)
     IStorage *stg = NULL;
     IStream *stm;
     WCHAR name[0x20];
-    HRESULT r;
+    HRESULT r = 0;
     unsigned i, count;
     const unsigned mode = STGM_CREATE|STGM_READWRITE|STGM_DIRECT|STGM_SHARE_EXCLUSIVE;
 
@@ -2487,7 +2487,7 @@ static void test_try_transform(void)
     LibmsiQuery *hquery;
     LibmsiRecord *hrec;
     const char *sql;
-    unsigned r;
+    unsigned r = 0;
     unsigned sz;
     char buffer[MAX_PATH];
 
@@ -2771,7 +2771,7 @@ static void test_join(void)
     LibmsiRecord *hrec;
     const char *sql;
     char buf[256];
-    unsigned r, count;
+    unsigned r = 0, count;
     unsigned size, i;
     bool data_correct;
     gchar *str;
@@ -3344,7 +3344,7 @@ static void test_temporary_table(void)
     LibmsiQuery *query = 0;
     LibmsiRecord *rec;
     const char *sql;
-    unsigned r;
+    unsigned r = 0;
     char buf[0x10];
     unsigned sz;
 
@@ -3461,7 +3461,7 @@ static void test_alter(void)
     gboolean cond;
     LibmsiDatabase *hdb = 0;
     const char *sql;
-    unsigned r;
+    unsigned r = 0;
 
     hdb = create_db();
     ok( hdb, "failed to create db\n");
@@ -3640,7 +3640,7 @@ static void test_integers(void)
     LibmsiRecord *rec = 0;
     unsigned count, i;
     const char *sql;
-    unsigned r;
+    unsigned r = 0;
 
     /* just libmsi_database_open should not create a file */
     hdb = libmsi_database_new(msifile, LIBMSI_DB_FLAGS_CREATE, NULL, NULL);
@@ -3767,7 +3767,7 @@ static void test_update(void)
     char result[256];
     const char *sql;
     unsigned size;
-    unsigned r;
+    unsigned r = 0;
 
     /* just libmsi_database_open should not create a file */
     hdb = libmsi_database_new(msifile, LIBMSI_DB_FLAGS_CREATE, NULL, NULL);
@@ -4044,7 +4044,7 @@ static void test_special_tables(void)
 {
     const char *sql;
     LibmsiDatabase *hdb = 0;
-    unsigned r;
+    unsigned r = 0;
 
     hdb = libmsi_database_new(msifile, LIBMSI_DB_FLAGS_CREATE, NULL, NULL);
     ok(hdb, "libmsi_database_open failed\n");
@@ -4084,7 +4084,7 @@ static void test_tables_order(void)
     LibmsiQuery *hquery = 0;
     LibmsiRecord *hrec = 0;
     gchar *str;
-    unsigned r;
+    unsigned r = 0;
     char buffer[100];
     unsigned sz;
 
@@ -4191,7 +4191,7 @@ static void test_rows_order(void)
     LibmsiDatabase *hdb = 0;
     LibmsiQuery *hquery = 0;
     LibmsiRecord *hrec = 0;
-    unsigned r;
+    unsigned r = 0;
     char buffer[100];
     unsigned sz;
 
@@ -4313,7 +4313,7 @@ static void test_collation(void)
     LibmsiDatabase *hdb = 0;
     LibmsiQuery *hquery = 0;
     LibmsiRecord *hrec = 0;
-    unsigned r;
+    unsigned r = 0;
     char buffer[100];
     unsigned sz;
     gchar *str;
@@ -4428,7 +4428,7 @@ static void test_select_markers(void)
     LibmsiQuery *query;
     LibmsiRecord *res;
     const char *sql;
-    unsigned r;
+    unsigned r = 0;
     unsigned size;
     char buf[256];
 
@@ -4581,7 +4581,7 @@ static void test_stringtable(void)
     char buffer[MAX_PATH];
     WCHAR data[MAX_PATH];
     unsigned sz, read;
-    unsigned r;
+    unsigned r = 0;
 
     static const unsigned mode = STGM_DIRECT | STGM_READ | STGM_SHARE_DENY_WRITE;
     static const WCHAR stringdata[] = {0x4840, 0x3f3f, 0x4577, 0x446c, 0x3b6a, 0x45e4, 0x4824, 0}; /* _StringData */
@@ -4852,7 +4852,7 @@ static void enum_stream_names(IStorage *stg)
 static void test_defaultdatabase(void)
 {
 #ifdef _WIN32
-    unsigned r;
+    unsigned r = 0;
     HRESULT hr;
     LibmsiDatabase *hdb;
     IStorage *stg = NULL;
@@ -4885,7 +4885,7 @@ static void test_order(void)
     LibmsiRecord *hrec;
     char buffer[256];
     const char *sql;
-    unsigned r, sz;
+    unsigned r = 0, sz;
     int val;
 
     hdb = create_db();
@@ -5138,7 +5138,7 @@ static void test_deleterow(void)
     LibmsiRecord *hrec;
     const char *sql;
     char buf[256];
-    unsigned r;
+    unsigned r = 0;
     unsigned size;
 
     unlink(msifile);
@@ -5203,7 +5203,7 @@ static void test_quotes(void)
     LibmsiRecord *hrec;
     const char *sql;
     char buf[256];
-    unsigned r;
+    unsigned r = 0;
     unsigned size;
 
     unlink(msifile);
@@ -5301,7 +5301,7 @@ static void test_carriagereturn(void)
     LibmsiRecord *hrec;
     const char *sql;
     char buf[256];
-    unsigned r;
+    unsigned r = 0;
     unsigned size;
 
     unlink(msifile);
@@ -5476,7 +5476,7 @@ static void test_noquotes(void)
     LibmsiRecord *hrec;
     const char *sql;
     char buf[256];
-    unsigned r;
+    unsigned r = 0;
     unsigned size;
 
     unlink(msifile);
@@ -5644,7 +5644,7 @@ static void test_forcecodepage(void)
     LibmsiDatabase *hdb;
     const char *sql;
     char buffer[512];
-    unsigned r;
+    unsigned r = 0;
     int fd;
 
     unlink(msifile);
@@ -5766,7 +5766,7 @@ static void test_storages_table(void)
     const char *sql;
     HRESULT hr;
     unsigned size;
-    unsigned r;
+    unsigned r = 0;
 
     hdb = create_db();
     ok(hdb, "failed to create db\n");
@@ -5879,7 +5879,7 @@ static void test_droptable(void)
     char buf[200];
     const char *sql;
     unsigned size;
-    unsigned r;
+    unsigned r = 0;
     GError *error = NULL;
 
     hdb = libmsi_database_new(msifile, LIBMSI_DB_FLAGS_CREATE, NULL, NULL);
@@ -6078,7 +6078,7 @@ static void test_dbmerge(void)
     char buf[100];
     const char *sql;
     unsigned size;
-    unsigned r;
+    unsigned r = 0;
 
     hdb = libmsi_database_new(msifile, LIBMSI_DB_FLAGS_CREATE, NULL, NULL);
     ok(hdb, "Expected LIBMSI_RESULT_SUCCESS, got %d\n", r);
@@ -6648,7 +6648,7 @@ static void test_select_with_tablenames(void)
     LibmsiQuery *query;
     LibmsiRecord *rec;
     const char *sql;
-    unsigned r;
+    unsigned r = 0;
     int i;
 
     int vals[4][2] = {
@@ -6734,7 +6734,7 @@ static void test_insertorder(void)
     LibmsiQuery *query;
     LibmsiRecord *rec;
     const char *sql;
-    unsigned r;
+    unsigned r = 0;
     int i;
 
     hdb = create_db();
@@ -6874,7 +6874,7 @@ static void test_columnorder(void)
     char buf[100];
     const char *sql;
     unsigned sz;
-    unsigned r;
+    unsigned r = 0;
 
     hdb = create_db();
     ok(hdb, "failed to create db\n");
@@ -7160,7 +7160,7 @@ static void test_createtable(void)
     LibmsiQuery *htab = 0;
     LibmsiRecord *hrec = 0;
     const char *sql;
-    unsigned res;
+    unsigned res = 0;
     unsigned size;
     char buffer[0x20];
     gchar *str;
@@ -7257,7 +7257,7 @@ static void test_embedded_nulls(void)
         "s72\tL0\n"
         "Control\tDialog\n"
         "LicenseAgreementDlg\ttext\x11\x19text\0text";
-    unsigned r, sz;
+    unsigned r = 0, sz;
     LibmsiDatabase *hdb;
     LibmsiRecord *hrec;
     char buffer[32];
@@ -7291,7 +7291,7 @@ static void test_select_column_names(void)
     LibmsiRecord *rec2;
     LibmsiQuery *query;
     char buffer[32];
-    unsigned r, size;
+    unsigned r = 0, size;
 
     unlink(msifile);
 
@@ -7467,7 +7467,7 @@ static void test_select_column_names(void)
     g_object_unref( hdb );
 }
 
-void main()
+int main()
 {
 #if !GLIB_CHECK_VERSION(2,35,1)
     g_type_init ();
