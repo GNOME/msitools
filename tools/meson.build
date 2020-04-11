@@ -40,7 +40,6 @@ if get_option('introspection')
       '--enable-experimental',
       '--pkg', 'gio-unix-2.0',
       '--pkg', 'libgcab-1.0',
-      '--pkg', 'libmsi-1.0',
       '--pkg', 'posix',
       '--pkg', 'config',
       '--vapidir=@0@'.format(meson.source_root()),
