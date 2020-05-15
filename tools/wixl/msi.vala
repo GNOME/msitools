@@ -702,6 +702,27 @@ namespace Wixl {
         }
     }
 
+    class MsiTableEnvironment: MsiTable {
+            static construct {
+                name = "Environment";
+                sql_create = "CREATE TABLE `Environment` (`Environment` CHAR(72) NOT NULL, `Name` CHAR(64) NOT NULL LOCALIZABLE, `Value` CHAR(255) LOCALIZABLE, `Component_` CHAR(72) NOT NULL PRIMARY KEY `Environment`)";
+                sql_insert = "INSERT INTO `Environment` (`Environment`, `Name`, `Value`, `Component_`) VALUES (?, ?, ?, ?)";
+            }
+
+            public Libmsi.Record add (string Environment, string Name, string? Value, string Component) throws GLib.Error {
+                var rec = new Libmsi.Record (4);
+
+                if (!rec.set_string (1, Environment) ||
+                    !rec.set_string (2, Name) ||
+                    (Value != null && !rec.set_string (3, Value)) ||
+                    !rec.set_string (4, Component))
+                    throw new Wixl.Error.FAILED ("failed to add record");
+
+                records.append (rec);
+                return rec;
+            }
+        }
+
     class MsiSummaryInfo: Object {
         public Libmsi.SummaryInfo properties;
 
@@ -800,6 +821,7 @@ namespace Wixl {
         public MsiTableCreateFolder table_create_folder;
         public MsiTableSignature table_signature;
         public MsiTableFileHash table_file_hash;
+        public MsiTableEnvironment table_environment;
 
         public HashTable<string, MsiTable> tables;
 
@@ -866,6 +888,7 @@ namespace Wixl {
             table_reg_locator = new MsiTableRegLocator ();
             table_create_folder = new MsiTableCreateFolder ();
             table_file_hash = new MsiTableFileHash ();
+            table_environment = new MsiTableEnvironment ();
 
             foreach (var t in new MsiTable[] {
                     table_admin_execute_sequence,
@@ -896,6 +919,7 @@ namespace Wixl {
                     table_reg_locator,
                     table_create_folder,
                     table_file_hash,
+                    table_environment,
                     new MsiTableError (),
                     new MsiTableValidation ()
                 }) {

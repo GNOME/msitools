@@ -177,6 +177,10 @@ namespace Wixl {
             }
             if (db.table_app_search.records.length () > 0)
                 add (MSIDefault.Action.AppSearch);
+            if (db.table_environment.records.length () > 0) {
+                add (MSIDefault.Action.RemoveEnvironmentStrings);
+                add (MSIDefault.Action.WriteEnvironmentStrings);
+            }
             table.add_sorted_actions ();
 
             // InstallUISequence
@@ -1132,6 +1136,82 @@ namespace Wixl {
             media.Cabinet = "cab1.cab";
             media.Id = "1";
             visit_media (media);
+        }
+
+        enum EnvironmentAction {
+            CREATE,
+            SET,
+            REMOVE;
+
+            public static EnvironmentAction from_string(string s) throws GLib.Error {
+                if (s == "create")
+                    return CREATE;
+                if (s == "set")
+                    return SET;
+                if (s == "remove")
+                    return REMOVE;
+                throw new Wixl.Error.FAILED ("Can't convert string to enum");
+            }
+        }
+
+        enum EnvironmentPart {
+            ALL,
+            FIRST,
+            LAST;
+
+            public static EnvironmentPart from_string(string s) throws GLib.Error {
+                if (s == null || s == "all")
+                    return ALL;
+                if (s == "first")
+                    return FIRST;
+                if (s == "last")
+                    return LAST;
+                throw new Wixl.Error.FAILED ("Can't convert string to enum");
+            }
+        }
+
+        public override void visit_environment (WixEnvironment env) throws GLib.Error {
+            string name_prefix = null, value = null;
+
+            switch(EnvironmentAction.from_string(env.Action)) {
+                case EnvironmentAction.CREATE:
+                    name_prefix = "+";
+                    break;
+                case EnvironmentAction.SET:
+                    name_prefix = "=";
+                    break;
+                case EnvironmentAction.REMOVE:
+                    name_prefix = "!";
+                    break;
+            }
+
+            if(parse_yesno(env.Permanent)) {
+                name_prefix += "-";
+            }
+
+            if(parse_yesno(env.System)) {
+                name_prefix += "*";
+            }
+
+            var name = name_prefix + env.Name;
+
+            var separator = ";";
+            if(env.Separator != null)
+                separator = env.Separator;
+
+            switch(EnvironmentPart.from_string(env.Part)) {
+                case EnvironmentPart.ALL:
+                    value = env.Value;
+                    break;
+                case EnvironmentPart.FIRST:
+                    value = env.Value + separator + "[~]";
+                    break;
+                case EnvironmentPart.LAST:
+                    value = "[~]" + separator + env.Value;
+                    break;
+            }
+            var component = env.parent as WixComponent;
+            db.table_environment.add(uuid_generate (), name, value, component.Id);
         }
     }
 
