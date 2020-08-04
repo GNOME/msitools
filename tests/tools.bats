@@ -16,7 +16,9 @@ load common
 
 @test "testsuminfo shouldn't print fail" {
   if [ ! -x "$testsuminfo" ]; then
-     skip "testsuminfo isn't built"
+     # meson 0.55 (at least), fails to parse skipped lines properly meson#7538
+     # skip "testsuminfo isn't built"
+     return 0
   fi
   run "$testsuminfo"
   [ "$status" -eq 0 ]
