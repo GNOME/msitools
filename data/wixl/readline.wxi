@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+<?require gcc.wxi?>
 <?require termcap.wxi?>
 <Include xmlns="http://schemas.microsoft.com/wix/2006/wi">
   <Fragment>
@@ -15,6 +16,7 @@
   </Fragment>
   <Fragment>
     <ComponentGroup Id="CG.readline">
+      <ComponentGroupRef Id="CG.gcc"/>
       <ComponentGroupRef Id="CG.termcap"/>
       <ComponentRef Id="cmpDAF77C127888108A58D3975FEE05AB54"/>
       <ComponentRef Id="cmpE5CE7E9C7DB9DC58E77E82DF9EA14BB0"/>

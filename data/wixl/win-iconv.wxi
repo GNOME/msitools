@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+<?require gcc.wxi?>
 <Include xmlns="http://schemas.microsoft.com/wix/2006/wi">
   <Fragment>
     <DirectoryRef Id="INSTALLDIR">
@@ -11,6 +12,7 @@
   </Fragment>
   <Fragment>
     <ComponentGroup Id="CG.win-iconv">
+      <ComponentGroupRef Id="CG.gcc"/>
       <ComponentRef Id="cmp3807A1C7915A2A7EFF8C88382DB67C3C"/>
     </ComponentGroup>
   </Fragment>

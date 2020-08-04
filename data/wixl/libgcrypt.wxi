@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+<?require gcc.wxi?>
 <?require libgpg-error.wxi?>
 <Include xmlns="http://schemas.microsoft.com/wix/2006/wi">
   <Fragment>
@@ -12,6 +13,7 @@
   </Fragment>
   <Fragment>
     <ComponentGroup Id="CG.libgcrypt">
+      <ComponentGroupRef Id="CG.gcc"/>
       <ComponentGroupRef Id="CG.libgpg-error"/>
       <ComponentRef Id="cmp62E6A98D1545A50FDD03A0868E255359"/>
     </ComponentGroup>
