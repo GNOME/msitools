@@ -13,548 +13,702 @@
 <Include xmlns="http://schemas.microsoft.com/wix/2006/wi">
   <Fragment>
     <DirectoryRef Id="INSTALLDIR">
-      <Directory Id="dir057B90419F9A3F68840A7D1EAA65A6EF" Name="bin">
-        <Component Win64="$(var.Win64)" Id="cmpB962DB3CF88FF4B22CD95DDD142C563A" Guid="*">
-          <File Id="fil77417D362231F5BADE6B993F6486FA29" KeyPath="yes" Source="$(var.SourceDir)/bin/libvirt-0.dll"/>
+      <Directory Id="dir048D575403F69492C3B43C749EFD94F0" Name="bin">
+        <Component Win64="$(var.Win64)" Id="cmp64E4F1A9BF137073D9131F7240393950" Guid="*">
+          <File Id="filE3ACF730DF6D752A2CDE34DDECFB6C40" KeyPath="yes" Source="$(var.SourceDir)/bin/libvirt-0.dll"/>
         </Component>
-        <Component Win64="$(var.Win64)" Id="cmpB6F6993161E17654F77AA88C3F185130" Guid="*">
-          <File Id="fil2C76D30B4A96A710A4816162D63D871C" KeyPath="yes" Source="$(var.SourceDir)/bin/libvirt-qemu-0.dll"/>
+        <Component Win64="$(var.Win64)" Id="cmp05CE47D22A2212AD6E022FD6CD5DEB33" Guid="*">
+          <File Id="fil2B2CBD4F1D54EE48D8E998BB041A579B" KeyPath="yes" Source="$(var.SourceDir)/bin/libvirt-admin-0.dll"/>
         </Component>
-	<Component Win64="$(var.Win64)" Id="cmpE285D1D7089CBDBA1061BBD4A7AF1000" Guid="*">
-          <File Id="filF27DB6482D9739ABAEAEE61F69076E20" KeyPath="yes" Source="$(var.SourceDir)/bin/libvirt-lxc-0.dll"/>
+        <Component Win64="$(var.Win64)" Id="cmpCC3564780D59DFEE613B1B53EF100534" Guid="*">
+          <File Id="fil35E2AF15332EEA8840AFE858A0888FB4" KeyPath="yes" Source="$(var.SourceDir)/bin/libvirt-lxc-0.dll"/>
         </Component>
-        <Component Win64="$(var.Win64)" Id="cmp41746D5296A8554D60E68588090F6113" Guid="*">
-          <File Id="filBB3B1264C58072C7D963EE71C7C8B360" KeyPath="yes" Source="$(var.SourceDir)/bin/virsh.exe"/>
+        <Component Win64="$(var.Win64)" Id="cmp6A35F8C52A4B507B42851A24AD85C868" Guid="*">
+          <File Id="fil52B175E431D68283B901AB5030AA95DE" KeyPath="yes" Source="$(var.SourceDir)/bin/libvirt-qemu-0.dll"/>
         </Component>
-        <Component Win64="$(var.Win64)" Id="cmp5A64F65084C4A2F5C65AD2B52DA889C9" Guid="*">
-          <File Id="filB82EDAFC45823931FE9E1B33F0966ABE" KeyPath="yes" Source="$(var.SourceDir)/bin/virt-pki-validate"/>
+        <Component Win64="$(var.Win64)" Id="cmp2E09E66B51106EE873E19C371DE2E694" Guid="*">
+          <File Id="filB2BF6F60FC79F2A1804E5724509BEB96" KeyPath="yes" Source="$(var.SourceDir)/bin/virsh.exe"/>
         </Component>
-        <Component Win64="$(var.Win64)" Id="cmp7B9E754936DA15F9743D74A8E94C70D8" Guid="*">
-          <File Id="fil80C845CB0E92617606CC834A82D33B33" KeyPath="yes" Source="$(var.SourceDir)/bin/virt-xml-validate"/>
+        <Component Win64="$(var.Win64)" Id="cmp07946E550DC94090D1A3349EFDBD9EAA" Guid="*">
+          <File Id="filAEBD28FE76BC936BE90B81346872B6E9" KeyPath="yes" Source="$(var.SourceDir)/bin/virt-admin.exe"/>
+        </Component>
+        <Component Win64="$(var.Win64)" Id="cmp6BD919CAEF03E119E5514442F8249731" Guid="*">
+          <File Id="filCE694064FE4DDCC5CC9ED7844322010B" KeyPath="yes" Source="$(var.SourceDir)/bin/virt-pki-validate"/>
+        </Component>
+        <Component Win64="$(var.Win64)" Id="cmp6F92766364C71DA399B145FE92C625D0" Guid="*">
+          <File Id="filEF539F542FB9B604B2E29B06C6842F98" KeyPath="yes" Source="$(var.SourceDir)/bin/virt-xml-validate"/>
         </Component>
       </Directory>
-      <Directory Id="dirD83B4226BEC776FC90FC7FDA695B987D" Name="etc">
-        <Directory Id="dirD728B334F70784B5FC1C842797CB7F07" Name="libvirt">
-          <Component Win64="$(var.Win64)" Id="cmp7A4376FBC4EFADFC0221F3A660481650" Guid="*">
-            <File Id="filBF43359F51A2331104180D14F5012EC1" KeyPath="yes" Source="$(var.SourceDir)/etc/libvirt/libvirt.conf"/>
+      <Directory Id="dirA57E3DD0E1B6E3578F94A3C1FAF87193" Name="etc">
+        <Directory Id="dir510C6CAE1B3DD7DC1E0CED493AA8BD1A" Name="libvirt">
+          <Component Win64="$(var.Win64)" Id="cmpAFBA563E678976F852E7F9991A2AA3EE" Guid="*">
+            <File Id="fil689513ECD692F9989769B22EC11460C6" KeyPath="yes" Source="$(var.SourceDir)/etc/libvirt/libvirt-admin.conf"/>
+          </Component>
+          <Component Win64="$(var.Win64)" Id="cmpE63C5DEFE7C5DBB0C564E31F85A877B7" Guid="*">
+            <File Id="fil4C0C91DC208FDB29999D75236A5D5515" KeyPath="yes" Source="$(var.SourceDir)/etc/libvirt/libvirt.conf"/>
           </Component>
         </Directory>
       </Directory>
-      <Directory Id="dir6B7E742BF88B8DCC517DD69E974D4C31" Name="share">
-        <Directory Id="dir552859B5435CFBE1ED73BF3D1D6A9E61" Name="libvirt">
-          <Directory Id="dir7365736941D4413E4C5DAE56370B208A" Name="api">
-            <Component Win64="$(var.Win64)" Id="cmp44EA8E9D3CF30D65D363E60D2B8B02B3" Guid="*">
-              <File Id="filA621FB035A77012B0B19023583C93077" KeyPath="yes" Source="$(var.SourceDir)/share/libvirt/api/libvirt-api.xml"/>
+      <Directory Id="dir50D0DB2813136756B58B88ACEEB42E1F" Name="share">
+        <Directory Id="dir440D817B188883C40505E074F7F9ADEC" Name="libvirt">
+          <Directory Id="dirB9FD292AB5D3AD55CC9557FFC5DF5B9A" Name="api">
+            <Component Win64="$(var.Win64)" Id="cmpF6C98C96340763462E87DF06386C2BD5" Guid="*">
+              <File Id="fil9DEFC1B23E1464E6D366A72BE71CA30A" KeyPath="yes" Source="$(var.SourceDir)/share/libvirt/api/libvirt-admin-api.xml"/>
             </Component>
-            <Component Win64="$(var.Win64)" Id="cmp73FE17238BBAAB26C2A6F61430AE3C92" Guid="*">
-              <File Id="filB3D71391BE5CD07F796B9B1E9879CEB4" KeyPath="yes" Source="$(var.SourceDir)/share/libvirt/api/libvirt-qemu-api.xml"/>
+            <Component Win64="$(var.Win64)" Id="cmpD6B62174039DA72B5C804438E0813207" Guid="*">
+              <File Id="filABE14702BBDFFC5F0A02DBC5CA3F4C59" KeyPath="yes" Source="$(var.SourceDir)/share/libvirt/api/libvirt-api.xml"/>
+            </Component>
+            <Component Win64="$(var.Win64)" Id="cmpE05B49BF1631309C004FB75B40ED8A76" Guid="*">
+              <File Id="filA956976EEFADABF1733F68F721CC4969" KeyPath="yes" Source="$(var.SourceDir)/share/libvirt/api/libvirt-lxc-api.xml"/>
+            </Component>
+            <Component Win64="$(var.Win64)" Id="cmp8001B543A8B709399A9FC1AE6DB7A9B4" Guid="*">
+              <File Id="filDD7BE164074EEEF1E128B10F5CA0A52E" KeyPath="yes" Source="$(var.SourceDir)/share/libvirt/api/libvirt-qemu-api.xml"/>
             </Component>
           </Directory>
-          <Directory Id="dir8C187E24AE199B94D942C1CD2DF56BFB" Name="schemas">
-            <Component Win64="$(var.Win64)" Id="cmpE862AF29C99A212EADB63915785585FE" Guid="*">
-              <File Id="fil4959C77CBD26E88883B7C9217D493494" KeyPath="yes" Source="$(var.SourceDir)/share/libvirt/schemas/basictypes.rng"/>
+          <Directory Id="dirE0BC80FDAF194BC7F3D268B4925EAB81" Name="cpu_map">
+            <Component Win64="$(var.Win64)" Id="cmp5FF4D24162AD709A1FFD17E46A849FEF" Guid="*">
+              <File Id="filEC94950A920BD447E93B5205CC5DBFFF" KeyPath="yes" Source="$(var.SourceDir)/share/libvirt/cpu_map/arm_Falkor.xml"/>
             </Component>
-            <Component Win64="$(var.Win64)" Id="cmp4F8200B1C77A38E8AC2D0FCAADC1566F" Guid="*">
-              <File Id="fil9F1C906C8A4F1745091A9AD4CEA62A2B" KeyPath="yes" Source="$(var.SourceDir)/share/libvirt/schemas/capability.rng"/>
+            <Component Win64="$(var.Win64)" Id="cmp9D531299D6DC4CA846440F0C4B2A42F3" Guid="*">
+              <File Id="filC02DAFB6B2D18EE6E17F95C9C0EE4757" KeyPath="yes" Source="$(var.SourceDir)/share/libvirt/cpu_map/arm_Kunpeng-920.xml"/>
             </Component>
-            <Component Win64="$(var.Win64)" Id="cmp2E0117774DAF52384B56F8D79110C7C6" Guid="*">
-              <File Id="filE9B439340CE61622847BEA0FFA289DEC" KeyPath="yes" Source="$(var.SourceDir)/share/libvirt/schemas/domain.rng"/>
+            <Component Win64="$(var.Win64)" Id="cmp2CA20AE22FDF3D930F8B4CB139B1B7E1" Guid="*">
+              <File Id="fil3DE67B387844FBDCA149CDDD8D0B4F4A" KeyPath="yes" Source="$(var.SourceDir)/share/libvirt/cpu_map/arm_ThunderX299xx.xml"/>
             </Component>
-            <Component Win64="$(var.Win64)" Id="cmp26C1A426E9119559ED16E37C516CAFD4" Guid="*">
-              <File Id="filF7EFEE0FE2A892E5844D71B14DD80711" KeyPath="yes" Source="$(var.SourceDir)/share/libvirt/schemas/domaincaps.rng"/>
+            <Component Win64="$(var.Win64)" Id="cmp764FEFDE4026EA2875484D8BC355ECD3" Guid="*">
+              <File Id="fil631918941D84F42163FF4E79E1C4FB17" KeyPath="yes" Source="$(var.SourceDir)/share/libvirt/cpu_map/arm_cortex-a53.xml"/>
             </Component>
-            <Component Win64="$(var.Win64)" Id="cmp421D485FC5A696C778DBD9BC6B028681" Guid="*">
-              <File Id="filDE7E694400FA4E97339DD492C34B51D2" KeyPath="yes" Source="$(var.SourceDir)/share/libvirt/schemas/domaincommon.rng"/>
+            <Component Win64="$(var.Win64)" Id="cmp23700C37812E6272B45E9807B2397807" Guid="*">
+              <File Id="fil31284A256994C6A656720BE361680D68" KeyPath="yes" Source="$(var.SourceDir)/share/libvirt/cpu_map/arm_cortex-a57.xml"/>
             </Component>
-            <Component Win64="$(var.Win64)" Id="cmpFF3455205061737D19CB16030514AA70" Guid="*">
-              <File Id="fil37C96147B256483F55C3BA9568F688D9" KeyPath="yes" Source="$(var.SourceDir)/share/libvirt/schemas/domainsnapshot.rng"/>
+            <Component Win64="$(var.Win64)" Id="cmp484321E2783FDA9084D43CDF0FB063D6" Guid="*">
+              <File Id="filD3E4EDADD5DB627782564DC93B48C37B" KeyPath="yes" Source="$(var.SourceDir)/share/libvirt/cpu_map/arm_cortex-a72.xml"/>
             </Component>
-            <Component Win64="$(var.Win64)" Id="cmpD27D0B9F6FADA360369DB634BCAB2C0F" Guid="*">
-              <File Id="fil4E8E659FF91695713EABE67659956EC1" KeyPath="yes" Source="$(var.SourceDir)/share/libvirt/schemas/interface.rng"/>
+            <Component Win64="$(var.Win64)" Id="cmp078A184D1DC4EF71DE6F9AF81665C40A" Guid="*">
+              <File Id="fil2D9FCFD82A5B58C33AB1ECE237A5B6E3" KeyPath="yes" Source="$(var.SourceDir)/share/libvirt/cpu_map/arm_features.xml"/>
             </Component>
-            <Component Win64="$(var.Win64)" Id="cmpBC1D701F907DAF183D8938C318609913" Guid="*">
-              <File Id="filA42DD601E5005C0443700EC0B7C6B262" KeyPath="yes" Source="$(var.SourceDir)/share/libvirt/schemas/network.rng"/>
+            <Component Win64="$(var.Win64)" Id="cmp49F0B5796EE1AB185F96ADD8120B623A" Guid="*">
+              <File Id="fil98BC4B878C9D507664791F0500C0E3FC" KeyPath="yes" Source="$(var.SourceDir)/share/libvirt/cpu_map/arm_vendors.xml"/>
             </Component>
-            <Component Win64="$(var.Win64)" Id="cmp3D1459C25446A1FA7F879FD65FCA4464" Guid="*">
-              <File Id="fil3D49BAF3CF17EF036659E150E6B04C48" KeyPath="yes" Source="$(var.SourceDir)/share/libvirt/schemas/networkcommon.rng"/>
+            <Component Win64="$(var.Win64)" Id="cmp6F1F5D0A5D308C32928B2166B526493F" Guid="*">
+              <File Id="filDC436532CB33ADE7CB7CCBB04530BE87" KeyPath="yes" Source="$(var.SourceDir)/share/libvirt/cpu_map/index.xml"/>
             </Component>
-            <Component Win64="$(var.Win64)" Id="cmpADB73CBD962904A2BFF44D65FCDA01C7" Guid="*">
-              <File Id="fil4CC2E3B0887594D933E2FA0D415A9CFC" KeyPath="yes" Source="$(var.SourceDir)/share/libvirt/schemas/nodedev.rng"/>
+            <Component Win64="$(var.Win64)" Id="cmp84F361E5924202F50775EB15B40818B9" Guid="*">
+              <File Id="filDF7C3B2AE61D91AD52A12CEF0C720545" KeyPath="yes" Source="$(var.SourceDir)/share/libvirt/cpu_map/ppc64_POWER6.xml"/>
             </Component>
-            <Component Win64="$(var.Win64)" Id="cmp09314B718D7501E43F74D85871FC17CC" Guid="*">
-              <File Id="fil6372307A4DFC6F925DDCB7D35D137A3B" KeyPath="yes" Source="$(var.SourceDir)/share/libvirt/schemas/nwfilter.rng"/>
+            <Component Win64="$(var.Win64)" Id="cmpEBB40F6318D37CD12637AA9F404E0DB1" Guid="*">
+              <File Id="fil296F4D94390083B47DF092727927E0D3" KeyPath="yes" Source="$(var.SourceDir)/share/libvirt/cpu_map/ppc64_POWER7.xml"/>
             </Component>
-            <Component Win64="$(var.Win64)" Id="cmp216B1FCC374A06427A76816AAFD57899" Guid="*">
-              <File Id="fil867A6518157E9B8D12408586C7FB97D0" KeyPath="yes" Source="$(var.SourceDir)/share/libvirt/schemas/secret.rng"/>
+            <Component Win64="$(var.Win64)" Id="cmpC80DAFBC19D89F7B8B389A98711952A1" Guid="*">
+              <File Id="fil9BFE04A5A076247F9C2BF35C8705CF3F" KeyPath="yes" Source="$(var.SourceDir)/share/libvirt/cpu_map/ppc64_POWER8.xml"/>
             </Component>
-            <Component Win64="$(var.Win64)" Id="cmp2BCEDCEC546C15E2542AD438FC60FA26" Guid="*">
-              <File Id="fil2A002A711C33A00876658B2D09F1497F" KeyPath="yes" Source="$(var.SourceDir)/share/libvirt/schemas/storagecommon.rng"/>
+            <Component Win64="$(var.Win64)" Id="cmp763AC6826798B17C38A362F6656E7BA2" Guid="*">
+              <File Id="fil619A65A0D2D66075287753A7204692F2" KeyPath="yes" Source="$(var.SourceDir)/share/libvirt/cpu_map/ppc64_POWER9.xml"/>
             </Component>
-            <Component Win64="$(var.Win64)" Id="cmpECA559285A41600FB62EA60E8D841C43" Guid="*">
-              <File Id="fil00DE9D758124F172981E0D41F5CB232D" KeyPath="yes" Source="$(var.SourceDir)/share/libvirt/schemas/storagepool.rng"/>
+            <Component Win64="$(var.Win64)" Id="cmpFC81DBCD42E965549DBF941A11DA0657" Guid="*">
+              <File Id="filFFF4FA34C17CDA9D3116A7B240CEFB98" KeyPath="yes" Source="$(var.SourceDir)/share/libvirt/cpu_map/ppc64_POWERPC_e5500.xml"/>
             </Component>
-            <Component Win64="$(var.Win64)" Id="cmp15330F42078AB746FC3608E9834126B6" Guid="*">
-              <File Id="fil05C80A1C760140501A1595DCE5C1B87C" KeyPath="yes" Source="$(var.SourceDir)/share/libvirt/schemas/storagevol.rng"/>
+            <Component Win64="$(var.Win64)" Id="cmp81470EBC60302F0BD9641920177EFFE8" Guid="*">
+              <File Id="fil8BD919ABADE70CD39B269B3EBCA2A92D" KeyPath="yes" Source="$(var.SourceDir)/share/libvirt/cpu_map/ppc64_POWERPC_e6500.xml"/>
+            </Component>
+            <Component Win64="$(var.Win64)" Id="cmp3C27DEF69A9D4AB3DE87B59B5C13EA0C" Guid="*">
+              <File Id="fil2B73CFBB75C50F7C07910D2909557C14" KeyPath="yes" Source="$(var.SourceDir)/share/libvirt/cpu_map/ppc64_vendors.xml"/>
+            </Component>
+            <Component Win64="$(var.Win64)" Id="cmpD2CFC215ABB4A92F60083F4A4974E5F1" Guid="*">
+              <File Id="fil66ED7FFD85EBAA517DC1505B5CEFAF23" KeyPath="yes" Source="$(var.SourceDir)/share/libvirt/cpu_map/x86_486.xml"/>
+            </Component>
+            <Component Win64="$(var.Win64)" Id="cmpD0DB9D56931EC587580C5B86C3BCC9B6" Guid="*">
+              <File Id="filF1F0F0E1CDA2E2F7EAE069C0E6A982C3" KeyPath="yes" Source="$(var.SourceDir)/share/libvirt/cpu_map/x86_Broadwell-IBRS.xml"/>
+            </Component>
+            <Component Win64="$(var.Win64)" Id="cmpE14951304B9A35949AA1752FC37C65C5" Guid="*">
+              <File Id="filC515C063AD77438C274873823FD3DD0E" KeyPath="yes" Source="$(var.SourceDir)/share/libvirt/cpu_map/x86_Broadwell-noTSX-IBRS.xml"/>
+            </Component>
+            <Component Win64="$(var.Win64)" Id="cmpE59D45605FE9786D9309688283CB4241" Guid="*">
+              <File Id="filA15115BFE353032C4B16A4CC4BB915EE" KeyPath="yes" Source="$(var.SourceDir)/share/libvirt/cpu_map/x86_Broadwell-noTSX.xml"/>
+            </Component>
+            <Component Win64="$(var.Win64)" Id="cmp5091A3529374718AD0CADF80B2B1A4E3" Guid="*">
+              <File Id="fil4528BDED55D9AB91E8688BAE721ED646" KeyPath="yes" Source="$(var.SourceDir)/share/libvirt/cpu_map/x86_Broadwell.xml"/>
+            </Component>
+            <Component Win64="$(var.Win64)" Id="cmp465DBCC9C96DD54F1A42F93922DC4E3C" Guid="*">
+              <File Id="filAC49D303A095CC423331E4866EC8BAE7" KeyPath="yes" Source="$(var.SourceDir)/share/libvirt/cpu_map/x86_Cascadelake-Server-noTSX.xml"/>
+            </Component>
+            <Component Win64="$(var.Win64)" Id="cmp33E964719AFA03972D074392BCA95607" Guid="*">
+              <File Id="fil6E9B437B51A5C24312C11BBBCB9D9F53" KeyPath="yes" Source="$(var.SourceDir)/share/libvirt/cpu_map/x86_Cascadelake-Server.xml"/>
+            </Component>
+            <Component Win64="$(var.Win64)" Id="cmpD0ACF6DFB31160D89447DC17ECAD5715" Guid="*">
+              <File Id="fil8C4FAC6D136B13EE5418A58C65B2B418" KeyPath="yes" Source="$(var.SourceDir)/share/libvirt/cpu_map/x86_Conroe.xml"/>
+            </Component>
+            <Component Win64="$(var.Win64)" Id="cmp759EC7807C94775D83F89DEB2984B56D" Guid="*">
+              <File Id="filA259594374471EB9DD61894A543C144D" KeyPath="yes" Source="$(var.SourceDir)/share/libvirt/cpu_map/x86_Cooperlake.xml"/>
+            </Component>
+            <Component Win64="$(var.Win64)" Id="cmpE1BD575687B2B2E25C710BE5FAB3B1D5" Guid="*">
+              <File Id="filFC547AD94B09ABE16B067FF404268505" KeyPath="yes" Source="$(var.SourceDir)/share/libvirt/cpu_map/x86_Dhyana.xml"/>
+            </Component>
+            <Component Win64="$(var.Win64)" Id="cmp5A2B4092479A0900307EDFB7C44FCBF3" Guid="*">
+              <File Id="fil177E1AB215AEDF55F347C2A1ED424060" KeyPath="yes" Source="$(var.SourceDir)/share/libvirt/cpu_map/x86_EPYC-IBPB.xml"/>
+            </Component>
+            <Component Win64="$(var.Win64)" Id="cmpADDCD0E2A83225AD19CC8245960E7E3C" Guid="*">
+              <File Id="fil7AC7BFBAEB38D327137ECDE378B71470" KeyPath="yes" Source="$(var.SourceDir)/share/libvirt/cpu_map/x86_EPYC.xml"/>
+            </Component>
+            <Component Win64="$(var.Win64)" Id="cmp9564409F8FB61F11B56D759370A40005" Guid="*">
+              <File Id="fil635933616BA331F60CAD03E33493CA6D" KeyPath="yes" Source="$(var.SourceDir)/share/libvirt/cpu_map/x86_Haswell-IBRS.xml"/>
+            </Component>
+            <Component Win64="$(var.Win64)" Id="cmp1C9759ED0D001102FB19DB3626A63D55" Guid="*">
+              <File Id="filAC0F468D46B2E80224110BDC0F56A8A9" KeyPath="yes" Source="$(var.SourceDir)/share/libvirt/cpu_map/x86_Haswell-noTSX-IBRS.xml"/>
+            </Component>
+            <Component Win64="$(var.Win64)" Id="cmpA5DB4DA173078AC4FEEC78A1B9248ED5" Guid="*">
+              <File Id="fil19E481E4AC919159D96E3487DC726EC7" KeyPath="yes" Source="$(var.SourceDir)/share/libvirt/cpu_map/x86_Haswell-noTSX.xml"/>
+            </Component>
+            <Component Win64="$(var.Win64)" Id="cmp6CEBD65D6081B9F6D045FC6826DC1FD0" Guid="*">
+              <File Id="fil0DD86800BC0BEEA30D8B78CC6A75683C" KeyPath="yes" Source="$(var.SourceDir)/share/libvirt/cpu_map/x86_Haswell.xml"/>
+            </Component>
+            <Component Win64="$(var.Win64)" Id="cmp844858AE88A30BE71D9D5F5B3C6A9FAA" Guid="*">
+              <File Id="filE9C934AE2346B71BF812595A5FBE0B0C" KeyPath="yes" Source="$(var.SourceDir)/share/libvirt/cpu_map/x86_Icelake-Client-noTSX.xml"/>
+            </Component>
+            <Component Win64="$(var.Win64)" Id="cmpA5B03D2F367D21FCAF49969566CC74DF" Guid="*">
+              <File Id="filC7419677CE9ED50C24F5592E8ADA61CB" KeyPath="yes" Source="$(var.SourceDir)/share/libvirt/cpu_map/x86_Icelake-Client.xml"/>
+            </Component>
+            <Component Win64="$(var.Win64)" Id="cmpD60F8B7CA4108740F05D052D0EF0C130" Guid="*">
+              <File Id="filB58115A1C4494006F14ED57FDFE17107" KeyPath="yes" Source="$(var.SourceDir)/share/libvirt/cpu_map/x86_Icelake-Server-noTSX.xml"/>
+            </Component>
+            <Component Win64="$(var.Win64)" Id="cmpB6DA06EDEDB3661D757B9D6562FFE262" Guid="*">
+              <File Id="fil0088AA733FE0F73F567EB4F7FF9747D1" KeyPath="yes" Source="$(var.SourceDir)/share/libvirt/cpu_map/x86_Icelake-Server.xml"/>
+            </Component>
+            <Component Win64="$(var.Win64)" Id="cmpC25F2A08F49F99A47CDECDAB8A7F7AC1" Guid="*">
+              <File Id="fil14E9E8E2EC86E488517715AD48CBEBA7" KeyPath="yes" Source="$(var.SourceDir)/share/libvirt/cpu_map/x86_IvyBridge-IBRS.xml"/>
+            </Component>
+            <Component Win64="$(var.Win64)" Id="cmp4F0AEE3479C4D3C999D53965E12B3E61" Guid="*">
+              <File Id="fil3863E6278E974C6F6C1BA40EAA568769" KeyPath="yes" Source="$(var.SourceDir)/share/libvirt/cpu_map/x86_IvyBridge.xml"/>
+            </Component>
+            <Component Win64="$(var.Win64)" Id="cmp20B907A39445FCFA3C67DF9D57DDE25F" Guid="*">
+              <File Id="fil16948267C59A3FAFA8B8F768A7A89065" KeyPath="yes" Source="$(var.SourceDir)/share/libvirt/cpu_map/x86_Nehalem-IBRS.xml"/>
+            </Component>
+            <Component Win64="$(var.Win64)" Id="cmp9F6661086931C06BBAFEFD563DFC9E8F" Guid="*">
+              <File Id="fil6764B2C800DE0D0F03C081C89064C5CB" KeyPath="yes" Source="$(var.SourceDir)/share/libvirt/cpu_map/x86_Nehalem.xml"/>
+            </Component>
+            <Component Win64="$(var.Win64)" Id="cmpB44877A2066DE42C256AE9E1C080788E" Guid="*">
+              <File Id="filEDC288A511E82C0700033F1A723935B7" KeyPath="yes" Source="$(var.SourceDir)/share/libvirt/cpu_map/x86_Opteron_G1.xml"/>
+            </Component>
+            <Component Win64="$(var.Win64)" Id="cmp9693FE67760DC2D04B01CDB1F141AF54" Guid="*">
+              <File Id="fil039CD29A46B51AF2E42FE25930180F2C" KeyPath="yes" Source="$(var.SourceDir)/share/libvirt/cpu_map/x86_Opteron_G2.xml"/>
+            </Component>
+            <Component Win64="$(var.Win64)" Id="cmp2138F27C8465C4D4855C6FBF6597D813" Guid="*">
+              <File Id="fil81F87EE2E4994970FACF7E6E0D107B65" KeyPath="yes" Source="$(var.SourceDir)/share/libvirt/cpu_map/x86_Opteron_G3.xml"/>
+            </Component>
+            <Component Win64="$(var.Win64)" Id="cmp4C3649CC18901CCFB2414D79111EC46E" Guid="*">
+              <File Id="fil776AA7B46A6DB7588E8E359F36503067" KeyPath="yes" Source="$(var.SourceDir)/share/libvirt/cpu_map/x86_Opteron_G4.xml"/>
+            </Component>
+            <Component Win64="$(var.Win64)" Id="cmp72BD782E8D7D761FC188B349863BD8E4" Guid="*">
+              <File Id="fil54EF2EEF24A34D45F3049D2BD0D882FA" KeyPath="yes" Source="$(var.SourceDir)/share/libvirt/cpu_map/x86_Opteron_G5.xml"/>
+            </Component>
+            <Component Win64="$(var.Win64)" Id="cmp12ED44FC07B5AC17D3C4A0D9F35DB783" Guid="*">
+              <File Id="fil49728CF9E905863B1FC7B9A3355C104D" KeyPath="yes" Source="$(var.SourceDir)/share/libvirt/cpu_map/x86_Penryn.xml"/>
+            </Component>
+            <Component Win64="$(var.Win64)" Id="cmpB5FFAFEEF869D583C4543137DBE83253" Guid="*">
+              <File Id="fil52D8A3277DF0C6675C316D1495851182" KeyPath="yes" Source="$(var.SourceDir)/share/libvirt/cpu_map/x86_SandyBridge-IBRS.xml"/>
+            </Component>
+            <Component Win64="$(var.Win64)" Id="cmp06EC1B71AF3191C223CFFC3FC72DEC6B" Guid="*">
+              <File Id="filFD72EB860068FB5AC244DBABDDAFAD11" KeyPath="yes" Source="$(var.SourceDir)/share/libvirt/cpu_map/x86_SandyBridge.xml"/>
+            </Component>
+            <Component Win64="$(var.Win64)" Id="cmp6E5505399967D23CDFD68B5D9EFDC8B2" Guid="*">
+              <File Id="filB52BD036F8AEF763D91A674938C8CE2E" KeyPath="yes" Source="$(var.SourceDir)/share/libvirt/cpu_map/x86_Skylake-Client-IBRS.xml"/>
+            </Component>
+            <Component Win64="$(var.Win64)" Id="cmp3BA9C7EA9E50A105617399F66268A466" Guid="*">
+              <File Id="filBE419CE1B256E8B420920243A61A20BE" KeyPath="yes" Source="$(var.SourceDir)/share/libvirt/cpu_map/x86_Skylake-Client-noTSX-IBRS.xml"/>
+            </Component>
+            <Component Win64="$(var.Win64)" Id="cmp3F4CA48086453310C5F27593084A3435" Guid="*">
+              <File Id="fil6AB28539A146801B5BDDDC5207F8750E" KeyPath="yes" Source="$(var.SourceDir)/share/libvirt/cpu_map/x86_Skylake-Client.xml"/>
+            </Component>
+            <Component Win64="$(var.Win64)" Id="cmpA1D82B9D9F31DC8F5611D31AC1080FA2" Guid="*">
+              <File Id="filD7B9187282FC7DF832D1E2269ACA412C" KeyPath="yes" Source="$(var.SourceDir)/share/libvirt/cpu_map/x86_Skylake-Server-IBRS.xml"/>
+            </Component>
+            <Component Win64="$(var.Win64)" Id="cmpF2A01A2C5B1501760D9652FF03A806EA" Guid="*">
+              <File Id="fil744453F72B41ADA9B360B3A448AB534B" KeyPath="yes" Source="$(var.SourceDir)/share/libvirt/cpu_map/x86_Skylake-Server-noTSX-IBRS.xml"/>
+            </Component>
+            <Component Win64="$(var.Win64)" Id="cmp1E862C1CEF2408E834A7BB0F4D4A0917" Guid="*">
+              <File Id="fil7D0BAF8EF1A63AE1921C986D598A00C7" KeyPath="yes" Source="$(var.SourceDir)/share/libvirt/cpu_map/x86_Skylake-Server.xml"/>
+            </Component>
+            <Component Win64="$(var.Win64)" Id="cmpF7BA3219F749827C5E71D7021644C17B" Guid="*">
+              <File Id="filABA61325A827539F50659733513CE392" KeyPath="yes" Source="$(var.SourceDir)/share/libvirt/cpu_map/x86_Westmere-IBRS.xml"/>
+            </Component>
+            <Component Win64="$(var.Win64)" Id="cmp4C533BCF190A61F87602EBC9A942AF2C" Guid="*">
+              <File Id="fil2A691BF165E24216D66FD49B8216759E" KeyPath="yes" Source="$(var.SourceDir)/share/libvirt/cpu_map/x86_Westmere.xml"/>
+            </Component>
+            <Component Win64="$(var.Win64)" Id="cmp77D042869F4928F023051E8B7AFF3035" Guid="*">
+              <File Id="filEA58BDDEBF527B7AAB48DEDC59E00DD9" KeyPath="yes" Source="$(var.SourceDir)/share/libvirt/cpu_map/x86_athlon.xml"/>
+            </Component>
+            <Component Win64="$(var.Win64)" Id="cmpCCEBC3DFEC3397929064BB6666A2F70C" Guid="*">
+              <File Id="filA9FA2E466059BD7E077E2B7576BC41BD" KeyPath="yes" Source="$(var.SourceDir)/share/libvirt/cpu_map/x86_core2duo.xml"/>
+            </Component>
+            <Component Win64="$(var.Win64)" Id="cmp76ED0974AAB3BF4A02694CBA65F4C4B6" Guid="*">
+              <File Id="fil39E457003FD407E70D85290592AB9167" KeyPath="yes" Source="$(var.SourceDir)/share/libvirt/cpu_map/x86_coreduo.xml"/>
+            </Component>
+            <Component Win64="$(var.Win64)" Id="cmpBC9390D6A10CE74FBFCBC1AA81B130DD" Guid="*">
+              <File Id="fil0CA2659D7B6223CF5387F16352F0784E" KeyPath="yes" Source="$(var.SourceDir)/share/libvirt/cpu_map/x86_cpu64-rhel5.xml"/>
+            </Component>
+            <Component Win64="$(var.Win64)" Id="cmp4BD4D0F9F8B343611ADEE557F4DB9E35" Guid="*">
+              <File Id="fil2FE0B586758B32330C94ECD12E3BEC74" KeyPath="yes" Source="$(var.SourceDir)/share/libvirt/cpu_map/x86_cpu64-rhel6.xml"/>
+            </Component>
+            <Component Win64="$(var.Win64)" Id="cmp9AB981D718CE5F40F11A7EFADD96E9DE" Guid="*">
+              <File Id="fil3F507C21A5CADCEE1E1CD3E7FD6DC2D4" KeyPath="yes" Source="$(var.SourceDir)/share/libvirt/cpu_map/x86_features.xml"/>
+            </Component>
+            <Component Win64="$(var.Win64)" Id="cmp2B67A862F48577AAAF4A3BA997FB09CA" Guid="*">
+              <File Id="filA99EB754E0C7FDBF2555E6407F833D51" KeyPath="yes" Source="$(var.SourceDir)/share/libvirt/cpu_map/x86_kvm32.xml"/>
+            </Component>
+            <Component Win64="$(var.Win64)" Id="cmp3D28E95237C8B20D519B4B68DB370322" Guid="*">
+              <File Id="filED301BD5F2501736B7F3DD7F86DDA054" KeyPath="yes" Source="$(var.SourceDir)/share/libvirt/cpu_map/x86_kvm64.xml"/>
+            </Component>
+            <Component Win64="$(var.Win64)" Id="cmpFC484FE9E174D510624057FF9B8ACD75" Guid="*">
+              <File Id="fil55B474B37BA768046D44BEA783381BA1" KeyPath="yes" Source="$(var.SourceDir)/share/libvirt/cpu_map/x86_n270.xml"/>
+            </Component>
+            <Component Win64="$(var.Win64)" Id="cmp3D7B3BB9B0D1980AE0E1BBC01514DAB1" Guid="*">
+              <File Id="fil8AA25E78E6ED9D939FA17DBB0CA04EB7" KeyPath="yes" Source="$(var.SourceDir)/share/libvirt/cpu_map/x86_pentium.xml"/>
+            </Component>
+            <Component Win64="$(var.Win64)" Id="cmpFA0A0E464D2895D47E3ED840F77005AF" Guid="*">
+              <File Id="fil2D41B68CF53E82DF7FD408F41372E253" KeyPath="yes" Source="$(var.SourceDir)/share/libvirt/cpu_map/x86_pentium2.xml"/>
+            </Component>
+            <Component Win64="$(var.Win64)" Id="cmpDE6EA77E20B2AF62107954218B65D091" Guid="*">
+              <File Id="fil50B26FABDEA955724A962D978735671D" KeyPath="yes" Source="$(var.SourceDir)/share/libvirt/cpu_map/x86_pentium3.xml"/>
+            </Component>
+            <Component Win64="$(var.Win64)" Id="cmp3454ED0F3494360BCCB22B8E3F481317" Guid="*">
+              <File Id="fil9D9666E39A1B84CDFA2E87B38B3D25DA" KeyPath="yes" Source="$(var.SourceDir)/share/libvirt/cpu_map/x86_pentiumpro.xml"/>
+            </Component>
+            <Component Win64="$(var.Win64)" Id="cmpFD799E0650FC487B85D2B11D833C9517" Guid="*">
+              <File Id="fil57A55E20E9F582C41D24B1DF9E1D6FB4" KeyPath="yes" Source="$(var.SourceDir)/share/libvirt/cpu_map/x86_phenom.xml"/>
+            </Component>
+            <Component Win64="$(var.Win64)" Id="cmp9E54CFB628703783D74D2FA9293FC418" Guid="*">
+              <File Id="fil20CBAFE5EB09D6D116CE107B30F54455" KeyPath="yes" Source="$(var.SourceDir)/share/libvirt/cpu_map/x86_qemu32.xml"/>
+            </Component>
+            <Component Win64="$(var.Win64)" Id="cmp5ABFFDF8F70AD41D51C6B9B249EC529A" Guid="*">
+              <File Id="fil316469CC3D0780586DAA470457D236EE" KeyPath="yes" Source="$(var.SourceDir)/share/libvirt/cpu_map/x86_qemu64.xml"/>
+            </Component>
+            <Component Win64="$(var.Win64)" Id="cmpE3FAC7320D2751188114A32123281383" Guid="*">
+              <File Id="filF3496D2BD34D4340381AEAC7A956539F" KeyPath="yes" Source="$(var.SourceDir)/share/libvirt/cpu_map/x86_vendors.xml"/>
+            </Component>
+          </Directory>
+          <Directory Id="dir8B8868CE2E9E5541807ED4F60287E516" Name="schemas">
+            <Component Win64="$(var.Win64)" Id="cmp0EE976CFB0619DA7F35A821E44360DF3" Guid="*">
+              <File Id="filD0EFA82B4617396DB820D28414C4CD99" KeyPath="yes" Source="$(var.SourceDir)/share/libvirt/schemas/basictypes.rng"/>
+            </Component>
+            <Component Win64="$(var.Win64)" Id="cmpBBB9E633746836DB25CB33D189ED2724" Guid="*">
+              <File Id="fil5EDFC041DAAB561C51FE1800466424B8" KeyPath="yes" Source="$(var.SourceDir)/share/libvirt/schemas/capability.rng"/>
+            </Component>
+            <Component Win64="$(var.Win64)" Id="cmp46211CA469DCE93B3457DFE648F7D7FF" Guid="*">
+              <File Id="filB2BA27FB2BF086311844AA598CF018D1" KeyPath="yes" Source="$(var.SourceDir)/share/libvirt/schemas/cputypes.rng"/>
+            </Component>
+            <Component Win64="$(var.Win64)" Id="cmp4695BA014F800F83E9AB493918DA2400" Guid="*">
+              <File Id="filC5A79160108EA6DB8549CF3295C5F0B3" KeyPath="yes" Source="$(var.SourceDir)/share/libvirt/schemas/domain.rng"/>
+            </Component>
+            <Component Win64="$(var.Win64)" Id="cmp15CE61469761EA220C99BACB7BBFAD1A" Guid="*">
+              <File Id="filB9B4ADD5AACE9A1099F7FB6E3C200829" KeyPath="yes" Source="$(var.SourceDir)/share/libvirt/schemas/domainbackup.rng"/>
+            </Component>
+            <Component Win64="$(var.Win64)" Id="cmp7ADFB5D18F6353A6828A70EC4B0F06A5" Guid="*">
+              <File Id="fil881AAECE8BF2BFAE6D242FFDCF257BB5" KeyPath="yes" Source="$(var.SourceDir)/share/libvirt/schemas/domaincaps.rng"/>
+            </Component>
+            <Component Win64="$(var.Win64)" Id="cmp209D2AEB9100AED853DF65EF547202B6" Guid="*">
+              <File Id="fil22EB1266A0E6DF487679EA739811A15A" KeyPath="yes" Source="$(var.SourceDir)/share/libvirt/schemas/domaincheckpoint.rng"/>
+            </Component>
+            <Component Win64="$(var.Win64)" Id="cmp3BBC9EBE31D605EBC5D985D8FF604598" Guid="*">
+              <File Id="filD543C5A805E4C71572AFBE89DE270DD2" KeyPath="yes" Source="$(var.SourceDir)/share/libvirt/schemas/domaincommon.rng"/>
+            </Component>
+            <Component Win64="$(var.Win64)" Id="cmp621039DA3CF1E8B53A7A79A2E171CC00" Guid="*">
+              <File Id="fil2BF6564AECFEC13EF19F9B9A1D533375" KeyPath="yes" Source="$(var.SourceDir)/share/libvirt/schemas/domainsnapshot.rng"/>
+            </Component>
+            <Component Win64="$(var.Win64)" Id="cmpD5B7951089586C51ADA5E387C60A858A" Guid="*">
+              <File Id="fil8DF0FB79720B6EECE2FE9D5CF7AD9E3E" KeyPath="yes" Source="$(var.SourceDir)/share/libvirt/schemas/interface.rng"/>
+            </Component>
+            <Component Win64="$(var.Win64)" Id="cmp65172F389701980D6B96A3B6DB48DACB" Guid="*">
+              <File Id="filA33D03ECF58D77900556B9FB8B11A915" KeyPath="yes" Source="$(var.SourceDir)/share/libvirt/schemas/network.rng"/>
+            </Component>
+            <Component Win64="$(var.Win64)" Id="cmpC9330B1C34E515C474975D49F16C4D78" Guid="*">
+              <File Id="fil405A49ED45C7D67B170B1DBA0F7F5A8B" KeyPath="yes" Source="$(var.SourceDir)/share/libvirt/schemas/networkcommon.rng"/>
+            </Component>
+            <Component Win64="$(var.Win64)" Id="cmpF1ECC60A0BBE0D68E3C7751C29B37DB7" Guid="*">
+              <File Id="fil955C6C05F0B8419BF2BFFA2ABB125008" KeyPath="yes" Source="$(var.SourceDir)/share/libvirt/schemas/networkport.rng"/>
+            </Component>
+            <Component Win64="$(var.Win64)" Id="cmpC4E3A3DD92910A14AA5D590C19A0A8FA" Guid="*">
+              <File Id="filC1B66BBDF66A8E3F5F661C57ED08F849" KeyPath="yes" Source="$(var.SourceDir)/share/libvirt/schemas/nodedev.rng"/>
+            </Component>
+            <Component Win64="$(var.Win64)" Id="cmpCA3E439B9C1FBC5A931A8AAF0B47EDEE" Guid="*">
+              <File Id="filD2A1468E3FC91D0B227B44B322CBAC47" KeyPath="yes" Source="$(var.SourceDir)/share/libvirt/schemas/nwfilter.rng"/>
+            </Component>
+            <Component Win64="$(var.Win64)" Id="cmpBFFDA7E63CA5EDC9D44FEDD28CBCDC74" Guid="*">
+              <File Id="fil179F8566EE8EC8F6D45A19B9994FD03E" KeyPath="yes" Source="$(var.SourceDir)/share/libvirt/schemas/nwfilter_params.rng"/>
+            </Component>
+            <Component Win64="$(var.Win64)" Id="cmpEEDC663391040F22424B369BD6FA7F1A" Guid="*">
+              <File Id="filDB17C712BEAB0F485C8ED69F1440F4B2" KeyPath="yes" Source="$(var.SourceDir)/share/libvirt/schemas/nwfilterbinding.rng"/>
+            </Component>
+            <Component Win64="$(var.Win64)" Id="cmpB17A4F98E618D9D187884D0CE8F0A01C" Guid="*">
+              <File Id="filFFD00A6D078F0520D58C1661DE206DA8" KeyPath="yes" Source="$(var.SourceDir)/share/libvirt/schemas/secret.rng"/>
+            </Component>
+            <Component Win64="$(var.Win64)" Id="cmp2F832FA1E2370794EEFB978AC24C9855" Guid="*">
+              <File Id="fil4F5FFFEAEEA907F42CC4E164CA653BA7" KeyPath="yes" Source="$(var.SourceDir)/share/libvirt/schemas/storagecommon.rng"/>
+            </Component>
+            <Component Win64="$(var.Win64)" Id="cmp5B9F386A5C36A8C6C3C86AE45D4C7CF5" Guid="*">
+              <File Id="fil7504F353671D23ABA4229EE7AC9A81EB" KeyPath="yes" Source="$(var.SourceDir)/share/libvirt/schemas/storagepool.rng"/>
+            </Component>
+            <Component Win64="$(var.Win64)" Id="cmp0B2BA496EDFBB7ADA9BC1062D9931A87" Guid="*">
+              <File Id="fil94D02AB795EC37343386D4ADF279D8AA" KeyPath="yes" Source="$(var.SourceDir)/share/libvirt/schemas/storagepoolcaps.rng"/>
+            </Component>
+            <Component Win64="$(var.Win64)" Id="cmpB882182E4FE470F1745A38A03AEB3E5D" Guid="*">
+              <File Id="fil4D11F7C061334C86A05A429101E22937" KeyPath="yes" Source="$(var.SourceDir)/share/libvirt/schemas/storagevol.rng"/>
+            </Component>
+          </Directory>
+          <Component Win64="$(var.Win64)" Id="cmpEF975D8CF66B1BEE6FECF22FF3E63CD7" Guid="*">
+            <File Id="fil66887C8CE529DA6C32A871748EC59CCE" KeyPath="yes" Source="$(var.SourceDir)/share/libvirt/test-screenshot.png"/>
+          </Component>
+        </Directory>
+        <Directory Id="dir06F8E7F60F225DC2E8E81EDDFA94863B" Name="locale">
+          <Directory Id="dir95CF89987D87B412458481F4DA8FD1BB" Name="as">
+            <Directory Id="dirA09E029D573FA9499D3EAB59E9EE815F" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmpC83E67A0761E4B0A8DEEF653FEE9ED3D" Guid="*">
+                <File Id="fil96F3FB3A619EB2411D43A39601A90EEF" KeyPath="yes" Source="$(var.SourceDir)/share/locale/as/LC_MESSAGES/libvirt.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dirF093A175D6366BA54B51E61725A64FEF" Name="bg">
+            <Directory Id="dirEDB1E5EE798588E88BA947F963E0B1FB" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp4DD808DA599E7DAF403B0523DE6D9777" Guid="*">
+                <File Id="filE62712865EA0CD9240863D751357B6AB" KeyPath="yes" Source="$(var.SourceDir)/share/locale/bg/LC_MESSAGES/libvirt.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir127DB1ADD3FA9202B9FD1B3E12381D9B" Name="bn_IN">
+            <Directory Id="dir7127C75A5DC4A68921A93098EEFD8021" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp08F00AB6B3B5D175392DAD2FEA7657B3" Guid="*">
+                <File Id="fil1768A3315E01D92C8369D4600BE1AEB0" KeyPath="yes" Source="$(var.SourceDir)/share/locale/bn_IN/LC_MESSAGES/libvirt.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dirDDF980668D620EEA8C92C38D5DADD401" Name="bs">
+            <Directory Id="dir90EE2A1CAD6E1ABB067CF35417EB77D0" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp628939F7E04270A3CFACD9FEAA916E79" Guid="*">
+                <File Id="fil907B531B0003070D430FFFF60095A0A3" KeyPath="yes" Source="$(var.SourceDir)/share/locale/bs/LC_MESSAGES/libvirt.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir30902214B7C408C4D2C834A3C45660B5" Name="ca">
+            <Directory Id="dirAE77BB055A72624BCAAF5BA4F6487605" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmpA361A04FAE3BDDDC9EDB135863A7655A" Guid="*">
+                <File Id="fil4FA6BD3FBA9EEFA6523FAF236D5665B1" KeyPath="yes" Source="$(var.SourceDir)/share/locale/ca/LC_MESSAGES/libvirt.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir52A62FBF7294E6D1703E6784D365A413" Name="cs">
+            <Directory Id="dirBD2D464C81F0505290476D80DD2F82F4" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp5376DAB5D6444D40C2B8923EB7E7A16E" Guid="*">
+                <File Id="fil5A10CCD6AAE9AD54C595BBF5FF689CC9" KeyPath="yes" Source="$(var.SourceDir)/share/locale/cs/LC_MESSAGES/libvirt.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir803A05A8EED8EA47FDE01C67D2063EE2" Name="da">
+            <Directory Id="dirB937010D25CEF9DEB76AFA3610DB4136" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp6A28421CFF9B22557A8AF1673D20D5DA" Guid="*">
+                <File Id="fil4031D7EDE247961BA5B4E3B1265814AC" KeyPath="yes" Source="$(var.SourceDir)/share/locale/da/LC_MESSAGES/libvirt.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir9DB60404E4C914434B7731DD122B6AEA" Name="de">
+            <Directory Id="dirADAE67E6672AC5B42BCADF2A3180291D" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp8E402E1233A8DAA6ABE4630970045CEF" Guid="*">
+                <File Id="filFE461981A442A70DFB7359FC0521516E" KeyPath="yes" Source="$(var.SourceDir)/share/locale/de/LC_MESSAGES/libvirt.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dirCE70B1F35D6465A409157E32816E9121" Name="el">
+            <Directory Id="dirC9F9E43E4CA7CB88EE97E8F44BF58FDE" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp10C169A8E5653D4A153BB0063DD35156" Guid="*">
+                <File Id="fil679C9FA372637F909280F2AF12FE68FB" KeyPath="yes" Source="$(var.SourceDir)/share/locale/el/LC_MESSAGES/libvirt.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dirE03C56F083EEB19E893A9383AE8D6273" Name="en_GB">
+            <Directory Id="dirF7DFBDC2E7A21F6470F098F6BC6B4522" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp91A0F5AB3A0D76B46F31ECBD4E1D01D4" Guid="*">
+                <File Id="filEB31517165DD1E2E8E34DBBDE16BE3ED" KeyPath="yes" Source="$(var.SourceDir)/share/locale/en_GB/LC_MESSAGES/libvirt.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir5AA668FBDB8E20DA1A632DC373660DE5" Name="es">
+            <Directory Id="dir20E46057D85C3DAEEC1A870B17D3A7DA" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp3AE43C9D3C7E4A1EF51F47D35F4A61F6" Guid="*">
+                <File Id="filD4E48B7776D3AFFCA9D75F2151B6A09E" KeyPath="yes" Source="$(var.SourceDir)/share/locale/es/LC_MESSAGES/libvirt.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dirCFECA32B2BD74DFC4708DCDF75412B5B" Name="fi">
+            <Directory Id="dir27555AF74E62C69C952DCBFB32B92DC1" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp9397222B80708969DAD54C9E0606E361" Guid="*">
+                <File Id="fil2EB82A082D2A0B5FDBE8C5460BD3B744" KeyPath="yes" Source="$(var.SourceDir)/share/locale/fi/LC_MESSAGES/libvirt.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dirA537DA324F121DBCDAD605FF37B79B32" Name="fr">
+            <Directory Id="dir098DB613E9AEF1928542CEAA8E9C06C7" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp38AD254BFDBD44254CEF46693F1CD677" Guid="*">
+                <File Id="fil00FA5230A9CAD9D79FD36AFD206F88B7" KeyPath="yes" Source="$(var.SourceDir)/share/locale/fr/LC_MESSAGES/libvirt.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dirB04A555CAA700AE7C97AA21526E0CB17" Name="gu">
+            <Directory Id="dirFA650E352452014C50E633A73AC63FDB" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp2741B859F0A39E3D36001502874254F5" Guid="*">
+                <File Id="filD9252FA77A3A4DD7F3E544D821B26A8B" KeyPath="yes" Source="$(var.SourceDir)/share/locale/gu/LC_MESSAGES/libvirt.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir878F8C5E95C570C6771CB6AADB6BDFEF" Name="hi">
+            <Directory Id="dir63980A876F5F19D5F1A260AEA64A63B8" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp39AD9781A84197F7D189159CEB9B721D" Guid="*">
+                <File Id="fil5B706A2445E41150393FCD3F815333C2" KeyPath="yes" Source="$(var.SourceDir)/share/locale/hi/LC_MESSAGES/libvirt.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dirCA6EE194301B57266C4D48D3A0A7AAED" Name="hu">
+            <Directory Id="dir29FDF6D1952E9AC47648D9E649E8ADD5" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp0A1EA843B384408A70D001A2315F034F" Guid="*">
+                <File Id="filFDC28A2EA42DB78F357C2C8B1092D2C8" KeyPath="yes" Source="$(var.SourceDir)/share/locale/hu/LC_MESSAGES/libvirt.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir4CDF8EEDAF1E583E9105F3F1ED5CAA19" Name="id">
+            <Directory Id="dir2C158CB1A80912D9992D2346AC27E017" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmpA4043A5C880D39240BE040BEB24D34C8" Guid="*">
+                <File Id="fil11BC955848FE38E2269C8F721F3A7715" KeyPath="yes" Source="$(var.SourceDir)/share/locale/id/LC_MESSAGES/libvirt.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir3E5B83893CE1CBC1DD43FA532B905B3E" Name="it">
+            <Directory Id="dir1A3ABBD2BF21C23E80CBD1B2E259F406" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp4F9BC59B1C64585490A03B1B5652D147" Guid="*">
+                <File Id="fil7ABB3BF5C09CF0F3C396CD7058FFE146" KeyPath="yes" Source="$(var.SourceDir)/share/locale/it/LC_MESSAGES/libvirt.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dirA5DF840AF9BDEE0B851FE2ABBDFED40F" Name="ja">
+            <Directory Id="dir233D9697D1360E3AB4B8AF31FC3793AB" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp8F783F0D7A0D9CD43EE5338EDE33A8F7" Guid="*">
+                <File Id="filC0FAF8DE030B575630A35AFABF29F10B" KeyPath="yes" Source="$(var.SourceDir)/share/locale/ja/LC_MESSAGES/libvirt.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dirC0B3D6EACEB99C350844E4B1F0E94C1A" Name="kn">
+            <Directory Id="dir92D4BB773BA17BC9E61A80488927FE6F" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp81ACFDB6CBBC6232000889FCE7804529" Guid="*">
+                <File Id="fil94C0B6263FDEA8760D84141867E0ADC8" KeyPath="yes" Source="$(var.SourceDir)/share/locale/kn/LC_MESSAGES/libvirt.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dirE0673C81FBCB1B8FD6A977EC6451DAB7" Name="ko">
+            <Directory Id="dir26FC958F7C3405F113C30B5044CCDC0A" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp97F7E8D70F19197FAA3C2546C3B11190" Guid="*">
+                <File Id="fil17C77D7B21FC5A64C38398F49072E983" KeyPath="yes" Source="$(var.SourceDir)/share/locale/ko/LC_MESSAGES/libvirt.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dirD154A11D15944DBAEA57A11865F3E7D6" Name="mk">
+            <Directory Id="dir70947FA1ED978993FA14D96CFEB88270" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmpDEEA59E34977DB654ECEDE6A8799F899" Guid="*">
+                <File Id="filF062E25FD37366C01E31B72C3F44241A" KeyPath="yes" Source="$(var.SourceDir)/share/locale/mk/LC_MESSAGES/libvirt.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir680523873470D28989E6BC90A540560B" Name="ml">
+            <Directory Id="dir2D1B52EF315C794C263050E26E50A381" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp912B028D0F7B1DB0F768835E77BB4E72" Guid="*">
+                <File Id="fil43A0F21C32D320EDDD045DB8AC3809DF" KeyPath="yes" Source="$(var.SourceDir)/share/locale/ml/LC_MESSAGES/libvirt.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir2C83D12B32877CF042CE9C32E818A8AC" Name="mr">
+            <Directory Id="dir225F2E300A0714FDDC588131D6403728" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmpB5617991D2C58E6595F3D2BB7CBC7533" Guid="*">
+                <File Id="fil0881B6B083355EACD7CF39E3DC771D0E" KeyPath="yes" Source="$(var.SourceDir)/share/locale/mr/LC_MESSAGES/libvirt.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir3AAABD7BBAB725D280195BBEF81824CD" Name="ms">
+            <Directory Id="dir632438190FDC671BF3F0B357BF921622" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp3DB8E3E276492FF85F2C8ABDAAF8CB7A" Guid="*">
+                <File Id="filDBF7339D761458E1C619BEB31699C6FE" KeyPath="yes" Source="$(var.SourceDir)/share/locale/ms/LC_MESSAGES/libvirt.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir0C1A7264CAE12E7E1674B2AB42789ABA" Name="nb">
+            <Directory Id="dir66165D1CA870B7AFF1CDA496697EA51F" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmpDEB28C4CD8A6991E88F867387F73904F" Guid="*">
+                <File Id="fil30D547772BABF74722468DADDFC9DE39" KeyPath="yes" Source="$(var.SourceDir)/share/locale/nb/LC_MESSAGES/libvirt.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir1EDFBA23F0CA032DA4636BC7DE3BD0F7" Name="nl">
+            <Directory Id="dir4569EE4950D46650DD3BB0DCB6E64F03" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmpC1AB0509A244104D35373F0A11AC0444" Guid="*">
+                <File Id="fil7F86398C2797723EF7E29D73BB9963A5" KeyPath="yes" Source="$(var.SourceDir)/share/locale/nl/LC_MESSAGES/libvirt.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir82B22BD7EA02D01AEBFD8521A08A2E65" Name="or">
+            <Directory Id="dir85E5DAF66887DF25A75BF5562FBBA3F4" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmpDC182C7773180239CAADB3FCF0E33660" Guid="*">
+                <File Id="fil146D37B32179520BF75F97E7E29F97D7" KeyPath="yes" Source="$(var.SourceDir)/share/locale/or/LC_MESSAGES/libvirt.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir8C2EF3D8DA94A083954D9880C35A19F3" Name="pa">
+            <Directory Id="dir36FCF8B4620F20DAE39A4BFBA2AC6DCF" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmpCC2C425F29C3D54413A45DEC22206CC0" Guid="*">
+                <File Id="filE2A44785BF20D649C7F943B81C74FA70" KeyPath="yes" Source="$(var.SourceDir)/share/locale/pa/LC_MESSAGES/libvirt.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir7601521D4266EDFA8EE3171811157E0F" Name="pl">
+            <Directory Id="dirD9C94FA99576B4495390F44F2E370A1E" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmpC4007D1C18019861D70674A42FDF44BD" Guid="*">
+                <File Id="fil60FEB478E3C4D1B128327D6C8441B588" KeyPath="yes" Source="$(var.SourceDir)/share/locale/pl/LC_MESSAGES/libvirt.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dirBF89280D6102080B693983E4CCDEEFEF" Name="pt">
+            <Directory Id="dirEB676E6050333E2E463DAE5BA9CF4040" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp4DD0A0BB65685ACAC9FC61B0CE552F93" Guid="*">
+                <File Id="fil0562B18A113062C73E2986B6F4A045A9" KeyPath="yes" Source="$(var.SourceDir)/share/locale/pt/LC_MESSAGES/libvirt.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir19DFD7795D123A13F2EEB21B13D7B3A2" Name="pt_BR">
+            <Directory Id="dir57A1A065129A6CA78C8996D3BA7F9F18" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp991E1DFDF21715B8C2C9679501E8B70C" Guid="*">
+                <File Id="fil186F7BE8F1B3BBD77D7A1395381699DE" KeyPath="yes" Source="$(var.SourceDir)/share/locale/pt_BR/LC_MESSAGES/libvirt.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir14940AC7511A51B8B849EE33FFA65F92" Name="ru">
+            <Directory Id="dir52372EF9038D855A55E5F07006AB7392" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp698D10D6774C2FDA996A3B55B2BB357B" Guid="*">
+                <File Id="fil8355326FD810872CA703FA028F5E84BC" KeyPath="yes" Source="$(var.SourceDir)/share/locale/ru/LC_MESSAGES/libvirt.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir50FA015B0B9000812BD29CBE47ECE590" Name="sr">
+            <Directory Id="dirC0312996BA0BFAAC84BAAA8F6EC67193" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp9A9284BD3C78C622EBB2F43F40465DA3" Guid="*">
+                <File Id="fil319E9A70951D2CF4DCD8DC6C915E46B3" KeyPath="yes" Source="$(var.SourceDir)/share/locale/sr/LC_MESSAGES/libvirt.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir45D11E57BC6C13098D16EF0ECB4B35C8" Name="sr@latin">
+            <Directory Id="dirD9A02E78133E44155DB5E95218D019A2" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmpF488CEEB91A5A0E85B29020ABA6C131A" Guid="*">
+                <File Id="filAE4677470A0E0F4E50218EF2880A3FB4" KeyPath="yes" Source="$(var.SourceDir)/share/locale/sr@latin/LC_MESSAGES/libvirt.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir9097467C889D6FF4611555BF504AE0E9" Name="sv">
+            <Directory Id="dir074DE8B6115FAC0BBCFF57B2A5EC33D9" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmpFEDA957D43C6B72F618074DDEA9D59BB" Guid="*">
+                <File Id="fil88D6CC40DD0B518CFE9A462C3888C4BA" KeyPath="yes" Source="$(var.SourceDir)/share/locale/sv/LC_MESSAGES/libvirt.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir001AFEED6B70CF238155D11FC833661D" Name="ta">
+            <Directory Id="dirD96600E9AEF5C6F88F1D7482715D062A" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmpF18093D51E8621FDBD568C6C35072D99" Guid="*">
+                <File Id="filC8A928F881D8FEC05BD2A419B104F948" KeyPath="yes" Source="$(var.SourceDir)/share/locale/ta/LC_MESSAGES/libvirt.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir27F0C8E970DABA9F05915585A9F8DBFE" Name="te">
+            <Directory Id="dir6F79534CD128F8214F40CE75E492DB08" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmpCECA9439C90DA8DAEC851893BBDEAC44" Guid="*">
+                <File Id="fil6A6F0CE91BA845436DC00C56D2887FBD" KeyPath="yes" Source="$(var.SourceDir)/share/locale/te/LC_MESSAGES/libvirt.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir1EBF7C7E46A214E3FA9ED5D8ACC026A1" Name="uk">
+            <Directory Id="dir2F8CF5D3CD1A1A0D310B06B002F534C1" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp99B3C15C6032192078A9BB01A8A0111B" Guid="*">
+                <File Id="fil8C0E5EC51B06CAF27D414044B963AB21" KeyPath="yes" Source="$(var.SourceDir)/share/locale/uk/LC_MESSAGES/libvirt.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir9EF6DB1477DBA8642885D3F8171D2C83" Name="vi">
+            <Directory Id="dir9E6AC8E61ACE4A3DB86942D6AF50DD53" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmpFEA160A64AA3AC845A17BBA104123616" Guid="*">
+                <File Id="fil99D1BFCAFC0DEB90DFF08D089A5E88A7" KeyPath="yes" Source="$(var.SourceDir)/share/locale/vi/LC_MESSAGES/libvirt.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dirDCB11E0B70A5ECA851F46216BFB3DD9B" Name="zh_CN">
+            <Directory Id="dir7FEEC2A99431DD7755F56E930532B257" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp8C4FEA4A640FFAAB2F663873AAA3D515" Guid="*">
+                <File Id="fil0AB55073BDDED8BB15BE6C2CAE4CA124" KeyPath="yes" Source="$(var.SourceDir)/share/locale/zh_CN/LC_MESSAGES/libvirt.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir05F0777CF2FD17FAAAE669F6D350C354" Name="zh_TW">
+            <Directory Id="dir4262A03681B8104F7B17F909225F823C" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmpE5173309CEFC3FC9C7FE4A78E5143D60" Guid="*">
+                <File Id="fil61A0B9D07AC5F338C463013FE7833F35" KeyPath="yes" Source="$(var.SourceDir)/share/locale/zh_TW/LC_MESSAGES/libvirt.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+        </Directory>
+        <Directory Id="dirABE3AD42BA2D235C0DB2FCFD2055B02E" Name="man">
+          <Directory Id="dir0845CD1AC062382BE85147DA95237551" Name="man1">
+            <Component Win64="$(var.Win64)" Id="cmpA88D4ABB6B3D8B81252ACB7E9548962F" Guid="*">
+              <File Id="fil627589118296FC5307A93752EB95CBF2" KeyPath="yes" Source="$(var.SourceDir)/share/man/man1/virsh.1"/>
+            </Component>
+            <Component Win64="$(var.Win64)" Id="cmpA3B2BD936EFCB20F20D59F8D5869D445" Guid="*">
+              <File Id="fil838868625DDF6A1C14FF1BA84E06486D" KeyPath="yes" Source="$(var.SourceDir)/share/man/man1/virt-admin.1"/>
+            </Component>
+            <Component Win64="$(var.Win64)" Id="cmpC99CCAEEAEA3E387261036CA703C6993" Guid="*">
+              <File Id="filEE2073B8F44ED260F41E4290F71AA2F1" KeyPath="yes" Source="$(var.SourceDir)/share/man/man1/virt-pki-validate.1"/>
+            </Component>
+            <Component Win64="$(var.Win64)" Id="cmpD97631EF5ADBC1CEAA13977FA12AE6A2" Guid="*">
+              <File Id="fil83038C17197C9D6E6CBC34E4E13A2F31" KeyPath="yes" Source="$(var.SourceDir)/share/man/man1/virt-xml-validate.1"/>
+            </Component>
+          </Directory>
+          <Directory Id="dirC3095AFF4C3C298F1CC25ECC7971E7A8" Name="man7">
+            <Component Win64="$(var.Win64)" Id="cmpB5BEC91E1FEC896919E66E51C85EAD90" Guid="*">
+              <File Id="fil4B06A8B9F02B4287275796966DAC9503" KeyPath="yes" Source="$(var.SourceDir)/share/man/man7/virkeycode-atset1.7"/>
+            </Component>
+            <Component Win64="$(var.Win64)" Id="cmpD2FB0C59F199C717EF42D852352ECC97" Guid="*">
+              <File Id="filA5C25AD60E0F2D4F958B187333E76B78" KeyPath="yes" Source="$(var.SourceDir)/share/man/man7/virkeycode-atset2.7"/>
+            </Component>
+            <Component Win64="$(var.Win64)" Id="cmp03DB23FC86F4EC68DB5D1307CEBFDCEF" Guid="*">
+              <File Id="fil5F9EB94AAEEDE17406A241A025C1C6E1" KeyPath="yes" Source="$(var.SourceDir)/share/man/man7/virkeycode-atset3.7"/>
+            </Component>
+            <Component Win64="$(var.Win64)" Id="cmp6596A748AF4119D991ABD2EF93A79F0B" Guid="*">
+              <File Id="filD162D5BAB247A440FBCDD271C0F709AD" KeyPath="yes" Source="$(var.SourceDir)/share/man/man7/virkeycode-linux.7"/>
+            </Component>
+            <Component Win64="$(var.Win64)" Id="cmp3ADCCC12B9F06DF6F50321DE92552840" Guid="*">
+              <File Id="fil1CA12E5B419D38ABA653F00D3D5F8B8A" KeyPath="yes" Source="$(var.SourceDir)/share/man/man7/virkeycode-osx.7"/>
+            </Component>
+            <Component Win64="$(var.Win64)" Id="cmp1419A8A979C8D13DE81A56BB3486A043" Guid="*">
+              <File Id="filF839DBDFA3D0C1C60263C60B8DE65FED" KeyPath="yes" Source="$(var.SourceDir)/share/man/man7/virkeycode-qnum.7"/>
+            </Component>
+            <Component Win64="$(var.Win64)" Id="cmp4C61B66BE6E4DFDDAB84477F802367D0" Guid="*">
+              <File Id="fil4199B3CED04EA9E17BCB9E29FD7429A0" KeyPath="yes" Source="$(var.SourceDir)/share/man/man7/virkeycode-usb.7"/>
+            </Component>
+            <Component Win64="$(var.Win64)" Id="cmp2C92106C4A91A99E637E4664914967B2" Guid="*">
+              <File Id="filC859F17D0202D5ED44CE19363C8C26BF" KeyPath="yes" Source="$(var.SourceDir)/share/man/man7/virkeycode-win32.7"/>
+            </Component>
+            <Component Win64="$(var.Win64)" Id="cmp9BE4F3F3B23C56E8F7754346A8FFA8FA" Guid="*">
+              <File Id="filB294E9322E188D4832B113A61E197054" KeyPath="yes" Source="$(var.SourceDir)/share/man/man7/virkeycode-xtkbd.7"/>
+            </Component>
+            <Component Win64="$(var.Win64)" Id="cmpC2B11B7A4F902A5C50682D3426149C7B" Guid="*">
+              <File Id="fil6BC043D74507EF6450DBEDBE76890D9D" KeyPath="yes" Source="$(var.SourceDir)/share/man/man7/virkeyname-linux.7"/>
+            </Component>
+            <Component Win64="$(var.Win64)" Id="cmp4AAFF0EA2D6D904F8EC3A78208F5645D" Guid="*">
+              <File Id="filDECD5DA4DAF4DF6CD0E0E349D1274B01" KeyPath="yes" Source="$(var.SourceDir)/share/man/man7/virkeyname-osx.7"/>
+            </Component>
+            <Component Win64="$(var.Win64)" Id="cmpCD9C5ACAB33EC0E405D7BCADB0514B53" Guid="*">
+              <File Id="fil18FFECCC64C06D7C5E91991C6790C9B5" KeyPath="yes" Source="$(var.SourceDir)/share/man/man7/virkeyname-win32.7"/>
             </Component>
           </Directory>
         </Directory>
-        <Directory Id="dir7B039A7AA6D28042486D7A807F91CF56" Name="locale">
-          <Directory Id="dir9B4832BE5C43E7355BDE4DEF7E492379" Name="ar">
-            <Directory Id="dirFB711D459E482DBCCAF0EABAFF41FA17" Name="LC_MESSAGES">
-              <Component Win64="$(var.Win64)" Id="cmp25D64463F8C1AD54949C1C7ED2DF6338" Guid="*">
-                <File Id="fil64DF87CB3C7A8901D87024E2E4F8EEE8" KeyPath="yes" Source="$(var.SourceDir)/share/locale/ar/LC_MESSAGES/libvirt.mo"/>
-              </Component>
-            </Directory>
-          </Directory>
-          <Directory Id="dirEFB3CFB34363E4F0CD8314E686D40325" Name="as">
-            <Directory Id="dirD3ED2DC8F2B163DA6AB588DF3E2C4A42" Name="LC_MESSAGES">
-              <Component Win64="$(var.Win64)" Id="cmp6A7B42668EC869869A112431C4D52C6E" Guid="*">
-                <File Id="filEF2D078B35CE623891915B8CEE456922" KeyPath="yes" Source="$(var.SourceDir)/share/locale/as/LC_MESSAGES/libvirt.mo"/>
-              </Component>
-            </Directory>
-          </Directory>
-          <Directory Id="dir484CD91F4BBC4553C7AC9658CD3D00C1" Name="bg">
-            <Directory Id="dirED65256D9A0F7AFDE84EB92DC114F223" Name="LC_MESSAGES">
-              <Component Win64="$(var.Win64)" Id="cmp53B6EEC856CEC8D3F8E6031ECFCDE465" Guid="*">
-                <File Id="filC0B42FE9E7A58C7E10C5C2F0E343648D" KeyPath="yes" Source="$(var.SourceDir)/share/locale/bg/LC_MESSAGES/libvirt.mo"/>
-              </Component>
-            </Directory>
-          </Directory>
-          <Directory Id="dir574D3D2E2567A19A1E9A2B38A8796672" Name="bn">
-            <Directory Id="dirF3FA18415CECE26557392FEAA1D5ACF4" Name="LC_MESSAGES">
-              <Component Win64="$(var.Win64)" Id="cmp1083755EDD4EDB5F6DE749D288E02FDC" Guid="*">
-                <File Id="filCAEEF80CCA9155E55B5399BD574358BD" KeyPath="yes" Source="$(var.SourceDir)/share/locale/bn/LC_MESSAGES/libvirt.mo"/>
-              </Component>
-            </Directory>
-          </Directory>
-          <Directory Id="dir965F34226CA6F57C03A78AB5566B28B9" Name="bn_IN">
-            <Directory Id="dirEF1A8F0366E3C59A6655F1E4FC885782" Name="LC_MESSAGES">
-              <Component Win64="$(var.Win64)" Id="cmpB88BD0C9926E10192C6604151E479817" Guid="*">
-                <File Id="filDB1733E602CDF4623320C454ECD94292" KeyPath="yes" Source="$(var.SourceDir)/share/locale/bn_IN/LC_MESSAGES/libvirt.mo"/>
-              </Component>
-            </Directory>
-          </Directory>
-          <Directory Id="dir99CE773B620930CD0352FF52E40B8493" Name="bs">
-            <Directory Id="dir9246502A0B613B70F8CC535DAC7F1E92" Name="LC_MESSAGES">
-              <Component Win64="$(var.Win64)" Id="cmp16BAEB32326AA70D341BF9C1CD22F427" Guid="*">
-                <File Id="fil00CBF94502BBE4CACBEC53618A6644D0" KeyPath="yes" Source="$(var.SourceDir)/share/locale/bs/LC_MESSAGES/libvirt.mo"/>
-              </Component>
-            </Directory>
-          </Directory>
-          <Directory Id="dirDDAF90364FF40B8411D411962397A6CC" Name="ca">
-            <Directory Id="dirFE17AD8852DA5385A86CB7EF55243435" Name="LC_MESSAGES">
-              <Component Win64="$(var.Win64)" Id="cmpAB86D949B16ECF32275E21A1525B1743" Guid="*">
-                <File Id="fil564548A5BB5254AE7C1241489BCCA82C" KeyPath="yes" Source="$(var.SourceDir)/share/locale/ca/LC_MESSAGES/libvirt.mo"/>
-              </Component>
-            </Directory>
-          </Directory>
-          <Directory Id="dir39A2DD9EBD95ECEE27CB436593363774" Name="cs">
-            <Directory Id="dirC0FC7D6DDC721487373D1FA6B51A98C8" Name="LC_MESSAGES">
-              <Component Win64="$(var.Win64)" Id="cmp258929F9F05315081F10A3F0CA36A424" Guid="*">
-                <File Id="fil1B9179D9E272803D1685971FFCEC6532" KeyPath="yes" Source="$(var.SourceDir)/share/locale/cs/LC_MESSAGES/libvirt.mo"/>
-              </Component>
-            </Directory>
-          </Directory>
-          <Directory Id="dir091279EA3838B67CD4739335BAEA4C9B" Name="cy">
-            <Directory Id="dirEC0C038E17B49180989A8B517ADDE610" Name="LC_MESSAGES">
-              <Component Win64="$(var.Win64)" Id="cmp594C28E69BDA7591383CC4A3AAE50EB4" Guid="*">
-                <File Id="fil2FFEFA1152874433A86966965C4B8F46" KeyPath="yes" Source="$(var.SourceDir)/share/locale/cy/LC_MESSAGES/libvirt.mo"/>
-              </Component>
-            </Directory>
-          </Directory>
-          <Directory Id="dir53FB796AED86DE23376FC24070FA93B9" Name="da">
-            <Directory Id="dirFB8C56907E33A44871E1F4339A7F30BE" Name="LC_MESSAGES">
-              <Component Win64="$(var.Win64)" Id="cmpD3B8CC4B16B460D36585A4B59F06A180" Guid="*">
-                <File Id="fil152CA6AD23A00C87D117DFC9CF87B28A" KeyPath="yes" Source="$(var.SourceDir)/share/locale/da/LC_MESSAGES/libvirt.mo"/>
-              </Component>
-            </Directory>
-          </Directory>
-          <Directory Id="dir73C863E6570A09A099E7178E9B77A8B0" Name="de">
-            <Directory Id="dir3DDC0269D60C9955F59CA9DF2736C8D3" Name="LC_MESSAGES">
-              <Component Win64="$(var.Win64)" Id="cmp03A792D5F40876122A543B198A8EF5F0" Guid="*">
-                <File Id="fil7F0C0DB5F7A4D501E5B39C64BB49BAAA" KeyPath="yes" Source="$(var.SourceDir)/share/locale/de/LC_MESSAGES/libvirt.mo"/>
-              </Component>
-            </Directory>
-          </Directory>
-          <Directory Id="dirC051DE574AE3038795EE5925339E0A14" Name="el">
-            <Directory Id="dir46E42460EA24C187EA5AF1F5757AA780" Name="LC_MESSAGES">
-              <Component Win64="$(var.Win64)" Id="cmp1CFA7CD4654AFB499A2BAE0EF70737DE" Guid="*">
-                <File Id="filA9C7F5DCBE66A528D1E53957C71F0C27" KeyPath="yes" Source="$(var.SourceDir)/share/locale/el/LC_MESSAGES/libvirt.mo"/>
-              </Component>
-            </Directory>
-          </Directory>
-          <Directory Id="dir3F4AEC6EBF9FB86EC387ED9AB16F0C1E" Name="en_GB">
-            <Directory Id="dirCDAD63460CE5E5B26B0BFDB5D75A7B77" Name="LC_MESSAGES">
-              <Component Win64="$(var.Win64)" Id="cmp4097A30F9200911EB7E1A944ECADDB17" Guid="*">
-                <File Id="fil55A3CC2CCBCAA11497397D269A8DB24B" KeyPath="yes" Source="$(var.SourceDir)/share/locale/en_GB/LC_MESSAGES/libvirt.mo"/>
-              </Component>
-            </Directory>
-          </Directory>
-          <Directory Id="dir4DFF40384C894D0049C2BBA9D53288A6" Name="es">
-            <Directory Id="dirE549A6DD11C1A9F015E0CB887AFB9518" Name="LC_MESSAGES">
-              <Component Win64="$(var.Win64)" Id="cmpAFF49BD34DC2F41522CF247DA3C7DB1E" Guid="*">
-                <File Id="fil661B5B670983B0E76DAF8E2053A2FFC3" KeyPath="yes" Source="$(var.SourceDir)/share/locale/es/LC_MESSAGES/libvirt.mo"/>
-              </Component>
-            </Directory>
-          </Directory>
-          <Directory Id="dirC066EEEAFD3DAD9C8384A41FD4772180" Name="et">
-            <Directory Id="dir05A946744A2120216A393A0FC3416530" Name="LC_MESSAGES">
-              <Component Win64="$(var.Win64)" Id="cmpB2BD4A34DEB7955C13109FDE5753CDD5" Guid="*">
-                <File Id="fil7F5A62E86A7554504107783DDFD86803" KeyPath="yes" Source="$(var.SourceDir)/share/locale/et/LC_MESSAGES/libvirt.mo"/>
-              </Component>
-            </Directory>
-          </Directory>
-          <Directory Id="dirF66ABAFD59395F98CF71D24DF4B06039" Name="fi">
-            <Directory Id="dir50AB3B4CC0CDB0B1644410218050787C" Name="LC_MESSAGES">
-              <Component Win64="$(var.Win64)" Id="cmp2600A73C63130E0BD2564E5A8FE4FBA1" Guid="*">
-                <File Id="fil0914E0F5683ABE0F5AC62AF73FDAA6A0" KeyPath="yes" Source="$(var.SourceDir)/share/locale/fi/LC_MESSAGES/libvirt.mo"/>
-              </Component>
-            </Directory>
-          </Directory>
-          <Directory Id="dirD5538C8F85F9CBC9C0D1385241209745" Name="fr">
-            <Directory Id="dir00CFD444BD7F0470C2F348DFE78AF765" Name="LC_MESSAGES">
-              <Component Win64="$(var.Win64)" Id="cmp01C8E991692EA4BFF12F0AC0DBD3B536" Guid="*">
-                <File Id="filBD2E8D09265ED07B09A77414BCB8517D" KeyPath="yes" Source="$(var.SourceDir)/share/locale/fr/LC_MESSAGES/libvirt.mo"/>
-              </Component>
-            </Directory>
-          </Directory>
-          <Directory Id="dir18AB583E279D0197A8E61D242AAB9578" Name="gl">
-            <Directory Id="dir1260DB8079392E0FA38E0001E327DD01" Name="LC_MESSAGES">
-              <Component Win64="$(var.Win64)" Id="cmp3E314C89DB8FFEE53C732136137CD84B" Guid="*">
-                <File Id="filB6A3EA0932A988A94F40EA8477072ADB" KeyPath="yes" Source="$(var.SourceDir)/share/locale/gl/LC_MESSAGES/libvirt.mo"/>
-              </Component>
-            </Directory>
-          </Directory>
-          <Directory Id="dir2733B4F9745381FBA7A9DEDB1890A692" Name="gu">
-            <Directory Id="dirA70548208F9A5B74BBD5B3D8941C5AB5" Name="LC_MESSAGES">
-              <Component Win64="$(var.Win64)" Id="cmp4137F7310322BC67DAB9FA075F5C3EF5" Guid="*">
-                <File Id="filC9CF0FE0097F5D1BE85195336741C65A" KeyPath="yes" Source="$(var.SourceDir)/share/locale/gu/LC_MESSAGES/libvirt.mo"/>
-              </Component>
-            </Directory>
-          </Directory>
-          <Directory Id="dirD0253DD992221EC07192ADDB9422C858" Name="he">
-            <Directory Id="dir1002D1D511502390076CDE04EF3AB0BE" Name="LC_MESSAGES">
-              <Component Win64="$(var.Win64)" Id="cmpE0E1338180A3ECECA1E5367016D48316" Guid="*">
-                <File Id="filF8176542BD71F8835658DE81C1238A6B" KeyPath="yes" Source="$(var.SourceDir)/share/locale/he/LC_MESSAGES/libvirt.mo"/>
-              </Component>
-            </Directory>
-          </Directory>
-          <Directory Id="dirD3E0369B3D26D706DB8DBA9FEC09B342" Name="hi">
-            <Directory Id="dir6C5D74797A30D67C9C46458B1FBAF373" Name="LC_MESSAGES">
-              <Component Win64="$(var.Win64)" Id="cmp90E06CE92071B37400F2E4C7672F488F" Guid="*">
-                <File Id="fil446A6C700DDC548F5E116932C66494B0" KeyPath="yes" Source="$(var.SourceDir)/share/locale/hi/LC_MESSAGES/libvirt.mo"/>
-              </Component>
-            </Directory>
-          </Directory>
-          <Directory Id="dirC6859FE7B51DAF5B75B8CBC9D8166E00" Name="hu">
-            <Directory Id="dirE9F877254A2562B6ADE41A787AC6B002" Name="LC_MESSAGES">
-              <Component Win64="$(var.Win64)" Id="cmpA37EADDED97FA3BBF58E818F514DF24C" Guid="*">
-                <File Id="fil492AE491CADDAEF705F571603EB51912" KeyPath="yes" Source="$(var.SourceDir)/share/locale/hu/LC_MESSAGES/libvirt.mo"/>
-              </Component>
-            </Directory>
-          </Directory>
-          <Directory Id="dir9BED5D981D1381AB2EB1E1C89AFD5EC3" Name="id">
-            <Directory Id="dirA08A530A6792A7430F6B32574301BBCE" Name="LC_MESSAGES">
-              <Component Win64="$(var.Win64)" Id="cmpD89B030C8DB620DD692F792206C78E60" Guid="*">
-                <File Id="filCBC0A859E2F9846FD0242869B6D05786" KeyPath="yes" Source="$(var.SourceDir)/share/locale/id/LC_MESSAGES/libvirt.mo"/>
-              </Component>
-            </Directory>
-          </Directory>
-          <Directory Id="dir915FC96816B39BB78FC7F67283296CDC" Name="is">
-            <Directory Id="dirE55D4428895F58BD399D15D8F7CD9306" Name="LC_MESSAGES">
-              <Component Win64="$(var.Win64)" Id="cmp3E42D715B5A8A6D6E89D919FA9B5C08D" Guid="*">
-                <File Id="fil1AEB95781090386051190655CF9D247E" KeyPath="yes" Source="$(var.SourceDir)/share/locale/is/LC_MESSAGES/libvirt.mo"/>
-              </Component>
-            </Directory>
-          </Directory>
-          <Directory Id="dirC3F695D3C9E0D16CD32FEFEBFDE81E3E" Name="it">
-            <Directory Id="dirA69056F67CC83E24A47F21FFA2123D36" Name="LC_MESSAGES">
-              <Component Win64="$(var.Win64)" Id="cmpAE743BD36DBC5A4CF0D93D8D7AD05E98" Guid="*">
-                <File Id="fil303C8E4F069AC4D6FC8C4C42B56B6830" KeyPath="yes" Source="$(var.SourceDir)/share/locale/it/LC_MESSAGES/libvirt.mo"/>
-              </Component>
-            </Directory>
-          </Directory>
-          <Directory Id="dirE8F5D7ADCD3EE2104840152DC64DED3C" Name="ja">
-            <Directory Id="dir3B34F7AA81B77BDF1B40A860B30461FB" Name="LC_MESSAGES">
-              <Component Win64="$(var.Win64)" Id="cmpCB68D78482853E298D7782670E4FCD9D" Guid="*">
-                <File Id="fil8DBC90657C14AC2A5D32F90AD3764B74" KeyPath="yes" Source="$(var.SourceDir)/share/locale/ja/LC_MESSAGES/libvirt.mo"/>
-              </Component>
-            </Directory>
-          </Directory>
-          <Directory Id="dirBDB3B4C01BB76380350BE7CE3C79FE9F" Name="ka">
-            <Directory Id="dirD0B5F8C429D6CB5DC45CE4F8CA9CEE16" Name="LC_MESSAGES">
-              <Component Win64="$(var.Win64)" Id="cmp77C6E349CA8167207D61A00CBE090FE7" Guid="*">
-                <File Id="filF0F12D9EB5D21656DF3E004BFC6D2873" KeyPath="yes" Source="$(var.SourceDir)/share/locale/ka/LC_MESSAGES/libvirt.mo"/>
-              </Component>
-            </Directory>
-          </Directory>
-          <Directory Id="dir65BEDC9A5531C12008CA19F73B45C5F0" Name="kn">
-            <Directory Id="dir668C673BEE3D1984E50F47CBD720715A" Name="LC_MESSAGES">
-              <Component Win64="$(var.Win64)" Id="cmp409FBFBE4A15910E2E1ACD018E2AC446" Guid="*">
-                <File Id="filCC7B0D63798375A2DB7AFD88E57F07AA" KeyPath="yes" Source="$(var.SourceDir)/share/locale/kn/LC_MESSAGES/libvirt.mo"/>
-              </Component>
-            </Directory>
-          </Directory>
-          <Directory Id="dir9BF5F7E0A04347B8B0536A3C73A632B8" Name="ko">
-            <Directory Id="dir0932819A3E71CE67F42518F07A4D8846" Name="LC_MESSAGES">
-              <Component Win64="$(var.Win64)" Id="cmpD95E9CFD9518121AAB268801C36AC1B5" Guid="*">
-                <File Id="filD3538628D561A9EF03ECEDCE95DDEAAF" KeyPath="yes" Source="$(var.SourceDir)/share/locale/ko/LC_MESSAGES/libvirt.mo"/>
-              </Component>
-            </Directory>
-          </Directory>
-          <Directory Id="dir5AA77F254ABD0FCC96EE9B45385906B9" Name="lt">
-            <Directory Id="dir9DE9A5F1F7F4C0DF6E1E404626701DCE" Name="LC_MESSAGES">
-              <Component Win64="$(var.Win64)" Id="cmp0E06CC43E903C84E0339F8A1D563DF20" Guid="*">
-                <File Id="fil9AA5F2EB184AADBC119081F2793C113D" KeyPath="yes" Source="$(var.SourceDir)/share/locale/lt/LC_MESSAGES/libvirt.mo"/>
-              </Component>
-            </Directory>
-          </Directory>
-          <Directory Id="dirBE5C262C6135BBF3E041FA839DB2D3E4" Name="lv">
-            <Directory Id="dir3EA9409172CD537D38128CAF560E9008" Name="LC_MESSAGES">
-              <Component Win64="$(var.Win64)" Id="cmp0CAF179658DC0C99556AF1AF2A677CCC" Guid="*">
-                <File Id="filA1E8E6728D19A23B895FBCFD9586C542" KeyPath="yes" Source="$(var.SourceDir)/share/locale/lv/LC_MESSAGES/libvirt.mo"/>
-              </Component>
-            </Directory>
-          </Directory>
-          <Directory Id="dir97E86D6C63CCDFC3D50779338ED105BE" Name="mk">
-            <Directory Id="dir8493E24A6F3DE733A4836FA07B19E89A" Name="LC_MESSAGES">
-              <Component Win64="$(var.Win64)" Id="cmpE2B25E38419FF4DD2663AC57F1A790C3" Guid="*">
-                <File Id="fil04B4CE3ECF8796C8151520C9FC47A431" KeyPath="yes" Source="$(var.SourceDir)/share/locale/mk/LC_MESSAGES/libvirt.mo"/>
-              </Component>
-            </Directory>
-          </Directory>
-          <Directory Id="dir8636A75EF816CEBA78928A701115D0A8" Name="ml">
-            <Directory Id="dir525F4661459D6783DB72570968C46B35" Name="LC_MESSAGES">
-              <Component Win64="$(var.Win64)" Id="cmpA78BDDB41CC73BABF7F286CCCBB8C3B3" Guid="*">
-                <File Id="fil3DE987178F1677D7794C528B1A749E27" KeyPath="yes" Source="$(var.SourceDir)/share/locale/ml/LC_MESSAGES/libvirt.mo"/>
-              </Component>
-            </Directory>
-          </Directory>
-          <Directory Id="dir72BC41036065FEFC1A9FF161885EBDDD" Name="mr">
-            <Directory Id="dir0C90E0DE475C72CBC1FBAE0F501F7F4B" Name="LC_MESSAGES">
-              <Component Win64="$(var.Win64)" Id="cmp7A641A3F3ABD781C805EAFC281509582" Guid="*">
-                <File Id="fil9A6EB2FD8A8603BE160C7F249B6B4754" KeyPath="yes" Source="$(var.SourceDir)/share/locale/mr/LC_MESSAGES/libvirt.mo"/>
-              </Component>
-            </Directory>
-          </Directory>
-          <Directory Id="dir0899E7924151E7255444CC9DCD2D39AE" Name="ms">
-            <Directory Id="dirE0B801A3EB1919E51A6DDF430AB89BC7" Name="LC_MESSAGES">
-              <Component Win64="$(var.Win64)" Id="cmp01E5AF2CDD78A7E4BFCF74B132B81B17" Guid="*">
-                <File Id="fil900838031737ED85460771FC240065D6" KeyPath="yes" Source="$(var.SourceDir)/share/locale/ms/LC_MESSAGES/libvirt.mo"/>
-              </Component>
-            </Directory>
-          </Directory>
-          <Directory Id="dir207B37EFAF42CFC9C0BB6A3329E41085" Name="nb">
-            <Directory Id="dir4B087852B3C3D6E917568B9135F92A6A" Name="LC_MESSAGES">
-              <Component Win64="$(var.Win64)" Id="cmp9C35E07BB0F131656646B7AF32820038" Guid="*">
-                <File Id="filF816ED69ACD8D0CB16D23851E4CABF28" KeyPath="yes" Source="$(var.SourceDir)/share/locale/nb/LC_MESSAGES/libvirt.mo"/>
-              </Component>
-            </Directory>
-          </Directory>
-          <Directory Id="dir7AEA8286435A15BF35F808B7B6487770" Name="nl">
-            <Directory Id="dir09201B7DAD919DBA55887478A3B73764" Name="LC_MESSAGES">
-              <Component Win64="$(var.Win64)" Id="cmp424BB8733909F999573DCA6A34B51C90" Guid="*">
-                <File Id="filF0A6AE2B8B0F9C60F014EF8AF9AEA158" KeyPath="yes" Source="$(var.SourceDir)/share/locale/nl/LC_MESSAGES/libvirt.mo"/>
-              </Component>
-            </Directory>
-          </Directory>
-          <Directory Id="dir68E48F000E142A21FF52BB6974156946" Name="nn">
-            <Directory Id="dir289A375BFC5D29A938A0D3A3299082FC" Name="LC_MESSAGES">
-              <Component Win64="$(var.Win64)" Id="cmp12BF2FA883C157F39666994392CFA9CF" Guid="*">
-                <File Id="filA356736F72FB7111974EF0D99E7DBCD4" KeyPath="yes" Source="$(var.SourceDir)/share/locale/nn/LC_MESSAGES/libvirt.mo"/>
-              </Component>
-            </Directory>
-          </Directory>
-          <Directory Id="dir51B3EFC5F68A7127CC96E66F3D00C286" Name="nso">
-            <Directory Id="dirA99113991016A1B3FF05CCA2ACEEE258" Name="LC_MESSAGES">
-              <Component Win64="$(var.Win64)" Id="cmp537F3FCE1D27FC82D3ADF1B1CB4D0934" Guid="*">
-                <File Id="filDF47524CF57A35C23537DAD222B2C46B" KeyPath="yes" Source="$(var.SourceDir)/share/locale/nso/LC_MESSAGES/libvirt.mo"/>
-              </Component>
-            </Directory>
-          </Directory>
-          <Directory Id="dir9F8378A23F6811398B4D74433C27433E" Name="or">
-            <Directory Id="dirA9EBB87EA8DD3C9285DDF07AAEF44754" Name="LC_MESSAGES">
-              <Component Win64="$(var.Win64)" Id="cmpED70BE7199F0D72F2DAE300F63A95B92" Guid="*">
-                <File Id="fil04BF9720C68C0530E86DF5E0FE2EE73D" KeyPath="yes" Source="$(var.SourceDir)/share/locale/or/LC_MESSAGES/libvirt.mo"/>
-              </Component>
-            </Directory>
-          </Directory>
-          <Directory Id="dir85D5B09F45A884186BB7BDC97E8F526B" Name="pa">
-            <Directory Id="dir2C0683988EE8060BFF6E8AC7655820B6" Name="LC_MESSAGES">
-              <Component Win64="$(var.Win64)" Id="cmp9E67361E267888064FD2386EA4A77495" Guid="*">
-                <File Id="fil9F5C5583462DFBDEB559CEE5CAC49A2A" KeyPath="yes" Source="$(var.SourceDir)/share/locale/pa/LC_MESSAGES/libvirt.mo"/>
-              </Component>
-            </Directory>
-          </Directory>
-          <Directory Id="dir86FF47BFD0CBC36700976644865E7805" Name="pl">
-            <Directory Id="dir15126F7F1D31BD7EB7141AE97473FE6D" Name="LC_MESSAGES">
-              <Component Win64="$(var.Win64)" Id="cmp21A0EFF20298756478CA39B76A995978" Guid="*">
-                <File Id="filB955D90BBD21A0E00ABE7FB4475F19FF" KeyPath="yes" Source="$(var.SourceDir)/share/locale/pl/LC_MESSAGES/libvirt.mo"/>
-              </Component>
-            </Directory>
-          </Directory>
-          <Directory Id="dir2D239883E43F18A12305E1991E92254D" Name="pt">
-            <Directory Id="dir9BE0E6E18C44431D2EA944A31309F090" Name="LC_MESSAGES">
-              <Component Win64="$(var.Win64)" Id="cmpC84040B4DED466FB462D6EDAE01558F8" Guid="*">
-                <File Id="fil9CE1EBD8704F2E5E49DADE0884CFF3AA" KeyPath="yes" Source="$(var.SourceDir)/share/locale/pt/LC_MESSAGES/libvirt.mo"/>
-              </Component>
-            </Directory>
-          </Directory>
-          <Directory Id="dir353684449F832380BC8BEF6A9EA527EB" Name="pt_BR">
-            <Directory Id="dir7FCC8093CB542E9F4567971187E2BD59" Name="LC_MESSAGES">
-              <Component Win64="$(var.Win64)" Id="cmpCEA09522273BE275788DE95169DBBA6F" Guid="*">
-                <File Id="filE45A8DFB061E3CB8431BA3272AEEC398" KeyPath="yes" Source="$(var.SourceDir)/share/locale/pt_BR/LC_MESSAGES/libvirt.mo"/>
-              </Component>
-            </Directory>
-          </Directory>
-          <Directory Id="dir46350962A1782DC071DEF4AA9223D90A" Name="ro">
-            <Directory Id="dirFE03C7E140CB74FEAA9EA139BD911480" Name="LC_MESSAGES">
-              <Component Win64="$(var.Win64)" Id="cmpCF1E7E10FE00E4FA3567DEE80B34507E" Guid="*">
-                <File Id="fil3FD3778713CC0B5F408A23AF34A7DE14" KeyPath="yes" Source="$(var.SourceDir)/share/locale/ro/LC_MESSAGES/libvirt.mo"/>
-              </Component>
-            </Directory>
-          </Directory>
-          <Directory Id="dir57F607FCED0AA5FE72C83FBE80357BFA" Name="ru">
-            <Directory Id="dirCAE82C29E9038F2B1F2A679B4CE37A76" Name="LC_MESSAGES">
-              <Component Win64="$(var.Win64)" Id="cmp790DA8C0D447D17F2FA17E6D5105FDF7" Guid="*">
-                <File Id="fil2CBAF6CFB5E3C0E732F04EDE9D9A40DC" KeyPath="yes" Source="$(var.SourceDir)/share/locale/ru/LC_MESSAGES/libvirt.mo"/>
-              </Component>
-            </Directory>
-          </Directory>
-          <Directory Id="dirD42BB0F56E9FAF8B9F60334905A48D0A" Name="si">
-            <Directory Id="dirF9DA7F1C49227B3024A1743386F42B2D" Name="LC_MESSAGES">
-              <Component Win64="$(var.Win64)" Id="cmpEA179B4CA53C9A5FF519B0C3041A864F" Guid="*">
-                <File Id="fil16D868F99FCB2E6C1313F585C119C421" KeyPath="yes" Source="$(var.SourceDir)/share/locale/si/LC_MESSAGES/libvirt.mo"/>
-              </Component>
-            </Directory>
-          </Directory>
-          <Directory Id="dir9E7ACA1BFAA87B9265705557E060125D" Name="sk">
-            <Directory Id="dir85A270188864F73DD08262D9B9D497A7" Name="LC_MESSAGES">
-              <Component Win64="$(var.Win64)" Id="cmp33F7BCFD4902594FE38CC44A9EEF48C1" Guid="*">
-                <File Id="fil756A6083F9F9D26F18AB0F2C1BA4B541" KeyPath="yes" Source="$(var.SourceDir)/share/locale/sk/LC_MESSAGES/libvirt.mo"/>
-              </Component>
-            </Directory>
-          </Directory>
-          <Directory Id="dir7059860692D4C960CD9CF10624AC6EB7" Name="sl">
-            <Directory Id="dir1F9DEC2F11BF5FE2215589373F0715EE" Name="LC_MESSAGES">
-              <Component Win64="$(var.Win64)" Id="cmp5A17949B9D9202CDB3A432B60AFAA4EC" Guid="*">
-                <File Id="fil759EAC69A4E29FB395211EE14AD8DC30" KeyPath="yes" Source="$(var.SourceDir)/share/locale/sl/LC_MESSAGES/libvirt.mo"/>
-              </Component>
-            </Directory>
-          </Directory>
-          <Directory Id="dir7A53B7027A5502F8C987B7110E26F30D" Name="sq">
-            <Directory Id="dirA1B6387316C173EAED9899D9E7C9B029" Name="LC_MESSAGES">
-              <Component Win64="$(var.Win64)" Id="cmp91D8E4A0C79D74B8EE9483EED27AC2C6" Guid="*">
-                <File Id="fil3311679091BCF8B298AD119AB6B8F61C" KeyPath="yes" Source="$(var.SourceDir)/share/locale/sq/LC_MESSAGES/libvirt.mo"/>
-              </Component>
-            </Directory>
-          </Directory>
-          <Directory Id="dirC831B643B1B7FBE9129E608AC50B9A22" Name="sr">
-            <Directory Id="dir8EFF780B67C99B3A3814A81C6DC1E614" Name="LC_MESSAGES">
-              <Component Win64="$(var.Win64)" Id="cmpCD72B418CDE861330FFF2B17EDA77152" Guid="*">
-                <File Id="fil9D1794B23496AA57DF1F76325B88503F" KeyPath="yes" Source="$(var.SourceDir)/share/locale/sr/LC_MESSAGES/libvirt.mo"/>
-              </Component>
-            </Directory>
-          </Directory>
-          <Directory Id="dir3167FA6BD44E28A1F4913004C8A933DB" Name="sr@latin">
-            <Directory Id="dir68A8BB1284D2EDA80E75EC9CAD8A63AE" Name="LC_MESSAGES">
-              <Component Win64="$(var.Win64)" Id="cmpD3A4617BB8755B345D3C6942876D82DC" Guid="*">
-                <File Id="fil14A5515D18A54F35EA5A4A10A2D4670B" KeyPath="yes" Source="$(var.SourceDir)/share/locale/sr@latin/LC_MESSAGES/libvirt.mo"/>
-              </Component>
-            </Directory>
-          </Directory>
-          <Directory Id="dir41133F8CAC4B4826866B5A595F1AC341" Name="sv">
-            <Directory Id="dir44B8B7E5B0AA919DED6F7A6BEAE0C033" Name="LC_MESSAGES">
-              <Component Win64="$(var.Win64)" Id="cmp387FBE1D13C2425F10AD9464532B3267" Guid="*">
-                <File Id="filC140A83DD53131DF63B27315594029B5" KeyPath="yes" Source="$(var.SourceDir)/share/locale/sv/LC_MESSAGES/libvirt.mo"/>
-              </Component>
-            </Directory>
-          </Directory>
-          <Directory Id="dir247374506DAC9BDB32CFA13215152E47" Name="ta">
-            <Directory Id="dir322438517F94116162A83BE04C8F7C69" Name="LC_MESSAGES">
-              <Component Win64="$(var.Win64)" Id="cmpE39D853F1B627CB8F590E5C6E2406722" Guid="*">
-                <File Id="fil2F1B26F4F9BFBE09700EB482E35F7BAF" KeyPath="yes" Source="$(var.SourceDir)/share/locale/ta/LC_MESSAGES/libvirt.mo"/>
-              </Component>
-            </Directory>
-          </Directory>
-          <Directory Id="dirD3B93687B54A62BEEFFEC61F24330D7A" Name="te">
-            <Directory Id="dirD892FB04B9E0AB2F74C372F074B37854" Name="LC_MESSAGES">
-              <Component Win64="$(var.Win64)" Id="cmpB4FBEB4CA227A953C07AD28E46448583" Guid="*">
-                <File Id="fil68E35A0792ADA164BC5DC47EA972AC82" KeyPath="yes" Source="$(var.SourceDir)/share/locale/te/LC_MESSAGES/libvirt.mo"/>
-              </Component>
-            </Directory>
-          </Directory>
-          <Directory Id="dir873A882CDC954F8E545DAE8B1DE6D4D3" Name="th">
-            <Directory Id="dir1623D391E888B7CCAD09C91551B09E2A" Name="LC_MESSAGES">
-              <Component Win64="$(var.Win64)" Id="cmp01FAE903DE2B04CCE3F96F107189F056" Guid="*">
-                <File Id="filA91E83FC1E0D0A413790D7AFA5468C8F" KeyPath="yes" Source="$(var.SourceDir)/share/locale/th/LC_MESSAGES/libvirt.mo"/>
-              </Component>
-            </Directory>
-          </Directory>
-          <Directory Id="dir7C914E0BDBE892F1107071867442425E" Name="tr">
-            <Directory Id="dirF0F577DEC2C3A4BC4A99ADFE26219D85" Name="LC_MESSAGES">
-              <Component Win64="$(var.Win64)" Id="cmp6F221E534C936B5E6CF72F5007986774" Guid="*">
-                <File Id="filC332EA9D3D19B3E427016ABFC7C20E5C" KeyPath="yes" Source="$(var.SourceDir)/share/locale/tr/LC_MESSAGES/libvirt.mo"/>
-              </Component>
-            </Directory>
-          </Directory>
-          <Directory Id="dir91D8CA30AE7CF286E48C244392289660" Name="uk">
-            <Directory Id="dirE02EA0037969B1353B7024BD12441953" Name="LC_MESSAGES">
-              <Component Win64="$(var.Win64)" Id="cmp21CD05BF28D3F543C36838FBD993F4AB" Guid="*">
-                <File Id="fil2003A766AD679C474E817A74EDC9D3F9" KeyPath="yes" Source="$(var.SourceDir)/share/locale/uk/LC_MESSAGES/libvirt.mo"/>
-              </Component>
-            </Directory>
-          </Directory>
-          <Directory Id="dirD85EF3856FDF090E8C2E5281ABC89B68" Name="ur">
-            <Directory Id="dir8A06DA5FB8BFC522A045AFD70F180AFB" Name="LC_MESSAGES">
-              <Component Win64="$(var.Win64)" Id="cmp604FB417EA67ED25AFDA2DDC8C4B5D39" Guid="*">
-                <File Id="filC032BE0F42DB6CCF8284011971D5E6AB" KeyPath="yes" Source="$(var.SourceDir)/share/locale/ur/LC_MESSAGES/libvirt.mo"/>
-              </Component>
-            </Directory>
-          </Directory>
-          <Directory Id="dirECCB44C6FA8A349A92D1E2BE174A4CCE" Name="vi">
-            <Directory Id="dir571EE6F9B0FAD7FDE1663604B7F7B3EC" Name="LC_MESSAGES">
-              <Component Win64="$(var.Win64)" Id="cmpAC4701506A1ED595DC3B8E1A2717C42F" Guid="*">
-                <File Id="fil6FDB4A442A97CE8E679D195872109BFB" KeyPath="yes" Source="$(var.SourceDir)/share/locale/vi/LC_MESSAGES/libvirt.mo"/>
-              </Component>
-            </Directory>
-          </Directory>
-          <Directory Id="dir0A3591E850C4696646C45561ED1C1AE1" Name="zh_CN">
-            <Directory Id="dir512C7ABF229465156A62C85EC7E20323" Name="LC_MESSAGES">
-              <Component Win64="$(var.Win64)" Id="cmpCF6935EB7E43940C2B058228BD14EEE2" Guid="*">
-                <File Id="fil869B76945058E08CD483EDA452753B93" KeyPath="yes" Source="$(var.SourceDir)/share/locale/zh_CN/LC_MESSAGES/libvirt.mo"/>
-              </Component>
-            </Directory>
-          </Directory>
-          <Directory Id="dirD170CBDEDCD0ED4FBA0AE3F7596E6414" Name="zh_TW">
-            <Directory Id="dirC8CAC1CA83558805E485AE7151EC696E" Name="LC_MESSAGES">
-              <Component Win64="$(var.Win64)" Id="cmpE61B51B6BDA11E44B42C1316C61A08DA" Guid="*">
-                <File Id="fil11AA009D75250C0C503BB6DD034501D8" KeyPath="yes" Source="$(var.SourceDir)/share/locale/zh_TW/LC_MESSAGES/libvirt.mo"/>
-              </Component>
-            </Directory>
-          </Directory>
-          <Directory Id="dirDFFEB17EEB3106081A6FDCF3292A351D" Name="zu">
-            <Directory Id="dirB5F9C8C16722F8D33BF1831263F2D095" Name="LC_MESSAGES">
-              <Component Win64="$(var.Win64)" Id="cmp2D5844F1D4A9F507665D2AF8E50689CF" Guid="*">
-                <File Id="filDA367EB9C826C9CA188B542F045C26C6" KeyPath="yes" Source="$(var.SourceDir)/share/locale/zu/LC_MESSAGES/libvirt.mo"/>
-              </Component>
-            </Directory>
-          </Directory>
-        </Directory>
-        <Directory Id="dir7777CAF29D5D36D49DEF4DF84540B575" Name="man">
-          <Directory Id="dir3598051201C1A6EA3FECC49510008D52" Name="man1">
-            <Component Win64="$(var.Win64)" Id="cmp411074C83ED9B03503D446F63E1FD21D" Guid="*">
-              <File Id="fil7E5E0AEF0705F2825E26E24FE1C48786" KeyPath="yes" Source="$(var.SourceDir)/share/man/man1/virsh.1"/>
-            </Component>
-            <Component Win64="$(var.Win64)" Id="cmpD5C9CC47BA794FB929F50E8A2D9B6E80" Guid="*">
-              <File Id="fil4C67F8E54FB3AB1E7168532DFD91E0B5" KeyPath="yes" Source="$(var.SourceDir)/share/man/man1/virt-pki-validate.1"/>
-            </Component>
-            <Component Win64="$(var.Win64)" Id="cmp183D5C9781080F8645308209417E5FE3" Guid="*">
-              <File Id="fil3596411D17B89A51E40E39EDD5EE5074" KeyPath="yes" Source="$(var.SourceDir)/share/man/man1/virt-xml-validate.1"/>
-            </Component>
-            </Directory>
-          </Directory>
-        </Directory>
+      </Directory>
     </DirectoryRef>
   </Fragment>
   <Fragment>
@@ -569,97 +723,177 @@
       <ComponentGroupRef Id="CG.libxml2"/>
       <ComponentGroupRef Id="CG.winpthreads"/>
       <ComponentGroupRef Id="CG.glib2"/>
-      <ComponentRef Id="cmpB962DB3CF88FF4B22CD95DDD142C563A"/>
-      <ComponentRef Id="cmpB6F6993161E17654F77AA88C3F185130"/>
-      <ComponentRef Id="cmpE285D1D7089CBDBA1061BBD4A7AF1000"/>
-      <ComponentRef Id="cmp5648F8ED8EFC91809ECF3B09E70ECFC7"/>
-      <ComponentRef Id="cmp41746D5296A8554D60E68588090F6113"/>
-      <ComponentRef Id="cmp5A64F65084C4A2F5C65AD2B52DA889C9"/>
-      <ComponentRef Id="cmp7B9E754936DA15F9743D74A8E94C70D8"/>
-      <ComponentRef Id="cmp7A4376FBC4EFADFC0221F3A660481650"/>
-      <ComponentRef Id="cmp44EA8E9D3CF30D65D363E60D2B8B02B3"/>
-      <ComponentRef Id="cmp73FE17238BBAAB26C2A6F61430AE3C92"/>
-      <ComponentRef Id="cmpE862AF29C99A212EADB63915785585FE"/>
-      <ComponentRef Id="cmp4F8200B1C77A38E8AC2D0FCAADC1566F"/>
-      <ComponentRef Id="cmp2E0117774DAF52384B56F8D79110C7C6"/>
-      <ComponentRef Id="cmp26C1A426E9119559ED16E37C516CAFD4"/>
-      <ComponentRef Id="cmp421D485FC5A696C778DBD9BC6B028681"/>
-      <ComponentRef Id="cmpFF3455205061737D19CB16030514AA70"/>
-      <ComponentRef Id="cmpD27D0B9F6FADA360369DB634BCAB2C0F"/>
-      <ComponentRef Id="cmpBC1D701F907DAF183D8938C318609913"/>
-      <ComponentRef Id="cmp3D1459C25446A1FA7F879FD65FCA4464"/>
-      <ComponentRef Id="cmpADB73CBD962904A2BFF44D65FCDA01C7"/>
-      <ComponentRef Id="cmp09314B718D7501E43F74D85871FC17CC"/>
-      <ComponentRef Id="cmp216B1FCC374A06427A76816AAFD57899"/>
-      <ComponentRef Id="cmp2BCEDCEC546C15E2542AD438FC60FA26"/>
-      <ComponentRef Id="cmpECA559285A41600FB62EA60E8D841C43"/>
-      <ComponentRef Id="cmp15330F42078AB746FC3608E9834126B6"/>
-      <ComponentRef Id="cmp25D64463F8C1AD54949C1C7ED2DF6338"/>
-      <ComponentRef Id="cmp6A7B42668EC869869A112431C4D52C6E"/>
-      <ComponentRef Id="cmp53B6EEC856CEC8D3F8E6031ECFCDE465"/>
-      <ComponentRef Id="cmp1083755EDD4EDB5F6DE749D288E02FDC"/>
-      <ComponentRef Id="cmpB88BD0C9926E10192C6604151E479817"/>
-      <ComponentRef Id="cmp16BAEB32326AA70D341BF9C1CD22F427"/>
-      <ComponentRef Id="cmpAB86D949B16ECF32275E21A1525B1743"/>
-      <ComponentRef Id="cmp258929F9F05315081F10A3F0CA36A424"/>
-      <ComponentRef Id="cmp594C28E69BDA7591383CC4A3AAE50EB4"/>
-      <ComponentRef Id="cmpD3B8CC4B16B460D36585A4B59F06A180"/>
-      <ComponentRef Id="cmp03A792D5F40876122A543B198A8EF5F0"/>
-      <ComponentRef Id="cmp1CFA7CD4654AFB499A2BAE0EF70737DE"/>
-      <ComponentRef Id="cmp4097A30F9200911EB7E1A944ECADDB17"/>
-      <ComponentRef Id="cmpAFF49BD34DC2F41522CF247DA3C7DB1E"/>
-      <ComponentRef Id="cmpB2BD4A34DEB7955C13109FDE5753CDD5"/>
-      <ComponentRef Id="cmp2600A73C63130E0BD2564E5A8FE4FBA1"/>
-      <ComponentRef Id="cmp01C8E991692EA4BFF12F0AC0DBD3B536"/>
-      <ComponentRef Id="cmp3E314C89DB8FFEE53C732136137CD84B"/>
-      <ComponentRef Id="cmp4137F7310322BC67DAB9FA075F5C3EF5"/>
-      <ComponentRef Id="cmpE0E1338180A3ECECA1E5367016D48316"/>
-      <ComponentRef Id="cmp90E06CE92071B37400F2E4C7672F488F"/>
-      <ComponentRef Id="cmpA37EADDED97FA3BBF58E818F514DF24C"/>
-      <ComponentRef Id="cmpD89B030C8DB620DD692F792206C78E60"/>
-      <ComponentRef Id="cmp3E42D715B5A8A6D6E89D919FA9B5C08D"/>
-      <ComponentRef Id="cmpAE743BD36DBC5A4CF0D93D8D7AD05E98"/>
-      <ComponentRef Id="cmpCB68D78482853E298D7782670E4FCD9D"/>
-      <ComponentRef Id="cmp77C6E349CA8167207D61A00CBE090FE7"/>
-      <ComponentRef Id="cmp409FBFBE4A15910E2E1ACD018E2AC446"/>
-      <ComponentRef Id="cmpD95E9CFD9518121AAB268801C36AC1B5"/>
-      <ComponentRef Id="cmp0E06CC43E903C84E0339F8A1D563DF20"/>
-      <ComponentRef Id="cmp0CAF179658DC0C99556AF1AF2A677CCC"/>
-      <ComponentRef Id="cmpE2B25E38419FF4DD2663AC57F1A790C3"/>
-      <ComponentRef Id="cmpA78BDDB41CC73BABF7F286CCCBB8C3B3"/>
-      <ComponentRef Id="cmp7A641A3F3ABD781C805EAFC281509582"/>
-      <ComponentRef Id="cmp01E5AF2CDD78A7E4BFCF74B132B81B17"/>
-      <ComponentRef Id="cmp9C35E07BB0F131656646B7AF32820038"/>
-      <ComponentRef Id="cmp424BB8733909F999573DCA6A34B51C90"/>
-      <ComponentRef Id="cmp12BF2FA883C157F39666994392CFA9CF"/>
-      <ComponentRef Id="cmp537F3FCE1D27FC82D3ADF1B1CB4D0934"/>
-      <ComponentRef Id="cmpED70BE7199F0D72F2DAE300F63A95B92"/>
-      <ComponentRef Id="cmp9E67361E267888064FD2386EA4A77495"/>
-      <ComponentRef Id="cmp21A0EFF20298756478CA39B76A995978"/>
-      <ComponentRef Id="cmpC84040B4DED466FB462D6EDAE01558F8"/>
-      <ComponentRef Id="cmpCEA09522273BE275788DE95169DBBA6F"/>
-      <ComponentRef Id="cmpCF1E7E10FE00E4FA3567DEE80B34507E"/>
-      <ComponentRef Id="cmp790DA8C0D447D17F2FA17E6D5105FDF7"/>
-      <ComponentRef Id="cmpEA179B4CA53C9A5FF519B0C3041A864F"/>
-      <ComponentRef Id="cmp33F7BCFD4902594FE38CC44A9EEF48C1"/>
-      <ComponentRef Id="cmp5A17949B9D9202CDB3A432B60AFAA4EC"/>
-      <ComponentRef Id="cmp91D8E4A0C79D74B8EE9483EED27AC2C6"/>
-      <ComponentRef Id="cmpCD72B418CDE861330FFF2B17EDA77152"/>
-      <ComponentRef Id="cmpD3A4617BB8755B345D3C6942876D82DC"/>
-      <ComponentRef Id="cmp387FBE1D13C2425F10AD9464532B3267"/>
-      <ComponentRef Id="cmpE39D853F1B627CB8F590E5C6E2406722"/>
-      <ComponentRef Id="cmpB4FBEB4CA227A953C07AD28E46448583"/>
-      <ComponentRef Id="cmp01FAE903DE2B04CCE3F96F107189F056"/>
-      <ComponentRef Id="cmp6F221E534C936B5E6CF72F5007986774"/>
-      <ComponentRef Id="cmp21CD05BF28D3F543C36838FBD993F4AB"/>
-      <ComponentRef Id="cmp604FB417EA67ED25AFDA2DDC8C4B5D39"/>
-      <ComponentRef Id="cmpAC4701506A1ED595DC3B8E1A2717C42F"/>
-      <ComponentRef Id="cmpCF6935EB7E43940C2B058228BD14EEE2"/>
-      <ComponentRef Id="cmpE61B51B6BDA11E44B42C1316C61A08DA"/>
-      <ComponentRef Id="cmp2D5844F1D4A9F507665D2AF8E50689CF"/>
-      <ComponentRef Id="cmp411074C83ED9B03503D446F63E1FD21D"/>
-      <ComponentRef Id="cmpD5C9CC47BA794FB929F50E8A2D9B6E80"/>
-      <ComponentRef Id="cmp183D5C9781080F8645308209417E5FE3"/>
+
+      <ComponentRef Id="cmp64E4F1A9BF137073D9131F7240393950"/>
+      <ComponentRef Id="cmp05CE47D22A2212AD6E022FD6CD5DEB33"/>
+      <ComponentRef Id="cmpCC3564780D59DFEE613B1B53EF100534"/>
+      <ComponentRef Id="cmp6A35F8C52A4B507B42851A24AD85C868"/>
+      <ComponentRef Id="cmp2E09E66B51106EE873E19C371DE2E694"/>
+      <ComponentRef Id="cmp07946E550DC94090D1A3349EFDBD9EAA"/>
+      <ComponentRef Id="cmp6BD919CAEF03E119E5514442F8249731"/>
+      <ComponentRef Id="cmp6F92766364C71DA399B145FE92C625D0"/>
+      <ComponentRef Id="cmpAFBA563E678976F852E7F9991A2AA3EE"/>
+      <ComponentRef Id="cmpE63C5DEFE7C5DBB0C564E31F85A877B7"/>
+      <ComponentRef Id="cmpF6C98C96340763462E87DF06386C2BD5"/>
+      <ComponentRef Id="cmpD6B62174039DA72B5C804438E0813207"/>
+      <ComponentRef Id="cmpE05B49BF1631309C004FB75B40ED8A76"/>
+      <ComponentRef Id="cmp8001B543A8B709399A9FC1AE6DB7A9B4"/>
+      <ComponentRef Id="cmp5FF4D24162AD709A1FFD17E46A849FEF"/>
+      <ComponentRef Id="cmp9D531299D6DC4CA846440F0C4B2A42F3"/>
+      <ComponentRef Id="cmp2CA20AE22FDF3D930F8B4CB139B1B7E1"/>
+      <ComponentRef Id="cmp764FEFDE4026EA2875484D8BC355ECD3"/>
+      <ComponentRef Id="cmp23700C37812E6272B45E9807B2397807"/>
+      <ComponentRef Id="cmp484321E2783FDA9084D43CDF0FB063D6"/>
+      <ComponentRef Id="cmp078A184D1DC4EF71DE6F9AF81665C40A"/>
+      <ComponentRef Id="cmp49F0B5796EE1AB185F96ADD8120B623A"/>
+      <ComponentRef Id="cmp6F1F5D0A5D308C32928B2166B526493F"/>
+      <ComponentRef Id="cmp84F361E5924202F50775EB15B40818B9"/>
+      <ComponentRef Id="cmpEBB40F6318D37CD12637AA9F404E0DB1"/>
+      <ComponentRef Id="cmpC80DAFBC19D89F7B8B389A98711952A1"/>
+      <ComponentRef Id="cmp763AC6826798B17C38A362F6656E7BA2"/>
+      <ComponentRef Id="cmpFC81DBCD42E965549DBF941A11DA0657"/>
+      <ComponentRef Id="cmp81470EBC60302F0BD9641920177EFFE8"/>
+      <ComponentRef Id="cmp3C27DEF69A9D4AB3DE87B59B5C13EA0C"/>
+      <ComponentRef Id="cmpD2CFC215ABB4A92F60083F4A4974E5F1"/>
+      <ComponentRef Id="cmpD0DB9D56931EC587580C5B86C3BCC9B6"/>
+      <ComponentRef Id="cmpE14951304B9A35949AA1752FC37C65C5"/>
+      <ComponentRef Id="cmpE59D45605FE9786D9309688283CB4241"/>
+      <ComponentRef Id="cmp5091A3529374718AD0CADF80B2B1A4E3"/>
+      <ComponentRef Id="cmp465DBCC9C96DD54F1A42F93922DC4E3C"/>
+      <ComponentRef Id="cmp33E964719AFA03972D074392BCA95607"/>
+      <ComponentRef Id="cmpD0ACF6DFB31160D89447DC17ECAD5715"/>
+      <ComponentRef Id="cmp759EC7807C94775D83F89DEB2984B56D"/>
+      <ComponentRef Id="cmpE1BD575687B2B2E25C710BE5FAB3B1D5"/>
+      <ComponentRef Id="cmp5A2B4092479A0900307EDFB7C44FCBF3"/>
+      <ComponentRef Id="cmpADDCD0E2A83225AD19CC8245960E7E3C"/>
+      <ComponentRef Id="cmp9564409F8FB61F11B56D759370A40005"/>
+      <ComponentRef Id="cmp1C9759ED0D001102FB19DB3626A63D55"/>
+      <ComponentRef Id="cmpA5DB4DA173078AC4FEEC78A1B9248ED5"/>
+      <ComponentRef Id="cmp6CEBD65D6081B9F6D045FC6826DC1FD0"/>
+      <ComponentRef Id="cmp844858AE88A30BE71D9D5F5B3C6A9FAA"/>
+      <ComponentRef Id="cmpA5B03D2F367D21FCAF49969566CC74DF"/>
+      <ComponentRef Id="cmpD60F8B7CA4108740F05D052D0EF0C130"/>
+      <ComponentRef Id="cmpB6DA06EDEDB3661D757B9D6562FFE262"/>
+      <ComponentRef Id="cmpC25F2A08F49F99A47CDECDAB8A7F7AC1"/>
+      <ComponentRef Id="cmp4F0AEE3479C4D3C999D53965E12B3E61"/>
+      <ComponentRef Id="cmp20B907A39445FCFA3C67DF9D57DDE25F"/>
+      <ComponentRef Id="cmp9F6661086931C06BBAFEFD563DFC9E8F"/>
+      <ComponentRef Id="cmpB44877A2066DE42C256AE9E1C080788E"/>
+      <ComponentRef Id="cmp9693FE67760DC2D04B01CDB1F141AF54"/>
+      <ComponentRef Id="cmp2138F27C8465C4D4855C6FBF6597D813"/>
+      <ComponentRef Id="cmp4C3649CC18901CCFB2414D79111EC46E"/>
+      <ComponentRef Id="cmp72BD782E8D7D761FC188B349863BD8E4"/>
+      <ComponentRef Id="cmp12ED44FC07B5AC17D3C4A0D9F35DB783"/>
+      <ComponentRef Id="cmpB5FFAFEEF869D583C4543137DBE83253"/>
+      <ComponentRef Id="cmp06EC1B71AF3191C223CFFC3FC72DEC6B"/>
+      <ComponentRef Id="cmp6E5505399967D23CDFD68B5D9EFDC8B2"/>
+      <ComponentRef Id="cmp3BA9C7EA9E50A105617399F66268A466"/>
+      <ComponentRef Id="cmp3F4CA48086453310C5F27593084A3435"/>
+      <ComponentRef Id="cmpA1D82B9D9F31DC8F5611D31AC1080FA2"/>
+      <ComponentRef Id="cmpF2A01A2C5B1501760D9652FF03A806EA"/>
+      <ComponentRef Id="cmp1E862C1CEF2408E834A7BB0F4D4A0917"/>
+      <ComponentRef Id="cmpF7BA3219F749827C5E71D7021644C17B"/>
+      <ComponentRef Id="cmp4C533BCF190A61F87602EBC9A942AF2C"/>
+      <ComponentRef Id="cmp77D042869F4928F023051E8B7AFF3035"/>
+      <ComponentRef Id="cmpCCEBC3DFEC3397929064BB6666A2F70C"/>
+      <ComponentRef Id="cmp76ED0974AAB3BF4A02694CBA65F4C4B6"/>
+      <ComponentRef Id="cmpBC9390D6A10CE74FBFCBC1AA81B130DD"/>
+      <ComponentRef Id="cmp4BD4D0F9F8B343611ADEE557F4DB9E35"/>
+      <ComponentRef Id="cmp9AB981D718CE5F40F11A7EFADD96E9DE"/>
+      <ComponentRef Id="cmp2B67A862F48577AAAF4A3BA997FB09CA"/>
+      <ComponentRef Id="cmp3D28E95237C8B20D519B4B68DB370322"/>
+      <ComponentRef Id="cmpFC484FE9E174D510624057FF9B8ACD75"/>
+      <ComponentRef Id="cmp3D7B3BB9B0D1980AE0E1BBC01514DAB1"/>
+      <ComponentRef Id="cmpFA0A0E464D2895D47E3ED840F77005AF"/>
+      <ComponentRef Id="cmpDE6EA77E20B2AF62107954218B65D091"/>
+      <ComponentRef Id="cmp3454ED0F3494360BCCB22B8E3F481317"/>
+      <ComponentRef Id="cmpFD799E0650FC487B85D2B11D833C9517"/>
+      <ComponentRef Id="cmp9E54CFB628703783D74D2FA9293FC418"/>
+      <ComponentRef Id="cmp5ABFFDF8F70AD41D51C6B9B249EC529A"/>
+      <ComponentRef Id="cmpE3FAC7320D2751188114A32123281383"/>
+      <ComponentRef Id="cmp0EE976CFB0619DA7F35A821E44360DF3"/>
+      <ComponentRef Id="cmpBBB9E633746836DB25CB33D189ED2724"/>
+      <ComponentRef Id="cmp46211CA469DCE93B3457DFE648F7D7FF"/>
+      <ComponentRef Id="cmp4695BA014F800F83E9AB493918DA2400"/>
+      <ComponentRef Id="cmp15CE61469761EA220C99BACB7BBFAD1A"/>
+      <ComponentRef Id="cmp7ADFB5D18F6353A6828A70EC4B0F06A5"/>
+      <ComponentRef Id="cmp209D2AEB9100AED853DF65EF547202B6"/>
+      <ComponentRef Id="cmp3BBC9EBE31D605EBC5D985D8FF604598"/>
+      <ComponentRef Id="cmp621039DA3CF1E8B53A7A79A2E171CC00"/>
+      <ComponentRef Id="cmpD5B7951089586C51ADA5E387C60A858A"/>
+      <ComponentRef Id="cmp65172F389701980D6B96A3B6DB48DACB"/>
+      <ComponentRef Id="cmpC9330B1C34E515C474975D49F16C4D78"/>
+      <ComponentRef Id="cmpF1ECC60A0BBE0D68E3C7751C29B37DB7"/>
+      <ComponentRef Id="cmpC4E3A3DD92910A14AA5D590C19A0A8FA"/>
+      <ComponentRef Id="cmpCA3E439B9C1FBC5A931A8AAF0B47EDEE"/>
+      <ComponentRef Id="cmpBFFDA7E63CA5EDC9D44FEDD28CBCDC74"/>
+      <ComponentRef Id="cmpEEDC663391040F22424B369BD6FA7F1A"/>
+      <ComponentRef Id="cmpB17A4F98E618D9D187884D0CE8F0A01C"/>
+      <ComponentRef Id="cmp2F832FA1E2370794EEFB978AC24C9855"/>
+      <ComponentRef Id="cmp5B9F386A5C36A8C6C3C86AE45D4C7CF5"/>
+      <ComponentRef Id="cmp0B2BA496EDFBB7ADA9BC1062D9931A87"/>
+      <ComponentRef Id="cmpB882182E4FE470F1745A38A03AEB3E5D"/>
+      <ComponentRef Id="cmpEF975D8CF66B1BEE6FECF22FF3E63CD7"/>
+      <ComponentRef Id="cmpC83E67A0761E4B0A8DEEF653FEE9ED3D"/>
+      <ComponentRef Id="cmp4DD808DA599E7DAF403B0523DE6D9777"/>
+      <ComponentRef Id="cmp08F00AB6B3B5D175392DAD2FEA7657B3"/>
+      <ComponentRef Id="cmp628939F7E04270A3CFACD9FEAA916E79"/>
+      <ComponentRef Id="cmpA361A04FAE3BDDDC9EDB135863A7655A"/>
+      <ComponentRef Id="cmp5376DAB5D6444D40C2B8923EB7E7A16E"/>
+      <ComponentRef Id="cmp6A28421CFF9B22557A8AF1673D20D5DA"/>
+      <ComponentRef Id="cmp8E402E1233A8DAA6ABE4630970045CEF"/>
+      <ComponentRef Id="cmp10C169A8E5653D4A153BB0063DD35156"/>
+      <ComponentRef Id="cmp91A0F5AB3A0D76B46F31ECBD4E1D01D4"/>
+      <ComponentRef Id="cmp3AE43C9D3C7E4A1EF51F47D35F4A61F6"/>
+      <ComponentRef Id="cmp9397222B80708969DAD54C9E0606E361"/>
+      <ComponentRef Id="cmp38AD254BFDBD44254CEF46693F1CD677"/>
+      <ComponentRef Id="cmp2741B859F0A39E3D36001502874254F5"/>
+      <ComponentRef Id="cmp39AD9781A84197F7D189159CEB9B721D"/>
+      <ComponentRef Id="cmp0A1EA843B384408A70D001A2315F034F"/>
+      <ComponentRef Id="cmpA4043A5C880D39240BE040BEB24D34C8"/>
+      <ComponentRef Id="cmp4F9BC59B1C64585490A03B1B5652D147"/>
+      <ComponentRef Id="cmp8F783F0D7A0D9CD43EE5338EDE33A8F7"/>
+      <ComponentRef Id="cmp81ACFDB6CBBC6232000889FCE7804529"/>
+      <ComponentRef Id="cmp97F7E8D70F19197FAA3C2546C3B11190"/>
+      <ComponentRef Id="cmpDEEA59E34977DB654ECEDE6A8799F899"/>
+      <ComponentRef Id="cmp912B028D0F7B1DB0F768835E77BB4E72"/>
+      <ComponentRef Id="cmpB5617991D2C58E6595F3D2BB7CBC7533"/>
+      <ComponentRef Id="cmp3DB8E3E276492FF85F2C8ABDAAF8CB7A"/>
+      <ComponentRef Id="cmpDEB28C4CD8A6991E88F867387F73904F"/>
+      <ComponentRef Id="cmpC1AB0509A244104D35373F0A11AC0444"/>
+      <ComponentRef Id="cmpDC182C7773180239CAADB3FCF0E33660"/>
+      <ComponentRef Id="cmpCC2C425F29C3D54413A45DEC22206CC0"/>
+      <ComponentRef Id="cmpC4007D1C18019861D70674A42FDF44BD"/>
+      <ComponentRef Id="cmp4DD0A0BB65685ACAC9FC61B0CE552F93"/>
+      <ComponentRef Id="cmp991E1DFDF21715B8C2C9679501E8B70C"/>
+      <ComponentRef Id="cmp698D10D6774C2FDA996A3B55B2BB357B"/>
+      <ComponentRef Id="cmp9A9284BD3C78C622EBB2F43F40465DA3"/>
+      <ComponentRef Id="cmpF488CEEB91A5A0E85B29020ABA6C131A"/>
+      <ComponentRef Id="cmpFEDA957D43C6B72F618074DDEA9D59BB"/>
+      <ComponentRef Id="cmpF18093D51E8621FDBD568C6C35072D99"/>
+      <ComponentRef Id="cmpCECA9439C90DA8DAEC851893BBDEAC44"/>
+      <ComponentRef Id="cmp99B3C15C6032192078A9BB01A8A0111B"/>
+      <ComponentRef Id="cmpFEA160A64AA3AC845A17BBA104123616"/>
+      <ComponentRef Id="cmp8C4FEA4A640FFAAB2F663873AAA3D515"/>
+      <ComponentRef Id="cmpE5173309CEFC3FC9C7FE4A78E5143D60"/>
+      <ComponentRef Id="cmpA88D4ABB6B3D8B81252ACB7E9548962F"/>
+      <ComponentRef Id="cmpA3B2BD936EFCB20F20D59F8D5869D445"/>
+      <ComponentRef Id="cmpC99CCAEEAEA3E387261036CA703C6993"/>
+      <ComponentRef Id="cmpD97631EF5ADBC1CEAA13977FA12AE6A2"/>
+      <ComponentRef Id="cmpB5BEC91E1FEC896919E66E51C85EAD90"/>
+      <ComponentRef Id="cmpD2FB0C59F199C717EF42D852352ECC97"/>
+      <ComponentRef Id="cmp03DB23FC86F4EC68DB5D1307CEBFDCEF"/>
+      <ComponentRef Id="cmp6596A748AF4119D991ABD2EF93A79F0B"/>
+      <ComponentRef Id="cmp3ADCCC12B9F06DF6F50321DE92552840"/>
+      <ComponentRef Id="cmp1419A8A979C8D13DE81A56BB3486A043"/>
+      <ComponentRef Id="cmp4C61B66BE6E4DFDDAB84477F802367D0"/>
+      <ComponentRef Id="cmp2C92106C4A91A99E637E4664914967B2"/>
+      <ComponentRef Id="cmp9BE4F3F3B23C56E8F7754346A8FFA8FA"/>
+      <ComponentRef Id="cmpC2B11B7A4F902A5C50682D3426149C7B"/>
+      <ComponentRef Id="cmp4AAFF0EA2D6D904F8EC3A78208F5645D"/>
+      <ComponentRef Id="cmpCD9C5ACAB33EC0E405D7BCADB0514B53"/>
     </ComponentGroup>
   </Fragment>
 </Include>
+<!-- generated with msitools 0.100.39-ffff -->
+<!-- ../../build/tools/wixl/wixl-heat -var var.SourceDir -p /usr/i686-w64-mingw32/sys-root/mingw/ -component-group CG.libvirt -directory-ref INSTALLDIR -win64 -->
