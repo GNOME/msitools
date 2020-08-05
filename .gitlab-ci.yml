@@ -54,12 +54,8 @@ variables:
                 mingw64-gstreamer1-plugins-good
                 mingw32-gstreamer1
                 mingw64-gstreamer1
-                mingw32-gstreamer-plugins-bad-free
-                mingw64-gstreamer-plugins-bad-free
                 mingw32-gstreamer-plugins-base
                 mingw64-gstreamer-plugins-base
-                mingw32-gstreamer-plugins-good
-                mingw64-gstreamer-plugins-good
                 mingw32-gstreamer
                 mingw64-gstreamer
                 mingw32-gtk2
