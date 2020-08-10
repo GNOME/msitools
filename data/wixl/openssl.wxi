@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+<?require gcc.wxi?>
 <?require zlib.wxi?>
 <Include xmlns="http://schemas.microsoft.com/wix/2006/wi">
   <Fragment>
@@ -55,6 +56,7 @@
   </Fragment>
   <Fragment>
     <ComponentGroup Id="CG.openssl">
+      <ComponentGroupRef Id="CG.gcc"/>
       <ComponentGroupRef Id="CG.zlib"/>
       <ComponentRef Id="cmp180069515EEF84E3D64434B53E32E2EF"/>
       <ComponentRef Id="cmp78BC9637069A326E7860F7EDB381EF4C"/>
