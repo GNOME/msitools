@@ -913,9 +913,12 @@ namespace Wixl {
             if (service_control.Wait != null)
                 Wait = parse_yesno(service_control.Wait);
 
-            event |= install_mode_to_event(service_control.Start, ServiceControlEvent.INSTALL_START, ServiceControlEvent.UNINSTALL_START);
-            event |= install_mode_to_event(service_control.Stop, ServiceControlEvent.INSTALL_STOP, ServiceControlEvent.UNINSTALL_STOP);
-            event |= install_mode_to_event(service_control.Remove, ServiceControlEvent.INSTALL_DELETE, ServiceControlEvent.UNINSTALL_DELETE);
+            if (service_control.Start != null)
+                event |= install_mode_to_event(service_control.Start, ServiceControlEvent.INSTALL_START, ServiceControlEvent.UNINSTALL_START);
+            if (service_control.Stop != null)
+                event |= install_mode_to_event(service_control.Stop, ServiceControlEvent.INSTALL_STOP, ServiceControlEvent.UNINSTALL_STOP);
+            if (service_control.Remove != null)
+                event |= install_mode_to_event(service_control.Remove, ServiceControlEvent.INSTALL_DELETE, ServiceControlEvent.UNINSTALL_DELETE);
 
             db.table_service_control.add(service_control.Id, service_control.Name, event, ServiceArguments, Wait, comp.Id);
         }
