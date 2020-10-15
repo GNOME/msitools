@@ -1081,6 +1081,10 @@ namespace Wixl {
                 type = CustomActionType.EXE_FILE;
                 source = action.FileKey;
                 target = action.ExeCommand;
+            } else if (action.Property != null && action.Value != null) {
+                type = CustomActionType.SET_PROPERTY;
+                source = action.Property;
+                target = action.Value;
             } else
                 throw new Wixl.Error.FAILED ("Unsupported CustomAction");
 
