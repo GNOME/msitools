@@ -55,6 +55,8 @@ libmsi = shared_library('msi',
   libmsi_sources,
   include_directories: inc_dirs,
   dependencies: libmsi_deps,
+  version: '0.0.0',
+  install: true,
 )
 
 pc = import('pkgconfig')
