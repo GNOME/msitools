@@ -373,8 +373,9 @@ namespace Wixl {
         void preprocess_xml (Xml.TextReader reader, Xml.TextWriter writer, File? file, bool is_include = false) throws GLib.Error {
             IfContext context = new IfContext (true, true);
             var ifstack = new Queue<IfContext> ();
+            int status;
 
-            while (reader.read () > 0) {
+            while ((status = reader.read ()) > 0) {
                 var loc = new Location (reader, file);
                 bool handled = false;
 
@@ -489,6 +490,8 @@ namespace Wixl {
 
             if (!ifstack.is_empty ())
                 throw new Wixl.Error.FAILED ("Missing endif");
+            if (status != 0)
+                throw new Wixl.Error.FAILED ("Failed to parse XML");
         }
 
         bool include_try (string filename, Xml.TextWriter writer) throws GLib.Error {

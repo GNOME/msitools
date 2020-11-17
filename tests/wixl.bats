@@ -163,3 +163,11 @@ EOF
   out=$(cat list | "$wixlheat" -p test/ -x c | grep File | sort)
   [ "$out" = '          <File Id="fil18D0F9984B0565992BE4B64E573B4237" KeyPath="yes" Source="SourceDir/a/file"/>' ]
 }
+
+@test "wixl - XML error" {
+  cd wixl
+
+  echo " " > test.wxs
+  run "$wixl" test.wxs
+  [ "$status" -eq 1 ]
+}
