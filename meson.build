@@ -1,7 +1,6 @@
 project('msitools',
   'c', 'vala',
   version: run_command('build-aux/git-version-gen', '@0@/.tarball-version'.format(meson.source_root()), check: true).stdout().strip(),
-  license: 'LGPL-2+',
   meson_version: '>= 0.52',
 )
 meson.add_dist_script('build-aux/meson-dist', meson.project_version(), meson.source_root())
