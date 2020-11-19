@@ -416,6 +416,8 @@ namespace Wixl {
 
             if (comp.Guid == "*")
                 uuid = uuid_from_name (comp.full_path (this));
+            else if (comp.Guid == "")
+                uuid = null; // unpatchable and not uninstallable component
             else
                 uuid = get_uuid (comp.Guid);
 

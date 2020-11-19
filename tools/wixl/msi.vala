@@ -396,10 +396,10 @@ namespace Wixl {
             sql_insert = "INSERT INTO `Component` (`Component`, `ComponentId`, `Directory_`, `Attributes`, `KeyPath`) VALUES (?, ?, ?, ?, ?)";
         }
 
-        public void add (string Component, string ComponentId, string Directory, int Attributes, string? KeyPath = null) throws GLib.Error {
+        public void add (string Component, string? ComponentId, string Directory, int Attributes, string? KeyPath = null) throws GLib.Error {
             var rec = new Libmsi.Record (5);
             if (!rec.set_string (1, Component) ||
-                !rec.set_string (2, ComponentId) ||
+                (ComponentId != null && !rec.set_string (2, ComponentId)) ||
                 !rec.set_string (3, Directory) ||
                 !rec.set_int (4, Attributes) ||
                 !rec.set_string (5, KeyPath))
