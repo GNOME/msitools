@@ -62,6 +62,16 @@ load common
   [ "$(echo "$output" | grep "^Revision")" = "$exp" ]
 }
 
+@test "msibuild - Set summary" {
+  run "$msibuild" out.msi -s 'Project name'
+  run "$msibuild" out.msi -s 'Project name3' 'Somebody' ';1042' '24265297-EC57-4E72-B5E9-000000000000'
+  run "$msiinfo" suminfo out.msi
+  echo "$output" | grep "Subject: Project name3"
+  echo "$output" | grep "Author: Somebody"
+  echo "$output" | grep "Template: ;1042"
+  echo "$output" | grep "Revision number (UUID): 24265297-EC57-4E72-B5E9-000000000000"
+}
+
 @test "msibuild - add stream" {
   echo "This is test.txt" > test.txt
   run "$msibuild" out.msi -a Binary.testtxt test.txt

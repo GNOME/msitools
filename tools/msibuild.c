@@ -298,7 +298,7 @@ int main(int argc, char *argv[])
                                   n > 3 ? argv[3] : NULL,
                                   n > 4 ? argv[4] : NULL, &error))
                 goto end;
-            argc -= 3, argv += 3;
+            argc -= n + 1, argv += n + 1;
             break;
         case 'i':
             do {
