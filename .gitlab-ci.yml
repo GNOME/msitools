@@ -16,8 +16,6 @@ variables:
                 mingw64-bzip2
                 mingw32-cairo
                 mingw64-cairo
-                mingw32-celt051
-                mingw64-celt051
                 mingw32-curl
                 mingw64-curl
                 mingw32-dlfcn
@@ -54,10 +52,6 @@ variables:
                 mingw64-gstreamer1-plugins-good
                 mingw32-gstreamer1
                 mingw64-gstreamer1
-                mingw32-gstreamer-plugins-base
-                mingw64-gstreamer-plugins-base
-                mingw32-gstreamer
-                mingw64-gstreamer
                 mingw32-gtk2
                 mingw64-gtk2
                 mingw32-gtk3
@@ -72,8 +66,6 @@ variables:
                 mingw64-hicolor-icon-theme
                 mingw32-icu
                 mingw64-icu
-                mingw32-ilmbase
-                mingw64-ilmbase
                 mingw32-jasper
                 mingw64-jasper
                 mingw32-json-glib
@@ -118,8 +110,6 @@ variables:
                 mingw64-libxml2
                 mingw32-nettle
                 mingw64-nettle
-                mingw32-OpenEXR
-                mingw64-OpenEXR
                 mingw32-openssl
                 mingw64-openssl
                 mingw32-opus
