@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <?require gstreamer1-plugins-base.wxi?>
-<?require OpenEXR.wxi?>
 <?require gcc-c++.wxi?>
 <?require libxml2.wxi?>
 <?require nettle.wxi?>
@@ -101,9 +100,6 @@
           <Component Win64="$(var.Win64)" Id="cmpF3A7DA356D8A5E9DA6767517F0FD91FB" Guid="*">
             <File Id="filBA1195BAE9888895F8108D8294B39371" KeyPath="yes" Source="$(var.SourceDir)/lib/gstreamer-1.0/libgstd3d.dll"/>
           </Component>
-          <Component Win64="$(var.Win64)" Id="cmpD9F44A71152095BB1311504F5E2746D5" Guid="*">
-            <File Id="filD5CA45FE4DE3366CA45CF6EF52B4F27E" KeyPath="yes" Source="$(var.SourceDir)/lib/gstreamer-1.0/libgstdashdemux.dll"/>
-          </Component>
           <Component Win64="$(var.Win64)" Id="cmp636E288E0B7C6AEB2990AF348215C9AA" Guid="*">
             <File Id="fil6E61195A144A411D39C8800DB077AAE0" KeyPath="yes" Source="$(var.SourceDir)/lib/gstreamer-1.0/libgstdebugutilsbad.dll"/>
           </Component>
@@ -191,9 +187,6 @@
           <Component Win64="$(var.Win64)" Id="cmp88A44C9FDB695E9AE413FC989E426434" Guid="*">
             <File Id="fil51A1D24EB330CC534E08A14D34BFA01A" KeyPath="yes" Source="$(var.SourceDir)/lib/gstreamer-1.0/libgstnetsim.dll"/>
           </Component>
-          <Component Win64="$(var.Win64)" Id="cmpA51A4882249288BCBF783B2B8F6C3F58" Guid="*">
-            <File Id="fil7D04370A014E2CE2B0DB5B0D13ADA733" KeyPath="yes" Source="$(var.SourceDir)/lib/gstreamer-1.0/libgstopenexr.dll"/>
-          </Component>
           <Component Win64="$(var.Win64)" Id="cmpD4E115B11B1C07D461165365952FB3D8" Guid="*">
             <File Id="fil35CDBAAD35D1174AABBC81C300B55212" KeyPath="yes" Source="$(var.SourceDir)/lib/gstreamer-1.0/libgstopusparse.dll"/>
           </Component>
@@ -262,9 +255,6 @@
           </Component>
           <Component Win64="$(var.Win64)" Id="cmp5CF73AEA20BA7CA3C8E57BF0B598376D" Guid="*">
             <File Id="filE3C022E556A01F85D0A6E3E34AACB321" KeyPath="yes" Source="$(var.SourceDir)/lib/gstreamer-1.0/libgsty4mdec.dll"/>
-          </Component>
-          <Component Win64="$(var.Win64)" Id="cmp03E4257DBD437EED77ADC36F26D13C18" Guid="*">
-            <File Id="fil29987D20608A2FEDB9A32963DD604590" KeyPath="yes" Source="$(var.SourceDir)/lib/gstreamer-1.0/libgstyadif.dll"/>
           </Component>
         </Directory>
       </Directory>
@@ -600,7 +590,6 @@
       <ComponentRef Id="cmpD3169FDE8F254F6BAB999FDC971DC896"/>
       <ComponentRef Id="cmp83B90DFB1EDBF160FA4CFCCD84AC9F77"/>
       <ComponentRef Id="cmpF3A7DA356D8A5E9DA6767517F0FD91FB"/>
-      <ComponentRef Id="cmpD9F44A71152095BB1311504F5E2746D5"/>
       <ComponentRef Id="cmp636E288E0B7C6AEB2990AF348215C9AA"/>
       <ComponentRef Id="cmpCFEA83DEABF93897510F3B125FAD3587"/>
       <ComponentRef Id="cmp83B339398D5E5381DD1E992E16858015"/>
@@ -630,7 +619,6 @@
       <ComponentRef Id="cmpCE4AF2BF5CCCCAED42E2B4F67D1B7BDE"/>
       <ComponentRef Id="cmp2BE4E40CAEDD29B510E7D2B8EF41DCAA"/>
       <ComponentRef Id="cmp88A44C9FDB695E9AE413FC989E426434"/>
-      <ComponentRef Id="cmpA51A4882249288BCBF783B2B8F6C3F58"/>
       <ComponentRef Id="cmpD4E115B11B1C07D461165365952FB3D8"/>
       <ComponentRef Id="cmp3EE8E68CC754693F270A95AF269F9338"/>
       <ComponentRef Id="cmpB127DDDC0A2E1F900291F6BE245CB844"/>
@@ -654,7 +642,6 @@
       <ComponentRef Id="cmp4D572CA37022D65E2503FFF2953FC253"/>
       <ComponentRef Id="cmpFEE2216B50BA31DFF5764437AD124B4B"/>
       <ComponentRef Id="cmp5CF73AEA20BA7CA3C8E57BF0B598376D"/>
-      <ComponentRef Id="cmp03E4257DBD437EED77ADC36F26D13C18"/>
       <ComponentRef Id="cmp8087692860F18BC0AF4A7E42D2B9BC5B"/>
       <ComponentRef Id="cmp2043CAC739EF592EE26EFBE74D87EC68"/>
       <ComponentRef Id="cmp3398072EF8D836C5D7975126A8318A35"/>
