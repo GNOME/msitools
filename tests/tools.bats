@@ -124,8 +124,8 @@ Binary" ]
   run "$msiinfo" streams out.msi
   out=$(echo "$output" | grep -v SummaryInformation)
   [ "$out" = "Icon.firefox.16.0.2.0.ico.exe" ]
-  run "$msiinfo" extract out.msi Icon.firefox.16.0.2.0.ico.exe
-  exp=$(cat Icon/firefox.16.0.2.0.ico.exe)
+  output=$("$msiinfo" extract out.msi Icon.firefox.16.0.2.0.ico.exe | sha1sum)
+  exp=$(cat Icon/firefox.16.0.2.0.ico.exe | sha1sum)
   [ "$output" = "$exp" ]
 }
 
