@@ -1,3 +1,17 @@
+v0.101
+======
+- convert the build system to Meson
+- remove uuid dependency
+- wixl: Make the ServiceControl attributes Remove/Start/Stop optional.
+- wixl: Implement SET_PROPERTY custom action
+- wixl: Properly handle empty GUID in Component nodes
+- wixl: Support ASYNC for CustomAction.Return
+- msiinfo: fix buffer overflow
+- update wxi files to match today (02/02/2021) f34/rawhide packages
+- translation updates, various misc fixes
+
+
+
 v0.100
 ======
 - fix v0.99 regression on big-endian systems
