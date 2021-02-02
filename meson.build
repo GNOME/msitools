@@ -31,6 +31,9 @@ config_h = configure_file(
   configuration: config,
 )
 
+prefix = get_option('prefix')
+includedir = join_paths(prefix, get_option('includedir'))
+
 inc_dirs = include_directories('.', 'include')
 
 subdir('completion')
