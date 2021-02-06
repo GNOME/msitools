@@ -47,8 +47,6 @@ wixl_heat = executable('wixl-heat',
   'wixl-heat.vala',
   config_h,
   vala_args: [
-    '-H', 'wixl.h',
-    '--use-header',
     '--enable-experimental',
     '--pkg', 'config',
     '--pkg', 'posix',
