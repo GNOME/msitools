@@ -4,6 +4,7 @@ msidiff = configure_file(
   configuration: config,
   install: true,
   install_dir: get_option('bindir'),
+  install_mode: 'r-xr-xr-x',
 )
 
 msidump = configure_file(
@@ -12,6 +13,7 @@ msidump = configure_file(
   configuration: config,
   install: true,
   install_dir: get_option('bindir'),
+  install_mode: 'r-xr-xr-x',
 )
 
 msibuild = executable('msibuild',
