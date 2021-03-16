@@ -188,12 +188,16 @@ static int mime2utf(int x)
     return '_';
 }
 
-void decode_streamname(const char *in, char *out)
+char *decode_streamname(const char *in)
 {
     unsigned count = 0;
     const uint8_t *p = (const uint8_t *)in;
-    uint8_t *q = (uint8_t *)out;
+    char *out;
+    uint8_t *q;
 
+    g_return_val_if_fail(in != NULL, NULL);
+    out = g_malloc0(strlen(in) + 1);
+    q = (uint8_t *)out;
     while ( *p )
     {
         uint8_t ch = *p;
@@ -226,18 +230,23 @@ void decode_streamname(const char *in, char *out)
         count++;
     }
     *q = 0;
+    return out;
 }
 
 void enum_stream_names( GsfInfile *stg )
 {
     unsigned n, i;
-    char name[0x40];
 
     n = gsf_infile_num_children(stg);
     for (i = 0; i < n; i++)
     {
+        g_autofree char *name = NULL;
         const char *stname = gsf_infile_name_by_index(stg, i);
-        decode_streamname( stname, name );
+
+        if (!stname)
+            continue;
+
+        name = decode_streamname(stname);
         TRACE("stream %2d -> %s %s\n", n,
               debugstr_a(stname), debugstr_a(name) );
     }
@@ -562,15 +571,14 @@ static unsigned table_get_column_info( LibmsiDatabase *db, const char *name, Lib
 
 unsigned _libmsi_open_table( LibmsiDatabase *db, const char *name, bool encoded )
 {
-    char decname[0x40];
+    g_autofree char *decname = NULL;
     LibmsiTable *table;
     guint8 *name8 = (guint8*)name;
 
     if (encoded)
     {
         assert(name8[0] == 0xe4 && name8[1] == 0xa1 && name8[2] == 0x80);
-        decode_streamname( name + 1, decname );
-        name = decname;
+        decname = decode_streamname(name + 1);
     }
 
     table = msi_alloc_zero( sizeof(LibmsiTable) + strlen( name ) * sizeof(char) );
@@ -2568,13 +2576,13 @@ unsigned msi_table_apply_transform( LibmsiDatabase *db, GsfInfile *stg )
     {
         LibmsiTableView *tv = NULL;
         const uint8_t *encname;
-        char name[0x40];
+        g_autofree char *name = NULL;
 
         encname = (const uint8_t *) gsf_infile_name_by_index(stg, i);
         if ( encname[0] != 0xe4 || encname[1] != 0xa1 || encname[2] != 0x80)
             continue;
 
-        decode_streamname( (char*)encname, name );
+        name = decode_streamname((char*)encname);
         if ( !strcmp( name+3, szStringPool ) ||
              !strcmp( name+3, szStringData ) )
             continue;

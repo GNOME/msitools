@@ -491,10 +491,10 @@ unsigned clone_infile_stream( LibmsiDatabase *db, const char *name, GsfInput **s
 unsigned msi_get_raw_stream( LibmsiDatabase *db, const char *stname, GsfInput **stm )
 {
     unsigned ret = LIBMSI_RESULT_FUNCTION_FAILED;
-    char decoded[MAX_STREAM_NAME_LEN];
+    g_autofree char *decoded = NULL;
     LibmsiTransform *transform;
 
-    decode_streamname( stname, decoded );
+    decoded = decode_streamname(stname);
     TRACE("%s -> %s\n", debugstr_a(stname), debugstr_a(decoded));
 
     if (clone_infile_stream( db, stname, stm ) == LIBMSI_RESULT_SUCCESS)
@@ -2110,7 +2110,6 @@ libmsi_database_is_readonly (LibmsiDatabase *db)
 static void cache_infile_structure( LibmsiDatabase *db )
 {
     int i, n;
-    char decname[0x40];
     unsigned r;
 
     n = gsf_infile_num_children(db->infile);
@@ -2132,7 +2131,9 @@ static void cache_infile_structure( LibmsiDatabase *db )
             /* UTF-8 encoding of 0x4840.  */
             if (name8[0] == 0xe4 && name8[1] == 0xa1 && name8[2] == 0x80)
             {
-                decode_streamname(name + 3, decname);
+                g_autofree char *decname = NULL;
+
+                decname = decode_streamname(name + 3);
                 if ( !strcmp( decname, szStringPool ) ||
                      !strcmp( decname, szStringData ) )
                     continue;
@@ -2340,9 +2341,9 @@ static unsigned commit_stream( const char *name, GsfInput *stm, void *opaque)
     LibmsiDatabase *db = opaque;
     GsfOutput *outstm;
     unsigned ret = LIBMSI_RESULT_FUNCTION_FAILED;
-    char decname[0x40];
+    g_autofree char *decname = NULL;
 
-    decode_streamname(name, decname);
+    decname = decode_streamname(name);
     TRACE("%s(%s) %p %p\n", debugstr_a(name), debugstr_a(decname), stm, opaque);
 
     outstm = gsf_outfile_new_child( db->outfile, name, false );
