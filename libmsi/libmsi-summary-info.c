@@ -401,7 +401,12 @@ static void read_properties_from_data( LibmsiOLEVariant *prop, const uint8_t *da
                 property->intval = atoi( str );
             } else if( type == OLEVT_FILETIME) {
                 parse_filetime( str, &property->filetime );
+            } else {
+                g_critical("invalid type, it can't be converted\n");
+                msi_free(str);
+                break;
             }
+            proptype = type;
             msi_free (str);
         }
         else
