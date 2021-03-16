@@ -372,7 +372,7 @@ static void read_properties_from_data( LibmsiOLEVariant *prop, const uint8_t *da
             break;
         case OLEVT_LPSTR:
             len = read_dword(data, &dwOffset);
-            if( dwOffset + len > sz )
+            if(len == 0 || dwOffset + len > sz )
             {
                 g_critical("not enough data for type %d %d %d \n", dwOffset, len, sz);
                 valid = FALSE;
