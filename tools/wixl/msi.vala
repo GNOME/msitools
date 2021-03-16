@@ -123,6 +123,16 @@ namespace Wixl {
                 hash_table_add (depends_on, a);
                 a.incoming_deps = true;
             }
+
+            public int dep_max() {
+                int ret = -1;
+                var it = HashTableIter <Action, Action*> (depends_on);
+                Action dep;
+                while (it.next (null, out dep))
+                    if (dep.sequence > ret)
+                        ret = dep.sequence;
+                return ret;
+            }
         }
 
         HashTable<string, Action> actions = new HashTable<string, Action> (str_hash, str_equal);
@@ -141,12 +151,26 @@ namespace Wixl {
             sorted.append (action);
         }
 
+        // before sorting topologically, sort the actions so that the
+        // one with the least max sequence dependency comes first.
+        List<weak Action> sorted_actions() {
+            CompareFunc<Action> cmp = (a, b) => {
+                if (a.sequence == b.sequence) {
+                    var a_dep = a.dep_max();
+                    var b_dep = b.dep_max();
+                    return a_dep - b_dep;
+                }
+                return a.sequence - b.sequence;
+            };
+            var list = actions.get_values ();
+            list.sort(cmp);
+            return list;
+        }
+
         List<Action> sort_topological () {
             List<Action> sorted = null;
 
-            Action action;
-            var it = HashTableIter <string, Action> (actions);
-            while (it.next (null, out action)) {
+            foreach (var action in sorted_actions()) {
                 if (action.incoming_deps)
                     continue;
                 sort_topological_visit (action, ref sorted);
@@ -156,14 +180,8 @@ namespace Wixl {
         }
 
         void add_implicit_deps () {
-            CompareFunc<Action> cmp = (a, b) => {
-                return a.sequence - b.sequence;
-            };
-            var list = actions.get_values ();
-            list.sort (cmp);
-
             Action? prev = null;
-            foreach (var a in list) {
+            foreach (var a in sorted_actions()) {
                 if (a.sequence == -1)
                     continue;
                 if (prev != null)
