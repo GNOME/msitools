@@ -62,7 +62,7 @@ static bool streams_set_table_size(LibmsiStreamsView *sv, unsigned size)
 static STREAM *create_stream(LibmsiStreamsView *sv, const char *name, bool encoded, GsfInput *stm)
 {
     STREAM *stream;
-    char decoded[MAX_STREAM_NAME_LEN];
+    g_autofree char *decoded = NULL;
 
     stream = msi_alloc(sizeof(STREAM));
     if (!stream)
@@ -70,7 +70,7 @@ static STREAM *create_stream(LibmsiStreamsView *sv, const char *name, bool encod
 
     if (encoded)
     {
-        decode_streamname(name, decoded);
+        decoded = decode_streamname(name);
         TRACE("stream -> %s %s\n", debugstr_a(name), debugstr_a(decoded));
         name = decoded;
     }

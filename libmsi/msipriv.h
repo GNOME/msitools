@@ -389,7 +389,7 @@ extern bool _libmsi_record_compare_fields(const LibmsiRecord *a, const LibmsiRec
 /* stream internals */
 extern void enum_stream_names( GsfInfile *stg );
 extern char *encode_streamname(bool bTable, const char *in);
-extern void decode_streamname(const char *in, char *out);
+extern char *decode_streamname(const char *in);
 
 /* database internals */
 extern LibmsiResult _libmsi_database_start_transaction(LibmsiDatabase *db);
