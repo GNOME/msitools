@@ -2123,6 +2123,10 @@ static void cache_infile_structure( LibmsiDatabase *db )
         const char* name = gsf_input_name(in);
         const uint8_t *name8 = (const uint8_t *)name;
 
+        if (!name) {
+            g_warn_if_reached();
+            continue;
+        }
         /* table streams are not in the _Streams table */
         if (!GSF_IS_INFILE(in) || gsf_infile_num_children(GSF_INFILE(in)) == -1) {
             /* UTF-8 encoding of 0x4840.  */
