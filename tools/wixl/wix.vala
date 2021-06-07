@@ -214,6 +214,8 @@ namespace Wixl {
                         continue;
                     }
                     break;
+                default:
+                    break;
                 }
                 error ("unhandled child %s node %s", name, child->name);
             }
