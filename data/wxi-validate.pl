@@ -71,6 +71,7 @@ my %dllbuiltin = (
     "psapi.dll" => 1,
     "setupapi.dll" => 1,
     "shell32.dll" => 1,
+    "shlwapi.dll" => 1,
     "user32.dll" => 1,
     "usp10.dll" => 1,
     "winmm.dll" => 1,
@@ -258,7 +259,7 @@ sub load {
 
 
 # Recursively expand a file to find the full
-# transitive set of dependancies / references
+# transitive set of dependencies / references
 sub expand {
     my $name = shift;
     my $allowed = shift;

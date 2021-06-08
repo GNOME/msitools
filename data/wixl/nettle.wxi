@@ -5,10 +5,10 @@
     <DirectoryRef Id="INSTALLDIR">
       <Directory Id="dir5AEF56DC061A17E3A4B74AFC27ECF971" Name="bin">
         <Component Win64="$(var.Win64)" Id="cmp0FCA4A1D4EBF049A68D5CDAE0F7D5E69" Guid="*">
-          <File Id="fil0409B66AE6C2A7113535F0A1884E08CF" KeyPath="yes" Source="$(var.SourceDir)/bin/libhogweed-5.dll"/>
+          <File Id="fil0409B66AE6C2A7113535F0A1884E08CF" KeyPath="yes" Source="$(var.SourceDir)/bin/libhogweed-6.dll"/>
         </Component>
         <Component Win64="$(var.Win64)" Id="cmpF597B02A6401FA9EE5BED98E55438C1D" Guid="*">
-          <File Id="fil0D87442097C12ABFCEF9D2D521F474BF" KeyPath="yes" Source="$(var.SourceDir)/bin/libnettle-7.dll"/>
+          <File Id="fil0D87442097C12ABFCEF9D2D521F474BF" KeyPath="yes" Source="$(var.SourceDir)/bin/libnettle-8.dll"/>
         </Component>
         <Component Win64="$(var.Win64)" Id="cmpEF03546E2EEC4BA072738E5368FF59F0" Guid="*">
           <File Id="filDE93FA4F7B112BDD5504093ACBC386E7" KeyPath="yes" Source="$(var.SourceDir)/bin/nettle-hash.exe"/>
