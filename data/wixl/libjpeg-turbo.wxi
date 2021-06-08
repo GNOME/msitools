@@ -7,17 +7,13 @@
         <Component Win64="$(var.Win64)" Id="cmpE626C1C6102BF568BDCB9DFDD7870ABD" Guid="*">
           <File Id="filC8FF4129195FC47778325A9337980F46" KeyPath="yes" Source="$(var.SourceDir)/bin/libjpeg-62.dll"/>
         </Component>
-        <Component Win64="$(var.Win64)" Id="cmp99A30A0157840A35C882406BD3246229" Guid="*">
-          <File Id="fil3548717EC188F5C12C01F776594F4E0D" KeyPath="yes" Source="$(var.SourceDir)/bin/libturbojpeg.dll"/>
-        </Component>
-        </Directory>
+      </Directory>
     </DirectoryRef>
   </Fragment>
   <Fragment>
     <ComponentGroup Id="CG.libjpeg-turbo">
       <ComponentGroupRef Id="CG.gcc"/>
       <ComponentRef Id="cmpE626C1C6102BF568BDCB9DFDD7870ABD"/>
-      <ComponentRef Id="cmp99A30A0157840A35C882406BD3246229"/>
     </ComponentGroup>
   </Fragment>
 </Include>

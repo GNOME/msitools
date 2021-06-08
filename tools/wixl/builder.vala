@@ -52,6 +52,8 @@ namespace Wixl {
                     root.load (child);
                     roots.append (root);
                     break;
+                default:
+                    break;
                 }
             }
         }
@@ -636,6 +638,8 @@ namespace Wixl {
                 break;
             case RegistryValueType.STRING:
                 value = value[0] == '#' ? "#" + value : value;
+                break;
+            default:
                 break;
             }
 

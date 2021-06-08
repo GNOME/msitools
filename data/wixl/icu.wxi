@@ -38,28 +38,28 @@
           <File Id="filFA1A874154792C2AE819A040A89594E4" KeyPath="yes" Source="$(var.SourceDir)/bin/gensprep.exe"/>
         </Component>
         <Component Win64="$(var.Win64)" Id="cmpA288B414DF3DD1AFA561A21D2F939BEC" Guid="*">
-          <File Id="fil48978306397F19F498A52E73268F651D" KeyPath="yes" Source="$(var.SourceDir)/bin/icudata67.dll"/>
+          <File Id="fil48978306397F19F498A52E73268F651D" KeyPath="yes" Source="$(var.SourceDir)/bin/icudata69.dll"/>
         </Component>
         <Component Win64="$(var.Win64)" Id="cmpCC0211338359B872C0A9C2858B735AA9" Guid="*">
-          <File Id="fil11CBA75FF069B44D84C54438FE319552" KeyPath="yes" Source="$(var.SourceDir)/bin/icui18n67.dll"/>
+          <File Id="fil11CBA75FF069B44D84C54438FE319552" KeyPath="yes" Source="$(var.SourceDir)/bin/icui18n69.dll"/>
         </Component>
         <Component Win64="$(var.Win64)" Id="cmpF30CE166B516D3F059E889D43F178BF2" Guid="*">
           <File Id="filFA5922182B8DAD7C4EDA2FC6AED8BFDA" KeyPath="yes" Source="$(var.SourceDir)/bin/icuinfo.exe"/>
         </Component>
         <Component Win64="$(var.Win64)" Id="cmpAFB77FD9757BCD2D035B2721E234DB4D" Guid="*">
-          <File Id="fil45AA7BB4389C63A90014CC66A5276D24" KeyPath="yes" Source="$(var.SourceDir)/bin/icuio67.dll"/>
+          <File Id="fil45AA7BB4389C63A90014CC66A5276D24" KeyPath="yes" Source="$(var.SourceDir)/bin/icuio69.dll"/>
         </Component>
         <Component Win64="$(var.Win64)" Id="cmp546D0F99610BC45592CFC2627A82E2B6" Guid="*">
           <File Id="fil064186150829A3FB4F3E965880560C02" KeyPath="yes" Source="$(var.SourceDir)/bin/icupkg.exe"/>
         </Component>
         <Component Win64="$(var.Win64)" Id="cmp2D5BFF6C9E9223C72FB48A1D1C152406" Guid="*">
-          <File Id="fil38E0F00EB38714F2D8F7C332BCF8B81B" KeyPath="yes" Source="$(var.SourceDir)/bin/icutest67.dll"/>
+          <File Id="fil38E0F00EB38714F2D8F7C332BCF8B81B" KeyPath="yes" Source="$(var.SourceDir)/bin/icutest69.dll"/>
         </Component>
         <Component Win64="$(var.Win64)" Id="cmp684F073E884511576D41FCB3F2BC23E9" Guid="*">
-          <File Id="fil2CE3347F862086A36C80ECE910608312" KeyPath="yes" Source="$(var.SourceDir)/bin/icutu67.dll"/>
+          <File Id="fil2CE3347F862086A36C80ECE910608312" KeyPath="yes" Source="$(var.SourceDir)/bin/icutu69.dll"/>
         </Component>
         <Component Win64="$(var.Win64)" Id="cmp47699B18F19531CF2E278D3ECF0BA178" Guid="*">
-          <File Id="fil869E9D9C69A40550A948227A48FE0BCF" KeyPath="yes" Source="$(var.SourceDir)/bin/icuuc67.dll"/>
+          <File Id="fil869E9D9C69A40550A948227A48FE0BCF" KeyPath="yes" Source="$(var.SourceDir)/bin/icuuc69.dll"/>
         </Component>
         <Component Win64="$(var.Win64)" Id="cmpD66DA194B6906EEA355A32A3BE79675B" Guid="*">
           <File Id="fil2B5E52280628A22C31F1222D9912B17F" KeyPath="yes" Source="$(var.SourceDir)/bin/makeconv.exe"/>
