@@ -106,6 +106,8 @@ variables:
                 mingw64-libvirt
                 mingw32-libvorbis
                 mingw64-libvorbis
+                mingw32-libwebp
+                mingw64-libwebp
                 mingw32-libxml2
                 mingw64-libxml2
                 mingw32-nettle

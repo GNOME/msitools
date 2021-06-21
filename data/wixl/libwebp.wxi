@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<?require gcc.wxi?>
+<?require libpng.wxi?>
+<?require libjpeg-turbo.wxi?>
+<Include xmlns="http://schemas.microsoft.com/wix/2006/wi">
+  <Fragment>
+    <DirectoryRef Id="INSTALLDIR">
+      <Directory Id="dir91FD08EC7FE4522F48257E1781BED722" Name="bin">
+        <Component Win64="$(var.Win64)" Id="cmp6CD6C0B11FFDF91DA2FF2F82B36A3239" Guid="*">
+          <File Id="filA54AAD9968F3E7F34C4B16FACFEA9C18" KeyPath="yes" Source="$(var.SourceDir)/bin/cwebp.exe"/>
+        </Component>
+        <Component Win64="$(var.Win64)" Id="cmpF0B39C7E01B3E8739EE3F65715024876" Guid="*">
+          <File Id="filBF26B1DF4D2D6DF8879293C4D29A65BE" KeyPath="yes" Source="$(var.SourceDir)/bin/dwebp.exe"/>
+        </Component>
+        <Component Win64="$(var.Win64)" Id="cmp09A31C7A35856E98F6E4D7DB87B79F85" Guid="*">
+          <File Id="fil69AD0A895CF3797043916B1C8BB287AE" KeyPath="yes" Source="$(var.SourceDir)/bin/img2webp.exe"/>
+        </Component>
+        <Component Win64="$(var.Win64)" Id="cmp93EA67CC84D7E73F7A8745615E7B536E" Guid="*">
+          <File Id="filBB3FBDBAA69D44DE26919D1E50FE65D7" KeyPath="yes" Source="$(var.SourceDir)/bin/libwebp-7.dll"/>
+        </Component>
+        <Component Win64="$(var.Win64)" Id="cmp04A05D6143699420D1A190A6C793ABE0" Guid="*">
+          <File Id="fil0C346B0B2E83A087229638BC6F7815AE" KeyPath="yes" Source="$(var.SourceDir)/bin/libwebpdecoder-3.dll"/>
+        </Component>
+        <Component Win64="$(var.Win64)" Id="cmp950DAB6B83080CBA8D477155F6C5CDA0" Guid="*">
+          <File Id="filD28028026936BCB306EB5BD269A835BE" KeyPath="yes" Source="$(var.SourceDir)/bin/libwebpdemux-2.dll"/>
+        </Component>
+        <Component Win64="$(var.Win64)" Id="cmp19B794A229AF41A7242B258A12DBABCE" Guid="*">
+          <File Id="fil933254599B2F78DF443E9220ACFF987E" KeyPath="yes" Source="$(var.SourceDir)/bin/libwebpmux-3.dll"/>
+        </Component>
+        <Component Win64="$(var.Win64)" Id="cmp44A97DC6CF50E8A6B62B3FEFA2DED84B" Guid="*">
+          <File Id="fil938820F23ABF387A2BC541F496D12D8B" KeyPath="yes" Source="$(var.SourceDir)/bin/webpinfo.exe"/>
+        </Component>
+        <Component Win64="$(var.Win64)" Id="cmpAAF7A9E0C6972485C3CC4A11C1518E63" Guid="*">
+          <File Id="fil293B8EAA3BAE9A663325366FDEE1EA6A" KeyPath="yes" Source="$(var.SourceDir)/bin/webpmux.exe"/>
+        </Component>
+      </Directory>
+    </DirectoryRef>
+  </Fragment>
+  <Fragment>
+    <ComponentGroup Id="CG.libwebp">
+      <ComponentGroupRef Id="CG.gcc"/>		  
+      <ComponentGroupRef Id="CG.libpng"/>		  
+      <ComponentGroupRef Id="CG.libjpeg-turbo"/>		  
+      <ComponentRef Id="cmp6CD6C0B11FFDF91DA2FF2F82B36A3239"/>
+      <ComponentRef Id="cmpF0B39C7E01B3E8739EE3F65715024876"/>
+      <ComponentRef Id="cmp09A31C7A35856E98F6E4D7DB87B79F85"/>
+      <ComponentRef Id="cmp93EA67CC84D7E73F7A8745615E7B536E"/>
+      <ComponentRef Id="cmp04A05D6143699420D1A190A6C793ABE0"/>
+      <ComponentRef Id="cmp950DAB6B83080CBA8D477155F6C5CDA0"/>
+      <ComponentRef Id="cmp19B794A229AF41A7242B258A12DBABCE"/>
+      <ComponentRef Id="cmp44A97DC6CF50E8A6B62B3FEFA2DED84B"/>
+      <ComponentRef Id="cmpAAF7A9E0C6972485C3CC4A11C1518E63"/>
+    </ComponentGroup>
+  </Fragment>
+</Include>
+<!-- generated with msitools 0.101.18-f545-dirty -->
+<!-- tools/wixl/wixl-heat -var var.SourceDir -p /usr/i686-w64-mingw32/sys-root/mingw/ -component-group CG.libwebp -directory-ref INSTALLDIR -win64 -->

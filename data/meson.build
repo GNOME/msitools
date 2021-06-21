@@ -53,6 +53,7 @@ wxi_data = files(
   'wixl/libvirt-glib.wxi',
   'wixl/libvirt.wxi',
   'wixl/libvorbis.wxi',
+  'wixl/libwebp.wxi',
   'wixl/libxml2.wxi',
   'wixl/nettle.wxi',
   'wixl/openssl.wxi',
