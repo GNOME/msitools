@@ -1,5 +1,4 @@
 wxi_data = files(
-  'wixl/SDL.wxi',
   'wixl/adwaita-icon-theme.wxi',
   'wixl/atk.wxi',
   'wixl/brotli.wxi',

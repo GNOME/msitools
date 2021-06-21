@@ -130,8 +130,6 @@ variables:
                 mingw64-readline
                 mingw32-rest
                 mingw64-rest
-                mingw32-SDL
-                mingw64-SDL
                 mingw32-speex
                 mingw64-speex
                 mingw32-spice-glib
