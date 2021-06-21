@@ -62,6 +62,7 @@ my %dllbuiltin = (
     "imm32.dll" => 1,
     "iphlpapi.dll" => 1,
     "kernel32.dll" => 1,
+    "ksuser.dll" => 1,
     "msimg32.dll" => 1,
     "msvcrt.dll" => 1,
     "mswsock.dll" => 1,
