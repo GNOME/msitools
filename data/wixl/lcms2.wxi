@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<?require gcc.wxi?>
+<Include xmlns="http://schemas.microsoft.com/wix/2006/wi">
+  <Fragment>
+    <DirectoryRef Id="INSTALLDIR">
+      <Directory Id="dir691E53432CA6ADCB244225AD56E45C92" Name="bin">
+        <Component Win64="$(var.Win64)" Id="cmpB9ECABF971E278E7746B0420FF42C18F" Guid="*">
+          <File Id="filF567B66E6053FBFF72CF46F231CEFACD" KeyPath="yes" Source="$(var.SourceDir)/bin/liblcms2-2.dll"/>
+        </Component>
+      </Directory>
+    </DirectoryRef>
+  </Fragment>
+  <Fragment>
+    <ComponentGroup Id="CG.lcms2">
+      <ComponentGroupRef Id="CG.gcc"/>
+      <ComponentRef Id="cmpB9ECABF971E278E7746B0420FF42C18F"/>
+    </ComponentGroup>
+  </Fragment>
+</Include>
+<!-- generated with msitools 0.101.23-6524 -->
+<!-- tools/wixl/wixl-heat -var var.SourceDir -p /usr/i686-w64-mingw32/sys-root/mingw/ -component-group CG.lcms2 -directory-ref INSTALLDIR -win64 -->

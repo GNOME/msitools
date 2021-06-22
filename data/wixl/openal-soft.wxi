@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<?require gcc.wxi?>
+<Include xmlns="http://schemas.microsoft.com/wix/2006/wi">
+  <Fragment>
+    <DirectoryRef Id="INSTALLDIR">
+      <Directory Id="dir43A9FB7EBE5CDE1AF87D085FF154BBB8" Name="bin">
+        <Component Win64="$(var.Win64)" Id="cmpB5E33E3FD4B087177A0434BFE815AAF6" Guid="*">
+          <File Id="fil12F1EC450118DDF91F61C046A56046F8" KeyPath="yes" Source="$(var.SourceDir)/bin/OpenAL32.dll"/>
+        </Component>
+        <Component Win64="$(var.Win64)" Id="cmp44C541F9ACA8ED2C066BA40D652CF2BC" Guid="*">
+          <File Id="filABA10A5835BCEF133558C4E5FF46F59D" KeyPath="yes" Source="$(var.SourceDir)/bin/alrecord.exe"/>
+        </Component>
+        <Component Win64="$(var.Win64)" Id="cmpAF821126633DDF42C1B9EC89EABE7B00" Guid="*">
+          <File Id="fil599DDC98F86B2D25B1E5E7884BC7DD8C" KeyPath="yes" Source="$(var.SourceDir)/bin/altonegen.exe"/>
+        </Component>
+        <Component Win64="$(var.Win64)" Id="cmpA5D9C918FF962618D158206FEA71BC33" Guid="*">
+          <File Id="filE804C97925740094A0B52BB429DBD2D1" KeyPath="yes" Source="$(var.SourceDir)/bin/bsincgen.exe"/>
+        </Component>
+        <Component Win64="$(var.Win64)" Id="cmpD0D15B9425C8B4E410E0BA626BD7850D" Guid="*">
+          <File Id="fil4BA323174377F363F1EC9DE5678647A4" KeyPath="yes" Source="$(var.SourceDir)/bin/makehrtf.exe"/>
+        </Component>
+        <Component Win64="$(var.Win64)" Id="cmp0A3C634FCB16350330E4135D5C199FDF" Guid="*">
+          <File Id="fil03556D6F168AF0CE83B9C9094B9C18FC" KeyPath="yes" Source="$(var.SourceDir)/bin/openal-info.exe"/>
+        </Component>
+      </Directory>
+      <Directory Id="dir27887051D9CAA97180A868142010ADAF" Name="etc">
+        <Directory Id="dirAA120FBE5F80C0813EE4E3D424805259" Name="openal">
+          <Component Win64="$(var.Win64)" Id="cmp8EB348F915C5896D56835BC9BAB79345" Guid="*">
+            <File Id="fil0A7940318F2FE3060E031BEA13AC48B9" KeyPath="yes" Source="$(var.SourceDir)/etc/openal/alsoft.conf"/>
+          </Component>
+        </Directory>
+      </Directory>
+      <Directory Id="dir3CAA11087B653C60BE0B8AB21F0F2F18" Name="share">
+        <Directory Id="dirEAEB505F05143075B3F8742AF6796474" Name="openal">
+          <Component Win64="$(var.Win64)" Id="cmp11A915BA8F368D6E2D544B09847F2C9E" Guid="*">
+            <File Id="filFD30374A44B7EFC7A66F5FCD89727825" KeyPath="yes" Source="$(var.SourceDir)/share/openal/alsoftrc.sample"/>
+          </Component>
+          <Directory Id="dirF58A5256085247B7ADB84072BCFA412E" Name="hrtf">
+            <Component Win64="$(var.Win64)" Id="cmp15CB730942AA27841AE05F8D750D7076" Guid="*">
+              <File Id="fil4A6C4D7DCA1A313C691FF74C18570C9C" KeyPath="yes" Source="$(var.SourceDir)/share/openal/hrtf/default-44100.mhr"/>
+            </Component>
+            <Component Win64="$(var.Win64)" Id="cmpEF09EE9DBA57EA4BFF1EE00CD35C55D0" Guid="*">
+              <File Id="filB5592E96EEDD9657FC1D4103CF480DEC" KeyPath="yes" Source="$(var.SourceDir)/share/openal/hrtf/default-48000.mhr"/>
+            </Component>
+          </Directory>
+          <Directory Id="dir43AD6F6AFFF1DD41A0E1FF522B640B3B" Name="presets">
+            <Component Win64="$(var.Win64)" Id="cmp9CDAE5DCCA39C25DF272715060C42F91" Guid="*">
+              <File Id="filC93DD5B4813F3504300112E662383A95" KeyPath="yes" Source="$(var.SourceDir)/share/openal/presets/3D7.1.ambdec"/>
+            </Component>
+            <Component Win64="$(var.Win64)" Id="cmpDA8DA322BCC5BE1B4648024BA53AAE78" Guid="*">
+              <File Id="filAC4A9F19BF1806E526BBBBACBF1461B8" KeyPath="yes" Source="$(var.SourceDir)/share/openal/presets/hexagon.ambdec"/>
+            </Component>
+            <Component Win64="$(var.Win64)" Id="cmp0843FFBF0FBC74B7821BC3CDDC7928E7" Guid="*">
+              <File Id="filC840CD7AA1AC0D69CF1991782A4A7C56" KeyPath="yes" Source="$(var.SourceDir)/share/openal/presets/itu5.1.ambdec"/>
+            </Component>
+            <Component Win64="$(var.Win64)" Id="cmpF832A3425FC57718F5B453EA1F14A864" Guid="*">
+              <File Id="fil7554633422DEA45D31418BD7F1EF63B3" KeyPath="yes" Source="$(var.SourceDir)/share/openal/presets/presets.txt"/>
+            </Component>
+            <Component Win64="$(var.Win64)" Id="cmpE17EEACE1A901A94A03D1558BC0B3E7A" Guid="*">
+              <File Id="filD3090C68526125ECF9AEFC76510DF492" KeyPath="yes" Source="$(var.SourceDir)/share/openal/presets/rectangle.ambdec"/>
+            </Component>
+            <Component Win64="$(var.Win64)" Id="cmpD582E54C924618402A41BB512C3FAEBD" Guid="*">
+              <File Id="fil6BC1A403B94A932171F000126BB191FB" KeyPath="yes" Source="$(var.SourceDir)/share/openal/presets/square.ambdec"/>
+            </Component>
+          </Directory>
+        </Directory>
+      </Directory>
+    </DirectoryRef>
+  </Fragment>
+  <Fragment>
+    <ComponentGroup Id="CG.openal-soft">
+      <ComponentGroupRef Id="CG.gcc"/>		  
+      <ComponentRef Id="cmpB5E33E3FD4B087177A0434BFE815AAF6"/>
+      <ComponentRef Id="cmp44C541F9ACA8ED2C066BA40D652CF2BC"/>
+      <ComponentRef Id="cmpAF821126633DDF42C1B9EC89EABE7B00"/>
+      <ComponentRef Id="cmpA5D9C918FF962618D158206FEA71BC33"/>
+      <ComponentRef Id="cmpD0D15B9425C8B4E410E0BA626BD7850D"/>
+      <ComponentRef Id="cmp0A3C634FCB16350330E4135D5C199FDF"/>
+      <ComponentRef Id="cmp8EB348F915C5896D56835BC9BAB79345"/>
+      <ComponentRef Id="cmp11A915BA8F368D6E2D544B09847F2C9E"/>
+      <ComponentRef Id="cmp15CB730942AA27841AE05F8D750D7076"/>
+      <ComponentRef Id="cmpEF09EE9DBA57EA4BFF1EE00CD35C55D0"/>
+      <ComponentRef Id="cmp9CDAE5DCCA39C25DF272715060C42F91"/>
+      <ComponentRef Id="cmpDA8DA322BCC5BE1B4648024BA53AAE78"/>
+      <ComponentRef Id="cmp0843FFBF0FBC74B7821BC3CDDC7928E7"/>
+      <ComponentRef Id="cmpF832A3425FC57718F5B453EA1F14A864"/>
+      <ComponentRef Id="cmpE17EEACE1A901A94A03D1558BC0B3E7A"/>
+      <ComponentRef Id="cmpD582E54C924618402A41BB512C3FAEBD"/>
+    </ComponentGroup>
+  </Fragment>
+</Include>
+<!-- generated with msitools 0.101.23-97e0-dirty -->
+<!-- tools/wixl/wixl-heat -var var.SourceDir -p /usr/i686-w64-mingw32/sys-root/mingw/ -component-group CG.openal-soft -directory-ref INSTALLDIR -win64 -->

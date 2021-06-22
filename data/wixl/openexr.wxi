@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<?require gcc-c++.wxi?>
+<?require zlib.wxi?>
+<Include xmlns="http://schemas.microsoft.com/wix/2006/wi">
+  <Fragment>
+    <DirectoryRef Id="INSTALLDIR">
+      <Directory Id="dir6ED2EF968C6DB22E5FCA04A67BFE8444" Name="bin">
+        <Component Win64="$(var.Win64)" Id="cmpBFAE7A86C533D3BFDEE266089A31F295" Guid="*">
+          <File Id="fil85774EC973B58F86F73169792E1AD727" KeyPath="yes" Source="$(var.SourceDir)/bin/libHalf-2_5.dll"/>
+        </Component>
+        <Component Win64="$(var.Win64)" Id="cmpF19F43C7580675C06258FB526B94C531" Guid="*">
+          <File Id="filA061BE0DE6A3B432EE5A966E95A93994" KeyPath="yes" Source="$(var.SourceDir)/bin/libIex-2_5.dll"/>
+        </Component>
+        <Component Win64="$(var.Win64)" Id="cmp6A6C82EA53C0EFAE3096326B17E20F67" Guid="*">
+          <File Id="fil1A5545BC38C3712497EAED13818916FB" KeyPath="yes" Source="$(var.SourceDir)/bin/libIexMath-2_5.dll"/>
+        </Component>
+        <Component Win64="$(var.Win64)" Id="cmpEA2481866C2DC47FC14B8C61C647F450" Guid="*">
+          <File Id="filB4503B1C139FAC100C5432EA4419FCE8" KeyPath="yes" Source="$(var.SourceDir)/bin/libIlmImf-2_5.dll"/>
+        </Component>
+        <Component Win64="$(var.Win64)" Id="cmp038AEE460CF570316C22824017BC9F1A" Guid="*">
+          <File Id="filCC11F0370D6E82A1504E31F5E50D043A" KeyPath="yes" Source="$(var.SourceDir)/bin/libIlmImfUtil-2_5.dll"/>
+        </Component>
+        <Component Win64="$(var.Win64)" Id="cmp4D54CFA696A2215D6E362F59D43BDBFC" Guid="*">
+          <File Id="fil1F7FFD91A2597F8D3684EAD65F1D38EE" KeyPath="yes" Source="$(var.SourceDir)/bin/libIlmThread-2_5.dll"/>
+        </Component>
+        <Component Win64="$(var.Win64)" Id="cmp0E50E41192530909EB2F68F8446C534C" Guid="*">
+          <File Id="fil6A80248ABF32FBB8EFABF523E4101DC4" KeyPath="yes" Source="$(var.SourceDir)/bin/libImath-2_5.dll"/>
+        </Component>
+      </Directory>
+    </DirectoryRef>
+  </Fragment>
+  <Fragment>
+    <ComponentGroup Id="CG.openexr">
+      <ComponentGroupRef Id="CG.gcc-c++"/>
+      <ComponentGroupRef Id="CG.zlib"/>
+      <ComponentRef Id="cmpBFAE7A86C533D3BFDEE266089A31F295"/>
+      <ComponentRef Id="cmpF19F43C7580675C06258FB526B94C531"/>
+      <ComponentRef Id="cmp6A6C82EA53C0EFAE3096326B17E20F67"/>
+      <ComponentRef Id="cmpEA2481866C2DC47FC14B8C61C647F450"/>
+      <ComponentRef Id="cmp038AEE460CF570316C22824017BC9F1A"/>
+      <ComponentRef Id="cmp4D54CFA696A2215D6E362F59D43BDBFC"/>
+      <ComponentRef Id="cmp0E50E41192530909EB2F68F8446C534C"/>
+    </ComponentGroup>
+  </Fragment>
+</Include>
+<!-- generated with msitools 0.101.24-50c9-dirty -->
+<!-- tools/wixl/wixl-heat -var var.SourceDir -p /usr/i686-w64-mingw32/sys-root/mingw/ -component-group CG.openexr -directory-ref INSTALLDIR -win64 -->
