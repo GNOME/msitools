@@ -118,6 +118,8 @@ variables:
                 mingw64-nettle
                 mingw32-openal-soft
                 mingw64-openal-soft
+                mingw32-openexr
+                mingw64-openexr
                 mingw32-openjpeg2
                 mingw64-openjpeg2
                 mingw32-openssl

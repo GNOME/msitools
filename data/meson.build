@@ -60,6 +60,7 @@ wxi_data = files(
   'wixl/libxml2.wxi',
   'wixl/nettle.wxi',
   'wixl/openal-soft.wxi',
+  'wixl/openexr.wxi',
   'wixl/openjpeg2.wxi',
   'wixl/openssl.wxi',
   'wixl/opus.wxi',
