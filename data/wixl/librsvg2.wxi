@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<?require gtk3.wxi?>
+<?require libcroco.wxi?>
+<Include xmlns="http://schemas.microsoft.com/wix/2006/wi">
+  <Fragment>
+    <DirectoryRef Id="INSTALLDIR">
+      <Directory Id="dirED3079353BC74DEC169B8BC04D7F2B6A" Name="bin">
+        <Component Win64="$(var.Win64)" Id="cmp9AE88CD731B9D1B84CEA9A38B11CA1F6" Guid="*">
+          <File Id="filD5388E24EF179C2CD391A3535E16A17F" KeyPath="yes" Source="$(var.SourceDir)/bin/librsvg-2-2.dll"/>
+        </Component>
+        <Component Win64="$(var.Win64)" Id="cmp81A1C1E9B324ED590B7F766F40A7D5B7" Guid="*">
+          <File Id="fil4B3E8AF8A79891B6BAE94D7DCE1A4694" KeyPath="yes" Source="$(var.SourceDir)/bin/rsvg-convert.exe"/>
+        </Component>
+        <Component Win64="$(var.Win64)" Id="cmp237C66D7E1EF3D3CAA94A503B0E26CCE" Guid="*">
+          <File Id="filFA11422A4083722AC98DDEA6F8375693" KeyPath="yes" Source="$(var.SourceDir)/bin/rsvg-view-3.exe"/>
+        </Component>
+      </Directory>
+      <Directory Id="dir445D749B0ED104613F534DD834B63D9A" Name="lib">
+        <Directory Id="dirE00BC2D7B7738A1AC7641506062BBC57" Name="gdk-pixbuf-2.0">
+          <Directory Id="dir5EC7CC42E68F4186442B5FE93C24DF1F" Name="2.10.0">
+            <Directory Id="dir3FF9C8FAB2C5EFE5B6FE57504EBE3186" Name="loaders">
+              <Component Win64="$(var.Win64)" Id="cmp0A65EC77C95F303FDE50FC39AD098AB1" Guid="*">
+                <File Id="fil49F025EBA9D1140C7009AA976FBE8FA2" KeyPath="yes" Source="$(var.SourceDir)/lib/gdk-pixbuf-2.0/2.10.0/loaders/libpixbufloader-svg.dll"/>
+              </Component>
+            </Directory>
+          </Directory>
+        </Directory>
+      </Directory>
+      <Directory Id="dirC9CBF0EAB47C9FE1EC3E1DF74B1145AB" Name="share">
+        <Directory Id="dirD7A052833C75896514FB2119EC7C2BD6" Name="thumbnailers">
+          <Component Win64="$(var.Win64)" Id="cmp12AB8C70459BB5E6C41D39CF16A6B578" Guid="*">
+            <File Id="fil813529753AC1F6BA3092BD2AF699890D" KeyPath="yes" Source="$(var.SourceDir)/share/thumbnailers/librsvg.thumbnailer"/>
+          </Component>
+        </Directory>
+      </Directory>
+    </DirectoryRef>
+  </Fragment>
+  <Fragment>
+    <ComponentGroup Id="CG.librsvg2">
+      <ComponentGroupRef Id="CG.gtk3"/>
+      <ComponentGroupRef Id="CG.libcroco"/>
+      <ComponentRef Id="cmp9AE88CD731B9D1B84CEA9A38B11CA1F6"/>
+      <ComponentRef Id="cmp81A1C1E9B324ED590B7F766F40A7D5B7"/>
+      <ComponentRef Id="cmp237C66D7E1EF3D3CAA94A503B0E26CCE"/>
+      <ComponentRef Id="cmp0A65EC77C95F303FDE50FC39AD098AB1"/>
+      <ComponentRef Id="cmp12AB8C70459BB5E6C41D39CF16A6B578"/>
+    </ComponentGroup>
+  </Fragment>
+</Include>
+<!-- generated with msitools 0.101.21-9162-dirty -->
+<!-- tools/wixl/wixl-heat -var var.SourceDir -p /usr/i686-w64-mingw32/sys-root/mingw/ -component-group CG.librsvg2 -directory-ref INSTALLDIR -win64 -->
