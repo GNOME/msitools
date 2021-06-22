@@ -32,6 +32,7 @@ wxi_data = files(
   'wixl/icu.wxi',
   'wixl/jasper.wxi',
   'wixl/json-glib.wxi',
+  'wixl/lcms2.wxi',
   'wixl/libcacard.wxi',
   'wixl/libcroco.wxi',
   'wixl/libepoxy.wxi',
