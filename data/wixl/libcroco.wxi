@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<?require glib2.wxi?>
+<?require libxml2.wxi?>
+<Include xmlns="http://schemas.microsoft.com/wix/2006/wi">
+  <Fragment>
+    <DirectoryRef Id="INSTALLDIR">
+      <Directory Id="dirDAFE6CE4EA704E2958C5FB855D95E404" Name="bin">
+        <Component Win64="$(var.Win64)" Id="cmp634D0EF72656491BB42875ED3F50C777" Guid="*">
+          <File Id="filA8D87CE33FE9B535C9BB6FEF980E2254" KeyPath="yes" Source="$(var.SourceDir)/bin/croco-0.6-config"/>
+        </Component>
+        <Component Win64="$(var.Win64)" Id="cmp1EF4D393045DF23957E97D2F68E42BCB" Guid="*">
+          <File Id="filEEFBC13554FB2F974CBDF952F66F96FD" KeyPath="yes" Source="$(var.SourceDir)/bin/csslint-0.6.exe"/>
+        </Component>
+        <Component Win64="$(var.Win64)" Id="cmp582A05D333028D71D96CA9AB85A155CE" Guid="*">
+          <File Id="filCB83FC709CBC88A6777BBADEA7B26280" KeyPath="yes" Source="$(var.SourceDir)/bin/libcroco-0.6-3.dll"/>
+        </Component>
+      </Directory>
+    </DirectoryRef>
+  </Fragment>
+  <Fragment>
+    <ComponentGroup Id="CG.libcroco">
+      <ComponentGroupRef Id="CG.glib2"/>		  
+      <ComponentGroupRef Id="CG.libxml2"/>		  
+      <ComponentRef Id="cmp634D0EF72656491BB42875ED3F50C777"/>
+      <ComponentRef Id="cmp1EF4D393045DF23957E97D2F68E42BCB"/>
+      <ComponentRef Id="cmp582A05D333028D71D96CA9AB85A155CE"/>
+    </ComponentGroup>
+  </Fragment>
+</Include>
+<!-- generated with msitools 0.101.22-990f-dirty -->
+<!-- tools/wixl/wixl-heat -var var.SourceDir -p /usr/i686-w64-mingw32/sys-root/mingw/ -component-group CG.libcroco -directory-ref INSTALLDIR -win64 -->

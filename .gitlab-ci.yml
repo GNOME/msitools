@@ -70,6 +70,8 @@ variables:
                 mingw64-jasper
                 mingw32-json-glib
                 mingw64-json-glib
+                mingw32-libcroco
+                mingw64-libcroco
                 mingw32-libepoxy
                 mingw64-libepoxy
                 mingw32-libffi

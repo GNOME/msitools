@@ -33,6 +33,7 @@ wxi_data = files(
   'wixl/jasper.wxi',
   'wixl/json-glib.wxi',
   'wixl/libcacard.wxi',
+  'wixl/libcroco.wxi',
   'wixl/libepoxy.wxi',
   'wixl/libffi.wxi',
   'wixl/libgcrypt.wxi',
