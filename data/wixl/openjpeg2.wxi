@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<?require gcc.wxi?>
+<Include xmlns="http://schemas.microsoft.com/wix/2006/wi">
+  <Fragment>
+    <DirectoryRef Id="INSTALLDIR">
+      <Directory Id="dir638A6A1ED11D14D93A69467925E6D31B" Name="bin">
+        <Component Win64="$(var.Win64)" Id="cmpAD99D482F25AED617CC50BC86B15D02E" Guid="*">
+          <File Id="filB950B6E60CBA0699E7FAB7461657338E" KeyPath="yes" Source="$(var.SourceDir)/bin/libopenjp2.dll"/>
+        </Component>
+      </Directory>
+    </DirectoryRef>
+  </Fragment>
+  <Fragment>
+    <ComponentGroup Id="CG.openjpeg2">
+      <ComponentGroupRef Id="CG.gcc"/>
+      <ComponentRef Id="cmpAD99D482F25AED617CC50BC86B15D02E"/>
+    </ComponentGroup>
+  </Fragment>
+</Include>
+<!-- generated with msitools 0.101.19-de2c-dirty -->
+<!-- tools/wixl/wixl-heat -var var.SourceDir -p /usr/i686-w64-mingw32/sys-root/mingw/ -component-group CG.openjpeg2 -directory-ref INSTALLDIR -win64 -->

@@ -112,6 +112,8 @@ variables:
                 mingw64-libxml2
                 mingw32-nettle
                 mingw64-nettle
+                mingw32-openjpeg2
+                mingw64-openjpeg2
                 mingw32-openssl
                 mingw64-openssl
                 mingw32-opus
