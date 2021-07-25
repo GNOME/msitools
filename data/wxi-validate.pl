@@ -59,6 +59,7 @@ my %dllbuiltin = (
     "dxgi.dll" => 1,
     "gdi32.dll" => 1,
     "gdiplus.dll" => 1,
+    "hid.dll" => 1,
     "imm32.dll" => 1,
     "iphlpapi.dll" => 1,
     "kernel32.dll" => 1,
