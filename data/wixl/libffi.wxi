@@ -5,7 +5,7 @@
     <DirectoryRef Id="INSTALLDIR">
       <Directory Id="dirB37BA35DC0E52FA4D62B8457EA52998D" Name="bin">
         <Component Win64="$(var.Win64)" Id="cmp4F67E190AA41922A005AF2B11F7D98C7" Guid="*">
-          <File Id="fil3C28FBAFB6D0436D0420107C1F59E022" KeyPath="yes" Source="$(var.SourceDir)/bin/libffi-6.dll"/>
+          <File Id="fil3C28FBAFB6D0436D0420107C1F59E022" KeyPath="yes" Source="$(var.SourceDir)/bin/libffi-8.dll"/>
         </Component>
       </Directory>
     </DirectoryRef>
