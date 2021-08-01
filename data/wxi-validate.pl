@@ -67,6 +67,7 @@ my %dllbuiltin = (
     "msimg32.dll" => 1,
     "msvcrt.dll" => 1,
     "mswsock.dll" => 1,
+    "ncrypt.dll" => 1,
     "ole32.dll" => 1,
     "oleaut32.dll" => 1,
     "opengl32.dll" => 1,
