@@ -203,11 +203,45 @@ namespace Wixl {
         private void hash_files () throws GLib.Error {
             foreach (var rec in db.table_file.records) {
                 var f = rec.get_data<WixFile> ("wixfile");
+                if (f.CompanionFile != null || f.DefaultVersion != null)
+                    // versioned/companion files don't need rows in hash table
+                    continue;
+                
                 var component = f.parent as WixComponent;
                 if (component.in_feature.length () == 0)
                     continue;
 
                 db.table_file_hash.add_with_file (f.Id, f.file);
+            }
+        }
+
+        /*
+         * CompanionFile attribute makes a file a companion child of another file, so referenced
+         * file must exist and the companion child must not be the key path of its component
+         * 
+         * See: https://docs.microsoft.com/en-us/windows/win32/msi/companion-files
+         */
+        private void validate_companion_files () throws GLib.Error {
+            var companionByFile = new HashTable<string, string?>(str_hash, str_equal);
+
+            foreach (var rec in db.table_file.records) {
+                var f = rec.get_data<WixFile> ("wixfile");
+                companionByFile.insert (f.Id, f.CompanionFile);
+                if (f.CompanionFile == null)
+                    continue;
+
+                var component = f.parent as WixComponent;
+                if (component.key != f)
+                    continue;
+
+                throw new Wixl.Error.FAILED ("companion file %s is key of its component".printf (f.Id));
+            }
+            
+            foreach (var companion in companionByFile.get_values ()) {
+                if (companion == null || companionByFile.contains (companion))
+                    continue;
+
+                throw new Wixl.Error.FAILED ("file %s referenced by CompanionFile does not exist".printf (companion));
             }
         }
 
@@ -276,6 +310,7 @@ namespace Wixl {
             shortcut_target ();
             sequence_actions ();
             hash_files ();
+            validate_companion_files ();
             build_cabinet ();
 
             return db;
@@ -689,8 +724,9 @@ namespace Wixl {
             FileInfo info;
             file.file = find_file (source, out info);
             var attr = FileAttribute.VITAL;
+            var version = file.CompanionFile ?? file.DefaultVersion;
 
-            var rec = db.table_file.add (file.Id, comp.Id, name, (int)info.get_size (), attr);
+            var rec = db.table_file.add (file.Id, comp.Id, name, (int)info.get_size (), attr, version);
             rec.set_data<WixFile> ("wixfile", file);
 
             visit_key_element (file);

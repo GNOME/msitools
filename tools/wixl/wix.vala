@@ -418,6 +418,8 @@ namespace Wixl {
         public string DiskId { get; set; }
         public string Source { get; set; }
         public string Name { get; set; }
+        public string DefaultVersion { get; set; }
+        public string CompanionFile { get; set; }
 
         public File file;
 
