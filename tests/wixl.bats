@@ -171,3 +171,11 @@ EOF
   run "$wixl" test.wxs
   [ "$status" -eq 1 ]
 }
+
+@test "wixl - UI ext" {
+  cd wixl
+  run "$wixl" -o out.msi TestUI.wxs --ext ui --extdir "$SRCDIR/data/ext"
+  [ "$status" -eq 0 ]
+  # FIXME: add tons of tests on out.msi
+  test -f out.msi
+}
