@@ -956,6 +956,10 @@ namespace Wixl {
 
         public string DowngradeErrorMessage { get; set; }
 
+        public string AllowSameVersionUpgrades { get; set; }
+
+        public string AllowDowngrades { get; set; }
+
         public override void accept (WixNodeVisitor visitor) throws GLib.Error {
             visitor.visit_major_upgrade (this);
         }

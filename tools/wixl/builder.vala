@@ -1121,15 +1121,24 @@ namespace Wixl {
             var product = major.parent as WixProduct;
 
             var property = "WIX_DOWNGRADE_DETECTED";
-            db.table_upgrade.add (get_uuid (product.UpgradeCode), product.Version, "", 2, property);
-
+            if (major.AllowDowngrades == "yes") {
+                db.table_upgrade.add (get_uuid (product.UpgradeCode), product.Version, "", UpgradeAttribute.MIGRATE_FEATURES, property);
+            } else {
+                db.table_upgrade.add (get_uuid (product.UpgradeCode), product.Version, "", UpgradeAttribute.ONLY_DETECT, property);
+            }
             secureProperties += property;
+
+            if (major.AllowSameVersionUpgrades == "yes") {
+                property = "WIX_SAME_VERSION_UPGRADE_DETECTED";
+                db.table_upgrade.add (get_uuid (product.UpgradeCode), product.Version, product.Version, UpgradeAttribute.MIGRATE_FEATURES | UpgradeAttribute.VERSION_MIN_INCLUSIVE | UpgradeAttribute.VERSION_MAX_INCLUSIVE, property);
+                secureProperties += property;
+            }
 
             property = "WIX_UPGRADE_DETECTED";
-            db.table_upgrade.add (get_uuid (product.UpgradeCode), "", product.Version, 1, property);
+            db.table_upgrade.add (get_uuid (product.UpgradeCode), "", product.Version, UpgradeAttribute.MIGRATE_FEATURES, property);
             secureProperties += property;
 
-            if (major.DowngradeErrorMessage != null) {
+            if (major.DowngradeErrorMessage != null && major.AllowDowngrades != "yes") {
                 db.table_launch_condition.add ("NOT WIX_DOWNGRADE_DETECTED", major.DowngradeErrorMessage);
             }
 
