@@ -19,6 +19,19 @@ namespace Wixl {
             return enum_from_string<Extension> (s);
         }
 
+        public string[] get_files () {
+            switch (this) {
+                case UI:
+                    // these files are assumed to be available and aren't
+                    // explicitly loaded by any of the other UI files
+                    return new string[] {
+                        "CancelDlg",
+                        "Common",
+                    };
+                default: return new string[] {};
+            };
+        }
+
         public string get_dir () {
             switch (this) {
                 case UI: return "ui";
@@ -46,6 +59,17 @@ namespace Wixl {
 
             if (extensions.length > 0) {
                 add_path (File.new_for_path (extdir).get_path ());
+            }
+
+            foreach (var ext in this.extensions) {
+                try {
+                    foreach (var file in ext.get_files ()) {
+                        load_extension_file(ext, file);
+                    }
+                } catch (GLib.Error error) {
+                    printerr (error.message + "\n");
+                    Posix.exit (1);
+                }
             }
         }
 
