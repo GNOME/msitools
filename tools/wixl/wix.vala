@@ -801,16 +801,25 @@ namespace Wixl {
                     "CostInitialize",
                     "Custom",
                     "ExecuteAction",
+                    "ExitDialog",
+                    "FatalError",
                     "FileCost",
                     "FindRelatedProducts",
                     "IsolateComponents",
                     "LaunchConditions",
+                    "MaintenanceWelcomeDlg",
                     "MigrateFeatureStates",
+                    "PrepareDlg",
+                    "ProgressDlg",
                     "ResolveSource",
+                    "ResumeDlg",
                     "RMCCPSearch",
                     "ScheduleReboot",
                     "Show",
-                    "ValidateProductID" })
+                    "UserExit",
+                    "ValidateProductID",
+                    "WelcomeDlg",
+                    "WelcomeEulaDlg" })
                 child_types->insert (action, typeof (WixAction));
         }
     }
@@ -845,6 +854,8 @@ namespace Wixl {
                     "CostInitialize",
                     "Custom",
                     "ExecuteAction",
+                    "ExitDialog",
+                    "FatalError",
                     "FileCost",
                     "InstallAdminPackage",
                     "InstallFiles",
@@ -852,7 +863,8 @@ namespace Wixl {
                     "InstallInitialize",
                     "InstallValidate",
                     "LaunchConditions",
-                    "Show" })
+                    "Show",
+                    "UserExit" })
                 child_types->insert (action, typeof (WixAction));
         }
     }
