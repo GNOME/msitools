@@ -20,6 +20,238 @@ namespace Wixl {
         }
     }
 
+    /* https://docs.microsoft.com/en-us/windows/win32/msi/checkbox-table */
+    class MsiTableCheckBox: MsiTable {
+        static construct {
+            name = "CheckBox";
+            sql_create = "CREATE TABLE `CheckBox` (`Property` CHAR(72) NOT NULL, `Value` CHAR(64) PRIMARY KEY `Property`)";
+            sql_insert = "INSERT INTO `CheckBox` (`Property`, `Value`) VALUES (?, ?)";
+        }
+
+        public void add (string property, string? value) throws GLib.Error {
+            var rec = new Libmsi.Record (2);
+
+            if (!rec.set_string (1, property) ||
+                (value != null && !rec.set_string (2, value)))
+                throw new Wixl.Error.FAILED ("failed to add record");
+
+            records.append (rec);
+        }
+    }
+
+    /* https://docs.microsoft.com/en-us/windows/win32/msi/eventmapping-table */
+    class MsiTableEventMapping: MsiTable {
+        static construct {
+            name = "EventMapping";
+            sql_create = "CREATE TABLE `EventMapping` (`Dialog_` CHAR(72) NOT NULL, `Control_` CHAR(50) NOT NULL, `Event` CHAR(50) NOT NULL, `Attribute` CHAR(50) NOT NULL PRIMARY KEY `Dialog_`, `Control_`, `Event`)";
+            sql_insert = "INSERT INTO `EventMapping` (`Dialog_`, `Control_`, `Event`, `Attribute`) VALUES (?, ?, ?, ?)";
+        }
+
+        public void add (string dialog, string control, string event, string attribute) throws GLib.Error {
+            var rec = new Libmsi.Record (4);
+
+            if (!rec.set_string (1, dialog) ||
+                !rec.set_string (2, control) ||
+                !rec.set_string (3, event) ||
+                !rec.set_string (4, attribute))
+                throw new Wixl.Error.FAILED ("failed to add record");
+
+            records.append (rec);
+        }
+    }
+
+    /* https://docs.microsoft.com/en-us/windows/win32/msi/control-table */
+    class MsiTableControl: MsiTable {
+        static construct {
+            name = "Control";
+            sql_create = "CREATE TABLE `Control` (`Dialog_` CHAR(72) NOT NULL, `Control` CHAR(50) NOT NULL, `Type` CHAR(20) NOT NULL, `X` INT NOT NULL, `Y` INT NOT NULL, `Width` INT NOT NULL, `Height` INT NOT NULL, `Attributes` LONG, `Property` CHAR(72), `Text` CHAR(0) LOCALIZABLE, `Control_Next` CHAR(50), `Help` CHAR(50) LOCALIZABLE PRIMARY KEY `Dialog_`, `Control`)";
+            sql_insert = "INSERT INTO `Control` (`Dialog_`, `Control`, `Type`, `X`, `Y`, `Width`, `Height`, `Attributes`, `Property`, `Text`, `Control_Next`, `Help`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        }
+
+        // control in tab order needs updating after record has been added
+        public bool set_next_control (Libmsi.Record rec, string next_control) {
+            return rec.set_string (11, next_control);
+        }
+
+        public Libmsi.Record add (string dialog, string control, string type, int x, int y, int width, int height, int attributes, string? property, string? text, string? filename, string? help) throws GLib.Error {
+            var rec = new Libmsi.Record (12);
+
+            if (text != null) {
+                if (!rec.set_string (10, text)) {
+                    throw new Wixl.Error.FAILED ("failed to set record");
+                }
+            } else if (filename != null) {
+                if (!rec.load_stream (10, filename)) {
+                    throw new Wixl.Error.FAILED ("failed to set record");
+                }
+            }
+
+            if (!rec.set_string (1, dialog) ||
+                !rec.set_string (2, control) ||
+                !rec.set_string (3, type) ||
+                !rec.set_int (4, x) ||
+                !rec.set_int (5, y) ||
+                !rec.set_int (6, width) ||
+                !rec.set_int (7, height) ||
+                (attributes > 0 && !rec.set_int (8, attributes)) ||
+                (property != null && !rec.set_string (9, property)) ||
+                (help != null && !rec.set_string (12, help)))
+                throw new Wixl.Error.FAILED ("failed to add record");
+
+            records.append (rec);
+
+            // keep the record so that the next control can be updated
+            return rec;
+        }
+    }
+
+    /* https://docs.microsoft.com/en-us/windows/win32/msi/uitext-table */
+    class MsiTableUIText: MsiTable {
+        static construct {
+            name = "UIText";
+            sql_create = "CREATE TABLE `UIText` (`Key` CHAR(72) NOT NULL, `Text` CHAR(255) LOCALIZABLE PRIMARY KEY `Key`)";
+            sql_insert = "INSERT INTO `UIText` (`Key`, `Text`) VALUES (?, ?)";
+        }
+
+        public void add (string key, string? text) throws GLib.Error {
+            var rec = new Libmsi.Record (2);
+
+            if (!rec.set_string (1, key) ||
+                (text != null && !rec.set_string (2, text)))
+                throw new Wixl.Error.FAILED ("failed to add record");
+
+            records.append (rec);
+        }
+    }
+
+    /* https://docs.microsoft.com/en-us/windows/win32/msi/textstyle-table */
+    class MsiTableTextStyle: MsiTable {
+        static construct {
+            name = "TextStyle";
+            sql_create = "CREATE TABLE `TextStyle` (`TextStyle` CHAR(72) NOT NULL, `FaceName` CHAR(32) NOT NULL, `Size` INT NOT NULL, `Color` LONG, `StyleBits` INT PRIMARY KEY `TextStyle`)";
+            sql_insert = "INSERT INTO `TextStyle` (`TextStyle`, `FaceName`, `Size`, `Color`, `StyleBits`) VALUES (?, ?, ?, ?, ?)";
+        }
+
+        public void add (string textstyle, string facename, int size, int? color = null, int stylebits = 0) throws GLib.Error {
+            var rec = new Libmsi.Record (5);
+
+            if (!rec.set_string (1, textstyle) ||
+                !rec.set_string (2, facename) ||
+                !rec.set_int (3, size) ||
+                (color != null && !rec.set_int (4, color)) ||
+                (stylebits > 0 && !rec.set_int (5, stylebits)))
+                throw new Wixl.Error.FAILED ("failed to add record");
+
+            records.append (rec);
+        }
+    }
+
+    /* https://docs.microsoft.com/en-us/windows/win32/msi/dialog-table */
+    class MsiTableDialog: MsiTable {
+        static construct {
+            name = "Dialog";
+            sql_create = "CREATE TABLE `Dialog` (`Dialog` CHAR(72) NOT NULL, `HCentering` INT NOT NULL, `VCentering` INT NOT NULL, `Width` INT NOT NULL, `Height` INT NOT NULL, `Attributes` LONG, `Title` CHAR(128) LOCALIZABLE, `Control_First` CHAR(50) NOT NULL, `Control_Default` CHAR(50), `Control_Cancel` CHAR(50) PRIMARY KEY `Dialog`)";
+            sql_insert = "INSERT INTO `Dialog` (`Dialog`, `HCentering`, `VCentering`, `Width`, `Height`, `Attributes`, `Title`, `Control_First`, `Control_Default`, `Control_Cancel`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        }
+
+        public void add (string dialog, int hcenter, int vcenter, int width, int height, int attributes, string? title, string first, string? default, string? cancel) throws GLib.Error {
+            var rec = new Libmsi.Record (10);
+
+            if (!rec.set_string (1, dialog) ||
+                !rec.set_int (2, hcenter) ||
+                !rec.set_int (3, vcenter) ||
+                !rec.set_int (4, width) ||
+                !rec.set_int (5, height) ||
+                !rec.set_int (6, attributes) ||
+                (title != null && !rec.set_string (7, title)) ||
+                !rec.set_string (8, first) ||
+                (default != null && !rec.set_string (9, default)) ||
+                (cancel != null && !rec.set_string (10, cancel)))
+                throw new Wixl.Error.FAILED ("failed to add record");
+
+            records.append (rec);
+        }
+    }
+
+    /* https://docs.microsoft.com/en-us/windows/win32/msi/controlevent-table */
+    class MsiTableControlEvent: MsiTable {
+        static construct {
+            name = "ControlEvent";
+            sql_create = "CREATE TABLE `ControlEvent` (`Dialog_` CHAR(72) NOT NULL, `Control_` CHAR(50) NOT NULL, `Event` CHAR(50) NOT NULL, `Argument` CHAR(255) NOT NULL, `Condition` CHAR(255), `Ordering` INT PRIMARY KEY `Dialog_`, `Control_`, `Event`, `Argument`, `Condition`)";
+            sql_insert = "INSERT INTO `ControlEvent` (`Dialog_`, `Control_`, `Event`, `Argument`, `Condition`, `Ordering`) VALUES (?, ?, ?, ?, ?, ?)";
+        }
+
+        public void add (string dialog, string control, string event, string argument, string? condition, int? ordering) throws GLib.Error {
+            var rec = new Libmsi.Record (6);
+
+            if (!rec.set_string (1, dialog) ||
+                !rec.set_string (2, control) ||
+                !rec.set_string (3, event) ||
+                !rec.set_string (4, argument) ||
+                (condition != null && !rec.set_string (5, condition)) ||
+                (ordering != null && !rec.set_int (6, ordering)))
+                throw new Wixl.Error.FAILED ("failed to add record");
+
+            records.append (rec);
+        }
+    }
+
+    /* https://docs.microsoft.com/en-us/windows/win32/msi/controlcondition-table */
+    class MsiTableControlCondition: MsiTable {
+        static construct {
+            name = "ControlCondition";
+            sql_create = "CREATE TABLE `ControlCondition` (`Dialog_` CHAR(72) NOT NULL, `Control_` CHAR(50) NOT NULL, `Action` CHAR(50) NOT NULL, `Condition` CHAR(255) NOT NULL PRIMARY KEY `Dialog_`, `Control_`, `Action`, `Condition`)";
+            sql_insert = "INSERT INTO `ControlCondition` (`Dialog_`, `Control_`, `Action`, `Condition`) VALUES (?, ?, ?, ?)";
+        }
+
+        public void add (string dialog, string control, string action, string condition) throws GLib.Error {
+            var rec = new Libmsi.Record (4);
+
+            if (!rec.set_string (1, dialog) ||
+                !rec.set_string (2, control) ||
+                !rec.set_string (3, action) ||
+                !rec.set_string (4, condition))
+                throw new Wixl.Error.FAILED ("failed to add record");
+
+            records.append (rec);
+        }
+    }
+
+    /* https://docs.microsoft.com/en-us/windows/win32/msi/listbox-table */
+    class MsiTableListBox: MsiTable {
+        static construct {
+            name = "ListBox";
+            sql_create = "CREATE TABLE `ListBox` (`Property` CHAR(72) NOT NULL, `Order` INT NOT NULL, `Value` CHAR(64) NOT NULL, `Text` CHAR(64) LOCALIZABLE PRIMARY KEY `Property`, `Order`)";
+            sql_insert = "INSERT INTO `ListBox` (`Property`, `Order`, `Value`, `Text`) VALUES (?, ?, ?, ?)";
+        }
+    }
+
+    /* https://docs.microsoft.com/en-us/windows/win32/msi/radiobutton-table */
+    class MsiTableRadioButton: MsiTable {
+        static construct {
+            name = "RadioButton";
+            sql_create = "CREATE TABLE `RadioButton` (`Property` CHAR(72) NOT NULL, `Order` INT NOT NULL, `Value` CHAR(64) NOT NULL, `X` INT NOT NULL, `Y` INT NOT NULL, `Width` INT NOT NULL, `Height` INT NOT NULL, `Text` CHAR(0) LOCALIZABLE, `Help` CHAR(50) LOCALIZABLE PRIMARY KEY `Property`, `Order`)";
+            sql_insert = "INSERT INTO `RadioButton` (`Property`, `Order`, `Value`, `X`, `Y`, `Width`, `Height`, `Text`, `Help`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        }
+
+        public void add (string property, int order, string value, int x, int y, int width, int height, string? text, string? help) throws GLib.Error {
+            var rec = new Libmsi.Record (9);
+
+            if (!rec.set_string (1, property) ||
+                !rec.set_int (2, order) ||
+                !rec.set_string (3, value) ||
+                !rec.set_int (4, x) ||
+                !rec.set_int (5, y) ||
+                !rec.set_int (6, width) ||
+                !rec.set_int (7, height) ||
+                (text != null && !rec.set_string (8, text)) ||
+                (help != null && !rec.set_string (9, help)))
+                throw new Wixl.Error.FAILED ("failed to add record");
+
+            records.append (rec);
+        }
+    }
+
     class MsiTableFileHash: MsiTable {
         static construct {
             name = "MsiFileHash";
@@ -819,6 +1051,16 @@ namespace Wixl {
         public MsiTableCreateFolder table_create_folder;
         public MsiTableSignature table_signature;
         public MsiTableFileHash table_file_hash;
+        public MsiTableCheckBox table_check_box;
+        public MsiTableEventMapping table_event_mapping;
+        public MsiTableControl table_control;
+        public MsiTableUIText table_ui_text;
+        public MsiTableTextStyle table_text_style;
+        public MsiTableDialog table_dialog;
+        public MsiTableControlEvent table_control_event;
+        public MsiTableControlCondition table_control_condition;
+        public MsiTableListBox table_list_box;
+        public MsiTableRadioButton table_radio_button;
 
         public HashTable<string, MsiTable> tables;
 
@@ -924,6 +1166,33 @@ namespace Wixl {
                 tables.insert (t.name, t);
             }
 
+            if (Extension.UI in extensions) {
+                table_check_box = new MsiTableCheckBox ();
+                table_control = new MsiTableControl ();
+                table_control_condition = new MsiTableControlCondition ();
+                table_control_event = new MsiTableControlEvent ();
+                table_dialog = new MsiTableDialog ();
+                table_event_mapping = new MsiTableEventMapping ();
+                table_list_box = new MsiTableListBox ();
+                table_radio_button = new MsiTableRadioButton ();
+                table_text_style = new MsiTableTextStyle ();
+                table_ui_text = new MsiTableUIText ();
+
+                foreach (var t in new MsiTable[] {
+                        table_check_box,
+                        table_control,
+                        table_control_condition,
+                        table_control_event,
+                        table_dialog,
+                        table_event_mapping,
+                        table_list_box,
+                        table_radio_button,
+                        table_text_style,
+                        table_ui_text,
+                    }) {
+                    tables.insert (t.name, t);
+                }
+            }
         }
 
         public void build (string filename) throws GLib.Error {
