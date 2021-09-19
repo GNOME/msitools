@@ -342,7 +342,7 @@ namespace Wixl {
         public class Action {
             public string name;
             public string? condition;
-            public int sequence = -1;
+            public int sequence = -999;
             public WixAction? action;
 
             public bool visited = false;
@@ -414,7 +414,7 @@ namespace Wixl {
         void add_implicit_deps () {
             Action? prev = null;
             foreach (var a in sorted_actions()) {
-                if (a.sequence == -1)
+                if (a.sequence == -999)
                     continue;
                 if (prev != null)
                     a.add_dep (prev);
@@ -428,7 +428,7 @@ namespace Wixl {
 
             int sequence = 0;
             foreach (var action in sorted) {
-                if (action.sequence == -1)
+                if (action.sequence == -999)
                     action.sequence = ++sequence;
 
                 sequence = action.sequence;
