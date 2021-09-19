@@ -43,6 +43,10 @@ namespace Wixl {
             this.arch = arch;
             this.extensions = extensions;
             this.extdir = extdir;
+
+            if (extensions.length > 0) {
+                add_path (File.new_for_path (extdir).get_path ());
+            }
         }
 
         WixRoot root;
