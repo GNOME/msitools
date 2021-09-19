@@ -12,19 +12,31 @@ namespace Wixl {
         }
     }
 
+    enum Extension {
+        UI = 0;
+
+        public static Extension from_string(string s) throws GLib.Error {
+            return enum_from_string<Extension> (s);
+        }
+    }
+
     class WixBuilder: WixNodeVisitor, WixResolver {
 
-        public WixBuilder (string[] includedirs, Arch arch) {
+        public WixBuilder (string[] includedirs, Arch arch, Extension[] extensions, string extdir) {
             add_path (".");
             foreach (var i in includedirs)
                 this.includedirs.append (File.new_for_path (i));
             this.arch = arch;
+            this.extensions = extensions;
+            this.extdir = extdir;
         }
 
         WixRoot root;
         MsiDatabase db;
         HashTable<string, string> variables;
         List<File> includedirs;
+        string extdir;
+        Extension[] extensions;
         Arch arch;
 
         construct {
@@ -264,7 +276,7 @@ namespace Wixl {
         }
 
         public MsiDatabase build () throws GLib.Error {
-            db = new MsiDatabase (arch);
+            db = new MsiDatabase (arch, extensions);
 
             foreach (var r in roots) {
                 root = r;

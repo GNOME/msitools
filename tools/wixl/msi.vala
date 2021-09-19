@@ -787,7 +787,8 @@ namespace Wixl {
     }
 
     class MsiDatabase: Object {
-        public Arch arch { get; construct set; }
+        public Arch arch;
+        public Extension[] extensions;
 
         public MsiSummaryInfo info;
         public MsiTableProperty table_property;
@@ -835,7 +836,10 @@ namespace Wixl {
                 return "x64";
         }
 
-        construct {
+        public MsiDatabase (Arch arch, Extension[] extensions) {
+            this.arch = arch;
+            this.extensions = extensions;
+
             info = new MsiSummaryInfo ();
             try {
                 info.set_property (Libmsi.Property.TITLE, "Installation Database");
@@ -919,10 +923,7 @@ namespace Wixl {
                 }) {
                 tables.insert (t.name, t);
             }
-        }
 
-        public MsiDatabase (Arch arch) {
-            Object (arch: arch);
         }
 
         public void build (string filename) throws GLib.Error {
