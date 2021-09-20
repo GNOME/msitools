@@ -12,19 +12,73 @@ namespace Wixl {
         }
     }
 
+    enum Extension {
+        UI = 0;
+
+        public static Extension from_string(string s) throws GLib.Error {
+            return enum_from_string<Extension> (s);
+        }
+
+        public string[] get_files () {
+            switch (this) {
+                case UI:
+                    // these files are assumed to be available and aren't
+                    // explicitly loaded by any of the other UI files
+                    return new string[] {
+                        "CancelDlg",
+                        "Common",
+                    };
+                default: return new string[] {};
+            };
+        }
+
+        public string get_dir () {
+            switch (this) {
+                case UI: return "ui";
+                default: return "";
+            };
+        }
+
+        public string to_string () {
+            switch (this) {
+                case UI: return "ui";
+                default: return "";
+            };
+        }
+    }
+
     class WixBuilder: WixNodeVisitor, WixResolver {
 
-        public WixBuilder (string[] includedirs, Arch arch) {
+        public WixBuilder (string[] includedirs, Arch arch, Extension[] extensions, string extdir) {
             add_path (".");
             foreach (var i in includedirs)
                 this.includedirs.append (File.new_for_path (i));
             this.arch = arch;
+            this.extensions = extensions;
+            this.extdir = extdir;
+
+            if (extensions.length > 0) {
+                add_path (File.new_for_path (extdir).get_path ());
+            }
+
+            foreach (var ext in this.extensions) {
+                try {
+                    foreach (var file in ext.get_files ()) {
+                        load_extension_file(ext, file);
+                    }
+                } catch (GLib.Error error) {
+                    printerr (error.message + "\n");
+                    Posix.exit (1);
+                }
+            }
         }
 
         WixRoot root;
         MsiDatabase db;
         HashTable<string, string> variables;
         List<File> includedirs;
+        string extdir;
+        Extension[] extensions;
         Arch arch;
 
         construct {
@@ -55,6 +109,14 @@ namespace Wixl {
                 default:
                     break;
                 }
+            }
+        }
+
+        public void load_extension_file(Extension ext, string name) throws GLib.Error {
+            if (ext in extensions) {
+                load_file(File.new_build_filename (extdir, ext.get_dir(), name + ".wxs"));
+            } else {
+                throw new Wixl.Error.FAILED ("Can't load '%s': extension '%s' isn't enabled", name, ext.to_string());
             }
         }
 
@@ -116,6 +178,11 @@ namespace Wixl {
             add (MSIDefault.Action.FileCost);
             add (MSIDefault.Action.CostFinalize);
             add (MSIDefault.Action.ExecuteAction);
+            if (Extension.UI in extensions) {
+                add (MSIDefault.Action.FatalError);
+                add (MSIDefault.Action.UserExit);
+                add (MSIDefault.Action.ExitDialog);
+            }
             table.add_sorted_actions ();
 
             // AdvtExecuteSequence
@@ -188,6 +255,17 @@ namespace Wixl {
             add (MSIDefault.Action.FileCost);
             add (MSIDefault.Action.CostFinalize);
             add (MSIDefault.Action.ExecuteAction);
+            if (Extension.UI in extensions) {
+                add (MSIDefault.Action.FatalError);
+                add (MSIDefault.Action.UserExit);
+                add (MSIDefault.Action.ExitDialog);
+                add (MSIDefault.Action.PrepareDlg);
+                add (MSIDefault.Action.ProgressDlg);
+                add (MSIDefault.Action.ResumeDlg);
+                add (MSIDefault.Action.WelcomeDlg);
+                add (MSIDefault.Action.WelcomeEulaDlg);
+                add (MSIDefault.Action.MaintenanceWelcomeDlg);
+            }
             if (db.table_upgrade.records.length () > 0) {
                 add (MSIDefault.Action.FindRelatedProducts);
                 add (MSIDefault.Action.MigrateFeatureStates);
@@ -264,7 +342,7 @@ namespace Wixl {
         }
 
         public MsiDatabase build () throws GLib.Error {
-            db = new MsiDatabase (arch);
+            db = new MsiDatabase (arch, extensions);
 
             foreach (var r in roots) {
                 root = r;
@@ -769,23 +847,41 @@ namespace Wixl {
 
             if (action.name == "Custom")
                 action.name = action.Action;
+            if (action.name == "Show")
+                action.name = action.Dialog;
 
             var node = table.get_action (action.name);
-            warn_if_fail (node.action == null);
-            node.action = action;
 
-            if (action.Sequence != null)
-                node.sequence = int.parse (action.Sequence);
-
-            if (action.After != null)
-                node.add_dep (table.get_action (action.After));
-
-            if (action.Before != null) {
-                var before = table.get_action (action.Before);
-                before.add_dep (node);
+            if ( node.action != null ) {
+                return;
             }
 
-            if (action.children.length () > 0) {
+            node.action = action;
+
+            if (action.OnExit != null) {
+                if (action.OnExit == "success") node.sequence = -1;
+                if (action.OnExit == "cancel") node.sequence = -2;
+                if (action.OnExit == "error") node.sequence = -3;
+                if (action.OnExit == "suspend") node.sequence = -4;
+            } else {
+                if (action.Sequence != null) {
+                    node.sequence = int.parse (action.Sequence);
+                }
+
+                if (action.After != null) {
+                    node.add_dep (table.get_action (action.After));
+                }
+
+                if (action.Before != null) {
+                    var before = table.get_action (action.Before);
+                    before.add_dep (node);
+                }
+            }
+
+            // set condition from either an attribute or inner text
+            if (action.Condition != null) {
+                node.condition = action.Condition;
+            } else if (action.children.length () > 0) {
                 return_if_fail (action.children.length () == 1);
                 var text = action.children.first ().data as WixText;
                 node.condition = text.Text;
@@ -1154,6 +1250,406 @@ namespace Wixl {
             media.Cabinet = "cab1.cab";
             media.Id = "1";
             visit_media (media);
+        }
+
+        public override void visit_ui_ref (WixUIRef ref) throws GLib.Error {
+            if (find_element<WixUI>(@ref.Id) == null) {
+                load_extension_file(Extension.UI, @ref.Id);
+            }
+        }
+
+        public override void visit_ui_text (WixUIText text) throws GLib.Error {
+            db.table_ui_text.add (text.Id, text.Value);
+        }
+
+        public override void visit_text_element (WixTextElement text) throws GLib.Error {
+            // set the Text value of the parent control
+            var control = text.parent as WixControl;
+
+            if (text.SourceFile != null) {
+                // use the contents of the given file
+                string data;
+                File file = find_file (text.SourceFile, null);
+                FileUtils.get_contents (file.get_path (), out data);
+                control.Text = data;
+            } else if (text.children.length () > 0) {
+                // use the inner text from this element
+                return_if_fail (text.children.length () == 1);
+                var node = text.children.first ().data as WixText;
+                control.Text = node.Text;
+            }
+        }
+
+        [Flags]
+        enum TextStyleBits {
+            BOLD = 1 << 0,
+            ITALIC = 1 << 1,
+            UNDERLINE = 1 << 2,
+            STRIKE = 1 << 3,
+        }
+
+        public override void visit_text_style (WixTextStyle style) throws GLib.Error {
+            int? color = null;
+            TextStyleBits bits = 0;
+
+            if (style.Blue != null || style.Green != null ||
+                    style.Red != null) {
+
+                color = 0;
+
+                if (style.Blue != null)
+                    color += 65536 * int.parse (style.Blue);
+                if (style.Green != null)
+                    color += 256 * int.parse (style.Green);
+                if (style.Red != null)
+                    color += int.parse (style.Red);
+            }
+
+            if (parse_yesno (style.Bold))
+                bits |= TextStyleBits.BOLD;
+            if (parse_yesno (style.Italic))
+                bits |= TextStyleBits.ITALIC;
+            if (parse_yesno (style.Underline))
+                bits |= TextStyleBits.UNDERLINE;
+            if (parse_yesno (style.Strike))
+                bits |= TextStyleBits.STRIKE;
+
+            db.table_text_style.add (style.Id, style.FaceName,
+                    int.parse (style.Size), color, bits);
+        }
+
+        [Flags]
+        enum DialogStyleBits {
+            VISIBLE = 1 << 0,
+            MODAL = 1 << 1,
+            MINIMIZE = 1 << 2,
+            SYS_MODAL = 1 << 3,
+            KEEP_MODELESS = 1 << 4,
+            TRACK_DISK_SPACE = 1 << 5,
+            USE_CUSTOM_PALETTE = 1 << 6,
+            RTLRO = 1 << 7,
+            RIGHT_ALIGNED = 1 << 8,
+            LEFT_SCROLL = 1 << 9,
+            BIDI = RTLRO | RIGHT_ALIGNED | LEFT_SCROLL,
+            ERROR = 1 << 16,
+        }
+
+        public override void visit_dialog (WixDialog dialog) throws GLib.Error {
+            int hcenter = 50;
+            int vcenter = 50;
+            int attributes = 0;
+            int width = int.parse (dialog.Width);
+            int height = int.parse (dialog.Height);
+
+            if (!parse_yesno (dialog.Hidden))
+                attributes |= DialogStyleBits.VISIBLE;
+            if (!parse_yesno (dialog.Modeless))
+                attributes |= DialogStyleBits.MODAL;
+            if (!parse_yesno (dialog.NoMinimize))
+                attributes |= DialogStyleBits.MINIMIZE;
+            if (parse_yesno (dialog.KeepModeless))
+                attributes |= DialogStyleBits.KEEP_MODELESS;
+            if (parse_yesno (dialog.TrackDiskSpace))
+                attributes |= DialogStyleBits.TRACK_DISK_SPACE;
+            if (parse_yesno (dialog.CustomPalette))
+                attributes |= DialogStyleBits.USE_CUSTOM_PALETTE;
+            if (parse_yesno (dialog.RightToLeft))
+                attributes |= DialogStyleBits.RTLRO;
+            if (parse_yesno (dialog.RightAligned))
+                attributes |= DialogStyleBits.RIGHT_ALIGNED;
+            if (parse_yesno (dialog.LeftScroll))
+                attributes |= DialogStyleBits.LEFT_SCROLL;
+            if (parse_yesno (dialog.ErrorDialog))
+                attributes |= DialogStyleBits.ERROR;
+
+            WixControl first = dialog.children.first().data as WixControl;
+
+            db.table_dialog.add (dialog.Id, hcenter, vcenter, width, height,
+                    attributes, dialog.Title, first.Id,
+                    dialog.Default, dialog.Cancel);
+
+            // do this after we know what all the children are, which means
+            // keeping a reference to the record so it can be updated in place
+
+            // loop over all the children and update the tab selection order
+            // of the controls, ignoring some controls
+            WixControl? firsttab = null;
+            WixControl? prevtab = null;
+
+            foreach (var child in dialog.children) {
+                var control = child as WixControl;
+
+                if (control.Type != "Bitmap" && control.Type != "CheckBox" &&
+                        control.Type != "PushButton" &&
+                        control.Type != "RadioButtonGroup") {
+                    continue;
+                }
+
+                if (control.TabSkip != null && parse_yesno (control.TabSkip)) {
+                    continue;
+                }
+
+                if (firsttab == null) {
+                    firsttab = control;
+                }
+
+                if (prevtab != null) {
+                    db.table_control.set_next_control (prevtab.record, control.Id);
+                }
+
+                prevtab = control;
+            }
+
+            if (prevtab != null && firsttab != null && prevtab != firsttab) {
+                db.table_control.set_next_control (prevtab.record, firsttab.Id);
+            }
+        }
+
+        public override void visit_dialog_ref (WixDialogRef ref) throws GLib.Error {
+            if (find_element<WixDialog>(@ref.Id) == null) {
+                load_extension_file(Extension.UI, @ref.Id);
+            }
+        }
+
+        [Flags]
+        enum ControlAttributes {
+            BIDI = 0xE0,
+            ENABLED = 0x02,
+            INDIRECT = 0x08,
+            INTEGER_CONTROL = 0x10,
+            LEFT_SCROLL = 0x80,
+            RIGHT_ALIGNED = 0x40,
+            RTLRO = 0x20,
+            SUNKEN = 0x04,
+            VISIBLE = 0x01,
+            // Text
+            FORMAT_SIZE = 0x080000,
+            NO_PREFIX = 0x020000,
+            NO_WRAP = 0x040000,
+            PASSWORD = 0x200000,
+            TRANSPARENT = 0x010000,
+            USERS_LANGUAGE = 0x100000,
+            // ProgressBar
+            PROGRESS_95 = 0x010000,
+            // Volume and Directory
+            FIXED_VOLUME = 0x020000,
+            REMOTE_VOLUME = 0x040000,
+            // PictureButton
+            BITMAP = 0x040000,
+            FIXED_SIZE = 0x100000,
+            ICON = 0x080000,
+            ICON_SIZE_16 = 0x200000,
+            ICON_SIZE_32 = 0x400000,
+            ICON_SIZE_48 = 0x600000,
+            // PushButton
+            ELEVATION_SHIELD = 0x800000,
+            // VolumeCostList
+            SHOW_ROLLBACK_COST = 0x00400000,
+        }
+
+        public override void visit_control (WixControl control) throws GLib.Error {
+            int attributes = 0;
+            int x = 100;
+            int y = 100;
+            int width = 500;
+            int height = 500;
+            string? filename = null;
+            string help;
+
+            if (!(control.parent is WixDialog)) {
+                error ("unhandled parent type %s", control.parent.name);
+            }
+
+            // static controls don't need to be enabled
+            if (control.Type != "Line" && control.Type != "Bitmap" &&
+                    control.Type != "Icon") {
+                if (!parse_yesno (control.Disabled))
+                    attributes |= ControlAttributes.ENABLED;
+            }
+            if (parse_yesno (control.Sunken))
+                attributes |= ControlAttributes.SUNKEN;
+            if (!parse_yesno (control.Hidden))
+                attributes |= ControlAttributes.VISIBLE;
+
+            // Text
+            if (parse_yesno (control.NoPrefix))
+                attributes |= ControlAttributes.NO_PREFIX;
+            if (parse_yesno (control.Transparent))
+                attributes |= ControlAttributes.TRANSPARENT;
+
+            // ProgressBar
+            if (parse_yesno (control.ProgressBlocks))
+                attributes |= ControlAttributes.PROGRESS_95;
+
+            // Volume and Directory
+            if (parse_yesno (control.Fixed))
+                attributes |= ControlAttributes.FIXED_VOLUME;
+
+            // PictureButton
+            if (control.IconSize != null) {
+                if (control.IconSize == "16") {
+                    attributes |= ControlAttributes.ICON_SIZE_16;
+                } else if (control.IconSize == "32") {
+                    attributes |= ControlAttributes.ICON_SIZE_32;
+                } else if (control.IconSize == "48") {
+                    attributes |= ControlAttributes.ICON_SIZE_48;
+                }
+            }
+            if (parse_yesno (control.FixedSize))
+                attributes |= ControlAttributes.FIXED_SIZE;
+
+            // PushButton
+            if (parse_yesno (control.ElevationShield))
+                attributes |= ControlAttributes.ELEVATION_SHIELD;
+
+            // VolumeCostList
+            if (parse_yesno (control.ShowRollbackCost))
+                attributes |= ControlAttributes.SHOW_ROLLBACK_COST;
+
+            if (control.X != null)
+                x = int.parse (control.X);
+            if (control.Y != null)
+                y = int.parse (control.Y);
+
+            if (control.Width != null)
+                width = int.parse (control.Width);
+            if (control.Height != null)
+                height = int.parse (control.Height);
+
+            help = control.ToolTip + "|";
+
+            if ( control.file != null ) {
+                filename = control.file.get_path();
+            }
+
+            if (control.Default != null && parse_yesno (control.Default)) {
+                if (control.parent is WixDialog) {
+                    var parent = control.parent as WixDialog;
+                    parent.Default = control.Id;
+                }
+            }
+
+            if (control.Cancel != null && parse_yesno (control.Cancel)) {
+                if (control.parent is WixDialog) {
+                    var parent = control.parent as WixDialog;
+                    parent.Cancel = control.Id;
+                }
+            }
+
+            if (control.DefaultCondition != null) {
+                var parent = control.parent as WixDialog;
+                db.table_control_condition.add (parent.Id, control.Id,
+                        "Default", control.DefaultCondition);
+            }
+
+            if (control.DisableCondition != null) {
+                var parent = control.parent as WixDialog;
+                db.table_control_condition.add (parent.Id, control.Id,
+                        "Disable", control.DisableCondition);
+            }
+
+            if (control.EnableCondition != null) {
+                var parent = control.parent as WixDialog;
+                db.table_control_condition.add (parent.Id, control.Id,
+                        "Enable", control.EnableCondition);
+            }
+
+            if (control.HideCondition != null) {
+                var parent = control.parent as WixDialog;
+                db.table_control_condition.add (parent.Id, control.Id,
+                        "Hide", control.HideCondition);
+            }
+
+            if (control.ShowCondition != null) {
+                var parent = control.parent as WixDialog;
+                db.table_control_condition.add (parent.Id, control.Id,
+                        "Show", control.ShowCondition);
+            }
+
+            var rec = db.table_control.add (control.parent.Id, control.Id,
+                    control.Type, x, y, width, height, attributes,
+                    control.Property, control.Text, filename, null);
+
+            // save the record so we can update the control tab order later
+            control.record = rec;
+
+            // also attach the property to the relevant control table
+            if ( control.Type == "CheckBox" ) {
+                db.table_check_box.add (control.Property, control.CheckBoxValue);
+            }
+        }
+
+        public override void visit_publish (WixPublish publish) throws GLib.Error {
+            int order;
+            string control;
+            string dialog;
+            string event;
+            string argument = null;
+            string condition = "1";
+
+            if (publish.parent is WixUI) {
+                control = publish.Control;
+                dialog = publish.Dialog;
+
+                if (find_element<WixDialog>(dialog) == null) {
+                    load_extension_file(Extension.UI, dialog);
+                }
+            } else {
+                control = (publish.parent as WixControl).Id;
+                dialog = (publish.parent.parent as WixDialog).Id;
+            }
+
+            if (publish.Property != null) {
+                event = "[%s]".printf (publish.Property);
+                if (publish.Value != null) {
+                    argument = publish.Value;
+                } else {
+                    argument = "{}";
+                }
+            } else {
+                event = publish.Event;
+                argument = publish.Value;
+            }
+
+            if (publish.Condition != null) {
+                condition = publish.Condition;
+            }
+
+            if (publish.Order != null) {
+                // use the next integer if nested under control
+                order = int.parse (publish.Order);
+                WixPublish.order = order + 1;
+            } else {
+                // use the given value and update the next value
+                order = WixPublish.order++;
+            }
+
+            db.table_control_event.add (dialog, control, event, argument,
+                    condition, order);
+        }
+
+        public override void visit_radio_button (WixRadioButton radio) throws GLib.Error {
+            string property;
+            int order;
+
+            property = (radio.parent as WixRadioButtonGroup).Property;
+            order = (radio.parent as WixRadioButtonGroup).order++;
+
+            db.table_radio_button.add (property, order, radio.Value,
+                    int.parse (radio.X), int.parse (radio.Y),
+                    int.parse (radio.Width), int.parse (radio.Height),
+                    radio.Text, radio.Help);
+        }
+
+        public override void visit_subscribe (WixSubscribe subscribe) throws GLib.Error {
+            string control;
+            string dialog;
+
+            dialog = (subscribe.parent.parent as WixDialog).Id;
+            control = (subscribe.parent as WixControl).Id;
+
+            db.table_event_mapping.add (dialog, control,
+                    subscribe.Event, subscribe.Attribute);
         }
     }
 

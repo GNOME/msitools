@@ -12,10 +12,14 @@ namespace Wixl {
     static string[] defines;
     [CCode (array_length = false, array_null_terminated = true)]
     static string[] opt_includedirs;
+    [CCode (array_length = false, array_null_terminated = true)]
+    static string[] opt_extensions;
 
     static string[] includedirs;
     static string wxidir;
+    static string extdir;
     static Arch arch = Arch.X86;
+    static Extension[] extensions;
 
     private const OptionEntry[] options = {
         { "version", 0, 0, OptionArg.NONE, ref version, N_("Display version number"), null },
@@ -24,8 +28,10 @@ namespace Wixl {
         { "define", 'D', 0, OptionArg.STRING_ARRAY, ref defines, N_("Define variable"), null },
         { "arch", 'a', 0, OptionArg.CALLBACK, (void*)parse_arch, N_("Target architecture"), null },
         { "includedir", 'I', 0, OptionArg.STRING_ARRAY, ref opt_includedirs, N_("Include directory"), null },
+        { "extdir", 0, 0, OptionArg.STRING, ref extdir, N_("System extension directory"), null },
         { "wxidir", 0, 0, OptionArg.STRING, ref wxidir, N_("System include directory"), null },
         { "only-preproc", 'E', 0, OptionArg.NONE, ref preproc, N_("Stop after the preprocessing stage"), null },
+        { "ext", 0, 0, OptionArg.STRING_ARRAY, ref opt_extensions, N_("Specify an extension"), null },
         { "", 0, 0, OptionArg.FILENAME_ARRAY, ref files, null, N_("INPUT_FILE1 [INPUT_FILE2]...") },
         { null }
     };
@@ -52,6 +58,7 @@ namespace Wixl {
         opt_context.add_main_entries (options, null);
 
         wxidir = Path.build_filename (Config.DATADIR, "wixl-" + Config.PACKAGE_VERSION, "include");
+        extdir = Path.build_filename (Config.DATADIR, "wixl-" + Config.PACKAGE_VERSION, "ext");
 
         try {
             opt_context.parse (ref args);
@@ -85,8 +92,18 @@ namespace Wixl {
             }
         }
 
+        foreach (var i in opt_extensions) {
+            try {
+                var extension = Extension.from_string(i);
+                extensions += extension;
+            } catch (GLib.Error e) {
+                GLib.stderr.printf (_("Extension of type '%s' is not supported.\n").printf (i));
+                exit (1);
+            }
+        }
+
         try {
-            var builder = new WixBuilder (includedirs, arch);
+            var builder = new WixBuilder (includedirs, arch, extensions, extdir);
 
             foreach (var d in defines) {
                 var def = d.split ("=", 2);

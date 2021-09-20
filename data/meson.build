@@ -88,6 +88,10 @@ install_data(wxi_data,
   install_dir: get_option('datadir') / 'wixl-' + meson.project_version() / 'include'
 )
 
+install_subdir('ext/',
+  install_dir: get_option('datadir') / 'wixl-' + meson.project_version()
+)
+
 if get_option('validate-wxi')
   wxi_validate = find_program('wxi-validate.pl')
   foreach file: wxi_data

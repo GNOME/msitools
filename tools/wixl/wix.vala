@@ -66,6 +66,16 @@ namespace Wixl {
         public abstract void visit_binary (WixBinary binary) throws GLib.Error;
         public abstract void visit_major_upgrade (WixMajorUpgrade major) throws GLib.Error;
         public abstract void visit_media_template (WixMediaTemplate media) throws GLib.Error;
+        public abstract void visit_ui_ref (WixUIRef ref) throws GLib.Error;
+        public abstract void visit_ui_text (WixUIText text) throws GLib.Error;
+        public abstract void visit_text_element (WixTextElement text) throws GLib.Error;
+        public abstract void visit_text_style (WixTextStyle style) throws GLib.Error;
+        public abstract void visit_dialog (WixDialog dialog) throws GLib.Error;
+        public abstract void visit_dialog_ref (WixDialogRef ref) throws GLib.Error;
+        public abstract void visit_control (WixControl control) throws GLib.Error;
+        public abstract void visit_publish (WixPublish publish) throws GLib.Error;
+        public abstract void visit_radio_button (WixRadioButton radio) throws GLib.Error;
+        public abstract void visit_subscribe (WixSubscribe subscribe) throws GLib.Error;
     }
 
     public abstract class WixNode: Object {
@@ -280,6 +290,10 @@ namespace Wixl {
                 typeof (WixDirectory),
                 typeof (WixDirectoryRef),
                 typeof (WixComponentGroup),
+                typeof (WixBinary),
+                typeof (WixUI),
+                typeof (WixUIRef),
+                typeof (WixInstallUISequence),
             });
         }
 
@@ -315,6 +329,7 @@ namespace Wixl {
         }
 
         public string Value { get; set; }
+        public string Secure { get; set; }
 
         public override void accept (WixNodeVisitor visitor) throws GLib.Error {
             base.accept (visitor);
@@ -690,6 +705,11 @@ namespace Wixl {
         public string Sequence { get; set; }
         public string Suppress { get; set; }
         public string Action { get; set; }
+        public string Dialog { get; set; }
+        public string OnExit { get; set; }
+
+        // not in the specification, but used by layouts?
+        public string Condition { get; set; }
 
         public override void load (Xml.Node *node) throws Wixl.Error {
             base.load (node);
@@ -801,16 +821,25 @@ namespace Wixl {
                     "CostInitialize",
                     "Custom",
                     "ExecuteAction",
+                    "ExitDialog",
+                    "FatalError",
                     "FileCost",
                     "FindRelatedProducts",
                     "IsolateComponents",
                     "LaunchConditions",
+                    "MaintenanceWelcomeDlg",
                     "MigrateFeatureStates",
+                    "PrepareDlg",
+                    "ProgressDlg",
                     "ResolveSource",
+                    "ResumeDlg",
                     "RMCCPSearch",
                     "ScheduleReboot",
                     "Show",
-                    "ValidateProductID" })
+                    "UserExit",
+                    "ValidateProductID",
+                    "WelcomeDlg",
+                    "WelcomeEulaDlg" })
                 child_types->insert (action, typeof (WixAction));
         }
     }
@@ -845,6 +874,8 @@ namespace Wixl {
                     "CostInitialize",
                     "Custom",
                     "ExecuteAction",
+                    "ExitDialog",
+                    "FatalError",
                     "FileCost",
                     "InstallAdminPackage",
                     "InstallFiles",
@@ -852,7 +883,8 @@ namespace Wixl {
                     "InstallInitialize",
                     "InstallValidate",
                     "LaunchConditions",
-                    "Show" })
+                    "Show",
+                    "UserExit" })
                 child_types->insert (action, typeof (WixAction));
         }
     }
@@ -1000,6 +1032,7 @@ namespace Wixl {
                 typeof (WixBinary),
                 typeof (WixMajorUpgrade),
                 typeof (WixMediaTemplate),
+                typeof (WixUIRef),
             });
         }
 
@@ -1143,6 +1176,262 @@ namespace Wixl {
 
         public override string full_path (WixResolver r) throws GLib.Error {
             return ((WixElement)r.resolve<WixDirectory> (this)).full_path (r);
+        }
+    }
+
+    public class WixUI: WixElement {
+        static construct {
+            name = "UI";
+
+            add_child_types (child_types, {
+                typeof (WixBinary),
+                typeof (WixDialog),
+                typeof (WixDialogRef),
+                typeof (WixProperty),
+                typeof (WixPublish),
+                typeof (WixTextStyle),
+                typeof (WixUIRef),
+                typeof (WixUIText),
+                typeof (WixAdminUISequence),
+                typeof (WixInstallUISequence),
+            });
+        }
+    }
+
+    public class WixUIRef: WixElementRef<WixUI> {
+        static construct {
+            name = "UIRef";
+            ref_type = typeof (WixUI);
+        }
+
+        public override string full_path (WixResolver r) throws GLib.Error {
+            return ((WixElement)r.resolve<WixUI> (this)).full_path (r);
+        }
+
+        public override void accept (WixNodeVisitor visitor) throws GLib.Error {
+            visitor.visit_ui_ref (this);
+        }
+    }
+
+    public class WixUIText: WixElement {
+        static construct {
+            name = "UIText";
+        }
+
+        public string Value { get; set; }
+
+        public override void accept (WixNodeVisitor visitor) throws GLib.Error {
+            visitor.visit_ui_text (this);
+        }
+    }
+
+    // note that this is different to the WixText node type
+    public class WixTextElement: WixElement {
+        static construct {
+            name = "Text";
+        }
+
+        public string SourceFile { get; set; }
+
+        public override void accept (WixNodeVisitor visitor) throws GLib.Error {
+            visitor.visit_text_element (this);
+        }
+    }
+
+    public class WixTextStyle: WixElement {
+        static construct {
+            name = "TextStyle";
+        }
+
+        public string Blue { get; set; }
+        public string Bold { get; set; }
+        public string FaceName { get; set; }
+        public string Green { get; set; }
+        public string Italic { get; set; }
+        public string Red { get; set; }
+        public string Size { get; set; }
+        public string Strike { get; set; }
+        public string Underline { get; set; }
+
+        public override void accept (WixNodeVisitor visitor) throws GLib.Error {
+            visitor.visit_text_style (this);
+        }
+    }
+
+    public class WixDialog: WixElement {
+        static construct {
+            name = "Dialog";
+
+            add_child_types (child_types, {
+                typeof (WixControl),
+            });
+        }
+
+        public string CustomPalette { get; set; }
+        public string ErrorDialog { get; set; }
+        public string Height { get; set; }
+        public string Hidden { get; set; }
+        public string KeepModeless { get; set; }
+        public string LeftScroll { get; set; }
+        public string Modeless { get; set; }
+        public string NoMinimize { get; set; }
+        public string RightAligned { get; set; }
+        public string RightToLeft { get; set; }
+        public string Title { get; set; }
+        public string TrackDiskSpace { get; set; }
+        public string Width { get; set; }
+
+        // child controls can set themselves as the default or cancel action
+        public string Default;
+        public string Cancel;
+
+        public override void accept (WixNodeVisitor visitor) throws GLib.Error {
+            base.accept (visitor);
+            visitor.visit_dialog (this);
+        }
+    }
+
+    public class WixDialogRef: WixElementRef<WixDialog> {
+        static construct {
+            name = "DialogRef";
+            ref_type = typeof (WixDialog);
+        }
+
+        public override string full_path (WixResolver r) throws GLib.Error {
+            return ((WixElement)r.resolve<WixDialog> (this)).full_path (r);
+        }
+
+        public override void accept (WixNodeVisitor visitor) throws GLib.Error {
+            visitor.visit_dialog_ref (this);
+        }
+    }
+
+    public class WixControl: WixElement {
+        static construct {
+            name = "Control";
+
+            add_child_types (child_types, {
+                typeof (WixPublish),
+                typeof (WixRadioButtonGroup),
+                typeof (WixSubscribe),
+                typeof (WixTextElement),
+            });
+        }
+
+        public string Bitmap { get; set; }
+        public string Cancel { get; set; }
+        public string CheckBoxValue { get; set; }
+        public string Default { get; set; }
+        public string Disabled { get; set; }
+        public string ElevationShield { get; set; }
+        public string Fixed { get; set; }
+        public string FixedSize { get; set; }
+        public string Height { get; set; }
+        public string Hidden { get; set; }
+        public string IconSize { get; set; }
+        public string NoPrefix { get; set; }
+        public string ProgressBlocks { get; set; }
+        public string Property { get; set; }
+        public string Remote { get; set; }
+        public string ShowRollbackCost { get; set; }
+        public string Sunken { get; set; }
+        public string TabSkip { get; set; }
+        public string Text { get; set; }
+        public string ToolTip { get; set; }
+        public string Transparent { get; set; }
+        public string Type { get; set; }
+        public string Width { get; set; }
+        public string X { get; set; }
+        public string Y { get; set; }
+
+        // the specification suggests these should be in a child <Condition>
+        // element but they are used as attributes in all the layouts
+        public string DefaultCondition { get; set; }
+        public string DisableCondition { get; set; }
+        public string EnableCondition { get; set; }
+        public string HideCondition { get; set; }
+        public string ShowCondition { get; set; }
+
+        // the text attribute can be populated from a child <Text>, which
+        // itself could come from a file
+        public File file;
+
+        // updating the tab order involves a later pass through all the
+        // controls, so keep a reference to the record so it can be updated
+        public Libmsi.Record record;
+
+        public override void accept (WixNodeVisitor visitor) throws GLib.Error {
+            base.accept (visitor);
+            visitor.visit_control (this);
+        }
+    }
+
+    public class WixPublish: WixElement {
+        static construct {
+            name = "Publish";
+        }
+
+        // if it isn't set then the default value should be one greater than
+        // any previous <Publish> element's order, so keep track
+        public static int order = 1;
+
+        public string Control { get; set; }
+        public string Dialog { get; set; }
+        public string Event { get; set; }
+        public string Order { get; set; }
+        public string Property { get; set; }
+        public string Value { get; set; }
+
+        // the specification suggests this should be the inner text but it's
+        // also used as an attribute in some of the layouts
+        public string Condition { get; set; }
+
+        public override void accept (WixNodeVisitor visitor) throws GLib.Error {
+            visitor.visit_publish (this);
+        }
+    }
+
+    public class WixRadioButtonGroup: WixElement {
+        static construct {
+            name = "RadioButtonGroup";
+
+            add_child_types (child_types, {
+                typeof (WixRadioButton),
+            });
+        }
+
+        public string Property { get; set; }
+        public int order = 1;
+    }
+
+    public class WixRadioButton: WixElement {
+        static construct {
+            name = "RadioButton";
+        }
+
+        public string Height { get; set; }
+        public string Help { get; set; }
+        public string Text { get; set; }
+        public string Value { get; set; }
+        public string Width { get; set; }
+        public string X { get; set; }
+        public string Y { get; set; }
+
+        public override void accept (WixNodeVisitor visitor) throws GLib.Error {
+            visitor.visit_radio_button (this);
+        }
+    }
+
+    public class WixSubscribe: WixElement {
+        static construct {
+            name = "Subscribe";
+        }
+
+        public string Attribute { get; set; }
+        public string Event { get; set; }
+
+        public override void accept (WixNodeVisitor visitor) throws GLib.Error {
+            visitor.visit_subscribe (this);
         }
     }
 
