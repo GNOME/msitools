@@ -1595,8 +1595,8 @@ namespace Wixl {
                     load_extension_file(Extension.UI, dialog);
                 }
             } else {
-                control = (publish.parent as WixControl).Id;
-                dialog = (publish.parent.parent as WixDialog).Id;
+                control = publish.parent.Id;
+                dialog = publish.parent.parent.Id;
             }
 
             if (publish.Property != null) {
@@ -1631,9 +1631,10 @@ namespace Wixl {
         public override void visit_radio_button (WixRadioButton radio) throws GLib.Error {
             string property;
             int order;
+            WixRadioButtonGroup group = radio.parent as WixRadioButtonGroup;
 
-            property = (radio.parent as WixRadioButtonGroup).Property;
-            order = (radio.parent as WixRadioButtonGroup).order++;
+            property = group.Property;
+            order = group.order++;
 
             db.table_radio_button.add (property, order, radio.Value,
                     int.parse (radio.X), int.parse (radio.Y),
@@ -1645,8 +1646,8 @@ namespace Wixl {
             string control;
             string dialog;
 
-            dialog = (subscribe.parent.parent as WixDialog).Id;
-            control = (subscribe.parent as WixControl).Id;
+            dialog = subscribe.parent.parent.Id;
+            control = subscribe.parent.Id;
 
             db.table_event_mapping.add (dialog, control,
                     subscribe.Event, subscribe.Attribute);
