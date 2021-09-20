@@ -1,15 +1,15 @@
 # Serbian translation for msitools.
 # Copyright (C) 2013 msitools's COPYRIGHT HOLDER
 # This file is distributed under the same license as the msitools package.
-# Мирослав Николић <miroslavnikolic@rocketmail.com>, 2013—2014.
+# Мирослав Николић <miroslavnikolic@rocketmail.com>, 2013–2021.
 msgid ""
 msgstr ""
 "Project-Id-Version: msitools master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/msitools/issues\n"
-"POT-Creation-Date: 2018-08-28 09:32+0000\n"
-"PO-Revision-Date: 2019-09-16 08:28+0200\n"
-"Last-Translator: Марко М. Костић <marko.m.kostic@gmail.com>\n"
-"Language-Team: Serbian <gnom@prevod.org>\n"
+"POT-Creation-Date: 2021-09-20 08:48+0000\n"
+"PO-Revision-Date: 2021-09-20 14:16+0200\n"
+"Last-Translator: Мирослав Николић <miroslavnikolic@rocketmail.com>\n"
+"Language-Team: српски <gnome-sr@googlegroups.org>\n"
 "Language: sr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -17,9 +17,8 @@ msgstr ""
 "Plural-Forms: nplurals=4; plural=n==1? 3 : n%10==1 && n%100!=11 ? 0 : n"
 "%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
 "X-Project-Style: gnome\n"
-"X-Generator: Poedit 2.2.3\n"
 
-#: tools/msiextract.vala:10 tools/wixl/wixl.vala:21
+#: tools/msiextract.vala:10 tools/wixl/wixl.vala:25
 msgid "Display version number"
 msgstr "Приказује број издања"
 
@@ -39,7 +38,7 @@ msgstr "МСИ_ДАТОТЕКА..."
 msgid "- a msi files extracting tool"
 msgstr "— алат за распакивање мси датотека"
 
-#: tools/msiextract.vala:180 tools/wixl/wixl.vala:75
+#: tools/msiextract.vala:180 tools/wixl/wixl.vala:82
 msgid "Please specify input files.\n"
 msgstr "Молим наведите улазне датотеке.\n"
 
@@ -67,62 +66,77 @@ msgstr "Избацује предметак"
 msgid "Add Win64 Component"
 msgstr "Додаје Вин64 састојак"
 
-#: tools/wixl/wixl.vala:22
+#: tools/wixl/wixl.vala:26
 msgid "Verbose output"
 msgstr "Опширан излаз"
 
-#: tools/wixl/wixl.vala:23
+#: tools/wixl/wixl.vala:27
 msgid "Output file"
 msgstr "Излазна датотека"
 
-#: tools/wixl/wixl.vala:24
+#: tools/wixl/wixl.vala:28
 msgid "Define variable"
 msgstr "Одређује променљиву"
 
-#: tools/wixl/wixl.vala:25
+#: tools/wixl/wixl.vala:29
 msgid "Target architecture"
 msgstr "Циљна архитектура"
 
-#: tools/wixl/wixl.vala:26
+#: tools/wixl/wixl.vala:30
 msgid "Include directory"
 msgstr "Укључује директоријум"
 
-#: tools/wixl/wixl.vala:27
+#: tools/wixl/wixl.vala:31
+#| msgid "System include directory"
+msgid "System extension directory"
+msgstr "Директоријум проширења система"
+
+#: tools/wixl/wixl.vala:32
 msgid "System include directory"
 msgstr "Системом укључен директоријум"
 
-#: tools/wixl/wixl.vala:28
+#: tools/wixl/wixl.vala:33
 msgid "Stop after the preprocessing stage"
 msgstr "Стаје након поступка предобраде"
 
-#: tools/wixl/wixl.vala:29
+#: tools/wixl/wixl.vala:34
+msgid "Specify an extension"
+msgstr "Одредите проширење"
+
+#: tools/wixl/wixl.vala:35
 msgid "INPUT_FILE1 [INPUT_FILE2]..."
 msgstr "УЛАЗНА_ДАТОТЕКА1 [УЛАЗНА_ДАТОТЕКА2]..."
 
-#: tools/wixl/wixl.vala:37
+#: tools/wixl/wixl.vala:43
 #, c-format
 msgid "arch of type '%s' is not supported"
 msgstr "Архитектура „%s“ није подржана"
 
-#: tools/wixl/wixl.vala:49
+#: tools/wixl/wixl.vala:55
 msgid "- a msi building tool"
 msgstr "— алат за изградњу мси-ја"
 
-#: tools/wixl/wixl.vala:83
+#: tools/wixl/wixl.vala:90
 msgid "Please specify the output file.\n"
-msgstr "Молим наведите излазну датотеку.\n"
+msgstr "Наведите излазну датотеку.\n"
 
 #: tools/wixl/wixl.vala:100
+#, c-format
+#| msgid "arch of type '%s' is not supported"
+msgid "Extension of type '%s' is not supported.\n"
+msgstr "Проширење врсте „%s“ није подржано.\n"
+
+#: tools/wixl/wixl.vala:117
 #, c-format
 msgid "Loading %s...\n"
 msgstr "Учитавам „%s“...\n"
 
-#: tools/wixl/wixl.vala:110
+#: tools/wixl/wixl.vala:127
 #, c-format
 msgid "Building %s...\n"
 msgstr "Изграђујем „%s“...\n"
 
-#: tools/wixl/wixl.vala:113
+#: tools/wixl/wixl.vala:130
 #, c-format
 msgid "Writing %s...\n"
 msgstr "Записујем „%s“...\n"
