@@ -1,14 +1,15 @@
 # Czech translation for msitools.
 # Copyright (C) 2013 msitools's COPYRIGHT HOLDER
 # This file is distributed under the same license as the msitools package.
-# Marek Černocký <marek@manet.cz>, 2013, 2014, 2018.
+#
+# Marek Černocký <marek@manet.cz>, 2013, 2014, 2018, 2021.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: msitools master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/msitools/issues\n"
-"POT-Creation-Date: 2018-08-28 09:32+0000\n"
-"PO-Revision-Date: 2018-09-07 08:15+0200\n"
+"POT-Creation-Date: 2021-09-20 08:48+0000\n"
+"PO-Revision-Date: 2021-09-28 10:38+0200\n"
 "Last-Translator: Marek Černocký <marek@manet.cz>\n"
 "Language-Team: čeština <gnome-cs-list@gnome.org>\n"
 "Language: cs\n"
@@ -18,7 +19,7 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
 "X-Generator: Gtranslator 2.91.6\n"
 
-#: tools/msiextract.vala:10 tools/wixl/wixl.vala:21
+#: tools/msiextract.vala:10 tools/wixl/wixl.vala:25
 msgid "Display version number"
 msgstr "Zobrazit číslo verze"
 
@@ -36,9 +37,9 @@ msgstr "SOUBOR_MSI…"
 
 #: tools/msiextract.vala:160
 msgid "- a msi files extracting tool"
-msgstr "– nástroj k rozbalování souborů msi"
+msgstr "– nástroj pro rozbalování souborů msi"
 
-#: tools/msiextract.vala:180 tools/wixl/wixl.vala:75
+#: tools/msiextract.vala:180 tools/wixl/wixl.vala:82
 msgid "Please specify input files.\n"
 msgstr "Zadejte prosím vstupní soubor.\n"
 
@@ -66,62 +67,75 @@ msgstr "Vynechat předponu"
 msgid "Add Win64 Component"
 msgstr "Přidat komponentu Win64"
 
-#: tools/wixl/wixl.vala:22
+#: tools/wixl/wixl.vala:26
 msgid "Verbose output"
 msgstr "Podrobný výstup"
 
-#: tools/wixl/wixl.vala:23
+#: tools/wixl/wixl.vala:27
 msgid "Output file"
 msgstr "Výstupní soubor"
 
-#: tools/wixl/wixl.vala:24
+#: tools/wixl/wixl.vala:28
 msgid "Define variable"
 msgstr "Definovat proměnnou"
 
-#: tools/wixl/wixl.vala:25
+#: tools/wixl/wixl.vala:29
 msgid "Target architecture"
 msgstr "Cílová architektura"
 
-#: tools/wixl/wixl.vala:26
+#: tools/wixl/wixl.vala:30
 msgid "Include directory"
-msgstr "Zahrnout složku"
+msgstr "Složka s popisy wxi"
 
-#: tools/wixl/wixl.vala:27
+#: tools/wixl/wixl.vala:31
+msgid "System extension directory"
+msgstr "Systémová složka s rozšířeními"
+
+#: tools/wixl/wixl.vala:32
 msgid "System include directory"
-msgstr "Zahrnout systémovou složku"
+msgstr "Systémová složka s popisy wxi"
 
-#: tools/wixl/wixl.vala:28
+#: tools/wixl/wixl.vala:33
 msgid "Stop after the preprocessing stage"
 msgstr "Zastavit po fázi předzpracování"
 
-#: tools/wixl/wixl.vala:29
+#: tools/wixl/wixl.vala:34
+msgid "Specify an extension"
+msgstr "Určit rozšíření"
+
+#: tools/wixl/wixl.vala:35
 msgid "INPUT_FILE1 [INPUT_FILE2]..."
 msgstr "VSTUPNÍ_SOUBOR1 [VSTUPNÍ_SOUBOR2]…"
 
-#: tools/wixl/wixl.vala:37
+#: tools/wixl/wixl.vala:43
 #, c-format
 msgid "arch of type '%s' is not supported"
 msgstr "architektura typu „%s“ není podporována"
 
-#: tools/wixl/wixl.vala:49
+#: tools/wixl/wixl.vala:55
 msgid "- a msi building tool"
 msgstr "– nástroj k vytváření souborů msi"
 
-#: tools/wixl/wixl.vala:83
+#: tools/wixl/wixl.vala:90
 msgid "Please specify the output file.\n"
 msgstr "Zadejte prosím výstupní soubor.\n"
 
 #: tools/wixl/wixl.vala:100
 #, c-format
+msgid "Extension of type '%s' is not supported.\n"
+msgstr "Rozšíření typu „%s“ není podporováno.\n"
+
+#: tools/wixl/wixl.vala:117
+#, c-format
 msgid "Loading %s...\n"
 msgstr "Načítá se %s…\n"
 
-#: tools/wixl/wixl.vala:110
+#: tools/wixl/wixl.vala:127
 #, c-format
 msgid "Building %s...\n"
 msgstr "Sestavuje se %s…\n"
 
-#: tools/wixl/wixl.vala:113
+#: tools/wixl/wixl.vala:130
 #, c-format
 msgid "Writing %s...\n"
 msgstr "Zapisuje se %s…\n"
