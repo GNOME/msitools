@@ -7,18 +7,19 @@ msgid ""
 msgstr ""
 "Project-Id-Version: msitools master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/msitools/issues\n"
-"POT-Creation-Date: 2020-08-30 21:55+0000\n"
-"PO-Revision-Date: 2020-09-16 00:00+0200\n"
+"POT-Creation-Date: 2021-09-20 08:48+0000\n"
+"PO-Revision-Date: 2021-10-01 18:15+0200\n"
+"Last-Translator: gogo <trebelnik2@gmail.com>\n"
 "Language-Team: Croatian <hr@li.org>\n"
 "Language: hr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
-"Last-Translator: gogo <trebelnik2@gmail.com>\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
+"%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 "X-Generator: Poedit 2.3\n"
 
-#: tools/msiextract.vala:10 tools/wixl/wixl.vala:21
+#: tools/msiextract.vala:10 tools/wixl/wixl.vala:25
 msgid "Display version number"
 msgstr "Prikaži broj inačice"
 
@@ -38,7 +39,7 @@ msgstr "MSI_DATOTEKA..."
 msgid "- a msi files extracting tool"
 msgstr "- alat za raspakiravanje msi datoteka"
 
-#: tools/msiextract.vala:180 tools/wixl/wixl.vala:75
+#: tools/msiextract.vala:180 tools/wixl/wixl.vala:82
 msgid "Please specify input files.\n"
 msgstr "Navedite ulaznu datoteku.\n"
 
@@ -66,62 +67,75 @@ msgstr "Izostavi prefiks"
 msgid "Add Win64 Component"
 msgstr "Dodaj Win64 komponentu"
 
-#: tools/wixl/wixl.vala:22
+#: tools/wixl/wixl.vala:26
 msgid "Verbose output"
 msgstr "Opširniji izlaz"
 
-#: tools/wixl/wixl.vala:23
+#: tools/wixl/wixl.vala:27
 msgid "Output file"
 msgstr "Izlazna datoteka"
 
-#: tools/wixl/wixl.vala:24
+#: tools/wixl/wixl.vala:28
 msgid "Define variable"
 msgstr "Odredi varijablu"
 
-#: tools/wixl/wixl.vala:25
+#: tools/wixl/wixl.vala:29
 msgid "Target architecture"
 msgstr "Odredišna arhitektura"
 
-#: tools/wixl/wixl.vala:26
+#: tools/wixl/wixl.vala:30
 msgid "Include directory"
 msgstr "Uključi direktorij"
 
-#: tools/wixl/wixl.vala:27
+#: tools/wixl/wixl.vala:31
+msgid "System extension directory"
+msgstr "Direktorij proširenja sustava"
+
+#: tools/wixl/wixl.vala:32
 msgid "System include directory"
 msgstr "Sustav uključuje direktorij"
 
-#: tools/wixl/wixl.vala:28
+#: tools/wixl/wixl.vala:33
 msgid "Stop after the preprocessing stage"
 msgstr "Zaustavi nakon faze predobrade"
 
-#: tools/wixl/wixl.vala:29
+#: tools/wixl/wixl.vala:34
+msgid "Specify an extension"
+msgstr "Odredi proširenje"
+
+#: tools/wixl/wixl.vala:35
 msgid "INPUT_FILE1 [INPUT_FILE2]..."
 msgstr "ULAZNA_DATOTEKA1 [ULAZNA_DATOTEKA2]..."
 
-#: tools/wixl/wixl.vala:37
+#: tools/wixl/wixl.vala:43
 #, c-format
 msgid "arch of type '%s' is not supported"
 msgstr "arhitektura '%s' nije podržana"
 
-#: tools/wixl/wixl.vala:49
+#: tools/wixl/wixl.vala:55
 msgid "- a msi building tool"
 msgstr "- alat za msi izgradnju"
 
-#: tools/wixl/wixl.vala:83
+#: tools/wixl/wixl.vala:90
 msgid "Please specify the output file.\n"
 msgstr "Navedite izlaznu datoteku.\n"
 
 #: tools/wixl/wixl.vala:100
 #, c-format
+msgid "Extension of type '%s' is not supported.\n"
+msgstr "Proširenje vrste '%s' nije podržano.\n"
+
+#: tools/wixl/wixl.vala:117
+#, c-format
 msgid "Loading %s...\n"
 msgstr "Učitavam %s...\n"
 
-#: tools/wixl/wixl.vala:110
+#: tools/wixl/wixl.vala:127
 #, c-format
 msgid "Building %s...\n"
 msgstr "Izgrađujem %s...\n"
 
-#: tools/wixl/wixl.vala:113
+#: tools/wixl/wixl.vala:130
 #, c-format
 msgid "Writing %s...\n"
 msgstr "Zapisujem %s...\n"
