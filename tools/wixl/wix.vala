@@ -939,6 +939,7 @@ namespace Wixl {
         public string Maximum { get; set; }
         public string IncludeMinimum { get; set; }
         public string IncludeMaximum { get; set; }
+        public string MigrateFeatures { get; set; }
         public string OnlyDetect { get; set; }
         public string Property { get; set; }
 

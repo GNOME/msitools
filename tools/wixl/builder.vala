@@ -866,11 +866,17 @@ namespace Wixl {
             var upgrade = version.parent as WixUpgrade;
             UpgradeAttribute attributes = 0;
 
+            if (parse_yesno (version.MigrateFeatures))
+                attributes |= UpgradeAttribute.MIGRATE_FEATURES;
+
             if (parse_yesno (version.OnlyDetect))
                 attributes |= UpgradeAttribute.ONLY_DETECT;
 
             if (parse_yesno (version.IncludeMinimum, true))
                 attributes |= UpgradeAttribute.VERSION_MIN_INCLUSIVE;
+
+            if (parse_yesno (version.IncludeMaximum))
+                attributes |= UpgradeAttribute.VERSION_MAX_INCLUSIVE;
 
             db.table_upgrade.add (get_uuid (upgrade.Id), version.Minimum, version.Maximum, attributes, version.Property);
 

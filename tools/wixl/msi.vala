@@ -572,11 +572,14 @@ namespace Wixl {
             sql_insert = "INSERT INTO `Upgrade` (`UpgradeCode`, `VersionMin`, `VersionMax`, `Attributes`, `ActionProperty`) VALUES (?, ?, ?, ?, ?)";
         }
 
-        public void add (string UpgradeCode, string VersionMin, string? VersionMax, int Attributes, string ActionProperty) throws GLib.Error {
+        public void add (string UpgradeCode, string? VersionMin, string? VersionMax, int Attributes, string ActionProperty) throws GLib.Error {
+            if (VersionMin == null && VersionMax == null)
+                throw new Wixl.Error.FAILED ("VersionMin and VersionMax must not both be null");
+
             var rec = new Libmsi.Record (5);
 
             if (!rec.set_string (1, UpgradeCode) ||
-                !rec.set_string (2, VersionMin) ||
+                (VersionMin != null && !rec.set_string (2, VersionMin)) ||
                 (VersionMax != null && !rec.set_string (3, VersionMax)) ||
                 !rec.set_int (4, Attributes) ||
                 !rec.set_string (5, ActionProperty))
