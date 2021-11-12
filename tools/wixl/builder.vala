@@ -536,7 +536,9 @@ namespace Wixl {
             else
                 uuid = get_uuid (comp.Guid);
 
-            if (parse_yesno (comp.Win64))
+            if (comp.Win64 != null && parse_yesno (comp.Win64))
+                attr |= ComponentAttribute.64BIT;
+            else if (comp.Win64 == null && (arch == Arch.X64 || arch == Arch.IA64))
                 attr |= ComponentAttribute.64BIT;
 
             db.table_component.add (comp.Id, uuid, dir.Id, attr,

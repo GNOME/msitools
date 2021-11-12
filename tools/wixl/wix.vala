@@ -1102,7 +1102,7 @@ namespace Wixl {
         }
 
         public string Guid { get; set; }
-        public string Win64 { get; set; }
+        public string? Win64 { get; set; }
         public WixKeyElement? key;
 
         public List<WixFeature> in_feature;
