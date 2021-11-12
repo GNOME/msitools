@@ -846,7 +846,7 @@ namespace Wixl {
             return_if_fail (condition.children.length () == 1);
             var text = condition.children.first ().data as WixText;
 
-            db.table_launch_condition.add (text.Text, condition.Message);
+            db.table_launch_condition.add (text.Text.strip(), condition.Message);
         }
 
         [Flags]
@@ -926,7 +926,7 @@ namespace Wixl {
             } else if (action.children.length () > 0) {
                 return_if_fail (action.children.length () == 1);
                 var text = action.children.first ().data as WixText;
-                node.condition = text.Text;
+                node.condition = text.Text.strip();
             }
         }
 
@@ -1318,7 +1318,7 @@ namespace Wixl {
                 // use the inner text from this element
                 return_if_fail (text.children.length () == 1);
                 var node = text.children.first ().data as WixText;
-                control.Text = node.Text;
+                control.Text = node.Text.strip();
             }
         }
 
