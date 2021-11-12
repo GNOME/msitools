@@ -1162,7 +1162,10 @@ namespace Wixl {
 
             var root = RegistryRoot.from_string (search.Root.down ());
             var type = RegistryType.from_string (search.Type.down ());
-            if (parse_yesno (search.Win64))
+
+            if (search.Win64 != null && parse_yesno (search.Win64))
+                type |= RegistryType.64BIT;
+            else if (search.Win64 == null && (arch == Arch.X64 || arch == Arch.IA64))
                 type |= RegistryType.64BIT;
 
             db.table_app_search.add (property.Id, search.Id);
