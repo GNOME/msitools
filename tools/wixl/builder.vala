@@ -1232,6 +1232,19 @@ namespace Wixl {
             } else
                 throw new Wixl.Error.FAILED ("Unsupported CustomAction");
 
+            if (action.Execute == "firstSequence")
+                type |= CustomActionType.FIRST_SEQUENCE;
+            else if (action.Execute == "oncePerProcess")
+                type |= CustomActionType.ONCE_PER_PROCESS;
+            else if (action.Execute == "clientRepeat")
+                type |= CustomActionType.CLIENT_REPEAT;
+            else if (action.Execute == "deferred")
+                type |= CustomActionType.IN_SCRIPT;
+            else if (action.Execute == "rollback")
+                type |= CustomActionType.IN_SCRIPT | CustomActionType.ROLLBACK;
+            else if (action.Execute == "commit")
+                type |= CustomActionType.IN_SCRIPT | CustomActionType.COMMIT;
+
             if (action.Return == "ignore")
                 type |= CustomActionType.CONTINUE;
             else if (action.Return == "asyncWait")
@@ -1240,9 +1253,8 @@ namespace Wixl {
                 type |= CustomActionType.CONTINUE;
                 type |= CustomActionType.ASYNC;
             }
-            if (action.Execute == "deferred")
-                type |= CustomActionType.IN_SCRIPT;
-            if (!parse_yesno (action.Impersonate))
+
+            if ((type & CustomActionType.IN_SCRIPT) == CustomActionType.IN_SCRIPT && !parse_yesno (action.Impersonate))
                 type |= CustomActionType.NO_IMPERSONATE;
 
             db.table_custom_action.add (action.Id, type, source, target);
