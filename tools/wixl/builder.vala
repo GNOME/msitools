@@ -10,6 +10,15 @@ namespace Wixl {
         public static Arch from_string(string s) throws GLib.Error {
             return enum_from_string<Arch> (s);
         }
+
+        public string to_string() {
+            switch (this) {
+                case X86: return "x86";
+                case IA64: return "ia64";
+                case X64: return "x64";
+                default: return "";
+            }
+        }
     }
 
     enum Extension {
@@ -124,7 +133,7 @@ namespace Wixl {
             string data;
             FileUtils.get_contents (file.get_path (), out data);
 
-            var p = new Preprocessor (variables, includedirs);
+            var p = new Preprocessor (variables, includedirs, arch);
             var doc = p.preprocess (data, file);
             if (preproc_only) {
                 doc.dump_format (FileStream.fdopen (1, "w"));
