@@ -1,128 +1,140 @@
 # Korean translation for msitools.
 # Copyright (C) 2014 msitools's COPYRIGHT HOLDER
 # This file is distributed under the same license as the msitools package.
-# Seong-ho Cho <shgho@gnome.org>, 2014, 2017.
+# Seong-ho Cho <shgho@gnome.org>, 2014-2021.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: msitools master\n"
-"Report-Msgid-Bugs-To: https://bugzilla.gnome.org/enter_bug.cgi?"
-"product=msitools&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2017-02-26 23:12+0000\n"
-"PO-Revision-Date: 2017-03-20 23:52+0900\n"
-"Last-Translator: Seong-ho Cho <shcho@gnome.org>\n"
+"Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/msitools/issues\n"
+"POT-Creation-Date: 2021-09-20 08:48+0000\n"
+"PO-Revision-Date: 2021-10-01 12:25+0900\n"
+"Last-Translator: Seong-ho Cho <darkcircle.0426@gmail.com>\n"
 "Language-Team: Korean <gnome-kr@googlegroups.com>\n"
 "Language: ko\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Poedit 1.8.7\n"
+"X-Generator: Poedit 2.3.1\n"
 
-#: ../tools/msiextract.vala:10 ../tools/wixl/wixl.vala:21
+#: tools/msiextract.vala:10 tools/wixl/wixl.vala:25
 msgid "Display version number"
 msgstr "버전 숫자를 표시합니다"
 
-#: ../tools/msiextract.vala:11
+#: tools/msiextract.vala:11
 msgid "Extract to directory"
 msgstr "대상 디렉터리로 추출합니다"
 
-#: ../tools/msiextract.vala:12
+#: tools/msiextract.vala:12
 msgid "List files only"
 msgstr "파일 목록을 보여주기만 합니다"
 
-#: ../tools/msiextract.vala:13
+#: tools/msiextract.vala:13
 msgid "MSI_FILE..."
 msgstr "<MSI_파일>..."
 
-#: ../tools/msiextract.vala:156
+#: tools/msiextract.vala:160
 msgid "- a msi files extracting tool"
 msgstr "- msi 파일 추출 도구"
 
-#: ../tools/msiextract.vala:176 ../tools/wixl/wixl.vala:75
+#: tools/msiextract.vala:180 tools/wixl/wixl.vala:82
 msgid "Please specify input files.\n"
 msgstr "입력 파일을 지정하십시오.\n"
 
-#: ../tools/wixl/wixl-heat.vala:12
+#: tools/wixl/wixl-heat.vala:12
 msgid "Directory Ref"
 msgstr "디렉터리 참조"
 
-#: ../tools/wixl/wixl-heat.vala:13
+#: tools/wixl/wixl-heat.vala:13
 msgid "Component Group"
 msgstr "구성 요소 그룹"
 
-#: ../tools/wixl/wixl-heat.vala:14
+#: tools/wixl/wixl-heat.vala:14
 msgid "Variable for source dir"
 msgstr "원본 디렉터리 변수"
 
-#: ../tools/wixl/wixl-heat.vala:15
+#: tools/wixl/wixl-heat.vala:15
 msgid "Prefix"
 msgstr "접두사"
 
-#: ../tools/wixl/wixl-heat.vala:16
+#: tools/wixl/wixl-heat.vala:16
 msgid "Exclude prefix"
 msgstr "접두사를 제외합니다"
 
-#: ../tools/wixl/wixl-heat.vala:17
+#: tools/wixl/wixl-heat.vala:17
 msgid "Add Win64 Component"
 msgstr "Win64 구성요소 추가"
 
-#: ../tools/wixl/wixl.vala:22
+#: tools/wixl/wixl.vala:26
 msgid "Verbose output"
 msgstr "자세히 출력합니다"
 
-#: ../tools/wixl/wixl.vala:23
+#: tools/wixl/wixl.vala:27
 msgid "Output file"
 msgstr "출력 파일"
 
-#: ../tools/wixl/wixl.vala:24
+#: tools/wixl/wixl.vala:28
 msgid "Define variable"
 msgstr "변수를 정의합니다"
 
-#: ../tools/wixl/wixl.vala:25
+#: tools/wixl/wixl.vala:29
 msgid "Target architecture"
 msgstr "대상 아키텍처"
 
-#: ../tools/wixl/wixl.vala:26
+#: tools/wixl/wixl.vala:30
 msgid "Include directory"
 msgstr "디렉터리 포함"
 
-#: ../tools/wixl/wixl.vala:27
+#: tools/wixl/wixl.vala:31
+msgid "System extension directory"
+msgstr "시스템 확장 디렉터리"
+
+#: tools/wixl/wixl.vala:32
 msgid "System include directory"
 msgstr "시스템 포함 디렉터리"
 
-#: ../tools/wixl/wixl.vala:28
+#: tools/wixl/wixl.vala:33
 msgid "Stop after the preprocessing stage"
 msgstr "전처리 단계 이후 멈춥니다"
 
-#: ../tools/wixl/wixl.vala:29
-msgid "INPUT_FILE..."
-msgstr "<입력파일>..."
+#: tools/wixl/wixl.vala:34
+msgid "Specify an extension"
+msgstr "확장을 지정합니다"
 
-#: ../tools/wixl/wixl.vala:37
+#: tools/wixl/wixl.vala:35
+msgid "INPUT_FILE1 [INPUT_FILE2]..."
+msgstr "<입력_파일1> [<입력_파일2>]..."
+
+#: tools/wixl/wixl.vala:43
 #, c-format
 msgid "arch of type '%s' is not supported"
 msgstr "'%s' 아키텍처 형식은 지원하지 않습니다"
 
-#: ../tools/wixl/wixl.vala:49
+#: tools/wixl/wixl.vala:55
 msgid "- a msi building tool"
 msgstr "- msi 빌드 도구"
 
-#: ../tools/wixl/wixl.vala:83
+#: tools/wixl/wixl.vala:90
 msgid "Please specify the output file.\n"
 msgstr "출력 파일을 지정하십시오.\n"
 
-#: ../tools/wixl/wixl.vala:100
+#: tools/wixl/wixl.vala:100
+#, c-format
+msgid "Extension of type '%s' is not supported.\n"
+msgstr "'%s' 확장 형식은 지원하지 않습니다.\n"
+
+#: tools/wixl/wixl.vala:117
 #, c-format
 msgid "Loading %s...\n"
 msgstr "%s 불러오는 중...\n"
 
-#: ../tools/wixl/wixl.vala:110
+#: tools/wixl/wixl.vala:127
 #, c-format
 msgid "Building %s...\n"
 msgstr "%s 구성하는 중...\n"
 
-#: ../tools/wixl/wixl.vala:113
+#: tools/wixl/wixl.vala:130
 #, c-format
 msgid "Writing %s...\n"
 msgstr "%s 쓰는 중...\n"
