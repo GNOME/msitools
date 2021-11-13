@@ -956,6 +956,54 @@ namespace Wixl {
         }
     }
 
+    /* https://docs.microsoft.com/en-us/windows/win32/msi/inifile-table */
+    class MsiTableIniFile: MsiTable {
+        static construct {
+            name = "IniFile";
+            sql_create = "CREATE TABLE `IniFile` (`IniFile` CHAR(72) NOT NULL, `FileName` CHAR(255) NOT NULL LOCALIZABLE, `DirProperty` CHAR(72), `Section` CHAR(255) NOT NULL LOCALIZABLE, `Key` CHAR(255) NOT NULL LOCALIZABLE, `Value` CHAR(255) NOT NULL LOCALIZABLE, `Action` INT NOT NULL, `Component_` CHAR(72) NOT NULL PRIMARY KEY `IniFile`)";
+            sql_insert = "INSERT INTO `IniFile` (`IniFile`, `FileName`, `DirProperty`, `Section`, `Key`, Value`, `Action`, `Component_`) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+        }
+
+        public void add (string IniFile, string FileName, string DirProperty, string Section, string Key, string Value, int Action, string Component) throws GLib.Error {
+            var rec = new Libmsi.Record (8);
+            if (!rec.set_string (1, IniFile) ||
+                !rec.set_string (2, FileName) ||
+                !rec.set_string (3, DirProperty) ||
+                !rec.set_string (4, Section) ||
+                !rec.set_string (5, Key) ||
+                !rec.set_string (6, Value) ||
+                !rec.set_int (7, Action) ||
+                !rec.set_string (8, Component))
+                throw new Wixl.Error.FAILED ("failed to add record");
+
+            records.append (rec);
+        }
+    }
+    /* https://docs.microsoft.com/en-us/windows/win32/msi/removeinifile-table */
+    class MsiTableRemoveIniFile: MsiTable {
+        static construct {
+            name = "RemoveIniFile";
+            sql_create = "CREATE TABLE `RemoveIniFile` (`RemoveIniFile` CHAR(72) NOT NULL, `FileName` CHAR(255) NOT NULL LOCALIZABLE, `DirProperty` CHAR(72), `Section` CHAR(255) NOT NULL LOCALIZABLE, `Key` CHAR(255) NOT NULL LOCALIZABLE, `Value` CHAR(255) LOCALIZABLE, `Action` INT NOT NULL, `Component_` CHAR(72) NOT NULL PRIMARY KEY `RemoveIniFile`)";
+            sql_insert = "INSERT INTO `RemoveIniFile` (`RemoveIniFile`, `FileName`, `DirProperty`, `Section`, `Key`, Value`, `Action`, `Component_`) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+        }
+
+        public void add (string IniFile, string FileName, string DirProperty, string Section, string Key, string? Value, int Action, string Component) throws GLib.Error {
+            var rec = new Libmsi.Record (8);
+            if (!rec.set_string (1, IniFile) ||
+                !rec.set_string (2, FileName) ||
+                !rec.set_string (3, DirProperty) ||
+                !rec.set_string (4, Section) ||
+                !rec.set_string (5, Key) ||
+                !rec.set_string (6, Value) ||
+                !rec.set_int (7, Action) ||
+                !rec.set_string (8, Component))
+                throw new Wixl.Error.FAILED ("failed to add record");
+
+            records.append (rec);
+        }
+    }
+
+
     class MsiSummaryInfo: Object {
         public Libmsi.SummaryInfo properties;
 
@@ -1040,6 +1088,8 @@ namespace Wixl {
         public MsiTableServiceControl table_service_control;
         public MsiTableServiceInstall table_service_install;
         public MsiTableFile table_file;
+        public MsiTableIniFile table_ini_file;
+        public MsiTableRemoveIniFile table_remove_ini_file;
         public MsiTableAdminExecuteSequence table_admin_execute_sequence;
         public MsiTableAdminUISequence table_admin_ui_sequence;
         public MsiTableAdvtExecuteSequence table_advt_execute_sequence;
@@ -1119,6 +1169,8 @@ namespace Wixl {
             table_service_control = new MsiTableServiceControl ();
             table_service_install = new MsiTableServiceInstall ();
             table_file = new MsiTableFile ();
+            table_ini_file = new MsiTableIniFile ();
+            table_remove_ini_file = new MsiTableRemoveIniFile ();
             table_admin_execute_sequence = new MsiTableAdminExecuteSequence ();
             table_admin_ui_sequence = new MsiTableAdminUISequence ();
             table_advt_execute_sequence = new MsiTableAdvtExecuteSequence ();
@@ -1154,6 +1206,8 @@ namespace Wixl {
                     table_service_control,
                     table_service_install,
                     table_file,
+                    table_ini_file,
+                    table_remove_ini_file,
                     table_streams,
                     table_shortcut,
                     table_upgrade,
