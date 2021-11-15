@@ -43,6 +43,7 @@ namespace Wixl {
         public abstract void visit_remove_folder (WixRemoveFolder rm) throws GLib.Error;
         public abstract void visit_registry_value (WixRegistryValue reg) throws GLib.Error;
         public abstract void visit_file (WixFile reg) throws GLib.Error;
+        public abstract void visit_ini_file (WixIniFile reg) throws GLib.Error;
         public abstract void visit_shortcut (WixShortcut shortcut) throws GLib.Error;
         public abstract void visit_create_folder (WixCreateFolder folder) throws GLib.Error;
         public abstract void visit_fragment (WixFragment fragment) throws GLib.Error;
@@ -445,6 +446,24 @@ namespace Wixl {
         public override void accept (WixNodeVisitor visitor) throws GLib.Error {
             base.accept (visitor);
             visitor.visit_file (this);
+        }
+    }
+
+    public class WixIniFile: WixElement {
+        static construct {
+            name = "IniFile";
+        }
+
+        public string Action { get; set; }
+        public string Directory { get; set; }
+        public string Key { get; set; }
+        public string Name { get; set; }
+        public string Section { get; set; }
+        public string Value { get; set; }
+
+
+        public override void accept (WixNodeVisitor visitor) throws GLib.Error {
+            visitor.visit_ini_file (this);
         }
     }
 
@@ -1098,6 +1117,7 @@ namespace Wixl {
                 typeof (WixRegistryKey),
                 typeof (WixServiceControl),
                 typeof (WixServiceInstall),
+                typeof (WixIniFile),
             });
         }
 

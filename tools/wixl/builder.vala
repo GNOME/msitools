@@ -223,6 +223,12 @@ namespace Wixl {
                 add (MSIDefault.Action.RemoveRegistryValues);
                 add (MSIDefault.Action.WriteRegistryValues);
             }
+            if (db.table_ini_file.records.length () > 0) {
+                add (MSIDefault.Action.WriteIniValues);
+            }
+            if (db.table_remove_ini_file.records.length () > 0) {
+                add (MSIDefault.Action.RemoveIniValues);
+            }
             if (db.table_shortcut.records.length () > 0) {
                 add (MSIDefault.Action.RemoveShortcuts);
                 add (MSIDefault.Action.CreateShortcuts);
@@ -808,6 +814,31 @@ namespace Wixl {
             rec.set_data<WixFile> ("wixfile", file);
 
             visit_key_element (file);
+        }
+
+        enum IniFileAction {
+            [Description (nick = "addLine")]
+            addLine = 0,
+            [Description (nick = "createLine")]
+            createLine = 1,
+            [Description (nick = "removeLine")]
+            removeLine = 2,
+            [Description (nick = "addTag")]
+            addTag = 3,
+            [Description (nick = "removeTag")]
+            removeTag = 4;
+            public static IniFileAction from_string(string s) throws GLib.Error {
+                return enum_from_string<IniFileAction> (s);
+            }
+        }
+        public override void visit_ini_file (WixIniFile inifile) throws GLib.Error {
+            var component = inifile.parent as WixComponent;
+            var action = IniFileAction.from_string (inifile.Action);
+
+            if (action == IniFileAction.addLine || action == IniFileAction.createLine || action == IniFileAction.addTag)
+                db.table_ini_file.add (inifile.Id, inifile.Name, inifile.Directory, inifile.Section, inifile.Key, inifile.Value, action, component.Id);
+            else
+                db.table_remove_ini_file.add (inifile.Id, inifile.Name, inifile.Directory, inifile.Section, inifile.Key, inifile.Value, action, component.Id);
         }
 
         public override void visit_shortcut (WixShortcut shortcut) throws GLib.Error {
