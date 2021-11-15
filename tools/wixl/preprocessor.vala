@@ -4,17 +4,19 @@ namespace Wixl {
 
         unowned List<File> includedirs;
         HashTable<string, string> variables;
+        Arch arch;
         construct {
             variables = new HashTable<string, string> (str_hash, str_equal);
         }
 
-        public Preprocessor (HashTable<string, string> globals, List<File> includedirs) {
+        public Preprocessor (HashTable<string, string> globals, List<File> includedirs, Arch arch) {
             string name, value;
             var it = HashTableIter <string, string> (globals);
             while (it.next (out name, out value))
                 define_variable (name, value);
 
             this.includedirs = includedirs;
+            this.arch = arch;
         }
 
         public void define_variable (string name, string value) {
@@ -47,6 +49,8 @@ namespace Wixl {
                     return file.get_basename ();
                 case "SOURCEFILEPATH":
                     return file.get_path ();
+                case "BUILDARCH":
+                    return arch.to_string();
                 }
                 break;
             }
