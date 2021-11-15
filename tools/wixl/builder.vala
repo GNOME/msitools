@@ -542,7 +542,9 @@ namespace Wixl {
             else
                 uuid = get_uuid (comp.Guid);
 
-            if (parse_yesno (comp.Win64))
+            if (comp.Win64 != null && parse_yesno (comp.Win64))
+                attr |= ComponentAttribute.64BIT;
+            else if (comp.Win64 == null && (arch == Arch.X64 || arch == Arch.IA64))
                 attr |= ComponentAttribute.64BIT;
 
             db.table_component.add (comp.Id, uuid, dir.Id, attr,
@@ -1191,7 +1193,10 @@ namespace Wixl {
 
             var root = RegistryRoot.from_string (search.Root.down ());
             var type = RegistryType.from_string (search.Type.down ());
-            if (parse_yesno (search.Win64))
+
+            if (search.Win64 != null && parse_yesno (search.Win64))
+                type |= RegistryType.64BIT;
+            else if (search.Win64 == null && (arch == Arch.X64 || arch == Arch.IA64))
                 type |= RegistryType.64BIT;
 
             db.table_app_search.add (property.Id, search.Id);
