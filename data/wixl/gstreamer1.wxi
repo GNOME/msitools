@@ -4,7 +4,7 @@
 <Include xmlns="http://schemas.microsoft.com/wix/2006/wi">
   <Fragment>
     <DirectoryRef Id="INSTALLDIR">
-      <Directory Id="dir94EB7964F8CF73C8E75BF63D57996CCA" Name="bin">
+      <Directory Id="dir7EBDD3C5637C995332BEB438F9C4CF1E" Name="bin">
         <Component Win64="$(var.Win64)" Id="cmp0D8CF9997EEC93FBB904414012FB4514" Guid="*">
           <File Id="fil2776266507ACD87669D39C8D97965A8D" KeyPath="yes" Source="$(var.SourceDir)/bin/gst-inspect-1.0.exe"/>
         </Component>
@@ -33,297 +33,319 @@
           <File Id="filA2FDE854CD554DFD05120ACD7E86E234" KeyPath="yes" Source="$(var.SourceDir)/bin/libgstreamer-1.0-0.dll"/>
         </Component>
       </Directory>
-      <Directory Id="dir2F98C2AC2235697317A559417B858936" Name="share">
-        <Directory Id="dir19B39CCA2802E461F84CB8374131A180" Name="locale">
-          <Directory Id="dir4FCA0AA3450C7DD24E47BD0765882739" Name="af">
-            <Directory Id="dir632CD5E29F723619FBF92AC575C9F0A8" Name="LC_MESSAGES">
+      <Directory Id="dirB2F735D32F69742F9CCB1F5A8907C042" Name="lib">
+        <Directory Id="dir60BBD2533BA0D419152D3355E05AC9E4" Name="gstreamer-1.0">
+          <Component Win64="$(var.Win64)" Id="cmp0ACFE00C63B8A3232D2DEB869037D87C" Guid="*">
+            <File Id="fil114D395327F4D6569AC02A39DFB1971E" KeyPath="yes" Source="$(var.SourceDir)/lib/gstreamer-1.0/libgstcoreelements.dll"/>
+          </Component>
+          <Component Win64="$(var.Win64)" Id="cmp811F5C25B1348DD7A6FFE318E33B2F72" Guid="*">
+            <File Id="filAC3D4D4F8DCE84F82D66194E5E5A9EE1" KeyPath="yes" Source="$(var.SourceDir)/lib/gstreamer-1.0/libgstcoretracers.dll"/>
+          </Component>
+        </Directory>
+      </Directory>
+      <Directory Id="dir1EBE474684D1CA6D6957A950C9672D67" Name="libexec">
+        <Directory Id="dir3248D276B500675FA6695124351B1529" Name="gstreamer-1.0">
+          <Component Win64="$(var.Win64)" Id="cmp3694FB7C618F9AA6A8199B5908839EED" Guid="*">
+            <File Id="fil90E25DCAD861049A2C91C41BE5374EBF" KeyPath="yes" Source="$(var.SourceDir)/libexec/gstreamer-1.0/gst-plugin-scanner.exe"/>
+          </Component>
+        </Directory>
+      </Directory>
+      <Directory Id="dir2D493EC0C690AE59F6E7BF562D9B2E1D" Name="share">
+        <Directory Id="dir1D2293355B054FBF921B7909B2909240" Name="aclocal">
+          <Component Win64="$(var.Win64)" Id="cmp453A7B102CA0C641D11AA1D797111983" Guid="*">
+            <File Id="filFEAD87C5BA0A19A4174FEB4D851A0C04" KeyPath="yes" Source="$(var.SourceDir)/share/aclocal/gst-element-check-1.0.m4"/>
+          </Component>
+        </Directory>
+        <Directory Id="dir969A2801596DDEFF774EFAA74EA00028" Name="locale">
+          <Directory Id="dir87D0A17FA85B6970D3EB3BFF6242212C" Name="af">
+            <Directory Id="dir6CB4635253DEB0988689D3C917BE4A54" Name="LC_MESSAGES">
               <Component Win64="$(var.Win64)" Id="cmpA4D7E136426B5975933DC66C5BCBE09E" Guid="*">
                 <File Id="fil896C993CE10319EB1D46694BA5468F6F" KeyPath="yes" Source="$(var.SourceDir)/share/locale/af/LC_MESSAGES/gstreamer-1.0.mo"/>
               </Component>
             </Directory>
           </Directory>
-          <Directory Id="dir7FF2A34AD6C3D03CB76B4A330DDC467F" Name="ast">
-            <Directory Id="dir271630361C0DA83D0FDBE240CF02FB48" Name="LC_MESSAGES">
+          <Directory Id="dir5584933D8E20294F06F6CC13C228FA8B" Name="ast">
+            <Directory Id="dirA78573BABC1DD4B85D5FE1DCA68AD048" Name="LC_MESSAGES">
               <Component Win64="$(var.Win64)" Id="cmpB90F5D9A90498563029B703ED62FD1D6" Guid="*">
                 <File Id="fil6AC8F86FAB773256F7C8C9462968EF1C" KeyPath="yes" Source="$(var.SourceDir)/share/locale/ast/LC_MESSAGES/gstreamer-1.0.mo"/>
               </Component>
             </Directory>
           </Directory>
-          <Directory Id="dirFBB3E5EB6B6AA14D79C554EE5C613BA6" Name="az">
-            <Directory Id="dir1D6A7B9069E179D8146723A1ADE933ED" Name="LC_MESSAGES">
+          <Directory Id="dirCD97EF9F507E890C86DF3933BEE2AFBE" Name="az">
+            <Directory Id="dir59BE409952EE5BED46694170895AB181" Name="LC_MESSAGES">
               <Component Win64="$(var.Win64)" Id="cmp537C4EB805A22DEF6624E00A2C355A53" Guid="*">
                 <File Id="fil48F096D7288F791224E6C0D5154D7539" KeyPath="yes" Source="$(var.SourceDir)/share/locale/az/LC_MESSAGES/gstreamer-1.0.mo"/>
               </Component>
             </Directory>
           </Directory>
-          <Directory Id="dir7CD2762F466B5A88ED04EA594BDE3D1E" Name="be">
-            <Directory Id="dir5B6EED348DE53B354F1AC165B2015A29" Name="LC_MESSAGES">
+          <Directory Id="dirCD6BD6ED533B4B422B4CAD3B0CD7BD7E" Name="be">
+            <Directory Id="dirAE6208D4AF35C0DA46CF6E08D6A6D02E" Name="LC_MESSAGES">
               <Component Win64="$(var.Win64)" Id="cmp0A425B426C8444F795CC04F51737818D" Guid="*">
                 <File Id="filBB3EAF123A4F1F40CBF565971686C4CD" KeyPath="yes" Source="$(var.SourceDir)/share/locale/be/LC_MESSAGES/gstreamer-1.0.mo"/>
               </Component>
             </Directory>
           </Directory>
-          <Directory Id="dir6EFCAC3AE9E74F1AB66072D91D57FE41" Name="bg">
-            <Directory Id="dirBE23940E8D7BE8B5BA917B4AD8279D2B" Name="LC_MESSAGES">
+          <Directory Id="dir6311F92A072268D2D07ACC8BFCD575CE" Name="bg">
+            <Directory Id="dir1E8EF29660EE78E39C1CC582ACB312C3" Name="LC_MESSAGES">
               <Component Win64="$(var.Win64)" Id="cmp1E2B89E4231BB828CB8D3AAE7991BA93" Guid="*">
                 <File Id="fil9CDEF657AFF9A2A4350ED9FCAF377870" KeyPath="yes" Source="$(var.SourceDir)/share/locale/bg/LC_MESSAGES/gstreamer-1.0.mo"/>
               </Component>
             </Directory>
           </Directory>
-          <Directory Id="dirF177C831DB2AEAFD2CD2927FF700C69A" Name="ca">
-            <Directory Id="dir89F059285928532A6CD75C022C33ADDA" Name="LC_MESSAGES">
+          <Directory Id="dir5737A451317CAC690FBFD80BBD6B33D8" Name="ca">
+            <Directory Id="dirBE30B777FE5CAED06991D773A22D3819" Name="LC_MESSAGES">
               <Component Win64="$(var.Win64)" Id="cmp558BB7DB4EE48DD11AE2D138BB688C02" Guid="*">
                 <File Id="fil253657990A241199BD24F5B976525F3C" KeyPath="yes" Source="$(var.SourceDir)/share/locale/ca/LC_MESSAGES/gstreamer-1.0.mo"/>
               </Component>
             </Directory>
           </Directory>
-          <Directory Id="dir8C3E293DC59783210B8DE28D693A387F" Name="cs">
-            <Directory Id="dir85D66FE6C77A5BC9B9CA60D7995262E9" Name="LC_MESSAGES">
+          <Directory Id="dir79C9EC6F5F2EEED3EFFE787DDD35D277" Name="cs">
+            <Directory Id="dir6AD0ADC0592C7B8574C5B0ADEA223BA2" Name="LC_MESSAGES">
               <Component Win64="$(var.Win64)" Id="cmp69737864FFEB8F7EEE779B85E04038C0" Guid="*">
                 <File Id="fil72826C2D3396CEC465532D1C5D51D048" KeyPath="yes" Source="$(var.SourceDir)/share/locale/cs/LC_MESSAGES/gstreamer-1.0.mo"/>
               </Component>
             </Directory>
           </Directory>
-          <Directory Id="dir2CC12B819A05A8381F22FFED4C991D7D" Name="da">
-            <Directory Id="dir9C36934617FC6DEE755139265E272BAB" Name="LC_MESSAGES">
+          <Directory Id="dir294B9A1639B2512F34589C8B2F8C540D" Name="da">
+            <Directory Id="dir7267CC3E82F3A57A68216C967CC5CDE9" Name="LC_MESSAGES">
               <Component Win64="$(var.Win64)" Id="cmp157256CDCD7F94C2CDD9BC8FC74771B9" Guid="*">
                 <File Id="fil4476CBFE7ABB7EE52286E0CE24262C27" KeyPath="yes" Source="$(var.SourceDir)/share/locale/da/LC_MESSAGES/gstreamer-1.0.mo"/>
               </Component>
             </Directory>
           </Directory>
-          <Directory Id="dirC5403608A5CA5BD39F860DAF89FF5B35" Name="de">
-            <Directory Id="dir15CB9C0A008C8D634CEF25D9BEE9E173" Name="LC_MESSAGES">
+          <Directory Id="dir8B2789A765F4550792CE3A4466CD4D60" Name="de">
+            <Directory Id="dir5FDBD92D4E84897EEF395A9FBC07E355" Name="LC_MESSAGES">
               <Component Win64="$(var.Win64)" Id="cmpD63E76DAE6DD2AE11F1AE822C5F1BABF" Guid="*">
                 <File Id="filED6AB9DB7AE498AEAA3BE42306F681DD" KeyPath="yes" Source="$(var.SourceDir)/share/locale/de/LC_MESSAGES/gstreamer-1.0.mo"/>
               </Component>
             </Directory>
           </Directory>
-          <Directory Id="dirE3320B780C3CAD4AD3EA15FA8684F15C" Name="el">
-            <Directory Id="dir0C097FB27B14A4BA5D3FF5E3DDC2ECC6" Name="LC_MESSAGES">
+          <Directory Id="dir7DDE0C2747D23372842B071327A65240" Name="el">
+            <Directory Id="dir7DA651ECBA29E23574592FC73FA091B9" Name="LC_MESSAGES">
               <Component Win64="$(var.Win64)" Id="cmpC356B4C8C837127CE93A32ED56DE0041" Guid="*">
                 <File Id="filE8966D67BE19C9CFB09A9EAF8E822A03" KeyPath="yes" Source="$(var.SourceDir)/share/locale/el/LC_MESSAGES/gstreamer-1.0.mo"/>
               </Component>
             </Directory>
           </Directory>
-          <Directory Id="dir65E14DCD9469E34751A069793EA68B18" Name="en_GB">
-            <Directory Id="dir83295CAF6E428312D454D8AFF8D68F8D" Name="LC_MESSAGES">
+          <Directory Id="dirF1715E1037401D886F3A7EF71FAADD06" Name="en_GB">
+            <Directory Id="dir6221D2F089F26A685594D848B81C6180" Name="LC_MESSAGES">
               <Component Win64="$(var.Win64)" Id="cmp79BF6BC04DD554DCEB1B16F97540A409" Guid="*">
                 <File Id="filDE4C6B29C5E2616E6F749AE32A90EDFC" KeyPath="yes" Source="$(var.SourceDir)/share/locale/en_GB/LC_MESSAGES/gstreamer-1.0.mo"/>
               </Component>
             </Directory>
           </Directory>
-          <Directory Id="dir54CA202711630580E3D15B4CE421A2F0" Name="eo">
-            <Directory Id="dir182AA6F085092C120B7BE2E20D2AF53A" Name="LC_MESSAGES">
+          <Directory Id="dirFCE7FD3014344CFC79EEB6CE4254D158" Name="eo">
+            <Directory Id="dirA1028AEA10D75FDF88D36BEC6C2152E8" Name="LC_MESSAGES">
               <Component Win64="$(var.Win64)" Id="cmp5A0768A58D676E5859C19147E8844B22" Guid="*">
                 <File Id="fil607EEB57BE4FD30256A0465182582394" KeyPath="yes" Source="$(var.SourceDir)/share/locale/eo/LC_MESSAGES/gstreamer-1.0.mo"/>
               </Component>
             </Directory>
           </Directory>
-          <Directory Id="dir9D81F27D242D0CF407F9FF851BA85F77" Name="es">
-            <Directory Id="dir594517313920B27C7ADFE1F565D4F13D" Name="LC_MESSAGES">
+          <Directory Id="dir6D6418B4F273492FE2086B9AE4AC124C" Name="es">
+            <Directory Id="dir73E539982F8D51BFBD64C464E1073E11" Name="LC_MESSAGES">
               <Component Win64="$(var.Win64)" Id="cmp7121D061A0BE62FA563D971B7DEAE9F6" Guid="*">
                 <File Id="fil0D189E4C6F2CA75427716014430E9173" KeyPath="yes" Source="$(var.SourceDir)/share/locale/es/LC_MESSAGES/gstreamer-1.0.mo"/>
               </Component>
             </Directory>
           </Directory>
-          <Directory Id="dirC8E28CFA92DB8124795DB66711226074" Name="eu">
-            <Directory Id="dirB48A1F794EDE09331EABF48DDFA01D8F" Name="LC_MESSAGES">
+          <Directory Id="dirF6D100BA91945A4950A787433DC789EF" Name="eu">
+            <Directory Id="dirBD35E3C3C5B861905D80DB5BD4F62C5A" Name="LC_MESSAGES">
               <Component Win64="$(var.Win64)" Id="cmp563C8EF17FF7F2BE2900FFB1A3454C27" Guid="*">
                 <File Id="filB0533EBC2B2FFDA4B2A4EA9112088040" KeyPath="yes" Source="$(var.SourceDir)/share/locale/eu/LC_MESSAGES/gstreamer-1.0.mo"/>
               </Component>
             </Directory>
           </Directory>
-          <Directory Id="dir6CD04752A5793CB37755548663EA9028" Name="fi">
-            <Directory Id="dir9975B83728AFFFF8A37F9EA575BEB321" Name="LC_MESSAGES">
+          <Directory Id="dirA628585E0EE2AE72DB2F360499DC85A2" Name="fi">
+            <Directory Id="dir49B3CA4F6B66EFAA4D0E57410CC90CC7" Name="LC_MESSAGES">
               <Component Win64="$(var.Win64)" Id="cmp10506DCA3B15E81FACF8EB922CDF1AA4" Guid="*">
                 <File Id="fil0A9901C78CD448CB6E401E6EF7CD480F" KeyPath="yes" Source="$(var.SourceDir)/share/locale/fi/LC_MESSAGES/gstreamer-1.0.mo"/>
               </Component>
             </Directory>
           </Directory>
-          <Directory Id="dir4C82CAAAD8C5A88450ADCB155FB88BBA" Name="fr">
-            <Directory Id="dir223DBEC5629920A2A7F91DE75FD0FB2E" Name="LC_MESSAGES">
+          <Directory Id="dirFCCA22056E53B5D59428AB7476DF4657" Name="fr">
+            <Directory Id="dir28876CBDE5ABD2BF82B3825E6292E67F" Name="LC_MESSAGES">
               <Component Win64="$(var.Win64)" Id="cmp76B582737FB9482A8A7D4FD5CAFFABA9" Guid="*">
                 <File Id="filEB46F424B647C292741335AAC62D717E" KeyPath="yes" Source="$(var.SourceDir)/share/locale/fr/LC_MESSAGES/gstreamer-1.0.mo"/>
               </Component>
             </Directory>
           </Directory>
-          <Directory Id="dirD799A3891E9DEEC78AC6B27FEBEAB00E" Name="fur">
-            <Directory Id="dir8AEF3E620C5E6A4BAD2632EB6FA01ED7" Name="LC_MESSAGES">
+          <Directory Id="dirAF56DC65E84C8E7A3E748EF8F4484EFA" Name="fur">
+            <Directory Id="dirEB8A96B5FDF0CC7AF41B0AB892944089" Name="LC_MESSAGES">
               <Component Win64="$(var.Win64)" Id="cmp70F367ED0817CC7D60FF88F09A2AE0F1" Guid="*">
                 <File Id="fil913C1BC82D81D074AD78C5BD78EE3301" KeyPath="yes" Source="$(var.SourceDir)/share/locale/fur/LC_MESSAGES/gstreamer-1.0.mo"/>
               </Component>
             </Directory>
           </Directory>
-          <Directory Id="dirAFBF52E2A5453DB8D810A14362250778" Name="gl">
-            <Directory Id="dir5EEAD1EA0964AA1EFE0CF9AFEB609E4C" Name="LC_MESSAGES">
+          <Directory Id="dirF458E38E8694882573D395F8C502614A" Name="gl">
+            <Directory Id="dirBFC3143F8379328941E9AEC795F6055A" Name="LC_MESSAGES">
               <Component Win64="$(var.Win64)" Id="cmp7EE39D72DA6F80EC82F83029AEB70C27" Guid="*">
                 <File Id="filB31244B52B08FB5020A0AD7435FD8513" KeyPath="yes" Source="$(var.SourceDir)/share/locale/gl/LC_MESSAGES/gstreamer-1.0.mo"/>
               </Component>
             </Directory>
           </Directory>
-          <Directory Id="dir17EC5AA3C3EA82A95A88E22057605FFA" Name="hr">
-            <Directory Id="dirD2C28F5B2511D1BFF4819155332BCBD0" Name="LC_MESSAGES">
+          <Directory Id="dir7A4230F7B2167324E805E23E2AC3E3B2" Name="hr">
+            <Directory Id="dirE88A511B757F5946A377151A274767C5" Name="LC_MESSAGES">
               <Component Win64="$(var.Win64)" Id="cmp4917B2B082082B81458EEF07F0C07562" Guid="*">
                 <File Id="fil32FC5A42BDD289881E1BCCCA9D65C5DB" KeyPath="yes" Source="$(var.SourceDir)/share/locale/hr/LC_MESSAGES/gstreamer-1.0.mo"/>
               </Component>
             </Directory>
           </Directory>
-          <Directory Id="dir8CA0D82C1BFF0306029314F57CF47846" Name="hu">
-            <Directory Id="dirEC9FAB96CFA26197E3EA01C0F73F6950" Name="LC_MESSAGES">
+          <Directory Id="dir4140E9B3BF09F5095BFE8CEFD93ACF7E" Name="hu">
+            <Directory Id="dirD9DF9DB9BF20467367EC21435E4512F6" Name="LC_MESSAGES">
               <Component Win64="$(var.Win64)" Id="cmp0684B9B3261F80969148C1B74FD27B32" Guid="*">
                 <File Id="fil19D43FEE923914B056271C799F53C1DE" KeyPath="yes" Source="$(var.SourceDir)/share/locale/hu/LC_MESSAGES/gstreamer-1.0.mo"/>
               </Component>
             </Directory>
           </Directory>
-          <Directory Id="dirC3EDB0772635C733FDD3708CCFA2E107" Name="id">
-            <Directory Id="dir70D3BB2015139812A3EA6E918367A4E5" Name="LC_MESSAGES">
+          <Directory Id="dirEC5F9EB21FFC12366AF89F9B6A4D314E" Name="id">
+            <Directory Id="dirC9B6342B681580EF986E84A37CEE2FF5" Name="LC_MESSAGES">
               <Component Win64="$(var.Win64)" Id="cmp08EC05FDAA7C1B0F5A33559F76876803" Guid="*">
                 <File Id="filB3CCE40EAF4ED685894745C8A20FBC38" KeyPath="yes" Source="$(var.SourceDir)/share/locale/id/LC_MESSAGES/gstreamer-1.0.mo"/>
               </Component>
             </Directory>
           </Directory>
-          <Directory Id="dir134F51C2A4D26206F8E08F3FFDC918E0" Name="it">
-            <Directory Id="dir4475A51D6DE620EF49741D28D891654C" Name="LC_MESSAGES">
+          <Directory Id="dir5543172F161B121833DA849DF31DA291" Name="it">
+            <Directory Id="dir74A68D42E719986DA953C7AA018861BD" Name="LC_MESSAGES">
               <Component Win64="$(var.Win64)" Id="cmp5E5D61E5583E43EFEDCCA3282B9EB491" Guid="*">
                 <File Id="fil50C45C9BC7896795F5540C250B4A0EB5" KeyPath="yes" Source="$(var.SourceDir)/share/locale/it/LC_MESSAGES/gstreamer-1.0.mo"/>
               </Component>
             </Directory>
           </Directory>
-          <Directory Id="dir5288A464C1DBA453EAC4D76FCCEFD897" Name="ja">
-            <Directory Id="dir35DE77415FCA71E3F486E5F30491F503" Name="LC_MESSAGES">
+          <Directory Id="dir57694BEE8F514E3C24ED4A662B4C5D17" Name="ja">
+            <Directory Id="dir278DF18CBC9FB8897CBEBA6F391EA9B2" Name="LC_MESSAGES">
               <Component Win64="$(var.Win64)" Id="cmp2D8DD82A022C3AF733496EEE1736E8A0" Guid="*">
                 <File Id="filFE4AE315F35B582BE2565A163C774424" KeyPath="yes" Source="$(var.SourceDir)/share/locale/ja/LC_MESSAGES/gstreamer-1.0.mo"/>
               </Component>
             </Directory>
           </Directory>
-          <Directory Id="dir76843027F66529ED255C88F104840C5C" Name="lt">
-            <Directory Id="dirEF0BFD1298FF4C2F322E35CBD76690DE" Name="LC_MESSAGES">
+          <Directory Id="dirA517C75583E03BCD3DF395BACE6278B1" Name="lt">
+            <Directory Id="dirAA638840B03182463FD363541514C9EB" Name="LC_MESSAGES">
               <Component Win64="$(var.Win64)" Id="cmp650684BFEFB7FE3E3741276942E95F00" Guid="*">
                 <File Id="filABD87674D62F4459752EA702B500053B" KeyPath="yes" Source="$(var.SourceDir)/share/locale/lt/LC_MESSAGES/gstreamer-1.0.mo"/>
               </Component>
             </Directory>
           </Directory>
-          <Directory Id="dirF605A93C43381AFEA6E0607675F10F8A" Name="nb">
-            <Directory Id="dirAD9BB84F7D762BDABB9FFFAC23D0775D" Name="LC_MESSAGES">
+          <Directory Id="dirEB16BBDF31807187F5064D710E58767C" Name="nb">
+            <Directory Id="dir98454F1B5D6E8312AE45653EF55CF851" Name="LC_MESSAGES">
               <Component Win64="$(var.Win64)" Id="cmpDC4B788706771B133FB2FDBE7A865489" Guid="*">
                 <File Id="fil49C956A7D82B19AABC96A064ADD5BBDE" KeyPath="yes" Source="$(var.SourceDir)/share/locale/nb/LC_MESSAGES/gstreamer-1.0.mo"/>
               </Component>
             </Directory>
           </Directory>
-          <Directory Id="dir71F46C30B4CA5BF2DB4CBFED38C01898" Name="nl">
-            <Directory Id="dir62C76134166C2DDD9D5A371D81ACC8BB" Name="LC_MESSAGES">
+          <Directory Id="dir3EB1CF01839618A8D79D72CB71B5A1E6" Name="nl">
+            <Directory Id="dir2FA7211686BE0077C1477E08ED8D79AA" Name="LC_MESSAGES">
               <Component Win64="$(var.Win64)" Id="cmpD82DC8F2DACA41388EF441739FBFCDFE" Guid="*">
                 <File Id="fil9D9EC80DB49C5AEBB33E38ED7666F277" KeyPath="yes" Source="$(var.SourceDir)/share/locale/nl/LC_MESSAGES/gstreamer-1.0.mo"/>
               </Component>
             </Directory>
           </Directory>
-          <Directory Id="dir2C18B666CC4C9CBEDEE7966E158528E7" Name="pl">
-            <Directory Id="dir3AFBC6AC04A8D3ED32BDDB5D7DF7238D" Name="LC_MESSAGES">
+          <Directory Id="dir8ED23194D411DA31B06A394CE59C64D1" Name="pl">
+            <Directory Id="dirEDA4F465255F45815B7FC23CDA5B3AE0" Name="LC_MESSAGES">
               <Component Win64="$(var.Win64)" Id="cmp9BF8F4E397B08F99E442C257FC5480EF" Guid="*">
                 <File Id="fil34FB61170820F9CD45122D86329E3918" KeyPath="yes" Source="$(var.SourceDir)/share/locale/pl/LC_MESSAGES/gstreamer-1.0.mo"/>
               </Component>
             </Directory>
           </Directory>
-          <Directory Id="dirED6C596A36D0DB360A785ADC37B81E98" Name="pt_BR">
-            <Directory Id="dirD50CE762608A9CF4DA09C5CD96D4513E" Name="LC_MESSAGES">
+          <Directory Id="dir8C123E5FF315A6747170EA4F89002DE9" Name="pt_BR">
+            <Directory Id="dir5970A113500A6C898C855542C223DE01" Name="LC_MESSAGES">
               <Component Win64="$(var.Win64)" Id="cmpCC2D569788B61E5EDFBC791BFA2E5E9C" Guid="*">
                 <File Id="fil799626A2D719A1850D7F72971447277D" KeyPath="yes" Source="$(var.SourceDir)/share/locale/pt_BR/LC_MESSAGES/gstreamer-1.0.mo"/>
               </Component>
             </Directory>
           </Directory>
-          <Directory Id="dirBAF6A1CEF6866751130BDE4F58CB2A28" Name="ro">
-            <Directory Id="dir384AF02A412CD20C8DE78F330E6D6FD7" Name="LC_MESSAGES">
+          <Directory Id="dir415C1A7AA7CB3587C4097D8B294E9071" Name="ro">
+            <Directory Id="dir2F7AC3C93BDEF83D30D80AE0EA915C87" Name="LC_MESSAGES">
               <Component Win64="$(var.Win64)" Id="cmp02CF6C83648A167BFACDD845D429295A" Guid="*">
                 <File Id="filBDB8D840CC6403069D36DD182CF9B559" KeyPath="yes" Source="$(var.SourceDir)/share/locale/ro/LC_MESSAGES/gstreamer-1.0.mo"/>
               </Component>
             </Directory>
           </Directory>
-          <Directory Id="dirA9BFAD20F2DDDEB64ECBAE8B28A32541" Name="ru">
-            <Directory Id="dir46F0711AE918D89C6613EF65ECFD7600" Name="LC_MESSAGES">
+          <Directory Id="dirBE98ED0BCDD6812BD18346165AE8B772" Name="ru">
+            <Directory Id="dir762825BA97A9F257135474AF888633FA" Name="LC_MESSAGES">
               <Component Win64="$(var.Win64)" Id="cmp16C854040788383694E6F149DBB02EC7" Guid="*">
                 <File Id="fil58E24B4A38F746500714643E0E4515E4" KeyPath="yes" Source="$(var.SourceDir)/share/locale/ru/LC_MESSAGES/gstreamer-1.0.mo"/>
               </Component>
             </Directory>
           </Directory>
-          <Directory Id="dir99593C54094D54F076CE91F30B45E5D0" Name="rw">
-            <Directory Id="dir70CFD4D67AD88A48D805EE63C425A28E" Name="LC_MESSAGES">
+          <Directory Id="dir61CE0C89671BE72AE538A53952983E4D" Name="rw">
+            <Directory Id="dir07EB90D2732266D9F4F9AAA4ACC58273" Name="LC_MESSAGES">
               <Component Win64="$(var.Win64)" Id="cmp84AE4F0B3E93E397E33C6B4F367A9CB3" Guid="*">
                 <File Id="filF6382D1E575CF2BCDE029A886AF76058" KeyPath="yes" Source="$(var.SourceDir)/share/locale/rw/LC_MESSAGES/gstreamer-1.0.mo"/>
               </Component>
             </Directory>
           </Directory>
-          <Directory Id="dir019B16FE5DF0955329004E8D21D9A700" Name="sk">
-            <Directory Id="dirA4A44F5EA3158150A386311FCEEBB241" Name="LC_MESSAGES">
+          <Directory Id="dir43BF4D064E48DF8751D46540C65664BA" Name="sk">
+            <Directory Id="dir44F4A1ED7777BA30C63DA1667053C715" Name="LC_MESSAGES">
               <Component Win64="$(var.Win64)" Id="cmp34E3C26B820505C597394233E48035BB" Guid="*">
                 <File Id="fil32DF170A1F36EC7D9965A1D8010A5C68" KeyPath="yes" Source="$(var.SourceDir)/share/locale/sk/LC_MESSAGES/gstreamer-1.0.mo"/>
               </Component>
             </Directory>
           </Directory>
-          <Directory Id="dir7A2AE158102F5F052169E960D823BB2E" Name="sl">
-            <Directory Id="dir9F789E5EA480F1F742F4AF489495E894" Name="LC_MESSAGES">
+          <Directory Id="dir0DBA2C1AB832829E091234C3F5B08E8E" Name="sl">
+            <Directory Id="dir839994DCC2F797149A4A830D4F0425F5" Name="LC_MESSAGES">
               <Component Win64="$(var.Win64)" Id="cmp6E05B2F38EC187AD73FA371DCE0035C0" Guid="*">
                 <File Id="fil76F8DBAAF024ABCE8C38920A73E4C67D" KeyPath="yes" Source="$(var.SourceDir)/share/locale/sl/LC_MESSAGES/gstreamer-1.0.mo"/>
               </Component>
             </Directory>
           </Directory>
-          <Directory Id="dirF75E54C8899D32511B5B07F356C9E220" Name="sq">
-            <Directory Id="dir7E6E0220DB07F8BC92830651637375E4" Name="LC_MESSAGES">
+          <Directory Id="dir6F4DFB481BE71EF54DFC025AE15BDD45" Name="sq">
+            <Directory Id="dir4B2D1A98D1BA6F7FBC5D4773C3917C5F" Name="LC_MESSAGES">
               <Component Win64="$(var.Win64)" Id="cmp717ADAE327A5A91D9732D72B80F3370B" Guid="*">
                 <File Id="filAEA2D55D1CF224DCEB8B47ED272D4D66" KeyPath="yes" Source="$(var.SourceDir)/share/locale/sq/LC_MESSAGES/gstreamer-1.0.mo"/>
               </Component>
             </Directory>
           </Directory>
-          <Directory Id="dir47DC6B2272E945304C18B9FFBBA6BA45" Name="sr">
-            <Directory Id="dir4B749983D76D2DF214B17BD210E90CEC" Name="LC_MESSAGES">
+          <Directory Id="dirF2A4866847C920C338C37A7B44AF6A59" Name="sr">
+            <Directory Id="dir63854A4476FA52CCE9CAB47C4CCDDD73" Name="LC_MESSAGES">
               <Component Win64="$(var.Win64)" Id="cmp127A5ED5CF67DD19DE5942BFF70A2740" Guid="*">
                 <File Id="fil659545CE85BA78100AA8595C3A54FEDD" KeyPath="yes" Source="$(var.SourceDir)/share/locale/sr/LC_MESSAGES/gstreamer-1.0.mo"/>
               </Component>
             </Directory>
           </Directory>
-          <Directory Id="dirA01D2CF0180A2870FCC9BAF8F1B5CA83" Name="sv">
-            <Directory Id="dirD20623D6451173A312B493E4FF8AAFD7" Name="LC_MESSAGES">
+          <Directory Id="dir83555D80A4098BB72B42E9BE8E8D7433" Name="sv">
+            <Directory Id="dir0AE41D766DCBF83B1977E0EF677AB923" Name="LC_MESSAGES">
               <Component Win64="$(var.Win64)" Id="cmp62A6BF0D159307D274270ED32D18CDB6" Guid="*">
                 <File Id="filA3BCF424360BB3C87414A0DF9A93C3A2" KeyPath="yes" Source="$(var.SourceDir)/share/locale/sv/LC_MESSAGES/gstreamer-1.0.mo"/>
               </Component>
             </Directory>
           </Directory>
-          <Directory Id="dirAEED25FA20F7227C9B7E02B5DC396563" Name="tr">
-            <Directory Id="dirBCD427F4C939A554F33A076A3EAC2E14" Name="LC_MESSAGES">
+          <Directory Id="dirEB0C75C3D9E54F355BF3E3B7D75EB5F5" Name="tr">
+            <Directory Id="dir01466BF25E45E9E265BCC0633F9E3347" Name="LC_MESSAGES">
               <Component Win64="$(var.Win64)" Id="cmp6016BE6BE1F9CBB893BA64988C992C9B" Guid="*">
                 <File Id="fil201B3D9FBA7610EB8D2A132C999AF380" KeyPath="yes" Source="$(var.SourceDir)/share/locale/tr/LC_MESSAGES/gstreamer-1.0.mo"/>
               </Component>
             </Directory>
           </Directory>
-          <Directory Id="dir1FFADD254A185DB568385950F81F232A" Name="uk">
-            <Directory Id="dir6E291AE90BFB4C5E2EAE100D4565E749" Name="LC_MESSAGES">
+          <Directory Id="dirCFEA54CF09B2C9642091E0AEA9B3892E" Name="uk">
+            <Directory Id="dirD44FFF5020A192AE7C2E84122B59827E" Name="LC_MESSAGES">
               <Component Win64="$(var.Win64)" Id="cmp5AF3C000E0617AAFA46ABAD09528B814" Guid="*">
                 <File Id="filA0A93E8911709B438878A582E5A0B7D5" KeyPath="yes" Source="$(var.SourceDir)/share/locale/uk/LC_MESSAGES/gstreamer-1.0.mo"/>
               </Component>
             </Directory>
           </Directory>
-          <Directory Id="dirD185C3B08B95AD9EF41827E58EB61B93" Name="vi">
-            <Directory Id="dirCDA4416DF7248DF2EC051C81ACB6A712" Name="LC_MESSAGES">
+          <Directory Id="dir19CF716DA72953BCEA85D32C754F86AB" Name="vi">
+            <Directory Id="dir02DF0BE9332992CC005A8E2E233D0B12" Name="LC_MESSAGES">
               <Component Win64="$(var.Win64)" Id="cmp640437CD605F13C49FE962982466981C" Guid="*">
                 <File Id="filB420FD3B2EFD41552261ADB863594FF7" KeyPath="yes" Source="$(var.SourceDir)/share/locale/vi/LC_MESSAGES/gstreamer-1.0.mo"/>
               </Component>
             </Directory>
           </Directory>
-          <Directory Id="dir488ABB1EBC8AB45C3464B4B2B9921AFF" Name="zh_CN">
-            <Directory Id="dir550D419DB239DF0B7FBC16F9ACA803BA" Name="LC_MESSAGES">
+          <Directory Id="dir49E2C2C0323621DEA8713277DE1F82D2" Name="zh_CN">
+            <Directory Id="dir76CE00A5D119724E9BDB4004C26D77C8" Name="LC_MESSAGES">
               <Component Win64="$(var.Win64)" Id="cmpAA5F14D1F02E2679E79AB018156ADA02" Guid="*">
                 <File Id="filD827B1E4532FD336D31EC1B9F47B033B" KeyPath="yes" Source="$(var.SourceDir)/share/locale/zh_CN/LC_MESSAGES/gstreamer-1.0.mo"/>
               </Component>
             </Directory>
           </Directory>
-          <Directory Id="dir43BEBA64B3C8724679CE67FEB42780A6" Name="zh_TW">
-            <Directory Id="dirDBEF4D8E3CF60DF62A292711EF5C4DBF" Name="LC_MESSAGES">
+          <Directory Id="dir8FC256B748A522EF2CB260D4561732E9" Name="zh_TW">
+            <Directory Id="dir741BAAE135706353E3660BD1A5B0B4DE" Name="LC_MESSAGES">
               <Component Win64="$(var.Win64)" Id="cmp4AD0399BB35367F79F7DD41107DA8DB0" Guid="*">
                 <File Id="filBC5DC7E36933FC6725C09BE4D2044E88" KeyPath="yes" Source="$(var.SourceDir)/share/locale/zh_TW/LC_MESSAGES/gstreamer-1.0.mo"/>
               </Component>
+              </Directory>
             </Directory>
           </Directory>
         </Directory>
-      </Directory>
     </DirectoryRef>
   </Fragment>
   <Fragment>
@@ -339,6 +361,10 @@
       <ComponentRef Id="cmp46DB6990FC2740672B3421145559C9BD"/>
       <ComponentRef Id="cmp5AEB3111ED36D8DF9A4732D4FCD9FB54"/>
       <ComponentRef Id="cmp9D35809C95F77B45F174A9DAB67E9D04"/>
+      <ComponentRef Id="cmp0ACFE00C63B8A3232D2DEB869037D87C"/>
+      <ComponentRef Id="cmp811F5C25B1348DD7A6FFE318E33B2F72"/>
+      <ComponentRef Id="cmp3694FB7C618F9AA6A8199B5908839EED"/>
+      <ComponentRef Id="cmp453A7B102CA0C641D11AA1D797111983"/>
       <ComponentRef Id="cmpA4D7E136426B5975933DC66C5BCBE09E"/>
       <ComponentRef Id="cmpB90F5D9A90498563029B703ED62FD1D6"/>
       <ComponentRef Id="cmp537C4EB805A22DEF6624E00A2C355A53"/>
@@ -383,5 +409,3 @@
     </ComponentGroup>
   </Fragment>
 </Include>
-<!-- generated with msitools 0.100.46-5f3f -->
-<!-- ../../build/tools/wixl/wixl-heat -var var.SourceDir -p /usr/i686-w64-mingw32/sys-root/mingw/ -component-group CG.gstreamer1 -directory-ref INSTALLDIR -win64 -->
