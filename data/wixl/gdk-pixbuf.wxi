@@ -2,7 +2,6 @@
 <?require glib2.wxi?>
 <?require libpng.wxi?>
 <?require libtiff.wxi?>
-<?require jasper.wxi?>
 <?require gettext.wxi?>
 <Include xmlns="http://schemas.microsoft.com/wix/2006/wi">
   <Fragment>
@@ -744,7 +743,6 @@
       <ComponentGroupRef Id="CG.glib2"/>
       <ComponentGroupRef Id="CG.libpng"/>
       <ComponentGroupRef Id="CG.libtiff"/>
-      <ComponentGroupRef Id="CG.jasper"/>
       <ComponentGroupRef Id="CG.gettext"/>
       <ComponentRef Id="cmp4BF448B47E572302678F2495BDE525FC"/>
       <ComponentRef Id="cmpF2291AFA90FC22D5216EBABA6781C4DB"/>
