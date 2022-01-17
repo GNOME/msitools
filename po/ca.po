@@ -1,0 +1,138 @@
+# Catalan translation for the msitools package
+# Copyright (C) 2021 msitools's COPYRIGHT HOLDER
+# This file is distributed under the same license as the msitools package.
+# Joan Mas Lloret <joan.mas.lloret@gmail.com>, 2022.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: msitools master\n"
+"Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/msitools/issues\n"
+"POT-Creation-Date: 2021-12-11 19:38+0000\n"
+"PO-Revision-Date: 2022-01-17 18:56+0100\n"
+"Last-Translator: Joan Mas Lloret <joan.mas.lloret@gmail.com\n"
+"Language-Team: Catalan <tradgnome@softcatala.org>\n"
+"Language: ca\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: tools/msiextract.vala:10 tools/wixl/wixl.vala:25
+msgid "Display version number"
+msgstr "Mostra la versió"
+
+#: tools/msiextract.vala:11
+msgid "Extract to directory"
+msgstr "Extreu al directori"
+
+#: tools/msiextract.vala:12
+msgid "List files only"
+msgstr "Mostra només els fitxers"
+
+#: tools/msiextract.vala:13
+msgid "MSI_FILE..."
+msgstr "ARXIU_MSI..."
+
+#: tools/msiextract.vala:160
+msgid "- a msi files extracting tool"
+msgstr "- una eina d'extracció de fitxers msi"
+
+#: tools/msiextract.vala:180 tools/wixl/wixl.vala:82
+msgid "Please specify input files.\n"
+msgstr "Si us plau, identifiqueu els fitxers d'entrada.\n"
+
+#: tools/wixl/wixl-heat.vala:12
+msgid "Directory Ref"
+msgstr "Referència del directori"
+
+#: tools/wixl/wixl-heat.vala:13
+msgid "Component Group"
+msgstr "Grup component"
+
+#: tools/wixl/wixl-heat.vala:14
+msgid "Variable for source dir"
+msgstr "Variable per al directori font"
+
+#: tools/wixl/wixl-heat.vala:15
+msgid "Prefix"
+msgstr "Prefix"
+
+#: tools/wixl/wixl-heat.vala:16
+msgid "Exclude prefix"
+msgstr "Prefix d'exclusió"
+
+#: tools/wixl/wixl-heat.vala:17
+msgid "Add Win64 Component"
+msgstr "Afegeix component Win64"
+
+#: tools/wixl/wixl.vala:26
+msgid "Verbose output"
+msgstr "Mostra més detalls"
+
+#: tools/wixl/wixl.vala:27
+msgid "Output file"
+msgstr "Fitxer de sortida"
+
+#: tools/wixl/wixl.vala:28
+msgid "Define variable"
+msgstr "Defineix la variable"
+
+#: tools/wixl/wixl.vala:29
+msgid "Target architecture"
+msgstr "Arquitectura desitjada"
+
+#: tools/wixl/wixl.vala:30
+msgid "Include directory"
+msgstr "Inclou el directori"
+
+#: tools/wixl/wixl.vala:31
+msgid "System extension directory"
+msgstr "Directori d'extensió del sistema"
+
+#: tools/wixl/wixl.vala:32
+msgid "System include directory"
+msgstr "Directori d'inclusió del sistema"
+
+#: tools/wixl/wixl.vala:33
+msgid "Stop after the preprocessing stage"
+msgstr "Atura després de l'etapa de preprocessament"
+
+#: tools/wixl/wixl.vala:34
+msgid "Specify an extension"
+msgstr "Especifica una extensió"
+
+#: tools/wixl/wixl.vala:35
+msgid "INPUT_FILE1 [INPUT_FILE2]..."
+msgstr "ARXIU_ENTRADA1 [ARXIU_ENTRADA2]..."
+
+#: tools/wixl/wixl.vala:43
+#, c-format
+msgid "arch of type '%s' is not supported"
+msgstr "l'arquitectura del tipus '%s' no està suportada"
+
+#: tools/wixl/wixl.vala:55
+msgid "- a msi building tool"
+msgstr "- una eina de muntatge de fitxers msi"
+
+#: tools/wixl/wixl.vala:90
+msgid "Please specify the output file.\n"
+msgstr "Si us plau, especifiqueu un fitxer de sortida.\n"
+
+#: tools/wixl/wixl.vala:100
+#, c-format
+msgid "Extension of type '%s' is not supported.\n"
+msgstr "L'extensió del tipus '%s' no està suportada.\n"
+
+#: tools/wixl/wixl.vala:117
+#, c-format
+msgid "Loading %s...\n"
+msgstr "S'està carregant %s...\n"
+
+#: tools/wixl/wixl.vala:127
+#, c-format
+msgid "Building %s...\n"
+msgstr "S'està construïnt %s...\n"
+
+#: tools/wixl/wixl.vala:130
+#, c-format
+msgid "Writing %s...\n"
+msgstr "S'està escrivint %s...\n"
