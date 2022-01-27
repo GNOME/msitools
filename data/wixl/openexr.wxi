@@ -1,30 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <?require gcc-c++.wxi?>
+<?require imath.wxi?>
 <?require zlib.wxi?>
 <Include xmlns="http://schemas.microsoft.com/wix/2006/wi">
   <Fragment>
     <DirectoryRef Id="INSTALLDIR">
-      <Directory Id="dir6ED2EF968C6DB22E5FCA04A67BFE8444" Name="bin">
-        <Component Win64="$(var.Win64)" Id="cmpBFAE7A86C533D3BFDEE266089A31F295" Guid="*">
-          <File Id="fil85774EC973B58F86F73169792E1AD727" KeyPath="yes" Source="$(var.SourceDir)/bin/libHalf-2_5.dll"/>
+      <Directory Id="dir0B857615C9B2C86258E8CF7C6974F9B1" Name="bin">
+        <Component Win64="$(var.Win64)" Id="cmpD06DB6061F9FA030F5A84B640A974E2C" Guid="*">
+          <File Id="filCCEEF63C65F726B1B2609A43920FAD36" KeyPath="yes" Source="$(var.SourceDir)/bin/libIex-3_1.dll"/>
         </Component>
-        <Component Win64="$(var.Win64)" Id="cmpF19F43C7580675C06258FB526B94C531" Guid="*">
-          <File Id="filA061BE0DE6A3B432EE5A966E95A93994" KeyPath="yes" Source="$(var.SourceDir)/bin/libIex-2_5.dll"/>
+        <Component Win64="$(var.Win64)" Id="cmpF382C85C906392EAEE0F8A3187356A4E" Guid="*">
+          <File Id="fil6208B4B4C22784C56395CA036FBC7BCD" KeyPath="yes" Source="$(var.SourceDir)/bin/libIlmThread-3_1.dll"/>
         </Component>
-        <Component Win64="$(var.Win64)" Id="cmp6A6C82EA53C0EFAE3096326B17E20F67" Guid="*">
-          <File Id="fil1A5545BC38C3712497EAED13818916FB" KeyPath="yes" Source="$(var.SourceDir)/bin/libIexMath-2_5.dll"/>
+        <Component Win64="$(var.Win64)" Id="cmpD791170731ED456887CF0FBF9E101C2B" Guid="*">
+          <File Id="fil34991156EBD9B579A98112DC98C7CEC6" KeyPath="yes" Source="$(var.SourceDir)/bin/libOpenEXR-3_1.dll"/>
         </Component>
-        <Component Win64="$(var.Win64)" Id="cmpEA2481866C2DC47FC14B8C61C647F450" Guid="*">
-          <File Id="filB4503B1C139FAC100C5432EA4419FCE8" KeyPath="yes" Source="$(var.SourceDir)/bin/libIlmImf-2_5.dll"/>
+        <Component Win64="$(var.Win64)" Id="cmp8300849796A475BA357F53956C655B7D" Guid="*">
+          <File Id="fil95B939BC488F0139759B1708258D13D5" KeyPath="yes" Source="$(var.SourceDir)/bin/libOpenEXRCore-3_1.dll"/>
         </Component>
-        <Component Win64="$(var.Win64)" Id="cmp038AEE460CF570316C22824017BC9F1A" Guid="*">
-          <File Id="filCC11F0370D6E82A1504E31F5E50D043A" KeyPath="yes" Source="$(var.SourceDir)/bin/libIlmImfUtil-2_5.dll"/>
-        </Component>
-        <Component Win64="$(var.Win64)" Id="cmp4D54CFA696A2215D6E362F59D43BDBFC" Guid="*">
-          <File Id="fil1F7FFD91A2597F8D3684EAD65F1D38EE" KeyPath="yes" Source="$(var.SourceDir)/bin/libIlmThread-2_5.dll"/>
-        </Component>
-        <Component Win64="$(var.Win64)" Id="cmp0E50E41192530909EB2F68F8446C534C" Guid="*">
-          <File Id="fil6A80248ABF32FBB8EFABF523E4101DC4" KeyPath="yes" Source="$(var.SourceDir)/bin/libImath-2_5.dll"/>
+        <Component Win64="$(var.Win64)" Id="cmpB99AA8413711B53DB838FC4FCFDAE130" Guid="*">
+          <File Id="filD799F70F1822A396BBDEDF9E062585BC" KeyPath="yes" Source="$(var.SourceDir)/bin/libOpenEXRUtil-3_1.dll"/>
         </Component>
       </Directory>
     </DirectoryRef>
@@ -32,14 +27,13 @@
   <Fragment>
     <ComponentGroup Id="CG.openexr">
       <ComponentGroupRef Id="CG.gcc-c++"/>
+      <ComponentGroupRef Id="CG.imath"/>
       <ComponentGroupRef Id="CG.zlib"/>
-      <ComponentRef Id="cmpBFAE7A86C533D3BFDEE266089A31F295"/>
-      <ComponentRef Id="cmpF19F43C7580675C06258FB526B94C531"/>
-      <ComponentRef Id="cmp6A6C82EA53C0EFAE3096326B17E20F67"/>
-      <ComponentRef Id="cmpEA2481866C2DC47FC14B8C61C647F450"/>
-      <ComponentRef Id="cmp038AEE460CF570316C22824017BC9F1A"/>
-      <ComponentRef Id="cmp4D54CFA696A2215D6E362F59D43BDBFC"/>
-      <ComponentRef Id="cmp0E50E41192530909EB2F68F8446C534C"/>
+      <ComponentRef Id="cmpD06DB6061F9FA030F5A84B640A974E2C"/>
+      <ComponentRef Id="cmpF382C85C906392EAEE0F8A3187356A4E"/>
+      <ComponentRef Id="cmpD791170731ED456887CF0FBF9E101C2B"/>
+      <ComponentRef Id="cmp8300849796A475BA357F53956C655B7D"/>
+      <ComponentRef Id="cmpB99AA8413711B53DB838FC4FCFDAE130"/>
     </ComponentGroup>
   </Fragment>
 </Include>

@@ -47,6 +47,7 @@ my %dllgroups;
 # as dependencies
 my %dllbuiltin = (
     "advapi32.dll" => 1,
+    "bcrypt.dll" => 1,
     "comctl32.dll" => 1,
     "comdlg32.dll" => 1,
     "crypt32.dll" => 1,
@@ -76,7 +77,9 @@ my %dllbuiltin = (
     "shell32.dll" => 1,
     "shlwapi.dll" => 1,
     "user32.dll" => 1,
+    "userenv.dll" => 1,
     "usp10.dll" => 1,
+    "version.dll" => 1,
     "winmm.dll" => 1,
     "winspool.drv" => 1,
     "wldap32.dll" => 1,

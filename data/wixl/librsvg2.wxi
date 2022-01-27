@@ -11,9 +11,6 @@
         <Component Win64="$(var.Win64)" Id="cmp81A1C1E9B324ED590B7F766F40A7D5B7" Guid="*">
           <File Id="fil4B3E8AF8A79891B6BAE94D7DCE1A4694" KeyPath="yes" Source="$(var.SourceDir)/bin/rsvg-convert.exe"/>
         </Component>
-        <Component Win64="$(var.Win64)" Id="cmp237C66D7E1EF3D3CAA94A503B0E26CCE" Guid="*">
-          <File Id="filFA11422A4083722AC98DDEA6F8375693" KeyPath="yes" Source="$(var.SourceDir)/bin/rsvg-view-3.exe"/>
-        </Component>
       </Directory>
       <Directory Id="dir445D749B0ED104613F534DD834B63D9A" Name="lib">
         <Directory Id="dirE00BC2D7B7738A1AC7641506062BBC57" Name="gdk-pixbuf-2.0">
@@ -41,7 +38,6 @@
       <ComponentGroupRef Id="CG.libcroco"/>
       <ComponentRef Id="cmp9AE88CD731B9D1B84CEA9A38B11CA1F6"/>
       <ComponentRef Id="cmp81A1C1E9B324ED590B7F766F40A7D5B7"/>
-      <ComponentRef Id="cmp237C66D7E1EF3D3CAA94A503B0E26CCE"/>
       <ComponentRef Id="cmp0A65EC77C95F303FDE50FC39AD098AB1"/>
       <ComponentRef Id="cmp12AB8C70459BB5E6C41D39CF16A6B578"/>
     </ComponentGroup>
