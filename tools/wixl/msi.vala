@@ -1003,6 +1003,25 @@ namespace Wixl {
         }
     }
 
+    /* https://docs.microsoft.com/en-us/windows/win32/msi/actiontext-table */
+    class MsiTableActionText : MsiTable {
+        static construct {
+            name = "ActionText";
+            sql_create = "CREATE TABLE `ActionText` (`Action` CHAR(72) NOT NULL, `Description` CHAR(255) LOCALIZABLE, `Template` CHAR(255) LOCALIZABLE PRIMARY KEY `Action`)";
+            sql_insert = "INSERT INTO `ActionText` (`Action`, `Description`, `Template`) VALUES (?, ?, ?)";
+        }
+
+        public void add (string Action, string? Description, string? Template) throws GLib.Error {
+            var rec = new Libmsi.Record (3);
+            if (!rec.set_string (1, Action) ||
+                (Description != null && !rec.set_string (2, Description)) ||
+                (Template != null && !rec.set_string (3, Template)))
+                throw new Wixl.Error.FAILED ("failed to add record");
+
+            records.append (rec);
+        }
+    }
+
 
     class MsiSummaryInfo: Object {
         public Libmsi.SummaryInfo properties;
@@ -1101,6 +1120,7 @@ namespace Wixl {
         public MsiTableLaunchCondition table_launch_condition;
         public MsiTableAppSearch table_app_search;
         public MsiTableCustomAction table_custom_action;
+        public MsiTableActionText table_action_text;
         public MsiTableRegLocator table_reg_locator;
         public MsiTableCreateFolder table_create_folder;
         public MsiTableSignature table_signature;
@@ -1183,6 +1203,7 @@ namespace Wixl {
             table_app_search = new MsiTableAppSearch ();
             table_signature = new MsiTableSignature ();
             table_custom_action = new MsiTableCustomAction ();
+            table_action_text = new MsiTableActionText ();
             table_reg_locator = new MsiTableRegLocator ();
             table_create_folder = new MsiTableCreateFolder ();
             table_file_hash = new MsiTableFileHash ();
@@ -1215,6 +1236,7 @@ namespace Wixl {
                     table_app_search,
                     table_signature,
                     table_custom_action,
+                    table_action_text,
                     table_reg_locator,
                     table_create_folder,
                     table_file_hash,

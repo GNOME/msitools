@@ -77,6 +77,7 @@ namespace Wixl {
         public abstract void visit_publish (WixPublish publish) throws GLib.Error;
         public abstract void visit_radio_button (WixRadioButton radio) throws GLib.Error;
         public abstract void visit_subscribe (WixSubscribe subscribe) throws GLib.Error;
+        public abstract void visit_progress_text (WixProgressText progress_text) throws GLib.Error;
     }
 
     public abstract class WixNode: Object {
@@ -1217,6 +1218,7 @@ namespace Wixl {
                 typeof (WixUIText),
                 typeof (WixAdminUISequence),
                 typeof (WixInstallUISequence),
+                typeof (WixProgressText),
             });
         }
     }
@@ -1455,6 +1457,19 @@ namespace Wixl {
 
         public override void accept (WixNodeVisitor visitor) throws GLib.Error {
             visitor.visit_subscribe (this);
+        }
+    }
+
+    public class WixProgressText: WixElement {
+        static construct {
+            name = "ProgressText";
+        }
+
+        public string Action { get; set; }
+        public string Template { get; set; }
+
+        public override void accept (WixNodeVisitor visitor) throws GLib.Error {
+            visitor.visit_progress_text (this);
         }
     }
 

@@ -1751,6 +1751,13 @@ namespace Wixl {
             db.table_event_mapping.add (dialog, control,
                     subscribe.Event, subscribe.Attribute);
         }
+
+        public override void visit_progress_text (WixProgressText progress_text) throws GLib.Error {
+            return_if_fail (progress_text.children.length () == 1);
+            var text = progress_text.children.first ().data as WixText;
+
+            db.table_action_text.add (progress_text.Action, text.Text.strip(), progress_text.Template);
+        }
     }
 
 } // Wixl
