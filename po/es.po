@@ -1,14 +1,14 @@
 # Spanish translation for msitools.
 # Copyright (C) 2013 msitools's COPYRIGHT HOLDER
 # This file is distributed under the same license as the msitools package.
-# Daniel Mustieles <daniel.mustieles@gmail.com>, 2013, 2014, 2018.
+# Daniel Mustieles <daniel.mustieles@gmail.com>, 2013-2022.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: msitools master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/msitools/issues\n"
-"POT-Creation-Date: 2018-08-28 09:32+0000\n"
-"PO-Revision-Date: 2018-10-31 16:36+0100\n"
+"POT-Creation-Date: 2021-09-20 08:48+0000\n"
+"PO-Revision-Date: 2022-02-07 13:20+0100\n"
 "Last-Translator: Daniel Mustieles <daniel.mustieles@gmail.com>\n"
 "Language-Team: es <gnome-es-list@gnome.org>\n"
 "Language: es\n"
@@ -16,9 +16,9 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Gtranslator 2.91.7\n"
+"X-Generator: Gtranslator 41.0\n"
 
-#: tools/msiextract.vala:10 tools/wixl/wixl.vala:21
+#: tools/msiextract.vala:10 tools/wixl/wixl.vala:25
 msgid "Display version number"
 msgstr "Mostrar el número de versión"
 
@@ -38,7 +38,7 @@ msgstr "ARCHIVO_MSI…"
 msgid "- a msi files extracting tool"
 msgstr "- una herramienta de extracción de archivos MSI"
 
-#: tools/msiextract.vala:180 tools/wixl/wixl.vala:75
+#: tools/msiextract.vala:180 tools/wixl/wixl.vala:82
 msgid "Please specify input files.\n"
 msgstr "Especifique los archivos de entrada.\n"
 
@@ -66,63 +66,77 @@ msgstr "Excluir prefijo"
 msgid "Add Win64 Component"
 msgstr "Añadir componente Win64"
 
-#: tools/wixl/wixl.vala:22
+#: tools/wixl/wixl.vala:26
 msgid "Verbose output"
 msgstr "Salida detallada"
 
-#: tools/wixl/wixl.vala:23
+#: tools/wixl/wixl.vala:27
 msgid "Output file"
 msgstr "Archivo de salida"
 
-#: tools/wixl/wixl.vala:24
+#: tools/wixl/wixl.vala:28
 msgid "Define variable"
 msgstr "Definir variable"
 
-#: tools/wixl/wixl.vala:25
+#: tools/wixl/wixl.vala:29
 msgid "Target architecture"
 msgstr "Arquitectura objetivo"
 
-#: tools/wixl/wixl.vala:26
+#: tools/wixl/wixl.vala:30
 msgid "Include directory"
 msgstr "Incluir carpeta"
 
-#: tools/wixl/wixl.vala:27
+#: tools/wixl/wixl.vala:31
+#| msgid "System include directory"
+msgid "System extension directory"
+msgstr "Carpeta de extensiones del sistema"
+
+#: tools/wixl/wixl.vala:32
 msgid "System include directory"
 msgstr "Incluir carpeta del sistema"
 
-#: tools/wixl/wixl.vala:28
+#: tools/wixl/wixl.vala:33
 msgid "Stop after the preprocessing stage"
 msgstr "Detener después de la fase de preprocesado"
 
-#: tools/wixl/wixl.vala:29
-#| msgid "INPUT_FILE..."
+#: tools/wixl/wixl.vala:34
+msgid "Specify an extension"
+msgstr "Especifique una extensión"
+
+#: tools/wixl/wixl.vala:35
 msgid "INPUT_FILE1 [INPUT_FILE2]..."
 msgstr "ARCHIVO_DE_ENTRADA1 [ARCHIVO_DE_ENTRADA2]…"
 
-#: tools/wixl/wixl.vala:37
+#: tools/wixl/wixl.vala:43
 #, c-format
 msgid "arch of type '%s' is not supported"
 msgstr "la arquitectura «%s» no está soportada"
 
-#: tools/wixl/wixl.vala:49
+#: tools/wixl/wixl.vala:55
 msgid "- a msi building tool"
 msgstr "- una herramienta de construcción de MSI"
 
-#: tools/wixl/wixl.vala:83
+#: tools/wixl/wixl.vala:90
 msgid "Please specify the output file.\n"
 msgstr "Especifique el archivo de salida.\n"
 
 #: tools/wixl/wixl.vala:100
 #, c-format
+#| msgid "arch of type '%s' is not supported"
+msgid "Extension of type '%s' is not supported.\n"
+msgstr "la extensión de tipo «%s» no está soportada.\n"
+
+#: tools/wixl/wixl.vala:117
+#, c-format
 msgid "Loading %s...\n"
 msgstr "Cargando %s…\n"
 
-#: tools/wixl/wixl.vala:110
+#: tools/wixl/wixl.vala:127
 #, c-format
 msgid "Building %s...\n"
 msgstr "Construyendo %s…\n"
 
-#: tools/wixl/wixl.vala:113
+#: tools/wixl/wixl.vala:130
 #, c-format
 msgid "Writing %s...\n"
 msgstr "Escribiendo %s…\n"
