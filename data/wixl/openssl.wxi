@@ -4,68 +4,122 @@
 <Include xmlns="http://schemas.microsoft.com/wix/2006/wi">
   <Fragment>
     <DirectoryRef Id="INSTALLDIR">
-      <Directory Id="dirFB106BD26A5512624D152E1AE91311A5" Name="bin">
-        <Component Win64="$(var.Win64)" Id="cmp180069515EEF84E3D64434B53E32E2EF" Guid="*">
+      <Directory Id="dir7A0A142062B9395975557CA11A692C6C" Name="bin">
+        <Component Win64="$(var.Win64)" Id="cmpDD3102332C652DC22438765DFB18FB09" Guid="*">
+          <File Id="fil6BD420434A94D18DCB361DCBA1A3817D" KeyPath="yes" Source="$(var.SourceDir)/bin/c_rehash"/>
+        </Component>
+        <Component Win64="$(var.Win64)" Id="cmp7C0B07BFF248BC0B0DBCDCB7790A2A4B" Guid="*">
           <?if $(var.Win64) = "yes"?>
-            <File Id="fil69C36901606A417E9E83EC70D1BE5216" KeyPath="yes" Source="$(var.SourceDir)/bin/libcrypto-1_1-x64.dll"/>
+            <File Id="fil0325E867F4094E8E8D5EEF33018EC526" KeyPath="yes" Source="$(var.SourceDir)/bin/libcrypto-3-x64.dll"/>
           <?else?>
-            <File Id="fil69C36901606A417E9E83EC70D1BE5216" KeyPath="yes" Source="$(var.SourceDir)/bin/libcrypto-1_1.dll"/>
+            <File Id="fil0325E867F4094E8E8D5EEF33018EC526" KeyPath="yes" Source="$(var.SourceDir)/bin/libcrypto-3.dll"/>
           <?endif?>
         </Component>
-        <Component Win64="$(var.Win64)" Id="cmp78BC9637069A326E7860F7EDB381EF4C" Guid="*">
+        <Component Win64="$(var.Win64)" Id="cmp26D72DB19A3C087D56667CC6FFEFB984" Guid="*">
           <?if $(var.Win64) = "yes"?>
-            <File Id="fil484753D5C92047DDAB492981DE4F6F5D" KeyPath="yes" Source="$(var.SourceDir)/bin/libssl-1_1-x64.dll"/>
+            <File Id="filBCF134F8288C3B8F194C0EC901DEF3D2" KeyPath="yes" Source="$(var.SourceDir)/bin/libssl-3-x64.dll"/>
           <?else?>
-            <File Id="fil484753D5C92047DDAB492981DE4F6F5D" KeyPath="yes" Source="$(var.SourceDir)/bin/libssl-1_1.dll"/>
+            <File Id="filBCF134F8288C3B8F194C0EC901DEF3D2" KeyPath="yes" Source="$(var.SourceDir)/bin/libssl-3.dll"/>
           <?endif?>
         </Component>
-        <Component Win64="$(var.Win64)" Id="cmp395C7C6526C74892B8DDBA6FFD21F7A3" Guid="*">
-          <File Id="filC2F467A974504B50AEABE12358B930E7" KeyPath="yes" Source="$(var.SourceDir)/bin/make-dummy-cert"/>
+        <Component Win64="$(var.Win64)" Id="cmp9D93C38EC5A566B6C8D73A50C3CC2AE2" Guid="*">
+          <File Id="filE4868A24752DB35F6721FD6EA449D1CD" KeyPath="yes" Source="$(var.SourceDir)/bin/make-dummy-cert"/>
         </Component>
-        <Component Win64="$(var.Win64)" Id="cmp7CAB2ADC32B44CD4B4DB6AF40C4E601C" Guid="*">
-          <File Id="fil64A9A7E5238B40809519518423F98A04" KeyPath="yes" Source="$(var.SourceDir)/bin/c_rehash"/>
+        <Component Win64="$(var.Win64)" Id="cmpE7E01D3518FF30A672F462CCB5AC0155" Guid="*">
+          <File Id="fil8B27915F7BA46DE82807084D12CD2CAA" KeyPath="yes" Source="$(var.SourceDir)/bin/openssl.exe"/>
+        </Component>
+        <Component Win64="$(var.Win64)" Id="cmpB9F9FC0983D8CB3461034E14D35DCF3E" Guid="*">
+          <File Id="fil3BD0BB8019FA8EEB9F7404FF688AB7DF" KeyPath="yes" Source="$(var.SourceDir)/bin/renew-dummy-cert"/>
         </Component>
       </Directory>
-      <Directory Id="dir4E367092058C305C8D4A39EA27BB2FE9" Name="etc">
-        <Directory Id="dir58408AA18D9E069B042C860A8E428F9C" Name="pki">
-          <Directory Id="dir510DB609C3F001786541D1DE8E996B70" Name="CA">
+      <Directory Id="dir0E00DA8308BDE5F19FA23986D0D31804" Name="etc">
+        <Directory Id="dirAD702C5BB08596EC386D6E06C963CCB3" Name="pki">
+          <Directory Id="dir87AEA282485E2417B1DFFBC059BC6243" Name="CA">
           </Directory>
-          <Directory Id="dir5C44C4BF436F189C06A91A4660678A24" Name="tls">
-            <Directory Id="dirD45DE9E9CAB4BE5E63AD4D04F6806229" Name="certs">
-              <Component Win64="$(var.Win64)" Id="cmpF4AC5E1C8B8F52A9E82B6D444415195E" Guid="*">
-                <File Id="fil92C36E70F9FD6288DBB69D80F59DCFD3" KeyPath="yes" Source="$(var.SourceDir)/etc/pki/tls/certs/Makefile"/>
+          <Directory Id="dirDB35E1DB3D3862EAD835D5D0BDF9A831" Name="tls">
+            <Directory Id="dirBD5F8D9C73590AE36C6806ED8D8488E9" Name="certs">
+              <Component Win64="$(var.Win64)" Id="cmpE0EC0307780904FAE8C23F7104940225" Guid="*">
+                <File Id="fil38BAE368F4571316A6825AA82B6F42FC" KeyPath="yes" Source="$(var.SourceDir)/etc/pki/tls/certs/Makefile"/>
               </Component>
             </Directory>
-            <Directory Id="dir41A7BA1ECA217B267001D6C667CDA303" Name="misc">
-              <Component Win64="$(var.Win64)" Id="cmpF3B98883A02530C5B7BE078B77A99EDD" Guid="*">
-                <File Id="fil3371D8AAA32C7E5720A6BFDB1FA157D3" KeyPath="yes" Source="$(var.SourceDir)/etc/pki/tls/misc/CA.pl"/>
-              </Component>
-              <Component Win64="$(var.Win64)" Id="cmp227F1DE4BB99FCD6BCF1AE825C00875B" Guid="*">
-                <File Id="fil9FDCC7B3E5AD0709F2E5CBA6544A552F" KeyPath="yes" Source="$(var.SourceDir)/etc/pki/tls/misc/tsget"/>
-              </Component>
-            </Directory>
-            <Component Win64="$(var.Win64)" Id="cmp2E54F8C4A1D93038E7927F172A186E21" Guid="*">
-              <File Id="filAFADD415BCA270CA348E8FA906B3CD04" KeyPath="yes" Source="$(var.SourceDir)/etc/pki/tls/openssl.cnf"/>
+            <Component Win64="$(var.Win64)" Id="cmp74EA186191EF8E2A354E2ECFAFCCEB5E" Guid="*">
+              <File Id="filCBD5899ADDCB8D6308FC4FEC28296F45" KeyPath="yes" Source="$(var.SourceDir)/etc/pki/tls/ct_log_list.cnf"/>
             </Component>
-            <Directory Id="dirCD184D71C8F8D24F893B9EAC344B61A8" Name="private">
-              </Directory>
+            <Component Win64="$(var.Win64)" Id="cmp959546F9FD1281055C8181D334A7A99D" Guid="*">
+              <File Id="filDCEE0D8D3AEB66E00BB6A8683BAEFF10" KeyPath="yes" Source="$(var.SourceDir)/etc/pki/tls/ct_log_list.cnf.dist"/>
+            </Component>
+            <Component Win64="$(var.Win64)" Id="cmpA68D179BBF055D286E106346CC2FE261" Guid="*">
+              <File Id="fil0FA12249D416CF99820CAE85496036AD" KeyPath="yes" Source="$(var.SourceDir)/etc/pki/tls/fipsmodule.cnf"/>
+            </Component>
+            <Directory Id="dirE806F14EA3E47071A11FADF96A26D275" Name="misc">
+              <Component Win64="$(var.Win64)" Id="cmpA5C4EE59197067B324C169361FD9400F" Guid="*">
+                <File Id="fil06DCD51D37F7CDC8F660751109DAA612" KeyPath="yes" Source="$(var.SourceDir)/etc/pki/tls/misc/CA.pl"/>
+              </Component>
+              <Component Win64="$(var.Win64)" Id="cmp4433A04CA4BFF803F83399DCBFF6E750" Guid="*">
+                <File Id="fil1CEA384EE0D428F1F19062C12D61C7BF" KeyPath="yes" Source="$(var.SourceDir)/etc/pki/tls/misc/tsget"/>
+              </Component>
+              <Component Win64="$(var.Win64)" Id="cmpD7EFD0F6EAD1B5C03C06133DC3ABD83D" Guid="*">
+                <File Id="fil818CB91FA72D03B0A85B8279CCF7ABE5" KeyPath="yes" Source="$(var.SourceDir)/etc/pki/tls/misc/tsget.pl"/>
+              </Component>
             </Directory>
+            <Component Win64="$(var.Win64)" Id="cmpA87E4548110A0AFAA82C2514A952FFAB" Guid="*">
+              <File Id="filA78AF1B9B1CA51B8529251EFFA71E2FC" KeyPath="yes" Source="$(var.SourceDir)/etc/pki/tls/openssl.cnf"/>
+            </Component>
+            <Component Win64="$(var.Win64)" Id="cmp1D2A15AA59CF0D67B78A679EA4C9613A" Guid="*">
+              <File Id="filFD43064BDAC7F8D1C477E06F4E0AE042" KeyPath="yes" Source="$(var.SourceDir)/etc/pki/tls/openssl.cnf.dist"/>
+            </Component>
           </Directory>
         </Directory>
+      </Directory>
+      <Directory Id="dirC6A2D1DCC20EDD052B27406CE52D54CB" Name="lib">
+        <Directory Id="dir5F207AC348AA5F6CE555387EC2B94BBA" Name="engines-3">
+          <Component Win64="$(var.Win64)" Id="cmpAAAE130A689406E8C38C01E9212C3658" Guid="*">
+            <File Id="fil3E96AAA14177142E781D473A46EE36A2" KeyPath="yes" Source="$(var.SourceDir)/lib/engines-3/capi.dll"/>
+          </Component>
+          <Component Win64="$(var.Win64)" Id="cmpC7D372ED115FEAA3F6D62512D00B4EE6" Guid="*">
+            <File Id="fil729CB6E29CCA81A18B955858767CA441" KeyPath="yes" Source="$(var.SourceDir)/lib/engines-3/loader_attic.dll"/>
+          </Component>
+          <Component Win64="$(var.Win64)" Id="cmpAC8D9BCB71B372B55E35A7A754655C79" Guid="*">
+            <File Id="filAAABF9453F0E12DEDA3724778181B162" KeyPath="yes" Source="$(var.SourceDir)/lib/engines-3/padlock.dll"/>
+          </Component>
+        </Directory>
+        <Directory Id="dirF6C5D1EE4C72868F2AB5802DB11F9951" Name="ossl-modules">
+          <Component Win64="$(var.Win64)" Id="cmp6625E83DED91E03CE4EB0D592EEEC534" Guid="*">
+            <File Id="fil71211B026719AB469402702CB9CF4487" KeyPath="yes" Source="$(var.SourceDir)/lib/ossl-modules/fips.dll"/>
+          </Component>
+          <Component Win64="$(var.Win64)" Id="cmp5040C6792A083CA4384768A3EEFD7391" Guid="*">
+            <File Id="filF42C10B699CBC1C460D36E39415E49DD" KeyPath="yes" Source="$(var.SourceDir)/lib/ossl-modules/legacy.dll"/>
+          </Component>
+        </Directory>
+      </Directory>
     </DirectoryRef>
   </Fragment>
   <Fragment>
     <ComponentGroup Id="CG.openssl">
       <ComponentGroupRef Id="CG.gcc"/>
       <ComponentGroupRef Id="CG.zlib"/>
-      <ComponentRef Id="cmp180069515EEF84E3D64434B53E32E2EF"/>
-      <ComponentRef Id="cmp78BC9637069A326E7860F7EDB381EF4C"/>
-      <ComponentRef Id="cmpF4AC5E1C8B8F52A9E82B6D444415195E"/>
-      <ComponentRef Id="cmpF3B98883A02530C5B7BE078B77A99EDD"/>
-      <ComponentRef Id="cmp395C7C6526C74892B8DDBA6FFD21F7A3"/>
-      <ComponentRef Id="cmp7CAB2ADC32B44CD4B4DB6AF40C4E601C"/>
-      <ComponentRef Id="cmp227F1DE4BB99FCD6BCF1AE825C00875B"/>
-      <ComponentRef Id="cmp2E54F8C4A1D93038E7927F172A186E21"/>
+      <ComponentRef Id="cmpDD3102332C652DC22438765DFB18FB09"/>
+      <ComponentRef Id="cmp7C0B07BFF248BC0B0DBCDCB7790A2A4B"/>
+      <ComponentRef Id="cmp26D72DB19A3C087D56667CC6FFEFB984"/>
+      <ComponentRef Id="cmp9D93C38EC5A566B6C8D73A50C3CC2AE2"/>
+      <ComponentRef Id="cmpE7E01D3518FF30A672F462CCB5AC0155"/>
+      <ComponentRef Id="cmpB9F9FC0983D8CB3461034E14D35DCF3E"/>
+      <ComponentRef Id="cmpE0EC0307780904FAE8C23F7104940225"/>
+      <ComponentRef Id="cmp74EA186191EF8E2A354E2ECFAFCCEB5E"/>
+      <ComponentRef Id="cmp959546F9FD1281055C8181D334A7A99D"/>
+      <ComponentRef Id="cmpA68D179BBF055D286E106346CC2FE261"/>
+      <ComponentRef Id="cmpA5C4EE59197067B324C169361FD9400F"/>
+      <ComponentRef Id="cmp4433A04CA4BFF803F83399DCBFF6E750"/>
+      <ComponentRef Id="cmpD7EFD0F6EAD1B5C03C06133DC3ABD83D"/>
+      <ComponentRef Id="cmpA87E4548110A0AFAA82C2514A952FFAB"/>
+      <ComponentRef Id="cmp1D2A15AA59CF0D67B78A679EA4C9613A"/>
+      <ComponentRef Id="cmpAAAE130A689406E8C38C01E9212C3658"/>
+      <ComponentRef Id="cmpC7D372ED115FEAA3F6D62512D00B4EE6"/>
+      <ComponentRef Id="cmpAC8D9BCB71B372B55E35A7A754655C79"/>
+      <ComponentRef Id="cmp6625E83DED91E03CE4EB0D592EEEC534"/>
+      <ComponentRef Id="cmp5040C6792A083CA4384768A3EEFD7391"/>
     </ComponentGroup>
   </Fragment>
 </Include>
+<!-- generated with msitools 0.101.79-8c74 -->
+<!-- tools/wixl/wixl-heat -var var.SourceDir -prefix /usr/i686-w64-mingw32/sys-root/mingw/ -component-group CG.openssl -directory-ref INSTALLDIR -win64 -->
