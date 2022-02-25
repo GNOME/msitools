@@ -8,9 +8,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: msitools master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/msitools/issues\n"
-"POT-Creation-Date: 2020-07-15 14:27+0000\n"
-"PO-Revision-Date: 2021-06-30 11:02+0300\n"
-"Last-Translator: Alexey Rubtsov <rushills@gmail.com>\n"
+"POT-Creation-Date: 2021-09-20 08:48+0000\n"
+"PO-Revision-Date: 2022-02-24 22:18+1000\n"
+"Last-Translator: Ser82-png <sw@atrus.ru>\n"
 "Language-Team: Русский <gnome-cyr@gnome.org>\n"
 "Language: ru\n"
 "MIME-Version: 1.0\n"
@@ -18,9 +18,9 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
 "%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
-"X-Generator: Poedit 3.0\n"
+"X-Generator: Poedit 2.3\n"
 
-#: tools/msiextract.vala:10 tools/wixl/wixl.vala:21
+#: tools/msiextract.vala:10 tools/wixl/wixl.vala:25
 msgid "Display version number"
 msgstr "Показать номер версии"
 
@@ -40,7 +40,7 @@ msgstr "MSI_ФАЙЛ..."
 msgid "- a msi files extracting tool"
 msgstr "— утилита распаковки файлов msi"
 
-#: tools/msiextract.vala:180 tools/wixl/wixl.vala:75
+#: tools/msiextract.vala:180 tools/wixl/wixl.vala:82
 msgid "Please specify input files.\n"
 msgstr "Укажите входные файлы.\n"
 
@@ -68,62 +68,75 @@ msgstr "Исключить префикс"
 msgid "Add Win64 Component"
 msgstr "Добавить компонент Win64"
 
-#: tools/wixl/wixl.vala:22
+#: tools/wixl/wixl.vala:26
 msgid "Verbose output"
 msgstr "Подробный вывод"
 
-#: tools/wixl/wixl.vala:23
+#: tools/wixl/wixl.vala:27
 msgid "Output file"
 msgstr "Выходной файл"
 
-#: tools/wixl/wixl.vala:24
+#: tools/wixl/wixl.vala:28
 msgid "Define variable"
 msgstr "Определить переменную"
 
-#: tools/wixl/wixl.vala:25
+#: tools/wixl/wixl.vala:29
 msgid "Target architecture"
 msgstr "Целевая архитектура"
 
-#: tools/wixl/wixl.vala:26
+#: tools/wixl/wixl.vala:30
 msgid "Include directory"
 msgstr "Каталог включаемых файлов"
 
-#: tools/wixl/wixl.vala:27
+#: tools/wixl/wixl.vala:31
+msgid "System extension directory"
+msgstr "Системный каталог расширений"
+
+#: tools/wixl/wixl.vala:32
 msgid "System include directory"
 msgstr "Каталог системных включаемых файлов"
 
-#: tools/wixl/wixl.vala:28
+#: tools/wixl/wixl.vala:33
 msgid "Stop after the preprocessing stage"
 msgstr "Остановить после этапа предварительной обработки"
 
-#: tools/wixl/wixl.vala:29
-msgid "INPUT_FILE1 [INPUT_FILE2]..."
-msgstr "ВХОДНОЙ_ФАЙЛ1 [ВХОДНОЙ_ФАЙЛ2]…"
+#: tools/wixl/wixl.vala:34
+msgid "Specify an extension"
+msgstr "Указать расширение"
 
-#: tools/wixl/wixl.vala:37
+#: tools/wixl/wixl.vala:35
+msgid "INPUT_FILE1 [INPUT_FILE2]..."
+msgstr "ВХОДНОЙ_ФАЙЛ1 [ВХОДНОЙ_ФАЙЛ2]..."
+
+#: tools/wixl/wixl.vala:43
 #, c-format
 msgid "arch of type '%s' is not supported"
 msgstr "архитектура «%s» не поддерживается"
 
-#: tools/wixl/wixl.vala:49
+#: tools/wixl/wixl.vala:55
 msgid "- a msi building tool"
 msgstr "— утилита создания файлов msi"
 
-#: tools/wixl/wixl.vala:83
+#: tools/wixl/wixl.vala:90
 msgid "Please specify the output file.\n"
 msgstr "Укажите выходной файл.\n"
 
 #: tools/wixl/wixl.vala:100
 #, c-format
+msgid "Extension of type '%s' is not supported.\n"
+msgstr "Тип расширения «%s» не поддерживается\n"
+
+#: tools/wixl/wixl.vala:117
+#, c-format
 msgid "Loading %s...\n"
 msgstr "Загрузка %s…\n"
 
-#: tools/wixl/wixl.vala:110
+#: tools/wixl/wixl.vala:127
 #, c-format
 msgid "Building %s...\n"
 msgstr "Сборка %s…\n"
 
-#: tools/wixl/wixl.vala:113
+#: tools/wixl/wixl.vala:130
 #, c-format
 msgid "Writing %s...\n"
 msgstr "Запись %s…\n"
