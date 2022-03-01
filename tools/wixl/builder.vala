@@ -1479,6 +1479,7 @@ namespace Wixl {
                 var control = child as WixControl;
 
                 if (control.Type != "Bitmap" && control.Type != "CheckBox" &&
+                        control.Type != "Edit" &&
                         control.Type != "PushButton" &&
                         control.Type != "RadioButtonGroup") {
                     continue;
