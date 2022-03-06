@@ -82,10 +82,13 @@ my $dllbuiltin = "^(" .
     "usp10|" .
     "version|" .
     "winmm|" .
-    "winspool|" .
     "wldap32|" .
     "ws2_32|" .
     ").dll\$";
+
+my $drvbuiltin = "^(" .
+    "winspool|" .
+    ").drv\$";
 
 my @checkgroups;
 my $errors = 0;
@@ -320,6 +323,7 @@ sub check {
                 next unless $info =~ /DLL Name: (\S+)/;
                 my $dllname = lc $1;
                 next if $dllname =~ $dllbuiltin;
+                next if $dllname =~ $drvbuiltin;
 
                 unless (exists $dllcomponents{$dllname}) {
                     print " > $file\n" if ++$problems == 1;
