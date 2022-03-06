@@ -45,46 +45,47 @@ my %dllgroups;
 # DLL files provided by Windows runtime which
 # thus don't need to be listed in wxi files
 # as dependencies
-my %dllbuiltin = (
-    "advapi32.dll" => 1,
-    "bcrypt.dll" => 1,
-    "comctl32.dll" => 1,
-    "comdlg32.dll" => 1,
-    "crypt32.dll" => 1,
-    "d3d9.dll" => 1,
-    "d3d10.dll" => 1,
-    "d3d11.dll" => 1,
-    "dnsapi.dll" => 1,
-    "dsound.dll" => 1,
-    "dwmapi.dll" => 1,
-    "dxgi.dll" => 1,
-    "gdi32.dll" => 1,
-    "gdiplus.dll" => 1,
-    "hid.dll" => 1,
-    "imm32.dll" => 1,
-    "iphlpapi.dll" => 1,
-    "kernel32.dll" => 1,
-    "ksuser.dll" => 1,
-    "msimg32.dll" => 1,
-    "msvcrt.dll" => 1,
-    "mswsock.dll" => 1,
-    "ncrypt.dll" => 1,
-    "ole32.dll" => 1,
-    "oleaut32.dll" => 1,
-    "opengl32.dll" => 1,
-    "psapi.dll" => 1,
-    "setupapi.dll" => 1,
-    "shell32.dll" => 1,
-    "shlwapi.dll" => 1,
-    "user32.dll" => 1,
-    "userenv.dll" => 1,
-    "usp10.dll" => 1,
-    "version.dll" => 1,
-    "winmm.dll" => 1,
-    "winspool.drv" => 1,
-    "wldap32.dll" => 1,
-    "ws2_32.dll" => 1,
-);
+my $dllbuiltin = "^(" .
+    "advapi32|" .
+    "api-ms-.*|" .
+    "bcrypt|" .
+    "comctl32|" .
+    "comdlg32|" .
+    "crypt32|" .
+    "d3d10|" .
+    "d3d11|" .
+    "d3d9|" .
+    "dnsapi|" .
+    "dsound|" .
+    "dwmapi|" .
+    "dxgi|" .
+    "gdi32|" .
+    "gdiplus|" .
+    "hid|" .
+    "imm32|" .
+    "iphlpapi|" .
+    "kernel32|" .
+    "ksuser|" .
+    "msimg32|" .
+    "msvcrt|" .
+    "mswsock|" .
+    "ncrypt|" .
+    "ole32|" .
+    "oleaut32|" .
+    "opengl32|" .
+    "psapi|" .
+    "setupapi|" .
+    "shell32|" .
+    "shlwapi|" .
+    "user32|" .
+    "userenv|" .
+    "usp10|" .
+    "version|" .
+    "winmm|" .
+    "winspool|" .
+    "wldap32|" .
+    "ws2_32|" .
+    ").dll\$";
 
 my @checkgroups;
 my $errors = 0;
@@ -318,7 +319,7 @@ sub check {
             foreach my $info (<OBJ>) {
                 next unless $info =~ /DLL Name: (\S+)/;
                 my $dllname = lc $1;
-                next if exists $dllbuiltin{$dllname};
+                next if $dllname =~ $dllbuiltin;
 
                 unless (exists $dllcomponents{$dllname}) {
                     print " > $file\n" if ++$problems == 1;
