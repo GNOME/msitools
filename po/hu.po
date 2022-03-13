@@ -1,25 +1,25 @@
 # Hungarian translation for msitools.
-# Copyright (C) 2013, 2014, 2019 Free Software Foundation, Inc.
+# Copyright (C) 2013, 2014, 2019, 2022 Free Software Foundation, Inc.
 # This file is distributed under the same license as the msitools package.
 #
-# Balázs Úr <urbalazs at gmail dot com>, 2013, 2014, 2019.
+# Balázs Úr <ur.balazs at fsf dot hu>, 2013, 2014, 2019, 2022.
 # Gabor Kelemen <kelemeng at gnome dot hu>, 2013.
 msgid ""
 msgstr ""
 "Project-Id-Version: msitools master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/msitools/issues\n"
-"POT-Creation-Date: 2018-08-28 09:32+0000\n"
-"PO-Revision-Date: 2019-01-27 18:25+0100\n"
-"Last-Translator: Balázs Úr <urbalazs@gmail.com>\n"
+"POT-Creation-Date: 2021-09-20 08:48+0000\n"
+"PO-Revision-Date: 2022-03-13 02:06+0100\n"
+"Last-Translator: Balázs Úr <ur.balazs at fsf dot hu>\n"
 "Language-Team: Hungarian <gnome-hu-list at gnome dot org>\n"
 "Language: hu\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Lokalize 1.2\n"
+"X-Generator: Lokalize 19.12.3\n"
 
-#: tools/msiextract.vala:10 tools/wixl/wixl.vala:21
+#: tools/msiextract.vala:10 tools/wixl/wixl.vala:25
 msgid "Display version number"
 msgstr "Verziószám megjelenítése"
 
@@ -39,7 +39,7 @@ msgstr "MSI_FÁJL…"
 msgid "- a msi files extracting tool"
 msgstr "- egy msi fájl kibontó eszköz"
 
-#: tools/msiextract.vala:180 tools/wixl/wixl.vala:75
+#: tools/msiextract.vala:180 tools/wixl/wixl.vala:82
 msgid "Please specify input files.\n"
 msgstr "Adjon meg bemeneti fájlokat.\n"
 
@@ -67,63 +67,77 @@ msgstr "Előtag kizárása"
 msgid "Add Win64 Component"
 msgstr "Win64 komponens hozzáadása"
 
-#: tools/wixl/wixl.vala:22
+#: tools/wixl/wixl.vala:26
 msgid "Verbose output"
 msgstr "Részletes kimenet"
 
-#: tools/wixl/wixl.vala:23
+#: tools/wixl/wixl.vala:27
 msgid "Output file"
 msgstr "Kimeneti fájl"
 
-#: tools/wixl/wixl.vala:24
+#: tools/wixl/wixl.vala:28
 msgid "Define variable"
 msgstr "Változó meghatározása"
 
-#: tools/wixl/wixl.vala:25
+#: tools/wixl/wixl.vala:29
 msgid "Target architecture"
 msgstr "Cél architektúra"
 
-#: tools/wixl/wixl.vala:26
+#: tools/wixl/wixl.vala:30
 msgid "Include directory"
 msgstr "Include könyvtár"
 
-#: tools/wixl/wixl.vala:27
+#: tools/wixl/wixl.vala:31
+#| msgid "System include directory"
+msgid "System extension directory"
+msgstr "Rendszer kiterjesztési könyvtára"
+
+#: tools/wixl/wixl.vala:32
 msgid "System include directory"
 msgstr "Rendszer include könyvtára"
 
-#: tools/wixl/wixl.vala:28
+#: tools/wixl/wixl.vala:33
 msgid "Stop after the preprocessing stage"
 msgstr "Leállítás az előfeldolgozás lépés után"
 
-#: tools/wixl/wixl.vala:29
+#: tools/wixl/wixl.vala:34
+msgid "Specify an extension"
+msgstr "Egy kiterjesztés megadása"
+
+#: tools/wixl/wixl.vala:35
 msgid "INPUT_FILE1 [INPUT_FILE2]..."
 msgstr "BEMENETI_FÁJL1 [BEMENETI_FÁJL2]…"
 
-#: tools/wixl/wixl.vala:37
+#: tools/wixl/wixl.vala:43
 #, c-format
 msgid "arch of type '%s' is not supported"
 msgstr "a(z) „%s” típusú architektúra nem támogatott"
 
-#: tools/wixl/wixl.vala:49
+#: tools/wixl/wixl.vala:55
 msgid "- a msi building tool"
-msgstr "- egy msi fordító eszköz"
+msgstr "- egy msi összeállító eszköz"
 
-#: tools/wixl/wixl.vala:83
+#: tools/wixl/wixl.vala:90
 msgid "Please specify the output file.\n"
 msgstr "Adja meg a kimeneti fájlt.\n"
 
 #: tools/wixl/wixl.vala:100
 #, c-format
+#| msgid "arch of type '%s' is not supported"
+msgid "Extension of type '%s' is not supported.\n"
+msgstr "A(z) „%s” típusú kiterjesztés nem támogatott.\n"
+
+#: tools/wixl/wixl.vala:117
+#, c-format
 msgid "Loading %s...\n"
 msgstr "%s betöltése…\n"
 
-#: tools/wixl/wixl.vala:110
+#: tools/wixl/wixl.vala:127
 #, c-format
 msgid "Building %s...\n"
 msgstr "%s összeállítása…\n"
 
-#: tools/wixl/wixl.vala:113
+#: tools/wixl/wixl.vala:130
 #, c-format
 msgid "Writing %s...\n"
 msgstr "%s írása…\n"
-
