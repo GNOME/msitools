@@ -187,11 +187,6 @@ namespace Wixl {
             add (MSIDefault.Action.FileCost);
             add (MSIDefault.Action.CostFinalize);
             add (MSIDefault.Action.ExecuteAction);
-            if (Extension.UI in extensions) {
-                add (MSIDefault.Action.FatalError);
-                add (MSIDefault.Action.UserExit);
-                add (MSIDefault.Action.ExitDialog);
-            }
             table.add_sorted_actions ();
 
             // AdvtExecuteSequence
@@ -270,17 +265,6 @@ namespace Wixl {
             add (MSIDefault.Action.FileCost);
             add (MSIDefault.Action.CostFinalize);
             add (MSIDefault.Action.ExecuteAction);
-            if (Extension.UI in extensions) {
-                add (MSIDefault.Action.FatalError);
-                add (MSIDefault.Action.UserExit);
-                add (MSIDefault.Action.ExitDialog);
-                add (MSIDefault.Action.PrepareDlg);
-                add (MSIDefault.Action.ProgressDlg);
-                add (MSIDefault.Action.ResumeDlg);
-                add (MSIDefault.Action.WelcomeDlg);
-                add (MSIDefault.Action.WelcomeEulaDlg);
-                add (MSIDefault.Action.MaintenanceWelcomeDlg);
-            }
             if (db.table_upgrade.records.length () > 0) {
                 add (MSIDefault.Action.FindRelatedProducts);
                 add (MSIDefault.Action.MigrateFeatureStates);
