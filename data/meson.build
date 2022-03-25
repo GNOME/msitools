@@ -5,6 +5,7 @@ wxi_data = files(
   'wixl/bzip2.wxi',
   'wixl/cairo.wxi',
   'wixl/curl.wxi',
+  'wixl/dbus.wxi',
   'wixl/dlfcn.wxi',
   'wixl/expat.wxi',
   'wixl/fontconfig.wxi',

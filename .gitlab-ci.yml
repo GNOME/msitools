@@ -20,6 +20,8 @@ variables:
                 mingw64-curl
                 mingw32-dlfcn
                 mingw64-dlfcn
+                mingw32-dbus
+                mingw64-dbus
                 mingw32-expat
                 mingw64-expat
                 mingw32-fontconfig
