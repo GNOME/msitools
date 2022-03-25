@@ -1,24 +1,24 @@
 # Dutch translation for msitools.
 # Copyright (C) 2019 msitools's COPYRIGHT HOLDER
 # This file is distributed under the same license as the msitools package.
-# Nathan Follens <nthn@unseen.is>, 2019.
+# Nathan Follens <nfollens@gnome.org>, 2019, 2022.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: msitools master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/msitools/issues\n"
-"POT-Creation-Date: 2019-01-16 18:59+0000\n"
-"PO-Revision-Date: 2019-01-20 09:45+0100\n"
+"POT-Creation-Date: 2021-09-20 08:48+0000\n"
+"PO-Revision-Date: 2022-03-25 20:42+0100\n"
+"Last-Translator: Nathan Follens <nfollens@gnome.org>\n"
 "Language-Team: Dutch <gnome-nl-list@gnome.org>\n"
 "Language: nl\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"Last-Translator: Nathan Follens <nthn@unseen.is>\n"
-"X-Generator: Poedit 2.2\n"
+"X-Generator: Poedit 3.0.1\n"
 
-#: tools/msiextract.vala:10 tools/wixl/wixl.vala:21
+#: tools/msiextract.vala:10 tools/wixl/wixl.vala:25
 msgid "Display version number"
 msgstr "Versienummer weergeven"
 
@@ -32,13 +32,13 @@ msgstr "Alleen inventariseren"
 
 #: tools/msiextract.vala:13
 msgid "MSI_FILE..."
-msgstr "MSI_BESTAND..."
+msgstr "MSI_BESTAND…"
 
 #: tools/msiextract.vala:160
 msgid "- a msi files extracting tool"
 msgstr "- een hulpprogramma voor het uitpakken van msi-bestanden"
 
-#: tools/msiextract.vala:180 tools/wixl/wixl.vala:75
+#: tools/msiextract.vala:180 tools/wixl/wixl.vala:82
 msgid "Please specify input files.\n"
 msgstr "Geef de invoerbestanden op.\n"
 
@@ -66,62 +66,75 @@ msgstr "Voorvoegsel uitsluiten"
 msgid "Add Win64 Component"
 msgstr "Win64-component toevoegen"
 
-#: tools/wixl/wixl.vala:22
+#: tools/wixl/wixl.vala:26
 msgid "Verbose output"
 msgstr "Uitgebreide uitvoer"
 
-#: tools/wixl/wixl.vala:23
+#: tools/wixl/wixl.vala:27
 msgid "Output file"
 msgstr "Uitvoerbestand"
 
-#: tools/wixl/wixl.vala:24
+#: tools/wixl/wixl.vala:28
 msgid "Define variable"
 msgstr "Bepaal variabele"
 
-#: tools/wixl/wixl.vala:25
+#: tools/wixl/wixl.vala:29
 msgid "Target architecture"
 msgstr "Doelarchitectuur"
 
-#: tools/wixl/wixl.vala:26
+#: tools/wixl/wixl.vala:30
 msgid "Include directory"
 msgstr "Map opnemen"
 
-#: tools/wixl/wixl.vala:27
+#: tools/wixl/wixl.vala:31
+msgid "System extension directory"
+msgstr "Systeemextensiemap"
+
+#: tools/wixl/wixl.vala:32
 msgid "System include directory"
 msgstr "Systeem - map opnemen"
 
-#: tools/wixl/wixl.vala:28
+#: tools/wixl/wixl.vala:33
 msgid "Stop after the preprocessing stage"
 msgstr "Stop na de voorverwerkingsfase"
 
-#: tools/wixl/wixl.vala:29
-msgid "INPUT_FILE1 [INPUT_FILE2]..."
-msgstr "INVOERBESTAND1 [INVOERBESTAND2]..."
+#: tools/wixl/wixl.vala:34
+msgid "Specify an extension"
+msgstr "Geef een extensie op"
 
-#: tools/wixl/wixl.vala:37
+#: tools/wixl/wixl.vala:35
+msgid "INPUT_FILE1 [INPUT_FILE2]..."
+msgstr "INVOERBESTAND1 [INVOERBESTAND2]…"
+
+#: tools/wixl/wixl.vala:43
 #, c-format
 msgid "arch of type '%s' is not supported"
-msgstr "archictectuur '%s' wordt niet ondersteund"
+msgstr "archictectuur ‘%s’ wordt niet ondersteund"
 
-#: tools/wixl/wixl.vala:49
+#: tools/wixl/wixl.vala:55
 msgid "- a msi building tool"
 msgstr "- een hulpprogramma voor het compileren van msi-bestanden"
 
-#: tools/wixl/wixl.vala:83
+#: tools/wixl/wixl.vala:90
 msgid "Please specify the output file.\n"
 msgstr "Geef het uitvoerbestand op.\n"
 
 #: tools/wixl/wixl.vala:100
 #, c-format
-msgid "Loading %s...\n"
-msgstr "Laden van %s...\n"
+msgid "Extension of type '%s' is not supported.\n"
+msgstr "Extensie van type ‘%s’ wordt niet ondersteund.\n"
 
-#: tools/wixl/wixl.vala:110
+#: tools/wixl/wixl.vala:117
+#, c-format
+msgid "Loading %s...\n"
+msgstr "Laden van %s…\n"
+
+#: tools/wixl/wixl.vala:127
 #, c-format
 msgid "Building %s...\n"
-msgstr "Compileren van %s...\n"
+msgstr "Compileren van %s…\n"
 
-#: tools/wixl/wixl.vala:113
+#: tools/wixl/wixl.vala:130
 #, c-format
 msgid "Writing %s...\n"
-msgstr "Schrijven van %s...\n"
+msgstr "Schrijven van %s…\n"
