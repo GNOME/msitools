@@ -777,16 +777,23 @@ namespace Wixl {
         File? find_file (string name, out FileInfo info) throws GLib.Error {
             info = null;
 
-            foreach (var p in path) {
-                var file = p.get_child (name);
-                try {
-                    info = file.query_info ("standard::*", 0, null);
-                    if (info != null)
-                        return file;
-                } catch (IOError error) {
-                    if (error is IOError.NOT_FOUND)
-                        continue;
-                    throw error;
+            if (Path.is_absolute (name)) {
+                var file = File.new_for_path (name);
+                info = file.query_info ("standard::*", 0, null);
+                if (info != null)
+                    return file;
+            } else {
+                foreach (var p in path) {
+                    var file = p.get_child (name);
+                    try {
+                        info = file.query_info ("standard::*", 0, null);
+                        if (info != null)
+                            return file;
+                    } catch (IOError error) {
+                        if (error is IOError.NOT_FOUND)
+                            continue;
+                        throw error;
+                    }
                 }
             }
 
