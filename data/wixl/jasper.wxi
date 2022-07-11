@@ -6,7 +6,7 @@
     <DirectoryRef Id="INSTALLDIR">
       <Directory Id="dir27315966C96210576046F102FD47141B" Name="bin">
         <Component Win64="$(var.Win64)" Id="cmpE90E07EE9910949948EAE5A96FD6427E" Guid="*">
-          <File Id="fil97B91D15AC196F7F158960E157F61D78" KeyPath="yes" Source="$(var.SourceDir)/bin/libjasper-4.dll"/>
+          <File Id="fil97B91D15AC196F7F158960E157F61D78" KeyPath="yes" Source="$(var.SourceDir)/bin/libjasper-6.dll"/>
         </Component>
         </Directory>
     </DirectoryRef>
