@@ -1,6 +1,7 @@
 # Turkish translation for msitools.
-# Copyright (C) 2014 msitools's COPYRIGHT HOLDER
+# Copyright (C) 2014-2022 msitools's COPYRIGHT HOLDER
 # This file is distributed under the same license as the msitools package.
+#
 # Muhammet Kara <muhammetk@gmail.com>, 2014.
 # Necdet Yücel <necdetyucel@gmail.com>, 2014.
 #
@@ -8,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: msitools master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/msitools/issues\n"
-"POT-Creation-Date: 2018-08-28 09:32+0000\n"
-"PO-Revision-Date: 2019-01-08 11:54+0200\n"
+"POT-Creation-Date: 2022-07-11 08:30+0000\n"
+"PO-Revision-Date: 2022-09-03 09:41+0300\n"
 "Last-Translator: Sabri Ünal <libreajans@gmail.com>\n"
 "Language-Team: Türkçe <gnome-turk@gnome.org>\n"
 "Language: tr\n"
@@ -17,10 +18,10 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Poedit 2.0.6\n"
+"X-Generator: Poedit 3.1.1\n"
 "X-POOTLE-MTIME: 1419291416.000000\n"
 
-#: tools/msiextract.vala:10 tools/wixl/wixl.vala:21
+#: tools/msiextract.vala:10 tools/wixl/wixl.vala:25
 msgid "Display version number"
 msgstr "Sürüm numarasını göster"
 
@@ -40,9 +41,9 @@ msgstr "MSI_DOSYASI..."
 msgid "- a msi files extracting tool"
 msgstr "- msi dosyalarını açma aracı"
 
-#: tools/msiextract.vala:180 tools/wixl/wixl.vala:75
+#: tools/msiextract.vala:180 tools/wixl/wixl.vala:82
 msgid "Please specify input files.\n"
-msgstr "Lütfen girdi dosyalarını belirtin.\n"
+msgstr "Lütfen girdi dosyalarını belirt.\n"
 
 #: tools/wixl/wixl-heat.vala:12
 msgid "Directory Ref"
@@ -68,62 +69,75 @@ msgstr "Öneki hariç tut"
 msgid "Add Win64 Component"
 msgstr "Win64 Bileşeni Ekle"
 
-#: tools/wixl/wixl.vala:22
+#: tools/wixl/wixl.vala:26
 msgid "Verbose output"
 msgstr "Ayrıntılı çıktı"
 
-#: tools/wixl/wixl.vala:23
+#: tools/wixl/wixl.vala:27
 msgid "Output file"
 msgstr "Çıktı dosyası"
 
-#: tools/wixl/wixl.vala:24
+#: tools/wixl/wixl.vala:28
 msgid "Define variable"
 msgstr "Değişken tanımla"
 
-#: tools/wixl/wixl.vala:25
+#: tools/wixl/wixl.vala:29
 msgid "Target architecture"
 msgstr "Hedef mimari"
 
-#: tools/wixl/wixl.vala:26
+#: tools/wixl/wixl.vala:30
 msgid "Include directory"
 msgstr "Dizini dahil et"
 
-#: tools/wixl/wixl.vala:27
+#: tools/wixl/wixl.vala:31
+msgid "System extension directory"
+msgstr "Sistem uzantı dizini"
+
+#: tools/wixl/wixl.vala:32
 msgid "System include directory"
 msgstr "Sistem içerme dizini"
 
-#: tools/wixl/wixl.vala:28
+#: tools/wixl/wixl.vala:33
 msgid "Stop after the preprocessing stage"
 msgstr "Ön işleme durumundan sonra dur"
 
-#: tools/wixl/wixl.vala:29
+#: tools/wixl/wixl.vala:34
+msgid "Specify an extension"
+msgstr "Uzantı belirt"
+
+#: tools/wixl/wixl.vala:35
 msgid "INPUT_FILE1 [INPUT_FILE2]..."
 msgstr "GİRDİ_DOSYASI1 [GİRDİ_DOSYASI2]..."
 
-#: tools/wixl/wixl.vala:37
+#: tools/wixl/wixl.vala:43
 #, c-format
 msgid "arch of type '%s' is not supported"
 msgstr "'%s' türündeki mimari desteklenmiyor"
 
-#: tools/wixl/wixl.vala:49
+#: tools/wixl/wixl.vala:55
 msgid "- a msi building tool"
 msgstr "- msi inşa aracı"
 
-#: tools/wixl/wixl.vala:83
+#: tools/wixl/wixl.vala:90
 msgid "Please specify the output file.\n"
-msgstr "Lütfen çıktı dosyasını belirtin.\n"
+msgstr "Lütfen çıktı dosyasını belirt.\n"
 
 #: tools/wixl/wixl.vala:100
+#, c-format
+msgid "Extension of type '%s' is not supported.\n"
+msgstr "'%s' türündeki uzantı desteklenmiyor.\n"
+
+#: tools/wixl/wixl.vala:117
 #, c-format
 msgid "Loading %s...\n"
 msgstr "%s yükleniyor...\n"
 
-#: tools/wixl/wixl.vala:110
+#: tools/wixl/wixl.vala:127
 #, c-format
 msgid "Building %s...\n"
 msgstr "%s inşa ediliyor...\n"
 
-#: tools/wixl/wixl.vala:113
+#: tools/wixl/wixl.vala:130
 #, c-format
 msgid "Writing %s...\n"
 msgstr "%s yazılıyor...\n"
