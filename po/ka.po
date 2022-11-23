@@ -1,0 +1,139 @@
+# Georgian translation for msitools.
+# Copyright (C) 2022 msitools's COPYRIGHT HOLDER
+# This file is distributed under the same license as the msitools package.
+# NorwayFun <temuri.doghonadze@gmail.com>, 2022.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: msitools master\n"
+"Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/msitools/issues\n"
+"POT-Creation-Date: 2022-11-14 09:56+0000\n"
+"PO-Revision-Date: 2022-11-23 03:11+0100\n"
+"Last-Translator: Temuri Doghonadze <temuri.doghonadze@gmail.com>\n"
+"Language-Team: Georgian <ka@li.org>\n"
+"Language: ka\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 3.2\n"
+
+#: tools/msiextract.vala:10 tools/wixl/wixl.vala:25
+msgid "Display version number"
+msgstr "ვერსიის ინფორმაციის ჩვენება"
+
+#: tools/msiextract.vala:11
+msgid "Extract to directory"
+msgstr "საქაღალდეში გახსნა"
+
+#: tools/msiextract.vala:12
+msgid "List files only"
+msgstr "მხოლოდ ფაილების სია"
+
+#: tools/msiextract.vala:13
+msgid "MSI_FILE..."
+msgstr "MSI_FILE..."
+
+#: tools/msiextract.vala:160
+msgid "- a msi files extracting tool"
+msgstr "- msi ფაილების გაშლის პროგრამა"
+
+#: tools/msiextract.vala:180 tools/wixl/wixl.vala:82
+msgid "Please specify input files.\n"
+msgstr "მიუთითეთ შეყვანის ფაილები.\n"
+
+#: tools/wixl/wixl-heat.vala:12
+msgid "Directory Ref"
+msgstr "საქაღალდეზე მიმართვა"
+
+#: tools/wixl/wixl-heat.vala:13
+msgid "Component Group"
+msgstr "კომპონენტების ჯგუფი"
+
+#: tools/wixl/wixl-heat.vala:14
+msgid "Variable for source dir"
+msgstr "ცვლადი საწყისი საქაღალდისთვის"
+
+#: tools/wixl/wixl-heat.vala:15
+msgid "Prefix"
+msgstr "პრეფიქსი"
+
+#: tools/wixl/wixl-heat.vala:16
+msgid "Exclude prefix"
+msgstr "გამოსარიცხი პრეფიქსი"
+
+#: tools/wixl/wixl-heat.vala:17
+msgid "Add Win64 Component"
+msgstr "Win64 კომპონენტის დამატება"
+
+#: tools/wixl/wixl.vala:26
+msgid "Verbose output"
+msgstr "უფრო მეტის ჩვენება"
+
+#: tools/wixl/wixl.vala:27
+msgid "Output file"
+msgstr "გამოტანის ფაილი"
+
+#: tools/wixl/wixl.vala:28
+msgid "Define variable"
+msgstr "ცვლადის აღწერა"
+
+#: tools/wixl/wixl.vala:29
+msgid "Target architecture"
+msgstr "სამიზნე არქიტექტურა"
+
+#: tools/wixl/wixl.vala:30
+msgid "Include directory"
+msgstr "საქაღალდის ჩასმა"
+
+#: tools/wixl/wixl.vala:31
+msgid "System extension directory"
+msgstr "სისტემური გაფართოებების საქაღალდე"
+
+#: tools/wixl/wixl.vala:32
+msgid "System include directory"
+msgstr "სისტემური ჩასასმელი ფაილების საქაღალდე"
+
+#: tools/wixl/wixl.vala:33
+msgid "Stop after the preprocessing stage"
+msgstr "პრეპროცესინგის ნაბიჯის შემდეგ გაჩერება"
+
+#: tools/wixl/wixl.vala:34
+msgid "Specify an extension"
+msgstr "მიუთითეთ გაფართოება"
+
+#: tools/wixl/wixl.vala:35
+msgid "INPUT_FILE1 [INPUT_FILE2]..."
+msgstr "შეყვანილი_ფაილი1 [შეყვანილი_ფაილი2]..."
+
+#: tools/wixl/wixl.vala:43
+#, c-format
+msgid "arch of type '%s' is not supported"
+msgstr "'%s' ტიპის არქიტექტურა მხარდაჭერილი არაა"
+
+#: tools/wixl/wixl.vala:55
+msgid "- a msi building tool"
+msgstr "- msi -ის აგების პროგრამა"
+
+#: tools/wixl/wixl.vala:90
+msgid "Please specify the output file.\n"
+msgstr "მიუთითეთ გამოტანის ფაილი\n"
+
+#: tools/wixl/wixl.vala:100
+#, c-format
+msgid "Extension of type '%s' is not supported.\n"
+msgstr "'%s' ტიპის გაფართოება მხარდაჭერილი არაა.\n"
+
+#: tools/wixl/wixl.vala:117
+#, c-format
+msgid "Loading %s...\n"
+msgstr "%s-ის ჩატვირთვა…\n"
+
+#: tools/wixl/wixl.vala:127
+#, c-format
+msgid "Building %s...\n"
+msgstr "%s-ის აგება...\n"
+
+#: tools/wixl/wixl.vala:130
+#, c-format
+msgid "Writing %s...\n"
+msgstr "%s-ის ჩაწერა...\n"
