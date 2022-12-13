@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<?require gcc-c++.wxi?>
+<Include xmlns="http://schemas.microsoft.com/wix/2006/wi">
+  <Fragment>
+    <DirectoryRef Id="INSTALLDIR">
+      <Directory Id="dir033044A31F938F71F5249FB618194516" Name="bin">
+        <Component Win64="$(var.Win64)" Id="cmp0E17966343938DDDF147D906FE73A2D0" Guid="*">
+          <File Id="fil7AC6EB047FD445A0E76C78769AFDBB74" KeyPath="yes" Source="$(var.SourceDir)/bin/libpcre2-16-0.dll"/>
+        </Component>
+        <Component Win64="$(var.Win64)" Id="cmpC078042BE296A2C71566E786E08E35A6" Guid="*">
+          <File Id="filBDCFA1F3CC54F2C1B051F5AC76FE4624" KeyPath="yes" Source="$(var.SourceDir)/bin/libpcre2-32-0.dll"/>
+        </Component>
+        <Component Win64="$(var.Win64)" Id="cmpDA8DCFCB83A2DD191A2C253606E8CFCE" Guid="*">
+          <File Id="fil5AA22A1E46831295C0845CA32F77529D" KeyPath="yes" Source="$(var.SourceDir)/bin/libpcre2-8-0.dll"/>
+        </Component>
+        <Component Win64="$(var.Win64)" Id="cmp3335AB9F4BF927B892F9CA864EECE354" Guid="*">
+          <File Id="filE4E29C84287D79B78E947FE5D522D5D3" KeyPath="yes" Source="$(var.SourceDir)/bin/libpcre2-posix-3.dll"/>
+        </Component>
+        <Component Win64="$(var.Win64)" Id="cmpD09E3E522F618ED423B1F9C21B3E0797" Guid="*">
+          <File Id="fil7E422A113306A1E41367FB2898428B55" KeyPath="yes" Source="$(var.SourceDir)/bin/pcre2-config"/>
+        </Component>
+        <Component Win64="$(var.Win64)" Id="cmpBDA9EDEDE3474F33BDEA6E355F21FE5B" Guid="*">
+          <File Id="fil7A14BA2C7086D64D57311BAE79341698" KeyPath="yes" Source="$(var.SourceDir)/bin/pcre2grep.exe"/>
+        </Component>
+        <Component Win64="$(var.Win64)" Id="cmp1D734C7D7E4169A2843DC016FC92CA23" Guid="*">
+          <File Id="filA5ADB22B2C82081EDD2C83452C1CF0F6" KeyPath="yes" Source="$(var.SourceDir)/bin/pcre2test.exe"/>
+        </Component>
+      </Directory>
+    </DirectoryRef>
+  </Fragment>
+  <Fragment>
+    <ComponentGroup Id="CG.pcre2">
+      <ComponentGroupRef Id="CG.gcc-c++"/>
+      <ComponentRef Id="cmp0E17966343938DDDF147D906FE73A2D0"/>
+      <ComponentRef Id="cmpC078042BE296A2C71566E786E08E35A6"/>
+      <ComponentRef Id="cmpDA8DCFCB83A2DD191A2C253606E8CFCE"/>
+      <ComponentRef Id="cmp3335AB9F4BF927B892F9CA864EECE354"/>
+      <ComponentRef Id="cmpD09E3E522F618ED423B1F9C21B3E0797"/>
+      <ComponentRef Id="cmpBDA9EDEDE3474F33BDEA6E355F21FE5B"/>
+      <ComponentRef Id="cmp1D734C7D7E4169A2843DC016FC92CA23"/>
+    </ComponentGroup>
+  </Fragment>
+</Include>
