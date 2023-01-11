@@ -99,7 +99,7 @@ if get_option('validate-wxi')
     filename = ('@0@'.format(file)).split('/')[-1].split('.wxi')[0]
     testname = 'wxi-@0@'.format(filename)
 
-    r = run_command('rpm', '-q', 'mingw32-' + filename, 'mingw64-' + filename)
+    r = run_command('rpm', '-q', 'mingw32-' + filename, 'mingw64-' + filename, check: false)
     if r.returncode() == 0
       test(testname,
         wxi_validate,
