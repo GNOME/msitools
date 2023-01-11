@@ -52,6 +52,8 @@ my $dllbuiltin = "^(" .
     "comctl32|" .
     "comdlg32|" .
     "crypt32|" .
+    "dbghelp|" .
+    "dwrite|" .
     "d3d10|" .
     "d3d11|" .
     "d3d9|" .
