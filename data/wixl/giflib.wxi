@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Include xmlns="http://schemas.microsoft.com/wix/2006/wi">
+  <Fragment>
+    <DirectoryRef Id="INSTALLDIR">
+      <Directory Id="dir0AF2BADAC87BCFC1DB7659685241D4C8" Name="bin">
+        <Component Win64="$(var.Win64)" Id="cmp64D96AD8CB239DEFAA3A9F43A063DC06" Guid="*">
+          <File Id="fil4779B53F29F428C8645CBB100C515F64" KeyPath="yes" Source="$(var.SourceDir)/bin/libgif-7.dll"/>
+        </Component>
+      </Directory>
+      <Directory Id="dirFC9E4F95EC39B01AF83FD9F271A9ECEF" Name="include">
+        <Component Win64="$(var.Win64)" Id="cmp92809C79C648B1112A8C35644BA3314B" Guid="*">
+          <File Id="filE903D9CC49D5B9F95EB61A613CDC6E40" KeyPath="yes" Source="$(var.SourceDir)/include/gif_lib.h"/>
+        </Component>
+      </Directory>
+      <Directory Id="dir7A76314D34EB8F860D9F1B803BD95D59" Name="lib">
+        <Component Win64="$(var.Win64)" Id="cmpCA894C8B47CB194E1B0D46D972EE13E7" Guid="*">
+          <File Id="filA46365A2EA62BF2CC5A33B7C026CB2DD" KeyPath="yes" Source="$(var.SourceDir)/lib/libgif.dll.a"/>
+        </Component>
+      </Directory>
+    </DirectoryRef>
+  </Fragment>
+  <Fragment>
+    <ComponentGroup Id="CG.giflib">
+      <ComponentRef Id="cmp64D96AD8CB239DEFAA3A9F43A063DC06"/>
+      <ComponentRef Id="cmp92809C79C648B1112A8C35644BA3314B"/>
+      <ComponentRef Id="cmpCA894C8B47CB194E1B0D46D972EE13E7"/>
+    </ComponentGroup>
+  </Fragment>
+</Include>
+<!-- generated with msitools 0.101.117-7d3c1b -->
+<!-- build/tools/wixl/wixl-heat -var var.SourceDir -p /usr/i686-w64-mingw32/sys-root/mingw/ -component-group CG.giflib -directory-ref INSTALLDIR -win64 -->

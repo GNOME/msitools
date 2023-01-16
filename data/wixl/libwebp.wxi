@@ -1,19 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
 <?require gcc.wxi?>
+<?require giflib.wxi?>
 <?require libpng.wxi?>
 <?require libjpeg-turbo.wxi?>
 <Include xmlns="http://schemas.microsoft.com/wix/2006/wi">
   <Fragment>
     <DirectoryRef Id="INSTALLDIR">
-      <Directory Id="dir91FD08EC7FE4522F48257E1781BED722" Name="bin">
+      <Directory Id="dir6AC076586E8B91F993328770F1A3789B" Name="bin">
         <Component Win64="$(var.Win64)" Id="cmp6CD6C0B11FFDF91DA2FF2F82B36A3239" Guid="*">
           <File Id="filA54AAD9968F3E7F34C4B16FACFEA9C18" KeyPath="yes" Source="$(var.SourceDir)/bin/cwebp.exe"/>
         </Component>
         <Component Win64="$(var.Win64)" Id="cmpF0B39C7E01B3E8739EE3F65715024876" Guid="*">
           <File Id="filBF26B1DF4D2D6DF8879293C4D29A65BE" KeyPath="yes" Source="$(var.SourceDir)/bin/dwebp.exe"/>
         </Component>
+        <Component Win64="$(var.Win64)" Id="cmpFD32768D5425192D7AB614E36FEC70CB" Guid="*">
+          <File Id="fil6AC2B22031ABD362572FB49EB12CD431" KeyPath="yes" Source="$(var.SourceDir)/bin/gif2webp.exe"/>
+        </Component>
         <Component Win64="$(var.Win64)" Id="cmp09A31C7A35856E98F6E4D7DB87B79F85" Guid="*">
           <File Id="fil69AD0A895CF3797043916B1C8BB287AE" KeyPath="yes" Source="$(var.SourceDir)/bin/img2webp.exe"/>
+        </Component>
+        <Component Win64="$(var.Win64)" Id="cmp24C341F8E4AB399A8A5D53FCBD7AADA0" Guid="*">
+          <File Id="fil773C0DAD4F95A076FEFF1D2158A4B004" KeyPath="yes" Source="$(var.SourceDir)/bin/libsharpyuv-0.dll"/>
         </Component>
         <Component Win64="$(var.Win64)" Id="cmp93EA67CC84D7E73F7A8745615E7B536E" Guid="*">
           <File Id="filBB3FBDBAA69D44DE26919D1E50FE65D7" KeyPath="yes" Source="$(var.SourceDir)/bin/libwebp-7.dll"/>
@@ -34,22 +41,127 @@
           <File Id="fil293B8EAA3BAE9A663325366FDEE1EA6A" KeyPath="yes" Source="$(var.SourceDir)/bin/webpmux.exe"/>
         </Component>
       </Directory>
+      <Directory Id="dir6D468E5A6DE081504CC7EB6DFF49A52B" Name="include">
+        <Directory Id="dir560049229D464398A9CE8C2D10155437" Name="webp">
+          <Component Win64="$(var.Win64)" Id="cmp394E76F3433D4A0AB64E2D7A3EF7253E" Guid="*">
+            <File Id="fil58F041BF5A1D96C48D3E9DE032098478" KeyPath="yes" Source="$(var.SourceDir)/include/webp/decode.h"/>
+          </Component>
+          <Component Win64="$(var.Win64)" Id="cmpDC51AB52E3BC80F94209804D1B361BB1" Guid="*">
+            <File Id="fil9749F92E0702900441AD75DCBCF239DF" KeyPath="yes" Source="$(var.SourceDir)/include/webp/demux.h"/>
+          </Component>
+          <Component Win64="$(var.Win64)" Id="cmpADABAB56556756BABFFC46EE8C725305" Guid="*">
+            <File Id="filA864BA7C516FB07C5A647068A8299D04" KeyPath="yes" Source="$(var.SourceDir)/include/webp/encode.h"/>
+          </Component>
+          <Component Win64="$(var.Win64)" Id="cmp7A895CBBFC81126AEE5E68405A436A10" Guid="*">
+            <File Id="fil07F0174426B6C7773E96AEB813ECE6FF" KeyPath="yes" Source="$(var.SourceDir)/include/webp/mux.h"/>
+          </Component>
+          <Component Win64="$(var.Win64)" Id="cmp4E801CDF5EC581349FE1F74E83EC4216" Guid="*">
+            <File Id="fil006547A200392C9F3D887485FB4955A5" KeyPath="yes" Source="$(var.SourceDir)/include/webp/mux_types.h"/>
+          </Component>
+          <Directory Id="dir3AB6988791D8D6F6A3EB4030769428C5" Name="sharpyuv">
+            <Component Win64="$(var.Win64)" Id="cmpAB2416DC7137152106AE3E4750EAA116" Guid="*">
+              <File Id="fil1D609C6040F9F03646CB10E6FCCC1371" KeyPath="yes" Source="$(var.SourceDir)/include/webp/sharpyuv/sharpyuv.h"/>
+            </Component>
+            <Component Win64="$(var.Win64)" Id="cmp81D9DE6160B3F801311B53A1D28660D8" Guid="*">
+              <File Id="fil6B714BD96D1668EAA4B960E2B5F42E40" KeyPath="yes" Source="$(var.SourceDir)/include/webp/sharpyuv/sharpyuv_csp.h"/>
+            </Component>
+          </Directory>
+          <Component Win64="$(var.Win64)" Id="cmpB32D09ACF6E1D4F5B5506A29AB35302C" Guid="*">
+            <File Id="filD22674CB0AA419CE405289F377D75001" KeyPath="yes" Source="$(var.SourceDir)/include/webp/types.h"/>
+          </Component>
+        </Directory>
+      </Directory>
+      <Directory Id="dir466A62AA551D65A3AF6D6FF96C25AFC1" Name="lib">
+        <Directory Id="dir72773FB016EB4921B30B48CE51B302F3" Name="cmake">
+          <Directory Id="dirC3BACA6DAD9B075465924823F0BB6DF3" Name="WebP">
+            <Component Win64="$(var.Win64)" Id="cmp3E96AC93574CD542A41EAB310A814F86" Guid="*">
+              <File Id="filCB100E1BE2ECC3BA6A5C0A2EF796E6EB" KeyPath="yes" Source="$(var.SourceDir)/lib/cmake/WebP/WebPConfig.cmake"/>
+            </Component>
+            <Component Win64="$(var.Win64)" Id="cmp914D8CD03B92ED2AC6EA67D62BE31EA4" Guid="*">
+              <File Id="fil0E662381BBE8D126B72F1FB39C1509DB" KeyPath="yes" Source="$(var.SourceDir)/lib/cmake/WebP/WebPConfigVersion.cmake"/>
+            </Component>
+            <Component Win64="$(var.Win64)" Id="cmpFDA4514B2230BFA69E69B24902333406" Guid="*">
+              <File Id="fil6256F081509E3C464C41E9A1F0811774" KeyPath="yes" Source="$(var.SourceDir)/lib/cmake/WebP/WebPTargets-release.cmake"/>
+            </Component>
+            <Component Win64="$(var.Win64)" Id="cmpE02BA546EC4544FC8EC46F0E3E470079" Guid="*">
+              <File Id="fil5C2FEBBEF171969914F886E6DD461BA7" KeyPath="yes" Source="$(var.SourceDir)/lib/cmake/WebP/WebPTargets.cmake"/>
+            </Component>
+          </Directory>
+        </Directory>
+        <Component Win64="$(var.Win64)" Id="cmp2A72FC158B4DE2FE9AA326D3792A1C6B" Guid="*">
+          <File Id="fil5AE72797C7522997FBE5744A57CE66DE" KeyPath="yes" Source="$(var.SourceDir)/lib/libsharpyuv.dll.a"/>
+        </Component>
+        <Component Win64="$(var.Win64)" Id="cmp23920511BDA88264C6733D494C5ADCFF" Guid="*">
+          <File Id="fil492607D19B066390A8AA6ED6795E0471" KeyPath="yes" Source="$(var.SourceDir)/lib/libwebp.dll.a"/>
+        </Component>
+        <Component Win64="$(var.Win64)" Id="cmpE56D389A9A2D546A5A735C754CF8FEBE" Guid="*">
+          <File Id="filEAE9F3FBFA0D4194814AB8BFFD7E752C" KeyPath="yes" Source="$(var.SourceDir)/lib/libwebpdecoder.dll.a"/>
+        </Component>
+        <Component Win64="$(var.Win64)" Id="cmpC86A0FB6BFF4AFFD1B97B5BF5B8612B6" Guid="*">
+          <File Id="filB274923B11C5ECB6FB90E8DAB1AC87D2" KeyPath="yes" Source="$(var.SourceDir)/lib/libwebpdemux.dll.a"/>
+        </Component>
+        <Component Win64="$(var.Win64)" Id="cmp420CF83FD0A1B8C3FC265316B5D5124A" Guid="*">
+          <File Id="fil56FA757A040CF76238067002C2BCDFCA" KeyPath="yes" Source="$(var.SourceDir)/lib/libwebpmux.dll.a"/>
+        </Component>
+        <Directory Id="dir7BD45E2A67A9BDCE00882D21D661AE63" Name="pkgconfig">
+          <Component Win64="$(var.Win64)" Id="cmpDD592989083A163AED25E43286D8905D" Guid="*">
+            <File Id="filEF58ECAEFE794A950A32ED1029109C16" KeyPath="yes" Source="$(var.SourceDir)/lib/pkgconfig/libsharpyuv.pc"/>
+          </Component>
+          <Component Win64="$(var.Win64)" Id="cmp1AAE97CACA43E689663E49D24F55E02E" Guid="*">
+            <File Id="fil89A6F733E8A6D115EB129C1A75568017" KeyPath="yes" Source="$(var.SourceDir)/lib/pkgconfig/libwebp.pc"/>
+          </Component>
+          <Component Win64="$(var.Win64)" Id="cmpFEFDF65CADC193BDCC3F165001CDD897" Guid="*">
+            <File Id="filB11406C633F55EC17C852EB701736CD2" KeyPath="yes" Source="$(var.SourceDir)/lib/pkgconfig/libwebpdecoder.pc"/>
+          </Component>
+          <Component Win64="$(var.Win64)" Id="cmpFD9CB32E788A92DC09A17E263E9BC228" Guid="*">
+            <File Id="filBE59D3E98C0E33476C27231DFE6E1B28" KeyPath="yes" Source="$(var.SourceDir)/lib/pkgconfig/libwebpdemux.pc"/>
+          </Component>
+          <Component Win64="$(var.Win64)" Id="cmpCC6CC1448F6BF08D7F1F74D106862A01" Guid="*">
+            <File Id="fil7478CE45AD374CF5AB2B5CC0F2D7AA2D" KeyPath="yes" Source="$(var.SourceDir)/lib/pkgconfig/libwebpmux.pc"/>
+          </Component>
+        </Directory>
+      </Directory>
     </DirectoryRef>
   </Fragment>
   <Fragment>
     <ComponentGroup Id="CG.libwebp">
       <ComponentGroupRef Id="CG.gcc"/>		  
+      <ComponentGroupRef Id="CG.giflib"/>
       <ComponentGroupRef Id="CG.libpng"/>		  
       <ComponentGroupRef Id="CG.libjpeg-turbo"/>		  
       <ComponentRef Id="cmp6CD6C0B11FFDF91DA2FF2F82B36A3239"/>
       <ComponentRef Id="cmpF0B39C7E01B3E8739EE3F65715024876"/>
+      <ComponentRef Id="cmpFD32768D5425192D7AB614E36FEC70CB"/>
       <ComponentRef Id="cmp09A31C7A35856E98F6E4D7DB87B79F85"/>
+      <ComponentRef Id="cmp24C341F8E4AB399A8A5D53FCBD7AADA0"/>
       <ComponentRef Id="cmp93EA67CC84D7E73F7A8745615E7B536E"/>
       <ComponentRef Id="cmp04A05D6143699420D1A190A6C793ABE0"/>
       <ComponentRef Id="cmp950DAB6B83080CBA8D477155F6C5CDA0"/>
       <ComponentRef Id="cmp19B794A229AF41A7242B258A12DBABCE"/>
       <ComponentRef Id="cmp44A97DC6CF50E8A6B62B3FEFA2DED84B"/>
       <ComponentRef Id="cmpAAF7A9E0C6972485C3CC4A11C1518E63"/>
+      <ComponentRef Id="cmp394E76F3433D4A0AB64E2D7A3EF7253E"/>
+      <ComponentRef Id="cmpDC51AB52E3BC80F94209804D1B361BB1"/>
+      <ComponentRef Id="cmpADABAB56556756BABFFC46EE8C725305"/>
+      <ComponentRef Id="cmp7A895CBBFC81126AEE5E68405A436A10"/>
+      <ComponentRef Id="cmp4E801CDF5EC581349FE1F74E83EC4216"/>
+      <ComponentRef Id="cmpAB2416DC7137152106AE3E4750EAA116"/>
+      <ComponentRef Id="cmp81D9DE6160B3F801311B53A1D28660D8"/>
+      <ComponentRef Id="cmpB32D09ACF6E1D4F5B5506A29AB35302C"/>
+      <ComponentRef Id="cmp3E96AC93574CD542A41EAB310A814F86"/>
+      <ComponentRef Id="cmp914D8CD03B92ED2AC6EA67D62BE31EA4"/>
+      <ComponentRef Id="cmpFDA4514B2230BFA69E69B24902333406"/>
+      <ComponentRef Id="cmpE02BA546EC4544FC8EC46F0E3E470079"/>
+      <ComponentRef Id="cmp2A72FC158B4DE2FE9AA326D3792A1C6B"/>
+      <ComponentRef Id="cmp23920511BDA88264C6733D494C5ADCFF"/>
+      <ComponentRef Id="cmpE56D389A9A2D546A5A735C754CF8FEBE"/>
+      <ComponentRef Id="cmpC86A0FB6BFF4AFFD1B97B5BF5B8612B6"/>
+      <ComponentRef Id="cmp420CF83FD0A1B8C3FC265316B5D5124A"/>
+      <ComponentRef Id="cmpDD592989083A163AED25E43286D8905D"/>
+      <ComponentRef Id="cmp1AAE97CACA43E689663E49D24F55E02E"/>
+      <ComponentRef Id="cmpFEFDF65CADC193BDCC3F165001CDD897"/>
+      <ComponentRef Id="cmpFD9CB32E788A92DC09A17E263E9BC228"/>
+      <ComponentRef Id="cmpCC6CC1448F6BF08D7F1F74D106862A01"/>
     </ComponentGroup>
   </Fragment>
 </Include>
