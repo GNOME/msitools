@@ -5,7 +5,10 @@
 <Include xmlns="http://schemas.microsoft.com/wix/2006/wi">
   <Fragment>
     <DirectoryRef Id="INSTALLDIR">
-      <Directory Id="dir2739BBB50CCDC7096EDFE2863FA4E126" Name="bin">
+      <Directory Id="dir039C4DB4D3909FE8295A7215A8693D2A" Name="bin">
+        <Component Win64="$(var.Win64)" Id="cmpDD82F3F22B0BA8C58566A3559E114551" Guid="*">
+          <File Id="fil4B4F9D979636D5FB20016CC2DD1F1338" KeyPath="yes" Source="$(var.SourceDir)/bin/hb-info.exe"/>
+        </Component>
         <Component Win64="$(var.Win64)" Id="cmp5730E3868448E02955418106B7D3FA24" Guid="*">
           <File Id="fil7AF508B6AFEF229D1E3B5A52A0EFCCB7" KeyPath="yes" Source="$(var.SourceDir)/bin/hb-ot-shape-closure.exe"/>
         </Component>
@@ -21,6 +24,9 @@
         <Component Win64="$(var.Win64)" Id="cmp8B40339E5485DDF2385CD34B800BAF53" Guid="*">
           <File Id="fil057096F2BAFB55595E44B645C136D6E9" KeyPath="yes" Source="$(var.SourceDir)/bin/libharfbuzz-0.dll"/>
         </Component>
+        <Component Win64="$(var.Win64)" Id="cmpACF09CB8D707B3801BA25708F150DA31" Guid="*">
+          <File Id="fil586588FC29E908E03FF900A7161D9A4C" KeyPath="yes" Source="$(var.SourceDir)/bin/libharfbuzz-cairo-0.dll"/>
+        </Component>
         <Component Win64="$(var.Win64)" Id="cmpC38398BFF7BC6D85AE5335CE464AAF23" Guid="*">
           <File Id="filDD2796B94D8141727EAFFBC98DABD37D" KeyPath="yes" Source="$(var.SourceDir)/bin/libharfbuzz-icu-0.dll"/>
         </Component>
@@ -35,11 +41,13 @@
       <ComponentGroupRef Id="CG.cairo"/>
       <ComponentGroupRef Id="CG.freetype"/>
       <ComponentGroupRef Id="CG.icu"/>
+      <ComponentRef Id="cmpDD82F3F22B0BA8C58566A3559E114551"/>
       <ComponentRef Id="cmp5730E3868448E02955418106B7D3FA24"/>
       <ComponentRef Id="cmpA818B1314F6536E10EBC57F0FF5B2F2D"/>
       <ComponentRef Id="cmp9AA1456DB9C31717DB339527C3F62A28"/>
       <ComponentRef Id="cmpE98106D964ED04BDE3481D0408199D5A"/>
       <ComponentRef Id="cmp8B40339E5485DDF2385CD34B800BAF53"/>
+      <ComponentRef Id="cmpACF09CB8D707B3801BA25708F150DA31"/>
       <ComponentRef Id="cmpC38398BFF7BC6D85AE5335CE464AAF23"/>
       <ComponentRef Id="cmp6544651C69DAA5579C6BEAEC841B2DD1"/>
     </ComponentGroup>
