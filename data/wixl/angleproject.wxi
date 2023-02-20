@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<?require gcc-c++.wxi?>
+<Include xmlns="http://schemas.microsoft.com/wix/2006/wi">
+  <Fragment>
+    <DirectoryRef Id="INSTALLDIR">
+      <Directory Id="dir7F659C3D2091003912A463AA084A363B" Name="bin">
+        <Component Win64="$(var.Win64)" Id="cmp08081DF3423A4E28A794561AD0E55BA8" Guid="*">
+          <File Id="fil6DCB69D4B741C8E6BF23A8609E62D45D" KeyPath="yes" Source="$(var.SourceDir)/bin/libEGL.dll"/>
+        </Component>
+        <Component Win64="$(var.Win64)" Id="cmp9AD40CF51D1464B85A4F2049887E31FA" Guid="*">
+          <File Id="fil10372E179FE605C2F06E480614C5351D" KeyPath="yes" Source="$(var.SourceDir)/bin/libGLESv2.dll"/>
+        </Component>
+      </Directory>
+    </DirectoryRef>
+  </Fragment>
+  <Fragment>
+    <ComponentGroup Id="CG.angleproject">
+      <ComponentGroupRef Id="CG.gcc-c++"/>
+      <ComponentRef Id="cmp08081DF3423A4E28A794561AD0E55BA8"/>
+      <ComponentRef Id="cmp9AD40CF51D1464B85A4F2049887E31FA"/>
+    </ComponentGroup>
+  </Fragment>
+</Include>
+<!-- generated with msitools 0.101.32-aeb8 -->
+<!-- wixl-heat -var var.SourceDir -p /usr/x86_64-w64-mingw32/sys-root/mingw/ -component-group CG.angleproject -directory-ref INSTALLDIR -win64 -->
