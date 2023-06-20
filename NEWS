@@ -1,3 +1,17 @@
+v0.102
+======
+- !30 Minimal UI support
+- !43 Support DefaultVersion and CompanionFile in File element
+- !44 Handle AllowDowngrades and AllowSameVersionUpgrades in MajorUpgrade
+- !46 Default Win64 to true on 64-bit arch
+- !47 Support all CustomAction Execute types properly
+- !48 Add sys.BUILDARCH preprocessor variable
+- !49 Strip scheduling condition nodes
+- !50 Add IniFile support
+- !54 Remove default UI actions from AdminUISequence/InstallUISequence
+- !55 Add support for ProgressText element
+- various build fixes and translation updates
+
 v0.101
 ======
 - convert the build system to Meson
@@ -9,8 +23,6 @@ v0.101
 - msiinfo: fix buffer overflow
 - update wxi files to match today (02/02/2021) f34/rawhide packages
 - translation updates, various misc fixes
-
-
 
 v0.100
 ======
