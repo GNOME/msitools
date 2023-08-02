@@ -134,8 +134,8 @@ variables:
                 mingw64-p11-kit
                 mingw32-pango
                 mingw64-pango
-                mingw32-pcre
-                mingw64-pcre
+                mingw32-pcre2
+                mingw64-pcre2
                 mingw32-pixman
                 mingw64-pixman
                 mingw32-portablexdr

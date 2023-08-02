@@ -69,6 +69,7 @@ wxi_data = files(
   'wixl/p11-kit.wxi',
   'wixl/pango.wxi',
   'wixl/pcre.wxi',
+  'wixl/pcre2.wxi',
   'wixl/pixman.wxi',
   'wixl/portablexdr.wxi',
   'wixl/readline.wxi',
