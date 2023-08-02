@@ -72,6 +72,7 @@ my $dllbuiltin = "^(" .
     "msvcrt|" .
     "mswsock|" .
     "ncrypt|" .
+    "ntdll|" .
     "ole32|" .
     "oleaut32|" .
     "opengl32|" .
