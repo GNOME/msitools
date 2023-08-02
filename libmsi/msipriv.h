@@ -411,9 +411,9 @@ extern LibmsiRecord *_libmsi_query_get_record( LibmsiDatabase *db, const char *q
 extern unsigned _libmsi_database_get_primary_keys( LibmsiDatabase *, const char *, LibmsiRecord **);
 
 /* view internals */
-extern unsigned _libmsi_query_execute( LibmsiQuery*, LibmsiRecord * );
-extern unsigned _libmsi_query_fetch( LibmsiQuery*, LibmsiRecord ** );
-extern unsigned _libmsi_query_get_column_info(LibmsiQuery *, LibmsiColInfo, LibmsiRecord **);
+extern LibmsiResult _libmsi_query_execute( LibmsiQuery*, LibmsiRecord * );
+extern LibmsiResult _libmsi_query_fetch( LibmsiQuery*, LibmsiRecord ** );
+extern LibmsiResult _libmsi_query_get_column_info(LibmsiQuery *, LibmsiColInfo, LibmsiRecord **);
 extern unsigned _libmsi_view_find_column( LibmsiView *, const char *, const char *, unsigned *);
 extern unsigned msi_view_get_row(LibmsiDatabase *, LibmsiView *, unsigned, LibmsiRecord **);
 
