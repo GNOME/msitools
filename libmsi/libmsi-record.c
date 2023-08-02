@@ -19,6 +19,7 @@
  */
 
 #include <stdarg.h>
+#include <inttypes.h>
 
 #include "libmsi-record.h"
 
@@ -506,7 +507,7 @@ static unsigned _libmsi_addstream_from_file(const char *szFile, GsfInput **pstm)
     g_object_unref(G_OBJECT(stm));
     *pstm = gsf_input_memory_new(data, sz, true);
 
-    TRACE("read %s, %ld bytes into GsfInput %p\n", debugstr_a(szFile), sz, *pstm);
+    TRACE("read %s, %" PRIdMAX " bytes into GsfInput %p\n", debugstr_a(szFile), sz, *pstm);
 
     return LIBMSI_RESULT_SUCCESS;
 }
