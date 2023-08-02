@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
+<?require fontconfig.wxi?>
+<?require freetype.wxi?>
 <?require gcc.wxi?>
 <?require glib2.wxi?>
 <?require libpng.wxi?>
@@ -22,6 +24,8 @@
   </Fragment>
   <Fragment>
     <ComponentGroup Id="CG.cairo">
+      <ComponentGroupRef Id="CG.fontconfig"/>
+      <ComponentGroupRef Id="CG.freetype"/>
       <ComponentGroupRef Id="CG.gcc"/>
       <ComponentGroupRef Id="CG.glib2"/>
       <ComponentGroupRef Id="CG.libpng"/>
