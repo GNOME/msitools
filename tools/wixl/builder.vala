@@ -753,6 +753,12 @@ namespace Wixl {
             case RegistryValueType.STRING:
                 value = value[0] == '#' ? "#" + value : value;
                 break;
+            case RegistryValueType.BINARY:
+                value = value.has_prefix("#x") ? value : "#x" + value;
+                break;
+            case RegistryValueType.EXPANDABLE:
+                value = value.has_prefix("#%") ? value : "#%" + value;
+                break;
             default:
                 break;
             }
