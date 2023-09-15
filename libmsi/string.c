@@ -495,14 +495,14 @@ string_table *msi_load_string_table( GsfInfile *stg, unsigned *bytes_per_strref 
     if( r != LIBMSI_RESULT_SUCCESS)
         goto end;
 
-    if ( (poolsize > 4) && (GUINT_FROM_LE(pool[1]) & 0x8000) )
+    if ( (poolsize > 4) && (GUINT16_FROM_LE(pool[1]) & 0x8000) )
         *bytes_per_strref = LONG_STR_BYTES;
     else
         *bytes_per_strref = sizeof(uint16_t);
 
     count = poolsize/4;
     if( poolsize > 4 )
-        codepage = GUINT_FROM_LE(pool[0]) | ( (GUINT_FROM_LE(pool[1]) & ~0x8000) << 16 );
+        codepage = GUINT16_FROM_LE(pool[0]) | ( (GUINT16_FROM_LE(pool[1]) & ~0x8000) << 16 );
     else
         codepage = CP_ACP;
 
@@ -516,10 +516,10 @@ string_table *msi_load_string_table( GsfInfile *stg, unsigned *bytes_per_strref 
     while ( i<count )
     {
         /* the string reference count is always the second word */
-        refs = GUINT_FROM_LE(pool[i*2+1]);
+        refs = GUINT16_FROM_LE(pool[i*2+1]);
 
         /* empty entries have two zeros, still have a string id */
-        if (GUINT_FROM_LE(pool[i*2]) == 0 && refs == 0)
+        if (GUINT16_FROM_LE(pool[i*2]) == 0 && refs == 0)
         {
             i++;
             n++;
@@ -531,14 +531,14 @@ string_table *msi_load_string_table( GsfInfile *stg, unsigned *bytes_per_strref 
          * and the high word of the length is inserted in the null string's
          * reference count field.
          */
-        if (GUINT_FROM_LE(pool[i*2]) == 0)
+        if (GUINT16_FROM_LE(pool[i*2]) == 0)
         {
-            len = (GUINT_FROM_LE(pool[i*2+3]) << 16) + GUINT_FROM_LE(pool[i*2+2]);
+            len = (GUINT16_FROM_LE(pool[i*2+3]) << 16) + GUINT16_FROM_LE(pool[i*2+2]);
             i += 2;
         }
         else
         {
-            len = GUINT_FROM_LE(pool[i*2]);
+            len = GUINT16_FROM_LE(pool[i*2]);
             i += 1;
         }
 
