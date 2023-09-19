@@ -1,3 +1,10 @@
+v0.103
+======
+- !68 Renamed libmsi to libmsi-1.0
+- !66 Change GUINT_FROM_LE to GUINT16_FROM_LE
+- !65 Fedora 39 *.wxi fixes
+- build fixes
+
 v0.102
 ======
 - !30 Minimal UI support
