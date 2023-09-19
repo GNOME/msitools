@@ -51,7 +51,7 @@ libmsi_deps = [
   libgsf,
 ]
 
-libmsi = shared_library('msi',
+libmsi = shared_library('msi-1.0',
   libmsi_sources,
   include_directories: inc_dirs,
   dependencies: libmsi_deps,
