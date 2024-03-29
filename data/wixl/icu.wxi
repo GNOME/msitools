@@ -3,7 +3,7 @@
 <Include xmlns="http://schemas.microsoft.com/wix/2006/wi">
   <Fragment>
     <DirectoryRef Id="INSTALLDIR">
-      <Directory Id="dir1B2F751CF227966804534093775533C9" Name="bin">
+      <Directory Id="dirB8846171015A0E6A5C8BDE14C028CE7A" Name="bin">
         <Component Win64="$(var.Win64)" Id="cmp5CFFEE5FCDA1047F64C7EE6AA0AE053C" Guid="*">
           <File Id="fil30026524D9A8680155888DE1802A66CB" KeyPath="yes" Source="$(var.SourceDir)/bin/derb.exe"/>
         </Component>
@@ -37,32 +37,32 @@
         <Component Win64="$(var.Win64)" Id="cmpEA210ADDBF0153D8B4279BC16085FCE0" Guid="*">
           <File Id="filFA1A874154792C2AE819A040A89594E4" KeyPath="yes" Source="$(var.SourceDir)/bin/gensprep.exe"/>
         </Component>
-        <Component Win64="$(var.Win64)" Id="cmpE0111910DC282BA136B680D2DD88769F" Guid="*">
-          <File Id="fil3002B40FF5AC470F1D3259C8316932A6" KeyPath="yes" Source="$(var.SourceDir)/bin/icudata73.dll"/>
+        <Component Win64="$(var.Win64)" Id="cmpDEF8A27E47CE461743E2C82BBC87D6C3" Guid="*">
+          <File Id="filA2D3D196BBE3513E2A978F212C175106" KeyPath="yes" Source="$(var.SourceDir)/bin/icudata74.dll"/>
         </Component>
         <Component Win64="$(var.Win64)" Id="cmpBD172F67DF2530D2C44A974C4DA04EDF" Guid="*">
           <File Id="fil12ACA1883A949391960E58D0A288FCE8" KeyPath="yes" Source="$(var.SourceDir)/bin/icuexportdata.exe"/>
         </Component>
-        <Component Win64="$(var.Win64)" Id="cmp9A2A75393E3D72CEC5B99748098EA3AF" Guid="*">
-          <File Id="filAB3D94BAD3C7842BDE7A7383AA1CB80E" KeyPath="yes" Source="$(var.SourceDir)/bin/icui18n73.dll"/>
+        <Component Win64="$(var.Win64)" Id="cmp4B70395336024B4AD9EFD35C3E24C747" Guid="*">
+          <File Id="fil688C5FDED29691ECFF398181B09E7A21" KeyPath="yes" Source="$(var.SourceDir)/bin/icui18n74.dll"/>
         </Component>
         <Component Win64="$(var.Win64)" Id="cmpF30CE166B516D3F059E889D43F178BF2" Guid="*">
           <File Id="filFA5922182B8DAD7C4EDA2FC6AED8BFDA" KeyPath="yes" Source="$(var.SourceDir)/bin/icuinfo.exe"/>
         </Component>
-        <Component Win64="$(var.Win64)" Id="cmpEA8F70DB8FAF3305791A11EBBF11D36D" Guid="*">
-          <File Id="fil9D1A90132F945FC82D650E4F70E7E0D4" KeyPath="yes" Source="$(var.SourceDir)/bin/icuio73.dll"/>
+        <Component Win64="$(var.Win64)" Id="cmp610D68F612DC3762D79875FBD20F31A2" Guid="*">
+          <File Id="fil5BA793EAC8A166C57D1420D825A0FAC0" KeyPath="yes" Source="$(var.SourceDir)/bin/icuio74.dll"/>
         </Component>
         <Component Win64="$(var.Win64)" Id="cmp546D0F99610BC45592CFC2627A82E2B6" Guid="*">
           <File Id="fil064186150829A3FB4F3E965880560C02" KeyPath="yes" Source="$(var.SourceDir)/bin/icupkg.exe"/>
         </Component>
-        <Component Win64="$(var.Win64)" Id="cmp85F9B243449A69AC1DFDC213C60CD26A" Guid="*">
-          <File Id="fil6AA7CF8E6B198499834FF041A9E303C3" KeyPath="yes" Source="$(var.SourceDir)/bin/icutest73.dll"/>
+        <Component Win64="$(var.Win64)" Id="cmpF61E5CD1DAE4A931B69846485A4AC8F3" Guid="*">
+          <File Id="fil1E5A833EA45CC1F66E0A1C7FE7811FD5" KeyPath="yes" Source="$(var.SourceDir)/bin/icutest74.dll"/>
         </Component>
-        <Component Win64="$(var.Win64)" Id="cmpDF2D17F1DAE2A7C080A886699F55FB3E" Guid="*">
-          <File Id="fil0DFB0E12BFC6ECE5906DF6873B9454CE" KeyPath="yes" Source="$(var.SourceDir)/bin/icutu73.dll"/>
+        <Component Win64="$(var.Win64)" Id="cmp017FFABAE15D5F991144CA6A79D89DD6" Guid="*">
+          <File Id="fil71A2D72D574D6C6C7329FDBAB8399E13" KeyPath="yes" Source="$(var.SourceDir)/bin/icutu74.dll"/>
         </Component>
-        <Component Win64="$(var.Win64)" Id="cmpBD12EBF60B1006F7A816CC1A0C615480" Guid="*">
-          <File Id="filA7E699788D5DD63C10C0250FC171860F" KeyPath="yes" Source="$(var.SourceDir)/bin/icuuc73.dll"/>
+        <Component Win64="$(var.Win64)" Id="cmpFEC4BD85F6991D59073D67B38AB09060" Guid="*">
+          <File Id="fil57ADA4F91D77291CFB5BEE456219D58E" KeyPath="yes" Source="$(var.SourceDir)/bin/icuuc74.dll"/>
         </Component>
         <Component Win64="$(var.Win64)" Id="cmpD66DA194B6906EEA355A32A3BE79675B" Guid="*">
           <File Id="fil2B5E52280628A22C31F1222D9912B17F" KeyPath="yes" Source="$(var.SourceDir)/bin/makeconv.exe"/>
@@ -74,60 +74,25 @@
           <File Id="fil4DDA98B1D7A95E4BE83881C611BF96A4" KeyPath="yes" Source="$(var.SourceDir)/bin/uconv.exe"/>
         </Component>
       </Directory>
-      <Directory Id="dir029A699042E6FA7C50E3DB6A6225DC2B" Name="lib">
-        <Directory Id="dir81C3C9A78B83CCA0A6179172B32B6C2C" Name="icu">
-          <Directory Id="dir7E4C6C859DCE3DE6DDA74844A1EFFE14" Name="73.2">
-            <Component Win64="$(var.Win64)" Id="cmpE86150FEABCFA77AD04AF353737DA8A8" Guid="*">
-              <File Id="filC4191E5B368344DB3559D1818DA84976" KeyPath="yes" Source="$(var.SourceDir)/lib/icu/73.2/Makefile.inc"/>
+      <Directory Id="dir152739E1682F1A0CD5E54E6506FCA4C8" Name="lib">
+        <Directory Id="dir8BD339F6E76EE4432CCC82A64511FDAB" Name="icu">
+          <Directory Id="dirD4823BAA64A6DD9E719CEF3D37E664C4" Name="74.2">
+            <Component Win64="$(var.Win64)" Id="cmpAD836D26B1644C7883E980588813142F" Guid="*">
+              <File Id="filEFC37E447C4379CFE32CF504D220A038" KeyPath="yes" Source="$(var.SourceDir)/lib/icu/74.2/Makefile.inc"/>
             </Component>
-            <Component Win64="$(var.Win64)" Id="cmp75DE0BF835E2BFF00271008FB937D078" Guid="*">
-              <File Id="filFDCCEFF16DBB1EBA7A5BF40CF2234D3B" KeyPath="yes" Source="$(var.SourceDir)/lib/icu/73.2/pkgdata.inc"/>
+            <Component Win64="$(var.Win64)" Id="cmp3DE6F640E74E1BC2EF2A087A2BC7C12D" Guid="*">
+              <File Id="filE330B32173AB0949EEBE7811F409FC97" KeyPath="yes" Source="$(var.SourceDir)/lib/icu/74.2/pkgdata.inc"/>
             </Component>
           </Directory>
-          <Directory Id="dir21F02C480A98A7CECA6AEC7075239829" Name="current">
+          <Directory Id="dirDF356786EAA6554B80D03C6D884373CA" Name="current">
           </Directory>
-        </Directory>
-        <Component Win64="$(var.Win64)" Id="cmp5E2902A3E3E243F11202993295226565" Guid="*">
-          <File Id="filF74004A4734C7CCF1FEF4644984771C7" KeyPath="yes" Source="$(var.SourceDir)/lib/libicudata.dll.a"/>
-        </Component>
-        <Component Win64="$(var.Win64)" Id="cmp16D4585D27FB481E9591E39A1B3EAA62" Guid="*">
-          <File Id="fil4C22290CE5B5F7FB957BD8D77567D9B1" KeyPath="yes" Source="$(var.SourceDir)/lib/libicui18n.dll.a"/>
-        </Component>
-        <Component Win64="$(var.Win64)" Id="cmpDDBB83D3797E7582FEF7F7F89C8AC9CC" Guid="*">
-          <File Id="fil9859022645F8ADF17B9BC8099C405A0A" KeyPath="yes" Source="$(var.SourceDir)/lib/libicuio.dll.a"/>
-        </Component>
-        <Component Win64="$(var.Win64)" Id="cmp117DF3A19C64345F59ADED0C0A316EE1" Guid="*">
-          <File Id="fil0D8C25B40D1A409D88C25E2E3E7A6F03" KeyPath="yes" Source="$(var.SourceDir)/lib/libicutest.dll.a"/>
-        </Component>
-        <Component Win64="$(var.Win64)" Id="cmpFBD8369420FBACA516AC3BC28ACE7DC5" Guid="*">
-          <File Id="filBC04A90A61F7F88997A700D0D2A6FF25" KeyPath="yes" Source="$(var.SourceDir)/lib/libicutu.dll.a"/>
-        </Component>
-        <Component Win64="$(var.Win64)" Id="cmp221E0A780759E0F3DEB6521EED27F6FF" Guid="*">
-          <File Id="fil5E5FB702C0751F55D8FBD30D7CC562BB" KeyPath="yes" Source="$(var.SourceDir)/lib/libicuuc.dll.a"/>
-        </Component>
-        <Directory Id="dirF1AA9F2338C09729DE2BCB5FE6162D9A" Name="pkgconfig">
-          <Component Win64="$(var.Win64)" Id="cmpA290A063074EC4AC3B5B6E8D0CB90A61" Guid="*">
-            <File Id="fil6C555D0090ACFF552312D6F2F1BFC328" KeyPath="yes" Source="$(var.SourceDir)/lib/pkgconfig/icu-i18n.pc"/>
-          </Component>
-          <Component Win64="$(var.Win64)" Id="cmpA7DC8C6BDE112043EAC15E1C5735FD9F" Guid="*">
-            <File Id="fil1EB43995023D1AD42727EC5B8686F8A5" KeyPath="yes" Source="$(var.SourceDir)/lib/pkgconfig/icu-io.pc"/>
-          </Component>
-          <Component Win64="$(var.Win64)" Id="cmp5B15EB74A47251EA86B5193D1F36B454" Guid="*">
-            <File Id="filFCCB4BD06A6E4258CC2CF2965F3792A2" KeyPath="yes" Source="$(var.SourceDir)/lib/pkgconfig/icu-uc.pc"/>
-          </Component>
         </Directory>
       </Directory>
-      <Directory Id="dirDACA4133852A189E180EA3B7F7B9213C" Name="share">
-        <Directory Id="dirC1C10A636BDB7854099277CF249EE8A9" Name="icu">
-          <Directory Id="dir4B7E35506066EE334EA8F3B3AD4DE8B7" Name="73.2">
-            <Component Win64="$(var.Win64)" Id="cmp44D5FB10C8954F3A98F00BDD2063DF77" Guid="*">
-              <File Id="filD8C27D8502F0566BC7C66CE04808F673" KeyPath="yes" Source="$(var.SourceDir)/share/icu/73.2/LICENSE"/>
-            </Component>
-            <Component Win64="$(var.Win64)" Id="cmp7E04B7DB60D5807E764CA861931E9FBA" Guid="*">
-              <File Id="fil47172A579D95F4590B447405B8D7958D" KeyPath="yes" Source="$(var.SourceDir)/share/icu/73.2/install-sh"/>
-            </Component>
-            <Component Win64="$(var.Win64)" Id="cmp9944CEC772805061212168BE976F66A7" Guid="*">
-              <File Id="fil68590C0826FFC8F74FABB4AF93744DDC" KeyPath="yes" Source="$(var.SourceDir)/share/icu/73.2/mkinstalldirs"/>
+      <Directory Id="dir06B4464A7E5D881762A9A9BC53B4CDBA" Name="share">
+        <Directory Id="dir9357C936622C0EEFAD863D9B2F0F7A21" Name="icu">
+          <Directory Id="dirC667A1A41D761E375E9F51D1630558BF" Name="74.2">
+            <Component Win64="$(var.Win64)" Id="cmp1EA883F9A4DFA23A423C3F85D9329DCF" Guid="*">
+              <File Id="fil8E67351EA90463B5806E32B48BFB6EE9" KeyPath="yes" Source="$(var.SourceDir)/share/icu/74.2/LICENSE"/>
             </Component>
           </Directory>
         </Directory>
@@ -148,34 +113,23 @@
       <ComponentRef Id="cmpF38BEBF50009812E413D28DA79F253A1"/>
       <ComponentRef Id="cmp18D1C2B2BD4DC8719DA5B85EA32FB047"/>
       <ComponentRef Id="cmpEA210ADDBF0153D8B4279BC16085FCE0"/>
-      <ComponentRef Id="cmpE0111910DC282BA136B680D2DD88769F"/>
+      <ComponentRef Id="cmpDEF8A27E47CE461743E2C82BBC87D6C3"/>
       <ComponentRef Id="cmpBD172F67DF2530D2C44A974C4DA04EDF"/>
-      <ComponentRef Id="cmp9A2A75393E3D72CEC5B99748098EA3AF"/>
+      <ComponentRef Id="cmp4B70395336024B4AD9EFD35C3E24C747"/>
       <ComponentRef Id="cmpF30CE166B516D3F059E889D43F178BF2"/>
-      <ComponentRef Id="cmpEA8F70DB8FAF3305791A11EBBF11D36D"/>
+      <ComponentRef Id="cmp610D68F612DC3762D79875FBD20F31A2"/>
       <ComponentRef Id="cmp546D0F99610BC45592CFC2627A82E2B6"/>
-      <ComponentRef Id="cmp85F9B243449A69AC1DFDC213C60CD26A"/>
-      <ComponentRef Id="cmpDF2D17F1DAE2A7C080A886699F55FB3E"/>
-      <ComponentRef Id="cmpBD12EBF60B1006F7A816CC1A0C615480"/>
+      <ComponentRef Id="cmpF61E5CD1DAE4A931B69846485A4AC8F3"/>
+      <ComponentRef Id="cmp017FFABAE15D5F991144CA6A79D89DD6"/>
+      <ComponentRef Id="cmpFEC4BD85F6991D59073D67B38AB09060"/>
       <ComponentRef Id="cmpD66DA194B6906EEA355A32A3BE79675B"/>
       <ComponentRef Id="cmp9753332E689CC33398657A3EBE555820"/>
       <ComponentRef Id="cmp5402843A4A815DCD2D0F259DAE521743"/>
-      <ComponentRef Id="cmpE86150FEABCFA77AD04AF353737DA8A8"/>
-      <ComponentRef Id="cmp75DE0BF835E2BFF00271008FB937D078"/>
-      <ComponentRef Id="cmp5E2902A3E3E243F11202993295226565"/>
-      <ComponentRef Id="cmp16D4585D27FB481E9591E39A1B3EAA62"/>
-      <ComponentRef Id="cmpDDBB83D3797E7582FEF7F7F89C8AC9CC"/>
-      <ComponentRef Id="cmp117DF3A19C64345F59ADED0C0A316EE1"/>
-      <ComponentRef Id="cmpFBD8369420FBACA516AC3BC28ACE7DC5"/>
-      <ComponentRef Id="cmp221E0A780759E0F3DEB6521EED27F6FF"/>
-      <ComponentRef Id="cmpA290A063074EC4AC3B5B6E8D0CB90A61"/>
-      <ComponentRef Id="cmpA7DC8C6BDE112043EAC15E1C5735FD9F"/>
-      <ComponentRef Id="cmp5B15EB74A47251EA86B5193D1F36B454"/>
-      <ComponentRef Id="cmp44D5FB10C8954F3A98F00BDD2063DF77"/>
-      <ComponentRef Id="cmp7E04B7DB60D5807E764CA861931E9FBA"/>
-      <ComponentRef Id="cmp9944CEC772805061212168BE976F66A7"/>
+      <ComponentRef Id="cmpAD836D26B1644C7883E980588813142F"/>
+      <ComponentRef Id="cmp3DE6F640E74E1BC2EF2A087A2BC7C12D"/>
+      <ComponentRef Id="cmp1EA883F9A4DFA23A423C3F85D9329DCF"/>
     </ComponentGroup>
   </Fragment>
 </Include>
-<!-- generated with msitools 0.101.32-aeb8 -->
+<!-- generated with msitools 0.103 -->
 <!-- wixl-heat -win64 -var var.SourceDir -p /usr/i686-w64-mingw32/sys-root/mingw/ -component-group CG.icu -directory-ref INSTALLDIR -->
