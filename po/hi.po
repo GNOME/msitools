@@ -1,0 +1,141 @@
+# Hindi translation for msitools.
+# Copyright (C) 2024 msitools's COPYRIGHT HOLDER
+# This file is distributed under the same license as the msitools package.
+# Scrambled 777 <weblate.scrambled777@simplelogin.com>, 2024.
+# Scrambled777 <weblate.scrambled777@simplelogin.com>, 2024.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: msitools master\n"
+"Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/msitools/issues\n"
+"POT-Creation-Date: 2024-03-29 12:41+0000\n"
+"PO-Revision-Date: 2024-04-23 11:32+0530\n"
+"Last-Translator: Scrambled777 <weblate.scrambled777@simplelogin.com>\n"
+"Language-Team: Hindi\n"
+"Language: hi\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"X-Generator: Gtranslator 46.0\n"
+
+#: tools/msiextract.vala:10 tools/wixl/wixl.vala:25
+msgid "Display version number"
+msgstr "संस्करण संख्या प्रदर्शित करें"
+
+#: tools/msiextract.vala:11
+msgid "Extract to directory"
+msgstr "निर्देशिका में निकालें"
+
+#: tools/msiextract.vala:12
+msgid "List files only"
+msgstr "केवल फाइलें सूचीबद्ध करें"
+
+#: tools/msiextract.vala:13
+msgid "MSI_FILE..."
+msgstr "MSI_FILE..."
+
+#: tools/msiextract.vala:160
+msgid "- a msi files extracting tool"
+msgstr "- एक msi फाइलों का निष्कर्षण उपकरण"
+
+#: tools/msiextract.vala:180 tools/wixl/wixl.vala:82
+msgid "Please specify input files.\n"
+msgstr "कृपया आगत फाइलें निर्दिष्ट करें।\n"
+
+#: tools/wixl/wixl-heat.vala:12
+msgid "Directory Ref"
+msgstr "निर्देशिका सन्दर्भ"
+
+#: tools/wixl/wixl-heat.vala:13
+msgid "Component Group"
+msgstr "घटक समूह"
+
+#: tools/wixl/wixl-heat.vala:14
+msgid "Variable for source dir"
+msgstr "स्रोत निर्देशिका के लिए चर"
+
+#: tools/wixl/wixl-heat.vala:15
+msgid "Prefix"
+msgstr "उपसर्ग"
+
+#: tools/wixl/wixl-heat.vala:16
+msgid "Exclude prefix"
+msgstr "उपसर्ग को छोड़ें"
+
+#: tools/wixl/wixl-heat.vala:17
+msgid "Add Win64 Component"
+msgstr "Win64 घटक जोड़ें"
+
+#: tools/wixl/wixl.vala:26
+msgid "Verbose output"
+msgstr "वाचाल निर्गत"
+
+#: tools/wixl/wixl.vala:27
+msgid "Output file"
+msgstr "निर्गत फाइल"
+
+#: tools/wixl/wixl.vala:28
+msgid "Define variable"
+msgstr "चर को परिभाषित करें"
+
+#: tools/wixl/wixl.vala:29
+msgid "Target architecture"
+msgstr "लक्ष्य वास्तुशिल्प"
+
+#: tools/wixl/wixl.vala:30
+msgid "Include directory"
+msgstr "निर्देशिका शामिल करें"
+
+#: tools/wixl/wixl.vala:31
+msgid "System extension directory"
+msgstr "सिस्टम विस्तार निर्देशिका"
+
+#: tools/wixl/wixl.vala:32
+msgid "System include directory"
+msgstr "सिस्टम में निर्देशिका शामिल है"
+
+#: tools/wixl/wixl.vala:33
+msgid "Stop after the preprocessing stage"
+msgstr "पूर्वप्रसंस्करण चरण के बाद रुकें"
+
+#: tools/wixl/wixl.vala:34
+msgid "Specify an extension"
+msgstr "एक विस्तार निर्दिष्ट करें"
+
+#: tools/wixl/wixl.vala:35
+msgid "INPUT_FILE1 [INPUT_FILE2]..."
+msgstr "INPUT_FILE1 [INPUT_FILE2]..."
+
+#: tools/wixl/wixl.vala:43
+#, c-format
+msgid "arch of type '%s' is not supported"
+msgstr "'%s' प्रकार का वास्तुशिल्प समर्थित नहीं है"
+
+#: tools/wixl/wixl.vala:55
+msgid "- a msi building tool"
+msgstr "- एक msi का निर्माण उपकरण"
+
+#: tools/wixl/wixl.vala:90
+msgid "Please specify the output file.\n"
+msgstr "कृपया निर्गत फाइल निर्दिष्ट करें।\n"
+
+#: tools/wixl/wixl.vala:100
+#, c-format
+msgid "Extension of type '%s' is not supported.\n"
+msgstr "'%s' प्रकार का विस्तार समर्थित नहीं है।\n"
+
+#: tools/wixl/wixl.vala:117
+#, c-format
+msgid "Loading %s...\n"
+msgstr "%s लोड हो रहा है...\n"
+
+#: tools/wixl/wixl.vala:127
+#, c-format
+msgid "Building %s...\n"
+msgstr "%s का निर्माण हो रहा है...\n"
+
+#: tools/wixl/wixl.vala:130
+#, c-format
+msgid "Writing %s...\n"
+msgstr "%s लिखा जा रहा है...\n"
