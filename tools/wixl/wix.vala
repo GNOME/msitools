@@ -518,6 +518,8 @@ namespace Wixl {
         public string ConfigurableDirectory { get; set; }
         public string AllowAdvertise { get; set; }
         public string Absent { get; set; }
+        public string InstallDefault { get; set; }
+        public string TypicalDefault { get; set; }
 
         public override void accept (WixNodeVisitor visitor) throws GLib.Error {
             visitor.visit_feature (this, VisitState.ENTER);
@@ -1361,6 +1363,8 @@ namespace Wixl {
         public string Remote { get; set; }
         public string ShowRollbackCost { get; set; }
         public string Sunken { get; set; }
+        public string Indirect { get; set; }
+        public string Icon { get; set; }
         public string TabSkip { get; set; }
         public string Text { get; set; }
         public string ToolTip { get; set; }

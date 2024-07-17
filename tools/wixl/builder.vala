@@ -560,6 +560,55 @@ namespace Wixl {
         WixFeature? feature_root;
         int feature_display;
 
+        enum AbsentValue {
+            Allow = 0,
+            Disallow;
+
+            public static AbsentValue from_string(string s) throws GLib.Error {
+                return enum_from_string<AbsentValue> (s);
+            }
+        }
+
+        enum AllowAdvertiseValue {
+            No = 0,
+            System,
+            Yes;
+
+            public static AllowAdvertiseValue from_string(string s) throws GLib.Error {
+                return enum_from_string<AllowAdvertiseValue> (s);
+            }
+        }
+
+        enum InstallDefaultValue {
+            FollowParent = 0,
+            Local,
+            Source;
+
+            public static InstallDefaultValue from_string(string s) throws GLib.Error {
+                return enum_from_string<InstallDefaultValue> (s);
+            }
+        }
+
+        enum TypicalDefaultValue {
+            Advertise = 0,
+            Install;
+
+            public static TypicalDefaultValue from_string(string s) throws GLib.Error {
+                return enum_from_string<TypicalDefaultValue> (s);
+            }
+        }
+
+        [Flags]
+        enum FeatureAttributes {
+            NONE = 0,
+            FAVORSOURCE = 1,
+            FOLLOWPARENT = 2,
+            FAVORADVERTISE = 4,
+            DISALLOWADVERTISE = 8,
+            UIDISALLOWABSENT = 16,
+            NOUNSUPPORTEDADVERTISE = 32,
+        }
+
         public override void visit_feature (WixFeature feature, VisitState state) throws GLib.Error {
             if (state == VisitState.ENTER && feature_root == null) {
                 feature_display = 0;
@@ -594,7 +643,57 @@ namespace Wixl {
             string? parent = (feature.parent is WixFeature) ? feature.parent.Id : null;
             int level = feature.Level != null ? int.parse (feature.Level) : 1;
 
-            db.table_feature.add (feature.Id, display, level, 0, parent, feature.Title, feature.Description, feature.ConfigurableDirectory);
+            int attributes = 0;
+            if (feature.InstallDefault != null) {
+                switch(InstallDefaultValue.from_string(feature.InstallDefault)) {
+                case InstallDefaultValue.FollowParent:
+                    attributes |= FeatureAttributes.FOLLOWPARENT;
+                    break;
+                case InstallDefaultValue.Source:
+                    attributes |= FeatureAttributes.FAVORSOURCE;
+                    break;
+                case InstallDefaultValue.Local:
+                    break;
+                }
+            }
+
+            if (feature.AllowAdvertise != null) {
+                switch(AllowAdvertiseValue.from_string(feature.AllowAdvertise)) {
+                case AllowAdvertiseValue.No:
+                    attributes |= FeatureAttributes.DISALLOWADVERTISE;
+                    break;
+                case AllowAdvertiseValue.System:
+                    attributes |= FeatureAttributes.NOUNSUPPORTEDADVERTISE;
+                    break;
+                case AllowAdvertiseValue.Yes:
+                    break;
+                }
+            }
+
+            if (feature.TypicalDefault != null) {
+                switch(TypicalDefaultValue.from_string(feature.TypicalDefault)) {
+                case TypicalDefaultValue.Advertise:
+                    attributes |= FeatureAttributes.FAVORADVERTISE;
+                    break;
+                case TypicalDefaultValue.Install:
+                    break;
+                }
+            }
+
+            if (feature.Absent != null) {
+                switch(AbsentValue.from_string(feature.Absent)) {
+                case AbsentValue.Disallow:
+                    attributes |= FeatureAttributes.UIDISALLOWABSENT;
+                    break;
+                case AbsentValue.Allow:
+                    break;
+                }
+            }
+
+            if ((attributes & (FeatureAttributes.DISALLOWADVERTISE | FeatureAttributes.FAVORADVERTISE)) == (FeatureAttributes.DISALLOWADVERTISE | FeatureAttributes.FAVORADVERTISE))
+                throw new Wixl.Error.FAILED ("cannot set both Absent='disallow' and TypicalDefault='no'");
+
+            db.table_feature.add (feature.Id, display, level, attributes, parent, feature.Title, feature.Description, feature.ConfigurableDirectory);
 
         }
 
@@ -1568,6 +1667,10 @@ namespace Wixl {
             }
             if (parse_yesno (control.Sunken))
                 attributes |= ControlAttributes.SUNKEN;
+            if (parse_yesno (control.Indirect))
+                attributes |= ControlAttributes.INDIRECT;
+            if (parse_yesno (control.Icon))
+                attributes |= ControlAttributes.ICON;
             if (!parse_yesno (control.Hidden))
                 attributes |= ControlAttributes.VISIBLE;
 
