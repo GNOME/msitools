@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<?require gcc.wxi?>
+<Include xmlns="http://schemas.microsoft.com/wix/2006/wi">
+  <Fragment>
+    <DirectoryRef Id="INSTALLDIR">
+      <Directory Id="dir8C3302584E07E0E8EB6DD6061B830CB1" Name="bin">
+        <Component Win64="$(var.Win64)" Id="cmpB6EEE640AF95F3179112FF6D675D6BEF" Guid="*">
+          <File Id="filD701605B384AC5FCF2AEB5D6A264629E" KeyPath="yes" Source="$(var.SourceDir)/bin/libdeflate-0.dll"/>
+        </Component>
+      </Directory>
+    </DirectoryRef>
+  </Fragment>
+  <Fragment>
+    <ComponentGroup Id="CG.libdeflate">
+      <ComponentGroupRef Id="CG.gcc"/>
+      <ComponentRef Id="cmpB6EEE640AF95F3179112FF6D675D6BEF"/>
+    </ComponentGroup>
+  </Fragment>
+</Include>
+<!-- generated with msitools 0.103.9-7e08 -->
+<!-- tools/wixl/wixl-heat -var var.SourceDir -p /usr/i686-w64-mingw32/sys-root/mingw/ -component-group CG.libdeflate -directory-ref INSTALLDIR -win64 -->

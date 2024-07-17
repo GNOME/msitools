@@ -36,6 +36,7 @@ wxi_data = files(
   'wixl/lcms2.wxi',
   'wixl/libcacard.wxi',
   'wixl/libcroco.wxi',
+  'wixl/libdeflate.wxi',
   'wixl/libepoxy.wxi',
   'wixl/libffi.wxi',
   'wixl/libgcrypt.wxi',

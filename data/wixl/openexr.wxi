@@ -1,25 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
 <?require gcc-c++.wxi?>
 <?require imath.wxi?>
+<?require libdeflate.wxi?>
 <?require zlib.wxi?>
 <Include xmlns="http://schemas.microsoft.com/wix/2006/wi">
   <Fragment>
     <DirectoryRef Id="INSTALLDIR">
-      <Directory Id="dir0B857615C9B2C86258E8CF7C6974F9B1" Name="bin">
-        <Component Win64="$(var.Win64)" Id="cmpD06DB6061F9FA030F5A84B640A974E2C" Guid="*">
-          <File Id="filCCEEF63C65F726B1B2609A43920FAD36" KeyPath="yes" Source="$(var.SourceDir)/bin/libIex-3_1.dll"/>
+      <Directory Id="dirBF88F169D27CF31E74B82CE3D44C1F09" Name="bin">
+        <Component Win64="$(var.Win64)" Id="cmpF7F1094F40508ECC2F846256AB7E1BE3" Guid="*">
+          <File Id="fil27B537824B37FF7EAAEE6501282B4C02" KeyPath="yes" Source="$(var.SourceDir)/bin/libIex-3_2.dll"/>
         </Component>
-        <Component Win64="$(var.Win64)" Id="cmpF382C85C906392EAEE0F8A3187356A4E" Guid="*">
-          <File Id="fil6208B4B4C22784C56395CA036FBC7BCD" KeyPath="yes" Source="$(var.SourceDir)/bin/libIlmThread-3_1.dll"/>
+        <Component Win64="$(var.Win64)" Id="cmpF31E4E0E78BEE2407927E287D453E184" Guid="*">
+          <File Id="fil0CE4033978686B284B50A6D7EBA30A2B" KeyPath="yes" Source="$(var.SourceDir)/bin/libIlmThread-3_2.dll"/>
         </Component>
-        <Component Win64="$(var.Win64)" Id="cmpD791170731ED456887CF0FBF9E101C2B" Guid="*">
-          <File Id="fil34991156EBD9B579A98112DC98C7CEC6" KeyPath="yes" Source="$(var.SourceDir)/bin/libOpenEXR-3_1.dll"/>
+        <Component Win64="$(var.Win64)" Id="cmpD8250857B54E91F67723C2668FAA4D08" Guid="*">
+          <File Id="fil931F72AD29298DE3131B50922F4E77AA" KeyPath="yes" Source="$(var.SourceDir)/bin/libOpenEXR-3_2.dll"/>
         </Component>
-        <Component Win64="$(var.Win64)" Id="cmp8300849796A475BA357F53956C655B7D" Guid="*">
-          <File Id="fil95B939BC488F0139759B1708258D13D5" KeyPath="yes" Source="$(var.SourceDir)/bin/libOpenEXRCore-3_1.dll"/>
+        <Component Win64="$(var.Win64)" Id="cmp6F3DA7B9BC2C1C877474E32CC76F4A1D" Guid="*">
+          <File Id="fil920B4C239BCBC627CFF684145DFBC33B" KeyPath="yes" Source="$(var.SourceDir)/bin/libOpenEXRCore-3_2.dll"/>
         </Component>
-        <Component Win64="$(var.Win64)" Id="cmpB99AA8413711B53DB838FC4FCFDAE130" Guid="*">
-          <File Id="filD799F70F1822A396BBDEDF9E062585BC" KeyPath="yes" Source="$(var.SourceDir)/bin/libOpenEXRUtil-3_1.dll"/>
+        <Component Win64="$(var.Win64)" Id="cmp88D3C972C5B137B0C002F705D1EB85F4" Guid="*">
+          <File Id="fil933A82F368F09E0267D7ACBE463D80CC" KeyPath="yes" Source="$(var.SourceDir)/bin/libOpenEXRUtil-3_2.dll"/>
         </Component>
       </Directory>
     </DirectoryRef>
@@ -28,14 +29,15 @@
     <ComponentGroup Id="CG.openexr">
       <ComponentGroupRef Id="CG.gcc-c++"/>
       <ComponentGroupRef Id="CG.imath"/>
+      <ComponentGroupRef Id="CG.libdeflate"/>
       <ComponentGroupRef Id="CG.zlib"/>
-      <ComponentRef Id="cmpD06DB6061F9FA030F5A84B640A974E2C"/>
-      <ComponentRef Id="cmpF382C85C906392EAEE0F8A3187356A4E"/>
-      <ComponentRef Id="cmpD791170731ED456887CF0FBF9E101C2B"/>
-      <ComponentRef Id="cmp8300849796A475BA357F53956C655B7D"/>
-      <ComponentRef Id="cmpB99AA8413711B53DB838FC4FCFDAE130"/>
+      <ComponentRef Id="cmpF7F1094F40508ECC2F846256AB7E1BE3"/>
+      <ComponentRef Id="cmpF31E4E0E78BEE2407927E287D453E184"/>
+      <ComponentRef Id="cmpD8250857B54E91F67723C2668FAA4D08"/>
+      <ComponentRef Id="cmp6F3DA7B9BC2C1C877474E32CC76F4A1D"/>
+      <ComponentRef Id="cmp88D3C972C5B137B0C002F705D1EB85F4"/>
     </ComponentGroup>
   </Fragment>
 </Include>
-<!-- generated with msitools 0.101.24-50c9-dirty -->
+<!-- generated with msitools 0.103.9-7e08 -->
 <!-- tools/wixl/wixl-heat -var var.SourceDir -p /usr/i686-w64-mingw32/sys-root/mingw/ -component-group CG.openexr -directory-ref INSTALLDIR -win64 -->
