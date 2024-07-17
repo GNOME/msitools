@@ -44,10 +44,10 @@ if get_option('introspection')
       '--pkg', 'libgcab-1.0',
       '--pkg', 'posix',
       '--pkg', 'config',
-      '--vapidir=@0@'.format(meson.source_root()),
-      '--vapidir=@0@'.format(meson.build_root() / 'libmsi'),
+      '--vapidir=@0@'.format(meson.project_source_root()),
+      '--vapidir=@0@'.format(meson.project_build_root() / 'libmsi'),
     ],
-    c_args: ['-include', meson.build_root() / 'config.h'],
+    c_args: ['-include', meson.project_build_root() / 'config.h'],
     dependencies: [libmsi, libgcab, libmsi_vapi],
     install: true,
   )

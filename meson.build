@@ -1,9 +1,9 @@
 project('msitools',
   'c', 'vala',
-  version: run_command('build-aux/git-version-gen', '@0@/.tarball-version'.format(meson.source_root()), check: true).stdout().strip(),
-  meson_version: '>= 0.52',
+  version: run_command('build-aux/git-version-gen', '@0@/.tarball-version'.format(meson.project_source_root()), check: true).stdout().strip(),
+  meson_version: '>= 0.56',
 )
-meson.add_dist_script('build-aux/meson-dist', meson.project_version(), meson.source_root())
+meson.add_dist_script('build-aux/meson-dist', meson.project_version(), meson.project_source_root())
 
 gnome = import('gnome')
 

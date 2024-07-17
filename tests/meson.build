@@ -33,7 +33,7 @@ test('Tools tests',
   protocol: 'tap',
   depends: [testrecord, testdatabase],
   env: {
-    'SRCDIR': meson.source_root(),
-    'BUILDDIR': meson.build_root(),
+    'SRCDIR': meson.project_source_root(),
+    'BUILDDIR': meson.project_build_root(),
   },
 )
