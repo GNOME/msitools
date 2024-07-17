@@ -540,6 +540,9 @@ namespace Wixl {
             else if (comp.Win64 == null && (arch == Arch.X64 || arch == Arch.IA64))
                 attr |= ComponentAttribute.64BIT;
 
+            if (comp.Permanent != null && parse_yesno (comp.Permanent))
+                attr |= ComponentAttribute.PERMANENT;
+
             db.table_component.add (comp.Id, uuid, dir.Id, attr,
                                     comp.key != null ? comp.key.Id : null);
 
