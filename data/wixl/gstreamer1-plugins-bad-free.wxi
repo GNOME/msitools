@@ -7,7 +7,7 @@
 <?require gsm.wxi?>
 <?require curl.wxi?>
 <?require libwebp.wxi?>
-<?require openjpeg2.wxi?>
+<?require openjpeg.wxi?>
 <?require librsvg2.wxi?>
 <?require lcms2.wxi?>
 <?require openal-soft.wxi?>
@@ -452,7 +452,7 @@
       <ComponentGroupRef Id="CG.gsm"/>
       <ComponentGroupRef Id="CG.curl"/>
       <ComponentGroupRef Id="CG.libwebp"/>
-      <ComponentGroupRef Id="CG.openjpeg2"/>
+      <ComponentGroupRef Id="CG.openjpeg"/>
       <ComponentGroupRef Id="CG.librsvg2"/>
       <ComponentGroupRef Id="CG.lcms2"/>
       <ComponentGroupRef Id="CG.openal-soft"/>

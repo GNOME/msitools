@@ -11,11 +11,11 @@
     </DirectoryRef>
   </Fragment>
   <Fragment>
-    <ComponentGroup Id="CG.openjpeg2">
+    <ComponentGroup Id="CG.openjpeg">
       <ComponentGroupRef Id="CG.gcc"/>
       <ComponentRef Id="cmpAD99D482F25AED617CC50BC86B15D02E"/>
     </ComponentGroup>
   </Fragment>
 </Include>
 <!-- generated with msitools 0.101.19-de2c-dirty -->
-<!-- tools/wixl/wixl-heat -var var.SourceDir -p /usr/i686-w64-mingw32/sys-root/mingw/ -component-group CG.openjpeg2 -directory-ref INSTALLDIR -win64 -->
+<!-- tools/wixl/wixl-heat -var var.SourceDir -p /usr/i686-w64-mingw32/sys-root/mingw/ -component-group CG.openjpeg -directory-ref INSTALLDIR -win64 -->
