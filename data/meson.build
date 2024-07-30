@@ -98,7 +98,7 @@ install_subdir('ext/',
 if get_option('validate-wxi')
   wxi_validate = find_program('wxi-validate.pl')
   foreach file: wxi_data
-    filename = ('@0@'.format(file)).split('/')[-1].split('.wxi')[0]
+    filename = ('@0@'.format(file.full_path())).split('/')[-1].split('.wxi')[0]
     testname = 'wxi-@0@'.format(filename)
 
     r = run_command('rpm', '-q', 'mingw32-' + filename, 'mingw64-' + filename, check: false)
