@@ -4,7 +4,7 @@
 <?require libtasn1.wxi?>
 <?require nettle.wxi?>
 <?require readline.wxi?>
-<?require p11-kit.wxi?>
+<?require zlib.wxi?>
 
 <Include xmlns="http://schemas.microsoft.com/wix/2006/wi">
   <Fragment>
@@ -23,7 +23,7 @@
       <ComponentGroupRef Id="CG.libtasn1"/>
       <ComponentGroupRef Id="CG.nettle"/>
       <ComponentGroupRef Id="CG.readline"/>
-      <ComponentGroupRef Id="CG.p11-kit"/>
+      <ComponentGroupRef Id="CG.zlib"/>
       <ComponentRef Id="cmp845933D5BF01B8450C766D545EF5F537"/>
     </ComponentGroup>
   </Fragment>

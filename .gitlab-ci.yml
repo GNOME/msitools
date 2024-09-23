@@ -130,8 +130,6 @@ variables:
                 mingw64-opus
                 mingw32-orc
                 mingw64-orc
-                mingw32-p11-kit
-                mingw64-p11-kit
                 mingw32-pango
                 mingw64-pango
                 mingw32-pcre2

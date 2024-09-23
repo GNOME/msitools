@@ -67,7 +67,6 @@ wxi_data = files(
   'wixl/openssl.wxi',
   'wixl/opus.wxi',
   'wixl/orc.wxi',
-  'wixl/p11-kit.wxi',
   'wixl/pango.wxi',
   'wixl/pcre.wxi',
   'wixl/pcre2.wxi',
