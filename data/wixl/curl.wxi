@@ -2,6 +2,7 @@
 <?require gcc.wxi?>
 <?require libssh2.wxi?>
 <?require libidn2.wxi?>
+<?require libpsl.wxi?>
 <?require zlib.wxi?>
 <?require openssl.wxi?>
 <Include xmlns="http://schemas.microsoft.com/wix/2006/wi">
@@ -19,6 +20,7 @@
       <ComponentGroupRef Id="CG.gcc"/>
       <ComponentGroupRef Id="CG.libssh2"/>
       <ComponentGroupRef Id="CG.libidn2"/>
+      <ComponentGroupRef Id="CG.libpsl"/>
       <ComponentGroupRef Id="CG.zlib"/>
       <ComponentGroupRef Id="CG.openssl"/>
       <ComponentRef Id="cmpD17DE7BDBF0C5DD49F836AC69F4B3B5F"/>
