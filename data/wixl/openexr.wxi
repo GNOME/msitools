@@ -6,21 +6,21 @@
 <Include xmlns="http://schemas.microsoft.com/wix/2006/wi">
   <Fragment>
     <DirectoryRef Id="INSTALLDIR">
-      <Directory Id="dirBF88F169D27CF31E74B82CE3D44C1F09" Name="bin">
-        <Component Win64="$(var.Win64)" Id="cmpF7F1094F40508ECC2F846256AB7E1BE3" Guid="*">
-          <File Id="fil27B537824B37FF7EAAEE6501282B4C02" KeyPath="yes" Source="$(var.SourceDir)/bin/libIex-3_2.dll"/>
+      <Directory Id="dirEF83D92A8C450D70CB316AAA69A4A89F" Name="bin">
+        <Component Win64="$(var.Win64)" Id="cmp7D0A4B4F9B302551B8A24FFE334C2FE7" Guid="*">
+          <File Id="fil2620578E2221C8DD260F9D5B8A1E8468" KeyPath="yes" Source="$(var.SourceDir)/bin/libIex-3_3.dll"/>
         </Component>
-        <Component Win64="$(var.Win64)" Id="cmpF31E4E0E78BEE2407927E287D453E184" Guid="*">
-          <File Id="fil0CE4033978686B284B50A6D7EBA30A2B" KeyPath="yes" Source="$(var.SourceDir)/bin/libIlmThread-3_2.dll"/>
+        <Component Win64="$(var.Win64)" Id="cmpA664B6E1BF219C1C63480652FAE31AED" Guid="*">
+          <File Id="fil2B94420E7FE6B3D7AEFAD195E2C0E45F" KeyPath="yes" Source="$(var.SourceDir)/bin/libIlmThread-3_3.dll"/>
         </Component>
-        <Component Win64="$(var.Win64)" Id="cmpD8250857B54E91F67723C2668FAA4D08" Guid="*">
-          <File Id="fil931F72AD29298DE3131B50922F4E77AA" KeyPath="yes" Source="$(var.SourceDir)/bin/libOpenEXR-3_2.dll"/>
+        <Component Win64="$(var.Win64)" Id="cmp88A029384995EBD86ABBA2F0BE769B04" Guid="*">
+          <File Id="filCC42169A377BDF755A233F6CCC45883B" KeyPath="yes" Source="$(var.SourceDir)/bin/libOpenEXR-3_3.dll"/>
         </Component>
-        <Component Win64="$(var.Win64)" Id="cmp6F3DA7B9BC2C1C877474E32CC76F4A1D" Guid="*">
-          <File Id="fil920B4C239BCBC627CFF684145DFBC33B" KeyPath="yes" Source="$(var.SourceDir)/bin/libOpenEXRCore-3_2.dll"/>
+        <Component Win64="$(var.Win64)" Id="cmpA73B532CBAD8754EB7E8FECC4F4C9FAD" Guid="*">
+          <File Id="fil72434EE2B0E7E05C72978B10B3E78A8F" KeyPath="yes" Source="$(var.SourceDir)/bin/libOpenEXRCore-3_3.dll"/>
         </Component>
-        <Component Win64="$(var.Win64)" Id="cmp88D3C972C5B137B0C002F705D1EB85F4" Guid="*">
-          <File Id="fil933A82F368F09E0267D7ACBE463D80CC" KeyPath="yes" Source="$(var.SourceDir)/bin/libOpenEXRUtil-3_2.dll"/>
+        <Component Win64="$(var.Win64)" Id="cmpDC1660504F2CD800AB83ECF49453AEE8" Guid="*">
+          <File Id="fil6A9AC38FF0A7AE3F6AAECB92040840DB" KeyPath="yes" Source="$(var.SourceDir)/bin/libOpenEXRUtil-3_3.dll"/>
         </Component>
       </Directory>
     </DirectoryRef>
@@ -31,11 +31,11 @@
       <ComponentGroupRef Id="CG.imath"/>
       <ComponentGroupRef Id="CG.libdeflate"/>
       <ComponentGroupRef Id="CG.zlib"/>
-      <ComponentRef Id="cmpF7F1094F40508ECC2F846256AB7E1BE3"/>
-      <ComponentRef Id="cmpF31E4E0E78BEE2407927E287D453E184"/>
-      <ComponentRef Id="cmpD8250857B54E91F67723C2668FAA4D08"/>
-      <ComponentRef Id="cmp6F3DA7B9BC2C1C877474E32CC76F4A1D"/>
-      <ComponentRef Id="cmp88D3C972C5B137B0C002F705D1EB85F4"/>
+      <ComponentRef Id="cmp7D0A4B4F9B302551B8A24FFE334C2FE7"/>
+      <ComponentRef Id="cmpA664B6E1BF219C1C63480652FAE31AED"/>
+      <ComponentRef Id="cmp88A029384995EBD86ABBA2F0BE769B04"/>
+      <ComponentRef Id="cmpA73B532CBAD8754EB7E8FECC4F4C9FAD"/>
+      <ComponentRef Id="cmpDC1660504F2CD800AB83ECF49453AEE8"/>
     </ComponentGroup>
   </Fragment>
 </Include>
