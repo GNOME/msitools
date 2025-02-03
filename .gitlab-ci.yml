@@ -104,8 +104,8 @@ variables:
                 mingw64-libtheora
                 mingw32-libtiff
                 mingw64-libtiff
-                mingw32-libusbx
-                mingw64-libusbx
+                mingw32-libusb1
+                mingw64-libusb1
                 mingw32-libvirt-glib
                 mingw64-libvirt-glib
                 mingw32-libvirt

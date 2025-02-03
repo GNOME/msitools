@@ -7,11 +7,11 @@
         <Component Win64="$(var.Win64)" Id="cmp599803EA845A59EB223BCE67450D325A" Guid="*">
           <File Id="filAC0876ADABB24D68E4983EFE44EC2427" KeyPath="yes" Source="$(var.SourceDir)/bin/libusb-1.0.dll"/>
         </Component>
-        </Directory>
+      </Directory>
     </DirectoryRef>
   </Fragment>
   <Fragment>
-    <ComponentGroup Id="CG.libusbx">
+    <ComponentGroup Id="CG.libusb1">
       <ComponentGroupRef Id="CG.gcc"/>
       <ComponentRef Id="cmp599803EA845A59EB223BCE67450D325A"/>
     </ComponentGroup>

@@ -54,7 +54,7 @@ wxi_data = files(
   'wixl/libtheora.wxi',
   'wixl/libtiff.wxi',
   'wixl/libunistring.wxi',
-  'wixl/libusbx.wxi',
+  'wixl/libusb1.wxi',
   'wixl/libvirt-glib.wxi',
   'wixl/libvirt.wxi',
   'wixl/libvorbis.wxi',
