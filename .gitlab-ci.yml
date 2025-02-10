@@ -144,6 +144,8 @@ variables:
                 mingw64-rest
                 mingw32-librsvg2
                 mingw64-librsvg2
+                mingw32-sdl2-compat
+                mingw64-sdl2-compat
                 mingw32-speex
                 mingw64-speex
                 mingw32-spice-glib
