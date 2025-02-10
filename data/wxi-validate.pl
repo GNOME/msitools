@@ -48,6 +48,7 @@ my %dllgroups;
 my $dllbuiltin = "^(" .
     "advapi32|" .
     "api-ms-.*|" .
+    "avrt|" .
     "bcrypt|" .
     "bcryptprimitives|" .
     "comctl32|" .

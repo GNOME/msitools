@@ -5,43 +5,34 @@
 <Include xmlns="http://schemas.microsoft.com/wix/2006/wi">
   <Fragment>
     <DirectoryRef Id="INSTALLDIR">
-      <Directory Id="dirC8389FDBB4A6257013203C24CB0E2DB5" Name="bin">
+      <Directory Id="dir20710092A112073B261FDBD18005002E" Name="bin">
         <Component Win64="$(var.Win64)" Id="cmpB5E33E3FD4B087177A0434BFE815AAF6" Guid="*">
           <File Id="fil12F1EC450118DDF91F61C046A56046F8" KeyPath="yes" Source="$(var.SourceDir)/bin/OpenAL32.dll"/>
         </Component>
-        <Component Win64="$(var.Win64)" Id="cmp658490EC71731EA2200D38752D85BE27" Guid="*">
-          <File Id="fil950D8DC4E1DF49AA5F83A531695D5D32" KeyPath="yes" Source="$(var.SourceDir)/bin/alloopback.exe"/>
-        </Component>
-        <Component Win64="$(var.Win64)" Id="cmp44C541F9ACA8ED2C066BA40D652CF2BC" Guid="*">
-          <File Id="filABA10A5835BCEF133558C4E5FF46F59D" KeyPath="yes" Source="$(var.SourceDir)/bin/alrecord.exe"/>
-        </Component>
-        <Component Win64="$(var.Win64)" Id="cmpAF821126633DDF42C1B9EC89EABE7B00" Guid="*">
-          <File Id="fil599DDC98F86B2D25B1E5E7884BC7DD8C" KeyPath="yes" Source="$(var.SourceDir)/bin/altonegen.exe"/>
-        </Component>
-        <Component Win64="$(var.Win64)" Id="cmp0A3C634FCB16350330E4135D5C199FDF" Guid="*">
-          <File Id="fil03556D6F168AF0CE83B9C9094B9C18FC" KeyPath="yes" Source="$(var.SourceDir)/bin/openal-info.exe"/>
-        </Component>
       </Directory>
-      <Directory Id="dirDBD2864B3C3FFD1E86261CF2604E3F9C" Name="etc">
-        <Directory Id="dir505C1542BAB4D8F20F377D6ED93EB4C9" Name="openal">
+      <Directory Id="dir0848A310D2D045FA66FAF56729E856AD" Name="etc">
+        <Directory Id="dirB94AE30A5D9557961BE1D0C8FFC0203B" Name="openal">
           <Component Win64="$(var.Win64)" Id="cmp8EB348F915C5896D56835BC9BAB79345" Guid="*">
             <File Id="fil0A7940318F2FE3060E031BEA13AC48B9" KeyPath="yes" Source="$(var.SourceDir)/etc/openal/alsoft.conf"/>
           </Component>
         </Directory>
       </Directory>
-      <Directory Id="dir3CAA11087B653C60BE0B8AB21F0F2F18" Name="share">
-        <Directory Id="dirEAEB505F05143075B3F8742AF6796474" Name="openal">
+      <Directory Id="dirB854172385B50A913D72D124307450CE" Name="share">
+        <Directory Id="dirFA431622A4D27F2E106D8701444FC257" Name="openal">
           <Component Win64="$(var.Win64)" Id="cmp11A915BA8F368D6E2D544B09847F2C9E" Guid="*">
             <File Id="filFD30374A44B7EFC7A66F5FCD89727825" KeyPath="yes" Source="$(var.SourceDir)/share/openal/alsoftrc.sample"/>
           </Component>
-          <Directory Id="dir3BB54727308B123DAAE192F80E66499C" Name="hrtf">
+          <Directory Id="dir1986BAC22CFB49F91D16699C2D9646C6" Name="hrtf">
             <Component Win64="$(var.Win64)" Id="cmpA36BD9219C48B21253F66551B287E38F" Guid="*">
               <File Id="filA107F4CD41D8744FCDBB822F95B96A8E" KeyPath="yes" Source="$(var.SourceDir)/share/openal/hrtf/Default HRTF.mhr"/>
             </Component>
           </Directory>
-          <Directory Id="dir4B13C789A73E2F77C83BA6BBBB295A9D" Name="presets">
+          <Directory Id="dir0249C2B12662397FCF090E1C1DFBAEF4" Name="presets">
             <Component Win64="$(var.Win64)" Id="cmp9CDAE5DCCA39C25DF272715060C42F91" Guid="*">
               <File Id="filC93DD5B4813F3504300112E662383A95" KeyPath="yes" Source="$(var.SourceDir)/share/openal/presets/3D7.1.ambdec"/>
+            </Component>
+            <Component Win64="$(var.Win64)" Id="cmpF581AB9C5FA2B73F61F1826380EC572B" Guid="*">
+              <File Id="filCCF94730B671958B1E1C3A1AC2C30974" KeyPath="yes" Source="$(var.SourceDir)/share/openal/presets/hex-quad.ambdec"/>
             </Component>
             <Component Win64="$(var.Win64)" Id="cmpDA8DA322BCC5BE1B4648024BA53AAE78" Guid="*">
               <File Id="filAC4A9F19BF1806E526BBBBACBF1461B8" KeyPath="yes" Source="$(var.SourceDir)/share/openal/presets/hexagon.ambdec"/>
@@ -72,13 +63,11 @@
       <ComponentGroupRef Id="CG.gcc-c++"/>
       <ComponentGroupRef Id="CG.SDL2"/>
       <ComponentRef Id="cmpB5E33E3FD4B087177A0434BFE815AAF6"/>
-      <ComponentRef Id="cmp658490EC71731EA2200D38752D85BE27"/>
-      <ComponentRef Id="cmp44C541F9ACA8ED2C066BA40D652CF2BC"/>
-      <ComponentRef Id="cmpAF821126633DDF42C1B9EC89EABE7B00"/>
-      <ComponentRef Id="cmp0A3C634FCB16350330E4135D5C199FDF"/>
       <ComponentRef Id="cmp8EB348F915C5896D56835BC9BAB79345"/>
       <ComponentRef Id="cmp11A915BA8F368D6E2D544B09847F2C9E"/>
+      <ComponentRef Id="cmpA36BD9219C48B21253F66551B287E38F"/>
       <ComponentRef Id="cmp9CDAE5DCCA39C25DF272715060C42F91"/>
+      <ComponentRef Id="cmpF581AB9C5FA2B73F61F1826380EC572B"/>
       <ComponentRef Id="cmpDA8DA322BCC5BE1B4648024BA53AAE78"/>
       <ComponentRef Id="cmp02222C78D2EBE4852FD4FD35F2CC06AC"/>
       <ComponentRef Id="cmp0843FFBF0FBC74B7821BC3CDDC7928E7"/>
