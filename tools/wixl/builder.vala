@@ -1940,7 +1940,7 @@ namespace Wixl {
                     break;
             }
             var component = env.parent as WixComponent;
-            db.table_environment.add(uuid_generate (), name, value, component.Id);
+            db.table_environment.add(Uuid.string_random (), name, value, component.Id);
         }
     }
 
