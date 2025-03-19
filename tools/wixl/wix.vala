@@ -509,6 +509,7 @@ namespace Wixl {
                 typeof (WixComponentRef),
                 typeof (WixComponentGroupRef),
                 typeof (WixFeature),
+                typeof (WixCondition),
             });
         }
 
@@ -565,6 +566,7 @@ namespace Wixl {
         }
 
         public string Message { get; set; }
+        public string Level { get; set; }
 
         public override void accept (WixNodeVisitor visitor) throws GLib.Error {
             visitor.visit_condition (this);

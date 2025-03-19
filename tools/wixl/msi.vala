@@ -680,6 +680,24 @@ namespace Wixl {
         }
     }
 
+    class MsiTableCondition : MsiTable {
+        static construct {
+            name = "Condition";
+            sql_create = "CREATE TABLE `Condition` (`Feature_` CHAR(38) NOT NULL, `Level` INT NOT NULL, `Condition` CHAR(255) PRIMARY KEY `Feature_`, `Level`)";
+            sql_insert = "INSERT INTO `Condition` (`Feature_`, `Level`, `Condition`) VALUES (?, ?, ?)";
+        }
+
+        public void add (string Feature, int Level, string? Condition) throws GLib.Error {
+            var rec = new Libmsi.Record (3);
+            if (!rec.set_string (1, Feature) ||
+                !rec.set_int (2, Level) ||
+                (Condition != null && !rec.set_string (3, Condition)))
+                throw new Wixl.Error.FAILED ("failed to add record");
+
+            records.append (rec);
+        }        
+    }
+
     class MsiTableRegistry: MsiTable {
         static construct {
             name = "Registry";
@@ -1120,6 +1138,7 @@ namespace Wixl {
         public MsiTableMedia table_media;
         public MsiTableDirectory table_directory;
         public MsiTableComponent table_component;
+        public MsiTableCondition table_condition;
         public MsiTableFeature table_feature;
         public MsiTableFeatureComponents table_feature_components;
         public MsiTableRemoveFile table_remove_file;
@@ -1207,6 +1226,7 @@ namespace Wixl {
             table_feature_components = new MsiTableFeatureComponents ();
             table_remove_file = new MsiTableRemoveFile ();
             table_registry = new MsiTableRegistry ();
+            table_condition = new MsiTableCondition ();
             table_service_control = new MsiTableServiceControl ();
             table_service_install = new MsiTableServiceInstall ();
             table_file = new MsiTableFile ();
@@ -1246,6 +1266,7 @@ namespace Wixl {
                     table_feature_components,
                     table_remove_file,
                     table_registry,
+                    table_condition,
                     table_service_control,
                     table_service_install,
                     table_file,
@@ -1309,7 +1330,7 @@ namespace Wixl {
             while (it.next (out name, out table))
                 table.create (db);
 
-            db.commit ();
+                db.commit ();
         }
     }
 
