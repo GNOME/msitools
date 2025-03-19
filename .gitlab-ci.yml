@@ -227,8 +227,6 @@ release-service:
     include:
       - component: "gitlab.gnome.org/GNOME/citemplates/release-service@master"
         inputs:
-          job-stage: "release"
-          dist-job-name: "build-release-tarball"
           tarball-artifact-path: "${TARBALL_ARTIFACT_PATH}"
     strategy: depend
   rules:
