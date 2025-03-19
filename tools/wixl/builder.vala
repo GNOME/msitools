@@ -548,7 +548,7 @@ namespace Wixl {
                 attr |= ComponentAttribute.PERMANENT;
 
             db.table_component.add (comp.Id, uuid, dir.Id, attr,
-                                    comp.key != null ? comp.key.Id : null);
+                                    comp.key != null ? comp.key.Id : null, comp.Condition);
 
         }
 
@@ -991,7 +991,12 @@ namespace Wixl {
             return_if_fail (condition.children.length () == 1);
             var text = condition.children.first ().data as WixText;
 
-            db.table_launch_condition.add (text.Text.strip(), condition.Message);
+            if (condition.parent is WixComponent) {
+                ((WixComponent)condition.parent).Condition = text.Text.strip();
+            } else if (condition.parent is WixProduct)
+                db.table_launch_condition.add (text.Text.strip(), condition.Message);
+            else
+                warning ("unhandled parent type %s", condition.parent.name);
         }
 
         [Flags]

@@ -509,6 +509,7 @@ namespace Wixl {
                 typeof (WixComponentRef),
                 typeof (WixComponentGroupRef),
                 typeof (WixFeature),
+                typeof (WixCondition),
             });
         }
 
@@ -565,6 +566,7 @@ namespace Wixl {
         }
 
         public string Message { get; set; }
+        public string Level { get; set; }
 
         public override void accept (WixNodeVisitor visitor) throws GLib.Error {
             visitor.visit_condition (this);
@@ -1123,6 +1125,7 @@ namespace Wixl {
                 typeof (WixServiceControl),
                 typeof (WixServiceInstall),
                 typeof (WixIniFile),
+                typeof (WixCondition),
                 typeof (WixEnvironment)
             });
         }
@@ -1131,6 +1134,7 @@ namespace Wixl {
         public string? Win64 { get; set; }
         public WixKeyElement? key;
         public string Permanent { get; set; }
+        public string Condition { get; set; }
 
         public List<WixFeature> in_feature;
 
