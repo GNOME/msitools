@@ -647,16 +647,17 @@ namespace Wixl {
         static construct {
             name = "Component";
             sql_create = "CREATE TABLE `Component` (`Component` CHAR(72) NOT NULL, `ComponentId` CHAR(38), `Directory_` CHAR(72) NOT NULL, `Attributes` INT NOT NULL, `Condition` CHAR(255), `KeyPath` CHAR(72) PRIMARY KEY `Component`)";
-            sql_insert = "INSERT INTO `Component` (`Component`, `ComponentId`, `Directory_`, `Attributes`, `KeyPath`) VALUES (?, ?, ?, ?, ?)";
+            sql_insert = "INSERT INTO `Component` (`Component`, `ComponentId`, `Directory_`, `Attributes`, `KeyPath`, `Condition`) VALUES (?, ?, ?, ?, ?, ?)";
         }
 
-        public void add (string Component, string? ComponentId, string Directory, int Attributes, string? KeyPath = null) throws GLib.Error {
-            var rec = new Libmsi.Record (5);
+        public void add (string Component, string? ComponentId, string Directory, int Attributes, string? KeyPath = null, string? Condition) throws GLib.Error {
+            var rec = new Libmsi.Record (6);
             if (!rec.set_string (1, Component) ||
                 (ComponentId != null && !rec.set_string (2, ComponentId)) ||
                 !rec.set_string (3, Directory) ||
                 !rec.set_int (4, Attributes) ||
-                !rec.set_string (5, KeyPath))
+                !rec.set_string (5, KeyPath) ||
+                (Condition != null && !rec.set_string (6, Condition)))
                 throw new Wixl.Error.FAILED ("failed to add record");
 
             records.append (rec);

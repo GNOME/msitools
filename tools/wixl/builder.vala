@@ -548,7 +548,7 @@ namespace Wixl {
                 attr |= ComponentAttribute.PERMANENT;
 
             db.table_component.add (comp.Id, uuid, dir.Id, attr,
-                                    comp.key != null ? comp.key.Id : null);
+                                    comp.key != null ? comp.key.Id : null, comp.Condition);
 
         }
 
@@ -994,6 +994,8 @@ namespace Wixl {
             if (condition.parent is WixFeature) {
                 var level = condition.Level != null ? int.parse (condition.Level) : 0;
                 db.table_condition.add (condition.parent.Id, level, text.Text.strip());
+            } else if (condition.parent is WixComponent) {
+                ((WixComponent)condition.parent).Condition = text.Text.strip();
             } else if (condition.parent is WixProduct)
                 db.table_launch_condition.add (text.Text.strip(), condition.Message);
             else
