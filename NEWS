@@ -1,3 +1,13 @@
+v0.105
+======
+
+- wixl: add ComponentGroup as Product child type
+- !73 wixl: support environment variables
+- wixl: Improving UI support
+- wix: add Permanent property on Component
+- bump meson to 0.56
+- wxi updates
+
 v0.103
 ======
 - !68 Renamed libmsi to libmsi-1.0
