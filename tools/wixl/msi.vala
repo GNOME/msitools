@@ -695,7 +695,7 @@ namespace Wixl {
                 throw new Wixl.Error.FAILED ("failed to add record");
 
             records.append (rec);
-        }        
+        }
     }
 
     class MsiTableRegistry: MsiTable {

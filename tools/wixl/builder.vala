@@ -990,14 +990,14 @@ namespace Wixl {
         public override void visit_condition (WixCondition condition) throws GLib.Error {
             return_if_fail (condition.children.length () == 1);
             var text = condition.children.first ().data as WixText;
-            
+
             if (condition.parent is WixFeature) {
                 var level = condition.Level != null ? int.parse (condition.Level) : 0;
                 db.table_condition.add (condition.parent.Id, level, text.Text.strip());
             } else if (condition.parent is WixProduct)
                 db.table_launch_condition.add (text.Text.strip(), condition.Message);
             else
-                warning ("unhandled parent type %s", condition.parent.name);            
+                warning ("unhandled parent type %s", condition.parent.name);
         }
 
         [Flags]
