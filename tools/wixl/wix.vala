@@ -1040,6 +1040,7 @@ namespace Wixl {
             name = "Product";
 
             add_child_types (child_types, {
+                typeof (WixComponentGroup),
                 typeof (WixCondition),
                 typeof (WixDirectory),
                 typeof (WixDirectoryRef),
