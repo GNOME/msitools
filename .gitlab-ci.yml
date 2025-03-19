@@ -227,8 +227,9 @@ release-service:
     include:
       - component: "gitlab.gnome.org/GNOME/citemplates/release-service@master"
         inputs:
-          dist-job-name: "build-release-tarball"
+          dist-job-name: "dummy-job"
           tarball-artifact-path: "${TARBALL_ARTIFACT_PATH}"
+      - local: .gitlab/dummy-job.yml
     strategy: depend
   rules:
     - if: $CI_COMMIT_TAG && $CI_COMMIT_REF_PROTECTED

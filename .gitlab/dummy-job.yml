@@ -1,0 +1,4 @@
+dummy-job:
+  stage: .pre
+  script:
+    - echo "This is a dummy job
