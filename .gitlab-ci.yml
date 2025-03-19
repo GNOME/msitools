@@ -1,5 +1,3 @@
-image: fedora:rawhide
-
 include:
   - component: "gitlab.gnome.org/GNOME/citemplates/release-service@master"
     inputs:
@@ -180,8 +178,9 @@ variables:
                 mingw32-zlib
                 mingw64-zlib
 
-build_stable:
+.build:
   stage: "build"
+  image: fedora:rawhide
   before_script:
     - rm -f /etc/rpm/macros.image-language-conf
     - dnf update -y --nogpgcheck
@@ -192,17 +191,22 @@ build_stable:
     - meson "${MESON_BUILD_DIR}" -Dvalidate-wxi=true
     - ninja -C "${MESON_BUILD_DIR}"
     - ninja -C "${MESON_BUILD_DIR}" test
+    - meson dist -C "${MESON_BUILD_DIR}"
   artifacts:
     paths:
-      - "${MESON_BUILD_DIR}"/meson-logs/*.txt
+      - "${MESON_BUILD_DIR}/meson-logs/*.txt"
     when: always
     expire_in: 1 week
 
+build_stable:
+  extends: .build
+  rules:
+    - if: $CI_COMMIT_BRANCH
+
 build-release-tarball:
-  stage: "build"
-  script:
-    - meson setup "${MESON_BUILD_DIR}"
-    - meson dist -C "${MESON_BUILD_DIR}" --include-subprojects
+  extends: .build
+  rules:
+    - if: $CI_COMMIT_TAG && $CI_COMMIT_REF_PROTECTED
   artifacts:
     name: "${CI_JOB_NAME}-${CI_COMMIT_REF_NAME}"
     when: "always"
