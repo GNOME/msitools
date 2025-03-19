@@ -78,6 +78,7 @@ namespace Wixl {
         public abstract void visit_radio_button (WixRadioButton radio) throws GLib.Error;
         public abstract void visit_subscribe (WixSubscribe subscribe) throws GLib.Error;
         public abstract void visit_progress_text (WixProgressText progress_text) throws GLib.Error;
+        public abstract void visit_environment (WixEnvironment env) throws GLib.Error;
     }
 
     public abstract class WixNode: Object {
@@ -1121,6 +1122,7 @@ namespace Wixl {
                 typeof (WixServiceControl),
                 typeof (WixServiceInstall),
                 typeof (WixIniFile),
+                typeof (WixEnvironment)
             });
         }
 
@@ -1487,6 +1489,25 @@ namespace Wixl {
                 typeof (WixFragment),
             });
         }
+    }
+
+    public class WixEnvironment: WixElement {
+        static construct {
+            name = "Environment";
+        }
+
+        public string Action { get; set; }
+        public string Name { get; set; }
+        public string Part { get; set; }
+        public string Permanent { get; set; }
+        public string Separator { get; set; }
+        public string System { get; set; }
+        public string Value { get; set; }
+
+        public override void accept (WixNodeVisitor visitor) throws GLib.Error {
+            visitor.visit_environment(this);
+        }
+
     }
 
 } // Wixl
