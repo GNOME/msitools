@@ -1,10 +1,17 @@
+include:
+  - component: "gitlab.gnome.org/GNOME/citemplates/release-service@master"
+    inputs:
+      job-stage: "release"
+      dist-job-name: "build-release-tarball"
+      tarball-artifact-path: "${TARBALL_ARTIFACT_PATH}"
+
 stages:
-  - "prepare"
   - "build"
   - "release"
 
 variables:
   MESON_BUILD_DIR: "_build"
+  TARBALL_ARTIFACT_PATH: "${MESON_BUILD_DIR}/meson-dist/${CI_PROJECT_NAME}-$(echo ${CI_COMMIT_TAG} | cut -c2-).tar.xz"
   DEPENDENCIES: dnf-command(builddep) meson git vala
                 bison bison-devel bison-runtime
                 glib2-devel gobject-introspection-devel
@@ -171,17 +178,6 @@ variables:
                 mingw32-zlib
                 mingw64-zlib
 
-prepare-version:
-  stage: "prepare"
-  script:
-    - echo "VERSION_NUMBER=$(echo $CI_COMMIT_TAG | sed 's/^v//')" >> build.env
-    - echo "TARBALL_ARTIFACT_PATH=${MESON_BUILD_DIR}/meson-dist/${CI_PROJECT_NAME}-${VERSION_NUMBER}.tar.xz" >> build.env
-  artifacts:
-    reports:
-      dotenv: build.env
-  rules:
-    - if: $CI_COMMIT_TAG && $CI_COMMIT_REF_PROTECTED
-
 .build:
   stage: "build"
   image: fedora:rawhide
@@ -202,35 +198,17 @@ prepare-version:
     when: always
     expire_in: 1 week
 
-build:
+build_stable:
   extends: .build
   rules:
     - if: $CI_COMMIT_BRANCH
 
 build-release-tarball:
   extends: .build
-  needs:
-    - job: prepare-version
+  rules:
+    - if: $CI_COMMIT_TAG && $CI_COMMIT_REF_PROTECTED
   artifacts:
     name: "${CI_JOB_NAME}-${CI_COMMIT_REF_NAME}"
     when: "always"
     paths:
-      - "${MESON_BUILD_DIR}/meson-dist/${CI_PROJECT_NAME}-${VERSION_NUMBER}.tar.xz"
-  rules:
-    - if: $CI_COMMIT_TAG && $CI_COMMIT_REF_PROTECTED
-
-release-service:
-  stage: "release"
-  needs:
-    - job: prepare-version
-    - job: build-release-tarball
-  trigger:
-    include:
-      - component: "gitlab.gnome.org/GNOME/citemplates/release-service@master"
-        inputs:
-          dist-job-name: "dummy-job"
-          tarball-artifact-path: "${TARBALL_ARTIFACT_PATH}"
-      - local: .gitlab/dummy-job.yml
-    strategy: depend
-  rules:
-    - if: $CI_COMMIT_TAG && $CI_COMMIT_REF_PROTECTED
+      - "${TARBALL_ARTIFACT_PATH}"
