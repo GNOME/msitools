@@ -1141,7 +1141,8 @@ namespace Wixl {
                 typeof (WixServiceInstall),
                 typeof (WixIniFile),
                 typeof (WixCondition),
-                typeof (WixEnvironment)
+                typeof (WixEnvironment),
+                typeof (WixCopyFile)
             });
         }
 
@@ -1526,6 +1527,27 @@ namespace Wixl {
 
         public override void accept (WixNodeVisitor visitor) throws GLib.Error {
             visitor.visit_environment(this);
+        }
+
+    }
+
+    public class WixCopyFile: WixElement {
+        static construct {
+            name = "CopyFile";
+        }
+
+        public string Delete { get; set; }
+        public string DestinationDirectory { get; set; }
+        public string DestinationName { get; set; }
+        public string DestinationProperty { get; set; }
+        public string SourceDirectory { get; set; }
+        public string SourceName { get; set; }
+        public string SourceProperty { get; set; }
+        
+        public string Value { get; set; }
+
+        public override void accept (WixNodeVisitor visitor) throws GLib.Error {
+            //visitor.visit_copy_file(this);
         }
 
     }
