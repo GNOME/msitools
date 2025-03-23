@@ -1043,25 +1043,71 @@ namespace Wixl {
     }
 
     class MsiTableEnvironment: MsiTable {
-            static construct {
-                name = "Environment";
-                sql_create = "CREATE TABLE `Environment` (`Environment` CHAR(72) NOT NULL, `Name` CHAR(64) NOT NULL LOCALIZABLE, `Value` CHAR(255) LOCALIZABLE, `Component_` CHAR(72) NOT NULL PRIMARY KEY `Environment`)";
-                sql_insert = "INSERT INTO `Environment` (`Environment`, `Name`, `Value`, `Component_`) VALUES (?, ?, ?, ?)";
-            }
-
-            public Libmsi.Record add (string Environment, string Name, string? Value, string Component) throws GLib.Error {
-                var rec = new Libmsi.Record (4);
-
-                if (!rec.set_string (1, Environment) ||
-                    !rec.set_string (2, Name) ||
-                    (Value != null && !rec.set_string (3, Value)) ||
-                    !rec.set_string (4, Component))
-                    throw new Wixl.Error.FAILED ("failed to add record");
-
-                records.append (rec);
-                return rec;
-            }
+        static construct {
+            name = "Environment";
+            sql_create = "CREATE TABLE `Environment` (`Environment` CHAR(72) NOT NULL, `Name` CHAR(64) NOT NULL LOCALIZABLE, `Value` CHAR(255) LOCALIZABLE, `Component_` CHAR(72) NOT NULL PRIMARY KEY `Environment`)";
+            sql_insert = "INSERT INTO `Environment` (`Environment`, `Name`, `Value`, `Component_`) VALUES (?, ?, ?, ?)";
         }
+
+        public Libmsi.Record add (string Environment, string Name, string? Value, string Component) throws GLib.Error {
+            var rec = new Libmsi.Record (4);
+
+            if (!rec.set_string (1, Environment) ||
+                !rec.set_string (2, Name) ||
+                (Value != null && !rec.set_string (3, Value)) ||
+                !rec.set_string (4, Component))
+                throw new Wixl.Error.FAILED ("failed to add record");
+
+            records.append (rec);
+            return rec;
+        }
+    }
+
+    class MsiTableDuplicateFile: MsiTable {
+        static construct {
+            name = "DuplicateFile";
+            sql_create = "CREATE TABLE `DuplicateFile` (`FileKey` CHAR(72) NOT NULL, `Component_` CHAR(72) NOT NULL, File_ CHAR(72) NOT NULL, DestName CHAR(255) LOCALIZABLE, DestFolder CHAR(72) NOT NULL PRIMARY KEY `FileKey`)";
+            sql_insert = "INSERT INTO `DuplicateFile` (`FileKey`, `Component_`, `File_`, `DestName`, `DestFolder`) VALUES (?, ?, ?, ?, ?)";
+        }
+
+        public Libmsi.Record add (string FileKey, string Component, string File, string DestName, string DestFolder) throws GLib.Error {
+            var rec = new Libmsi.Record (5);
+
+            if (!rec.set_string (1, FileKey) ||
+                !rec.set_string (2, Component) ||
+                !rec.set_string (3, File) ||
+                (DestName != null && !rec.set_string (4, DestName)) ||
+                (DestFolder != null && !rec.set_string (5, DestFolder)))
+                throw new Wixl.Error.FAILED ("failed to add record");
+
+            records.append (rec);
+            return rec;
+        }
+    }
+
+    class MsiTableMoveFile: MsiTable {
+        static construct {
+            name = "MoveFile";
+            sql_create = "CREATE TABLE `MoveFile` (`FileKey` CHAR(72) NOT NULL, `Component_` CHAR(72) NOT NULL, `SourceName` CHAR(255) LOCALIZABLE, `DestName` CHAR(255) LOCALIZABLE, `SourceFolder` CHAR(255) LOCALIZABLE, `DestFolder` CHAR(255) NOT NULL LOCALIZABLE `Options` INTEGER NOT NULL PRIMARY KEY `FileKey`)";
+            sql_insert = "INSERT INTO `MoveFile` (`FileKey`, `Component_`, `SourceName`, `DestName`, `SourceFolder`, `DestFolder`, `Options`) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        }
+
+        public Libmsi.Record add (string FileKey, string Component, string SourceName, string DestName, string SourceFolder, string DestFolder, int Options) throws GLib.Error {
+            var rec = new Libmsi.Record (7);
+
+            if (!rec.set_string (1, FileKey) ||
+                !rec.set_string (2, Component) ||
+                (SourceName != null && !rec.set_string (3, SourceName)) ||
+                (DestName != null && !rec.set_string (4, DestName)) ||
+                (SourceFolder != null && !rec.set_string (5, SourceFolder)) ||
+                !rec.set_string (6, DestFolder) ||
+                !rec.set_int(7, Options))
+                throw new Wixl.Error.FAILED ("failed to add record");
+
+            records.append (rec);
+            return rec;
+        }
+    }
 
     class MsiSummaryInfo: Object {
         public Libmsi.SummaryInfo properties;
@@ -1177,6 +1223,8 @@ namespace Wixl {
         public MsiTableListBox table_list_box;
         public MsiTableRadioButton table_radio_button;
         public MsiTableEnvironment table_environment;
+        public MsiTableDuplicateFile table_duplicate_file;
+        public MsiTableMoveFile  table_move_file;
 
         public HashTable<string, MsiTable> tables;
 
@@ -1251,6 +1299,8 @@ namespace Wixl {
             table_create_folder = new MsiTableCreateFolder ();
             table_file_hash = new MsiTableFileHash ();
             table_environment = new MsiTableEnvironment ();
+            table_duplicate_file = new MsiTableDuplicateFile ();
+            table_move_file = new MsiTableMoveFile ();
 
             foreach (var t in new MsiTable[] {
                     table_admin_execute_sequence,
@@ -1286,6 +1336,8 @@ namespace Wixl {
                     table_create_folder,
                     table_file_hash,
                     table_environment,
+                    table_duplicate_file,
+                    table_move_file,
                     new MsiTableError (),
                     new MsiTableValidation ()
                 }) {

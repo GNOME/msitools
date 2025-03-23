@@ -1958,6 +1958,16 @@ namespace Wixl {
             var component = env.parent as WixComponent;
             db.table_environment.add(Uuid.string_random (), name, value, component.Id);
         }
+
+        public override void visit_copy_file (WixCopyFile env) throws GLib.Error {
+
+            string shouldDelete = env.Delete;
+            if(shouldDelete == "yes"){
+                db.table_move_file.add();
+            } else {
+                db.table_duplicate_file.add();
+            }
+        }
     }
 
 } // Wixl

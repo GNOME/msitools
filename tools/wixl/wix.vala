@@ -80,6 +80,7 @@ namespace Wixl {
         public abstract void visit_subscribe (WixSubscribe subscribe) throws GLib.Error;
         public abstract void visit_progress_text (WixProgressText progress_text) throws GLib.Error;
         public abstract void visit_environment (WixEnvironment env) throws GLib.Error;
+        public abstract void visit_copy_file (WixCopyFile copy_file) throws GLib.Error;
     }
 
     public abstract class WixNode: Object {
@@ -1547,7 +1548,7 @@ namespace Wixl {
         public string Value { get; set; }
 
         public override void accept (WixNodeVisitor visitor) throws GLib.Error {
-            //visitor.visit_copy_file(this);
+            visitor.visit_copy_file(this);
         }
 
     }
