@@ -1959,13 +1959,31 @@ namespace Wixl {
             db.table_environment.add(Uuid.string_random (), name, value, component.Id);
         }
 
-        public override void visit_copy_file (WixCopyFile env) throws GLib.Error {
+        public override void visit_copy_file (WixCopyFile copyFile) throws GLib.Error {
+            
+            //when under component and no fileid specified the file to copy must already exist
+                //when under ocmponent and fileid specified acts the same as under file except it is
+                //when the component is specified 
 
-            string shouldDelete = env.Delete;
-            if(shouldDelete == "yes"){
-                db.table_move_file.add();
-            } else {
-                db.table_duplicate_file.add();
+            //delete cannot be specified if it is under a file or the fileIf is specified
+
+            if (copyFile.parent is WixComponent) {
+                //TODO this should support FileId reference as well
+                WixComponent parent = copyFile.parent as WixComponent;
+                if(copyFile.Delete != null && copyFile.Delete == "yes") {
+                    db.table_move_file.add(Uuid.string_random (), parent.Id, copyFile.SourceName, copyFile.DestinationName, copyFile.SourceDirectory, copyFile.DestinationDirectory, 1);
+                } else {
+                    //do we need to add a file to the table so we can reference the id?
+                    //db.table_duplicate_file.add(Uuid.string_random (), component.Id, file.Id, copyFile.DestinationName, copyFile.DestinationDirectory);
+                    
+                }
+            } else if (copyFile.parent is WixFile) {
+                if(copyFile.Delete != null && copyFile.Delete != "no") {
+                    throw new Wixl.Error.FAILED ("Delete must be not specified or 'no' when nested under a File");   
+                }
+                WixFile parent = copyFile.parent as WixFile;
+                WixComponent component = parent.parent as WixComponent;
+                db.table_duplicate_file.add(Uuid.string_random (), component.Id, parent.Id, copyFile.DestinationName, copyFile.DestinationDirectory);
             }
         }
     }
