@@ -793,16 +793,17 @@ namespace Wixl {
         static construct {
             name = "RemoveFile";
             sql_create = "CREATE TABLE `RemoveFile` (`FileKey` CHAR(72) NOT NULL, `Component_` CHAR(72) NOT NULL, `FileName` CHAR(255) LOCALIZABLE, `DirProperty` CHAR(72) NOT NULL, `InstallMode` INT NOT NULL PRIMARY KEY `FileKey`)";
-            sql_insert = "INSERT INTO `RemoveFile` (`FileKey`, `Component_`, `DirProperty`, `InstallMode`) VALUES (?, ?, ?, ?)";
+            sql_insert = "INSERT INTO `RemoveFile` (`FileKey`, `Component_`, `DirProperty`, `InstallMode`, `FileName`) VALUES (?, ?, ?, ?, ?)";
         }
 
-        public void add (string FileKey, string Component, string DirProperty, int InstallMode) throws GLib.Error {
-            var rec = new Libmsi.Record (4);
+        public void add (string FileKey, string Component, string DirProperty, int InstallMode, string? FileName) throws GLib.Error {
+            var rec = new Libmsi.Record (5);
             if (!rec.set_string (1, FileKey) ||
                 !rec.set_string (2, Component) ||
                 !rec.set_string (3, DirProperty) ||
                 !rec.set_int (4, InstallMode))
                 throw new Wixl.Error.FAILED ("failed to add record");
+            rec.set_string(5, FileName);
 
             records.append (rec);
         }

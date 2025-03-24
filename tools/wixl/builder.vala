@@ -767,7 +767,7 @@ namespace Wixl {
             var comp = rm.parent as WixComponent;
             WixDirectory dir = get_directory (comp);
 
-            db.table_remove_file.add (rm.Id, comp.Id, dir.Id, on);
+            db.table_remove_file.add (rm.Id, comp.Id, dir.Id, on, null);
         }
 
         void visit_key_element (WixKeyElement key, WixComponent? component = null) throws GLib.Error {
@@ -928,6 +928,14 @@ namespace Wixl {
             rec.set_data<WixFile> ("wixfile", file);
 
             visit_key_element (file);
+        }
+
+        public override void visit_remove_file (WixRemoveFile rf) throws GLib.Error {
+            var on = InstallMode.from_string (rf.On);
+            var comp = rf.parent as WixComponent;
+            WixDirectory dir = get_directory (comp);
+
+            db.table_remove_file.add (rf.Id, comp.Id, dir.Id, on, rf.Name);
         }
 
         enum IniFileAction {

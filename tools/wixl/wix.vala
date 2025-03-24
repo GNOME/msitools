@@ -43,6 +43,7 @@ namespace Wixl {
         public abstract void visit_remove_folder (WixRemoveFolder rm) throws GLib.Error;
         public abstract void visit_registry_value (WixRegistryValue reg) throws GLib.Error;
         public abstract void visit_file (WixFile reg) throws GLib.Error;
+        public abstract void visit_remove_file (WixRemoveFile rf) throws GLib.Error;
         public abstract void visit_ini_file (WixIniFile reg) throws GLib.Error;
         public abstract void visit_shortcut (WixShortcut shortcut) throws GLib.Error;
         public abstract void visit_create_folder (WixCreateFolder folder) throws GLib.Error;
@@ -498,6 +499,19 @@ namespace Wixl {
 
         public override void accept (WixNodeVisitor visitor) throws GLib.Error {
             visitor.visit_remove_folder (this);
+        }
+    }
+
+    public class WixRemoveFile: WixElement {
+        static construct {
+            name = "RemoveFile";
+        }
+
+        public string Name { get; set; }
+        public string On { get; set; }
+
+        public override void accept (WixNodeVisitor visitor) throws GLib.Error {
+            visitor.visit_remove_file (this);
         }
     }
 
@@ -1119,6 +1133,7 @@ namespace Wixl {
                 typeof (WixRemoveFolder),
                 typeof (WixRegistryValue),
                 typeof (WixFile),
+                typeof (WixRemoveFile),
                 typeof (WixShortcut),
                 typeof (WixProgId),
                 typeof (WixRegistryKey),
