@@ -432,7 +432,10 @@ namespace Wixl {
         static construct {
             name = "File";
 
-            add_child_types (child_types, { typeof (WixShortcut) });
+            add_child_types (child_types, {
+                typeof (WixShortcut),
+                typeof (WixCopyFile)
+            });
         }
 
         public string DiskId { get; set; }
