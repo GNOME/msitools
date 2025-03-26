@@ -132,7 +132,7 @@ namespace Wixl {
         } catch (GLib.Error error) {
             if (verbose)
                 print (_("A GLib error has occurred\n"));
-            printerr (error.message + "\n");
+            printerr (error.domain.to_string() + " " + error.code.to_string() + " " + error.message + "\n");
             return 1;
         }
 

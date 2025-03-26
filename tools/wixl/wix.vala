@@ -1544,10 +1544,8 @@ namespace Wixl {
         public string Delete { get; set; }
         public string DestinationDirectory { get; set; }
         public string DestinationName { get; set; }
-        //public string DestinationProperty { get; set; }
         public string SourceDirectory { get; set; }
         public string SourceName { get; set; }
-        //public string SourceProperty { get; set; }
         
         public string Value { get; set; }
 
