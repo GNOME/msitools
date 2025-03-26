@@ -130,6 +130,8 @@ namespace Wixl {
                 print (_("Writing %s...\n"), output);
             msi.build (output);
         } catch (GLib.Error error) {
+            if (verbose)
+                print (_("A GLib error has occurred\n"));
             printerr (error.message + "\n");
             return 1;
         }
