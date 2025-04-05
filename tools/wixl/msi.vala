@@ -1066,7 +1066,7 @@ namespace Wixl {
     class MsiTableDuplicateFile: MsiTable {
         static construct {
             name = "DuplicateFile";
-            sql_create = "CREATE TABLE `DuplicateFile` (`FileKey` CHAR(72) NOT NULL, `Component_` CHAR(72) NOT NULL, File_ CHAR(72) NOT NULL, DestName CHAR(255) LOCALIZABLE, DestFolder CHAR(72) NOT NULL PRIMARY KEY `FileKey`)";
+            sql_create = "CREATE TABLE `DuplicateFile` (`FileKey` CHAR(72) NOT NULL, `Component_` CHAR(72) NOT NULL, File_ CHAR(72) NOT NULL, DestName CHAR(255) LOCALIZABLE, DestFolder CHAR(72) PRIMARY KEY `FileKey`)";
             sql_insert = "INSERT INTO `DuplicateFile` (`FileKey`, `Component_`, `File_`, `DestName`, `DestFolder`) VALUES (?, ?, ?, ?, ?)";
         }
 
