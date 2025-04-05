@@ -1092,13 +1092,13 @@ namespace Wixl {
             sql_insert = "INSERT INTO `MoveFile` (`FileKey`, `Component_`, `SourceName`, `DestName`, `SourceFolder`, `DestFolder`, `Options`) VALUES (?, ?, ?, ?, ?, ?, ?)";
         }
 
-        public Libmsi.Record add (string FileKey, string Component, string SourceName, string DestName, string SourceFolder, string DestFolder, int Options) throws GLib.Error {
+        public Libmsi.Record add (string FileKey, string Component, string SourceName, string? DestName, string SourceFolder, string DestFolder, int Options) throws GLib.Error {
             var rec = new Libmsi.Record (7);
 
             if (!rec.set_string (1, FileKey) ||
                 !rec.set_string (2, Component) ||
                 (SourceName != null && !rec.set_string (3, SourceName)) ||
-                (DestName != null && !rec.set_string (4, DestName)) ||
+                !rec.set_string (4, DestName) ||
                 (SourceFolder != null && !rec.set_string (5, SourceFolder)) ||
                 !rec.set_string (6, DestFolder) ||
                 !rec.set_int(7, Options))
@@ -1224,7 +1224,7 @@ namespace Wixl {
         public MsiTableRadioButton table_radio_button;
         public MsiTableEnvironment table_environment;
         public MsiTableDuplicateFile table_duplicate_file;
-        public MsiTableMoveFile  table_move_file;
+        public MsiTableMoveFile table_move_file;
 
         public HashTable<string, MsiTable> tables;
 

@@ -1970,9 +1970,9 @@ namespace Wixl {
                     db.table_duplicate_file.add(Uuid.string_random (), component.Id, copy_file.FileId, copy_file.DestinationName, copy_file.DestinationDirectory);
                 } else {
                     if(copy_file.Delete != null && copy_file.Delete == "yes") {
-                        db.table_move_file.add(Uuid.string_random (), parent.Id, copy_file.SourceName, copy_file.DestinationName, copy_file.SourceDirectory, copy_file.DestinationDirectory, 1);
+                        db.table_move_file.add(copy_file.Id, parent.Id, copy_file.SourceName, copy_file.DestinationName, copy_file.SourceDirectory, copy_file.DestinationDirectory, 1);
                     } else {
-                        db.table_move_file.add(Uuid.string_random (), parent.Id, copy_file.SourceName, copy_file.DestinationName, copy_file.SourceDirectory, copy_file.DestinationDirectory, 0);
+                        db.table_move_file.add(copy_file.Id, parent.Id, copy_file.SourceName, copy_file.DestinationName, copy_file.SourceDirectory, copy_file.DestinationDirectory, 0);
                     }
                 }
             } else if (copy_file.parent is WixFile) {
