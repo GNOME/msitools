@@ -1088,7 +1088,7 @@ namespace Wixl {
     class MsiTableMoveFile: MsiTable {
         static construct {
             name = "MoveFile";
-            sql_create = "CREATE TABLE `MoveFile` (`FileKey` CHAR(72) NOT NULL, `Component_` CHAR(72) NOT NULL, `SourceName` CHAR(255) LOCALIZABLE, `DestName` CHAR(255) LOCALIZABLE, `SourceFolder` CHAR(255) LOCALIZABLE, `DestFolder` CHAR(255) NOT NULL LOCALIZABLE, `Options` INTEGER NOT NULL PRIMARY KEY `FileKey`)";
+            sql_create = "CREATE TABLE `MoveFile` (`FileKey` CHAR(72) NOT NULL, `Component_` CHAR(72) NOT NULL, `SourceName` CHAR(255) LOCALIZABLE, `DestName` CHAR(255) LOCALIZABLE, `SourceFolder` CHAR(72), `DestFolder` CHAR(72) NOT NULL, `Options` INTEGER NOT NULL PRIMARY KEY `FileKey`)";
             sql_insert = "INSERT INTO `MoveFile` (`FileKey`, `Component_`, `SourceName`, `DestName`, `SourceFolder`, `DestFolder`, `Options`) VALUES (?, ?, ?, ?, ?, ?, ?)";
         }
 
