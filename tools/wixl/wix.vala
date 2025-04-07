@@ -80,6 +80,7 @@ namespace Wixl {
         public abstract void visit_subscribe (WixSubscribe subscribe) throws GLib.Error;
         public abstract void visit_progress_text (WixProgressText progress_text) throws GLib.Error;
         public abstract void visit_environment (WixEnvironment env) throws GLib.Error;
+        public abstract void visit_copy_file (WixCopyFile copy_file) throws GLib.Error;
     }
 
     public abstract class WixNode: Object {
@@ -431,7 +432,10 @@ namespace Wixl {
         static construct {
             name = "File";
 
-            add_child_types (child_types, { typeof (WixShortcut) });
+            add_child_types (child_types, {
+                typeof (WixShortcut),
+                typeof (WixCopyFile)
+            });
         }
 
         public string DiskId { get; set; }
@@ -1141,7 +1145,8 @@ namespace Wixl {
                 typeof (WixServiceInstall),
                 typeof (WixIniFile),
                 typeof (WixCondition),
-                typeof (WixEnvironment)
+                typeof (WixEnvironment),
+                typeof (WixCopyFile)
             });
         }
 
@@ -1526,6 +1531,26 @@ namespace Wixl {
 
         public override void accept (WixNodeVisitor visitor) throws GLib.Error {
             visitor.visit_environment(this);
+        }
+
+    }
+
+    public class WixCopyFile: WixElement {
+        static construct {
+            name = "CopyFile";
+        }
+
+        public string FileId { get; set; }
+        public string Delete { get; set; }
+        public string DestinationDirectory { get; set; }
+        public string DestinationName { get; set; }
+        public string SourceDirectory { get; set; }
+        public string SourceName { get; set; }
+        
+        public string Value { get; set; }
+
+        public override void accept (WixNodeVisitor visitor) throws GLib.Error {
+            visitor.visit_copy_file(this);
         }
 
     }

@@ -1958,6 +1958,32 @@ namespace Wixl {
             var component = env.parent as WixComponent;
             db.table_environment.add(Uuid.string_random (), name, value, component.Id);
         }
+
+        public override void visit_copy_file (WixCopyFile copy_file) throws GLib.Error {
+            if (copy_file.parent is WixComponent) {
+                WixComponent parent = copy_file.parent as WixComponent;
+                if(copy_file.FileId != null && copy_file.FileId != "") {
+                    if(copy_file.Delete != null && copy_file.Delete != "no") {
+                        throw new Wixl.Error.FAILED ("Delete must be not specified or 'no' when referncing a FileId");   
+                    }
+                    WixComponent component = copy_file.parent as WixComponent;
+                    db.table_duplicate_file.add(copy_file.Id, component.Id, copy_file.FileId, copy_file.DestinationName, copy_file.DestinationDirectory);
+                } else {
+                    if(copy_file.Delete != null && copy_file.Delete == "yes") {
+                        db.table_move_file.add(copy_file.Id, parent.Id, copy_file.SourceName, copy_file.DestinationName, copy_file.SourceDirectory, copy_file.DestinationDirectory, 1);
+                    } else {
+                        db.table_move_file.add(copy_file.Id, parent.Id, copy_file.SourceName, copy_file.DestinationName, copy_file.SourceDirectory, copy_file.DestinationDirectory, 0);
+                    }
+                }
+            } else if (copy_file.parent is WixFile) {
+                if(copy_file.Delete != null && copy_file.Delete != "no") {
+                    throw new Wixl.Error.FAILED ("Delete must be not specified or 'no' when nested under a File");   
+                }
+                WixFile parent = copy_file.parent as WixFile;
+                WixComponent component = parent.parent as WixComponent;
+                db.table_duplicate_file.add(copy_file.Id, component.Id, parent.Id, copy_file.DestinationName, copy_file.DestinationDirectory);
+            }
+        }
     }
 
 } // Wixl
