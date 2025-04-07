@@ -2,21 +2,22 @@
 # Copyright (C) 2020 msitools's COPYRIGHT HOLDER
 # This file is distributed under the same license as the msitools package.
 #
-# Yuri Chornoivan <yurchor@ukr.net>, 2020, 2021.
+# Yuri Chornoivan <yurchor@ukr.net>, 2020, 2021, 2025.
 msgid ""
 msgstr ""
 "Project-Id-Version: msitools master\n"
-"Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/msitools/issues\n"
-"POT-Creation-Date: 2021-09-20 08:48+0000\n"
-"PO-Revision-Date: 2021-09-20 17:29+0300\n"
+"Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/msitools/issues/\n"
+"POT-Creation-Date: 2025-04-07 07:53+0000\n"
+"PO-Revision-Date: 2025-04-07 15:45+0300\n"
 "Last-Translator: Yuri Chornoivan <yurchor@ukr.net>\n"
 "Language-Team: Ukrainian <trans-uk@lists.fedoraproject.org>\n"
 "Language: uk\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=4; plural=n==1 ? 3 : n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
-"X-Generator: Lokalize 20.12.0\n"
+"Plural-Forms: nplurals=4; plural=n==1 ? 3 : n%10==1 && n%100!=11 ? 0 : n"
+"%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
+"X-Generator: Lokalize 23.04.3\n"
 
 #: tools/msiextract.vala:10 tools/wixl/wixl.vala:25
 msgid "Display version number"
@@ -87,7 +88,6 @@ msgid "Include directory"
 msgstr "Каталог включення"
 
 #: tools/wixl/wixl.vala:31
-#| msgid "System include directory"
 msgid "System extension directory"
 msgstr "Загальносистемний каталог розширень"
 
@@ -101,8 +101,7 @@ msgstr "Зупинитися на етапі попередньої обробк
 
 #: tools/wixl/wixl.vala:34
 msgid "Specify an extension"
-msgstr ""
-"Вказати розширення"
+msgstr "Вказати розширення"
 
 #: tools/wixl/wixl.vala:35
 msgid "INPUT_FILE1 [INPUT_FILE2]..."
@@ -123,7 +122,6 @@ msgstr "Будь ласка, вкажіть файл для виведення �
 
 #: tools/wixl/wixl.vala:100
 #, c-format
-#| msgid "arch of type '%s' is not supported"
 msgid "Extension of type '%s' is not supported.\n"
 msgstr "Підтримки типу розширень «%s» не передбачено.\n"
 
@@ -141,3 +139,7 @@ msgstr "Збираємо %s…\n"
 #, c-format
 msgid "Writing %s...\n"
 msgstr "Записуємо %s…\n"
+
+#: tools/wixl/wixl.vala:134
+msgid "A GLib error has occurred\n"
+msgstr "Сталася помилка у GLib\n"
