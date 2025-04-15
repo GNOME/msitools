@@ -1236,10 +1236,18 @@ namespace Wixl {
         }
 
         string get_arch_template () {
-            if (arch == Arch.X86)
+            switch (arch) {
+            case Arch.ARM64:
+                return "Arm64";
+            case Arch.X86:
+            case Arch.INTEL:
                 return "Intel";
-            else
+            case Arch.IA64:
+            case Arch.X64:
+            case Arch.INTEL64:
                 return "x64";
+            }
+            assert_not_reached ();
         }
 
         public MsiDatabase (Arch arch, Extension[] extensions) {

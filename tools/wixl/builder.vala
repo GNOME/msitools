@@ -5,18 +5,20 @@ namespace Wixl {
         INTEL = 0,
         IA64 = 1,
         INTEL64 = 1,
-        X64;
+        X64,
+        ARM64;
 
-        public static Arch from_string(string s) throws GLib.Error {
+        public static Arch from_string (string s) throws GLib.Error {
             return enum_from_string<Arch> (s);
         }
 
-        public string to_string() {
+        public string to_string () {
             switch (this) {
-                case X86: return "x86";
-                case IA64: return "ia64";
-                case X64: return "x64";
-                default: return "";
+            case X86: return "x86";
+            case IA64: return "ia64";
+            case X64: return "x64";
+            case ARM64: return "arm64";
+            default: return "";
             }
         }
     }
