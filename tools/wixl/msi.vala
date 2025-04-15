@@ -1240,11 +1240,11 @@ namespace Wixl {
             case Arch.ARM64:
                 return "Arm64";
             case Arch.X86:
-            case Arch.INTEL:
+                // case Arch.INTEL:
                 return "Intel";
             case Arch.IA64:
             case Arch.X64:
-            case Arch.INTEL64:
+                // case Arch.INTEL64:
                 return "x64";
             }
             assert_not_reached ();
