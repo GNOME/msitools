@@ -1102,6 +1102,14 @@ namespace Wixl {
                                      progid.Id);
 
             db.table_registry.add (regid, 0, progid.Id, comp.Id, null, progid.Description);
+            if (progid.Icon != null) {
+                var key = progid.Id + "\\DefaultIcon";
+                regid = generate_id ("reg", 2,
+                                     comp.Id,
+                                     key);
+                db.table_registry.add (regid, 0, key, comp.Id, null,
+                                    progid.IconIndex != null ? "[#%s],%s".printf (progid.Icon, progid.IconIndex) : "[#%s]".printf (progid.Icon));
+            }
         }
 
         public override void visit_extension (WixExtension ext) throws GLib.Error {

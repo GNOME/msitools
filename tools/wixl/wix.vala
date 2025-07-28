@@ -734,6 +734,8 @@ namespace Wixl {
 
         public string Description { get; set; }
         public string Advertise { get; set; }
+        public string? Icon { get; set; }
+        public string? IconIndex { get; set; }
 
         public override void accept (WixNodeVisitor visitor) throws GLib.Error {
             base.accept (visitor);
