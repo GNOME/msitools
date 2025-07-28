@@ -79,6 +79,7 @@ my $dllbuiltin = "^(" .
     "oleaut32|" .
     "opengl32|" .
     "psapi|" .
+    "secur32|" .
     "setupapi|" .
     "shell32|" .
     "shlwapi|" .
