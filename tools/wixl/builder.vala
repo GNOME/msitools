@@ -1152,7 +1152,7 @@ namespace Wixl {
                                  key);
 
             db.table_registry.add (regid, 0, key, comp.Id, null,
-                                   "\"[#%s]\" %s".printf (verb.TargetFile, verb.Argument));
+                                   verb.Argument != null ? "\"[#%s]\" %s".printf (verb.TargetFile, verb.Argument) : "\"[#%s]\"".printf (verb.TargetFile));
         }
 
         public override void visit_mime (WixMIME mime) throws GLib.Error {
