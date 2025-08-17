@@ -43,6 +43,9 @@
         <Component Win64="$(var.Win64)" Id="cmp55E1B06EFB697A72DB02D7D4C86B1997" Guid="*">
           <File Id="fil0EC5372DEB4036B7536EDFA0D5C9CD3A" KeyPath="yes" Source="$(var.SourceDir)/bin/libgstd3d11-1.0-0.dll"/>
         </Component>
+        <Component Win64="$(var.Win64)" Id="cmp7F606FBDF4E15B3D5495E812C2601911" Guid="*">
+          <File Id="filA524624BFAC7256731C738116A5747A6" KeyPath="yes" Source="$(var.SourceDir)/bin/libgstd3d12-1.0-0.dll"/>
+        </Component>
         <Component Win64="$(var.Win64)" Id="cmp56F5CB58D1B9948E9BB9131D880688C5" Guid="*">
           <File Id="fil7ED79B535A320C45C83FFE6574E4D4C9" KeyPath="yes" Source="$(var.SourceDir)/bin/libgstd3dshader-1.0-0.dll"/>
         </Component>
@@ -469,6 +472,7 @@
       <ComponentRef Id="cmp2D5DDC61140008E34488359B12ABC249"/>
       <ComponentRef Id="cmpA58F913541D7C856A9563E345798DA20"/>
       <ComponentRef Id="cmp55E1B06EFB697A72DB02D7D4C86B1997"/>
+      <ComponentRef Id="cmp7F606FBDF4E15B3D5495E812C2601911"/>
       <ComponentRef Id="cmp56F5CB58D1B9948E9BB9131D880688C5"/>
       <ComponentRef Id="cmp9BAA3AD287159B490256FFD70BFF28FA"/>
       <ComponentRef Id="cmp12335C8DCBEC08051B25016C1ABEE398"/>
