@@ -58,6 +58,7 @@ my $dllbuiltin = "^(" .
     "dwrite|" .
     "d3d10|" .
     "d3d11|" .
+    "d3d12|" .
     "d3d9|" .
     "dnsapi|" .
     "dsound|" .
