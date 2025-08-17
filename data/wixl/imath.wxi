@@ -2,16 +2,16 @@
 <Include xmlns="http://schemas.microsoft.com/wix/2006/wi">
   <Fragment>
     <DirectoryRef Id="INSTALLDIR">
-      <Directory Id="dirDF2FF252C04DE78A678C9C5499754BFF" Name="bin">
-        <Component Win64="$(var.Win64)" Id="cmpBC889D338B69F2FA276BFE0374221241" Guid="*">
-          <File Id="filFFE133719FAB9A9F9CABF171211F6002" KeyPath="yes" Source="$(var.SourceDir)/bin/libImath-3_1.dll"/>
+      <Directory Id="dirB990BA540EAA57D01F2FB09779B5CED2" Name="bin">
+        <Component Win64="$(var.Win64)" Id="cmp5969801D0246A3F75E9D13D3084D242F" Guid="*">
+          <File Id="fil23EEC0821288CFC5C7AA00F05E100009" KeyPath="yes" Source="$(var.SourceDir)/bin/libImath-3_2.dll"/>
         </Component>
       </Directory>
     </DirectoryRef>
   </Fragment>
   <Fragment>
     <ComponentGroup Id="CG.imath">
-      <ComponentRef Id="cmpBC889D338B69F2FA276BFE0374221241"/>
+      <ComponentRef Id="cmp5969801D0246A3F75E9D13D3084D242F"/>
     </ComponentGroup>
   </Fragment>
 </Include>
