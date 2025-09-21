@@ -2,11 +2,11 @@
 <Include xmlns="http://schemas.microsoft.com/wix/2006/wi">
   <Fragment>
     <DirectoryRef Id="INSTALLDIR">
-      <Directory Id="dir84AD9B2DF0AEA2A611AFA840BFDDDAB0" Name="share">
-        <Directory Id="dir3BAC22CF0414A9A34C534C81F8B14AA3" Name="icons">
-          <Directory Id="dir294293E4AAAC494122DFE89502144EB6" Name="Adwaita">
-            <Directory Id="dir33456A71901D3FA09735A9E625FDC191" Name="16x16">
-              <Directory Id="dir962B5B54ADF7F0F39CDBD2853B82AF3F" Name="devices">
+      <Directory Id="dir572D4E9C3B1FE392667EF7B2A513F1F5" Name="share">
+        <Directory Id="dirABA663C93337B5D32F3CE7C00D01C9B0" Name="icons">
+          <Directory Id="dirD306D3FA10E9A94C6ADCF2AA5CF33098" Name="Adwaita">
+            <Directory Id="dirAB377F65F8C079F76503853D9C7B1698" Name="16x16">
+              <Directory Id="dirA839140CEDF48CAA908003A84E2D0E9E" Name="devices">
                 <Component Win64="$(var.Win64)" Id="cmp8B787DA47D168F8EDC6485CE664DBDE3" Guid="*">
                   <File Id="filDDCB4C90BFFA511C3E1C79A0C9C37A63" KeyPath="yes" Source="$(var.SourceDir)/share/icons/Adwaita/16x16/devices/audio-headphones.png"/>
                 </Component>
@@ -14,7 +14,7 @@
                   <File Id="fil94F3115D0709F31250544510EE90F3D7" KeyPath="yes" Source="$(var.SourceDir)/share/icons/Adwaita/16x16/devices/audio-headset.png"/>
                 </Component>
               </Directory>
-              <Directory Id="dir300B4AFD19CB5B554A9C5CFE32988005" Name="emblems">
+              <Directory Id="dir2EEDDAE4CFE14931D10E24FB7C7480E3" Name="emblems">
                 <Component Win64="$(var.Win64)" Id="cmp810CE4FA669AD73631760862CF1ADD92" Guid="*">
                   <File Id="filA323274A414C67BF91B09DE8713CD43A" KeyPath="yes" Source="$(var.SourceDir)/share/icons/Adwaita/16x16/emblems/emblem-readonly.png"/>
                 </Component>
@@ -31,7 +31,7 @@
                   <File Id="filE6984798A5A3BCE4F21823CE57EC284B" KeyPath="yes" Source="$(var.SourceDir)/share/icons/Adwaita/16x16/emblems/emblem-unreadable.png"/>
                 </Component>
               </Directory>
-              <Directory Id="dir6B16D656C43335E63C338EF4C1FF7233" Name="mimetypes">
+              <Directory Id="dir3799E93B71C6AC7263EA22574EFACFB8" Name="mimetypes">
                 <Component Win64="$(var.Win64)" Id="cmpB9698734C27394A6BD997A224A67080D" Guid="*">
                   <File Id="fil7D6C56A5703536957E3E716583A50651" KeyPath="yes" Source="$(var.SourceDir)/share/icons/Adwaita/16x16/mimetypes/application-certificate.png"/>
                 </Component>
@@ -114,7 +114,7 @@
                   <File Id="filACC2E74F45F67807A6B2ACA280BE033F" KeyPath="yes" Source="$(var.SourceDir)/share/icons/Adwaita/16x16/mimetypes/x-package-repository.png"/>
                 </Component>
               </Directory>
-              <Directory Id="dir4B437A1D838EB1BB68E5444D1DCD3E8F" Name="places">
+              <Directory Id="dirB85C1ADC7391BCFFD4126788525D04E7" Name="places">
                 <Component Win64="$(var.Win64)" Id="cmpEF6867A3E53F76979E617B8924A62043" Guid="*">
                   <File Id="fil789BE49E0267E24A0F6D735C2CE3CEA1" KeyPath="yes" Source="$(var.SourceDir)/share/icons/Adwaita/16x16/places/folder-bookmarks.png"/>
                 </Component>
@@ -168,7 +168,7 @@
                 </Component>
               </Directory>
             </Directory>
-            <Directory Id="dir930DAE588068E4B98F6BFEBA80222008" Name="cursors">
+            <Directory Id="dirC13263892F034FC9AD391EB1C9FB288F" Name="cursors">
               <Component Win64="$(var.Win64)" Id="cmpA3684AB0171712EE4D2B993343305D5F" Guid="*">
                 <File Id="filD58FD15C4A96FA7180B67016D9DD2162" KeyPath="yes" Source="$(var.SourceDir)/share/icons/Adwaita/cursors/alias.cur"/>
               </Component>
@@ -272,8 +272,8 @@
             <Component Win64="$(var.Win64)" Id="cmp18179DF8515CA425A48ADC6AE2793125" Guid="*">
               <File Id="filB493C3AEFC743AE57F13120D19E2FA7A" KeyPath="yes" Source="$(var.SourceDir)/share/icons/Adwaita/index.theme"/>
             </Component>
-            <Directory Id="dirC2BCD0FC46E3A1C381FD326AA7C3EEB9" Name="scalable">
-              <Directory Id="dir6932EEAB805F62B6C3950383F78281E0" Name="devices">
+            <Directory Id="dirA0EF4945CCB35E74CB988D83374D35F8" Name="scalable">
+              <Directory Id="dirE371E7F4E59ACE686861350139364990" Name="devices">
                 <Component Win64="$(var.Win64)" Id="cmpD3F6E55BB33659C3B75DB76C888E3D0C" Guid="*">
                   <File Id="fil5663D7575777E667FB09ED90C4519750" KeyPath="yes" Source="$(var.SourceDir)/share/icons/Adwaita/scalable/devices/audio-headphones.svg"/>
                 </Component>
@@ -341,7 +341,7 @@
                   <File Id="fil361ACE7D9E3CC478CCD48B49E112F7C3" KeyPath="yes" Source="$(var.SourceDir)/share/icons/Adwaita/scalable/devices/video-display.svg"/>
                 </Component>
               </Directory>
-              <Directory Id="dirED584691F5D768D9167198DE5E4C5370" Name="mimetypes">
+              <Directory Id="dir501D38ED0F93F899AD09AEE2C8200B4E" Name="mimetypes">
                 <Component Win64="$(var.Win64)" Id="cmp7C00DCFFCA8CCEF0132088A8E1C58B00" Guid="*">
                   <File Id="fil64E5AA0E6FDC99EE315806A0FC9F00E8" KeyPath="yes" Source="$(var.SourceDir)/share/icons/Adwaita/scalable/mimetypes/application-certificate.svg"/>
                 </Component>
@@ -424,7 +424,7 @@
                   <File Id="fil3EEB6106AB231A50976B643466DB423D" KeyPath="yes" Source="$(var.SourceDir)/share/icons/Adwaita/scalable/mimetypes/x-package-repository.svg"/>
                 </Component>
               </Directory>
-              <Directory Id="dirBE95660D963D2E301C7A47BEFEC21E9A" Name="places">
+              <Directory Id="dir818D2795EE1E4C5280E237E9404D8AE0" Name="places">
                 <Component Win64="$(var.Win64)" Id="cmp068BF656E585CCF54E7E1E717154C183" Guid="*">
                   <File Id="filE9B3CE02971B570A4BF11224E7F46598" KeyPath="yes" Source="$(var.SourceDir)/share/icons/Adwaita/scalable/places/folder-documents.svg"/>
                 </Component>
@@ -474,7 +474,7 @@
                   <File Id="fil8482EEDF268D8FDA090BDFB363F8BEAC" KeyPath="yes" Source="$(var.SourceDir)/share/icons/Adwaita/scalable/places/user-trash.svg"/>
                 </Component>
               </Directory>
-              <Directory Id="dir738BBD5C588C256D5F0D7DE6E5E70301" Name="status">
+              <Directory Id="dir7BFE87C391AE9C327F496B009004BA26" Name="status">
                 <Component Win64="$(var.Win64)" Id="cmp0768DE5EE4366D65A516B3624CBF9199" Guid="*">
                   <File Id="filBAF211BF52CFADB7531396189ED874E0" KeyPath="yes" Source="$(var.SourceDir)/share/icons/Adwaita/scalable/status/avatar-default.svg"/>
                 </Component>
@@ -492,8 +492,8 @@
                 </Component>
               </Directory>
             </Directory>
-            <Directory Id="dir6F06D85EAA5999284D50C934CA1A117E" Name="symbolic">
-              <Directory Id="dir497A636E0A0267D0606D1D228F0E1452" Name="actions">
+            <Directory Id="dirFBECBEAEA14EF0A57549DED41E07766D" Name="symbolic">
+              <Directory Id="dir57FFE171BDA88B136E337D707659D5EF" Name="actions">
                 <Component Win64="$(var.Win64)" Id="cmp2E84536FB9F3F002BE7AC97AB87D4473" Guid="*">
                   <File Id="fil837E6D3239F7071B7F1330CA3133F5CF" KeyPath="yes" Source="$(var.SourceDir)/share/icons/Adwaita/symbolic/actions/action-unavailable-symbolic.svg"/>
                 </Component>
@@ -1041,12 +1041,7 @@
                   <File Id="fil0D4C253BF2AA799AE015C599ECF507D1" KeyPath="yes" Source="$(var.SourceDir)/share/icons/Adwaita/symbolic/actions/zoom-out-symbolic.svg"/>
                 </Component>
               </Directory>
-              <Directory Id="dir34F0256C4A1AFE431A985C3EDBB2F0BB" Name="apps">
-                <Component Win64="$(var.Win64)" Id="cmp9F8D5CC1C910100B6FA0B76D56F7B522" Guid="*">
-                  <File Id="fil5733B83A73D2971A89514D68DE26BBBC" KeyPath="yes" Source="$(var.SourceDir)/share/icons/Adwaita/symbolic/apps/help-contents-symbolic.svg"/>
-                </Component>
-              </Directory>
-              <Directory Id="dir8127088E1A97D079CA15DFCB0AAE02EB" Name="categories">
+              <Directory Id="dirEED38DE2590DE30144D7E03CFBC1B6ED" Name="categories">
                 <Component Win64="$(var.Win64)" Id="cmp7503EC5999CC29DF63CB8DD0377B3935" Guid="*">
                   <File Id="filC0E42BE6F49EF04B1D69DC442E3F67A1" KeyPath="yes" Source="$(var.SourceDir)/share/icons/Adwaita/symbolic/categories/applications-engineering-symbolic.svg"/>
                 </Component>
@@ -1108,7 +1103,7 @@
                   <File Id="fil663E3D68473E39A90B2095435EB4674B" KeyPath="yes" Source="$(var.SourceDir)/share/icons/Adwaita/symbolic/categories/system-help-symbolic.svg"/>
                 </Component>
               </Directory>
-              <Directory Id="dir1D78F2268B80DBFC1143CE4DFC5F586A" Name="devices">
+              <Directory Id="dir35F785EC6EC119EB1041D65B04D28E86" Name="devices">
                 <Component Win64="$(var.Win64)" Id="cmpF35B2E18893FF3212BAA9B046631A932" Guid="*">
                   <File Id="fil899C3D6D207BB8E97E2302F5705FDB09" KeyPath="yes" Source="$(var.SourceDir)/share/icons/Adwaita/symbolic/devices/ac-adapter-symbolic.svg"/>
                 </Component>
@@ -1305,7 +1300,7 @@
                   <File Id="fil9B08A9C02D170CE8781D57416D89A41B" KeyPath="yes" Source="$(var.SourceDir)/share/icons/Adwaita/symbolic/devices/video-single-display-symbolic.svg"/>
                 </Component>
               </Directory>
-              <Directory Id="dir198025B2FE41F3267A68A8645A03A139" Name="emotes">
+              <Directory Id="dirF51B0E4AF60F5C9B12AE1F49FFC3E0D9" Name="emotes">
                 <Component Win64="$(var.Win64)" Id="cmp8BBF7F68610EFBA46A7B68D4827334A7" Guid="*">
                   <File Id="filA1D65AD1D1CFA08BCBB529120D07D134" KeyPath="yes" Source="$(var.SourceDir)/share/icons/Adwaita/symbolic/emotes/emote-love-symbolic.svg"/>
                 </Component>
@@ -1385,7 +1380,7 @@
                   <File Id="fil65242728A4BFE3BBD60B738449897C1C" KeyPath="yes" Source="$(var.SourceDir)/share/icons/Adwaita/symbolic/emotes/face-yawn-symbolic.svg"/>
                 </Component>
               </Directory>
-              <Directory Id="dir1230111D1D0D294E083CE6F453B3BA0F" Name="legacy">
+              <Directory Id="dirDD10B208D6E54C24574B43C8FB74B94C" Name="legacy">
                 <Component Win64="$(var.Win64)" Id="cmp1AEE1D82862482023ECFCAB793FDE255" Guid="*">
                   <File Id="fil8ECB54B412747148657CA82C8F552FC2" KeyPath="yes" Source="$(var.SourceDir)/share/icons/Adwaita/symbolic/legacy/accessories-calculator-symbolic.svg"/>
                 </Component>
@@ -1537,7 +1532,7 @@
                   <File Id="filB8CCDC7EC20E1E8D2AD1B6982FA3E0A5" KeyPath="yes" Source="$(var.SourceDir)/share/icons/Adwaita/symbolic/legacy/web-browser-symbolic.svg"/>
                 </Component>
               </Directory>
-              <Directory Id="dirC9CCDBC6EA25AC19D0ABAD41E7875134" Name="mimetypes">
+              <Directory Id="dir54FC89C8CA29DC0D6BCF36C32D8F1E44" Name="mimetypes">
                 <Component Win64="$(var.Win64)" Id="cmp83D369062658F4F538D81D9D106F20E1" Guid="*">
                   <File Id="fil6EDC97917E08BDEA1DA12BB19E13CF72" KeyPath="yes" Source="$(var.SourceDir)/share/icons/Adwaita/symbolic/mimetypes/application-certificate-symbolic.svg"/>
                 </Component>
@@ -1599,7 +1594,7 @@
                   <File Id="fil005D24C6A8F2BBD7C687FF47EE8E4B66" KeyPath="yes" Source="$(var.SourceDir)/share/icons/Adwaita/symbolic/mimetypes/x-office-spreadsheet-symbolic.svg"/>
                 </Component>
               </Directory>
-              <Directory Id="dir7E1F167A6BBEA9A29BFE9AC4710E6DCC" Name="places">
+              <Directory Id="dir604AF96F56EEF1B5794686B4C425AB58" Name="places">
                 <Component Win64="$(var.Win64)" Id="cmpA71627A9A20D47270ED44E2335BDC5B0" Guid="*">
                   <File Id="fil65356644231EEAC04E348FFC8853C64E" KeyPath="yes" Source="$(var.SourceDir)/share/icons/Adwaita/symbolic/places/folder-documents-symbolic.svg"/>
                 </Component>
@@ -1655,7 +1650,7 @@
                   <File Id="fil8FDC4BC97805790B56702BB6A49AED20" KeyPath="yes" Source="$(var.SourceDir)/share/icons/Adwaita/symbolic/places/user-trash-symbolic.svg"/>
                 </Component>
               </Directory>
-              <Directory Id="dir18F30E255FB41B14BB5FEA3617FC4672" Name="status">
+              <Directory Id="dir8969DFA4E4A3CDC9D8529A874B9DAE44" Name="status">
                 <Component Win64="$(var.Win64)" Id="cmpA617B536E48CD45AEE064638A7C7185D" Guid="*">
                   <File Id="fil047B98014ACF8B179576BA558715F30A" KeyPath="yes" Source="$(var.SourceDir)/share/icons/Adwaita/symbolic/status/airplane-mode-disabled-symbolic.svg"/>
                 </Component>
@@ -1734,11 +1729,17 @@
                 <Component Win64="$(var.Win64)" Id="cmp5F5973176DE522F8E3EB2050E3EA2CC5" Guid="*">
                   <File Id="fil0A6373EC357062489E8D2BB5C5D04E4E" KeyPath="yes" Source="$(var.SourceDir)/share/icons/Adwaita/symbolic/status/battery-level-0-charging-symbolic.svg"/>
                 </Component>
+                <Component Win64="$(var.Win64)" Id="cmp347ABAA7A8627933702F16A676932D84" Guid="*">
+                  <File Id="fil3DCB76D0963A4F37041C1B850EF65343" KeyPath="yes" Source="$(var.SourceDir)/share/icons/Adwaita/symbolic/status/battery-level-0-plugged-in-symbolic.svg"/>
+                </Component>
                 <Component Win64="$(var.Win64)" Id="cmp9CACDC3E28932C0007557EDF6F6BCEA7" Guid="*">
                   <File Id="fil89777C6E374AF27EDDFE35BD8D01BCDF" KeyPath="yes" Source="$(var.SourceDir)/share/icons/Adwaita/symbolic/status/battery-level-0-symbolic.svg"/>
                 </Component>
                 <Component Win64="$(var.Win64)" Id="cmp5D54C241976F81920ECD427D091A2B5D" Guid="*">
                   <File Id="filA5E24C38278927F9FBFB6C6564CFD75B" KeyPath="yes" Source="$(var.SourceDir)/share/icons/Adwaita/symbolic/status/battery-level-10-charging-symbolic.svg"/>
+                </Component>
+                <Component Win64="$(var.Win64)" Id="cmp56CF9DC33A58C4F88563A546420C6452" Guid="*">
+                  <File Id="filFE5F3FE820804698568880E06350D796" KeyPath="yes" Source="$(var.SourceDir)/share/icons/Adwaita/symbolic/status/battery-level-10-plugged-in-symbolic.svg"/>
                 </Component>
                 <Component Win64="$(var.Win64)" Id="cmp77DAE972157E3C5577D775A65FDD0C84" Guid="*">
                   <File Id="fil85265854C37DE0B005CCF6E4862F59CE" KeyPath="yes" Source="$(var.SourceDir)/share/icons/Adwaita/symbolic/status/battery-level-10-symbolic.svg"/>
@@ -1746,11 +1747,17 @@
                 <Component Win64="$(var.Win64)" Id="cmp00B1A52B471D1AEB4DAE2937AB0C3DC0" Guid="*">
                   <File Id="fil982CE270680B715FBA7E1C7746E7E8C7" KeyPath="yes" Source="$(var.SourceDir)/share/icons/Adwaita/symbolic/status/battery-level-100-charged-symbolic.svg"/>
                 </Component>
+                <Component Win64="$(var.Win64)" Id="cmpEE978A90360AD11F40DC41DC5B722490" Guid="*">
+                  <File Id="fil7426F4C97C72D0900F626FA4270BC9DC" KeyPath="yes" Source="$(var.SourceDir)/share/icons/Adwaita/symbolic/status/battery-level-100-plugged-in-symbolic.svg"/>
+                </Component>
                 <Component Win64="$(var.Win64)" Id="cmp11B0AE034A0BB6BB715FAAF45C9B089C" Guid="*">
                   <File Id="filEAA970E15CB4810742D0BF0220FE1226" KeyPath="yes" Source="$(var.SourceDir)/share/icons/Adwaita/symbolic/status/battery-level-100-symbolic.svg"/>
                 </Component>
                 <Component Win64="$(var.Win64)" Id="cmp5DE49242F43AA554E0E00558E74FD66C" Guid="*">
                   <File Id="fil0B51DA7E64C964023D423D2CBEAFE8D2" KeyPath="yes" Source="$(var.SourceDir)/share/icons/Adwaita/symbolic/status/battery-level-20-charging-symbolic.svg"/>
+                </Component>
+                <Component Win64="$(var.Win64)" Id="cmp550EFEDDF53A1CE58D1B1FEEA03FC120" Guid="*">
+                  <File Id="filE0AB4D6D3167F962C544A42EE8B751AF" KeyPath="yes" Source="$(var.SourceDir)/share/icons/Adwaita/symbolic/status/battery-level-20-plugged-in-symbolic.svg"/>
                 </Component>
                 <Component Win64="$(var.Win64)" Id="cmp2A0D9C64483D8D59E5104BE939A4F7A1" Guid="*">
                   <File Id="fil76258A95CCCF30751A499984DF89EF32" KeyPath="yes" Source="$(var.SourceDir)/share/icons/Adwaita/symbolic/status/battery-level-20-symbolic.svg"/>
@@ -1758,11 +1765,17 @@
                 <Component Win64="$(var.Win64)" Id="cmp2B6BE55D1171563B92A1986F27DF486F" Guid="*">
                   <File Id="fil32033D10A7E46921B708BB745A78C9AE" KeyPath="yes" Source="$(var.SourceDir)/share/icons/Adwaita/symbolic/status/battery-level-30-charging-symbolic.svg"/>
                 </Component>
+                <Component Win64="$(var.Win64)" Id="cmp2521AE6BE5096CA7AEC84384F7ABE430" Guid="*">
+                  <File Id="filA76680003180CCEE754B5D97E222163D" KeyPath="yes" Source="$(var.SourceDir)/share/icons/Adwaita/symbolic/status/battery-level-30-plugged-in-symbolic.svg"/>
+                </Component>
                 <Component Win64="$(var.Win64)" Id="cmpB894FDC4E185ABD93C7B579B0B74F112" Guid="*">
                   <File Id="fil515CA59490D7157262A1534B657EAD0A" KeyPath="yes" Source="$(var.SourceDir)/share/icons/Adwaita/symbolic/status/battery-level-30-symbolic.svg"/>
                 </Component>
                 <Component Win64="$(var.Win64)" Id="cmpF164EE35E34D06EAF05CA71D275A2571" Guid="*">
                   <File Id="fil1ECF309A11E99DFFD329E3D008A18CF2" KeyPath="yes" Source="$(var.SourceDir)/share/icons/Adwaita/symbolic/status/battery-level-40-charging-symbolic.svg"/>
+                </Component>
+                <Component Win64="$(var.Win64)" Id="cmp36EA790366C63584C1CF58B162A02A61" Guid="*">
+                  <File Id="filC88F994625160AB84D1518FB4958B49F" KeyPath="yes" Source="$(var.SourceDir)/share/icons/Adwaita/symbolic/status/battery-level-40-plugged-in-symbolic.svg"/>
                 </Component>
                 <Component Win64="$(var.Win64)" Id="cmpFB06F5F3DB4FC9541173B47C13252DA4" Guid="*">
                   <File Id="fil88A142DD1539B74F0BEC2625AE9323F1" KeyPath="yes" Source="$(var.SourceDir)/share/icons/Adwaita/symbolic/status/battery-level-40-symbolic.svg"/>
@@ -1770,11 +1783,17 @@
                 <Component Win64="$(var.Win64)" Id="cmpC1ED6C26ED26E1A77D0E841ECE2F0291" Guid="*">
                   <File Id="fil728232713DCF60176E0AA8119E23D54A" KeyPath="yes" Source="$(var.SourceDir)/share/icons/Adwaita/symbolic/status/battery-level-50-charging-symbolic.svg"/>
                 </Component>
+                <Component Win64="$(var.Win64)" Id="cmp58EA2963AF1478164F14DADC2672D9D8" Guid="*">
+                  <File Id="fil14185E26E334CF40E1351D58809411CF" KeyPath="yes" Source="$(var.SourceDir)/share/icons/Adwaita/symbolic/status/battery-level-50-plugged-in-symbolic.svg"/>
+                </Component>
                 <Component Win64="$(var.Win64)" Id="cmp8E53FFB6CDDD6BDE6ACBDD7B32A49A93" Guid="*">
                   <File Id="fil2B1B1C254B55F9FD3A748BBAD8180403" KeyPath="yes" Source="$(var.SourceDir)/share/icons/Adwaita/symbolic/status/battery-level-50-symbolic.svg"/>
                 </Component>
                 <Component Win64="$(var.Win64)" Id="cmp97F3103A0999CA9800C2935DC4D8E425" Guid="*">
                   <File Id="filC52C7F6C0D53C2FFC6B374E11EA90476" KeyPath="yes" Source="$(var.SourceDir)/share/icons/Adwaita/symbolic/status/battery-level-60-charging-symbolic.svg"/>
+                </Component>
+                <Component Win64="$(var.Win64)" Id="cmpCFD199617370B733A9FC1C3EE56A717A" Guid="*">
+                  <File Id="fil0201AA66DFB858D854400D43D9328AC0" KeyPath="yes" Source="$(var.SourceDir)/share/icons/Adwaita/symbolic/status/battery-level-60-plugged-in-symbolic.svg"/>
                 </Component>
                 <Component Win64="$(var.Win64)" Id="cmp5379087D8B5D07A35039794DEB200F99" Guid="*">
                   <File Id="fil4CFD0FF8E10BD397128623CA82132631" KeyPath="yes" Source="$(var.SourceDir)/share/icons/Adwaita/symbolic/status/battery-level-60-symbolic.svg"/>
@@ -1782,17 +1801,26 @@
                 <Component Win64="$(var.Win64)" Id="cmp4E175E16B57D20888416993FA807A3CC" Guid="*">
                   <File Id="fil6BF51A63E7F35C501EA02F6EDD9A9F32" KeyPath="yes" Source="$(var.SourceDir)/share/icons/Adwaita/symbolic/status/battery-level-70-charging-symbolic.svg"/>
                 </Component>
+                <Component Win64="$(var.Win64)" Id="cmpCA69D89D0024F607C5A3F22FC78C2ABB" Guid="*">
+                  <File Id="filA71D94FCAFAA7E8661181F9C127F78AD" KeyPath="yes" Source="$(var.SourceDir)/share/icons/Adwaita/symbolic/status/battery-level-70-plugged-in-symbolic.svg"/>
+                </Component>
                 <Component Win64="$(var.Win64)" Id="cmp5C140E933345C52D166CA03F25A7B369" Guid="*">
                   <File Id="filEDD64D3A603672C52EAB2BCC56B61AAE" KeyPath="yes" Source="$(var.SourceDir)/share/icons/Adwaita/symbolic/status/battery-level-70-symbolic.svg"/>
                 </Component>
                 <Component Win64="$(var.Win64)" Id="cmp59D92BE2205777E90CCA8A9193B55AA7" Guid="*">
                   <File Id="filA84240F1F8864FCFC926EE4938D18A8F" KeyPath="yes" Source="$(var.SourceDir)/share/icons/Adwaita/symbolic/status/battery-level-80-charging-symbolic.svg"/>
                 </Component>
+                <Component Win64="$(var.Win64)" Id="cmp5E11E9FAA86E4DEAB9CC01553F599C5B" Guid="*">
+                  <File Id="filEA1222FDF45CF2794C7F9A7F1FDCBC9F" KeyPath="yes" Source="$(var.SourceDir)/share/icons/Adwaita/symbolic/status/battery-level-80-plugged-in-symbolic.svg"/>
+                </Component>
                 <Component Win64="$(var.Win64)" Id="cmp84B5A66C4E458EE5CF9E36A7D43776A3" Guid="*">
                   <File Id="filC54743291FB745A75E3D1D3D3E555BA3" KeyPath="yes" Source="$(var.SourceDir)/share/icons/Adwaita/symbolic/status/battery-level-80-symbolic.svg"/>
                 </Component>
                 <Component Win64="$(var.Win64)" Id="cmp5092D8169A0F5318B11378134BF1EA36" Guid="*">
                   <File Id="fil4C84E3334FAD2C0C4FD6266B61FE62ED" KeyPath="yes" Source="$(var.SourceDir)/share/icons/Adwaita/symbolic/status/battery-level-90-charging-symbolic.svg"/>
+                </Component>
+                <Component Win64="$(var.Win64)" Id="cmpD56936132364C02D18C60880B0446A0E" Guid="*">
+                  <File Id="filA34C5343C4616B7F4B755151437744D8" KeyPath="yes" Source="$(var.SourceDir)/share/icons/Adwaita/symbolic/status/battery-level-90-plugged-in-symbolic.svg"/>
                 </Component>
                 <Component Win64="$(var.Win64)" Id="cmpF409E7E88837587FFFBEDDA564DEB4AD" Guid="*">
                   <File Id="fil2E21A46BC590E1450A5B84ACB2EDDB37" KeyPath="yes" Source="$(var.SourceDir)/share/icons/Adwaita/symbolic/status/battery-level-90-symbolic.svg"/>
@@ -2335,7 +2363,7 @@
                   <File Id="fil3CEE05A264B86CCD07857D9F001A96DE" KeyPath="yes" Source="$(var.SourceDir)/share/icons/Adwaita/symbolic/status/weather-windy-symbolic.svg"/>
                 </Component>
               </Directory>
-              <Directory Id="dirF953371CDDF7AC806425A0D40A047D68" Name="ui">
+              <Directory Id="dir2AEC9956E99B846C307FC1A9A4CBB735" Name="ui">
                 <Component Win64="$(var.Win64)" Id="cmp1B4F8A5F101CB2EE31C86C28E2ACF228" Guid="*">
                   <File Id="fil834021C0163E4B69B2C0A1DA110B03BF" KeyPath="yes" Source="$(var.SourceDir)/share/icons/Adwaita/symbolic/ui/checkbox-checked-symbolic.svg"/>
                 </Component>
@@ -2415,8 +2443,8 @@
             </Directory>
           </Directory>
         </Directory>
-        <Directory Id="dir4B49A465D58DCD770DC400708B7A02A7" Name="licenses">
-          <Directory Id="dir4C55859746B5860A3D6035A00B8EC948" Name="adwaita-icon-theme">
+        <Directory Id="dir503E6C9072F5AD8760B5A488871F342A" Name="licenses">
+          <Directory Id="dirE323A808F85E225D85DF38111845551A" Name="adwaita-icon-theme">
             <Component Win64="$(var.Win64)" Id="cmp858AFBB8557ACEFBC94A03D4F344FE0E" Guid="*">
               <File Id="fil0B8A8F02873D60E62C032979A47FCC3D" KeyPath="yes" Source="$(var.SourceDir)/share/licenses/adwaita-icon-theme/COPYING"/>
             </Component>
@@ -2428,7 +2456,7 @@
             </Component>
           </Directory>
         </Directory>
-        <Directory Id="dir28E9EE1003153D1867B2A2E8B1480139" Name="pkgconfig">
+        <Directory Id="dir9BDE8B0526DE2BBDEBF0EA31598F04CD" Name="pkgconfig">
           <Component Win64="$(var.Win64)" Id="cmpEB6E66974A248F924ABCF9B0B9DA948F" Guid="*">
             <File Id="filAC18426A41E32DCF8625A14466EA72E6" KeyPath="yes" Source="$(var.SourceDir)/share/pkgconfig/adwaita-icon-theme.pc"/>
           </Component>
@@ -2775,7 +2803,6 @@
       <ComponentRef Id="cmp72AE2047D63D01C78BAD6DA803EE7261"/>
       <ComponentRef Id="cmp92CD181C6CC1A691699F2B7139AAFC1B"/>
       <ComponentRef Id="cmpA92A1A2274A086CD0F808A68420F29AE"/>
-      <ComponentRef Id="cmp9F8D5CC1C910100B6FA0B76D56F7B522"/>
       <ComponentRef Id="cmp7503EC5999CC29DF63CB8DD0377B3935"/>
       <ComponentRef Id="cmp0059F45F059A0AC758639D3A9F032016"/>
       <ComponentRef Id="cmpB99A8080EDC05E10D644F7CDF4963D70"/>
@@ -3001,26 +3028,37 @@
       <ComponentRef Id="cmpA860A8DD1DE2F2ED6ADA73E41F9D05C9"/>
       <ComponentRef Id="cmp1B4B75A8BBC22D2A2A8F3CDCFC1D5F2A"/>
       <ComponentRef Id="cmp5F5973176DE522F8E3EB2050E3EA2CC5"/>
+      <ComponentRef Id="cmp347ABAA7A8627933702F16A676932D84"/>
       <ComponentRef Id="cmp9CACDC3E28932C0007557EDF6F6BCEA7"/>
       <ComponentRef Id="cmp5D54C241976F81920ECD427D091A2B5D"/>
+      <ComponentRef Id="cmp56CF9DC33A58C4F88563A546420C6452"/>
       <ComponentRef Id="cmp77DAE972157E3C5577D775A65FDD0C84"/>
       <ComponentRef Id="cmp00B1A52B471D1AEB4DAE2937AB0C3DC0"/>
+      <ComponentRef Id="cmpEE978A90360AD11F40DC41DC5B722490"/>
       <ComponentRef Id="cmp11B0AE034A0BB6BB715FAAF45C9B089C"/>
       <ComponentRef Id="cmp5DE49242F43AA554E0E00558E74FD66C"/>
+      <ComponentRef Id="cmp550EFEDDF53A1CE58D1B1FEEA03FC120"/>
       <ComponentRef Id="cmp2A0D9C64483D8D59E5104BE939A4F7A1"/>
       <ComponentRef Id="cmp2B6BE55D1171563B92A1986F27DF486F"/>
+      <ComponentRef Id="cmp2521AE6BE5096CA7AEC84384F7ABE430"/>
       <ComponentRef Id="cmpB894FDC4E185ABD93C7B579B0B74F112"/>
       <ComponentRef Id="cmpF164EE35E34D06EAF05CA71D275A2571"/>
+      <ComponentRef Id="cmp36EA790366C63584C1CF58B162A02A61"/>
       <ComponentRef Id="cmpFB06F5F3DB4FC9541173B47C13252DA4"/>
       <ComponentRef Id="cmpC1ED6C26ED26E1A77D0E841ECE2F0291"/>
+      <ComponentRef Id="cmp58EA2963AF1478164F14DADC2672D9D8"/>
       <ComponentRef Id="cmp8E53FFB6CDDD6BDE6ACBDD7B32A49A93"/>
       <ComponentRef Id="cmp97F3103A0999CA9800C2935DC4D8E425"/>
+      <ComponentRef Id="cmpCFD199617370B733A9FC1C3EE56A717A"/>
       <ComponentRef Id="cmp5379087D8B5D07A35039794DEB200F99"/>
       <ComponentRef Id="cmp4E175E16B57D20888416993FA807A3CC"/>
+      <ComponentRef Id="cmpCA69D89D0024F607C5A3F22FC78C2ABB"/>
       <ComponentRef Id="cmp5C140E933345C52D166CA03F25A7B369"/>
       <ComponentRef Id="cmp59D92BE2205777E90CCA8A9193B55AA7"/>
+      <ComponentRef Id="cmp5E11E9FAA86E4DEAB9CC01553F599C5B"/>
       <ComponentRef Id="cmp84B5A66C4E458EE5CF9E36A7D43776A3"/>
       <ComponentRef Id="cmp5092D8169A0F5318B11378134BF1EA36"/>
+      <ComponentRef Id="cmpD56936132364C02D18C60880B0446A0E"/>
       <ComponentRef Id="cmpF409E7E88837587FFFBEDDA564DEB4AD"/>
       <ComponentRef Id="cmp648EF8D75EBBD634C0F89B9F8855E7E4"/>
       <ComponentRef Id="cmpFE01533ED44FD2A67E101CC2678B19E1"/>
@@ -3233,5 +3271,5 @@
     </ComponentGroup>
   </Fragment>
 </Include>
-<!-- generated with msitools 0.106.27-99ab -->
-<!-- tools/wixl/wixl-heat -var var.SourceDir -p /usr/x86_64-w64-mingw32/sys-root/mingw/ -directory-ref INSTALLDIR -win64 -component-group CG.adwaita-icon-theme -->
+<!-- generated with msitools 0.106.34-f1e6 -->
+<!-- build/tools/wixl/wixl-heat -var var.SourceDir -p /usr/i686-w64-mingw32/sys-root/mingw/ -directory-ref INSTALLDIR -win64 -component-group CG.adwaita-icon-theme -->
