@@ -1,0 +1,144 @@
+# Bulgarian translation for msitools.
+# Copyright (C) 2025 msitools's COPYRIGHT HOLDER
+# This file is distributed under the same license as the msitools package.
+# twlvnn kraftwerk <kraft_werk@tutanota.com>, 2025.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: msitools master\n"
+"Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/msitools/issues/\n"
+"POT-Creation-Date: 2025-08-17 07:58+0000\n"
+"PO-Revision-Date: 2025-08-23 15:44+0200\n"
+"Last-Translator: twlvnn kraftwerk <kraft_werk@tutanota.com>\n"
+"Language-Team: Bulgarian <dict-notifications@fsa-bg.org>\n"
+"Language: bg\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1)\n"
+"X-Generator: Gtranslator 48.0\n"
+
+#: tools/msiextract.vala:10 tools/wixl/wixl.vala:25
+msgid "Display version number"
+msgstr "Показване на версията"
+
+#: tools/msiextract.vala:11
+msgid "Extract to directory"
+msgstr "Извличане в папка"
+
+#: tools/msiextract.vala:12
+msgid "List files only"
+msgstr "Изброяване само на файловете"
+
+#: tools/msiextract.vala:13
+msgid "MSI_FILE..."
+msgstr "MSI_ФАЙЛ…"
+
+#: tools/msiextract.vala:160
+msgid "- a msi files extracting tool"
+msgstr "— инструмент за извличане на msi файлове"
+
+#: tools/msiextract.vala:180 tools/wixl/wixl.vala:82
+msgid "Please specify input files.\n"
+msgstr "Посочете входни файлове.\n"
+
+#: tools/wixl/wixl-heat.vala:12
+msgid "Directory Ref"
+msgstr "Указател на папка"
+
+#: tools/wixl/wixl-heat.vala:13
+msgid "Component Group"
+msgstr "Група компоненти"
+
+#: tools/wixl/wixl-heat.vala:14
+msgid "Variable for source dir"
+msgstr "Променлива за изходната папка"
+
+#: tools/wixl/wixl-heat.vala:15
+msgid "Prefix"
+msgstr "Представка"
+
+#: tools/wixl/wixl-heat.vala:16
+msgid "Exclude prefix"
+msgstr "Изключване на представка"
+
+#: tools/wixl/wixl-heat.vala:17
+msgid "Add Win64 Component"
+msgstr "Добавяне на Win64 компонент"
+
+#: tools/wixl/wixl.vala:26
+msgid "Verbose output"
+msgstr "Съобщения за допълнителна информация"
+
+#: tools/wixl/wixl.vala:27
+msgid "Output file"
+msgstr "Изходен файл"
+
+#: tools/wixl/wixl.vala:28
+msgid "Define variable"
+msgstr "Дефиниране на променлива"
+
+#: tools/wixl/wixl.vala:29
+msgid "Target architecture"
+msgstr "Целева рхитектура"
+
+#: tools/wixl/wixl.vala:30
+msgid "Include directory"
+msgstr "Папка за include файлове"
+
+#: tools/wixl/wixl.vala:31
+msgid "System extension directory"
+msgstr "Системна папка за разширения"
+
+#: tools/wixl/wixl.vala:32
+msgid "System include directory"
+msgstr "Системна папка за include файлове"
+
+#: tools/wixl/wixl.vala:33
+msgid "Stop after the preprocessing stage"
+msgstr "Спиране след етапа на предварителната обработка"
+
+#: tools/wixl/wixl.vala:34
+msgid "Specify an extension"
+msgstr "Посочете разширение"
+
+#: tools/wixl/wixl.vala:35
+msgid "INPUT_FILE1 [INPUT_FILE2]..."
+msgstr "ВХОДЕН_ФАЙЛ1 [ВХОДЕН_ФАЙЛ2]…"
+
+#: tools/wixl/wixl.vala:43
+#, c-format
+msgid "arch of type '%s' is not supported"
+msgstr "архитектурата от вид „%s“ не се поддържа"
+
+#: tools/wixl/wixl.vala:55
+msgid "- a msi building tool"
+msgstr "— инструмент за изграждане на msi файлове"
+
+#: tools/wixl/wixl.vala:90
+msgid "Please specify the output file.\n"
+msgstr "Посочете изходния файл.\n"
+
+#: tools/wixl/wixl.vala:100
+#, c-format
+msgid "Extension of type '%s' is not supported.\n"
+msgstr "Разширението от вид „%s“ не се поддържа.\n"
+
+#: tools/wixl/wixl.vala:117
+#, c-format
+msgid "Loading %s...\n"
+msgstr "Зареждане на %s…\n"
+
+#: tools/wixl/wixl.vala:127
+#, c-format
+msgid "Building %s...\n"
+msgstr "Изграждане на %s…\n"
+
+#: tools/wixl/wixl.vala:130
+#, c-format
+msgid "Writing %s...\n"
+msgstr "Записване на %s…\n"
+
+#: tools/wixl/wixl.vala:134
+msgid "A GLib error has occurred\n"
+msgstr "Възникна GLib грешка\n"
