@@ -6,11 +6,10 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: msitools master\n"
-"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
-"product=msitools&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2014-11-03 14:11+0000\n"
+"Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/msitools/issues\n"
+"POT-Creation-Date: 2022-07-11 08:21+0000\n"
 "PO-Revision-Date: 2015-02-26 01:10+0200\n"
-"Last-Translator: Tom Tryfonidis <tomtryf@gmail.com>\n"
+"Last-Translator: Giannis Antypas <gianni.antypas@gmail.com>\n"
 "Language-Team: team@gnome.gr\n"
 "Language: el\n"
 "MIME-Version: 1.0\n"
@@ -20,110 +19,128 @@ msgstr ""
 "X-Generator: Poedit 1.7.4\n"
 "X-Project-Style: gnome\n"
 
-#: ../tools/msiextract.vala:10 ../tools/wixl/wixl.vala:21
+#: tools/msiextract.vala:10 tools/wixl/wixl.vala:25
 msgid "Display version number"
 msgstr "Εμφάνιση αριθμού έκδοσης"
 
-#: ../tools/msiextract.vala:11
+#: tools/msiextract.vala:11
 msgid "Extract to directory"
 msgstr "Εξαγωγή σε κατάλογο"
 
-#: ../tools/msiextract.vala:12
+#: tools/msiextract.vala:12
 msgid "List files only"
 msgstr "Καταχώριση μόνο αρχείων"
 
-#: ../tools/msiextract.vala:13
+#: tools/msiextract.vala:13
 msgid "MSI_FILE..."
 msgstr "MSI_FILE..."
 
-#: ../tools/msiextract.vala:126
+#: tools/msiextract.vala:160
 msgid "- a msi files extracting tool"
 msgstr "- ένα εργαλείο εξαγωγής αρχείων msi"
 
-#: ../tools/msiextract.vala:146 ../tools/wixl/wixl.vala:75
+#: tools/msiextract.vala:180 tools/wixl/wixl.vala:82
 msgid "Please specify input files.\n"
 msgstr "Παρακαλούμε ορίστε αρχεία εισόδου.\n"
 
-#: ../tools/wixl/wixl-heat.vala:12
+#: tools/wixl/wixl-heat.vala:12
 msgid "Directory Ref"
 msgstr "Κατάλογος αναφοράς"
 
-#: ../tools/wixl/wixl-heat.vala:13
+#: tools/wixl/wixl-heat.vala:13
 msgid "Component Group"
 msgstr "Ομάδα στοιχείου"
 
-#: ../tools/wixl/wixl-heat.vala:14
+#: tools/wixl/wixl-heat.vala:14
 msgid "Variable for source dir"
 msgstr "Μεταβλητή για τον πηγαίο κατάλογο"
 
-#: ../tools/wixl/wixl-heat.vala:15
+#: tools/wixl/wixl-heat.vala:15
 msgid "Prefix"
 msgstr "Πρόθεμα"
 
-#: ../tools/wixl/wixl-heat.vala:16
+#: tools/wixl/wixl-heat.vala:16
 msgid "Exclude prefix"
 msgstr "Αποκλεισμός προθέματος"
 
-#: ../tools/wixl/wixl-heat.vala:17
+#: tools/wixl/wixl-heat.vala:17
 msgid "Add Win64 Component"
 msgstr "Προσθήκη στοιχείου Win64"
 
-#: ../tools/wixl/wixl.vala:22
+#: tools/wixl/wixl.vala:26
 msgid "Verbose output"
 msgstr "Αναλυτική έξοδος"
 
-#: ../tools/wixl/wixl.vala:23
+#: tools/wixl/wixl.vala:27
 msgid "Output file"
 msgstr "Αρχείο εξόδου"
 
-#: ../tools/wixl/wixl.vala:24
+#: tools/wixl/wixl.vala:28
 msgid "Define variable"
 msgstr "Ορισμός μεταβλητής"
 
-#: ../tools/wixl/wixl.vala:25
+#: tools/wixl/wixl.vala:29
 msgid "Target architecture"
 msgstr "Αρχιτεκτονική προορισμού"
 
-#: ../tools/wixl/wixl.vala:26
+#: tools/wixl/wixl.vala:30
 msgid "Include directory"
 msgstr "Να περιλαμβάνεται ο κατάλογος"
 
-#: ../tools/wixl/wixl.vala:27
+#: tools/wixl/wixl.vala:31
+#, fuzzy
+#| msgid "System include directory"
+msgid "System extension directory"
+msgstr "Το σύστημα να περιλαμβάνει τον κατάλογο"
+
+#: tools/wixl/wixl.vala:32
 msgid "System include directory"
 msgstr "Το σύστημα να περιλαμβάνει τον κατάλογο"
 
-#: ../tools/wixl/wixl.vala:28
+#: tools/wixl/wixl.vala:33
 msgid "Stop after the preprocessing stage"
 msgstr "Στάση μετά το στάδιο της προεπεξεργασίας"
 
-#: ../tools/wixl/wixl.vala:29
-msgid "INPUT_FILE..."
+#: tools/wixl/wixl.vala:34
+msgid "Specify an extension"
+msgstr "Καθορισμός μιας επέκτασης"
+
+#: tools/wixl/wixl.vala:35
+#, fuzzy
+#| msgid "INPUT_FILE..."
+msgid "INPUT_FILE1 [INPUT_FILE2]..."
 msgstr "INPUT_FILE..."
 
-#: ../tools/wixl/wixl.vala:37
+#: tools/wixl/wixl.vala:43
 #, c-format
 msgid "arch of type '%s' is not supported"
 msgstr "η αρχιτεκτονική του τύπου '%s' δεν υποστηρίζεται"
 
-#: ../tools/wixl/wixl.vala:49
+#: tools/wixl/wixl.vala:55
 msgid "- a msi building tool"
 msgstr "- ένα εργαλείο δόμησης msi"
 
-#: ../tools/wixl/wixl.vala:83
+#: tools/wixl/wixl.vala:90
 msgid "Please specify the output file.\n"
 msgstr "Παρακαλώ ορίστε το αρχείο εξόδου.\n"
 
-#: ../tools/wixl/wixl.vala:100
+#: tools/wixl/wixl.vala:100
+#, fuzzy, c-format
+#| msgid "arch of type '%s' is not supported"
+msgid "Extension of type '%s' is not supported.\n"
+msgstr "η αρχιτεκτονική του τύπου '%s' δεν υποστηρίζεται"
+
+#: tools/wixl/wixl.vala:117
 #, c-format
 msgid "Loading %s...\n"
 msgstr "Φορτώνεται το %s...\n"
 
-#: ../tools/wixl/wixl.vala:110
+#: tools/wixl/wixl.vala:127
 #, c-format
 msgid "Building %s...\n"
 msgstr "Δομείται το %s...\n"
 
-#: ../tools/wixl/wixl.vala:113
+#: tools/wixl/wixl.vala:130
 #, c-format
 msgid "Writing %s...\n"
 msgstr "Γράφεται το %s...\n"
