@@ -1,30 +1,51 @@
 <?xml version="1.0" encoding="utf-8"?>
-<?require gcc.wxi?>
-<?require gmp.wxi?>
+<?require zlib.wxi?>
+<?require winpthreads.wxi?>
 <?require libtasn1.wxi?>
 <?require nettle.wxi?>
-<?require readline.wxi?>
-<?require zlib.wxi?>
-
 <Include xmlns="http://schemas.microsoft.com/wix/2006/wi">
   <Fragment>
     <DirectoryRef Id="INSTALLDIR">
-      <Directory Id="dir6A4BB80DC22241BD2E3AE9ECF3DB60D5" Name="bin">
-        <Component Win64="$(var.Win64)" Id="cmp845933D5BF01B8450C766D545EF5F537" Guid="*">
-          <File Id="fil9C333DD6A36336E25CD821B997A40BC9" KeyPath="yes" Source="$(var.SourceDir)/bin/libgnutls-30.dll"/>
+      <Directory Id="dir3F13766AA7E9D6A4B636C1F9076A2E85" Name="bin">
+        <Component Win64="$(var.Win64)" Id="cmp0EBE174C065B3C7E3742EC24BE54CC77" Guid="*">
+          <File Id="fil1EBB0CE9CAAB80332CE2354F3DC70093" KeyPath="yes" Source="$(var.SourceDir)/bin/certtool.exe"/>
+        </Component>
+        <Component Win64="$(var.Win64)" Id="cmp09107C22807ECCA5412DFEF0B1EA673E" Guid="*">
+          <File Id="fil0004AD9E738D0B36B0DC729B18011AAC" KeyPath="yes" Source="$(var.SourceDir)/bin/gnutls-cli-debug.exe"/>
+        </Component>
+        <Component Win64="$(var.Win64)" Id="cmpD8DC6A81DF1F92693992386B0ED94497" Guid="*">
+          <File Id="fil46DE137E8071C982D0809B82F3286A8E" KeyPath="yes" Source="$(var.SourceDir)/bin/gnutls-cli.exe"/>
+        </Component>
+        <Component Win64="$(var.Win64)" Id="cmpA9143F891D957A259A1C41A466D3772B" Guid="*">
+          <File Id="filEFF3CA9BC13781EB963354589264F3A4" KeyPath="yes" Source="$(var.SourceDir)/bin/gnutls-serv.exe"/>
+        </Component>
+        <Component Win64="$(var.Win64)" Id="cmpD4302A34DBF760A09C89C24DEB310CAC" Guid="*">
+          <File Id="fil428E933E9A5B1BACABF598E7BA289935" KeyPath="yes" Source="$(var.SourceDir)/bin/libgnutls-30.dll"/>
+        </Component>
+        <Component Win64="$(var.Win64)" Id="cmp5CBD4B9213FEDA7265852F5B82060D00" Guid="*">
+          <File Id="fil4C93606B28437F25CE418EF8276DE49F" KeyPath="yes" Source="$(var.SourceDir)/bin/ocsptool.exe"/>
+        </Component>
+        <Component Win64="$(var.Win64)" Id="cmpEF40D234DFBD50D6812119E0924DE38D" Guid="*">
+          <File Id="fil26AB880753794374C8A4D3E0073B21E0" KeyPath="yes" Source="$(var.SourceDir)/bin/psktool.exe"/>
         </Component>
       </Directory>
     </DirectoryRef>
   </Fragment>
   <Fragment>
     <ComponentGroup Id="CG.gnutls">
-      <ComponentGroupRef Id="CG.gcc"/>
-      <ComponentGroupRef Id="CG.gmp"/>
+      <ComponentGroupRef Id="CG.zlib"/>
+      <ComponentGroupRef Id="CG.winpthreads"/>
       <ComponentGroupRef Id="CG.libtasn1"/>
       <ComponentGroupRef Id="CG.nettle"/>
-      <ComponentGroupRef Id="CG.readline"/>
-      <ComponentGroupRef Id="CG.zlib"/>
-      <ComponentRef Id="cmp845933D5BF01B8450C766D545EF5F537"/>
+      <ComponentRef Id="cmp0EBE174C065B3C7E3742EC24BE54CC77"/>
+      <ComponentRef Id="cmp09107C22807ECCA5412DFEF0B1EA673E"/>
+      <ComponentRef Id="cmpD8DC6A81DF1F92693992386B0ED94497"/>
+      <ComponentRef Id="cmpA9143F891D957A259A1C41A466D3772B"/>
+      <ComponentRef Id="cmpD4302A34DBF760A09C89C24DEB310CAC"/>
+      <ComponentRef Id="cmp5CBD4B9213FEDA7265852F5B82060D00"/>
+      <ComponentRef Id="cmpEF40D234DFBD50D6812119E0924DE38D"/>
     </ComponentGroup>
   </Fragment>
 </Include>
+<?ignore generated with msitools 0.106.45-476d-dirty ?>
+<?ignore tools/wixl/wixl-heat -i --var var.SourceDir -p /usr/i686-w64-mingw32/sys-root/mingw/ --directory-ref INSTALLDIR --win64 --component-group CG.gnutls --require zlib --require winpthreads --require libtasn1 --require nettle ?>

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<?require gcc-c++.wxi?>
+<?require zlib.wxi?>
+<Include xmlns="http://schemas.microsoft.com/wix/2006/wi">
+  <Fragment>
+    <DirectoryRef Id="INSTALLDIR">
+      <Directory Id="dirBF88BE85EB3DEFB680E63F066C3A5F2D" Name="bin">
+        <Component Win64="$(var.Win64)" Id="cmp3A4CA4064B4B57B3BBC44C1DCCF5C34A" Guid="*">
+          <File Id="fil3BAABD9F41F8B4F7DA175BB6C6C30A1D" KeyPath="yes" Source="$(var.SourceDir)/bin/libtag.dll"/>
+        </Component>
+        <Component Win64="$(var.Win64)" Id="cmp8CB254356BB770C07CD21B24DD311BE9" Guid="*">
+          <File Id="fil83318BC91F37341431386F79944321B9" KeyPath="yes" Source="$(var.SourceDir)/bin/libtag_c.dll"/>
+        </Component>
+        <Component Win64="$(var.Win64)" Id="cmp390CE62F926D96BD48BDD82F3223248D" Guid="*">
+          <File Id="fil517BE9C72374098A5CC34194A8DCC745" KeyPath="yes" Source="$(var.SourceDir)/bin/taglib-config.cmd"/>
+        </Component>
+      </Directory>
+    </DirectoryRef>
+  </Fragment>
+  <Fragment>
+    <ComponentGroup Id="CG.taglib">
+      <ComponentGroupRef Id="CG.gcc-c++"/>
+      <ComponentGroupRef Id="CG.zlib"/>
+      <ComponentRef Id="cmp3A4CA4064B4B57B3BBC44C1DCCF5C34A"/>
+      <ComponentRef Id="cmp8CB254356BB770C07CD21B24DD311BE9"/>
+      <ComponentRef Id="cmp390CE62F926D96BD48BDD82F3223248D"/>
+    </ComponentGroup>
+  </Fragment>
+</Include>
+<?ignore generated with msitools 0.106.45-476d-dirty ?>
+<?ignore build/tools/wixl/wixl-heat --var var.SourceDir -p /usr/i686-w64-mingw32/sys-root/mingw/ --directory-ref INSTALLDIR --win64 --component-group CG.taglib --require gcc-c++ --require zlib -i ?>

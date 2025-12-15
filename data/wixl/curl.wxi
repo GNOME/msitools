@@ -1,29 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
-<?require gcc.wxi?>
+<?require openssl.wxi?>
+<?require zlib.wxi?>
 <?require libssh2.wxi?>
 <?require libidn2.wxi?>
 <?require libpsl.wxi?>
-<?require zlib.wxi?>
-<?require openssl.wxi?>
 <Include xmlns="http://schemas.microsoft.com/wix/2006/wi">
   <Fragment>
     <DirectoryRef Id="INSTALLDIR">
-      <Directory Id="dir228046DAD8E98D16E9275D1D5B2A4070" Name="bin">
-        <Component Win64="$(var.Win64)" Id="cmpD17DE7BDBF0C5DD49F836AC69F4B3B5F" Guid="*">
-          <File Id="filC09E7BC3640F1C5BE2A36213327D902F" KeyPath="yes" Source="$(var.SourceDir)/bin/libcurl-4.dll"/>
+      <Directory Id="dir3C8B70E255FBEC7AE027BB7FF84932C6" Name="bin">
+        <Component Win64="$(var.Win64)" Id="cmpAB1801CAC3934440EF4327F75F7A4822" Guid="*">
+          <File Id="filB41EBEBCEF14D410650B652D479B05C2" KeyPath="yes" Source="$(var.SourceDir)/bin/curl-config"/>
         </Component>
-        </Directory>
+        <Component Win64="$(var.Win64)" Id="cmp83D4D502DA3FCE1EACCEE68798665B9F" Guid="*">
+          <File Id="fil4A6D3AA053521688C97BF6E599CBB33B" KeyPath="yes" Source="$(var.SourceDir)/bin/curl.exe"/>
+        </Component>
+        <Component Win64="$(var.Win64)" Id="cmp574C2EFB53F2A86FF8275C7ACA6B5C69" Guid="*">
+          <File Id="fil9583802D9ECB77E66CE237F0E697E7FA" KeyPath="yes" Source="$(var.SourceDir)/bin/libcurl-4.dll"/>
+        </Component>
+      </Directory>
     </DirectoryRef>
   </Fragment>
   <Fragment>
     <ComponentGroup Id="CG.curl">
-      <ComponentGroupRef Id="CG.gcc"/>
+      <ComponentGroupRef Id="CG.openssl"/>
+      <ComponentGroupRef Id="CG.zlib"/>
       <ComponentGroupRef Id="CG.libssh2"/>
       <ComponentGroupRef Id="CG.libidn2"/>
       <ComponentGroupRef Id="CG.libpsl"/>
-      <ComponentGroupRef Id="CG.zlib"/>
-      <ComponentGroupRef Id="CG.openssl"/>
-      <ComponentRef Id="cmpD17DE7BDBF0C5DD49F836AC69F4B3B5F"/>
+      <ComponentRef Id="cmpAB1801CAC3934440EF4327F75F7A4822"/>
+      <ComponentRef Id="cmp83D4D502DA3FCE1EACCEE68798665B9F"/>
+      <ComponentRef Id="cmp574C2EFB53F2A86FF8275C7ACA6B5C69"/>
     </ComponentGroup>
   </Fragment>
 </Include>
+<?ignore generated with msitools 0.106.45-476d-dirty ?>
+<?ignore tools/wixl/wixl-heat -i --var var.SourceDir -p /usr/i686-w64-mingw32/sys-root/mingw/ --directory-ref INSTALLDIR --win64 --component-group CG.curl --require openssl --require zlib --require libssh2 --require libidn2 --require libpsl ?>

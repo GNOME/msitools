@@ -1,20 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
-<?require gcc.wxi?>
-
+<?require gcc-c++.wxi?>
 <Include xmlns="http://schemas.microsoft.com/wix/2006/wi">
   <Fragment>
     <DirectoryRef Id="INSTALLDIR">
-      <Directory Id="dirEC46AD626BCD898D01A0DEE1610DCD27" Name="bin">
-        <Component Win64="$(var.Win64)" Id="cmp0EE51670A82496B36B97670C3C0E50BA" Guid="*">
-          <File Id="filD5351501BA31874AFFFA329B749B82CB" KeyPath="yes" Source="$(var.SourceDir)/bin/libgmp-10.dll"/>
+      <Directory Id="dir92A9ABC1E1B666571C5036D752971C85" Name="bin">
+        <Component Win64="$(var.Win64)" Id="cmpFCA086BAC69C3C72C7FEB62EF3E32F1D" Guid="*">
+          <File Id="fil34492BA909D5D22B52B36EBC8782CD92" KeyPath="yes" Source="$(var.SourceDir)/bin/libgmp-10.dll"/>
+        </Component>
+        <Component Win64="$(var.Win64)" Id="cmp7FAD0EA7F90DFF8F19E3C68F18F6E3BC" Guid="*">
+          <File Id="fil1369C0FFD1D7D173F2C20B600B810967" KeyPath="yes" Source="$(var.SourceDir)/bin/libgmpxx-4.dll"/>
         </Component>
       </Directory>
     </DirectoryRef>
   </Fragment>
   <Fragment>
     <ComponentGroup Id="CG.gmp">
-      <ComponentGroupRef Id="CG.gcc"/>
-      <ComponentRef Id="cmp0EE51670A82496B36B97670C3C0E50BA"/>
+      <ComponentGroupRef Id="CG.gcc-c++"/>
+      <ComponentRef Id="cmpFCA086BAC69C3C72C7FEB62EF3E32F1D"/>
+      <ComponentRef Id="cmp7FAD0EA7F90DFF8F19E3C68F18F6E3BC"/>
     </ComponentGroup>
   </Fragment>
 </Include>
+<?ignore generated with msitools 0.106.45-476d-dirty ?>
+<?ignore tools/wixl/wixl-heat -i --var var.SourceDir -p /usr/i686-w64-mingw32/sys-root/mingw/ --directory-ref INSTALLDIR --win64 --component-group CG.gmp --require gcc-c++ ?>

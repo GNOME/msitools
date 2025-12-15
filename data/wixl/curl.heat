@@ -1,0 +1,5 @@
+--require openssl
+--require zlib
+--require libssh2
+--require libidn2
+--require libpsl

@@ -1,0 +1,6 @@
+--require gstreamer1-plugins-base
+--require speex
+--require libsoup
+--require wavpack
+--require gdk-pixbuf
+--require taglib

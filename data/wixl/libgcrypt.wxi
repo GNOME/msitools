@@ -1,21 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
-<?require gcc.wxi?>
 <?require libgpg-error.wxi?>
 <Include xmlns="http://schemas.microsoft.com/wix/2006/wi">
   <Fragment>
     <DirectoryRef Id="INSTALLDIR">
-      <Directory Id="dir8D95A98280E1A4395CEA99E084CF7DBF" Name="bin">
-        <Component Win64="$(var.Win64)" Id="cmp62E6A98D1545A50FDD03A0868E255359" Guid="*">
-          <File Id="filEADB779B803E35614D5C3A8C9930DE5D" KeyPath="yes" Source="$(var.SourceDir)/bin/libgcrypt-20.dll"/>
+      <Directory Id="dir52574B507EEB938B30459E0589D17D74" Name="bin">
+        <Component Win64="$(var.Win64)" Id="cmp4C9AC4AABBE2AFF82EAA644B54A08375" Guid="*">
+          <File Id="filA707135263B7CF90348D3CEBCB283B6B" KeyPath="yes" Source="$(var.SourceDir)/bin/dumpsexp.exe"/>
+        </Component>
+        <Component Win64="$(var.Win64)" Id="cmp70DEE09C7368B18FA3A2246995083E30" Guid="*">
+          <File Id="fil09C7AB661F6E7B06CB0FC168C72B37F9" KeyPath="yes" Source="$(var.SourceDir)/bin/hmac256.exe"/>
+        </Component>
+        <Component Win64="$(var.Win64)" Id="cmpAD894CDA3752881C9187011BAEE7D8F0" Guid="*">
+          <File Id="filA43707651835C31BFDD9437C789A9A1A" KeyPath="yes" Source="$(var.SourceDir)/bin/libgcrypt-20.dll"/>
+        </Component>
+        <Component Win64="$(var.Win64)" Id="cmpB5237683F7C93324B7EF58988050C8EC" Guid="*">
+          <File Id="fil992E12D711EAEB6A240D4891313558FC" KeyPath="yes" Source="$(var.SourceDir)/bin/libgcrypt-config"/>
+        </Component>
+        <Component Win64="$(var.Win64)" Id="cmpBC67040C8BF22B9767F3B91E40F9631A" Guid="*">
+          <File Id="filEFFEA5C17376196B759CBE9FD05C3A11" KeyPath="yes" Source="$(var.SourceDir)/bin/mpicalc.exe"/>
         </Component>
       </Directory>
     </DirectoryRef>
   </Fragment>
   <Fragment>
     <ComponentGroup Id="CG.libgcrypt">
-      <ComponentGroupRef Id="CG.gcc"/>
       <ComponentGroupRef Id="CG.libgpg-error"/>
-      <ComponentRef Id="cmp62E6A98D1545A50FDD03A0868E255359"/>
+      <ComponentRef Id="cmp4C9AC4AABBE2AFF82EAA644B54A08375"/>
+      <ComponentRef Id="cmp70DEE09C7368B18FA3A2246995083E30"/>
+      <ComponentRef Id="cmpAD894CDA3752881C9187011BAEE7D8F0"/>
+      <ComponentRef Id="cmpB5237683F7C93324B7EF58988050C8EC"/>
+      <ComponentRef Id="cmpBC67040C8BF22B9767F3B91E40F9631A"/>
     </ComponentGroup>
   </Fragment>
 </Include>
+<?ignore generated with msitools 0.106.45-476d-dirty ?>
+<?ignore tools/wixl/wixl-heat -i --var var.SourceDir -p /usr/i686-w64-mingw32/sys-root/mingw/ --directory-ref INSTALLDIR --win64 --component-group CG.libgcrypt --require libgpg-error ?>

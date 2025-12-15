@@ -1,23 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
+<?require glib2.wxi?>
 <?require libusb1.wxi?>
 <Include xmlns="http://schemas.microsoft.com/wix/2006/wi">
   <Fragment>
     <DirectoryRef Id="INSTALLDIR">
-      <Directory Id="dirA85F181264B4CDDD35B5874300B3EF0F" Name="bin">
-        <Component Win64="$(var.Win64)" Id="cmpCE0EE24B2A1AF5DC602D6AF0B067F39A" Guid="*">
-          <File Id="fil75C15C827FBDF05115A68E7515421B89" KeyPath="yes" Source="$(var.SourceDir)/bin/libusbredirhost-1.dll"/>
+      <Directory Id="dir69851C63D74C742AB1E13D72A0ACFBFA" Name="bin">
+        <Component Win64="$(var.Win64)" Id="cmp03E3C30E686A72D36D9F2C44E394ED2F" Guid="*">
+          <File Id="fil5D90BEC6ADFACEF1F9685F8872E9FC47" KeyPath="yes" Source="$(var.SourceDir)/bin/libusbredirhost-1.dll"/>
         </Component>
-        <Component Win64="$(var.Win64)" Id="cmpE4FC3C3C7912197F97C49292AAEA17E2" Guid="*">
-          <File Id="fil2385B1BB5B07DEF6E0DECC06F5A2A45D" KeyPath="yes" Source="$(var.SourceDir)/bin/libusbredirparser-1.dll"/>
+        <Component Win64="$(var.Win64)" Id="cmp553423A7CBCA7019414FFA2B52036E03" Guid="*">
+          <File Id="fil5D830114FC899A9A6B71E506A035442F" KeyPath="yes" Source="$(var.SourceDir)/bin/libusbredirparser-1.dll"/>
         </Component>
+        <Component Win64="$(var.Win64)" Id="cmp9B1C30E56E7D9E04CEF1A3E5B8AD7FC9" Guid="*">
+          <File Id="fil7139F4768251D150A6F1AAABC44B79ED" KeyPath="yes" Source="$(var.SourceDir)/bin/usbredirect.exe"/>
+        </Component>
+      </Directory>
+      <Directory Id="dirEC34FC7A4BC088CFEAE933E66520CC47" Name="share">
+        <Directory Id="dir11057524532C499C553B10F8373D86CA" Name="man">
+          <Directory Id="dir44586349F99AEBAF209EFABB0A88CBC6" Name="man1">
+            <Component Win64="$(var.Win64)" Id="cmpC97E57F7A803C3B32AAE715F8BC8AF72" Guid="*">
+              <File Id="fil9B67EB344D67DD9C48BF316DB7B85019" KeyPath="yes" Source="$(var.SourceDir)/share/man/man1/usbredirect.1"/>
+            </Component>
+          </Directory>
+        </Directory>
       </Directory>
     </DirectoryRef>
   </Fragment>
   <Fragment>
     <ComponentGroup Id="CG.usbredir">
+      <ComponentGroupRef Id="CG.glib2"/>
       <ComponentGroupRef Id="CG.libusb1"/>
-      <ComponentRef Id="cmpCE0EE24B2A1AF5DC602D6AF0B067F39A"/>
-      <ComponentRef Id="cmpE4FC3C3C7912197F97C49292AAEA17E2"/>
+      <ComponentRef Id="cmp03E3C30E686A72D36D9F2C44E394ED2F"/>
+      <ComponentRef Id="cmp553423A7CBCA7019414FFA2B52036E03"/>
+      <ComponentRef Id="cmp9B1C30E56E7D9E04CEF1A3E5B8AD7FC9"/>
+      <ComponentRef Id="cmpC97E57F7A803C3B32AAE715F8BC8AF72"/>
     </ComponentGroup>
   </Fragment>
 </Include>
+<?ignore generated with msitools 0.106.45-476d-dirty ?>
+<?ignore build/tools/wixl/wixl-heat --var var.SourceDir -p /usr/i686-w64-mingw32/sys-root/mingw/ --directory-ref INSTALLDIR --win64 --component-group CG.usbredir --require glib2 --require libusb1 -i ?>

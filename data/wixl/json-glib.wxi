@@ -3,7 +3,7 @@
 <Include xmlns="http://schemas.microsoft.com/wix/2006/wi">
   <Fragment>
     <DirectoryRef Id="INSTALLDIR">
-      <Directory Id="dir16600D3D9134F14DC613C581EFB04FEF" Name="bin">
+      <Directory Id="dir0BD2EB3C0BA85B2B247F6D4525B1E459" Name="bin">
         <Component Win64="$(var.Win64)" Id="cmpB22C65EB18C45EE7EEC15BB62ABF151F" Guid="*">
           <File Id="filD7FF8342FFC78ED1349A6005A7E2E06D" KeyPath="yes" Source="$(var.SourceDir)/bin/json-glib-format.exe"/>
         </Component>
@@ -14,420 +14,408 @@
           <File Id="fil65081A5EDE7DE3D9A7C6ADF001780FB8" KeyPath="yes" Source="$(var.SourceDir)/bin/libjson-glib-1.0-0.dll"/>
         </Component>
       </Directory>
-      <Directory Id="dirEECD184898EEA9F4CF9E4BBF773D9A0C" Name="share">
-        <Directory Id="dir2683A2D0D4AA9F5AA7040E0DD11AF806" Name="installed-tests">
-          <Directory Id="dir0A44DDA8F22898C2BFD2EDA447BACB42" Name="json-glib-1.0">
-            <Component Win64="$(var.Win64)" Id="cmpD27D0F51D027D2A1120DBA7FC9C727E9" Guid="*">
-              <File Id="filF30D3046A1694DF9AA18071C94DCB235" KeyPath="yes" Source="$(var.SourceDir)/share/installed-tests/json-glib-1.0/array.test"/>
-            </Component>
-            <Component Win64="$(var.Win64)" Id="cmpB18ACB53128AF083BC0EA4FA1D8661BF" Guid="*">
-              <File Id="fil3FC3AB43E91BE96145C9EBC551288CA3" KeyPath="yes" Source="$(var.SourceDir)/share/installed-tests/json-glib-1.0/boxed.test"/>
-            </Component>
-            <Component Win64="$(var.Win64)" Id="cmpDE3B20A7B215C39ADF1FEB2DC5E2DD8F" Guid="*">
-              <File Id="fil70171F534832990DBE22E9C2E48D98B5" KeyPath="yes" Source="$(var.SourceDir)/share/installed-tests/json-glib-1.0/builder.test"/>
-            </Component>
-            <Component Win64="$(var.Win64)" Id="cmpD22571115566BB8799C7916B967EC338" Guid="*">
-              <File Id="filF02D630B4E77EA77815813AE6400BE4B" KeyPath="yes" Source="$(var.SourceDir)/share/installed-tests/json-glib-1.0/generator.test"/>
-            </Component>
-            <Component Win64="$(var.Win64)" Id="cmp044ED77F764FEC3F25B9895E9B51559F" Guid="*">
-              <File Id="fil07C74CC6F35481B982AADD665991260A" KeyPath="yes" Source="$(var.SourceDir)/share/installed-tests/json-glib-1.0/gvariant.test"/>
-            </Component>
-            <Component Win64="$(var.Win64)" Id="cmp171D585529309103E419FA2643A2F3EC" Guid="*">
-              <File Id="filD937EE2FF62BA18980EF995F24683EF1" KeyPath="yes" Source="$(var.SourceDir)/share/installed-tests/json-glib-1.0/invalid.test"/>
-            </Component>
-            <Component Win64="$(var.Win64)" Id="cmpD17A0CE4675AF4FD1626D22C7383AAD5" Guid="*">
-              <File Id="fil06D9696499FC5CE535068C9CDD8639F7" KeyPath="yes" Source="$(var.SourceDir)/share/installed-tests/json-glib-1.0/node.test"/>
-            </Component>
-            <Component Win64="$(var.Win64)" Id="cmp70B66E289D39E8E72BDA9B917D84DB9F" Guid="*">
-              <File Id="filED1119A89F153E53AA6DBB7575BFA9C5" KeyPath="yes" Source="$(var.SourceDir)/share/installed-tests/json-glib-1.0/object.test"/>
-            </Component>
-            <Component Win64="$(var.Win64)" Id="cmp063858686255EED77556A2BAD6793892" Guid="*">
-              <File Id="filF8D94ED9D7E885D9A3AF355D18C7CAA7" KeyPath="yes" Source="$(var.SourceDir)/share/installed-tests/json-glib-1.0/parser.test"/>
-            </Component>
-            <Component Win64="$(var.Win64)" Id="cmp83A8B2787A3805B9E73C8532E5AA3505" Guid="*">
-              <File Id="filEF6E39132019BD97806DBB42AC0C7BCC" KeyPath="yes" Source="$(var.SourceDir)/share/installed-tests/json-glib-1.0/path.test"/>
-            </Component>
-            <Component Win64="$(var.Win64)" Id="cmpF762F302CFA949D856D8A87450E31856" Guid="*">
-              <File Id="fil50827F59DCD77B44F90759A3652C27E4" KeyPath="yes" Source="$(var.SourceDir)/share/installed-tests/json-glib-1.0/reader.test"/>
-            </Component>
-            <Component Win64="$(var.Win64)" Id="cmp66BD45FF525A7B88CC45870F262DBDD2" Guid="*">
-              <File Id="fil32914113AC5BD0EB8EF624C694EC4D2B" KeyPath="yes" Source="$(var.SourceDir)/share/installed-tests/json-glib-1.0/serialize-complex.test"/>
-            </Component>
-            <Component Win64="$(var.Win64)" Id="cmpC1DC1ED21AEABE3A2C181CDB9474B683" Guid="*">
-              <File Id="filEAFD9B3F605ACADC3CF4CB9B149E6BE8" KeyPath="yes" Source="$(var.SourceDir)/share/installed-tests/json-glib-1.0/serialize-full.test"/>
-            </Component>
-            <Component Win64="$(var.Win64)" Id="cmp8895C4285AA92794A4CA719AEAE37DD4" Guid="*">
-              <File Id="fil0253C5AE2FA52CA086ADB1A9C3EEDF47" KeyPath="yes" Source="$(var.SourceDir)/share/installed-tests/json-glib-1.0/serialize-simple.test"/>
-            </Component>
-          </Directory>
+      <Directory Id="dirDAE42A9540A37FC40DF89F725C87F400" Name="libexec">
+        <Directory Id="dir84C825B28FAC506C6C424E85D24F9C4A" Name="installed-tests">
         </Directory>
-        <Directory Id="dirC30433A9E01B1534215A5B848E140EE6" Name="locale">
-          <Directory Id="dirDFFBAFCF4B962C58D58CDD20CC501371" Name="as">
-            <Directory Id="dirB62985E4E90C549A53C8A42EE36312EF" Name="LC_MESSAGES">
+      </Directory>
+      <Directory Id="dirC9E459DA5ACBB48A7D9AC1C970E62EB9" Name="share">
+        <Directory Id="dirD51D26946C9C7903964A99F9998CE876" Name="installed-tests">
+        </Directory>
+        <Directory Id="dir217C1DA0C31FAEDD7BFBF60C010B6AF4" Name="locale">
+          <Directory Id="dir1F7E323B70399184AFCCA2B7E3841572" Name="as">
+            <Directory Id="dir08FC6923F112712BDF735C286AB34E21" Name="LC_MESSAGES">
               <Component Win64="$(var.Win64)" Id="cmp76C32026CF6D7A11054A4E258A6CD75E" Guid="*">
                 <File Id="filFC9A0DA17911AB414BCAB09590473F3E" KeyPath="yes" Source="$(var.SourceDir)/share/locale/as/LC_MESSAGES/json-glib-1.0.mo"/>
               </Component>
             </Directory>
           </Directory>
-          <Directory Id="dirB84DB7DB0FB63E20DF6B26A1231C236A" Name="bg">
-            <Directory Id="dir19AD7C3F511A1B5EB5EF63A3A6943010" Name="LC_MESSAGES">
+          <Directory Id="dirEC58CFC6EEBCD0B8C8979E5C80E12DEF" Name="be">
+            <Directory Id="dir20E8E363A6313C0C2B24C5459192DB36" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmpC11413C4398DB987701E98576C290714" Guid="*">
+                <File Id="fil01306BAB96E0EEA4A571427631F676DF" KeyPath="yes" Source="$(var.SourceDir)/share/locale/be/LC_MESSAGES/json-glib-1.0.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir735064A6F4DFC6B0E1BE96AC1FACDD5C" Name="bg">
+            <Directory Id="dir6F607BD9CC8E41CEF78523373F73E847" Name="LC_MESSAGES">
               <Component Win64="$(var.Win64)" Id="cmp5433D18C053427EA0C37865C487612AB" Guid="*">
                 <File Id="filB03EBFC0CB983EDB7C2B3269BC09ACA9" KeyPath="yes" Source="$(var.SourceDir)/share/locale/bg/LC_MESSAGES/json-glib-1.0.mo"/>
               </Component>
             </Directory>
           </Directory>
-          <Directory Id="dirA4904BBC32FDB62E56978E89DBA011C9" Name="bn_IN">
-            <Directory Id="dir067E05EF72C210082701C8C559BF4A2D" Name="LC_MESSAGES">
+          <Directory Id="dir506A8AB2233F36EC5CF26A6D9A6DDA7A" Name="bn_IN">
+            <Directory Id="dirDA916A2869EC08006731C97F50AA20D7" Name="LC_MESSAGES">
               <Component Win64="$(var.Win64)" Id="cmp275EFE51865178E242A12E6CB84A36B4" Guid="*">
                 <File Id="fil6CFF654C9E5F76DA748115D03192E19D" KeyPath="yes" Source="$(var.SourceDir)/share/locale/bn_IN/LC_MESSAGES/json-glib-1.0.mo"/>
               </Component>
             </Directory>
           </Directory>
-          <Directory Id="dirB9A31DB30489AEBAF970AA719E92CB51" Name="bs">
-            <Directory Id="dir2008E87F0B570D522F32E2593B30F7A6" Name="LC_MESSAGES">
+          <Directory Id="dirC0738D9237CB4DCEBC28BB5884D81D2E" Name="bs">
+            <Directory Id="dir42F1D3DCEC9027D873261617CEAF8331" Name="LC_MESSAGES">
               <Component Win64="$(var.Win64)" Id="cmp7E1EC57C8299805D269A97FBB1F01367" Guid="*">
                 <File Id="filE13F6AA962E1DCDB84905549C499F15A" KeyPath="yes" Source="$(var.SourceDir)/share/locale/bs/LC_MESSAGES/json-glib-1.0.mo"/>
               </Component>
             </Directory>
           </Directory>
-          <Directory Id="dir2E640B5B7EF87D41CFB6329223D7B3E8" Name="ca">
-            <Directory Id="dir91BB597997742199F4F70A01F8CA4357" Name="LC_MESSAGES">
+          <Directory Id="dir432AF4CD4EE9CEDE7476D0260855DFA9" Name="ca">
+            <Directory Id="dir0AC84463403B5D4B73D6F7060A0A17CF" Name="LC_MESSAGES">
               <Component Win64="$(var.Win64)" Id="cmp9E3AC7FFAB80BC47046043C995F32B33" Guid="*">
                 <File Id="filA56149CD4E46496090455A4CA848BB1A" KeyPath="yes" Source="$(var.SourceDir)/share/locale/ca/LC_MESSAGES/json-glib-1.0.mo"/>
               </Component>
             </Directory>
           </Directory>
-          <Directory Id="dir852D1FACDCE072642EBE6011434B36C2" Name="ca@valencia">
-            <Directory Id="dir5BD6186C3761FC09E18DE6D7BE3EF309" Name="LC_MESSAGES">
+          <Directory Id="dir9C9B25C877746BE46859A3F48023A9A6" Name="ca@valencia">
+            <Directory Id="dir049B226CDD7A99BB73AC1AFA10EE1822" Name="LC_MESSAGES">
               <Component Win64="$(var.Win64)" Id="cmp8A0650C308BD7745EBAA1079872114C3" Guid="*">
                 <File Id="filF5EBA155C966CD348C9C947124751DCF" KeyPath="yes" Source="$(var.SourceDir)/share/locale/ca@valencia/LC_MESSAGES/json-glib-1.0.mo"/>
               </Component>
             </Directory>
           </Directory>
-          <Directory Id="dirFD809DE33ED49D6EBEA53DF055021146" Name="cs">
-            <Directory Id="dirE79DAACDF10681A512400290C9D9A573" Name="LC_MESSAGES">
+          <Directory Id="dirE275731ACA6EF29F8BC625AB9F8D8493" Name="cs">
+            <Directory Id="dir4086A938561A226041BEFC54110B4D21" Name="LC_MESSAGES">
               <Component Win64="$(var.Win64)" Id="cmpE34E7A4818E3D9B51F307A6D3C555678" Guid="*">
                 <File Id="fil3B1544CFBB633CD04EF0F35D514BBB6D" KeyPath="yes" Source="$(var.SourceDir)/share/locale/cs/LC_MESSAGES/json-glib-1.0.mo"/>
               </Component>
             </Directory>
           </Directory>
-          <Directory Id="dir8B67D24AC7373667D15604781A185B9B" Name="da">
-            <Directory Id="dirE1CC311F29F9E65140D874E880272D94" Name="LC_MESSAGES">
+          <Directory Id="dir37EA48846274D5C1439CBCD51BF17CCF" Name="da">
+            <Directory Id="dirF57068B9FBD94EE0D344BA92AA2552A3" Name="LC_MESSAGES">
               <Component Win64="$(var.Win64)" Id="cmp537B6571610F6794D9F998253A82A5CC" Guid="*">
                 <File Id="fil59570CDD4FA376906CD38021F597BB20" KeyPath="yes" Source="$(var.SourceDir)/share/locale/da/LC_MESSAGES/json-glib-1.0.mo"/>
               </Component>
             </Directory>
           </Directory>
-          <Directory Id="dirF5E08B85CD59BEED5380C822C470EFE8" Name="de">
-            <Directory Id="dirB2BAA01D232E53B9FB8014AE2D103B86" Name="LC_MESSAGES">
+          <Directory Id="dir5283D39BE915D51B38D9F20D74F6BA63" Name="de">
+            <Directory Id="dir92A12146C50E18415EFED99BDDBC9160" Name="LC_MESSAGES">
               <Component Win64="$(var.Win64)" Id="cmp59CD26BA11A5A33638192848A6EE3AF9" Guid="*">
                 <File Id="fil8A93EFB23EDF04CDF5F9CD5C8CF4A599" KeyPath="yes" Source="$(var.SourceDir)/share/locale/de/LC_MESSAGES/json-glib-1.0.mo"/>
               </Component>
             </Directory>
           </Directory>
-          <Directory Id="dir435E4F20F817075E8C1F25B50D481A32" Name="el">
-            <Directory Id="dir73BD2607A0FA880E3887CC0FDF2C1A3E" Name="LC_MESSAGES">
+          <Directory Id="dirC9705F8F4BE8B3411A3026803D4EE30B" Name="el">
+            <Directory Id="dir613487497E172CC224E270D78AE04206" Name="LC_MESSAGES">
               <Component Win64="$(var.Win64)" Id="cmp4463298F012C4FC7BBF4351A87554530" Guid="*">
                 <File Id="fil8FF364542AED3AD74FA76528E6883E90" KeyPath="yes" Source="$(var.SourceDir)/share/locale/el/LC_MESSAGES/json-glib-1.0.mo"/>
               </Component>
             </Directory>
           </Directory>
-          <Directory Id="dir01723050E41E75C92972F054BE3C4783" Name="en_GB">
-            <Directory Id="dirFB4D6A1380A496F299CF461562EA536F" Name="LC_MESSAGES">
+          <Directory Id="dir3DFDD35C2F8C5C12D2B2F6FCCBF03A28" Name="en_GB">
+            <Directory Id="dirC8278A4ED3337640447F55E44D57D7A1" Name="LC_MESSAGES">
               <Component Win64="$(var.Win64)" Id="cmpA9958CCBDBAB1F12F20ED1A9811C35EC" Guid="*">
                 <File Id="filBDBF45BC0B37F797BDB8D2D621D294CC" KeyPath="yes" Source="$(var.SourceDir)/share/locale/en_GB/LC_MESSAGES/json-glib-1.0.mo"/>
               </Component>
             </Directory>
           </Directory>
-          <Directory Id="dir0DBCD060060D2BAF84130DAE16D9AC54" Name="eo">
-            <Directory Id="dir2732909A096528D79FF66CF3467C334F" Name="LC_MESSAGES">
+          <Directory Id="dirBD35E5941ED615E3BA6EEDBF378789B2" Name="eo">
+            <Directory Id="dir56B062C08C715F5BB8177DD05746CE43" Name="LC_MESSAGES">
               <Component Win64="$(var.Win64)" Id="cmp55346F250C98B706F8BCDBB43A79457D" Guid="*">
                 <File Id="fil1A9A9CBF8BF3871A57956E3A058B95C0" KeyPath="yes" Source="$(var.SourceDir)/share/locale/eo/LC_MESSAGES/json-glib-1.0.mo"/>
               </Component>
             </Directory>
           </Directory>
-          <Directory Id="dir5DB753C9E8CED31C6AA12A1274CF6C09" Name="es">
-            <Directory Id="dir565D0070C9FDA15CDC101F8FBB52A30B" Name="LC_MESSAGES">
+          <Directory Id="dir5BB7FE3CD7E1DB13D6A79476E36FCAE4" Name="es">
+            <Directory Id="dir7819B94724F55D900E3751F6D4104F27" Name="LC_MESSAGES">
               <Component Win64="$(var.Win64)" Id="cmpDB17CC078670092F9DE53EE387827C56" Guid="*">
                 <File Id="fil18706446BDDAA08FA17163553E757713" KeyPath="yes" Source="$(var.SourceDir)/share/locale/es/LC_MESSAGES/json-glib-1.0.mo"/>
               </Component>
             </Directory>
           </Directory>
-          <Directory Id="dirC1EAC118E0F6D018DF342159A573A997" Name="et">
-            <Directory Id="dir1B50057041DA4CCFD60F9C836E776CBE" Name="LC_MESSAGES">
+          <Directory Id="dirBD28D05AF27F43835F41079542FA14D6" Name="et">
+            <Directory Id="dirB81E29514F939175513CAA0EC38B6C63" Name="LC_MESSAGES">
               <Component Win64="$(var.Win64)" Id="cmp81888BE2D697DB1B3E73FDF1274006DB" Guid="*">
                 <File Id="filDFE553711A8D9831219DB5EB440C07FE" KeyPath="yes" Source="$(var.SourceDir)/share/locale/et/LC_MESSAGES/json-glib-1.0.mo"/>
               </Component>
             </Directory>
           </Directory>
-          <Directory Id="dirBE340EF35E7C9AA3ACAA7172A68703D4" Name="eu">
-            <Directory Id="dir70F29B3CDF5299761408B2376CB061CE" Name="LC_MESSAGES">
+          <Directory Id="dir9ED1256E7A7C883A5A09C8C9F17666CA" Name="eu">
+            <Directory Id="dir831B40141297AD04D8319B7F6B0F4DBC" Name="LC_MESSAGES">
               <Component Win64="$(var.Win64)" Id="cmpF6D67AF741D754F6415EFE725A23E1E9" Guid="*">
                 <File Id="filE33C01259AB136EF7352FB9BC4AF98CB" KeyPath="yes" Source="$(var.SourceDir)/share/locale/eu/LC_MESSAGES/json-glib-1.0.mo"/>
               </Component>
             </Directory>
           </Directory>
-          <Directory Id="dir1772A4A92EC8534737D7D221CC10CAE7" Name="fr">
-            <Directory Id="dir76178DB72142A946A5577E557EB11DBF" Name="LC_MESSAGES">
+          <Directory Id="dir916A59813E1135BD8AE1790D4B9D382F" Name="fr">
+            <Directory Id="dirBAD0612F9C0DA9F277AF6F614E941A61" Name="LC_MESSAGES">
               <Component Win64="$(var.Win64)" Id="cmp2D618A570F2882B943D7E188F2CE789D" Guid="*">
                 <File Id="fil0C3182C86B2FCFE09BBE6B0E8DC586AD" KeyPath="yes" Source="$(var.SourceDir)/share/locale/fr/LC_MESSAGES/json-glib-1.0.mo"/>
               </Component>
             </Directory>
           </Directory>
-          <Directory Id="dir6935042D87E5D31031D668DB926CB03A" Name="fur">
-            <Directory Id="dir3F24668EF0855E7A53FCFFE15F5A7FD8" Name="LC_MESSAGES">
+          <Directory Id="dirE91C46372DC8BEF007BAB9C903A07573" Name="fur">
+            <Directory Id="dirDB87A8F94ADA23A84D6879171A28F67F" Name="LC_MESSAGES">
               <Component Win64="$(var.Win64)" Id="cmp1B28A716D05A9F73BD2C89513DB4B0F2" Guid="*">
                 <File Id="filEBB07B75D0D26EC0D2CBA597F04D5061" KeyPath="yes" Source="$(var.SourceDir)/share/locale/fur/LC_MESSAGES/json-glib-1.0.mo"/>
               </Component>
             </Directory>
           </Directory>
-          <Directory Id="dir4F8028E4F7FFEA19F267456542185AAE" Name="gl">
-            <Directory Id="dir754231DBF09E7EE71847999623CB2A80" Name="LC_MESSAGES">
+          <Directory Id="dir40C1E6E1E84782EDA7AD81F53BEB311A" Name="gl">
+            <Directory Id="dir64E0CA13D5EB168703D5B2BE99F986D4" Name="LC_MESSAGES">
               <Component Win64="$(var.Win64)" Id="cmpFEB7C5EBE938E1EB34D79D5662B2C39C" Guid="*">
                 <File Id="fil16D8D8B4D38110595D8590D65ED281D6" KeyPath="yes" Source="$(var.SourceDir)/share/locale/gl/LC_MESSAGES/json-glib-1.0.mo"/>
               </Component>
             </Directory>
           </Directory>
-          <Directory Id="dirE96A3962587506DFBAD976F7BD22A586" Name="he">
-            <Directory Id="dir7AE9430C602210A8B4F47E3BE178303C" Name="LC_MESSAGES">
+          <Directory Id="dir7D328F1615900F1221CED737F98257C9" Name="he">
+            <Directory Id="dirADB3F4900C0A7854AFA2416194847EF6" Name="LC_MESSAGES">
               <Component Win64="$(var.Win64)" Id="cmpB175A8A2BBEF3C20EA5D286FD42681A6" Guid="*">
                 <File Id="filDDB89E2982379A3CA72EFB5A57DB16E4" KeyPath="yes" Source="$(var.SourceDir)/share/locale/he/LC_MESSAGES/json-glib-1.0.mo"/>
               </Component>
             </Directory>
           </Directory>
-          <Directory Id="dirD34D5FEA75C6EC8759903634E7BB4E26" Name="hi">
-            <Directory Id="dirD633C8550C746D85FBB18DAAF76D4978" Name="LC_MESSAGES">
+          <Directory Id="dir0FC0DCEC02AD1B90F65DE931D7F81232" Name="hi">
+            <Directory Id="dirD3174E9B60035072E4BD401B12B8CE29" Name="LC_MESSAGES">
               <Component Win64="$(var.Win64)" Id="cmpB939E26EAA39A3E8FC0A9D6F27D8A11E" Guid="*">
                 <File Id="filE33583869E2969754180ED03F75242CD" KeyPath="yes" Source="$(var.SourceDir)/share/locale/hi/LC_MESSAGES/json-glib-1.0.mo"/>
               </Component>
             </Directory>
           </Directory>
-          <Directory Id="dirE36140020933EA85FEB622805D2D55A8" Name="hu">
-            <Directory Id="dir6137A803373E374BCDDAF5A5FF9F0C72" Name="LC_MESSAGES">
+          <Directory Id="dir557B3686F623A989A40F82C8EEECDD1D" Name="hr">
+            <Directory Id="dirBEDB79C3BE5588AB35205DF25503BC6F" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmpC2B1DF65DBCC9D70276A0ED7B577C987" Guid="*">
+                <File Id="fil73D3B09BDE2571971C8274F37F7618EA" KeyPath="yes" Source="$(var.SourceDir)/share/locale/hr/LC_MESSAGES/json-glib-1.0.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dirC7745975AF345117D0F99356DB519E9D" Name="hu">
+            <Directory Id="dir0D4CBC1BCC0675A7E446910C67F61B12" Name="LC_MESSAGES">
               <Component Win64="$(var.Win64)" Id="cmp1D3A42EE906BA35F2AB2CFB53D9223FD" Guid="*">
                 <File Id="filDA00B76B23D79B76A283E5AC11EBB65F" KeyPath="yes" Source="$(var.SourceDir)/share/locale/hu/LC_MESSAGES/json-glib-1.0.mo"/>
               </Component>
             </Directory>
           </Directory>
-          <Directory Id="dirE0767DA5C876C07125779B1B6C3F9E5C" Name="id">
-            <Directory Id="dir2AA0B750D02FBC2E7428608C0494BD08" Name="LC_MESSAGES">
+          <Directory Id="dirE83F33AB8523161AE5DA0721DD00E1C3" Name="id">
+            <Directory Id="dir922C53965A287F3A76E2BF158F857774" Name="LC_MESSAGES">
               <Component Win64="$(var.Win64)" Id="cmpBC258BDC192A025E5AAD24C1143F5C96" Guid="*">
                 <File Id="fil8DD26B2C581DF4C426B3EA83BC66FF52" KeyPath="yes" Source="$(var.SourceDir)/share/locale/id/LC_MESSAGES/json-glib-1.0.mo"/>
               </Component>
             </Directory>
           </Directory>
-          <Directory Id="dir8E7F7B8E67881A3D9759E731E17620AA" Name="it">
-            <Directory Id="dir562BD802BA88CA67B407F861DBC18CF0" Name="LC_MESSAGES">
+          <Directory Id="dir2BD91AA49FB5B30C2914F0E2820CD19C" Name="it">
+            <Directory Id="dir933EDF4E75BF5BDFD35327A612A3BC63" Name="LC_MESSAGES">
               <Component Win64="$(var.Win64)" Id="cmpE8E9CA49779BF2A0AFB3053DF634312F" Guid="*">
                 <File Id="filA27C997856A3D79A2AFD6EF8251E79EE" KeyPath="yes" Source="$(var.SourceDir)/share/locale/it/LC_MESSAGES/json-glib-1.0.mo"/>
               </Component>
             </Directory>
           </Directory>
-          <Directory Id="dirC84EEFA9DBAF5DE2A55066303A1189F2" Name="ja">
-            <Directory Id="dir6160028C8B305CD433838E006FB091C3" Name="LC_MESSAGES">
+          <Directory Id="dir9EADC1D0AFB7BE21D832EB01B2E09383" Name="ja">
+            <Directory Id="dir95D1D28EB2BA42CEC96AF9E9664851CB" Name="LC_MESSAGES">
               <Component Win64="$(var.Win64)" Id="cmpDD965932763D75AAFDCF117685D4864A" Guid="*">
                 <File Id="filAD59A46718A1806B9DB25C0E5BA53C39" KeyPath="yes" Source="$(var.SourceDir)/share/locale/ja/LC_MESSAGES/json-glib-1.0.mo"/>
               </Component>
             </Directory>
           </Directory>
-          <Directory Id="dir7075EBD2D93BC0E0F8BEC74BA6F7A700" Name="ko">
-            <Directory Id="dir85C706A6A0979EDD71339122E4C92566" Name="LC_MESSAGES">
+          <Directory Id="dir267993419AA3714EB3E526ADCFEB3FCA" Name="ko">
+            <Directory Id="dirCFF9866113F55DD46ED26022E12D87F8" Name="LC_MESSAGES">
               <Component Win64="$(var.Win64)" Id="cmpBFC727E0D27D1A18DCD9E7EE327E29D2" Guid="*">
                 <File Id="fil171D3B0CFB2A2E15709B0435E3672AE1" KeyPath="yes" Source="$(var.SourceDir)/share/locale/ko/LC_MESSAGES/json-glib-1.0.mo"/>
               </Component>
             </Directory>
           </Directory>
-          <Directory Id="dir7108D404125593D261F90A8C263C3A2A" Name="ky">
-            <Directory Id="dirF9E18A902673B545D12DF9A7F59E42F7" Name="LC_MESSAGES">
+          <Directory Id="dir4DC12FF2BD9F21C9B35CAF5ACAAF512C" Name="ky">
+            <Directory Id="dir8D359B324CF53B4C66EBFC48EA28F702" Name="LC_MESSAGES">
               <Component Win64="$(var.Win64)" Id="cmp9F0FAE3033D96D0423BE38EC6CF8FC92" Guid="*">
                 <File Id="filC0E464190454D30F070ACE854F606E2F" KeyPath="yes" Source="$(var.SourceDir)/share/locale/ky/LC_MESSAGES/json-glib-1.0.mo"/>
               </Component>
             </Directory>
           </Directory>
-          <Directory Id="dir4CD053C19D8D8525FFECC05C4C1A3F7C" Name="lt">
-            <Directory Id="dirACB64001C8AEC209257015E1BF038E5E" Name="LC_MESSAGES">
+          <Directory Id="dir7E194A5C067C65CE581BD709EE03A27A" Name="lt">
+            <Directory Id="dir3D71B2A8C7F4713DDFA9E7F9B0B0AADA" Name="LC_MESSAGES">
               <Component Win64="$(var.Win64)" Id="cmp63B991CF3CE5C1E0E718E343B86E3BEA" Guid="*">
                 <File Id="fil80534801E7CF5034E12D3AE8BC4A511C" KeyPath="yes" Source="$(var.SourceDir)/share/locale/lt/LC_MESSAGES/json-glib-1.0.mo"/>
               </Component>
             </Directory>
           </Directory>
-          <Directory Id="dir409D7BB3ED039D97C70ECFBC8DCE456F" Name="lv">
-            <Directory Id="dir01F7EB15EB70608D072697A2547D184C" Name="LC_MESSAGES">
+          <Directory Id="dir1B0B5E68B18AF8FA3B23F066D7C83DEB" Name="lv">
+            <Directory Id="dir297DE4FC2EF5D6D863AB5E48D0112305" Name="LC_MESSAGES">
               <Component Win64="$(var.Win64)" Id="cmpA7B24EB004C7D2808500943F41A75BB8" Guid="*">
                 <File Id="fil045E7EE19121F9285A6D535E3AB020EF" KeyPath="yes" Source="$(var.SourceDir)/share/locale/lv/LC_MESSAGES/json-glib-1.0.mo"/>
               </Component>
             </Directory>
           </Directory>
-          <Directory Id="dir861134559C85CC45C9B2C7E7038B0973" Name="ml">
-            <Directory Id="dirC4C9ADC257F0135F9F0388762944174D" Name="LC_MESSAGES">
+          <Directory Id="dir76F0EC5C5559D337A3D73A68F4218708" Name="ml">
+            <Directory Id="dirAE05222BB964458031AF4FA1B9C88B73" Name="LC_MESSAGES">
               <Component Win64="$(var.Win64)" Id="cmp215ECB9911A8D7D9C1184B131A17821F" Guid="*">
                 <File Id="filE123C98F857F4F9889A6A019B1424CA4" KeyPath="yes" Source="$(var.SourceDir)/share/locale/ml/LC_MESSAGES/json-glib-1.0.mo"/>
               </Component>
             </Directory>
           </Directory>
-          <Directory Id="dir305CA7BCDBD74178591C768F5A3D9381" Name="nb">
-            <Directory Id="dir03E43FA2F69FE4B8D0E1436EC15460E3" Name="LC_MESSAGES">
+          <Directory Id="dirFB9F0F01F6F163849A5EFF70A7E28932" Name="ms">
+            <Directory Id="dir046585FAC934874F73CB148188D6E7B0" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp5F177E0ED2128E744BA637D719D7F63F" Guid="*">
+                <File Id="fil006A182392AA956E245EC857B2DF9B15" KeyPath="yes" Source="$(var.SourceDir)/share/locale/ms/LC_MESSAGES/json-glib-1.0.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dirACE929737FA2A07997AA34A0F25D0942" Name="nb">
+            <Directory Id="dir9882F72AE84878294C1D9A48424CBD92" Name="LC_MESSAGES">
               <Component Win64="$(var.Win64)" Id="cmpCF4301607D015002A923ABEF702506A0" Guid="*">
                 <File Id="filA190DDE06E3D681EBF87EAAA9A2D472A" KeyPath="yes" Source="$(var.SourceDir)/share/locale/nb/LC_MESSAGES/json-glib-1.0.mo"/>
               </Component>
             </Directory>
           </Directory>
-          <Directory Id="dirD6D4C08BA0F50FEAF6CB1BE1AD974F1A" Name="ne">
-            <Directory Id="dir772498B7452763EE57E0929FD586B32D" Name="LC_MESSAGES">
+          <Directory Id="dirCD5214F70450E2A4D0606EF1EA474ADD" Name="ne">
+            <Directory Id="dirAFDB82326D298A508BEE6C3A3DFDC187" Name="LC_MESSAGES">
               <Component Win64="$(var.Win64)" Id="cmpC453770BD984E8F14B687B5A7A5EC5C7" Guid="*">
                 <File Id="fil841E39B0F675D541B6ADBD9994A70B85" KeyPath="yes" Source="$(var.SourceDir)/share/locale/ne/LC_MESSAGES/json-glib-1.0.mo"/>
               </Component>
             </Directory>
           </Directory>
-          <Directory Id="dirE041EC469E67FCB968E35CF753E84459" Name="oc">
-            <Directory Id="dirC019092EB455BC3D27D98DD5CF66AE06" Name="LC_MESSAGES">
+          <Directory Id="dir30EC228C891BDDE158BDDBA7D407D339" Name="nl">
+            <Directory Id="dirC2DAE235413C73DB61E2B38B745AB371" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmpE4A41E6AAB5818FCB46FA4BA9BF9973D" Guid="*">
+                <File Id="fil793E78E3438DCFB37B917573AC45F020" KeyPath="yes" Source="$(var.SourceDir)/share/locale/nl/LC_MESSAGES/json-glib-1.0.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dirA8A34E2B84099B0124D2233ECDE592ED" Name="oc">
+            <Directory Id="dir72302DE148190A6E933BBEB8F7561C87" Name="LC_MESSAGES">
               <Component Win64="$(var.Win64)" Id="cmpF3E880A0FE12E6D2FD2F2B00BCACA250" Guid="*">
                 <File Id="fil10F0348D2DB289E312940F486BA5513F" KeyPath="yes" Source="$(var.SourceDir)/share/locale/oc/LC_MESSAGES/json-glib-1.0.mo"/>
               </Component>
             </Directory>
           </Directory>
-          <Directory Id="dir982C363A4BE2C09BB528ADA65782A6CE" Name="or">
-            <Directory Id="dir014880126D45F91236AE53DD41615589" Name="LC_MESSAGES">
+          <Directory Id="dir7C10AA00E3634BC108F867733D4B7F38" Name="or">
+            <Directory Id="dir29A10FF701E0C416A69274EA81ED527B" Name="LC_MESSAGES">
               <Component Win64="$(var.Win64)" Id="cmp4371BED51B578FD96EBD8D001EC595F2" Guid="*">
                 <File Id="fil6403D68B716A5DF8C0A1E506C2DD38AA" KeyPath="yes" Source="$(var.SourceDir)/share/locale/or/LC_MESSAGES/json-glib-1.0.mo"/>
               </Component>
             </Directory>
           </Directory>
-          <Directory Id="dirDF9D20675354BF4E8ED2382ACB93F891" Name="pa">
-            <Directory Id="dir62A3BBC2D81CE172A9076EF56AB155E9" Name="LC_MESSAGES">
+          <Directory Id="dirCA70730B3B84868134534CF3E06C5A0A" Name="pa">
+            <Directory Id="dir3CB683ACE9D9352052238ABE7DB0CD1D" Name="LC_MESSAGES">
               <Component Win64="$(var.Win64)" Id="cmp7AD9FE8DAEBD9036F488134DB2DB89A1" Guid="*">
                 <File Id="filE2F0BFF4CF74AF55D939C4698F77ED4D" KeyPath="yes" Source="$(var.SourceDir)/share/locale/pa/LC_MESSAGES/json-glib-1.0.mo"/>
               </Component>
             </Directory>
           </Directory>
-          <Directory Id="dir6D92C0E5D445C42C11B11F6AD9FA57FB" Name="pl">
-            <Directory Id="dir295D88F3D30420D6883F54A7A289B935" Name="LC_MESSAGES">
+          <Directory Id="dir1C7335F3742BB8786BD0FAF1AB6C821C" Name="pl">
+            <Directory Id="dirD6AE3AD2277464400277361CDA79DA23" Name="LC_MESSAGES">
               <Component Win64="$(var.Win64)" Id="cmp45C446EF5556645977ED946EC0FE608A" Guid="*">
                 <File Id="filACA49B6A35453A0179286144F9F2D642" KeyPath="yes" Source="$(var.SourceDir)/share/locale/pl/LC_MESSAGES/json-glib-1.0.mo"/>
               </Component>
             </Directory>
           </Directory>
-          <Directory Id="dir19232514DC9DCFB4C9FAF1C96F9418C8" Name="pt">
-            <Directory Id="dirE9CC40AB48398869ED6EAA3D32358FAB" Name="LC_MESSAGES">
+          <Directory Id="dir8D47503D6A4F5F0DA0999C0C016EB94C" Name="pt">
+            <Directory Id="dir2D90D7FF205B8A920C1FCEBA7E085ABC" Name="LC_MESSAGES">
               <Component Win64="$(var.Win64)" Id="cmpCA6F925C6E98CCCC8BF747A977D80BB9" Guid="*">
                 <File Id="fil1C329F102BBB12DBBF23061E341CFDFD" KeyPath="yes" Source="$(var.SourceDir)/share/locale/pt/LC_MESSAGES/json-glib-1.0.mo"/>
               </Component>
             </Directory>
           </Directory>
-          <Directory Id="dir498A3376785C4ABE000B669D6FEA3B0D" Name="pt_BR">
-            <Directory Id="dirB33318A37BED5B93D259CC86B85E2DEB" Name="LC_MESSAGES">
+          <Directory Id="dir00C473A2F6DF31725C82CCF155A2DE1D" Name="pt_BR">
+            <Directory Id="dir48A25B916F5AFA408AB516D1DF4E3730" Name="LC_MESSAGES">
               <Component Win64="$(var.Win64)" Id="cmp32B95F20B971A912D5055A5ECE3356BD" Guid="*">
                 <File Id="fil4506CC0833807C783B3681E2B1DC8E95" KeyPath="yes" Source="$(var.SourceDir)/share/locale/pt_BR/LC_MESSAGES/json-glib-1.0.mo"/>
               </Component>
             </Directory>
           </Directory>
-          <Directory Id="dir15A295872D6516088308337EE95A1C00" Name="ro">
-            <Directory Id="dir0DE1A7809B26D53D930F7D6D0C7D6B40" Name="LC_MESSAGES">
+          <Directory Id="dirBAC3A7B5A85C4A66879D8AFAC73F6413" Name="ro">
+            <Directory Id="dir434E4B0B1854D2FBFB9EF239A3B5F180" Name="LC_MESSAGES">
               <Component Win64="$(var.Win64)" Id="cmp68D545CD24C7E407230E8092034A2549" Guid="*">
                 <File Id="fil6BB80BF4E25377DD42980AD4C1B3E968" KeyPath="yes" Source="$(var.SourceDir)/share/locale/ro/LC_MESSAGES/json-glib-1.0.mo"/>
               </Component>
             </Directory>
           </Directory>
-          <Directory Id="dirB1C4359965EAC5775A64218E6FF87691" Name="ru">
-            <Directory Id="dirE3B2995D4C25C6C3082F220931CFE425" Name="LC_MESSAGES">
+          <Directory Id="dir06D1411B08DF36E9DB6A38162762E4F5" Name="ru">
+            <Directory Id="dir29896F0E161B652FD9BC76C6983CEC55" Name="LC_MESSAGES">
               <Component Win64="$(var.Win64)" Id="cmp795420D46E44DEAE0703525929B40BDE" Guid="*">
                 <File Id="fil2318488AB2002FF335DDFB0018BB3C85" KeyPath="yes" Source="$(var.SourceDir)/share/locale/ru/LC_MESSAGES/json-glib-1.0.mo"/>
               </Component>
             </Directory>
           </Directory>
-          <Directory Id="dirB66E81A453DA2050444F5B596D53B016" Name="sk">
-            <Directory Id="dirD720E699294469AADCE3F0AEE4FA2823" Name="LC_MESSAGES">
+          <Directory Id="dir061DA774149D5E1514DA506DBCD3A212" Name="sk">
+            <Directory Id="dir1741997EB4C73F274A5A2D02A63D5D0E" Name="LC_MESSAGES">
               <Component Win64="$(var.Win64)" Id="cmp0FBAA066334CFD70631C725247158287" Guid="*">
                 <File Id="filD295244E5D1C1CFBDB6D0BA4CE068650" KeyPath="yes" Source="$(var.SourceDir)/share/locale/sk/LC_MESSAGES/json-glib-1.0.mo"/>
               </Component>
             </Directory>
           </Directory>
-          <Directory Id="dir8E47B96BF29ECCA4064FAA0FBB8199BB" Name="sl">
-            <Directory Id="dirE84EBC833E82B3B2231B55AC90071448" Name="LC_MESSAGES">
+          <Directory Id="dir2A7AEB2B1ACA5FB7B3584FB01FBFBAD4" Name="sl">
+            <Directory Id="dir11A41F477290FEEC68C5A0F836545448" Name="LC_MESSAGES">
               <Component Win64="$(var.Win64)" Id="cmp152D75FCBE30C2DE325F6F1691698121" Guid="*">
                 <File Id="fil08E50AAA30C01F7DBA8D90FE63204A4F" KeyPath="yes" Source="$(var.SourceDir)/share/locale/sl/LC_MESSAGES/json-glib-1.0.mo"/>
               </Component>
             </Directory>
           </Directory>
-          <Directory Id="dir93889F1C9997A30D239BF18D9FDFA484" Name="sr">
-            <Directory Id="dirC2DEC671040E0D39A9004D7D867F9F7D" Name="LC_MESSAGES">
+          <Directory Id="dir66BB8B932FFE1B6DFEB0EEACD3D44A94" Name="sr">
+            <Directory Id="dir1BCF1BDB31455FA20344C7C0F857AE96" Name="LC_MESSAGES">
               <Component Win64="$(var.Win64)" Id="cmp8EC7F7FA1CBCFB73B3692D442D142D6F" Guid="*">
                 <File Id="filE44962473E9E31B0F1E184BDDF795F07" KeyPath="yes" Source="$(var.SourceDir)/share/locale/sr/LC_MESSAGES/json-glib-1.0.mo"/>
               </Component>
             </Directory>
           </Directory>
-          <Directory Id="dir5016F644396E7874B557E737621A67F8" Name="sr@latin">
-            <Directory Id="dir25BD4B4A7C0FB694D586D4FFFB9ADFAA" Name="LC_MESSAGES">
+          <Directory Id="dirB1BBDE1F3BDA275B2BB2CA9D76C455C5" Name="sr@latin">
+            <Directory Id="dir2E315DB8C4A37B715CB49A8EE27600D0" Name="LC_MESSAGES">
               <Component Win64="$(var.Win64)" Id="cmp819BE412E9592D0ECBF49E9B5523E8C8" Guid="*">
                 <File Id="filD8A54C378CD6616C02E9E20E399E69EA" KeyPath="yes" Source="$(var.SourceDir)/share/locale/sr@latin/LC_MESSAGES/json-glib-1.0.mo"/>
               </Component>
             </Directory>
           </Directory>
-          <Directory Id="dir78117B201510115019DFD9C129BB2F24" Name="sv">
-            <Directory Id="dirBBC1AF960B1B08754073CDCD4AA31A83" Name="LC_MESSAGES">
+          <Directory Id="dirD7BD1E2F34A9073A70F01800798735D4" Name="sv">
+            <Directory Id="dir4FE4D5C72202E3432AD83BDF57E98E38" Name="LC_MESSAGES">
               <Component Win64="$(var.Win64)" Id="cmp07469BC01DAB13BA347B312B50229D6F" Guid="*">
                 <File Id="fil1CE84670D53765641E3A29DCDA101CCC" KeyPath="yes" Source="$(var.SourceDir)/share/locale/sv/LC_MESSAGES/json-glib-1.0.mo"/>
               </Component>
             </Directory>
           </Directory>
-          <Directory Id="dirF87EF22D24D472DE496D11B374A68AEA" Name="te">
-            <Directory Id="dir4BC1F08D5DCFDB409C4CEBDD13D6B928" Name="LC_MESSAGES">
+          <Directory Id="dirD9315CF5F697DEF0AC8A594C1E93AB6C" Name="te">
+            <Directory Id="dirE8869E4B36ECE3AF59855C618EE1644E" Name="LC_MESSAGES">
               <Component Win64="$(var.Win64)" Id="cmpC0D1DB391D0CBAA3092C761241F77491" Guid="*">
                 <File Id="fil2F69F25582AB08757C46560F46A4860A" KeyPath="yes" Source="$(var.SourceDir)/share/locale/te/LC_MESSAGES/json-glib-1.0.mo"/>
               </Component>
             </Directory>
           </Directory>
-          <Directory Id="dir0546DFAF60E359C24663BB37F755F433" Name="tg">
-            <Directory Id="dir18E0FC38B50C784EFB6135F5AA81932E" Name="LC_MESSAGES">
+          <Directory Id="dir75970D18BA3B14950FAAFB7F2C9A293A" Name="tg">
+            <Directory Id="dir0B7A8CEEBA3788649C265752AB2EEC07" Name="LC_MESSAGES">
               <Component Win64="$(var.Win64)" Id="cmp582C3F961B2BA4276190BD0692C18D27" Guid="*">
                 <File Id="fil89AFEF9A5DFFABE5FDE874E7F0184EE7" KeyPath="yes" Source="$(var.SourceDir)/share/locale/tg/LC_MESSAGES/json-glib-1.0.mo"/>
               </Component>
             </Directory>
           </Directory>
-          <Directory Id="dir7760C323832AC4EF129FD69B92CC8D6F" Name="tr">
-            <Directory Id="dir998925F5EAC451927BA8327A9EB9BBAC" Name="LC_MESSAGES">
+          <Directory Id="dir41F0BAB8AA1141C35633907F21E5F4AD" Name="tr">
+            <Directory Id="dir025A53DC2FC70A686E83D7838F08D2E3" Name="LC_MESSAGES">
               <Component Win64="$(var.Win64)" Id="cmpC1112D6081BCF80760AEAEE9C5920F47" Guid="*">
                 <File Id="fil5ECCBF626A9E8D478CFCC5B6D54A4C33" KeyPath="yes" Source="$(var.SourceDir)/share/locale/tr/LC_MESSAGES/json-glib-1.0.mo"/>
               </Component>
             </Directory>
           </Directory>
-          <Directory Id="dir4629C977EA8DE94E9AE0B327AD68D43C" Name="ug">
-            <Directory Id="dir0A2870690D05BC09A70CCC3B0675A588" Name="LC_MESSAGES">
+          <Directory Id="dirACB64DD24B9BBA044A08D96E07AC013F" Name="ug">
+            <Directory Id="dir4B74669810C45A57DB097FFA1C823435" Name="LC_MESSAGES">
               <Component Win64="$(var.Win64)" Id="cmp8EB4CA64D8893D3FEB44921988FBA0F0" Guid="*">
                 <File Id="fil50DACADC81D1631358505DF06DB0F88F" KeyPath="yes" Source="$(var.SourceDir)/share/locale/ug/LC_MESSAGES/json-glib-1.0.mo"/>
               </Component>
             </Directory>
           </Directory>
-          <Directory Id="dirD63B315A7C3842002CBADC32FAA5839F" Name="uk">
-            <Directory Id="dir2521139D9717307051273CFF3158038C" Name="LC_MESSAGES">
+          <Directory Id="dirE02D0A1E0435CA905825AC07D15765DA" Name="uk">
+            <Directory Id="dir2891482A3244CD9AB8A230D7A9A08C02" Name="LC_MESSAGES">
               <Component Win64="$(var.Win64)" Id="cmp3851D0490749D4D1854C79E82A98B9A2" Guid="*">
                 <File Id="fil44FFFB81BD9B9457669821190514DCE1" KeyPath="yes" Source="$(var.SourceDir)/share/locale/uk/LC_MESSAGES/json-glib-1.0.mo"/>
               </Component>
             </Directory>
           </Directory>
-          <Directory Id="dirCA3F9B6A615FB504A7D841D1F71A8256" Name="vi">
-            <Directory Id="dirF294ACC5FF815DF13CB9B14E9BCFDDF8" Name="LC_MESSAGES">
+          <Directory Id="dir88D2BF6D636791485AC4D6A65E5FA96D" Name="vi">
+            <Directory Id="dir55D406B3CC163BECB9FDEADCE918B4D8" Name="LC_MESSAGES">
               <Component Win64="$(var.Win64)" Id="cmp52B8BDB844799E41573B6AD0CBB8E4B9" Guid="*">
                 <File Id="filA21FB4F6180E7763C263AE76A84AA864" KeyPath="yes" Source="$(var.SourceDir)/share/locale/vi/LC_MESSAGES/json-glib-1.0.mo"/>
               </Component>
             </Directory>
           </Directory>
-          <Directory Id="dir99DFA27F01006C493B9BE8D61DA060B0" Name="zh_CN">
-            <Directory Id="dir5515ED890876B757605E1126272B9DED" Name="LC_MESSAGES">
+          <Directory Id="dir6D6797AF18934B332FD3D1F02779610B" Name="zh_CN">
+            <Directory Id="dir5523914981F88AFA4CF6482F63F9A4C9" Name="LC_MESSAGES">
               <Component Win64="$(var.Win64)" Id="cmp7B53C2094C29DD48D6F0A2F67365614A" Guid="*">
                 <File Id="fil2FB45F4E0EF46603D493BCAB6CA903C2" KeyPath="yes" Source="$(var.SourceDir)/share/locale/zh_CN/LC_MESSAGES/json-glib-1.0.mo"/>
               </Component>
             </Directory>
           </Directory>
-          <Directory Id="dirA0EB07439FBCEB8CEE9CFD50372D32B8" Name="zh_HK">
-            <Directory Id="dirF01D1FC1D74336491CED21E576772BFB" Name="LC_MESSAGES">
+          <Directory Id="dirA1BE216B02D76D077EC5212C0FA1287F" Name="zh_HK">
+            <Directory Id="dir723ADE5E3C80212DAD8053171DFA5801" Name="LC_MESSAGES">
               <Component Win64="$(var.Win64)" Id="cmp9CC9D757706CC932E18DB925FDC7694D" Guid="*">
                 <File Id="fil9EEBDF9539D41E025F013FDE8185A51F" KeyPath="yes" Source="$(var.SourceDir)/share/locale/zh_HK/LC_MESSAGES/json-glib-1.0.mo"/>
               </Component>
             </Directory>
           </Directory>
-          <Directory Id="dirC18BB3C5B50DC6B7737731A24C3E93A6" Name="zh_TW">
-            <Directory Id="dir61C3F333386E9A779234CBE1AD6BE456" Name="LC_MESSAGES">
+          <Directory Id="dirCF977C9D62795ED7061EB5F15D453D20" Name="zh_TW">
+            <Directory Id="dir116A263FBD38B1D85F5D013F8ACF9882" Name="LC_MESSAGES">
               <Component Win64="$(var.Win64)" Id="cmp8B9D6EE5A18879EFC993EA7EC107CD8C" Guid="*">
                 <File Id="filBA32915FF68B5E864BEAA449454A3716" KeyPath="yes" Source="$(var.SourceDir)/share/locale/zh_TW/LC_MESSAGES/json-glib-1.0.mo"/>
               </Component>
@@ -443,21 +431,8 @@
       <ComponentRef Id="cmpB22C65EB18C45EE7EEC15BB62ABF151F"/>
       <ComponentRef Id="cmp7B62E6909CFDAB61D81B735937C94082"/>
       <ComponentRef Id="cmp139CB05C6FB19C67B172A8BFABC18233"/>
-      <ComponentRef Id="cmpD27D0F51D027D2A1120DBA7FC9C727E9"/>
-      <ComponentRef Id="cmpB18ACB53128AF083BC0EA4FA1D8661BF"/>
-      <ComponentRef Id="cmpDE3B20A7B215C39ADF1FEB2DC5E2DD8F"/>
-      <ComponentRef Id="cmpD22571115566BB8799C7916B967EC338"/>
-      <ComponentRef Id="cmp044ED77F764FEC3F25B9895E9B51559F"/>
-      <ComponentRef Id="cmp171D585529309103E419FA2643A2F3EC"/>
-      <ComponentRef Id="cmpD17A0CE4675AF4FD1626D22C7383AAD5"/>
-      <ComponentRef Id="cmp70B66E289D39E8E72BDA9B917D84DB9F"/>
-      <ComponentRef Id="cmp063858686255EED77556A2BAD6793892"/>
-      <ComponentRef Id="cmp83A8B2787A3805B9E73C8532E5AA3505"/>
-      <ComponentRef Id="cmpF762F302CFA949D856D8A87450E31856"/>
-      <ComponentRef Id="cmp66BD45FF525A7B88CC45870F262DBDD2"/>
-      <ComponentRef Id="cmpC1DC1ED21AEABE3A2C181CDB9474B683"/>
-      <ComponentRef Id="cmp8895C4285AA92794A4CA719AEAE37DD4"/>
       <ComponentRef Id="cmp76C32026CF6D7A11054A4E258A6CD75E"/>
+      <ComponentRef Id="cmpC11413C4398DB987701E98576C290714"/>
       <ComponentRef Id="cmp5433D18C053427EA0C37865C487612AB"/>
       <ComponentRef Id="cmp275EFE51865178E242A12E6CB84A36B4"/>
       <ComponentRef Id="cmp7E1EC57C8299805D269A97FBB1F01367"/>
@@ -477,6 +452,7 @@
       <ComponentRef Id="cmpFEB7C5EBE938E1EB34D79D5662B2C39C"/>
       <ComponentRef Id="cmpB175A8A2BBEF3C20EA5D286FD42681A6"/>
       <ComponentRef Id="cmpB939E26EAA39A3E8FC0A9D6F27D8A11E"/>
+      <ComponentRef Id="cmpC2B1DF65DBCC9D70276A0ED7B577C987"/>
       <ComponentRef Id="cmp1D3A42EE906BA35F2AB2CFB53D9223FD"/>
       <ComponentRef Id="cmpBC258BDC192A025E5AAD24C1143F5C96"/>
       <ComponentRef Id="cmpE8E9CA49779BF2A0AFB3053DF634312F"/>
@@ -486,8 +462,10 @@
       <ComponentRef Id="cmp63B991CF3CE5C1E0E718E343B86E3BEA"/>
       <ComponentRef Id="cmpA7B24EB004C7D2808500943F41A75BB8"/>
       <ComponentRef Id="cmp215ECB9911A8D7D9C1184B131A17821F"/>
+      <ComponentRef Id="cmp5F177E0ED2128E744BA637D719D7F63F"/>
       <ComponentRef Id="cmpCF4301607D015002A923ABEF702506A0"/>
       <ComponentRef Id="cmpC453770BD984E8F14B687B5A7A5EC5C7"/>
+      <ComponentRef Id="cmpE4A41E6AAB5818FCB46FA4BA9BF9973D"/>
       <ComponentRef Id="cmpF3E880A0FE12E6D2FD2F2B00BCACA250"/>
       <ComponentRef Id="cmp4371BED51B578FD96EBD8D001EC595F2"/>
       <ComponentRef Id="cmp7AD9FE8DAEBD9036F488134DB2DB89A1"/>
@@ -513,5 +491,5 @@
     </ComponentGroup>
   </Fragment>
 </Include>
-<!-- generated with msitools 0.97.7-4147 -->
-<!-- wixl-heat -var var.SourceDir -p /usr/i686-w64-mingw32/sys-root/mingw/ -component-group CG.json-glib -directory-ref INSTALLDIR -->
+<?ignore generated with msitools 0.106.45-476d-dirty ?>
+<?ignore build/tools/wixl/wixl-heat --var var.SourceDir -p /usr/i686-w64-mingw32/sys-root/mingw/ --directory-ref INSTALLDIR --win64 --component-group CG.json-glib --require glib2 ?>

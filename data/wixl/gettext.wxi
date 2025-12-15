@@ -1,21 +1,165 @@
 <?xml version="1.0" encoding="utf-8"?>
-<?require gcc.wxi?>
 <?require win-iconv.wxi?>
+<?require gcc-c++.wxi?>
+<?require termcap.wxi?>
 <Include xmlns="http://schemas.microsoft.com/wix/2006/wi">
   <Fragment>
     <DirectoryRef Id="INSTALLDIR">
-      <Directory Id="dirBBB2DE8E8B5E7A934B840E6BDE8EE865" Name="bin">
-        <Component Win64="$(var.Win64)" Id="cmpAB304E617DA059E0A52EC5BF43346A01" Guid="*">
-          <File Id="fil3887CE3C6978DEAEF194F74409A51F95" KeyPath="yes" Source="$(var.SourceDir)/bin/libintl-8.dll"/>
+      <Directory Id="dir53F478266AFC2382775D02A536FA4ECE" Name="bin">
+        <Component Win64="$(var.Win64)" Id="cmp2B4865EF3A8FCC8BF885A64EC768EF4D" Guid="*">
+          <File Id="fil5E6061C70778979650103A09169C158A" KeyPath="yes" Source="$(var.SourceDir)/bin/autopoint"/>
         </Component>
+        <Component Win64="$(var.Win64)" Id="cmp93CB2A182DA159CB4F922A1F1077D2DA" Guid="*">
+          <File Id="fil42D212E5A8BB44C9882BA3E58F44B6B8" KeyPath="yes" Source="$(var.SourceDir)/bin/envsubst.exe"/>
+        </Component>
+        <Component Win64="$(var.Win64)" Id="cmp53BCC28E18BA48A76E5486AF549B69A4" Guid="*">
+          <File Id="filA427EAB50A92A2B5EADC0A2715DF9433" KeyPath="yes" Source="$(var.SourceDir)/bin/gettext.exe"/>
+        </Component>
+        <Component Win64="$(var.Win64)" Id="cmp355E11F35A0E14A9E24EC4CDF673E0BB" Guid="*">
+          <File Id="fil81E3F2EECDDF0C2C009BAF5E09BD6A4F" KeyPath="yes" Source="$(var.SourceDir)/bin/gettext.sh"/>
+        </Component>
+        <Component Win64="$(var.Win64)" Id="cmp7AE7C4087E0946C68CF05267A22B6B18" Guid="*">
+          <File Id="filD3379E106A9EAD70982CF06F5BA115B2" KeyPath="yes" Source="$(var.SourceDir)/bin/gettextize"/>
+        </Component>
+        <Component Win64="$(var.Win64)" Id="cmp5F1C667F2719C7F4AAA4D16A95F5C128" Guid="*">
+          <File Id="fil63C8B278791F72AF80D835D2E9063BCD" KeyPath="yes" Source="$(var.SourceDir)/bin/libasprintf-0.dll"/>
+        </Component>
+        <Component Win64="$(var.Win64)" Id="cmp600C9AA6D76CF20E79B83224A955ED07" Guid="*">
+          <File Id="fil8BF88FAE10F78F9FD02FDBE2926CE5D3" KeyPath="yes" Source="$(var.SourceDir)/bin/libgettextlib-0-26.dll"/>
+        </Component>
+        <Component Win64="$(var.Win64)" Id="cmpC295C83F16E0B90A9890998AE7C2DE2F" Guid="*">
+          <File Id="fil637AA3E8C7F911608D95B99C49D7FD53" KeyPath="yes" Source="$(var.SourceDir)/bin/libgettextpo-0.dll"/>
+        </Component>
+        <Component Win64="$(var.Win64)" Id="cmp40A04BDCFC1724DA20CCBF51DBD0FFF4" Guid="*">
+          <File Id="fil82C09461908716DECD532A8E8DFC011C" KeyPath="yes" Source="$(var.SourceDir)/bin/libgettextsrc-0-26.dll"/>
+        </Component>
+        <Component Win64="$(var.Win64)" Id="cmpCFEFDEF3F3E6CD0E41DC271B402A732C" Guid="*">
+          <File Id="fil43ACA2B4A89F711EFFFC5D9FFCF9EC61" KeyPath="yes" Source="$(var.SourceDir)/bin/libintl-8.dll"/>
+        </Component>
+        <Component Win64="$(var.Win64)" Id="cmp96D9BBD0EAE65B0235A41CFE10D60E62" Guid="*">
+          <File Id="fil6611BD83ACAA679B018E00A9CA5B4E1B" KeyPath="yes" Source="$(var.SourceDir)/bin/libtextstyle-0.dll"/>
+        </Component>
+        <Component Win64="$(var.Win64)" Id="cmp4C250DA3DE302AAD6E92F48E5E3E37D1" Guid="*">
+          <File Id="fil3F020382BB2084FFE73AFD04E7AF8F68" KeyPath="yes" Source="$(var.SourceDir)/bin/msgattrib.exe"/>
+        </Component>
+        <Component Win64="$(var.Win64)" Id="cmp8BF05249A703A5D26E0C4859187DC65C" Guid="*">
+          <File Id="fil8B7BA1B9777E80F3E61C7E8FEF6C131A" KeyPath="yes" Source="$(var.SourceDir)/bin/msgcat.exe"/>
+        </Component>
+        <Component Win64="$(var.Win64)" Id="cmp20685CA90C662D57039A60D560BF840F" Guid="*">
+          <File Id="fil1F4F8276E8190494FE4504A0AE520CA3" KeyPath="yes" Source="$(var.SourceDir)/bin/msgcmp.exe"/>
+        </Component>
+        <Component Win64="$(var.Win64)" Id="cmpA21DC012C377EBD5BEA3D47825E7F52E" Guid="*">
+          <File Id="fil85067445F61E67A8CE4B67098948A459" KeyPath="yes" Source="$(var.SourceDir)/bin/msgcomm.exe"/>
+        </Component>
+        <Component Win64="$(var.Win64)" Id="cmpC2F8ACE60E760108FFECFDF0DD86FF92" Guid="*">
+          <File Id="filCC499D0FF63A9A1AC1A37D9C00B335DC" KeyPath="yes" Source="$(var.SourceDir)/bin/msgconv.exe"/>
+        </Component>
+        <Component Win64="$(var.Win64)" Id="cmp3741C93C8456CFDB735BDF10B0DC21D5" Guid="*">
+          <File Id="filD66159D4DBDB2E23C07F95DF9F209C80" KeyPath="yes" Source="$(var.SourceDir)/bin/msgen.exe"/>
+        </Component>
+        <Component Win64="$(var.Win64)" Id="cmp47D90B5F872DCB22C8DD1D6F4E49725A" Guid="*">
+          <File Id="filD8F1EE178D11996AC8F4855F3C55B0C2" KeyPath="yes" Source="$(var.SourceDir)/bin/msgexec.exe"/>
+        </Component>
+        <Component Win64="$(var.Win64)" Id="cmp7C3F95E36A47E70BA9E9BE3B78FA6319" Guid="*">
+          <File Id="fil264BEC932F50959864FF5E5C17851A48" KeyPath="yes" Source="$(var.SourceDir)/bin/msgfilter.exe"/>
+        </Component>
+        <Component Win64="$(var.Win64)" Id="cmp10834AF72B3ECE587AF1C864DAE468AA" Guid="*">
+          <File Id="filF2A6919CA8DEFBD344353A06B8234CB1" KeyPath="yes" Source="$(var.SourceDir)/bin/msgfmt.exe"/>
+        </Component>
+        <Component Win64="$(var.Win64)" Id="cmp649DCB9FB1268E94FD594A03C5C34D16" Guid="*">
+          <File Id="fil03771A6444165ADBCB33AD11A8844562" KeyPath="yes" Source="$(var.SourceDir)/bin/msggrep.exe"/>
+        </Component>
+        <Component Win64="$(var.Win64)" Id="cmp2C7E9D64A978F0E2E6638A21E49B13A1" Guid="*">
+          <File Id="filEBCCD8F47F9DB3693992D0EE27A30259" KeyPath="yes" Source="$(var.SourceDir)/bin/msginit.exe"/>
+        </Component>
+        <Component Win64="$(var.Win64)" Id="cmpF9B887B74049DA7C843E4FE6428A5B6A" Guid="*">
+          <File Id="filC57D2C4F25959094F1D3A2EF465617C8" KeyPath="yes" Source="$(var.SourceDir)/bin/msgmerge.exe"/>
+        </Component>
+        <Component Win64="$(var.Win64)" Id="cmp482C0EAC6561CED37028CC0E97C7EF56" Guid="*">
+          <File Id="fil07CD9FE90D9B7EA6A60AAE172EB57AD1" KeyPath="yes" Source="$(var.SourceDir)/bin/msgunfmt.exe"/>
+        </Component>
+        <Component Win64="$(var.Win64)" Id="cmp9D4CA2D0CB518E536436A7359DFA63F5" Guid="*">
+          <File Id="fil245FBE6A7989F32D060444A47A12A66B" KeyPath="yes" Source="$(var.SourceDir)/bin/msguniq.exe"/>
+        </Component>
+        <Component Win64="$(var.Win64)" Id="cmpAA328359D016C745A734464850A30096" Guid="*">
+          <File Id="fil8D7ADD01A0086F41E5845240DB662B79" KeyPath="yes" Source="$(var.SourceDir)/bin/ngettext.exe"/>
+        </Component>
+        <Component Win64="$(var.Win64)" Id="cmpA8126FB1380CD1F11D3A757675BA1C26" Guid="*">
+          <File Id="filAEBE46F2EFA9CBA408F82923058EFE79" KeyPath="yes" Source="$(var.SourceDir)/bin/printf_gettext.exe"/>
+        </Component>
+        <Component Win64="$(var.Win64)" Id="cmpC9B7FCA0DFA93BB963305EEB9BCB9AA6" Guid="*">
+          <File Id="fil33C91F51B4175A87DB37B9F4ECA34C6B" KeyPath="yes" Source="$(var.SourceDir)/bin/printf_ngettext.exe"/>
+        </Component>
+        <Component Win64="$(var.Win64)" Id="cmp20C93802084B4BAB0A9FEBC7ECE40C64" Guid="*">
+          <File Id="fil35506284638E5FCF4C9047799EFF3B58" KeyPath="yes" Source="$(var.SourceDir)/bin/recode-sr-latin.exe"/>
+        </Component>
+        <Component Win64="$(var.Win64)" Id="cmp874D9442FE724D450AB6C0ED19D20568" Guid="*">
+          <File Id="fil85008FCD492DC81CCFEB8D329225101C" KeyPath="yes" Source="$(var.SourceDir)/bin/xgettext.exe"/>
+        </Component>
+      </Directory>
+      <Directory Id="dir9E4E7E2AF37750D859660F6AC03AD99E" Name="libexec">
+        <Directory Id="dir968BE4A6A57794FE48F40F622B4AB65B" Name="gettext">
+          <Component Win64="$(var.Win64)" Id="cmp27D0146018F33124E9B46597F6F0A5C6" Guid="*">
+            <File Id="filB0F1911964AE56FCC87C03E4628370E4" KeyPath="yes" Source="$(var.SourceDir)/libexec/gettext/cldr-plurals.exe"/>
+          </Component>
+          <Component Win64="$(var.Win64)" Id="cmp88ABE74CBB3D41300E6C968C0480FECF" Guid="*">
+            <File Id="filD04269BEB1808ACDC269A7BD31C4FE16" KeyPath="yes" Source="$(var.SourceDir)/libexec/gettext/hostname.exe"/>
+          </Component>
+          <Component Win64="$(var.Win64)" Id="cmp6E761885FFD72CB391A8DC278A8EAE3F" Guid="*">
+            <File Id="filBC5B9D5489A8CC309C388EB4FAB5E12A" KeyPath="yes" Source="$(var.SourceDir)/libexec/gettext/project-id"/>
+          </Component>
+          <Component Win64="$(var.Win64)" Id="cmpEDDE7AEB53C0B1AEDA21B7181DB6B192" Guid="*">
+            <File Id="filEF548F29875F98B375DFFB253212BD1C" KeyPath="yes" Source="$(var.SourceDir)/libexec/gettext/urlget.exe"/>
+          </Component>
+          <Component Win64="$(var.Win64)" Id="cmp8D3331B47B09FA29FA1FA9667991F2DA" Guid="*">
+            <File Id="fil4DE0A58AC85B1F53306D33DB5A2608C8" KeyPath="yes" Source="$(var.SourceDir)/libexec/gettext/user-email"/>
+          </Component>
+        </Directory>
       </Directory>
     </DirectoryRef>
   </Fragment>
   <Fragment>
     <ComponentGroup Id="CG.gettext">
-      <ComponentGroupRef Id="CG.gcc"/>
       <ComponentGroupRef Id="CG.win-iconv"/>
-      <ComponentRef Id="cmpAB304E617DA059E0A52EC5BF43346A01"/>
+      <ComponentGroupRef Id="CG.gcc-c++"/>
+      <ComponentGroupRef Id="CG.termcap"/>
+      <ComponentRef Id="cmp2B4865EF3A8FCC8BF885A64EC768EF4D"/>
+      <ComponentRef Id="cmp93CB2A182DA159CB4F922A1F1077D2DA"/>
+      <ComponentRef Id="cmp53BCC28E18BA48A76E5486AF549B69A4"/>
+      <ComponentRef Id="cmp355E11F35A0E14A9E24EC4CDF673E0BB"/>
+      <ComponentRef Id="cmp7AE7C4087E0946C68CF05267A22B6B18"/>
+      <ComponentRef Id="cmp5F1C667F2719C7F4AAA4D16A95F5C128"/>
+      <ComponentRef Id="cmp600C9AA6D76CF20E79B83224A955ED07"/>
+      <ComponentRef Id="cmpC295C83F16E0B90A9890998AE7C2DE2F"/>
+      <ComponentRef Id="cmp40A04BDCFC1724DA20CCBF51DBD0FFF4"/>
+      <ComponentRef Id="cmpCFEFDEF3F3E6CD0E41DC271B402A732C"/>
+      <ComponentRef Id="cmp96D9BBD0EAE65B0235A41CFE10D60E62"/>
+      <ComponentRef Id="cmp4C250DA3DE302AAD6E92F48E5E3E37D1"/>
+      <ComponentRef Id="cmp8BF05249A703A5D26E0C4859187DC65C"/>
+      <ComponentRef Id="cmp20685CA90C662D57039A60D560BF840F"/>
+      <ComponentRef Id="cmpA21DC012C377EBD5BEA3D47825E7F52E"/>
+      <ComponentRef Id="cmpC2F8ACE60E760108FFECFDF0DD86FF92"/>
+      <ComponentRef Id="cmp3741C93C8456CFDB735BDF10B0DC21D5"/>
+      <ComponentRef Id="cmp47D90B5F872DCB22C8DD1D6F4E49725A"/>
+      <ComponentRef Id="cmp7C3F95E36A47E70BA9E9BE3B78FA6319"/>
+      <ComponentRef Id="cmp10834AF72B3ECE587AF1C864DAE468AA"/>
+      <ComponentRef Id="cmp649DCB9FB1268E94FD594A03C5C34D16"/>
+      <ComponentRef Id="cmp2C7E9D64A978F0E2E6638A21E49B13A1"/>
+      <ComponentRef Id="cmpF9B887B74049DA7C843E4FE6428A5B6A"/>
+      <ComponentRef Id="cmp482C0EAC6561CED37028CC0E97C7EF56"/>
+      <ComponentRef Id="cmp9D4CA2D0CB518E536436A7359DFA63F5"/>
+      <ComponentRef Id="cmpAA328359D016C745A734464850A30096"/>
+      <ComponentRef Id="cmpA8126FB1380CD1F11D3A757675BA1C26"/>
+      <ComponentRef Id="cmpC9B7FCA0DFA93BB963305EEB9BCB9AA6"/>
+      <ComponentRef Id="cmp20C93802084B4BAB0A9FEBC7ECE40C64"/>
+      <ComponentRef Id="cmp874D9442FE724D450AB6C0ED19D20568"/>
+      <ComponentRef Id="cmp27D0146018F33124E9B46597F6F0A5C6"/>
+      <ComponentRef Id="cmp88ABE74CBB3D41300E6C968C0480FECF"/>
+      <ComponentRef Id="cmp6E761885FFD72CB391A8DC278A8EAE3F"/>
+      <ComponentRef Id="cmpEDDE7AEB53C0B1AEDA21B7181DB6B192"/>
+      <ComponentRef Id="cmp8D3331B47B09FA29FA1FA9667991F2DA"/>
     </ComponentGroup>
   </Fragment>
 </Include>
+<?ignore generated with msitools 0.106.45-476d-dirty ?>
+<?ignore tools/wixl/wixl-heat -i --var var.SourceDir -p /usr/i686-w64-mingw32/sys-root/mingw/ --directory-ref INSTALLDIR --win64 --component-group CG.gettext --require win-iconv --require gcc-c++ --require termcap ?>

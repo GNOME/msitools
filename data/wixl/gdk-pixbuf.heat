@@ -1,0 +1,3 @@
+--require glib2
+--require libpng
+--require libtiff

@@ -78,6 +78,7 @@ wxi_data = files(
   'wixl/spice-glib.wxi',
   'wixl/spice-gtk3.wxi',
   'wixl/sqlite.wxi',
+  'wixl/taglib.wxi',
   'wixl/termcap.wxi',
   'wixl/usbredir.wxi',
   'wixl/wavpack.wxi',

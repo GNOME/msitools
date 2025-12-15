@@ -5,14 +5,14 @@
 <Include xmlns="http://schemas.microsoft.com/wix/2006/wi">
   <Fragment>
     <DirectoryRef Id="INSTALLDIR">
-      <Directory Id="dir550BF0206CDE089C1765C9E202FA648F" Name="bin">
-        <Component Win64="$(var.Win64)" Id="cmp8D382588B7F7DD3EF2B6D88927913BA5" Guid="*">
-          <File Id="filD1331BF1F5AA97B1DEF1BE66794E05A9" KeyPath="yes" Source="$(var.SourceDir)/bin/libtiff-5.dll"/>
+      <Directory Id="dir50155F546E8766B16F1C5C37021DE6B9" Name="bin">
+        <Component Win64="$(var.Win64)" Id="cmpB4E47465897C3B123324C6CA86F90BF8" Guid="*">
+          <File Id="fil3D5A9A3003E19991C5550F3FDBA9AFCC" KeyPath="yes" Source="$(var.SourceDir)/bin/libtiff-6.dll"/>
         </Component>
-        <Component Win64="$(var.Win64)" Id="cmp1E73886068B760FB1A37062110040830" Guid="*">
-          <File Id="fil32C66F84A6181D0ECA02DAB6A54A7D03" KeyPath="yes" Source="$(var.SourceDir)/bin/libtiffxx-5.dll"/>
+        <Component Win64="$(var.Win64)" Id="cmp3FB4E2E4E4EFCCB747C2FFDC9BAF8FDF" Guid="*">
+          <File Id="fil7B2862C2C72D071E2C7EB8E78E927B8C" KeyPath="yes" Source="$(var.SourceDir)/bin/libtiffxx-6.dll"/>
         </Component>
-        </Directory>
+      </Directory>
     </DirectoryRef>
   </Fragment>
   <Fragment>
@@ -20,8 +20,10 @@
       <ComponentGroupRef Id="CG.gcc-c++"/>
       <ComponentGroupRef Id="CG.libjpeg-turbo"/>
       <ComponentGroupRef Id="CG.zlib"/>
-      <ComponentRef Id="cmp8D382588B7F7DD3EF2B6D88927913BA5"/>
-      <ComponentRef Id="cmp1E73886068B760FB1A37062110040830"/>
+      <ComponentRef Id="cmpB4E47465897C3B123324C6CA86F90BF8"/>
+      <ComponentRef Id="cmp3FB4E2E4E4EFCCB747C2FFDC9BAF8FDF"/>
     </ComponentGroup>
   </Fragment>
 </Include>
+<?ignore generated with msitools 0.106.45-476d-dirty ?>
+<?ignore tools/wixl/wixl-heat -i --var var.SourceDir -p /usr/i686-w64-mingw32/sys-root/mingw/ --directory-ref INSTALLDIR --win64 --component-group CG.libtiff --require gcc-c++ --require libjpeg-turbo --require zlib ?>

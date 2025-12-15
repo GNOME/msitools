@@ -1,103 +1,231 @@
 <?xml version="1.0" encoding="utf-8"?>
-<?require gcc.wxi?>
 <Include xmlns="http://schemas.microsoft.com/wix/2006/wi">
   <Fragment>
     <DirectoryRef Id="INSTALLDIR">
-      <Directory Id="dir8CE238A586E7F1480C035F69655D43CE" Name="bin">
-        <Component Win64="$(var.Win64)" Id="cmpDDAF30DD250EE6A297D2F9D2B1E5DA64" Guid="*">
-          <File Id="fil5EE0E2655D72C6D58E404F2C25AB2D6C" KeyPath="yes" Source="$(var.SourceDir)/bin/libgpg-error-0.dll"/>
+      <Directory Id="dir36B8B856BB936EE11FF88A2A199A00AC" Name="bin">
+        <Component Win64="$(var.Win64)" Id="cmp86F0A5149EC75A2FEFD43B7D1DCAED4A" Guid="*">
+          <File Id="filF9298CAA0DAD43D6D07D9F9F289912E3" KeyPath="yes" Source="$(var.SourceDir)/bin/gpg-error.exe"/>
+        </Component>
+        <Component Win64="$(var.Win64)" Id="cmpCE412403CB2807055D9946939EC8FBE8" Guid="*">
+          <File Id="fil79E6E99C67EEEAC206FA627D1FABDCEA" KeyPath="yes" Source="$(var.SourceDir)/bin/gpgrt-config"/>
+        </Component>
+        <Component Win64="$(var.Win64)" Id="cmpCD3D82AC78E6D0E30CFC9B8663681597" Guid="*">
+          <File Id="filA7CCD7CABBAECC7922BF7E3086544AEB" KeyPath="yes" Source="$(var.SourceDir)/bin/libgpg-error-0.dll"/>
+        </Component>
+        <Component Win64="$(var.Win64)" Id="cmpEAB63780CF7BFA73A639F3C0B2D2318C" Guid="*">
+          <File Id="fil760566D5909D255563FDAA18D03A28FC" KeyPath="yes" Source="$(var.SourceDir)/bin/yat2m.exe"/>
         </Component>
       </Directory>
-      <Directory Id="dir2B9DA0643168C751A9BCAAACC599A9D1" Name="share">
-        <Directory Id="dirDABB764363E41C309C58627882938C2B" Name="locale">
-          <Directory Id="dirC0BC33BF0B297225BA49D4E153DD0D27" Name="cs">
-            <Directory Id="dir8CF58A268BCD9C96ADA4A2D76B05BEC7" Name="LC_MESSAGES">
-              <Component Win64="$(var.Win64)" Id="cmp2FF0AD4FC85CBFCF23A83045A6303C42" Guid="*">
-                <File Id="fil6DE5BDF74639FB80EDD48FABFFF4B78C" KeyPath="yes" Source="$(var.SourceDir)/share/locale/cs/LC_MESSAGES/libgpg-error.mo"/>
+      <Directory Id="dir47B1ACD0B6BEE3EECD88057CF7603FF1" Name="share">
+        <Directory Id="dir2EC23CFCCF20E1C0FFA38F70D25E82B2" Name="common-lisp">
+          <Directory Id="dirF56BACDE0777EA515D532BCDBDC93260" Name="source">
+            <Directory Id="dir4BE51809A9A4249D1B22F882694ABD54" Name="gpg-error">
+              <Component Win64="$(var.Win64)" Id="cmpB3436C04DAD15033E967BD77B437E205" Guid="*">
+                <File Id="fil13FB2330C31E7D68C4515C74C5027125" KeyPath="yes" Source="$(var.SourceDir)/share/common-lisp/source/gpg-error/gpg-error-codes.lisp"/>
               </Component>
-            </Directory>
-          </Directory>
-          <Directory Id="dir6CE77A22B02267E9560849F227350404" Name="de">
-            <Directory Id="dir7965BF2F5E6A30A6294B99E903037AEE" Name="LC_MESSAGES">
-              <Component Win64="$(var.Win64)" Id="cmp515E3EA54C3696051B4011090130326E" Guid="*">
-                <File Id="fil87945AC72C746D95D2338B3B0892C4AD" KeyPath="yes" Source="$(var.SourceDir)/share/locale/de/LC_MESSAGES/libgpg-error.mo"/>
+              <Component Win64="$(var.Win64)" Id="cmpBCE3A1B4EE5711620B97B64FA0D6BFDB" Guid="*">
+                <File Id="fil98542104AD68AC3D3D8807B8D14912B4" KeyPath="yes" Source="$(var.SourceDir)/share/common-lisp/source/gpg-error/gpg-error-package.lisp"/>
               </Component>
-            </Directory>
-          </Directory>
-          <Directory Id="dir86959560754B370F4137105CF7977CB1" Name="fr">
-            <Directory Id="dirBE005F5D32DF049085B766AD9C3F46CB" Name="LC_MESSAGES">
-              <Component Win64="$(var.Win64)" Id="cmp321EBE8BE6B428644F1145D18532B14E" Guid="*">
-                <File Id="fil21DDC9B90D24563A04A3A1CACA496A32" KeyPath="yes" Source="$(var.SourceDir)/share/locale/fr/LC_MESSAGES/libgpg-error.mo"/>
+              <Component Win64="$(var.Win64)" Id="cmpC428686D744D6C13AB30BA0CC70DA70D" Guid="*">
+                <File Id="filB0B561C23EA706B090C67F4488EECA73" KeyPath="yes" Source="$(var.SourceDir)/share/common-lisp/source/gpg-error/gpg-error.asd"/>
               </Component>
-            </Directory>
-          </Directory>
-          <Directory Id="dir71779CA22D679FADCD31A0261242AA68" Name="it">
-            <Directory Id="dirFF59668C6237B6DB273F43D88E3973E0" Name="LC_MESSAGES">
-              <Component Win64="$(var.Win64)" Id="cmp0B89CDAE856FF0FBF7A409C6CA2C7250" Guid="*">
-                <File Id="filB8C74DADFE61869F4FBDF929EE828FF4" KeyPath="yes" Source="$(var.SourceDir)/share/locale/it/LC_MESSAGES/libgpg-error.mo"/>
+              <Component Win64="$(var.Win64)" Id="cmp85372A978990CED837FCF0EDB2F1215A" Guid="*">
+                <File Id="filA3C88BF50BB9166CF125AD5B1489E0F2" KeyPath="yes" Source="$(var.SourceDir)/share/common-lisp/source/gpg-error/gpg-error.lisp"/>
               </Component>
-            </Directory>
-          </Directory>
-          <Directory Id="dirBDE789B1DAD01765BBC194B471EA9943" Name="nl">
-            <Directory Id="dirCB6E7CF933B2C07960C698D650F4E3F9" Name="LC_MESSAGES">
-              <Component Win64="$(var.Win64)" Id="cmp37D69A1107EC405842E105769DCFB9C2" Guid="*">
-                <File Id="fil7BD61D0E11F0C763918AD8B3FD95F32A" KeyPath="yes" Source="$(var.SourceDir)/share/locale/nl/LC_MESSAGES/libgpg-error.mo"/>
-              </Component>
-            </Directory>
-          </Directory>
-          <Directory Id="dir653858486910E11885590E46F78109E7" Name="pl">
-            <Directory Id="dirD5FBB37F1D7F419E8136932D44A4883D" Name="LC_MESSAGES">
-              <Component Win64="$(var.Win64)" Id="cmp928D2C18229968995106FCE357ABF905" Guid="*">
-                <File Id="filD32071679DAF3E2E723AB1D3B22D915C" KeyPath="yes" Source="$(var.SourceDir)/share/locale/pl/LC_MESSAGES/libgpg-error.mo"/>
-              </Component>
-            </Directory>
-          </Directory>
-          <Directory Id="dir40A7A55E9F231A177FB16AC045A70DBC" Name="ro">
-            <Directory Id="dirCAAF78B208AB911E9788B4B2DD20F37A" Name="LC_MESSAGES">
-              <Component Win64="$(var.Win64)" Id="cmp668E75CED737E1F6928C7DAC50E896E3" Guid="*">
-                <File Id="fil03286813162AF82259D6FF84AE138FE0" KeyPath="yes" Source="$(var.SourceDir)/share/locale/ro/LC_MESSAGES/libgpg-error.mo"/>
-              </Component>
-            </Directory>
-          </Directory>
-          <Directory Id="dir6EE23E60840DFF5E7FC28E32DE626C61" Name="sv">
-            <Directory Id="dir2C5F0C98D7E35355B950D1764A288740" Name="LC_MESSAGES">
-              <Component Win64="$(var.Win64)" Id="cmpE2E2C9A32014693D364CECD573E63F3F" Guid="*">
-                <File Id="fil72E02E71A88B6E163FFF63C4AA965A73" KeyPath="yes" Source="$(var.SourceDir)/share/locale/sv/LC_MESSAGES/libgpg-error.mo"/>
-              </Component>
-            </Directory>
-          </Directory>
-          <Directory Id="dir28D6D25D89EBC10D57FA5AA760309DC5" Name="vi">
-            <Directory Id="dir0C96C29FA6408E232470E010C838F39B" Name="LC_MESSAGES">
-              <Component Win64="$(var.Win64)" Id="cmpE0411046BC4806C98C1E84622CA74736" Guid="*">
-                <File Id="fil8425B986FCAE568805A4D2CB4AF203CB" KeyPath="yes" Source="$(var.SourceDir)/share/locale/vi/LC_MESSAGES/libgpg-error.mo"/>
-              </Component>
-            </Directory>
-          </Directory>
-          <Directory Id="dirF8E2A82681D862C9E3FF011A0AAB38C2" Name="zh_CN">
-            <Directory Id="dirA6B0E59AA8114F92E2031A6A19A9C9C5" Name="LC_MESSAGES">
-              <Component Win64="$(var.Win64)" Id="cmp0B0B441FE0CCEA25FB7A948C1C642956" Guid="*">
-                <File Id="filA97296BF9DF40DF726D6D0AF5527070A" KeyPath="yes" Source="$(var.SourceDir)/share/locale/zh_CN/LC_MESSAGES/libgpg-error.mo"/>
-              </Component>
-              </Directory>
             </Directory>
           </Directory>
         </Directory>
+        <Directory Id="dir5413129266CED1EFE8EFED75AEAE3CD7" Name="libgpg-error">
+          <Component Win64="$(var.Win64)" Id="cmpA1020D37B61972519E99A7DAB45CFBA3" Guid="*">
+            <File Id="fil0BF995103395E24CAD98CAAA12132778" KeyPath="yes" Source="$(var.SourceDir)/share/libgpg-error/errorref.txt"/>
+          </Component>
+        </Directory>
+        <Directory Id="dirEBA5D54CABAAD6CD3EC83D0C4C989096" Name="locale">
+          <Directory Id="dirEB239229156F861D2F91B6436A74F608" Name="cs">
+            <Directory Id="dirA2D9A22F9A8ACB6D98D9D592761BE894" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmpA7B561466F3F24D0ADBC8F9C952CC2E8" Guid="*">
+                <File Id="filF0038EFA3EEAC29EC935C80D11E8A43E" KeyPath="yes" Source="$(var.SourceDir)/share/locale/cs/LC_MESSAGES/libgpg-error.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dirAF54F02FF2B2892B740C7FA53AC75B05" Name="da">
+            <Directory Id="dirFDE45A15C3518B382465E55830984AC9" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp621B037F33B60DAE591B4129974D61EB" Guid="*">
+                <File Id="filE7ACF108392523C5D7E37C472B456085" KeyPath="yes" Source="$(var.SourceDir)/share/locale/da/LC_MESSAGES/libgpg-error.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir709EDEE605E88F76076B298C020CB7F9" Name="de">
+            <Directory Id="dirACD2F6C3C7B39BC68A10FDAB06ECA4CE" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp4131A019DF856710B070B05C6BCA8CC1" Guid="*">
+                <File Id="fil7C96BD427F089AA04E2654AA4C03DFA6" KeyPath="yes" Source="$(var.SourceDir)/share/locale/de/LC_MESSAGES/libgpg-error.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dirE1E44F350BE7F0456938A3D35732069C" Name="eo">
+            <Directory Id="dir80F63DE580693134434654783FB533B4" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmpC2D3762260680DA99FC68A642F1AC9AD" Guid="*">
+                <File Id="fil05921658790D50EF5D34DA3C3060C75F" KeyPath="yes" Source="$(var.SourceDir)/share/locale/eo/LC_MESSAGES/libgpg-error.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dirDF05B888CCA2C079058C8E563440837C" Name="es">
+            <Directory Id="dir10D830121FF34C3BC88A2BBDBBE173B0" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmpC380FD064F1B51ECE86E9E7D2E0156AA" Guid="*">
+                <File Id="fil64719BD55724108C47DE2D833F5CC26C" KeyPath="yes" Source="$(var.SourceDir)/share/locale/es/LC_MESSAGES/libgpg-error.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dirB5BB413A06CA8A6D7AFDCBB1E19025C1" Name="fr">
+            <Directory Id="dirBEBBD31A54CF8146822CB4EC4BA0BC37" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmpF130EC2FF81FACFB860B282BB9A8D876" Guid="*">
+                <File Id="fil33AE8F432EE1DB08AEC22A2210DC2F7A" KeyPath="yes" Source="$(var.SourceDir)/share/locale/fr/LC_MESSAGES/libgpg-error.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dirF5DDEF09B86699CC446542C11985D9ED" Name="hu">
+            <Directory Id="dir8C6AE7F1525EB6840748AB879EB50F01" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp6A82073E2F460DB39F65DFC6A8B653CC" Guid="*">
+                <File Id="fil0691366DF21AC6E03F99B9CBD41B556B" KeyPath="yes" Source="$(var.SourceDir)/share/locale/hu/LC_MESSAGES/libgpg-error.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir967C539B8E13FE6823D06835540428DE" Name="it">
+            <Directory Id="dir399C47EC2158493114B9CC3CED889200" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp7533739FA97D0C85EDA2A6470716A9B6" Guid="*">
+                <File Id="fil5300AA23FBE2D4950230167E702D408D" KeyPath="yes" Source="$(var.SourceDir)/share/locale/it/LC_MESSAGES/libgpg-error.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir379A2A7CE745D8565A2D90E993AF59C1" Name="ja">
+            <Directory Id="dir01C0CBBA953390499A6B5E6298D8F1E4" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmpD7E4DAE6B8BC589AE3431F7298824D17" Guid="*">
+                <File Id="fil49BB3366E99FB9B7BE086FE1D41B94E5" KeyPath="yes" Source="$(var.SourceDir)/share/locale/ja/LC_MESSAGES/libgpg-error.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir064360D587716CCA96D7D34F06A1750A" Name="nl">
+            <Directory Id="dirC5968AAF52202C7D8EFA6FB1E857F949" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp840BE992A6921B87011AD65099709EA2" Guid="*">
+                <File Id="fil9FFFFAF88D04980E393CF0FF9746F537" KeyPath="yes" Source="$(var.SourceDir)/share/locale/nl/LC_MESSAGES/libgpg-error.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dirA235891FEB7E9E4FF7E3520A2DE0B691" Name="pl">
+            <Directory Id="dirB11522186EC285B42C2F7B434C6E65A3" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmpF82D4CB100AF2F541DB60078B459780B" Guid="*">
+                <File Id="fil00B54FC8E60CC2C4F1A6AB8BB541629C" KeyPath="yes" Source="$(var.SourceDir)/share/locale/pl/LC_MESSAGES/libgpg-error.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir74A5C74D0921D3464DD60996B890F203" Name="pt">
+            <Directory Id="dir4F793EFF1E4F82E467EF5A514E45F45D" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp66F314BC55040DB05B03B6BE957448BD" Guid="*">
+                <File Id="fil45938C10A1F910CE478C98C277B61B0C" KeyPath="yes" Source="$(var.SourceDir)/share/locale/pt/LC_MESSAGES/libgpg-error.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir387B6B3B426EF1F27D53FCA7033F24B2" Name="ro">
+            <Directory Id="dir6A3448F4DC8001538646EF0B4F2F4860" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp6EE482792ACB85732A2EEC66646B956C" Guid="*">
+                <File Id="fil0416DBDEBEB21C7268008E24AA1398CE" KeyPath="yes" Source="$(var.SourceDir)/share/locale/ro/LC_MESSAGES/libgpg-error.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dirDCE7CDC964E5699326A720092087E85C" Name="ru">
+            <Directory Id="dirE4BB3745479BD34B51FB26ABD29AD020" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp8247505552639BCEDBED0ABDF3A11960" Guid="*">
+                <File Id="fil61BD89B9BDA3A960679FFBE31BC82743" KeyPath="yes" Source="$(var.SourceDir)/share/locale/ru/LC_MESSAGES/libgpg-error.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir5BC60D610A2BB4351121F8F8E4F59D8B" Name="sr">
+            <Directory Id="dir727F04C57CE042DCD12C6724FB244E11" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp37982E720A191AF8C5850CCED29D2249" Guid="*">
+                <File Id="filBDAF1A7DD04C844973CBC83EEFA9BE72" KeyPath="yes" Source="$(var.SourceDir)/share/locale/sr/LC_MESSAGES/libgpg-error.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir3B517191E7B4A360EDE865A0831C4CF7" Name="sv">
+            <Directory Id="dir2DF3C406E2A778826A2F5D3BB7A07650" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmpC1F56401F3C5F4FE429E228FCBD0C507" Guid="*">
+                <File Id="filB023F6FDD659C493547EE4AC49E605DC" KeyPath="yes" Source="$(var.SourceDir)/share/locale/sv/LC_MESSAGES/libgpg-error.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dirDC1BC01F4D7EE738B6E50ED82B76F6AB" Name="tr">
+            <Directory Id="dir4CA31B97D631CF2087FFFD4F423937B5" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp38BE5D683157F81A29E5B18A179A7E53" Guid="*">
+                <File Id="filC9BA061BDB10A6892B0884F90C07DA3B" KeyPath="yes" Source="$(var.SourceDir)/share/locale/tr/LC_MESSAGES/libgpg-error.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dirD524B7E11F618DC4352AD4FB743C7709" Name="uk">
+            <Directory Id="dir90731928050E3BAFDEAFB8073D1D2774" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp535977F4CFEA796267FF136A0E8D56A3" Guid="*">
+                <File Id="fil995833813D4970CCB28878657A2CC843" KeyPath="yes" Source="$(var.SourceDir)/share/locale/uk/LC_MESSAGES/libgpg-error.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dirC102138E8FD283BFE8F07E165A2F6946" Name="vi">
+            <Directory Id="dir429129A873CCCCAC7023AEA36193983D" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp04A573C0EDA34BB51C5CDE609C54EE7A" Guid="*">
+                <File Id="filFAACB95AC020DC79CCB784175DC440AC" KeyPath="yes" Source="$(var.SourceDir)/share/locale/vi/LC_MESSAGES/libgpg-error.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir780BCF832BE45497D82F518D0267C648" Name="zh_CN">
+            <Directory Id="dir665065DC44A51F240B7BBFD6F5730CA9" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmpDEA41728F09DF1F1CD952A0B28932D20" Guid="*">
+                <File Id="fil2200901D92C0F9438D93257F27B6DD9F" KeyPath="yes" Source="$(var.SourceDir)/share/locale/zh_CN/LC_MESSAGES/libgpg-error.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir8789AB82AE5E94252FB3042FC264645A" Name="zh_TW">
+            <Directory Id="dirFE81E52A6F9B6BF5BA8413007C5120A7" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp527EB38197E0B8B2A57B131408C19E47" Guid="*">
+                <File Id="fil9E07DD5B8FDDE8E65A61C78C4B491DC6" KeyPath="yes" Source="$(var.SourceDir)/share/locale/zh_TW/LC_MESSAGES/libgpg-error.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+        </Directory>
+      </Directory>
     </DirectoryRef>
   </Fragment>
   <Fragment>
     <ComponentGroup Id="CG.libgpg-error">
-      <ComponentGroupRef Id="CG.gcc"/>
-      <ComponentRef Id="cmpDDAF30DD250EE6A297D2F9D2B1E5DA64"/>
-      <ComponentRef Id="cmp2FF0AD4FC85CBFCF23A83045A6303C42"/>
-      <ComponentRef Id="cmp515E3EA54C3696051B4011090130326E"/>
-      <ComponentRef Id="cmp321EBE8BE6B428644F1145D18532B14E"/>
-      <ComponentRef Id="cmp0B89CDAE856FF0FBF7A409C6CA2C7250"/>
-      <ComponentRef Id="cmp37D69A1107EC405842E105769DCFB9C2"/>
-      <ComponentRef Id="cmp928D2C18229968995106FCE357ABF905"/>
-      <ComponentRef Id="cmp668E75CED737E1F6928C7DAC50E896E3"/>
-      <ComponentRef Id="cmpE2E2C9A32014693D364CECD573E63F3F"/>
-      <ComponentRef Id="cmpE0411046BC4806C98C1E84622CA74736"/>
-      <ComponentRef Id="cmp0B0B441FE0CCEA25FB7A948C1C642956"/>
+      <ComponentRef Id="cmp86F0A5149EC75A2FEFD43B7D1DCAED4A"/>
+      <ComponentRef Id="cmpCE412403CB2807055D9946939EC8FBE8"/>
+      <ComponentRef Id="cmpCD3D82AC78E6D0E30CFC9B8663681597"/>
+      <ComponentRef Id="cmpEAB63780CF7BFA73A639F3C0B2D2318C"/>
+      <ComponentRef Id="cmpB3436C04DAD15033E967BD77B437E205"/>
+      <ComponentRef Id="cmpBCE3A1B4EE5711620B97B64FA0D6BFDB"/>
+      <ComponentRef Id="cmpC428686D744D6C13AB30BA0CC70DA70D"/>
+      <ComponentRef Id="cmp85372A978990CED837FCF0EDB2F1215A"/>
+      <ComponentRef Id="cmpA1020D37B61972519E99A7DAB45CFBA3"/>
+      <ComponentRef Id="cmpA7B561466F3F24D0ADBC8F9C952CC2E8"/>
+      <ComponentRef Id="cmp621B037F33B60DAE591B4129974D61EB"/>
+      <ComponentRef Id="cmp4131A019DF856710B070B05C6BCA8CC1"/>
+      <ComponentRef Id="cmpC2D3762260680DA99FC68A642F1AC9AD"/>
+      <ComponentRef Id="cmpC380FD064F1B51ECE86E9E7D2E0156AA"/>
+      <ComponentRef Id="cmpF130EC2FF81FACFB860B282BB9A8D876"/>
+      <ComponentRef Id="cmp6A82073E2F460DB39F65DFC6A8B653CC"/>
+      <ComponentRef Id="cmp7533739FA97D0C85EDA2A6470716A9B6"/>
+      <ComponentRef Id="cmpD7E4DAE6B8BC589AE3431F7298824D17"/>
+      <ComponentRef Id="cmp840BE992A6921B87011AD65099709EA2"/>
+      <ComponentRef Id="cmpF82D4CB100AF2F541DB60078B459780B"/>
+      <ComponentRef Id="cmp66F314BC55040DB05B03B6BE957448BD"/>
+      <ComponentRef Id="cmp6EE482792ACB85732A2EEC66646B956C"/>
+      <ComponentRef Id="cmp8247505552639BCEDBED0ABDF3A11960"/>
+      <ComponentRef Id="cmp37982E720A191AF8C5850CCED29D2249"/>
+      <ComponentRef Id="cmpC1F56401F3C5F4FE429E228FCBD0C507"/>
+      <ComponentRef Id="cmp38BE5D683157F81A29E5B18A179A7E53"/>
+      <ComponentRef Id="cmp535977F4CFEA796267FF136A0E8D56A3"/>
+      <ComponentRef Id="cmp04A573C0EDA34BB51C5CDE609C54EE7A"/>
+      <ComponentRef Id="cmpDEA41728F09DF1F1CD952A0B28932D20"/>
+      <ComponentRef Id="cmp527EB38197E0B8B2A57B131408C19E47"/>
     </ComponentGroup>
   </Fragment>
 </Include>
+<?ignore generated with msitools 0.106.45-476d-dirty ?>
+<?ignore build/tools/wixl/wixl-heat --var var.SourceDir -p /usr/i686-w64-mingw32/sys-root/mingw/ --directory-ref INSTALLDIR --win64 --component-group CG.libgpg-error ?>
