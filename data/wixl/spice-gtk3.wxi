@@ -1,21 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
-<?require gtk3.wxi?>
 <?require spice-glib.wxi?>
+<?require gtk3.wxi?>
 <Include xmlns="http://schemas.microsoft.com/wix/2006/wi">
   <Fragment>
     <DirectoryRef Id="INSTALLDIR">
-      <Directory Id="dirF3B61B20E2250498456FBB66DD63E154" Name="bin">
-        <Component Win64="$(var.Win64)" Id="cmpA1DABC2491D8FFEDE1B305115701456D" Guid="*">
-          <File Id="filF15A4CFCF3F047C36D3A6592CDAC3D33" KeyPath="yes" Source="$(var.SourceDir)/bin/libspice-client-gtk-3.0-5.dll"/>
+      <Directory Id="dirBF42772B33FC480909DAD35A0214147C" Name="bin">
+        <Component Win64="$(var.Win64)" Id="cmpB3631EEE5C2772FDAA1B82EA5F95649F" Guid="*">
+          <File Id="fil015E0A21A8028D6E8D08F7C12DCC5747" KeyPath="yes" Source="$(var.SourceDir)/bin/libspice-client-gtk-3.0-5.dll"/>
+        </Component>
+        <Component Win64="$(var.Win64)" Id="cmpF737B13D3EAECA418444ED78743AE414" Guid="*">
+          <File Id="fil086DCA6C77CF41A423400B13B2BBE937" KeyPath="yes" Source="$(var.SourceDir)/bin/spicy.exe"/>
         </Component>
       </Directory>
     </DirectoryRef>
   </Fragment>
   <Fragment>
     <ComponentGroup Id="CG.spice-gtk3">
-      <ComponentGroupRef Id="CG.gtk3"/>
       <ComponentGroupRef Id="CG.spice-glib"/>
-      <ComponentRef Id="cmpA1DABC2491D8FFEDE1B305115701456D"/>
+      <ComponentGroupRef Id="CG.gtk3"/>
+      <ComponentRef Id="cmpB3631EEE5C2772FDAA1B82EA5F95649F"/>
+      <ComponentRef Id="cmpF737B13D3EAECA418444ED78743AE414"/>
     </ComponentGroup>
   </Fragment>
 </Include>
+<?ignore generated with msitools 0.106.45-476d-dirty ?>
+<?ignore build/tools/wixl/wixl-heat --var var.SourceDir -p /usr/i686-w64-mingw32/sys-root/mingw/ --directory-ref INSTALLDIR --win64 --component-group CG.spice-gtk3 --require spice-glib --require gtk3 -i ?>

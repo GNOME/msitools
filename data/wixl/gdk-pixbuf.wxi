@@ -2,740 +2,817 @@
 <?require glib2.wxi?>
 <?require libpng.wxi?>
 <?require libtiff.wxi?>
-<?require gettext.wxi?>
 <Include xmlns="http://schemas.microsoft.com/wix/2006/wi">
   <Fragment>
     <DirectoryRef Id="INSTALLDIR">
-      <Directory Id="dir4623CC0AACA2EB1E10EFA73807874CF3" Name="bin">
-        <Component Win64="$(var.Win64)" Id="cmp4BF448B47E572302678F2495BDE525FC" Guid="*">
-          <File Id="filC7AB82BEAAE354578D6120B65B5190F4" KeyPath="yes" Source="$(var.SourceDir)/bin/libgdk_pixbuf-2.0-0.dll"/>
+      <Directory Id="dir96F03D6F7706EE263374845251B8794F" Name="bin">
+        <Component Win64="$(var.Win64)" Id="cmp072F03D5BB985CDC6FCB559D5A5604DB" Guid="*">
+          <File Id="fil399563775BB8FC0D9C60885994FB0C3A" KeyPath="yes" Source="$(var.SourceDir)/bin/gdk-pixbuf-csource.exe"/>
+        </Component>
+        <Component Win64="$(var.Win64)" Id="cmpF97CF649EE7E9B28CC51FCF30D277757" Guid="*">
+          <File Id="filF5CEF018DD55915DF1C200388A5D1F5E" KeyPath="yes" Source="$(var.SourceDir)/bin/gdk-pixbuf-pixdata.exe"/>
+        </Component>
+        <Component Win64="$(var.Win64)" Id="cmp5B78356404D2C958449DB80FFB42ED70" Guid="*">
+          <File Id="filC1509A33783F7791928FF1007F95DECB" KeyPath="yes" Source="$(var.SourceDir)/bin/gdk-pixbuf-query-loaders.exe"/>
+        </Component>
+        <Component Win64="$(var.Win64)" Id="cmp2476B08C26C6F08483ECED5ECE195D4D" Guid="*">
+          <File Id="fil81C72C17AF02F2E250327769E46403DF" KeyPath="yes" Source="$(var.SourceDir)/bin/libgdk_pixbuf-2.0-0.dll"/>
         </Component>
       </Directory>
-      <Directory Id="dirAB3380D35F32B03E3E19AC6D0BC1A2A6" Name="share">
-        <Directory Id="dir22DD6E0ABE40F5BBBB64EFA544ABDD14" Name="locale">
-          <Directory Id="dir2015ED7DBC68F202A7E16AA04CA69522" Name="af">
-            <Directory Id="dir538D46D21BAF8C434EAC9FFE77699B3E" Name="LC_MESSAGES">
-              <Component Win64="$(var.Win64)" Id="cmpF2291AFA90FC22D5216EBABA6781C4DB" Guid="*">
-                <File Id="filA1BABF755DC26AF72DB63B56C6BE3BF0" KeyPath="yes" Source="$(var.SourceDir)/share/locale/af/LC_MESSAGES/gdk-pixbuf.mo"/>
-              </Component>
-            </Directory>
-          </Directory>
-          <Directory Id="dir64EF88CD6455A01510F04BF538AE7D4F" Name="ang">
-            <Directory Id="dirD217130367CBA23191AB615041156809" Name="LC_MESSAGES">
-              <Component Win64="$(var.Win64)" Id="cmpC2E95DC50F2916A8C8736FA26C956581" Guid="*">
-                <File Id="fil63C1BDA1E3C8B73A624246019FCFCE69" KeyPath="yes" Source="$(var.SourceDir)/share/locale/ang/LC_MESSAGES/gdk-pixbuf.mo"/>
-              </Component>
-            </Directory>
-          </Directory>
-          <Directory Id="dir263634D280C7C5A1A3626FCD35631E1C" Name="ar">
-            <Directory Id="dir3C5E09E1070D850EF9C46232B3B9503C" Name="LC_MESSAGES">
-              <Component Win64="$(var.Win64)" Id="cmpBF3EA0075E7E9EB74541D5BCB49B9A36" Guid="*">
-                <File Id="filA0CC46977DADDDB2EB968B1B98C3517E" KeyPath="yes" Source="$(var.SourceDir)/share/locale/ar/LC_MESSAGES/gdk-pixbuf.mo"/>
-              </Component>
-            </Directory>
-          </Directory>
-          <Directory Id="dirEB1D15D48E738F5747512ADA0B880C6E" Name="as">
-            <Directory Id="dirDF5E599291AD0F1EE1124E4D008B7D1B" Name="LC_MESSAGES">
-              <Component Win64="$(var.Win64)" Id="cmp623E6FA5A4756885C6BD30360B91CEDD" Guid="*">
-                <File Id="filB66621A51877B62607088570CC3F2E1C" KeyPath="yes" Source="$(var.SourceDir)/share/locale/as/LC_MESSAGES/gdk-pixbuf.mo"/>
-              </Component>
-            </Directory>
-          </Directory>
-          <Directory Id="dir42EE0FAA7FD87CE8E9BEC0E7DE00BD57" Name="ast">
-            <Directory Id="dirA70FD6A4C6AD7CB49850A4C54B8E0EDD" Name="LC_MESSAGES">
-              <Component Win64="$(var.Win64)" Id="cmpC53C5A7B365E9355EB10121D8B3C13FE" Guid="*">
-                <File Id="fil46B74164F7B7DEC9C413F03400160F55" KeyPath="yes" Source="$(var.SourceDir)/share/locale/ast/LC_MESSAGES/gdk-pixbuf.mo"/>
-              </Component>
-            </Directory>
-          </Directory>
-          <Directory Id="dirA6E063979941482739FFCEFDB15AC588" Name="az">
-            <Directory Id="dir9B6A833B85916BAAFFFF8BCD894A6206" Name="LC_MESSAGES">
-              <Component Win64="$(var.Win64)" Id="cmp51F01D3F21D03724753CEEC456A25F4F" Guid="*">
-                <File Id="fil6FD1F92097F52097A3C9B1CF85510C71" KeyPath="yes" Source="$(var.SourceDir)/share/locale/az/LC_MESSAGES/gdk-pixbuf.mo"/>
-              </Component>
-            </Directory>
-          </Directory>
-          <Directory Id="dir80552D84020E541AABF7AACE34450A51" Name="be">
-            <Directory Id="dirD985669E8CF8F55ED1722EB970681233" Name="LC_MESSAGES">
-              <Component Win64="$(var.Win64)" Id="cmpA66A8DD8623CF7805B0728FD54C593F0" Guid="*">
-                <File Id="fil177DA78020319FA7CE87D7D93FE1E050" KeyPath="yes" Source="$(var.SourceDir)/share/locale/be/LC_MESSAGES/gdk-pixbuf.mo"/>
-              </Component>
-            </Directory>
-          </Directory>
-          <Directory Id="dirC5E75A154979BF1E440C6A971F3DB58C" Name="be@latin">
-            <Directory Id="dir83BF7711C537A8CCFEFDBC868712E482" Name="LC_MESSAGES">
-              <Component Win64="$(var.Win64)" Id="cmpFFC6E765768073CE2CF7460A2A695AB3" Guid="*">
-                <File Id="fil1E9FD1C9F16F4A62637E9C18F2D6E94C" KeyPath="yes" Source="$(var.SourceDir)/share/locale/be@latin/LC_MESSAGES/gdk-pixbuf.mo"/>
-              </Component>
-            </Directory>
-          </Directory>
-          <Directory Id="dir13EE05CF32FC27ECE4A48CD5F9921D4D" Name="bg">
-            <Directory Id="dirEC07C05A60C529BF3759FA827A725A96" Name="LC_MESSAGES">
-              <Component Win64="$(var.Win64)" Id="cmp88FC832A06E20D2E5B04804A7F12E74F" Guid="*">
-                <File Id="filFF7A7CDEDE8D4E160A2710CD2017CC6E" KeyPath="yes" Source="$(var.SourceDir)/share/locale/bg/LC_MESSAGES/gdk-pixbuf.mo"/>
-              </Component>
-            </Directory>
-          </Directory>
-          <Directory Id="dirA6F0F5F42888B438A17E2F3F616EE844" Name="bn">
-            <Directory Id="dir25EC55AE7927A37FD44F3EB273AF3F05" Name="LC_MESSAGES">
-              <Component Win64="$(var.Win64)" Id="cmpA2879E1E3A95E94D0DD8A114B144A30E" Guid="*">
-                <File Id="fil216B545B9E731E19A42D8A3F54240038" KeyPath="yes" Source="$(var.SourceDir)/share/locale/bn/LC_MESSAGES/gdk-pixbuf.mo"/>
-              </Component>
-            </Directory>
-          </Directory>
-          <Directory Id="dir17EDFD292EBDBA401833BB3D7C860118" Name="bn_IN">
-            <Directory Id="dir3A4BCC2AA62F95AB28E31663E1E8781C" Name="LC_MESSAGES">
-              <Component Win64="$(var.Win64)" Id="cmp65828626892FCBA4DBEB97D88E256343" Guid="*">
-                <File Id="fil691F726727381CB1283A5DC056DACD19" KeyPath="yes" Source="$(var.SourceDir)/share/locale/bn_IN/LC_MESSAGES/gdk-pixbuf.mo"/>
-              </Component>
-            </Directory>
-          </Directory>
-          <Directory Id="dirA085F4638C98597E41636A3B12B7CFAB" Name="br">
-            <Directory Id="dir6B76C3E7C9D688EC42BB6E25ABB5DB90" Name="LC_MESSAGES">
-              <Component Win64="$(var.Win64)" Id="cmp4AE4B246F5945589704C1831B74ED697" Guid="*">
-                <File Id="fil9C967B852EBCEA0CF920A8BE8998386A" KeyPath="yes" Source="$(var.SourceDir)/share/locale/br/LC_MESSAGES/gdk-pixbuf.mo"/>
-              </Component>
-            </Directory>
-          </Directory>
-          <Directory Id="dir171AF42F16F4AC9E1ECEC816D4515180" Name="bs">
-            <Directory Id="dirFC05233DA05F021E9EBD8A7729A6B029" Name="LC_MESSAGES">
-              <Component Win64="$(var.Win64)" Id="cmp614890C1040C4DE8CC4C900FD861702C" Guid="*">
-                <File Id="fil6EBBB0A633AB28EECB617A266E4BB0A0" KeyPath="yes" Source="$(var.SourceDir)/share/locale/bs/LC_MESSAGES/gdk-pixbuf.mo"/>
-              </Component>
-            </Directory>
-          </Directory>
-          <Directory Id="dir76E51A196C492DA960D6B7EB1450F3D2" Name="ca">
-            <Directory Id="dir1F22A594DA9BEC8A3091458A92D848DF" Name="LC_MESSAGES">
-              <Component Win64="$(var.Win64)" Id="cmp6CE56D3418F65B673C326778EF100311" Guid="*">
-                <File Id="filCBB056A85535957CE4C6AE38BC753E0E" KeyPath="yes" Source="$(var.SourceDir)/share/locale/ca/LC_MESSAGES/gdk-pixbuf.mo"/>
-              </Component>
-            </Directory>
-          </Directory>
-          <Directory Id="dir1A43CB16B4A0CFCD17433CB52D1E7A3E" Name="ca@valencia">
-            <Directory Id="dir52FA45DEC1AB170BFE74543FEB18A7FE" Name="LC_MESSAGES">
-              <Component Win64="$(var.Win64)" Id="cmp82E43D358D55E3F788EB9791B40CE002" Guid="*">
-                <File Id="filA575EA7CE4E93D949D258A7710DDA24B" KeyPath="yes" Source="$(var.SourceDir)/share/locale/ca@valencia/LC_MESSAGES/gdk-pixbuf.mo"/>
-              </Component>
-            </Directory>
-          </Directory>
-          <Directory Id="dir9D3D51F10F8288D738CA6B2CF6F9F295" Name="crh">
-            <Directory Id="dir1D932D9F44815E25B93C6F2BB67BC06A" Name="LC_MESSAGES">
-              <Component Win64="$(var.Win64)" Id="cmp087584D372B4A8F7EC95683B29DCCF89" Guid="*">
-                <File Id="fil92AD2CC230BAFD3F72FD275C30655B7E" KeyPath="yes" Source="$(var.SourceDir)/share/locale/crh/LC_MESSAGES/gdk-pixbuf.mo"/>
-              </Component>
-            </Directory>
-          </Directory>
-          <Directory Id="dirB7ED211C619DE2D3D75442B7034793E0" Name="cs">
-            <Directory Id="dirAFF0BC805EEAA93AB21F1448DD939784" Name="LC_MESSAGES">
-              <Component Win64="$(var.Win64)" Id="cmp6E2F9BF992B0455D59144AB663C1A477" Guid="*">
-                <File Id="fil786769B53984DE97333525B72179670E" KeyPath="yes" Source="$(var.SourceDir)/share/locale/cs/LC_MESSAGES/gdk-pixbuf.mo"/>
-              </Component>
-            </Directory>
-          </Directory>
-          <Directory Id="dirC6BFF49F0E1974F455E2BE2964ED131D" Name="csb">
-            <Directory Id="dir3E010559D6FF06B0A4B3AE15E65BBBB4" Name="LC_MESSAGES">
-              <Component Win64="$(var.Win64)" Id="cmpFE36C0A575452D208D911A958A3D4E57" Guid="*">
-                <File Id="fil5A68A7E6D3D5173B22E5BC670E39EAB9" KeyPath="yes" Source="$(var.SourceDir)/share/locale/csb/LC_MESSAGES/gdk-pixbuf.mo"/>
-              </Component>
-            </Directory>
-          </Directory>
-          <Directory Id="dir99EC34185E3D7564EFDEB1E5A7F93078" Name="cy">
-            <Directory Id="dir803D4790C3AFF811AD2F2C14333A445A" Name="LC_MESSAGES">
-              <Component Win64="$(var.Win64)" Id="cmp51E303CF8C571121CB130D08D83D25F7" Guid="*">
-                <File Id="fil12F89F4E449CBFFB4EF4D1E40DA4E4DD" KeyPath="yes" Source="$(var.SourceDir)/share/locale/cy/LC_MESSAGES/gdk-pixbuf.mo"/>
-              </Component>
-            </Directory>
-          </Directory>
-          <Directory Id="dir5F96CD12FA28B56B3925C1A0F5911C08" Name="da">
-            <Directory Id="dir5C4A38FA7A98C87F36CB6808F5E3F613" Name="LC_MESSAGES">
-              <Component Win64="$(var.Win64)" Id="cmpD2CA8CF76979E093EFA7A3E8362AA120" Guid="*">
-                <File Id="fil197EB43464D38106433AAAF69275BD6A" KeyPath="yes" Source="$(var.SourceDir)/share/locale/da/LC_MESSAGES/gdk-pixbuf.mo"/>
-              </Component>
-            </Directory>
-          </Directory>
-          <Directory Id="dirA5085A7A82D8B0707E64843C2D8C6108" Name="de">
-            <Directory Id="dir7BE1BEBE7FD4C7C2E0C24A02E864FFD6" Name="LC_MESSAGES">
-              <Component Win64="$(var.Win64)" Id="cmp99C5EBF8FA675F35C03E38DA270AE80A" Guid="*">
-                <File Id="fil3C9E6338B20DD33AB4DF1BACA1C9389D" KeyPath="yes" Source="$(var.SourceDir)/share/locale/de/LC_MESSAGES/gdk-pixbuf.mo"/>
-              </Component>
-            </Directory>
-          </Directory>
-          <Directory Id="dir00BED359C5AA0ADDF72D5A25F93C7EB5" Name="dz">
-            <Directory Id="dir3183D6F031AAF267A08DA70A190FCCF5" Name="LC_MESSAGES">
-              <Component Win64="$(var.Win64)" Id="cmp282F6E50EFCA3B57E78723020570CDAF" Guid="*">
-                <File Id="fil0D2E98B1D0B689D383576405DD2706F5" KeyPath="yes" Source="$(var.SourceDir)/share/locale/dz/LC_MESSAGES/gdk-pixbuf.mo"/>
-              </Component>
-            </Directory>
-          </Directory>
-          <Directory Id="dir573667092ACD8E38D0F86D12628AAA3E" Name="el">
-            <Directory Id="dirEAD2752355106C15432798BDD23A1C09" Name="LC_MESSAGES">
-              <Component Win64="$(var.Win64)" Id="cmp9AD5CA7E4C2A3874DE38BF7E8ED99814" Guid="*">
-                <File Id="fil4B9C3EAEC7C16F1EC4B2DA57FA08993C" KeyPath="yes" Source="$(var.SourceDir)/share/locale/el/LC_MESSAGES/gdk-pixbuf.mo"/>
-              </Component>
-            </Directory>
-          </Directory>
-          <Directory Id="dirA3876C33A0354577F78C6C00FA81FCBF" Name="en@shaw">
-            <Directory Id="dirED61B2DA8E2DEE3536DB80EC28E0DC00" Name="LC_MESSAGES">
-              <Component Win64="$(var.Win64)" Id="cmpB8E1DFA9C846E1AECB430C5267F5DAF0" Guid="*">
-                <File Id="filB3D8A4C0F42E8002C216394B9C419647" KeyPath="yes" Source="$(var.SourceDir)/share/locale/en@shaw/LC_MESSAGES/gdk-pixbuf.mo"/>
-              </Component>
-            </Directory>
-          </Directory>
-          <Directory Id="dir20BABB5A596871F2D047F477CF9F5C97" Name="en_CA">
-            <Directory Id="dirEC5E08537D4EA9F4953A76E1A854EC65" Name="LC_MESSAGES">
-              <Component Win64="$(var.Win64)" Id="cmpA61D6ED1B751A30CCFD88E4521B68687" Guid="*">
-                <File Id="filB6E2EE560246B4FF83548C235C36C0DF" KeyPath="yes" Source="$(var.SourceDir)/share/locale/en_CA/LC_MESSAGES/gdk-pixbuf.mo"/>
-              </Component>
-            </Directory>
-          </Directory>
-          <Directory Id="dirE8146111ACDD65CFB652DCB21BA10DD8" Name="en_GB">
-            <Directory Id="dirCB8F3967C90AAD11B02A6132EC03874E" Name="LC_MESSAGES">
-              <Component Win64="$(var.Win64)" Id="cmp3E15E8643C57BB14C44087F0AFFFFDD8" Guid="*">
-                <File Id="filA216490D06A5ABD4FAA33780AF4AE663" KeyPath="yes" Source="$(var.SourceDir)/share/locale/en_GB/LC_MESSAGES/gdk-pixbuf.mo"/>
-              </Component>
-            </Directory>
-          </Directory>
-          <Directory Id="dir6822B11AFB284EF23D446F6242F88C66" Name="eo">
-            <Directory Id="dirA87A2212E96309C56699E0A65F109CC2" Name="LC_MESSAGES">
-              <Component Win64="$(var.Win64)" Id="cmp78CC8765DD352535DFD6003E894AA492" Guid="*">
-                <File Id="filFCD4A2C0FD9F1F8C4F06DAA23D28EC8F" KeyPath="yes" Source="$(var.SourceDir)/share/locale/eo/LC_MESSAGES/gdk-pixbuf.mo"/>
-              </Component>
-            </Directory>
-          </Directory>
-          <Directory Id="dir996CDC85050F82833738A5BE5200D870" Name="es">
-            <Directory Id="dir5D729826B99129E481546F5033FDEF7D" Name="LC_MESSAGES">
-              <Component Win64="$(var.Win64)" Id="cmpCFB3390B1504D45198A356D71372D79F" Guid="*">
-                <File Id="fil14489B209ED0F8E6FC9162FB10F89E45" KeyPath="yes" Source="$(var.SourceDir)/share/locale/es/LC_MESSAGES/gdk-pixbuf.mo"/>
-              </Component>
-            </Directory>
-          </Directory>
-          <Directory Id="dirE34515CD04259AFB4F7CB8A5DB15C62B" Name="et">
-            <Directory Id="dirCE06A93187DC33CAB4ADF5F86B650715" Name="LC_MESSAGES">
-              <Component Win64="$(var.Win64)" Id="cmp17DE9DD03F26DAC7FC9F8CAE86DD8931" Guid="*">
-                <File Id="filC4742D7CDB2FD8FA963919A28561B474" KeyPath="yes" Source="$(var.SourceDir)/share/locale/et/LC_MESSAGES/gdk-pixbuf.mo"/>
-              </Component>
-            </Directory>
-          </Directory>
-          <Directory Id="dir9680189514BD1CEA17E7BBB74F411961" Name="eu">
-            <Directory Id="dir001B8CA429B5790D8DCB32DDF0B89028" Name="LC_MESSAGES">
-              <Component Win64="$(var.Win64)" Id="cmp01AD35BFE11E0F9FCFAAE563A3C7B659" Guid="*">
-                <File Id="fil48A6B5531B2A550AE2D62D58CF3DC0EB" KeyPath="yes" Source="$(var.SourceDir)/share/locale/eu/LC_MESSAGES/gdk-pixbuf.mo"/>
-              </Component>
-            </Directory>
-          </Directory>
-          <Directory Id="dir65688B559EA372BEB25BD00BAE812EA3" Name="fa">
-            <Directory Id="dir47D19A053F8EE95F30DF2763F003AAC1" Name="LC_MESSAGES">
-              <Component Win64="$(var.Win64)" Id="cmp0BB52F0599D12101D6559AA11CFC5FF3" Guid="*">
-                <File Id="filD87FD908945F8423B793F0A70F2CBEBA" KeyPath="yes" Source="$(var.SourceDir)/share/locale/fa/LC_MESSAGES/gdk-pixbuf.mo"/>
-              </Component>
-            </Directory>
-          </Directory>
-          <Directory Id="dir73DA3C4E1A2FC7AFE79149C7B8EAFCCD" Name="fi">
-            <Directory Id="dirC4D401561D1D9283B9B8BB796C422FD3" Name="LC_MESSAGES">
-              <Component Win64="$(var.Win64)" Id="cmpC7CB40220D26E62F6E1DD46289B07573" Guid="*">
-                <File Id="fil4C0D8B75AF2FA95B47F97F9608057C04" KeyPath="yes" Source="$(var.SourceDir)/share/locale/fi/LC_MESSAGES/gdk-pixbuf.mo"/>
-              </Component>
-            </Directory>
-          </Directory>
-          <Directory Id="dirBFD5290126D5D7D961314B1BF501BCBB" Name="fr">
-            <Directory Id="dir82672CB65D942910A316CBF55A832867" Name="LC_MESSAGES">
-              <Component Win64="$(var.Win64)" Id="cmp4A3CB87C57C12F4C45634083EFE9995F" Guid="*">
-                <File Id="filA229E07DE5CE0D8B38AEFB8DA95A7E3E" KeyPath="yes" Source="$(var.SourceDir)/share/locale/fr/LC_MESSAGES/gdk-pixbuf.mo"/>
-              </Component>
-            </Directory>
-          </Directory>
-          <Directory Id="dir133B71DFD96C2BC24EFB1F120D6D19CB" Name="ga">
-            <Directory Id="dir75010EAA1DCEFC22A28663AE08E938B0" Name="LC_MESSAGES">
-              <Component Win64="$(var.Win64)" Id="cmp773AAF7605E71633F19EE484F37BC672" Guid="*">
-                <File Id="filD0B50A20F9542784C639B96972EED2D9" KeyPath="yes" Source="$(var.SourceDir)/share/locale/ga/LC_MESSAGES/gdk-pixbuf.mo"/>
-              </Component>
-            </Directory>
-          </Directory>
-          <Directory Id="dirF8FD1B7495672A03C26A3C631917030A" Name="gl">
-            <Directory Id="dirAD0B0E11F5BBC0BB506F7BC601260881" Name="LC_MESSAGES">
-              <Component Win64="$(var.Win64)" Id="cmp0483C2581BEDADCF776EB42EF5AB42CC" Guid="*">
-                <File Id="filFFDD353E12CBCDAC42BCA33E29BDEA8B" KeyPath="yes" Source="$(var.SourceDir)/share/locale/gl/LC_MESSAGES/gdk-pixbuf.mo"/>
-              </Component>
-            </Directory>
-          </Directory>
-          <Directory Id="dir6830DAFB95C574115A27FFEEFD565D6E" Name="gu">
-            <Directory Id="dir7D3B11C13BA3C6F1892237AC193BD273" Name="LC_MESSAGES">
-              <Component Win64="$(var.Win64)" Id="cmp5F6BE776DFF9138BAEA3CDE438158A4E" Guid="*">
-                <File Id="filDB86CB245E0016C92AD14C0001510DF8" KeyPath="yes" Source="$(var.SourceDir)/share/locale/gu/LC_MESSAGES/gdk-pixbuf.mo"/>
-              </Component>
-            </Directory>
-          </Directory>
-          <Directory Id="dirD32C47A8E0A9EA1AACA94F60D47200E4" Name="he">
-            <Directory Id="dirC4DF87758DA3600BBC0FA71BE2C61616" Name="LC_MESSAGES">
-              <Component Win64="$(var.Win64)" Id="cmp340BD3227EE2A2CEADCF538E11E68335" Guid="*">
-                <File Id="fil4CF4EC9E203E9A50FB9560DB41D49C94" KeyPath="yes" Source="$(var.SourceDir)/share/locale/he/LC_MESSAGES/gdk-pixbuf.mo"/>
-              </Component>
-            </Directory>
-          </Directory>
-          <Directory Id="dirDDC5F5BEFFBB2556424B1404688E357E" Name="hi">
-            <Directory Id="dirC21FEDE236624840605147B6F9F82A11" Name="LC_MESSAGES">
-              <Component Win64="$(var.Win64)" Id="cmp702B8577EDBFED988653313AC13020BE" Guid="*">
-                <File Id="fil31F12B67884A2CBDB8E775FBD06D38E0" KeyPath="yes" Source="$(var.SourceDir)/share/locale/hi/LC_MESSAGES/gdk-pixbuf.mo"/>
-              </Component>
-            </Directory>
-          </Directory>
-          <Directory Id="dir8917A653C5E7771B82017B44A64EEF15" Name="hr">
-            <Directory Id="dir8DBD2AB555A827DBC6E94587EF4E9D34" Name="LC_MESSAGES">
-              <Component Win64="$(var.Win64)" Id="cmpC5D24BEE8156E2F389778A556EE62640" Guid="*">
-                <File Id="fil970533DBB2F8C722698D283F1F09EEE3" KeyPath="yes" Source="$(var.SourceDir)/share/locale/hr/LC_MESSAGES/gdk-pixbuf.mo"/>
-              </Component>
-            </Directory>
-          </Directory>
-          <Directory Id="dir981D7FC6D742F08C15580C9F5E47F475" Name="hu">
-            <Directory Id="dirD3337C13587F337E15ECD2D97665AA3F" Name="LC_MESSAGES">
-              <Component Win64="$(var.Win64)" Id="cmpECF6AC3054C87E50D65EF35B6BE47DD9" Guid="*">
-                <File Id="filFECF3BF412E8D942DED3C648378BFBB1" KeyPath="yes" Source="$(var.SourceDir)/share/locale/hu/LC_MESSAGES/gdk-pixbuf.mo"/>
-              </Component>
-            </Directory>
-          </Directory>
-          <Directory Id="dir2E45C7610870F89D798E723A428EA029" Name="hy">
-            <Directory Id="dirC3C17D2375D1CD86FEC08CBBAEBE08B1" Name="LC_MESSAGES">
-              <Component Win64="$(var.Win64)" Id="cmpD58C240934ED4B08C8282BA9E542FBF6" Guid="*">
-                <File Id="fil5B9EA16CD2FA2B99E578FB7A2158CAED" KeyPath="yes" Source="$(var.SourceDir)/share/locale/hy/LC_MESSAGES/gdk-pixbuf.mo"/>
-              </Component>
-            </Directory>
-          </Directory>
-          <Directory Id="dirE2956A455B3782FAA843B0B2FD74CD48" Name="ia">
-            <Directory Id="dirA6B9EB8DE3BB16BDF42F9558F4A0DEAA" Name="LC_MESSAGES">
-              <Component Win64="$(var.Win64)" Id="cmpF65DA9B5144DEDACAD27F39D8634B881" Guid="*">
-                <File Id="filD44CD0EF123A625478BC092F67343023" KeyPath="yes" Source="$(var.SourceDir)/share/locale/ia/LC_MESSAGES/gdk-pixbuf.mo"/>
-              </Component>
-            </Directory>
-          </Directory>
-          <Directory Id="dir6497A2C689119C7850B923809A601161" Name="id">
-            <Directory Id="dir6E6FA78E119D7C0E7CED7AE7DB27B7A3" Name="LC_MESSAGES">
-              <Component Win64="$(var.Win64)" Id="cmpF23B54D359AAD291AEE17500D75FD7E3" Guid="*">
-                <File Id="filBF490D339E8977C43262856E534B0D7F" KeyPath="yes" Source="$(var.SourceDir)/share/locale/id/LC_MESSAGES/gdk-pixbuf.mo"/>
-              </Component>
-            </Directory>
-          </Directory>
-          <Directory Id="dirABF64E76CE0F8FC6201BCBDA0CF1277B" Name="io">
-            <Directory Id="dir30DC9C4713835E79BB97DB5E5637E709" Name="LC_MESSAGES">
-              <Component Win64="$(var.Win64)" Id="cmp91AC0FC515F7A2DF2EFCDA62893AE97E" Guid="*">
-                <File Id="filA4AA769F5ABA38332236A39F94162345" KeyPath="yes" Source="$(var.SourceDir)/share/locale/io/LC_MESSAGES/gdk-pixbuf.mo"/>
-              </Component>
-            </Directory>
-          </Directory>
-          <Directory Id="dirB2B76AD75CFAA455D72F122A2CB95E7A" Name="is">
-            <Directory Id="dir15D1E8EE8B3F933E16A6CE51187542F8" Name="LC_MESSAGES">
-              <Component Win64="$(var.Win64)" Id="cmp911F4483900655D42D383EE3A0729802" Guid="*">
-                <File Id="filD459F6ACB4DE5A1BD76CD2E266407164" KeyPath="yes" Source="$(var.SourceDir)/share/locale/is/LC_MESSAGES/gdk-pixbuf.mo"/>
-              </Component>
-            </Directory>
-          </Directory>
-          <Directory Id="dir34D0DEF608EEA63E0F7C7971F59462DF" Name="it">
-            <Directory Id="dir1933F7F4F48A8024757FD5F990B952AF" Name="LC_MESSAGES">
-              <Component Win64="$(var.Win64)" Id="cmpEB0D1A941E2EE2C6846A4C294F62565E" Guid="*">
-                <File Id="fil7F967CD58500A8278258F5F42AAD0FCC" KeyPath="yes" Source="$(var.SourceDir)/share/locale/it/LC_MESSAGES/gdk-pixbuf.mo"/>
-              </Component>
-            </Directory>
-          </Directory>
-          <Directory Id="dir2D4BF50B876AFBA053B53ADF0B512489" Name="ja">
-            <Directory Id="dirF23E7E2690A5B501456C1E6E7D611356" Name="LC_MESSAGES">
-              <Component Win64="$(var.Win64)" Id="cmp388E9CE389C4E472D8F68F5F0FBD44C5" Guid="*">
-                <File Id="filC6E92DAB8ED6DFDD776A19815E90043C" KeyPath="yes" Source="$(var.SourceDir)/share/locale/ja/LC_MESSAGES/gdk-pixbuf.mo"/>
-              </Component>
-            </Directory>
-          </Directory>
-          <Directory Id="dirF1B96FE2D27996248270674F28A1C3FD" Name="ka">
-            <Directory Id="dir47BD3BB6403FFBEC565B67A745F30159" Name="LC_MESSAGES">
-              <Component Win64="$(var.Win64)" Id="cmp098E708E43E56D2A0A7279084A7C567D" Guid="*">
-                <File Id="fil4F5BAB11742B0F61AD00BAA9E245E890" KeyPath="yes" Source="$(var.SourceDir)/share/locale/ka/LC_MESSAGES/gdk-pixbuf.mo"/>
-              </Component>
-            </Directory>
-          </Directory>
-          <Directory Id="dirFB5C8A69D3C1E104D3585D614C1A1A97" Name="km">
-            <Directory Id="dirA2467C3497D1AD43A190A15F7544E404" Name="LC_MESSAGES">
-              <Component Win64="$(var.Win64)" Id="cmpE5448E0AED5BB5687B42BA7412EFB1BD" Guid="*">
-                <File Id="fil1A14CE894E2C735B0C767C904C1846A1" KeyPath="yes" Source="$(var.SourceDir)/share/locale/km/LC_MESSAGES/gdk-pixbuf.mo"/>
-              </Component>
-            </Directory>
-          </Directory>
-          <Directory Id="dir71D038778EFB4C705162200E25A06C5E" Name="kn">
-            <Directory Id="dir0838EAB919F4BEADB9B691B31009FA98" Name="LC_MESSAGES">
-              <Component Win64="$(var.Win64)" Id="cmpBAB970814E4A550575662725EE23F572" Guid="*">
-                <File Id="filA09F4416B8267515FADCC9C1C7EBA8F3" KeyPath="yes" Source="$(var.SourceDir)/share/locale/kn/LC_MESSAGES/gdk-pixbuf.mo"/>
-              </Component>
-            </Directory>
-          </Directory>
-          <Directory Id="dir5BAECF3AB1CDCECB1FD69BE3B4B6B164" Name="ko">
-            <Directory Id="dir3B29ABF7FADB973D52E1C9BA6862FB2D" Name="LC_MESSAGES">
-              <Component Win64="$(var.Win64)" Id="cmp95C9AC19559C4B8D3C9C55162E51F672" Guid="*">
-                <File Id="fil9EF781365CFF0AF79F445F6704E8D5D4" KeyPath="yes" Source="$(var.SourceDir)/share/locale/ko/LC_MESSAGES/gdk-pixbuf.mo"/>
-              </Component>
-            </Directory>
-          </Directory>
-          <Directory Id="dirA50D0BA7342465542D8A5E267FF53C63" Name="ku">
-            <Directory Id="dir6BC175E900EA6DD60C23C38F018EED50" Name="LC_MESSAGES">
-              <Component Win64="$(var.Win64)" Id="cmp43124EEEF6BEEEBD0F46836354AE2069" Guid="*">
-                <File Id="filC5C7BA415A2465C6BC52CEFB2C6BDFAC" KeyPath="yes" Source="$(var.SourceDir)/share/locale/ku/LC_MESSAGES/gdk-pixbuf.mo"/>
-              </Component>
-            </Directory>
-          </Directory>
-          <Directory Id="dirD1E0EEFC1BC2FE068CA879DE1073AF0C" Name="li">
-            <Directory Id="dir4BA5EFDD0F7033590AB5C13C84F91AAF" Name="LC_MESSAGES">
-              <Component Win64="$(var.Win64)" Id="cmp4C4CFD8D76E4365712E9BE14FDDC52E8" Guid="*">
-                <File Id="filA705A3E8B6F635F686A98ABAA1074A6F" KeyPath="yes" Source="$(var.SourceDir)/share/locale/li/LC_MESSAGES/gdk-pixbuf.mo"/>
-              </Component>
-            </Directory>
-          </Directory>
-          <Directory Id="dirCEC44A5E87B37F8B2634E45F806C9942" Name="lt">
-            <Directory Id="dir52ED83ECC016F141E3565ED55AE1F171" Name="LC_MESSAGES">
-              <Component Win64="$(var.Win64)" Id="cmp662C451610FF11564AA05CC7BB2D9E7C" Guid="*">
-                <File Id="fil1896406EE67DF71F4841A1A58F2A9CE9" KeyPath="yes" Source="$(var.SourceDir)/share/locale/lt/LC_MESSAGES/gdk-pixbuf.mo"/>
-              </Component>
-            </Directory>
-          </Directory>
-          <Directory Id="dir71522542BA351DCAD45D82DB2FD423EF" Name="lv">
-            <Directory Id="dirD446E8E17929694F53D06ADC358A214D" Name="LC_MESSAGES">
-              <Component Win64="$(var.Win64)" Id="cmp0158A0B7D5932322C98F3247A644FB86" Guid="*">
-                <File Id="fil81242415048A7AECC0859636F57BB4FD" KeyPath="yes" Source="$(var.SourceDir)/share/locale/lv/LC_MESSAGES/gdk-pixbuf.mo"/>
-              </Component>
-            </Directory>
-          </Directory>
-          <Directory Id="dir57F206FCAB68403CEE8CDB21307D3C1E" Name="mai">
-            <Directory Id="dirF996CC8963F002536A664DDE0BAD5D34" Name="LC_MESSAGES">
-              <Component Win64="$(var.Win64)" Id="cmp3B180EFA4DC18325A1919024B3FCF0B0" Guid="*">
-                <File Id="fil00095D648175FDF314F1A86DD27AD12F" KeyPath="yes" Source="$(var.SourceDir)/share/locale/mai/LC_MESSAGES/gdk-pixbuf.mo"/>
-              </Component>
-            </Directory>
-          </Directory>
-          <Directory Id="dir6A3BA0CE4C0E4B2620C127103B31904B" Name="mi">
-            <Directory Id="dir491C50BC53EEBBEEEA2B944E2F09AAAD" Name="LC_MESSAGES">
-              <Component Win64="$(var.Win64)" Id="cmpB8849F272C146217D2EA97C85AEC3CCD" Guid="*">
-                <File Id="fil67957F6C5EA5298EA4B0DE8824330CAB" KeyPath="yes" Source="$(var.SourceDir)/share/locale/mi/LC_MESSAGES/gdk-pixbuf.mo"/>
-              </Component>
-            </Directory>
-          </Directory>
-          <Directory Id="dirA43C11DE411E77EE90F2FDEBD53C15D6" Name="mk">
-            <Directory Id="dirA5ACB0BCFF0376BA6FCE90E29727F7CE" Name="LC_MESSAGES">
-              <Component Win64="$(var.Win64)" Id="cmp4006C109481122FA1A946D8ABAAC1883" Guid="*">
-                <File Id="fil543C161F4CC548A6ED8C0B0CBD2EF7E0" KeyPath="yes" Source="$(var.SourceDir)/share/locale/mk/LC_MESSAGES/gdk-pixbuf.mo"/>
-              </Component>
-            </Directory>
-          </Directory>
-          <Directory Id="dirCD841D2CABEC4728AEE77FDC0E0B60D5" Name="ml">
-            <Directory Id="dir747DCC9E627D062F599047B9EECEB58C" Name="LC_MESSAGES">
-              <Component Win64="$(var.Win64)" Id="cmpE35D4B6F8D71CF1C54901799E850D1AF" Guid="*">
-                <File Id="fil10049F623F1C81F114A7A9D255E18C79" KeyPath="yes" Source="$(var.SourceDir)/share/locale/ml/LC_MESSAGES/gdk-pixbuf.mo"/>
-              </Component>
-            </Directory>
-          </Directory>
-          <Directory Id="dir72BFE96FEA92915434EEBD5C38BA0DE8" Name="mn">
-            <Directory Id="dir43623B78EC004068BCFE9B0F473D19AB" Name="LC_MESSAGES">
-              <Component Win64="$(var.Win64)" Id="cmpB84A9BA2DCA61B6337C03A413A464E96" Guid="*">
-                <File Id="filC064E098AF3BF633CBA18A6FE2003FB2" KeyPath="yes" Source="$(var.SourceDir)/share/locale/mn/LC_MESSAGES/gdk-pixbuf.mo"/>
-              </Component>
-            </Directory>
-          </Directory>
-          <Directory Id="dir8AC44E97D64F05C2A57181AB67224519" Name="mr">
-            <Directory Id="dirB048A97DC77F7A36F15E9818BD843EC5" Name="LC_MESSAGES">
-              <Component Win64="$(var.Win64)" Id="cmpE62286FD065BC3721D899483E229F62C" Guid="*">
-                <File Id="fil21781E3E9B6A9D4AB30F6EAB8ABB57BD" KeyPath="yes" Source="$(var.SourceDir)/share/locale/mr/LC_MESSAGES/gdk-pixbuf.mo"/>
-              </Component>
-            </Directory>
-          </Directory>
-          <Directory Id="dirBC74725BABC0A1CF66A5B6C59B30FD85" Name="ms">
-            <Directory Id="dir70F3BEE7119013CB2806943A0F2BC899" Name="LC_MESSAGES">
-              <Component Win64="$(var.Win64)" Id="cmp20D228C97D1EBFEA5BB8EA4155950329" Guid="*">
-                <File Id="fil04F96D19A2E60428F9048164810CA569" KeyPath="yes" Source="$(var.SourceDir)/share/locale/ms/LC_MESSAGES/gdk-pixbuf.mo"/>
-              </Component>
-            </Directory>
-          </Directory>
-          <Directory Id="dir1FB6FF628570C37D19E050500D95462F" Name="my">
-            <Directory Id="dir8DA576944CCD5B7B163606067883DEDA" Name="LC_MESSAGES">
-              <Component Win64="$(var.Win64)" Id="cmp88F4A8466363BF6B3ABAF7F32A10D6BE" Guid="*">
-                <File Id="filEE7C3168907AEE5618455D9DCEBA578B" KeyPath="yes" Source="$(var.SourceDir)/share/locale/my/LC_MESSAGES/gdk-pixbuf.mo"/>
-              </Component>
-            </Directory>
-          </Directory>
-          <Directory Id="dir9ECA8DEE8B8E966CF0C7A497207A93BE" Name="nb">
-            <Directory Id="dir22472B847AAED695667F7B9C566B15FD" Name="LC_MESSAGES">
-              <Component Win64="$(var.Win64)" Id="cmp506F870FF0028FA5A86081ED3714CEBA" Guid="*">
-                <File Id="fil18AC0D55EFA1A71AB36C42B71EE2DBBC" KeyPath="yes" Source="$(var.SourceDir)/share/locale/nb/LC_MESSAGES/gdk-pixbuf.mo"/>
-              </Component>
-            </Directory>
-          </Directory>
-          <Directory Id="dir06ABE4FE277867C55C412E8E5144C03E" Name="nds">
-            <Directory Id="dirB1AA84366CEB52EA2D5DD0F4E269A646" Name="LC_MESSAGES">
-              <Component Win64="$(var.Win64)" Id="cmp0C3F48F3B7D6C31A664E9531964EA194" Guid="*">
-                <File Id="filAD90A46AFA3907499335F7C0169A1709" KeyPath="yes" Source="$(var.SourceDir)/share/locale/nds/LC_MESSAGES/gdk-pixbuf.mo"/>
-              </Component>
-            </Directory>
-          </Directory>
-          <Directory Id="dir52D57E6EE9728B010F523E9D271E07B8" Name="ne">
-            <Directory Id="dirFAB5BCB15FCAA44F68D67887FD3CB6A4" Name="LC_MESSAGES">
-              <Component Win64="$(var.Win64)" Id="cmpD051E517AB971231FBDABE2C548B1173" Guid="*">
-                <File Id="filDA33526FE0F217CE6662FEE4DD59BB41" KeyPath="yes" Source="$(var.SourceDir)/share/locale/ne/LC_MESSAGES/gdk-pixbuf.mo"/>
-              </Component>
-            </Directory>
-          </Directory>
-          <Directory Id="dirD6D7CACCE5B5E9EEA80F48CECC3DBED9" Name="nl">
-            <Directory Id="dir4A10FB28FCCF06B96F46B942693C9D06" Name="LC_MESSAGES">
-              <Component Win64="$(var.Win64)" Id="cmp21D70FEF30DB67BFD7E604895FCE7570" Guid="*">
-                <File Id="fil903C6A8BC4ACADD4261B61C0284E268F" KeyPath="yes" Source="$(var.SourceDir)/share/locale/nl/LC_MESSAGES/gdk-pixbuf.mo"/>
-              </Component>
-            </Directory>
-          </Directory>
-          <Directory Id="dirCEE0990CCFB8A3808FE1561AE021CDE5" Name="nn">
-            <Directory Id="dir60CD0B2E655851E5796DDDDE80EDFFCB" Name="LC_MESSAGES">
-              <Component Win64="$(var.Win64)" Id="cmpB4BE96E7013DA870168FD967378163D7" Guid="*">
-                <File Id="fil650D74FE3426C77164D6703C4B5549AF" KeyPath="yes" Source="$(var.SourceDir)/share/locale/nn/LC_MESSAGES/gdk-pixbuf.mo"/>
-              </Component>
-            </Directory>
-          </Directory>
-          <Directory Id="dirE9348B23AC3246468C9C867B49602A02" Name="nso">
-            <Directory Id="dir31F267E7066C707D265AC6384E9FF91F" Name="LC_MESSAGES">
-              <Component Win64="$(var.Win64)" Id="cmpB3451F71F1AAD75360A0A1349798BA54" Guid="*">
-                <File Id="fil59BB1B6E73FF841A73E9897AC9948383" KeyPath="yes" Source="$(var.SourceDir)/share/locale/nso/LC_MESSAGES/gdk-pixbuf.mo"/>
-              </Component>
-            </Directory>
-          </Directory>
-          <Directory Id="dir07E0D114C9B231E35E6A9D6C194B9D78" Name="oc">
-            <Directory Id="dirFD7DE6928F7C5D7EDA4AC20AF2F08F92" Name="LC_MESSAGES">
-              <Component Win64="$(var.Win64)" Id="cmp94A0F363E1E6A8E587EB7BB2EF3562A9" Guid="*">
-                <File Id="fil393889A0A274E23A1E34D5FC959F6677" KeyPath="yes" Source="$(var.SourceDir)/share/locale/oc/LC_MESSAGES/gdk-pixbuf.mo"/>
-              </Component>
-            </Directory>
-          </Directory>
-          <Directory Id="dir4B735D6F319C42A1F625C1138FA1633E" Name="or">
-            <Directory Id="dirE61B50CB2E6D4F6959842084AF4B9163" Name="LC_MESSAGES">
-              <Component Win64="$(var.Win64)" Id="cmp6FB82216B40FB14E5391F00D4D4F4602" Guid="*">
-                <File Id="filBEE2A84BD71865A81DB324BB2D50D2AD" KeyPath="yes" Source="$(var.SourceDir)/share/locale/or/LC_MESSAGES/gdk-pixbuf.mo"/>
-              </Component>
-            </Directory>
-          </Directory>
-          <Directory Id="dir5ADA03A0D0EBDACCBE780ADC0A7C5A75" Name="pa">
-            <Directory Id="dirA76D031C2CCC81C672098F1179A70B14" Name="LC_MESSAGES">
-              <Component Win64="$(var.Win64)" Id="cmp4583149977E1A128584E3D48679799E5" Guid="*">
-                <File Id="filB460A16F4F94EBA5CB72DB871586F871" KeyPath="yes" Source="$(var.SourceDir)/share/locale/pa/LC_MESSAGES/gdk-pixbuf.mo"/>
-              </Component>
-            </Directory>
-          </Directory>
-          <Directory Id="dir59C0ED603BFCA2B7A4D2B57E107A9C5D" Name="pl">
-            <Directory Id="dir414E97B302FE88A74AFA910F310CC3E1" Name="LC_MESSAGES">
-              <Component Win64="$(var.Win64)" Id="cmp38111F834B409DEBDFB20D21E1685252" Guid="*">
-                <File Id="fil841192D42A221EE89D0F72A5AEF1AC41" KeyPath="yes" Source="$(var.SourceDir)/share/locale/pl/LC_MESSAGES/gdk-pixbuf.mo"/>
-              </Component>
-            </Directory>
-          </Directory>
-          <Directory Id="dirAD8FBE1CCAC6E3C92A43A41BC4F80990" Name="ps">
-            <Directory Id="dir9F64B6E800A251BC012BA8BFD13A16AB" Name="LC_MESSAGES">
-              <Component Win64="$(var.Win64)" Id="cmp90AC1975AD7B858C6628DD1B9753A61B" Guid="*">
-                <File Id="fil344D3FAAA4E067741D399381F85CF35C" KeyPath="yes" Source="$(var.SourceDir)/share/locale/ps/LC_MESSAGES/gdk-pixbuf.mo"/>
-              </Component>
+      <Directory Id="dir6E9C19DEB4FE738091EAC43EC0524CF4" Name="lib">
+        <Directory Id="dirC9651A394A5CDBB48794E4089F86516C" Name="gdk-pixbuf-2.0">
+          <Directory Id="dir55FDC37E0EECB084D4514320FD16CA40" Name="2.10.0">
+            <Directory Id="dirEB700915188A66A2940A32A11760A524" Name="loaders">
             </Directory>
-          </Directory>
-          <Directory Id="dir2EE2353699168D01DA9DBDDA1A519D49" Name="pt">
-            <Directory Id="dir749DC7FAA631B422040BBC591F07CAC5" Name="LC_MESSAGES">
-              <Component Win64="$(var.Win64)" Id="cmp4F1748901C8C021706EA640A98CC0B30" Guid="*">
-                <File Id="filBDB3073FF9FADDD82B387A41BE6AE138" KeyPath="yes" Source="$(var.SourceDir)/share/locale/pt/LC_MESSAGES/gdk-pixbuf.mo"/>
+            <Component Win64="$(var.Win64)" Id="cmp9CB790132E38ACC78E086BF58172286D" Guid="*">
+              <File Id="fil323D5E0039444ABF46EB8504A5329124" KeyPath="yes" Source="$(var.SourceDir)/lib/gdk-pixbuf-2.0/2.10.0/loaders.cache"/>
+            </Component>
+            <Directory Id="dir18B3B30AD0E7D71EAEC0936B9BB0173B" Name="loaders">
+              <Component Win64="$(var.Win64)" Id="cmp66C880342A5CD728BE4F78B82014FCE4" Guid="*">
+                <File Id="filB4D26FA0079DA4115A2213B509A1D997" KeyPath="yes" Source="$(var.SourceDir)/lib/gdk-pixbuf-2.0/2.10.0/loaders/libpixbufloader-ani.dll"/>
               </Component>
-            </Directory>
-          </Directory>
-          <Directory Id="dir23D21475FEDEB0824A5BEFE7A8910863" Name="pt_BR">
-            <Directory Id="dir2C253F9A97461E0C68AEED942CD427A4" Name="LC_MESSAGES">
-              <Component Win64="$(var.Win64)" Id="cmp28764826870067E429225A914A72DF36" Guid="*">
-                <File Id="fil87195C3C21AE2DF721E4AB91D15D706B" KeyPath="yes" Source="$(var.SourceDir)/share/locale/pt_BR/LC_MESSAGES/gdk-pixbuf.mo"/>
-              </Component>
-            </Directory>
-          </Directory>
-          <Directory Id="dirE2AC8902AFFC1762995F9673C31C1C8E" Name="ro">
-            <Directory Id="dirDACF6F68F2F76F3BA133C83C620A25FC" Name="LC_MESSAGES">
-              <Component Win64="$(var.Win64)" Id="cmp2D6A2792C3B77372A7C42F63815B7FB4" Guid="*">
-                <File Id="fil77A85763F220AE90F5B718E6D575A89A" KeyPath="yes" Source="$(var.SourceDir)/share/locale/ro/LC_MESSAGES/gdk-pixbuf.mo"/>
-              </Component>
-            </Directory>
-          </Directory>
-          <Directory Id="dirBB6F126723184522B78CDC4E2C18C24F" Name="ru">
-            <Directory Id="dir49F54B80DCCB7E4FB884289BFFA064AF" Name="LC_MESSAGES">
-              <Component Win64="$(var.Win64)" Id="cmp0AED1721905A3363731A721EBCC8ADBF" Guid="*">
-                <File Id="filE43118339345B48D35547C7244A08929" KeyPath="yes" Source="$(var.SourceDir)/share/locale/ru/LC_MESSAGES/gdk-pixbuf.mo"/>
-              </Component>
-            </Directory>
-          </Directory>
-          <Directory Id="dir7A72B7EA3BF61295C13644C418A1A3DF" Name="si">
-            <Directory Id="dir5423B32EC2392A513B978168D6BEE870" Name="LC_MESSAGES">
-              <Component Win64="$(var.Win64)" Id="cmpB93CE0CD2C3DC2F9FC2AF96178AC4468" Guid="*">
-                <File Id="fil8AD8E756B8E11EA9E87BA9A7A072062E" KeyPath="yes" Source="$(var.SourceDir)/share/locale/si/LC_MESSAGES/gdk-pixbuf.mo"/>
-              </Component>
-            </Directory>
-          </Directory>
-          <Directory Id="dirF75990EB859608535FE5720C4C1D9BFA" Name="sk">
-            <Directory Id="dir55B0B9203BF84F098CD2BEFC66779C16" Name="LC_MESSAGES">
-              <Component Win64="$(var.Win64)" Id="cmp122FAF76617488AE4D550BC5D312CA9C" Guid="*">
-                <File Id="filE2120258BC792B8B2A9181CE33CE40F3" KeyPath="yes" Source="$(var.SourceDir)/share/locale/sk/LC_MESSAGES/gdk-pixbuf.mo"/>
-              </Component>
-            </Directory>
-          </Directory>
-          <Directory Id="dirACE747D21152313AAB628E9706F3A4DE" Name="sl">
-            <Directory Id="dir9FA57D7358DCD5C529639BD303439B73" Name="LC_MESSAGES">
-              <Component Win64="$(var.Win64)" Id="cmpE3AC6A70FFC82AD914D95A55CC8E7CE8" Guid="*">
-                <File Id="fil5325BB139BFD4723C02418C46BBFE677" KeyPath="yes" Source="$(var.SourceDir)/share/locale/sl/LC_MESSAGES/gdk-pixbuf.mo"/>
-              </Component>
-            </Directory>
-          </Directory>
-          <Directory Id="dir0ABD7693793EC6E0DBD9EB1095A5A127" Name="sq">
-            <Directory Id="dirC57A12B743F7BC48AF2FF747BB42D6B8" Name="LC_MESSAGES">
-              <Component Win64="$(var.Win64)" Id="cmp29862EE0323AE1CCB7FF741FE364BAEF" Guid="*">
-                <File Id="fil3D5CC6BD15D13DE8611DF11C85A96644" KeyPath="yes" Source="$(var.SourceDir)/share/locale/sq/LC_MESSAGES/gdk-pixbuf.mo"/>
-              </Component>
-            </Directory>
-          </Directory>
-          <Directory Id="dir351E12C573D0FE7F3207D98CCBA2C877" Name="sr">
-            <Directory Id="dir0877FFE4F1246A9F4C29C3E57E282DA2" Name="LC_MESSAGES">
-              <Component Win64="$(var.Win64)" Id="cmpE85AA35F8CB4D57C2DFB26AC31CFF331" Guid="*">
-                <File Id="filC6DA0729D700678DEB984F2AFAF9E47E" KeyPath="yes" Source="$(var.SourceDir)/share/locale/sr/LC_MESSAGES/gdk-pixbuf.mo"/>
-              </Component>
-            </Directory>
-          </Directory>
-          <Directory Id="dir0588DFA64541F5DDF1F4CEBFC34A290B" Name="sr@ije">
-            <Directory Id="dir181E876A6532C69EBCE4AE1A28F9DE3C" Name="LC_MESSAGES">
-              <Component Win64="$(var.Win64)" Id="cmp359E685380BFB9D57C023A8CBE416CA9" Guid="*">
-                <File Id="fil6147CE9E4E6FDE2F92A095AE9C7654FF" KeyPath="yes" Source="$(var.SourceDir)/share/locale/sr@ije/LC_MESSAGES/gdk-pixbuf.mo"/>
-              </Component>
-            </Directory>
-          </Directory>
-          <Directory Id="dir147BCEEBB348B793812D7FABC687CD68" Name="sr@latin">
-            <Directory Id="dirEF4196181F3C82312C71321BAB4738EF" Name="LC_MESSAGES">
-              <Component Win64="$(var.Win64)" Id="cmp4DA00A310EA67047113CFB4C35F5016A" Guid="*">
-                <File Id="filE446F424598714D1F11A396BD74AF2C3" KeyPath="yes" Source="$(var.SourceDir)/share/locale/sr@latin/LC_MESSAGES/gdk-pixbuf.mo"/>
-              </Component>
-            </Directory>
-          </Directory>
-          <Directory Id="dir09F406F09C38C54092B4DCA70EB32D13" Name="sv">
-            <Directory Id="dir48A2DE23A382EB1D4EB013FA894674A5" Name="LC_MESSAGES">
-              <Component Win64="$(var.Win64)" Id="cmp9ABADB482FE56BEFD2E82B915C0A5C6D" Guid="*">
-                <File Id="fil8B9DA6438F47D08461A8B6CC6CC40B47" KeyPath="yes" Source="$(var.SourceDir)/share/locale/sv/LC_MESSAGES/gdk-pixbuf.mo"/>
-              </Component>
-            </Directory>
-          </Directory>
-          <Directory Id="dirEAB1230433BF3E56167A219799B550A9" Name="ta">
-            <Directory Id="dir91AE8C9F0C4E5EB37B2C2321A8DBB91E" Name="LC_MESSAGES">
-              <Component Win64="$(var.Win64)" Id="cmp43CC5F2FF9B8486EE2F52A78DE41C20E" Guid="*">
-                <File Id="filD0BD3C53F7C0A9F98F82FD14F5A8A142" KeyPath="yes" Source="$(var.SourceDir)/share/locale/ta/LC_MESSAGES/gdk-pixbuf.mo"/>
-              </Component>
-            </Directory>
-          </Directory>
-          <Directory Id="dirB86B02D0A1BBB6D2BA59BED275CEADA0" Name="te">
-            <Directory Id="dir38263739FB0545374B7EA6D62AD98276" Name="LC_MESSAGES">
-              <Component Win64="$(var.Win64)" Id="cmpEA492420099E7FE96BE2E464745FB463" Guid="*">
-                <File Id="fil944B80A5D0F79F11C80ADCFDD2252A27" KeyPath="yes" Source="$(var.SourceDir)/share/locale/te/LC_MESSAGES/gdk-pixbuf.mo"/>
+              <Component Win64="$(var.Win64)" Id="cmp6BF09DEDBEE61D767E3F4E334164A569" Guid="*">
+                <File Id="fil8CB5E725F59CC3F222699CB4B427502E" KeyPath="yes" Source="$(var.SourceDir)/lib/gdk-pixbuf-2.0/2.10.0/loaders/libpixbufloader-icns.dll"/>
               </Component>
-            </Directory>
-          </Directory>
-          <Directory Id="dir2CA621F1082F0483DB5CFB1055CBE13C" Name="th">
-            <Directory Id="dir6A60D4B15342E93AD58E57F870A7E4EA" Name="LC_MESSAGES">
-              <Component Win64="$(var.Win64)" Id="cmpA05A72B7B6135E96C826690AE1668E13" Guid="*">
-                <File Id="fil36BB6CBBB4C244DB5DA79CC463A39609" KeyPath="yes" Source="$(var.SourceDir)/share/locale/th/LC_MESSAGES/gdk-pixbuf.mo"/>
-              </Component>
-            </Directory>
-          </Directory>
-          <Directory Id="dirD836326BCBC80394D55C7320A7A394B6" Name="tk">
-            <Directory Id="dirBE9936C16F888E37A1E5A7F29A62F2E3" Name="LC_MESSAGES">
-              <Component Win64="$(var.Win64)" Id="cmpDCED4A875FFFF945F9C0AF342E860A15" Guid="*">
-                <File Id="filE5B837D019B0464DF44A2EC03C21B8AE" KeyPath="yes" Source="$(var.SourceDir)/share/locale/tk/LC_MESSAGES/gdk-pixbuf.mo"/>
-              </Component>
-            </Directory>
-          </Directory>
-          <Directory Id="dir335DE48D8B9B04956F7F4D8C140BD982" Name="tr">
-            <Directory Id="dir0BC23E630EADF260ECA26A764EBA7ED4" Name="LC_MESSAGES">
-              <Component Win64="$(var.Win64)" Id="cmp0FC62E7F98B4DB2EB27EAA41F0C03CE3" Guid="*">
-                <File Id="filC92B8B29179638442495D3183D1D68E4" KeyPath="yes" Source="$(var.SourceDir)/share/locale/tr/LC_MESSAGES/gdk-pixbuf.mo"/>
-              </Component>
-            </Directory>
-          </Directory>
-          <Directory Id="dir4F36164BA24A02482DC0EBB57CA28970" Name="tt">
-            <Directory Id="dirB3C6EB411A66205AC136773EFCB26E21" Name="LC_MESSAGES">
-              <Component Win64="$(var.Win64)" Id="cmp3945BB24466DF88029999678BACE7E3C" Guid="*">
-                <File Id="fil625988DBC816852AB97F23D2D77282B4" KeyPath="yes" Source="$(var.SourceDir)/share/locale/tt/LC_MESSAGES/gdk-pixbuf.mo"/>
-              </Component>
-            </Directory>
-          </Directory>
-          <Directory Id="dir5A15B3453F5CD1E4358BB839A0FABBC4" Name="ug">
-            <Directory Id="dirC0DD5CCE3C8E1FFE0A92CAB24B46AD8A" Name="LC_MESSAGES">
-              <Component Win64="$(var.Win64)" Id="cmp6EFAFC68C8644AEF19EAA983A22CD287" Guid="*">
-                <File Id="fil7570F4C0F986D336795B2010D6D4E406" KeyPath="yes" Source="$(var.SourceDir)/share/locale/ug/LC_MESSAGES/gdk-pixbuf.mo"/>
-              </Component>
-            </Directory>
-          </Directory>
-          <Directory Id="dir2BCA245304C01E85753BB134CE276E30" Name="uk">
-            <Directory Id="dir3E5C3B511D3016993AF6FC42AA6D844A" Name="LC_MESSAGES">
-              <Component Win64="$(var.Win64)" Id="cmp94CD0303A0D421718CB53385EDDE23F3" Guid="*">
-                <File Id="fil4F8E7931B901C0BD4C47F39899F0F781" KeyPath="yes" Source="$(var.SourceDir)/share/locale/uk/LC_MESSAGES/gdk-pixbuf.mo"/>
-              </Component>
-            </Directory>
-          </Directory>
-          <Directory Id="dirFFCBF7A6C80EF70839E5991B1D1F0BF2" Name="uz">
-            <Directory Id="dirB5B19EB7AEBA2D0362027610BAF43592" Name="LC_MESSAGES">
-              <Component Win64="$(var.Win64)" Id="cmp2A8D62955ADDACE595029717E267D94E" Guid="*">
-                <File Id="fil773BBFAEB749C930E4D9E62C044697FC" KeyPath="yes" Source="$(var.SourceDir)/share/locale/uz/LC_MESSAGES/gdk-pixbuf.mo"/>
-              </Component>
-            </Directory>
-          </Directory>
-          <Directory Id="dir6B0DF47C6D261A5CB8B33228C902484C" Name="uz@cyrillic">
-            <Directory Id="dir4B971D514B08D68B26A6BA724128C78E" Name="LC_MESSAGES">
-              <Component Win64="$(var.Win64)" Id="cmpF6784ED6610A2CF84B32E6E4DA8D18F1" Guid="*">
-                <File Id="fil8208AC6F47D2B58962051449A0EE3166" KeyPath="yes" Source="$(var.SourceDir)/share/locale/uz@cyrillic/LC_MESSAGES/gdk-pixbuf.mo"/>
-              </Component>
-            </Directory>
-          </Directory>
-          <Directory Id="dirD09DFA4D4B1C3E34DA490872F51A8160" Name="vi">
-            <Directory Id="dir164F27922627150DEF44A4A9B42738EC" Name="LC_MESSAGES">
-              <Component Win64="$(var.Win64)" Id="cmp02C514CB4151AC6DAC8AF2D383FD974B" Guid="*">
-                <File Id="fil7BF560DA4C2178139087DA3BECDF76B4" KeyPath="yes" Source="$(var.SourceDir)/share/locale/vi/LC_MESSAGES/gdk-pixbuf.mo"/>
-              </Component>
-            </Directory>
-          </Directory>
-          <Directory Id="dir8AA5E77F65DB586A5B48B4E97FB4908F" Name="wa">
-            <Directory Id="dir6907A637A0AF93113081F38D54AADF4D" Name="LC_MESSAGES">
-              <Component Win64="$(var.Win64)" Id="cmp47D09084D866C8138A6DC4D1249B4ECC" Guid="*">
-                <File Id="fil2D582600EF6E6C9756140B17DCC384E9" KeyPath="yes" Source="$(var.SourceDir)/share/locale/wa/LC_MESSAGES/gdk-pixbuf.mo"/>
-              </Component>
-            </Directory>
-          </Directory>
-          <Directory Id="dir67BBBB93B90E70C16075E3EACCD066E2" Name="xh">
-            <Directory Id="dirBC609635A0463B25624483555A1CC828" Name="LC_MESSAGES">
-              <Component Win64="$(var.Win64)" Id="cmpB6D947650750E9B6E1226BD5BDB04B63" Guid="*">
-                <File Id="filC8FB800B7841C76FE8D193F27ABDA237" KeyPath="yes" Source="$(var.SourceDir)/share/locale/xh/LC_MESSAGES/gdk-pixbuf.mo"/>
+              <Component Win64="$(var.Win64)" Id="cmp5D102B25E6246C1AD2D96939B74ACDDE" Guid="*">
+                <File Id="filFCE790E3C4013955E9F63DE610F1CBEB" KeyPath="yes" Source="$(var.SourceDir)/lib/gdk-pixbuf-2.0/2.10.0/loaders/libpixbufloader-pnm.dll"/>
               </Component>
-            </Directory>
-          </Directory>
-          <Directory Id="dir7735342890EF53E9398C576AA4FCD8E3" Name="yi">
-            <Directory Id="dirB40B82933B6C9C55D21CA58F4796F9BF" Name="LC_MESSAGES">
-              <Component Win64="$(var.Win64)" Id="cmpB713F32A0497C5365C050085B32021B9" Guid="*">
-                <File Id="fil9C28D8E686627EDFBC138F76FA63424C" KeyPath="yes" Source="$(var.SourceDir)/share/locale/yi/LC_MESSAGES/gdk-pixbuf.mo"/>
+              <Component Win64="$(var.Win64)" Id="cmp0E4F9CD1AB467AC7C2EC61221CA485B1" Guid="*">
+                <File Id="filA7A544B8F03E79C4CA45309AFF8D5571" KeyPath="yes" Source="$(var.SourceDir)/lib/gdk-pixbuf-2.0/2.10.0/loaders/libpixbufloader-qtif.dll"/>
               </Component>
-            </Directory>
-          </Directory>
-          <Directory Id="dir05BF3D8A219E9083DEB68E223DEF2F72" Name="zh_CN">
-            <Directory Id="dirD331DBBE7EF457576D13E5C597E1241A" Name="LC_MESSAGES">
-              <Component Win64="$(var.Win64)" Id="cmp4F5A1EC883DEA9973444E8AD2CE5B7FA" Guid="*">
-                <File Id="filAB8CDF7366A1930D9ECE4E121BB84C3A" KeyPath="yes" Source="$(var.SourceDir)/share/locale/zh_CN/LC_MESSAGES/gdk-pixbuf.mo"/>
+              <Component Win64="$(var.Win64)" Id="cmp1375CE2CC2E5172630829A8E090327A3" Guid="*">
+                <File Id="fil37888015F69FBF0AC3C402CA7584FDC0" KeyPath="yes" Source="$(var.SourceDir)/lib/gdk-pixbuf-2.0/2.10.0/loaders/libpixbufloader-tga.dll"/>
               </Component>
-            </Directory>
-          </Directory>
-          <Directory Id="dir763E20F4C2A39A0D5B4DD2059AD1066B" Name="zh_HK">
-            <Directory Id="dirD719FBC634BE2E7A79ECA6F35082D9F9" Name="LC_MESSAGES">
-              <Component Win64="$(var.Win64)" Id="cmpAFA0D9B021BAE4633A9E4CD9D82B8353" Guid="*">
-                <File Id="filF0753C5D7608B9405770DD4DB0DBA0B7" KeyPath="yes" Source="$(var.SourceDir)/share/locale/zh_HK/LC_MESSAGES/gdk-pixbuf.mo"/>
+              <Component Win64="$(var.Win64)" Id="cmp9903F78551E790A3D4904A08A089A40D" Guid="*">
+                <File Id="filE41B014E3AF0456422758193D113BC30" KeyPath="yes" Source="$(var.SourceDir)/lib/gdk-pixbuf-2.0/2.10.0/loaders/libpixbufloader-xbm.dll"/>
               </Component>
-            </Directory>
-          </Directory>
-          <Directory Id="dirEF10FBFAB92C9D0D7660DE1631722833" Name="zh_TW">
-            <Directory Id="dir37ACDCCFF6309A8A37B29972402B6FCC" Name="LC_MESSAGES">
-              <Component Win64="$(var.Win64)" Id="cmp08921DEF6D25E75869BAF736DC28A5B6" Guid="*">
-                <File Id="filFDEE5F6F43DA23AE3CFABFA99B51C917" KeyPath="yes" Source="$(var.SourceDir)/share/locale/zh_TW/LC_MESSAGES/gdk-pixbuf.mo"/>
+              <Component Win64="$(var.Win64)" Id="cmp95D9BEB9B96560311E2FF699893D37D2" Guid="*">
+                <File Id="fil83820EC383F3C49AF836A0B8DFA180DD" KeyPath="yes" Source="$(var.SourceDir)/lib/gdk-pixbuf-2.0/2.10.0/loaders/libpixbufloader-xpm.dll"/>
               </Component>
-              </Directory>
             </Directory>
           </Directory>
         </Directory>
+      </Directory>
+      <Directory Id="dir2FD079E928A6ED5E54CE09507DED5C31" Name="share">
+        <Directory Id="dir7ED65FC49FC7B688B5AAC72C0E6D33AA" Name="locale">
+          <Directory Id="dir1730714CBAAFD61DFBEA2AEFBB4F3420" Name="ab">
+            <Directory Id="dir08E12D5FE6131AE76FE8E208680C31CC" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp7251F58555D41A1AF0F971552AD51BED" Guid="*">
+                <File Id="fil06869F9ECED67CF828759FAD17E510D1" KeyPath="yes" Source="$(var.SourceDir)/share/locale/ab/LC_MESSAGES/gdk-pixbuf.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir6BEA481A2B7FE037EC427BB7B7196502" Name="af">
+            <Directory Id="dir0E3C6007AA4073DB5D2A000BDB1D19DD" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp4BE3763769C85D7C649FC561E95AB4FD" Guid="*">
+                <File Id="fil252F337B81F3A4BD26781A5233F214D3" KeyPath="yes" Source="$(var.SourceDir)/share/locale/af/LC_MESSAGES/gdk-pixbuf.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir7CDD50B881F4C8AF3D25D043281B0BD6" Name="ang">
+            <Directory Id="dir4D3169B2E88C60F464A3A9C83416DFB9" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp00116F380E029200A8528CCCDA439142" Guid="*">
+                <File Id="filCEA0D2032C4F99476560E4E7EB115CED" KeyPath="yes" Source="$(var.SourceDir)/share/locale/ang/LC_MESSAGES/gdk-pixbuf.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir066EA225FE37DF432C6830277F482BB2" Name="ar">
+            <Directory Id="dir787E2DB9BFC3F3062E56EC7FE5000D41" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp484C5006CDE460D35C5E583480FD60D9" Guid="*">
+                <File Id="fil6407FF1B7794CA2A118B50683A119494" KeyPath="yes" Source="$(var.SourceDir)/share/locale/ar/LC_MESSAGES/gdk-pixbuf.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dirF7C21212D0DC751D7944F5FE6AF207AD" Name="as">
+            <Directory Id="dir4D1DCCB2B0B96361036BAC79422B0424" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp20A9213C98EFBE40F7FA34F2C5393026" Guid="*">
+                <File Id="filBABE5CCC5996ED3F8A5A18279D0E4289" KeyPath="yes" Source="$(var.SourceDir)/share/locale/as/LC_MESSAGES/gdk-pixbuf.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir59B215D55B18987D1A52F014E7D20E59" Name="ast">
+            <Directory Id="dir1666729DF5801F4113F123F40AA193D6" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp0BDF5EB111A83B5F1E0E0B82A505F098" Guid="*">
+                <File Id="fil20DC5A1A87BCF212BA4970160609F2C5" KeyPath="yes" Source="$(var.SourceDir)/share/locale/ast/LC_MESSAGES/gdk-pixbuf.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dirC4428AD686FD8A336837DECD3C019F82" Name="az">
+            <Directory Id="dirA5633B1E13E40543517C7C21BC02FB54" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmpEC224928054C53A8095FD2B1AEBA663A" Guid="*">
+                <File Id="filDF48E7A0932698754DCE0E3770BE898F" KeyPath="yes" Source="$(var.SourceDir)/share/locale/az/LC_MESSAGES/gdk-pixbuf.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dirF61711B342682C3C199362B876C33A25" Name="be">
+            <Directory Id="dir0D6187A231A16BD94806574F808178D9" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp63944A7B432DA59E4872E4593E57B174" Guid="*">
+                <File Id="filD7F13161A7BD10D89EBC1605B44B4FAF" KeyPath="yes" Source="$(var.SourceDir)/share/locale/be/LC_MESSAGES/gdk-pixbuf.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dirCFCEE3F1C37F790777D0335192A5FF50" Name="be@latin">
+            <Directory Id="dir94783975EABBF7F8CF596DCA427CA5A3" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp270DE3E30C5309BE608B46A2C5453AE8" Guid="*">
+                <File Id="fil6B59F4C6399FF03B6964DDC86545C2DA" KeyPath="yes" Source="$(var.SourceDir)/share/locale/be@latin/LC_MESSAGES/gdk-pixbuf.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dirD3F90C85FBD8C178FC35CD5C7F8B9EBE" Name="bg">
+            <Directory Id="dir3F3D701558C8EE8E9B7CCC2B84F11613" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp0C9FC79BB364105FE4161241D08738D3" Guid="*">
+                <File Id="fil919A85C518E1C5C5FC187EC36CD84BA6" KeyPath="yes" Source="$(var.SourceDir)/share/locale/bg/LC_MESSAGES/gdk-pixbuf.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir6D40F53F5D0432D145724A9F7031F736" Name="bn">
+            <Directory Id="dir536D2028D77DFC428A1EC67E6B7F67C6" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp38F8FB65F8A9A564D968848A5BBDE096" Guid="*">
+                <File Id="fil10773BF3764807DA31F19956EB2D5C4E" KeyPath="yes" Source="$(var.SourceDir)/share/locale/bn/LC_MESSAGES/gdk-pixbuf.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir893D23DB5A8108D94212F08B37114320" Name="bn_IN">
+            <Directory Id="dirD86BA0273E3F13A192886F3840A542C6" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp6A7F01B8DFE7D1FB3CFCF23D682CF627" Guid="*">
+                <File Id="filF6712A13BE165D513B5A9C3CBD5958A6" KeyPath="yes" Source="$(var.SourceDir)/share/locale/bn_IN/LC_MESSAGES/gdk-pixbuf.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir53B897C9AA37026888430605950B92FE" Name="br">
+            <Directory Id="dirAA7F562105E79F3208ADE0CCD11E1EE9" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp2917114282854CF588157F026F894107" Guid="*">
+                <File Id="fil581E8B6ACDC8FA1752E00B1B03B9AB10" KeyPath="yes" Source="$(var.SourceDir)/share/locale/br/LC_MESSAGES/gdk-pixbuf.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir4DBDFA76D6BE2F15B8565879298EAC8B" Name="bs">
+            <Directory Id="dir4AAB6C7FE4906E992F0FD2BECFA7383C" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmpE643CF56E8C534A1C34C3A8AB7DA4C9A" Guid="*">
+                <File Id="fil00C02CDEDDD9170040273438F7D9B1F1" KeyPath="yes" Source="$(var.SourceDir)/share/locale/bs/LC_MESSAGES/gdk-pixbuf.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir77696047F3F1FC80C2411B774190F618" Name="ca">
+            <Directory Id="dir4E34750C2CBD6D59370907B5D0516DA6" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp39947DD840B22D1246A61E7BAEC1C9DD" Guid="*">
+                <File Id="fil4E97BF60806C3C33A80B727D3B75F74B" KeyPath="yes" Source="$(var.SourceDir)/share/locale/ca/LC_MESSAGES/gdk-pixbuf.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir4593E07FAE972620EB18374F63272356" Name="ca@valencia">
+            <Directory Id="dir3BD9F00802DED82C5B1A7C3C59DB4B0B" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp15429A4DD8538FE01A55646A982142C5" Guid="*">
+                <File Id="fil9167161EF88F2C95F56F95EA5AAF718F" KeyPath="yes" Source="$(var.SourceDir)/share/locale/ca@valencia/LC_MESSAGES/gdk-pixbuf.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir5FA22767577AF81008980C5F0B5E964F" Name="crh">
+            <Directory Id="dir64982903747B388FE0ED393AD505B70A" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp5F78C828ECA5F89B610A3729C541B014" Guid="*">
+                <File Id="fil688445C74726344CEDEA9EC47482A4F2" KeyPath="yes" Source="$(var.SourceDir)/share/locale/crh/LC_MESSAGES/gdk-pixbuf.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dirD5D153E52F29E57FEDF6825178DE6318" Name="cs">
+            <Directory Id="dir9B00F950310382E1E9FA6EEDD8A2D408" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp70A902E496D4BDC8C61F4B7BEE8D2729" Guid="*">
+                <File Id="filA850871DCE0090BF577B47F2A7B6F024" KeyPath="yes" Source="$(var.SourceDir)/share/locale/cs/LC_MESSAGES/gdk-pixbuf.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir3A87E4CD489C841F57609ADE5C80B434" Name="csb">
+            <Directory Id="dirA2DA9B929D596AFBB629ACA27F1FDE6F" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmpFC551DF5C8F7D6F8494A7632EC2A10F0" Guid="*">
+                <File Id="filDA60FDC32F19EFB70B10EFD4D5BFCD0D" KeyPath="yes" Source="$(var.SourceDir)/share/locale/csb/LC_MESSAGES/gdk-pixbuf.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir57443A14940B93265945B3D494F7C358" Name="cy">
+            <Directory Id="dir6BA5794D73FAAB9FCAE46FBA398E8FF0" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp973D699C85A9C51940F76C52AD7C327F" Guid="*">
+                <File Id="fil2C6E14C4E803F7A2D7B12EE64C1F0B35" KeyPath="yes" Source="$(var.SourceDir)/share/locale/cy/LC_MESSAGES/gdk-pixbuf.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir55A1768548E84A031481CF95FFB28B38" Name="da">
+            <Directory Id="dir95D4AB456404B161429CE650F6C9C23E" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp4266A0EF1C5306DC9B17ED6940AB7130" Guid="*">
+                <File Id="fil0A06D386C0CD74B0DF2CE3FD4E3B40D3" KeyPath="yes" Source="$(var.SourceDir)/share/locale/da/LC_MESSAGES/gdk-pixbuf.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dirFECD9D956F6C6134C132E9ADB12DF910" Name="de">
+            <Directory Id="dirF86006A8AE086849358F822C0004FF72" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmpC2BF9E66B1F93A3D98A2CC01F20895E4" Guid="*">
+                <File Id="fil0FE12CDBD6E4CA8B938E13DFFE9C2037" KeyPath="yes" Source="$(var.SourceDir)/share/locale/de/LC_MESSAGES/gdk-pixbuf.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir9675D1A4EA6E40A3E3990EA710B9ADE9" Name="dz">
+            <Directory Id="dir39F82C2ECBF10E9BCDE5E399A02C2373" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp09CDC8B0FB387FFF3255DA6683998CB5" Guid="*">
+                <File Id="filD5A12C555618F02529BA9177AD669C35" KeyPath="yes" Source="$(var.SourceDir)/share/locale/dz/LC_MESSAGES/gdk-pixbuf.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir6C0EE39626AD61F53B02FB162DFDFB86" Name="el">
+            <Directory Id="dir108C56CB8440C07A1063E19E0B720831" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp7D7BBD00CC5B533BBFAEBBF1AB1434EC" Guid="*">
+                <File Id="fil039C07871793918C00816F83338DBBA0" KeyPath="yes" Source="$(var.SourceDir)/share/locale/el/LC_MESSAGES/gdk-pixbuf.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir051B6AF18CA80E2D06BE71DC6721D064" Name="en@shaw">
+            <Directory Id="dir79631EA720ECF7416B4713BF35F86AA5" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp634B52C1EEFF96653A453E2FAD315D15" Guid="*">
+                <File Id="fil5E8ABD70CA261CCE5955382A8D1ADC26" KeyPath="yes" Source="$(var.SourceDir)/share/locale/en@shaw/LC_MESSAGES/gdk-pixbuf.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dirCFD7440B380D743108FCCF27B97D65EE" Name="en_CA">
+            <Directory Id="dirD503682B503FA63CA14282F12EA7C37D" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp6CBC3CEA0FE8AC1DFAAE17EF64927EB6" Guid="*">
+                <File Id="fil5356E7A3AD26D4A472DADC5FF1684B24" KeyPath="yes" Source="$(var.SourceDir)/share/locale/en_CA/LC_MESSAGES/gdk-pixbuf.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir47B96D7FE8159BC32D94937B49BAFA20" Name="en_GB">
+            <Directory Id="dir9070F168723FA12F7FEF2171C354A5FF" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp6D0C25C78327207557ACF86C76E510CD" Guid="*">
+                <File Id="filA95F97855047AFB13C712A732E3E7DCB" KeyPath="yes" Source="$(var.SourceDir)/share/locale/en_GB/LC_MESSAGES/gdk-pixbuf.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir3F24BB6FA9EA7CD230F4D700C5C5C4F3" Name="eo">
+            <Directory Id="dir777C3D4929426C9B6982803C83569521" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp67A16C9D97B514F238E67C6646B210CF" Guid="*">
+                <File Id="filDA19B77CF46DC299F40F781F9874FB51" KeyPath="yes" Source="$(var.SourceDir)/share/locale/eo/LC_MESSAGES/gdk-pixbuf.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir06A0DE40B03A02379B68678009B49BB4" Name="es">
+            <Directory Id="dir9EA0C6512B385E0824E741EE8E2B9920" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmpAC3B3627FFF9CA43D41CE8528F8333C5" Guid="*">
+                <File Id="filFD2926FE1B1323DF850EF670C246993E" KeyPath="yes" Source="$(var.SourceDir)/share/locale/es/LC_MESSAGES/gdk-pixbuf.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir8C2E9C6EA27D615F73165A992F5EE3CE" Name="et">
+            <Directory Id="dir376B964D00F4BEE0211B137D06D30216" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp29C22D4631E42563D034F2CEDB04F9AC" Guid="*">
+                <File Id="fil570ECD6B65EBF207C9FBD70C0D116BB1" KeyPath="yes" Source="$(var.SourceDir)/share/locale/et/LC_MESSAGES/gdk-pixbuf.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dirDDE601F2ACE1443256F120CA91AE024D" Name="eu">
+            <Directory Id="dir0ED0A2D97B45D06E7C3E3D3BF3DB984E" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp4F1D7940E1E03A9732D91C9786BB9042" Guid="*">
+                <File Id="fil78EF6853FA579929F1A785D8CE875369" KeyPath="yes" Source="$(var.SourceDir)/share/locale/eu/LC_MESSAGES/gdk-pixbuf.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dirD0C663B4E6ECC6707A7E4DBDEAA6BF67" Name="fa">
+            <Directory Id="dir514DC25B4538BC2FEC6D4245E2DD75DA" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp8D8405D1CB62A368FDEDB0E23AFDDF16" Guid="*">
+                <File Id="filE3A9F3692C5B446E93A8BAA2571DEAB3" KeyPath="yes" Source="$(var.SourceDir)/share/locale/fa/LC_MESSAGES/gdk-pixbuf.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dirCD1043D5D1EEF75250192122F3D29495" Name="fi">
+            <Directory Id="dir2DE24FE1ACCD7456905C5B27D6F9AF91" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp46AA4DDC87EE02B442DFBFB54570EB12" Guid="*">
+                <File Id="fil18D12C230807541FA6237B8CBE6FADBC" KeyPath="yes" Source="$(var.SourceDir)/share/locale/fi/LC_MESSAGES/gdk-pixbuf.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir405145E39D812817A773B7DC537CC133" Name="fr">
+            <Directory Id="dir3B8E3A76177BE9492C5CDEE10C6121E5" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp7EDA29EE789D1F9BA6070ED42D1A6FBC" Guid="*">
+                <File Id="filC216A36F0BB5242C37AAA946947EE3E2" KeyPath="yes" Source="$(var.SourceDir)/share/locale/fr/LC_MESSAGES/gdk-pixbuf.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir13C253015AA452D4C9B31F75296FE10C" Name="fur">
+            <Directory Id="dir15DA918F11A15C90CE8FE5F8673D17A0" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp6C3C814E83E2AC7A226E3D07F95FDD61" Guid="*">
+                <File Id="fil4CCD0F1B193444AE33AE60268544CDA2" KeyPath="yes" Source="$(var.SourceDir)/share/locale/fur/LC_MESSAGES/gdk-pixbuf.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dirEBE9BA208A24052D9476472FA37F218C" Name="ga">
+            <Directory Id="dirA610AE5581B85A7DDC01401D409A4A2C" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp06984833EFA3F8280B95B3090561FCE9" Guid="*">
+                <File Id="fil92312157201F16946B3E2B0E97319CD5" KeyPath="yes" Source="$(var.SourceDir)/share/locale/ga/LC_MESSAGES/gdk-pixbuf.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir5D469587375E45B91E4260A634A38C8E" Name="gl">
+            <Directory Id="dir96CC542BD0968FD06A4DBA379C9C178F" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmpF24E7B585A1644F4B2B171389A59305E" Guid="*">
+                <File Id="fil37E33291048A69A814BB6115B5D02D66" KeyPath="yes" Source="$(var.SourceDir)/share/locale/gl/LC_MESSAGES/gdk-pixbuf.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir683549D8707CA57232830D95B579DADA" Name="gu">
+            <Directory Id="dirF1E862083034E9E73232DAD293C4B2D5" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmpC8A30DE736829C429E9E14D5B7ED0C03" Guid="*">
+                <File Id="fil92B4E8476EA552188746D2EDFF0B770F" KeyPath="yes" Source="$(var.SourceDir)/share/locale/gu/LC_MESSAGES/gdk-pixbuf.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir953DB422D2211E3B4C82019E18938171" Name="he">
+            <Directory Id="dir0B53C6859D82BD95EB9FD0BE102EEC86" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp7B7AAFC9B9A85A1EC5FDED90CA62D6D7" Guid="*">
+                <File Id="fil874A97D1F2A805C74FA98AD90021B938" KeyPath="yes" Source="$(var.SourceDir)/share/locale/he/LC_MESSAGES/gdk-pixbuf.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir5FB839A978B44250ABF95B0BBEF06B21" Name="hi">
+            <Directory Id="dirDE6BC3D5017B0BA8C174E9A731CC9805" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp04151D84D6F6B27D1F6877DD5A7F7F99" Guid="*">
+                <File Id="filF8EBF9FF5C165031A5AEAF129FC54D21" KeyPath="yes" Source="$(var.SourceDir)/share/locale/hi/LC_MESSAGES/gdk-pixbuf.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dirA28B854494E0749D4FEF4E41906E2F59" Name="hr">
+            <Directory Id="dir464798EE79BB568DB1957ECC799375BC" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp158C3898A68DBDB1040AC2E8739F2B0B" Guid="*">
+                <File Id="fil0FABD7BA13DA7175D216DB8733F1ABDA" KeyPath="yes" Source="$(var.SourceDir)/share/locale/hr/LC_MESSAGES/gdk-pixbuf.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dirAA47D352D0F0D6DDC5BCE531425C9743" Name="hu">
+            <Directory Id="dir32F8DEA5F81CDE442BAB7589A161358E" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmpE371868077E608B05DF181BD9D58EE47" Guid="*">
+                <File Id="fil0609F9B4B54F901D9AA9E63E1A3ECEC5" KeyPath="yes" Source="$(var.SourceDir)/share/locale/hu/LC_MESSAGES/gdk-pixbuf.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dirF41516A5C614CE34149180C8FF74B844" Name="hy">
+            <Directory Id="dirCA686938B03D03E8E0B3561E2D0014C4" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp78913D76D35B41B1A9B86C5D3CA01628" Guid="*">
+                <File Id="fil25A26F4BC73791627A76A55C85B25AE2" KeyPath="yes" Source="$(var.SourceDir)/share/locale/hy/LC_MESSAGES/gdk-pixbuf.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir4F9599AFF5AEE4E74A938C8F99F9882D" Name="ia">
+            <Directory Id="dir271F859C4DF852D268FD754E03A8A0AD" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmpDAEB12DDA5A021E00516DF6143CB8D26" Guid="*">
+                <File Id="filCA1A866E448E273768AA0C8BAB1997F6" KeyPath="yes" Source="$(var.SourceDir)/share/locale/ia/LC_MESSAGES/gdk-pixbuf.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dirC423240362E57B7CAE19C95BD3FB81ED" Name="id">
+            <Directory Id="dir559539056FDAB46E4C219105773700EB" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp02B7D0310A210038EDB7F26C0E0E0495" Guid="*">
+                <File Id="fil572A36881C0D8E9004400C803451635D" KeyPath="yes" Source="$(var.SourceDir)/share/locale/id/LC_MESSAGES/gdk-pixbuf.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dirC6092AE3A023FA5510F2D2D48555B89D" Name="io">
+            <Directory Id="dir2C9893D7C8999BD9C44D802FC8A94F44" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp34F0EA35C149C137FD5774D843F2FDBF" Guid="*">
+                <File Id="fil1541722F5E855FFC8365384A37BF9863" KeyPath="yes" Source="$(var.SourceDir)/share/locale/io/LC_MESSAGES/gdk-pixbuf.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dirE4CBB6146C6DB39CB9EA8B9ABBF3213E" Name="is">
+            <Directory Id="dir4864A5FD52F492BD7E91C3543A563490" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp35DCC513C58A2995D96BE16F024CD2E9" Guid="*">
+                <File Id="filDF969D1EB82EE55CD73C4E0A0BDB31DA" KeyPath="yes" Source="$(var.SourceDir)/share/locale/is/LC_MESSAGES/gdk-pixbuf.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir741F170BBFC590C2E09DF1C1D14AE417" Name="it">
+            <Directory Id="dirA641E10B30AE913B6BD79731EA6AF8D2" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmpED490B072693FCD4100B0EBE0D205B61" Guid="*">
+                <File Id="fil8F4F1F4E46B93E87E4BE1F438A982D0D" KeyPath="yes" Source="$(var.SourceDir)/share/locale/it/LC_MESSAGES/gdk-pixbuf.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dirC123F5EE069C1586856173F61140D1CA" Name="ja">
+            <Directory Id="dir595C774B707DE15AC40133469AB8A7E2" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmpF44B6257A5CFBCEFF49D086147FDB472" Guid="*">
+                <File Id="fil197E7386112A4B64309E573FDB130BB1" KeyPath="yes" Source="$(var.SourceDir)/share/locale/ja/LC_MESSAGES/gdk-pixbuf.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir5B932C79A707AE2ECE8101D209C8AB2C" Name="ka">
+            <Directory Id="dir0817D6D147964CC8A4BD85DAC8BD35D5" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmpDDA86F92EB01499809E06BEFB9AE370D" Guid="*">
+                <File Id="fil1E1C31668CE0DBCA98A36B9056664E79" KeyPath="yes" Source="$(var.SourceDir)/share/locale/ka/LC_MESSAGES/gdk-pixbuf.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dirF5AFFF9D3A19599118679C2C25123ED8" Name="kab">
+            <Directory Id="dir84423D74AAE6669383D9EBFBE3AA415D" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmpC98971D2A5FB15C2AB9FF479BEB1930A" Guid="*">
+                <File Id="fil15966A7BF95586ACA9F67AD0E4E51755" KeyPath="yes" Source="$(var.SourceDir)/share/locale/kab/LC_MESSAGES/gdk-pixbuf.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dirDA2DDB8B98027A4821900AAF07FAEE59" Name="kk">
+            <Directory Id="dir0D48C3AA85F68BFAA81A505808039F1C" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmpDB3E01AEF8007499E176C88C06FC042D" Guid="*">
+                <File Id="fil85DB6ADBD3CB4E3813011FDB38D86C05" KeyPath="yes" Source="$(var.SourceDir)/share/locale/kk/LC_MESSAGES/gdk-pixbuf.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dirCA47FC49046EE22CC496DF5DD4A7A1E7" Name="km">
+            <Directory Id="dirE102C3BF3B64A5BD9CD36D3635979833" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp899079B6EB347E553B37AD784A3E0B6A" Guid="*">
+                <File Id="filFA8B91EEEE857A455A78920845CFA9D5" KeyPath="yes" Source="$(var.SourceDir)/share/locale/km/LC_MESSAGES/gdk-pixbuf.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dirDEE58649DBD8AF24E6F7CD4A2271CED0" Name="kn">
+            <Directory Id="dirFAA897C6D643B3E75FFDA69C69CD20C7" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp30CB18CC7698C7931D74D988CCEBADD4" Guid="*">
+                <File Id="fil9F52FA5F6FE169E855EADEAB76F61C5E" KeyPath="yes" Source="$(var.SourceDir)/share/locale/kn/LC_MESSAGES/gdk-pixbuf.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir5D530A42794EA82B9A4C584118B7AD40" Name="ko">
+            <Directory Id="dir7254DF793073246BF14B87CD7BEA5ED9" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmpA79D56D68DF82670B2933283914F3A3E" Guid="*">
+                <File Id="fil730A9F408987047170E32C9799293176" KeyPath="yes" Source="$(var.SourceDir)/share/locale/ko/LC_MESSAGES/gdk-pixbuf.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir04A2022D390A2A898A74D9EEF459DE49" Name="ku">
+            <Directory Id="dirFB404AD0950C8F6FD53F75E9AD5B5622" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp7DFE04C947EC4E831AF11C18201355B2" Guid="*">
+                <File Id="fil2C7BA60C5807E4399486025C9891177E" KeyPath="yes" Source="$(var.SourceDir)/share/locale/ku/LC_MESSAGES/gdk-pixbuf.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir74720C8ECCA34A73BE2476CE0926FF8E" Name="li">
+            <Directory Id="dir0C60AD74C58ADF6B96C1595397EFB6A2" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp9D8D887EDA085C5FD1FBEB1F134BA569" Guid="*">
+                <File Id="fil9BD625F06F35E0ADB83ED3565D8284FA" KeyPath="yes" Source="$(var.SourceDir)/share/locale/li/LC_MESSAGES/gdk-pixbuf.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dirEDC83C8B2473C534631A299366E5D6BB" Name="lt">
+            <Directory Id="dir46BF7AB7CDCCB097CAFF2110B72BE315" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp5783CBDF819E3AFE81320FAF663FD2CE" Guid="*">
+                <File Id="filA228A45560202CECBEF6A885D40FBA7F" KeyPath="yes" Source="$(var.SourceDir)/share/locale/lt/LC_MESSAGES/gdk-pixbuf.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir9A38C6AFF5AC6CB7618350B810621A6C" Name="lv">
+            <Directory Id="dir1F2C6B3ADE0D4DA02EDDDE61F102D617" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp81F0D5E0ECA8D9244654751B502E1DB1" Guid="*">
+                <File Id="fil074D3E663180C37FF46BF7E1B6A1986C" KeyPath="yes" Source="$(var.SourceDir)/share/locale/lv/LC_MESSAGES/gdk-pixbuf.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dirEA4DA164091CAEE5B0F5431A518F5144" Name="mai">
+            <Directory Id="dirA2F86A88B12CAC7E014AA768DC99637C" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmpD931A339BD30EDB7173C8A45BA594CAE" Guid="*">
+                <File Id="fil584A93B51161F56B4621BD47FE316D26" KeyPath="yes" Source="$(var.SourceDir)/share/locale/mai/LC_MESSAGES/gdk-pixbuf.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dirCD3C25E9FF5F944C92438A2BEFF53070" Name="mi">
+            <Directory Id="dir2C87BD0A8AE6D2FCA1A8D03135F38435" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmpD385461B87257D5783228E52DC1FFD34" Guid="*">
+                <File Id="fil2DCCD289BA20293B1CF3392F7C1E5CE4" KeyPath="yes" Source="$(var.SourceDir)/share/locale/mi/LC_MESSAGES/gdk-pixbuf.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir21DFA2601D2951790AF940EC1DA59EE5" Name="mk">
+            <Directory Id="dirAFAE574FD3CF0B156264D556BDDA610D" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp9AE1D137332A8A598F13BB5AF08E54B5" Guid="*">
+                <File Id="fil02D4AD7D4A62A08F0A934F74DAB6FECC" KeyPath="yes" Source="$(var.SourceDir)/share/locale/mk/LC_MESSAGES/gdk-pixbuf.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dirA0EC3AE99034F411DC71EEF97B07E02F" Name="ml">
+            <Directory Id="dirED5CA021D41F85AA4149209EEB5C1CBE" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmpCD6A8ABFAE464085E6D74E1F63E5BC55" Guid="*">
+                <File Id="filB344D08E9D26FD3AA62AE6485F50511D" KeyPath="yes" Source="$(var.SourceDir)/share/locale/ml/LC_MESSAGES/gdk-pixbuf.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir0E72652091885BDBCD40F490A2C01754" Name="mn">
+            <Directory Id="dir418C4B9359D07E56C0C2F4895583ACE8" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmpA5E0514D5628A4D88BBA44BE167101A8" Guid="*">
+                <File Id="filDA69D62F5FFAE429DCFB6F33986F72EA" KeyPath="yes" Source="$(var.SourceDir)/share/locale/mn/LC_MESSAGES/gdk-pixbuf.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dirE8262435AA53714A0A9E61C49A1A8875" Name="mr">
+            <Directory Id="dirF22E9584AA2EFFCA0075997E9F0124E5" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp25851B207A61EF2476803EAAE90D3266" Guid="*">
+                <File Id="fil6A685CEC7A9D820B4ADAFCC0CAE7D302" KeyPath="yes" Source="$(var.SourceDir)/share/locale/mr/LC_MESSAGES/gdk-pixbuf.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dirF111F432EE9EA35D0BB80CC2B9B885E5" Name="ms">
+            <Directory Id="dir7320ACC87A3AEAF9034EB21122756450" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp375DF0110C403293EE4DDB4A84EEB886" Guid="*">
+                <File Id="fil255C20B087B26081584BA026BE7F83FD" KeyPath="yes" Source="$(var.SourceDir)/share/locale/ms/LC_MESSAGES/gdk-pixbuf.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir34092B7C31E667BCC24B63DEE87717F7" Name="my">
+            <Directory Id="dir3E10D552EC5969A73BAB8E7FA4EEE431" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp421EFFD2A6E9BE072AD0B275F9608AE7" Guid="*">
+                <File Id="fil8C98AB09AF2244155507ED336A35ADB2" KeyPath="yes" Source="$(var.SourceDir)/share/locale/my/LC_MESSAGES/gdk-pixbuf.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir3E024C97A22FADCCD00F060F2685FBEA" Name="nb">
+            <Directory Id="dirF8C5FA12CE518127A96AD08352A5BD18" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp0E4102273F025DC6F666F264DFF97DF0" Guid="*">
+                <File Id="fil5D5411FFD97ECAC6AA4A6AA83E9829C1" KeyPath="yes" Source="$(var.SourceDir)/share/locale/nb/LC_MESSAGES/gdk-pixbuf.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dirEA58674C223739DAE09059C3E27C901C" Name="nds">
+            <Directory Id="dir005B7C29F73B12ECB65625802AFE3472" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmpF44551C9CF199DB81E76C50FCE13E371" Guid="*">
+                <File Id="fil88AAB3AC0F95E564DA247760436ABD0E" KeyPath="yes" Source="$(var.SourceDir)/share/locale/nds/LC_MESSAGES/gdk-pixbuf.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dirBA507160FEAB454A53B6083355D8297C" Name="ne">
+            <Directory Id="dir84FC5153AEE3F54A7F2C8438BA35DB80" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp01CDB045611370FF84C55588E2418430" Guid="*">
+                <File Id="fil1353B074723F53E5935D82DCEB0D9CDC" KeyPath="yes" Source="$(var.SourceDir)/share/locale/ne/LC_MESSAGES/gdk-pixbuf.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dirE7E541D9C823EB5A7B85BC3563F5C658" Name="nl">
+            <Directory Id="dir7655EEB1F49D5BF514E5EEB32D5BE334" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmpDEDB5ABF5F953305E46C0524D733C4B1" Guid="*">
+                <File Id="fil8A64CF7CEBBF2C00DD7164E7E89EA7B5" KeyPath="yes" Source="$(var.SourceDir)/share/locale/nl/LC_MESSAGES/gdk-pixbuf.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dirA72640C2C03EFBBCE4CBF289611C7EBF" Name="nn">
+            <Directory Id="dir70F03E9742CE547C6BEBA6206B259156" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmpD410C6C8FE519E6ACDB2C539B349F68E" Guid="*">
+                <File Id="filAA6192603A30771F5EEB7B8B2F0929D7" KeyPath="yes" Source="$(var.SourceDir)/share/locale/nn/LC_MESSAGES/gdk-pixbuf.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir66843E73CAB1FD36B42682A8FB8D6FDC" Name="nso">
+            <Directory Id="dir8FAB548670604572AD60B14C0B33146C" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmpE4F1298FFAA05EC420B1DA1C06F13B28" Guid="*">
+                <File Id="filA8DBBC8D8E75E8C11A0B34F4C636A120" KeyPath="yes" Source="$(var.SourceDir)/share/locale/nso/LC_MESSAGES/gdk-pixbuf.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir16A93935A487907316EE99CCC0036E03" Name="oc">
+            <Directory Id="dirFDC86A395AFE0B8659515B9BFAA14B46" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmpFACA84B6FB1C3F6E1D075EF2A5AB2E86" Guid="*">
+                <File Id="fil5DDAB251A4D1C3FBFCCE34005F0739E7" KeyPath="yes" Source="$(var.SourceDir)/share/locale/oc/LC_MESSAGES/gdk-pixbuf.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dirBC8D6A543561BC27DEBFAF6090BE4DE5" Name="or">
+            <Directory Id="dir498D836CF6719B9FACC701B8DEB239BD" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp0F4EF02654B14F0145F06977A9578410" Guid="*">
+                <File Id="fil01320CBB650FE83F55979BA81D38BDE2" KeyPath="yes" Source="$(var.SourceDir)/share/locale/or/LC_MESSAGES/gdk-pixbuf.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir7A4FD7521F1D885A740ABC070D543151" Name="pa">
+            <Directory Id="dir7F496D1C3F4CFF2A40BF4E2AFC0DE9E9" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp0784AEEF84310D9029B9BC9D05DB4A51" Guid="*">
+                <File Id="fil83BCFEAE4D720EE464B40BD2D54F0319" KeyPath="yes" Source="$(var.SourceDir)/share/locale/pa/LC_MESSAGES/gdk-pixbuf.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dirA9804358C7632BDA7087F4291CEAF01F" Name="pl">
+            <Directory Id="dirD5F293FFAA2127689EFE1E9373264222" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp47824F16818598DC39724BA42EF105AC" Guid="*">
+                <File Id="fil727361B3396B9F859F60FA86EB6F04B5" KeyPath="yes" Source="$(var.SourceDir)/share/locale/pl/LC_MESSAGES/gdk-pixbuf.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dirBD61546D86547F9B41E57E3CBDFACB6D" Name="ps">
+            <Directory Id="dirC2A14224F5879CAC757D6F8A137D9261" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp08E29A800F466ED8DD2E2807BC2FD4EB" Guid="*">
+                <File Id="filC766AC1F2D5614DC79662F4C6B3DE3E7" KeyPath="yes" Source="$(var.SourceDir)/share/locale/ps/LC_MESSAGES/gdk-pixbuf.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir40E2B1DC5C892148CD829E513B8BB68F" Name="pt">
+            <Directory Id="dirDDF68C9D562E5B6D1AF7BF04F7E8DACF" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp941A2A4A0320A050E06ABE3FE357470D" Guid="*">
+                <File Id="fil701500387A1E4A3CA982C444B5A65888" KeyPath="yes" Source="$(var.SourceDir)/share/locale/pt/LC_MESSAGES/gdk-pixbuf.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir496F60DE9FD0F0C611C10D73B7959C6D" Name="pt_BR">
+            <Directory Id="dir8333DFF65CCDC77722D08B85EF854581" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp3A28D0A370E572481CCF864C03155776" Guid="*">
+                <File Id="fil9D42DC159543308315A4FEB3F7D8924F" KeyPath="yes" Source="$(var.SourceDir)/share/locale/pt_BR/LC_MESSAGES/gdk-pixbuf.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir82FAC9ABA438D012DB67556ABB316356" Name="ro">
+            <Directory Id="dir5D2617B9152A53A4E578C21559533539" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp6B0B80D93947B38C652AB35FB29D0943" Guid="*">
+                <File Id="filFF3E9505ABA71E99B2D5E280EBA8FA15" KeyPath="yes" Source="$(var.SourceDir)/share/locale/ro/LC_MESSAGES/gdk-pixbuf.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dirF653A3412E722BC2440A3CDFF083781F" Name="ru">
+            <Directory Id="dir233602A32B54004168362FC45B2393A9" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp08D4DC2E7C707D8E17FE5EE6BC164361" Guid="*">
+                <File Id="fil61EA3BDF18509FC07852E5F6BE92E64B" KeyPath="yes" Source="$(var.SourceDir)/share/locale/ru/LC_MESSAGES/gdk-pixbuf.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir4AEF5621C0D5E1396FAC2D282ACF9E34" Name="si">
+            <Directory Id="dir18A725D99C98C49AE07D39DD9E121197" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp40A6A1E82D4D539B04AAC5A6B27355A6" Guid="*">
+                <File Id="fil5F067E9230F1A57BDF763B6838DCF6B2" KeyPath="yes" Source="$(var.SourceDir)/share/locale/si/LC_MESSAGES/gdk-pixbuf.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dirE00FC42B5627A46D504BFE1037C14E7D" Name="sk">
+            <Directory Id="dir502A2F291B1DEFCC6330441A2DD28F3C" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp396460695A79B9ABDF7F416C28290B58" Guid="*">
+                <File Id="fil873384D61F12F966325CB6A6900111DE" KeyPath="yes" Source="$(var.SourceDir)/share/locale/sk/LC_MESSAGES/gdk-pixbuf.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dirD1FBF4BB479F0D98178C400D892FE01E" Name="sl">
+            <Directory Id="dir41C9F14B40D24C350E556C01A9F3237E" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp02D1158F1C815241A3648D1866077EA7" Guid="*">
+                <File Id="filAABC4CCF58EA5CB3104F0AF4DB3C4818" KeyPath="yes" Source="$(var.SourceDir)/share/locale/sl/LC_MESSAGES/gdk-pixbuf.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir3BCF9123F969C0430EE52D00FBB9303F" Name="sq">
+            <Directory Id="dirB6E4649BBAF56856AB8FC51537681B8C" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp711ADEF387B7021A6E538F981D2AC479" Guid="*">
+                <File Id="filFE850729E9B1C3D39EFA884C9ACB0BBF" KeyPath="yes" Source="$(var.SourceDir)/share/locale/sq/LC_MESSAGES/gdk-pixbuf.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dirDE1B200C87CE7963EB88E192C2571D53" Name="sr">
+            <Directory Id="dirA931705033D7CB422944891BD4D88FF1" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmpA18704ADBA803D7004F5844C539F9B45" Guid="*">
+                <File Id="fil53AD3380A3CD92CBA00FBEE199CF6995" KeyPath="yes" Source="$(var.SourceDir)/share/locale/sr/LC_MESSAGES/gdk-pixbuf.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir22DF78EAF199A3C09566D66A94725A5D" Name="sr@ije">
+            <Directory Id="dir863E61078EB582773F205CB1DDFD45F2" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp388D1A4E240636C7A84BDA23161C381B" Guid="*">
+                <File Id="fil65CD4AEAF597053B9B37CB642C14229E" KeyPath="yes" Source="$(var.SourceDir)/share/locale/sr@ije/LC_MESSAGES/gdk-pixbuf.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir6B23D1B0ECEC77166036FFF485EE10F9" Name="sr@latin">
+            <Directory Id="dir214CB6BFE28CAAF2A7680643AB35368D" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp62EF4D39CB2F4470D3CB9655E5E1F786" Guid="*">
+                <File Id="fil67EFC9E04C0EE6335CF425298C9D1DEB" KeyPath="yes" Source="$(var.SourceDir)/share/locale/sr@latin/LC_MESSAGES/gdk-pixbuf.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dirE3D16DD7E4BE9674A975642AECBF281B" Name="sv">
+            <Directory Id="dirFCC753B4500A458F22452BEEBA5FFADD" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp6454CEB5B316FD91FADD712C82994736" Guid="*">
+                <File Id="filD8490F146792C36AD0600D3AECCB75C6" KeyPath="yes" Source="$(var.SourceDir)/share/locale/sv/LC_MESSAGES/gdk-pixbuf.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir2263B9598A4A759875B4631DA0E06320" Name="ta">
+            <Directory Id="dir6231AED7E7674E9F89A6D3663B237507" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp9C64F3D0D9AD9D295458E3E1CB091BFF" Guid="*">
+                <File Id="fil88CBE22AA2C7FBF7F222719A119B3CDB" KeyPath="yes" Source="$(var.SourceDir)/share/locale/ta/LC_MESSAGES/gdk-pixbuf.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir5210FC01C3B4AA09CCD3DACD1695DDBE" Name="te">
+            <Directory Id="dir4880B4A0A463DF675EE7FF1ABE34940E" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp30FD86544EB9A6AD0826F03E60DAE52E" Guid="*">
+                <File Id="fil8D17891356B8EBF39D4E46A4D28136A2" KeyPath="yes" Source="$(var.SourceDir)/share/locale/te/LC_MESSAGES/gdk-pixbuf.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir2A0BC77FEA0C745821D1383A4956CCAF" Name="tg">
+            <Directory Id="dirE91BAF5241D1C0B6C12760D3EC36A110" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp44421DF7EEF1B928605347BDB7ABF755" Guid="*">
+                <File Id="fil9D8AC732F20C2AB736F296008B4A17E0" KeyPath="yes" Source="$(var.SourceDir)/share/locale/tg/LC_MESSAGES/gdk-pixbuf.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir2329C1A83F883202C63058B37D3C2369" Name="th">
+            <Directory Id="dirF59BE1184A693545E9E2271225ECF258" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmpEFB6540EF81F7A67689D4EB33B496248" Guid="*">
+                <File Id="filE8A8BBD3C6D9354C0B3E41A7EDBBE2C8" KeyPath="yes" Source="$(var.SourceDir)/share/locale/th/LC_MESSAGES/gdk-pixbuf.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir3AA74F2DFD50195E5288EED0265CDB2F" Name="tk">
+            <Directory Id="dir806BCD0037D5CB362729185EDAAAA1BA" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp0D66B570A8059A6B8C2A57140D7F2236" Guid="*">
+                <File Id="fil738D1B13BC216B93FBE10B5941F367C5" KeyPath="yes" Source="$(var.SourceDir)/share/locale/tk/LC_MESSAGES/gdk-pixbuf.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dirBB15F5FFF376F58DCE6674151575907E" Name="tr">
+            <Directory Id="dir0E266533D2889D538E78997D36FBB504" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmpB7759AB474264AD639C5372518AA2663" Guid="*">
+                <File Id="filB59B4A69A8229E9D2FA8B70676DF2025" KeyPath="yes" Source="$(var.SourceDir)/share/locale/tr/LC_MESSAGES/gdk-pixbuf.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir5E412DFC92BA6F40AE542B99C762DD43" Name="tt">
+            <Directory Id="dirE8F203A875F63F88109E16DDFCDD2C67" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp2DF918873C1424CB93A77CE496C07388" Guid="*">
+                <File Id="filFAD7E5484CB97506E135E38A5E267F29" KeyPath="yes" Source="$(var.SourceDir)/share/locale/tt/LC_MESSAGES/gdk-pixbuf.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir95466F43F7287817F296B920A5769A19" Name="ug">
+            <Directory Id="dir975D187E85C8F04782791B71771091C0" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp2F7F38A7B05895DE23D9904151617C88" Guid="*">
+                <File Id="filDF531F93462DF43198820B5375868E57" KeyPath="yes" Source="$(var.SourceDir)/share/locale/ug/LC_MESSAGES/gdk-pixbuf.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir6D6B53C70A1C922B86E02C535D91BEFD" Name="uk">
+            <Directory Id="dir4C6ED8DB7514CD024D3DA31C099AF59C" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp13801B33820E0C1C9C3BEE446A5FA5CD" Guid="*">
+                <File Id="filA02B3FFBFD0ED6BDB943BFB3A4B31317" KeyPath="yes" Source="$(var.SourceDir)/share/locale/uk/LC_MESSAGES/gdk-pixbuf.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir3CCCDA016CD72B5434F25A7191F6B3A3" Name="uz">
+            <Directory Id="dir7598324C82FC7AFFF417B4C2225F22C3" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmpEBA0F0CA26DA81222AAF6BCEDC8F61DA" Guid="*">
+                <File Id="filC8AB306A262AF3D345230CB536B79ECB" KeyPath="yes" Source="$(var.SourceDir)/share/locale/uz/LC_MESSAGES/gdk-pixbuf.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dirCFBAF1A2D93A563E04D0D6230EDBA90D" Name="uz@cyrillic">
+            <Directory Id="dirBDB1C6BF646BE74A2AB12474A5342A73" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp212F6CAE3954300AA5521E942C8054E4" Guid="*">
+                <File Id="filEC400847B67C2B498C877E99137E8D2F" KeyPath="yes" Source="$(var.SourceDir)/share/locale/uz@cyrillic/LC_MESSAGES/gdk-pixbuf.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dirE506EC096D6F3A82ABD9505131365CF4" Name="vi">
+            <Directory Id="dir4B1040441174BD785AEA4734F1572FEA" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmpCA88AE940BE0D40B9ACB0A936A9BF5A9" Guid="*">
+                <File Id="filDBB4A60B93D1E35924913918013A4900" KeyPath="yes" Source="$(var.SourceDir)/share/locale/vi/LC_MESSAGES/gdk-pixbuf.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir8D723BF1F89F7876E617E8D62B52E967" Name="wa">
+            <Directory Id="dirE32012796A9A99F2E5CD534B66A6C101" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp80DEA22C182AC023653123AA6CC2E17E" Guid="*">
+                <File Id="fil893E89DD088E23DB022293919ECC90DC" KeyPath="yes" Source="$(var.SourceDir)/share/locale/wa/LC_MESSAGES/gdk-pixbuf.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dirA2BFA974A5FC67DCAC3217F779B8D075" Name="xh">
+            <Directory Id="dir6D67CEC77C18E14E42289BA38E7E66BF" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp12C7AF4484CD1F262F4CCAA26A209682" Guid="*">
+                <File Id="fil44D6C6DC6350F7F801039996F33A4621" KeyPath="yes" Source="$(var.SourceDir)/share/locale/xh/LC_MESSAGES/gdk-pixbuf.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dirFB317048996D7CB83E8FAE5089C7E6C7" Name="yi">
+            <Directory Id="dir4F8EC3689B2FE8C385DDE4087B684178" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmpED3ACB731EA817173F32CDC98E18D0FF" Guid="*">
+                <File Id="fil7780D9B6451E0EDC7986594D315DA8A0" KeyPath="yes" Source="$(var.SourceDir)/share/locale/yi/LC_MESSAGES/gdk-pixbuf.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir56ACFDAB6BC9903DA62716C287B9259F" Name="zh_CN">
+            <Directory Id="dir0779E5661C88969E0837A485E79F0F2A" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmpE533F096178EC42F80D5C0C98389AD2C" Guid="*">
+                <File Id="fil9D07F93C347E567DC88D7CBC22D835A3" KeyPath="yes" Source="$(var.SourceDir)/share/locale/zh_CN/LC_MESSAGES/gdk-pixbuf.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dirDEF849221812DD1904DF7BA3CB2FA2B6" Name="zh_HK">
+            <Directory Id="dir58FB44494E579FEA67C2B476494FDAFC" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmpD2F4492F299B3557EDEA3C396A080A27" Guid="*">
+                <File Id="fil6737F500DAB008F1F6C5021E19A5E51F" KeyPath="yes" Source="$(var.SourceDir)/share/locale/zh_HK/LC_MESSAGES/gdk-pixbuf.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dirA1ED70670E52BC4EFA563BA16CAC36DB" Name="zh_TW">
+            <Directory Id="dir16A731E0A6E1E2221CB5EB0CC8555236" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmpF57CE80C914F197DBA5DC2FBBA53D5BB" Guid="*">
+                <File Id="filCC5F6CE2FB4D292F3B4B6BC672473325" KeyPath="yes" Source="$(var.SourceDir)/share/locale/zh_TW/LC_MESSAGES/gdk-pixbuf.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+        </Directory>
+      </Directory>
     </DirectoryRef>
   </Fragment>
   <Fragment>
@@ -743,111 +820,128 @@
       <ComponentGroupRef Id="CG.glib2"/>
       <ComponentGroupRef Id="CG.libpng"/>
       <ComponentGroupRef Id="CG.libtiff"/>
-      <ComponentGroupRef Id="CG.gettext"/>
-      <ComponentRef Id="cmp4BF448B47E572302678F2495BDE525FC"/>
-      <ComponentRef Id="cmpF2291AFA90FC22D5216EBABA6781C4DB"/>
-      <ComponentRef Id="cmpC2E95DC50F2916A8C8736FA26C956581"/>
-      <ComponentRef Id="cmpBF3EA0075E7E9EB74541D5BCB49B9A36"/>
-      <ComponentRef Id="cmp623E6FA5A4756885C6BD30360B91CEDD"/>
-      <ComponentRef Id="cmpC53C5A7B365E9355EB10121D8B3C13FE"/>
-      <ComponentRef Id="cmp51F01D3F21D03724753CEEC456A25F4F"/>
-      <ComponentRef Id="cmpA66A8DD8623CF7805B0728FD54C593F0"/>
-      <ComponentRef Id="cmpFFC6E765768073CE2CF7460A2A695AB3"/>
-      <ComponentRef Id="cmp88FC832A06E20D2E5B04804A7F12E74F"/>
-      <ComponentRef Id="cmpA2879E1E3A95E94D0DD8A114B144A30E"/>
-      <ComponentRef Id="cmp65828626892FCBA4DBEB97D88E256343"/>
-      <ComponentRef Id="cmp4AE4B246F5945589704C1831B74ED697"/>
-      <ComponentRef Id="cmp614890C1040C4DE8CC4C900FD861702C"/>
-      <ComponentRef Id="cmp6CE56D3418F65B673C326778EF100311"/>
-      <ComponentRef Id="cmp82E43D358D55E3F788EB9791B40CE002"/>
-      <ComponentRef Id="cmp087584D372B4A8F7EC95683B29DCCF89"/>
-      <ComponentRef Id="cmp6E2F9BF992B0455D59144AB663C1A477"/>
-      <ComponentRef Id="cmpFE36C0A575452D208D911A958A3D4E57"/>
-      <ComponentRef Id="cmp51E303CF8C571121CB130D08D83D25F7"/>
-      <ComponentRef Id="cmpD2CA8CF76979E093EFA7A3E8362AA120"/>
-      <ComponentRef Id="cmp99C5EBF8FA675F35C03E38DA270AE80A"/>
-      <ComponentRef Id="cmp282F6E50EFCA3B57E78723020570CDAF"/>
-      <ComponentRef Id="cmp9AD5CA7E4C2A3874DE38BF7E8ED99814"/>
-      <ComponentRef Id="cmpB8E1DFA9C846E1AECB430C5267F5DAF0"/>
-      <ComponentRef Id="cmpA61D6ED1B751A30CCFD88E4521B68687"/>
-      <ComponentRef Id="cmp3E15E8643C57BB14C44087F0AFFFFDD8"/>
-      <ComponentRef Id="cmp78CC8765DD352535DFD6003E894AA492"/>
-      <ComponentRef Id="cmpCFB3390B1504D45198A356D71372D79F"/>
-      <ComponentRef Id="cmp17DE9DD03F26DAC7FC9F8CAE86DD8931"/>
-      <ComponentRef Id="cmp01AD35BFE11E0F9FCFAAE563A3C7B659"/>
-      <ComponentRef Id="cmp0BB52F0599D12101D6559AA11CFC5FF3"/>
-      <ComponentRef Id="cmpC7CB40220D26E62F6E1DD46289B07573"/>
-      <ComponentRef Id="cmp4A3CB87C57C12F4C45634083EFE9995F"/>
-      <ComponentRef Id="cmp773AAF7605E71633F19EE484F37BC672"/>
-      <ComponentRef Id="cmp0483C2581BEDADCF776EB42EF5AB42CC"/>
-      <ComponentRef Id="cmp5F6BE776DFF9138BAEA3CDE438158A4E"/>
-      <ComponentRef Id="cmp340BD3227EE2A2CEADCF538E11E68335"/>
-      <ComponentRef Id="cmp702B8577EDBFED988653313AC13020BE"/>
-      <ComponentRef Id="cmpC5D24BEE8156E2F389778A556EE62640"/>
-      <ComponentRef Id="cmpECF6AC3054C87E50D65EF35B6BE47DD9"/>
-      <ComponentRef Id="cmpD58C240934ED4B08C8282BA9E542FBF6"/>
-      <ComponentRef Id="cmpF65DA9B5144DEDACAD27F39D8634B881"/>
-      <ComponentRef Id="cmpF23B54D359AAD291AEE17500D75FD7E3"/>
-      <ComponentRef Id="cmp91AC0FC515F7A2DF2EFCDA62893AE97E"/>
-      <ComponentRef Id="cmp911F4483900655D42D383EE3A0729802"/>
-      <ComponentRef Id="cmpEB0D1A941E2EE2C6846A4C294F62565E"/>
-      <ComponentRef Id="cmp388E9CE389C4E472D8F68F5F0FBD44C5"/>
-      <ComponentRef Id="cmp098E708E43E56D2A0A7279084A7C567D"/>
-      <ComponentRef Id="cmpE5448E0AED5BB5687B42BA7412EFB1BD"/>
-      <ComponentRef Id="cmpBAB970814E4A550575662725EE23F572"/>
-      <ComponentRef Id="cmp95C9AC19559C4B8D3C9C55162E51F672"/>
-      <ComponentRef Id="cmp43124EEEF6BEEEBD0F46836354AE2069"/>
-      <ComponentRef Id="cmp4C4CFD8D76E4365712E9BE14FDDC52E8"/>
-      <ComponentRef Id="cmp662C451610FF11564AA05CC7BB2D9E7C"/>
-      <ComponentRef Id="cmp0158A0B7D5932322C98F3247A644FB86"/>
-      <ComponentRef Id="cmp3B180EFA4DC18325A1919024B3FCF0B0"/>
-      <ComponentRef Id="cmpB8849F272C146217D2EA97C85AEC3CCD"/>
-      <ComponentRef Id="cmp4006C109481122FA1A946D8ABAAC1883"/>
-      <ComponentRef Id="cmpE35D4B6F8D71CF1C54901799E850D1AF"/>
-      <ComponentRef Id="cmpB84A9BA2DCA61B6337C03A413A464E96"/>
-      <ComponentRef Id="cmpE62286FD065BC3721D899483E229F62C"/>
-      <ComponentRef Id="cmp20D228C97D1EBFEA5BB8EA4155950329"/>
-      <ComponentRef Id="cmp88F4A8466363BF6B3ABAF7F32A10D6BE"/>
-      <ComponentRef Id="cmp506F870FF0028FA5A86081ED3714CEBA"/>
-      <ComponentRef Id="cmp0C3F48F3B7D6C31A664E9531964EA194"/>
-      <ComponentRef Id="cmpD051E517AB971231FBDABE2C548B1173"/>
-      <ComponentRef Id="cmp21D70FEF30DB67BFD7E604895FCE7570"/>
-      <ComponentRef Id="cmpB4BE96E7013DA870168FD967378163D7"/>
-      <ComponentRef Id="cmpB3451F71F1AAD75360A0A1349798BA54"/>
-      <ComponentRef Id="cmp94A0F363E1E6A8E587EB7BB2EF3562A9"/>
-      <ComponentRef Id="cmp6FB82216B40FB14E5391F00D4D4F4602"/>
-      <ComponentRef Id="cmp4583149977E1A128584E3D48679799E5"/>
-      <ComponentRef Id="cmp38111F834B409DEBDFB20D21E1685252"/>
-      <ComponentRef Id="cmp90AC1975AD7B858C6628DD1B9753A61B"/>
-      <ComponentRef Id="cmp4F1748901C8C021706EA640A98CC0B30"/>
-      <ComponentRef Id="cmp28764826870067E429225A914A72DF36"/>
-      <ComponentRef Id="cmp2D6A2792C3B77372A7C42F63815B7FB4"/>
-      <ComponentRef Id="cmp0AED1721905A3363731A721EBCC8ADBF"/>
-      <ComponentRef Id="cmpB93CE0CD2C3DC2F9FC2AF96178AC4468"/>
-      <ComponentRef Id="cmp122FAF76617488AE4D550BC5D312CA9C"/>
-      <ComponentRef Id="cmpE3AC6A70FFC82AD914D95A55CC8E7CE8"/>
-      <ComponentRef Id="cmp29862EE0323AE1CCB7FF741FE364BAEF"/>
-      <ComponentRef Id="cmpE85AA35F8CB4D57C2DFB26AC31CFF331"/>
-      <ComponentRef Id="cmp359E685380BFB9D57C023A8CBE416CA9"/>
-      <ComponentRef Id="cmp4DA00A310EA67047113CFB4C35F5016A"/>
-      <ComponentRef Id="cmp9ABADB482FE56BEFD2E82B915C0A5C6D"/>
-      <ComponentRef Id="cmp43CC5F2FF9B8486EE2F52A78DE41C20E"/>
-      <ComponentRef Id="cmpEA492420099E7FE96BE2E464745FB463"/>
-      <ComponentRef Id="cmpA05A72B7B6135E96C826690AE1668E13"/>
-      <ComponentRef Id="cmpDCED4A875FFFF945F9C0AF342E860A15"/>
-      <ComponentRef Id="cmp0FC62E7F98B4DB2EB27EAA41F0C03CE3"/>
-      <ComponentRef Id="cmp3945BB24466DF88029999678BACE7E3C"/>
-      <ComponentRef Id="cmp6EFAFC68C8644AEF19EAA983A22CD287"/>
-      <ComponentRef Id="cmp94CD0303A0D421718CB53385EDDE23F3"/>
-      <ComponentRef Id="cmp2A8D62955ADDACE595029717E267D94E"/>
-      <ComponentRef Id="cmpF6784ED6610A2CF84B32E6E4DA8D18F1"/>
-      <ComponentRef Id="cmp02C514CB4151AC6DAC8AF2D383FD974B"/>
-      <ComponentRef Id="cmp47D09084D866C8138A6DC4D1249B4ECC"/>
-      <ComponentRef Id="cmpB6D947650750E9B6E1226BD5BDB04B63"/>
-      <ComponentRef Id="cmpB713F32A0497C5365C050085B32021B9"/>
-      <ComponentRef Id="cmp4F5A1EC883DEA9973444E8AD2CE5B7FA"/>
-      <ComponentRef Id="cmpAFA0D9B021BAE4633A9E4CD9D82B8353"/>
-      <ComponentRef Id="cmp08921DEF6D25E75869BAF736DC28A5B6"/>
+      <ComponentRef Id="cmp072F03D5BB985CDC6FCB559D5A5604DB"/>
+      <ComponentRef Id="cmpF97CF649EE7E9B28CC51FCF30D277757"/>
+      <ComponentRef Id="cmp5B78356404D2C958449DB80FFB42ED70"/>
+      <ComponentRef Id="cmp2476B08C26C6F08483ECED5ECE195D4D"/>
+      <ComponentRef Id="cmp9CB790132E38ACC78E086BF58172286D"/>
+      <ComponentRef Id="cmp66C880342A5CD728BE4F78B82014FCE4"/>
+      <ComponentRef Id="cmp6BF09DEDBEE61D767E3F4E334164A569"/>
+      <ComponentRef Id="cmp5D102B25E6246C1AD2D96939B74ACDDE"/>
+      <ComponentRef Id="cmp0E4F9CD1AB467AC7C2EC61221CA485B1"/>
+      <ComponentRef Id="cmp1375CE2CC2E5172630829A8E090327A3"/>
+      <ComponentRef Id="cmp9903F78551E790A3D4904A08A089A40D"/>
+      <ComponentRef Id="cmp95D9BEB9B96560311E2FF699893D37D2"/>
+      <ComponentRef Id="cmp7251F58555D41A1AF0F971552AD51BED"/>
+      <ComponentRef Id="cmp4BE3763769C85D7C649FC561E95AB4FD"/>
+      <ComponentRef Id="cmp00116F380E029200A8528CCCDA439142"/>
+      <ComponentRef Id="cmp484C5006CDE460D35C5E583480FD60D9"/>
+      <ComponentRef Id="cmp20A9213C98EFBE40F7FA34F2C5393026"/>
+      <ComponentRef Id="cmp0BDF5EB111A83B5F1E0E0B82A505F098"/>
+      <ComponentRef Id="cmpEC224928054C53A8095FD2B1AEBA663A"/>
+      <ComponentRef Id="cmp63944A7B432DA59E4872E4593E57B174"/>
+      <ComponentRef Id="cmp270DE3E30C5309BE608B46A2C5453AE8"/>
+      <ComponentRef Id="cmp0C9FC79BB364105FE4161241D08738D3"/>
+      <ComponentRef Id="cmp38F8FB65F8A9A564D968848A5BBDE096"/>
+      <ComponentRef Id="cmp6A7F01B8DFE7D1FB3CFCF23D682CF627"/>
+      <ComponentRef Id="cmp2917114282854CF588157F026F894107"/>
+      <ComponentRef Id="cmpE643CF56E8C534A1C34C3A8AB7DA4C9A"/>
+      <ComponentRef Id="cmp39947DD840B22D1246A61E7BAEC1C9DD"/>
+      <ComponentRef Id="cmp15429A4DD8538FE01A55646A982142C5"/>
+      <ComponentRef Id="cmp5F78C828ECA5F89B610A3729C541B014"/>
+      <ComponentRef Id="cmp70A902E496D4BDC8C61F4B7BEE8D2729"/>
+      <ComponentRef Id="cmpFC551DF5C8F7D6F8494A7632EC2A10F0"/>
+      <ComponentRef Id="cmp973D699C85A9C51940F76C52AD7C327F"/>
+      <ComponentRef Id="cmp4266A0EF1C5306DC9B17ED6940AB7130"/>
+      <ComponentRef Id="cmpC2BF9E66B1F93A3D98A2CC01F20895E4"/>
+      <ComponentRef Id="cmp09CDC8B0FB387FFF3255DA6683998CB5"/>
+      <ComponentRef Id="cmp7D7BBD00CC5B533BBFAEBBF1AB1434EC"/>
+      <ComponentRef Id="cmp634B52C1EEFF96653A453E2FAD315D15"/>
+      <ComponentRef Id="cmp6CBC3CEA0FE8AC1DFAAE17EF64927EB6"/>
+      <ComponentRef Id="cmp6D0C25C78327207557ACF86C76E510CD"/>
+      <ComponentRef Id="cmp67A16C9D97B514F238E67C6646B210CF"/>
+      <ComponentRef Id="cmpAC3B3627FFF9CA43D41CE8528F8333C5"/>
+      <ComponentRef Id="cmp29C22D4631E42563D034F2CEDB04F9AC"/>
+      <ComponentRef Id="cmp4F1D7940E1E03A9732D91C9786BB9042"/>
+      <ComponentRef Id="cmp8D8405D1CB62A368FDEDB0E23AFDDF16"/>
+      <ComponentRef Id="cmp46AA4DDC87EE02B442DFBFB54570EB12"/>
+      <ComponentRef Id="cmp7EDA29EE789D1F9BA6070ED42D1A6FBC"/>
+      <ComponentRef Id="cmp6C3C814E83E2AC7A226E3D07F95FDD61"/>
+      <ComponentRef Id="cmp06984833EFA3F8280B95B3090561FCE9"/>
+      <ComponentRef Id="cmpF24E7B585A1644F4B2B171389A59305E"/>
+      <ComponentRef Id="cmpC8A30DE736829C429E9E14D5B7ED0C03"/>
+      <ComponentRef Id="cmp7B7AAFC9B9A85A1EC5FDED90CA62D6D7"/>
+      <ComponentRef Id="cmp04151D84D6F6B27D1F6877DD5A7F7F99"/>
+      <ComponentRef Id="cmp158C3898A68DBDB1040AC2E8739F2B0B"/>
+      <ComponentRef Id="cmpE371868077E608B05DF181BD9D58EE47"/>
+      <ComponentRef Id="cmp78913D76D35B41B1A9B86C5D3CA01628"/>
+      <ComponentRef Id="cmpDAEB12DDA5A021E00516DF6143CB8D26"/>
+      <ComponentRef Id="cmp02B7D0310A210038EDB7F26C0E0E0495"/>
+      <ComponentRef Id="cmp34F0EA35C149C137FD5774D843F2FDBF"/>
+      <ComponentRef Id="cmp35DCC513C58A2995D96BE16F024CD2E9"/>
+      <ComponentRef Id="cmpED490B072693FCD4100B0EBE0D205B61"/>
+      <ComponentRef Id="cmpF44B6257A5CFBCEFF49D086147FDB472"/>
+      <ComponentRef Id="cmpDDA86F92EB01499809E06BEFB9AE370D"/>
+      <ComponentRef Id="cmpC98971D2A5FB15C2AB9FF479BEB1930A"/>
+      <ComponentRef Id="cmpDB3E01AEF8007499E176C88C06FC042D"/>
+      <ComponentRef Id="cmp899079B6EB347E553B37AD784A3E0B6A"/>
+      <ComponentRef Id="cmp30CB18CC7698C7931D74D988CCEBADD4"/>
+      <ComponentRef Id="cmpA79D56D68DF82670B2933283914F3A3E"/>
+      <ComponentRef Id="cmp7DFE04C947EC4E831AF11C18201355B2"/>
+      <ComponentRef Id="cmp9D8D887EDA085C5FD1FBEB1F134BA569"/>
+      <ComponentRef Id="cmp5783CBDF819E3AFE81320FAF663FD2CE"/>
+      <ComponentRef Id="cmp81F0D5E0ECA8D9244654751B502E1DB1"/>
+      <ComponentRef Id="cmpD931A339BD30EDB7173C8A45BA594CAE"/>
+      <ComponentRef Id="cmpD385461B87257D5783228E52DC1FFD34"/>
+      <ComponentRef Id="cmp9AE1D137332A8A598F13BB5AF08E54B5"/>
+      <ComponentRef Id="cmpCD6A8ABFAE464085E6D74E1F63E5BC55"/>
+      <ComponentRef Id="cmpA5E0514D5628A4D88BBA44BE167101A8"/>
+      <ComponentRef Id="cmp25851B207A61EF2476803EAAE90D3266"/>
+      <ComponentRef Id="cmp375DF0110C403293EE4DDB4A84EEB886"/>
+      <ComponentRef Id="cmp421EFFD2A6E9BE072AD0B275F9608AE7"/>
+      <ComponentRef Id="cmp0E4102273F025DC6F666F264DFF97DF0"/>
+      <ComponentRef Id="cmpF44551C9CF199DB81E76C50FCE13E371"/>
+      <ComponentRef Id="cmp01CDB045611370FF84C55588E2418430"/>
+      <ComponentRef Id="cmpDEDB5ABF5F953305E46C0524D733C4B1"/>
+      <ComponentRef Id="cmpD410C6C8FE519E6ACDB2C539B349F68E"/>
+      <ComponentRef Id="cmpE4F1298FFAA05EC420B1DA1C06F13B28"/>
+      <ComponentRef Id="cmpFACA84B6FB1C3F6E1D075EF2A5AB2E86"/>
+      <ComponentRef Id="cmp0F4EF02654B14F0145F06977A9578410"/>
+      <ComponentRef Id="cmp0784AEEF84310D9029B9BC9D05DB4A51"/>
+      <ComponentRef Id="cmp47824F16818598DC39724BA42EF105AC"/>
+      <ComponentRef Id="cmp08E29A800F466ED8DD2E2807BC2FD4EB"/>
+      <ComponentRef Id="cmp941A2A4A0320A050E06ABE3FE357470D"/>
+      <ComponentRef Id="cmp3A28D0A370E572481CCF864C03155776"/>
+      <ComponentRef Id="cmp6B0B80D93947B38C652AB35FB29D0943"/>
+      <ComponentRef Id="cmp08D4DC2E7C707D8E17FE5EE6BC164361"/>
+      <ComponentRef Id="cmp40A6A1E82D4D539B04AAC5A6B27355A6"/>
+      <ComponentRef Id="cmp396460695A79B9ABDF7F416C28290B58"/>
+      <ComponentRef Id="cmp02D1158F1C815241A3648D1866077EA7"/>
+      <ComponentRef Id="cmp711ADEF387B7021A6E538F981D2AC479"/>
+      <ComponentRef Id="cmpA18704ADBA803D7004F5844C539F9B45"/>
+      <ComponentRef Id="cmp388D1A4E240636C7A84BDA23161C381B"/>
+      <ComponentRef Id="cmp62EF4D39CB2F4470D3CB9655E5E1F786"/>
+      <ComponentRef Id="cmp6454CEB5B316FD91FADD712C82994736"/>
+      <ComponentRef Id="cmp9C64F3D0D9AD9D295458E3E1CB091BFF"/>
+      <ComponentRef Id="cmp30FD86544EB9A6AD0826F03E60DAE52E"/>
+      <ComponentRef Id="cmp44421DF7EEF1B928605347BDB7ABF755"/>
+      <ComponentRef Id="cmpEFB6540EF81F7A67689D4EB33B496248"/>
+      <ComponentRef Id="cmp0D66B570A8059A6B8C2A57140D7F2236"/>
+      <ComponentRef Id="cmpB7759AB474264AD639C5372518AA2663"/>
+      <ComponentRef Id="cmp2DF918873C1424CB93A77CE496C07388"/>
+      <ComponentRef Id="cmp2F7F38A7B05895DE23D9904151617C88"/>
+      <ComponentRef Id="cmp13801B33820E0C1C9C3BEE446A5FA5CD"/>
+      <ComponentRef Id="cmpEBA0F0CA26DA81222AAF6BCEDC8F61DA"/>
+      <ComponentRef Id="cmp212F6CAE3954300AA5521E942C8054E4"/>
+      <ComponentRef Id="cmpCA88AE940BE0D40B9ACB0A936A9BF5A9"/>
+      <ComponentRef Id="cmp80DEA22C182AC023653123AA6CC2E17E"/>
+      <ComponentRef Id="cmp12C7AF4484CD1F262F4CCAA26A209682"/>
+      <ComponentRef Id="cmpED3ACB731EA817173F32CDC98E18D0FF"/>
+      <ComponentRef Id="cmpE533F096178EC42F80D5C0C98389AD2C"/>
+      <ComponentRef Id="cmpD2F4492F299B3557EDEA3C396A080A27"/>
+      <ComponentRef Id="cmpF57CE80C914F197DBA5DC2FBBA53D5BB"/>
     </ComponentGroup>
   </Fragment>
 </Include>
+<?ignore generated with msitools 0.106.45-476d-dirty ?>
+<?ignore tools/wixl/wixl-heat -i --var var.SourceDir -p /usr/i686-w64-mingw32/sys-root/mingw/ --directory-ref INSTALLDIR --win64 --component-group CG.gdk-pixbuf --require glib2 --require libpng --require libtiff ?>

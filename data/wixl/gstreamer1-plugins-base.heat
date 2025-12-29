@@ -1,0 +1,8 @@
+--require gstreamer1
+--require angleproject
+--require cairo
+--require orc
+--require pango
+--require libjpeg-turbo
+--require libtheora
+--require libvorbis

@@ -170,6 +170,8 @@ RUN dnf install -y --nogpgcheck dnf-plugin-builddep intltool \
         mingw64-termcap \
         mingw32-usbredir \
         mingw64-usbredir \
+        mingw32-taglib \
+        mingw64-taglib \
         mingw32-wavpack \
         mingw64-wavpack \
         mingw32-win-iconv \

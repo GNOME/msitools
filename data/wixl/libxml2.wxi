@@ -4,9 +4,18 @@
 <Include xmlns="http://schemas.microsoft.com/wix/2006/wi">
   <Fragment>
     <DirectoryRef Id="INSTALLDIR">
-      <Directory Id="dirD8064B86A0619AFE43838810338564E9" Name="bin">
-        <Component Win64="$(var.Win64)" Id="cmp399FF74797F11178725B36DDB41741A5" Guid="*">
-          <File Id="fil1697757D63C856FC5AED6AA4E898D830" KeyPath="yes" Source="$(var.SourceDir)/bin/libxml2-2.dll"/>
+      <Directory Id="dir5809F92D93AD936C8EFA8698C8A89774" Name="bin">
+        <Component Win64="$(var.Win64)" Id="cmpB4B7DE5AC88C1C86ABEB3E7EED908C49" Guid="*">
+          <File Id="fil71412E6E3A734DA63A8D056B1970A60C" KeyPath="yes" Source="$(var.SourceDir)/bin/libxml2-2.dll"/>
+        </Component>
+        <Component Win64="$(var.Win64)" Id="cmp89FD8111DCB2BC93E91A3A7F263675E5" Guid="*">
+          <File Id="fil49027848875946AF605B8E7C42F9B8E3" KeyPath="yes" Source="$(var.SourceDir)/bin/xml2-config"/>
+        </Component>
+        <Component Win64="$(var.Win64)" Id="cmp61AD6D6DE70CA65FE55179DB0AFE8888" Guid="*">
+          <File Id="fil5D55CBBF9A786654985AC07CADCC768A" KeyPath="yes" Source="$(var.SourceDir)/bin/xmlcatalog.exe"/>
+        </Component>
+        <Component Win64="$(var.Win64)" Id="cmpE518174753E2313444AAFA741002F5A1" Guid="*">
+          <File Id="filF73A8B7DC6FAFBEBED69A5B6CCA6B0D7" KeyPath="yes" Source="$(var.SourceDir)/bin/xmllint.exe"/>
         </Component>
       </Directory>
     </DirectoryRef>
@@ -15,7 +24,12 @@
     <ComponentGroup Id="CG.libxml2">
       <ComponentGroupRef Id="CG.win-iconv"/>
       <ComponentGroupRef Id="CG.zlib"/>
-      <ComponentRef Id="cmp399FF74797F11178725B36DDB41741A5"/>
+      <ComponentRef Id="cmpB4B7DE5AC88C1C86ABEB3E7EED908C49"/>
+      <ComponentRef Id="cmp89FD8111DCB2BC93E91A3A7F263675E5"/>
+      <ComponentRef Id="cmp61AD6D6DE70CA65FE55179DB0AFE8888"/>
+      <ComponentRef Id="cmpE518174753E2313444AAFA741002F5A1"/>
     </ComponentGroup>
   </Fragment>
 </Include>
+<?ignore generated with msitools 0.106.45-476d-dirty ?>
+<?ignore build/tools/wixl/wixl-heat --var var.SourceDir -p /usr/i686-w64-mingw32/sys-root/mingw/ --directory-ref INSTALLDIR --win64 --component-group CG.libxml2 --require win-iconv --require zlib -i ?>

@@ -1,28 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
 <?require cairo.wxi?>
 <?require freetype.wxi?>
-<?require fontconfig.wxi?>
-<?require harfbuzz.wxi?>
 <?require fribidi.wxi?>
+<?require harfbuzz.wxi?>
+<?require fontconfig.wxi?>
 <Include xmlns="http://schemas.microsoft.com/wix/2006/wi">
   <Fragment>
     <DirectoryRef Id="INSTALLDIR">
-      <Directory Id="dir0F15244834A4142CC7FBD4F5CFCF7FA0" Name="bin">
-        <Component Win64="$(var.Win64)" Id="cmp1FE5988884F4A6E5F9B935E26F7CA89E" Guid="*">
-          <File Id="filEEE5FCA0FBBDE782D9B70C7AEA64843C" KeyPath="yes" Source="$(var.SourceDir)/bin/libpango-1.0-0.dll"/>
+      <Directory Id="dir1A1E6399D4A319B9BF559F506067B805" Name="bin">
+        <Component Win64="$(var.Win64)" Id="cmpECF3DBB2504642C72517D89D1C254CF3" Guid="*">
+          <File Id="fil7B08362FE8CD740947974D647F937E7B" KeyPath="yes" Source="$(var.SourceDir)/bin/libpango-1.0-0.dll"/>
         </Component>
-        <Component Win64="$(var.Win64)" Id="cmpB85AF8036B232EAA090D687374559306" Guid="*">
-          <File Id="filA1FB038A531D269931DE63F5AC02DC16" KeyPath="yes" Source="$(var.SourceDir)/bin/libpangocairo-1.0-0.dll"/>
+        <Component Win64="$(var.Win64)" Id="cmp6E80036D2EC00A44FF5DC8ED74A2B76B" Guid="*">
+          <File Id="filB3A3B1EB3E4EA64486DA1C0E27A559B4" KeyPath="yes" Source="$(var.SourceDir)/bin/libpangocairo-1.0-0.dll"/>
         </Component>
-        <Component Win64="$(var.Win64)" Id="cmp79E5CAC364D0F87C611C24DBEC44D777" Guid="*">
-          <File Id="fil4E5ABBF5D47C302D9D303788878E3ED2" KeyPath="yes" Source="$(var.SourceDir)/bin/libpangoft2-1.0-0.dll"/>
+        <Component Win64="$(var.Win64)" Id="cmpCB114B35620F0C82FFF9948105930320" Guid="*">
+          <File Id="fil51BFA54625BFACA6B8FC3179635885FA" KeyPath="yes" Source="$(var.SourceDir)/bin/libpangoft2-1.0-0.dll"/>
         </Component>
-        <Component Win64="$(var.Win64)" Id="cmpBE35A7ACCA3D48A17EAAE6CE108ED9D2" Guid="*">
-          <File Id="filC5D15BDBA79F0D71CE744741B659F15B" KeyPath="yes" Source="$(var.SourceDir)/bin/libpangowin32-1.0-0.dll"/>
+        <Component Win64="$(var.Win64)" Id="cmpA807D7441B7FB7462E5E1EFFEF9258CB" Guid="*">
+          <File Id="fil2F529C82525A63E6E6CEAC757E2EA125" KeyPath="yes" Source="$(var.SourceDir)/bin/libpangowin32-1.0-0.dll"/>
         </Component>
-        <Component Win64="$(var.Win64)" Id="cmpE489E2AA2EF92767EE6A77F8CD4AB54E" Guid="*">
-          <File Id="fil10B67BAEF698F2F32D5C732C99D53996" KeyPath="yes" Source="$(var.SourceDir)/bin/pango-view.exe"/>
+        <Component Win64="$(var.Win64)" Id="cmpE9C31FCE64AF3BE95904AA676234D018" Guid="*">
+          <File Id="fil9AEBD43E2CF7AD31051474588EC97397" KeyPath="yes" Source="$(var.SourceDir)/bin/pango-list.exe"/>
         </Component>
+        <Component Win64="$(var.Win64)" Id="cmp316EE7AF64303FB34AA2D920F319E408" Guid="*">
+          <File Id="fil80B06FC0132A30B0F4865098917FBEFF" KeyPath="yes" Source="$(var.SourceDir)/bin/pango-segmentation.exe"/>
+        </Component>
+        <Component Win64="$(var.Win64)" Id="cmpBAD22A5441111FD72E2AD1F325053CEB" Guid="*">
+          <File Id="fil53063B3944921B13C886946688FDF8F9" KeyPath="yes" Source="$(var.SourceDir)/bin/pango-view.exe"/>
+        </Component>
+      </Directory>
+      <Directory Id="dir395FA803B3CA6410D30B80D442AD7A7D" Name="etc">
+        <Directory Id="dir52D234CFB8BB3F35BF28788397333E02" Name="pango">
+        </Directory>
       </Directory>
     </DirectoryRef>
   </Fragment>
@@ -30,14 +40,18 @@
     <ComponentGroup Id="CG.pango">
       <ComponentGroupRef Id="CG.cairo"/>
       <ComponentGroupRef Id="CG.freetype"/>
-      <ComponentGroupRef Id="CG.fontconfig"/>
-      <ComponentGroupRef Id="CG.harfbuzz"/>
       <ComponentGroupRef Id="CG.fribidi"/>
-      <ComponentRef Id="cmp1FE5988884F4A6E5F9B935E26F7CA89E"/>
-      <ComponentRef Id="cmpB85AF8036B232EAA090D687374559306"/>
-      <ComponentRef Id="cmp79E5CAC364D0F87C611C24DBEC44D777"/>
-      <ComponentRef Id="cmpBE35A7ACCA3D48A17EAAE6CE108ED9D2"/>
-      <ComponentRef Id="cmpE489E2AA2EF92767EE6A77F8CD4AB54E"/>
+      <ComponentGroupRef Id="CG.harfbuzz"/>
+      <ComponentGroupRef Id="CG.fontconfig"/>
+      <ComponentRef Id="cmpECF3DBB2504642C72517D89D1C254CF3"/>
+      <ComponentRef Id="cmp6E80036D2EC00A44FF5DC8ED74A2B76B"/>
+      <ComponentRef Id="cmpCB114B35620F0C82FFF9948105930320"/>
+      <ComponentRef Id="cmpA807D7441B7FB7462E5E1EFFEF9258CB"/>
+      <ComponentRef Id="cmpE9C31FCE64AF3BE95904AA676234D018"/>
+      <ComponentRef Id="cmp316EE7AF64303FB34AA2D920F319E408"/>
+      <ComponentRef Id="cmpBAD22A5441111FD72E2AD1F325053CEB"/>
     </ComponentGroup>
   </Fragment>
 </Include>
+<?ignore generated with msitools 0.106.45-476d-dirty ?>
+<?ignore build/tools/wixl/wixl-heat --var var.SourceDir -p /usr/i686-w64-mingw32/sys-root/mingw/ --directory-ref INSTALLDIR --win64 --component-group CG.pango --require cairo --require freetype --require fribidi --require harfbuzz --require fontconfig -i ?>

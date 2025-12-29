@@ -1,0 +1,4 @@
+--require libffi
+--require gettext
+--require pcre2
+--require zlib

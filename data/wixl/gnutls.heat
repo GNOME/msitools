@@ -1,0 +1,4 @@
+--require zlib
+--require winpthreads
+--require libtasn1
+--require nettle

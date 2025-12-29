@@ -78,6 +78,7 @@ wxi_data = files(
   'wixl/spice-glib.wxi',
   'wixl/spice-gtk3.wxi',
   'wixl/sqlite.wxi',
+  'wixl/taglib.wxi',
   'wixl/termcap.wxi',
   'wixl/usbredir.wxi',
   'wixl/wavpack.wxi',
@@ -95,7 +96,7 @@ install_subdir('ext/',
 )
 
 if get_option('validate-wxi')
-  wxi_validate = find_program('wxi-validate.pl')
+  wxi_validate = find_program('wxi-validate.py')
   foreach file: wxi_data
     filename = ('@0@'.format(file.full_path())).split('/')[-1].split('.wxi')[0]
     testname = 'wxi-@0@'.format(filename)

@@ -1,0 +1,2 @@
+--require spice-glib
+--require gtk3

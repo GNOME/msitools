@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<?require gdk-pixbuf.wxi?>
-<?require libxml2.wxi?>
 <?require pango.wxi?>
+<?require libxml2.wxi?>
+<?require gdk-pixbuf.wxi?>
 <Include xmlns="http://schemas.microsoft.com/wix/2006/wi">
   <Fragment>
     <DirectoryRef Id="INSTALLDIR">
-      <Directory Id="dir75D91D285100E02587048268EBFEE11A" Name="bin">
+      <Directory Id="dir9C62F19B0CAC500DFF986BA3CE4E4F38" Name="bin">
         <Component Win64="$(var.Win64)" Id="cmp9AE88CD731B9D1B84CEA9A38B11CA1F6" Guid="*">
           <File Id="filD5388E24EF179C2CD391A3535E16A17F" KeyPath="yes" Source="$(var.SourceDir)/bin/librsvg-2-2.dll"/>
         </Component>
@@ -13,8 +13,8 @@
           <File Id="fil4B3E8AF8A79891B6BAE94D7DCE1A4694" KeyPath="yes" Source="$(var.SourceDir)/bin/rsvg-convert.exe"/>
         </Component>
       </Directory>
-      <Directory Id="dirAAB7D5C8C48B56EB9143A3BD2FE82C94" Name="share">
-        <Directory Id="dirE873C85B1249EB9A4D8F56BB2859C427" Name="thumbnailers">
+      <Directory Id="dir5065B990B3FE086C9A17B2AC10354C66" Name="share">
+        <Directory Id="dirD7F45B091D032BFD5465A8C1A056A67C" Name="thumbnailers">
           <Component Win64="$(var.Win64)" Id="cmp12AB8C70459BB5E6C41D39CF16A6B578" Guid="*">
             <File Id="fil813529753AC1F6BA3092BD2AF699890D" KeyPath="yes" Source="$(var.SourceDir)/share/thumbnailers/librsvg.thumbnailer"/>
           </Component>
@@ -24,14 +24,14 @@
   </Fragment>
   <Fragment>
     <ComponentGroup Id="CG.librsvg2">
-      <ComponentGroupRef Id="CG.gdk-pixbuf"/>
-      <ComponentGroupRef Id="CG.libxml2"/>
       <ComponentGroupRef Id="CG.pango"/>
+      <ComponentGroupRef Id="CG.libxml2"/>
+      <ComponentGroupRef Id="CG.gdk-pixbuf"/>
       <ComponentRef Id="cmp9AE88CD731B9D1B84CEA9A38B11CA1F6"/>
       <ComponentRef Id="cmp81A1C1E9B324ED590B7F766F40A7D5B7"/>
       <ComponentRef Id="cmp12AB8C70459BB5E6C41D39CF16A6B578"/>
     </ComponentGroup>
   </Fragment>
 </Include>
-<!-- generated with msitools 0.103.11-38e8 -->
-<!-- tools/wixl/wixl-heat -var var.SourceDir -p /usr/i686-w64-mingw32/sys-root/mingw/ -directory-ref INSTALLDIR -win64 -component-group CG.librsvg2 -->
+<?ignore generated with msitools 0.106.45-476d-dirty ?>
+<?ignore build/tools/wixl/wixl-heat --var var.SourceDir -p /usr/i686-w64-mingw32/sys-root/mingw/ --directory-ref INSTALLDIR --win64 --component-group CG.librsvg2 --require pango --require libxml2 --require gdk-pixbuf -i ?>

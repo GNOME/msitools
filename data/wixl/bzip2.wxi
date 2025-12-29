@@ -1,19 +1,63 @@
 <?xml version="1.0" encoding="utf-8"?>
-<?require gcc.wxi?>
 <Include xmlns="http://schemas.microsoft.com/wix/2006/wi">
   <Fragment>
     <DirectoryRef Id="INSTALLDIR">
-      <Directory Id="dir64E7888498031746A1102943B8FCD902" Name="bin">
+      <Directory Id="dirF2BF85DC5A872CE9A0153534177EC4A5" Name="bin">
+        <Component Win64="$(var.Win64)" Id="cmpF6D84654B5849184C925D2AB9B2FAE7A" Guid="*">
+          <File Id="filF6CD492304EFC9CB794D83862C7C72C5" KeyPath="yes" Source="$(var.SourceDir)/bin/bunzip2.exe"/>
+        </Component>
+        <Component Win64="$(var.Win64)" Id="cmp5623A3DB2CEFF1DD06FE45BD8E904E46" Guid="*">
+          <File Id="filC2053172740400F6BCC131627C246365" KeyPath="yes" Source="$(var.SourceDir)/bin/bzcat.exe"/>
+        </Component>
+        <Component Win64="$(var.Win64)" Id="cmp4BE155E975E0425F338B146844B2FA47" Guid="*">
+          <File Id="filCE55452668AE0CE691AAFCF79D5A89E5" KeyPath="yes" Source="$(var.SourceDir)/bin/bzcmp"/>
+        </Component>
+        <Component Win64="$(var.Win64)" Id="cmpC3FB85516DBA98C7B53BA77378E6F759" Guid="*">
+          <File Id="filF66392DBD1AEC68982E496923B67C0CC" KeyPath="yes" Source="$(var.SourceDir)/bin/bzdiff"/>
+        </Component>
+        <Component Win64="$(var.Win64)" Id="cmp745C80E2745B3CCB8F045C9B0497D933" Guid="*">
+          <File Id="filFFCE36A319E925EDF4A5E5E67735B993" KeyPath="yes" Source="$(var.SourceDir)/bin/bzegrep"/>
+        </Component>
+        <Component Win64="$(var.Win64)" Id="cmp1006EBD1D7E7722A04F6B003EEFAAD06" Guid="*">
+          <File Id="fil0266C1C614C3785C81A23CC932284EDA" KeyPath="yes" Source="$(var.SourceDir)/bin/bzfgrep"/>
+        </Component>
+        <Component Win64="$(var.Win64)" Id="cmp06FE323ABA712F0511F272065D1BBB58" Guid="*">
+          <File Id="fil1AFCADFFF2C2F001FBD3BD0E0E20B588" KeyPath="yes" Source="$(var.SourceDir)/bin/bzgrep"/>
+        </Component>
+        <Component Win64="$(var.Win64)" Id="cmp606EB539E7551B064BAA577887AC48ED" Guid="*">
+          <File Id="fil18742783FD4F4144309FE070808F0D8D" KeyPath="yes" Source="$(var.SourceDir)/bin/bzip2.exe"/>
+        </Component>
+        <Component Win64="$(var.Win64)" Id="cmp819B683532CC98C59502CB2C55736461" Guid="*">
+          <File Id="filC46CDCD855DA27D3F43D81E423A2C3D5" KeyPath="yes" Source="$(var.SourceDir)/bin/bzip2recover.exe"/>
+        </Component>
+        <Component Win64="$(var.Win64)" Id="cmpE6BDBFCB15910B89C721F8B1CAEA5E75" Guid="*">
+          <File Id="fil308AA541C8DB628BC16B32610B0720EE" KeyPath="yes" Source="$(var.SourceDir)/bin/bzless"/>
+        </Component>
+        <Component Win64="$(var.Win64)" Id="cmpD46084A51421C4C1D13DE5C773FE4944" Guid="*">
+          <File Id="fil2F481C5E58F0C86C79154865CC384679" KeyPath="yes" Source="$(var.SourceDir)/bin/bzmore"/>
+        </Component>
         <Component Win64="$(var.Win64)" Id="cmp883CA6FC909A0EC8BA007E2598B955E7" Guid="*">
           <File Id="fil6899A4C36BA547E4206998FCABAF9CBB" KeyPath="yes" Source="$(var.SourceDir)/bin/libbz2-1.dll"/>
         </Component>
-        </Directory>
+      </Directory>
     </DirectoryRef>
   </Fragment>
   <Fragment>
     <ComponentGroup Id="CG.bzip2">
-      <ComponentGroupRef Id="CG.gcc"/>
+      <ComponentRef Id="cmpF6D84654B5849184C925D2AB9B2FAE7A"/>
+      <ComponentRef Id="cmp5623A3DB2CEFF1DD06FE45BD8E904E46"/>
+      <ComponentRef Id="cmp4BE155E975E0425F338B146844B2FA47"/>
+      <ComponentRef Id="cmpC3FB85516DBA98C7B53BA77378E6F759"/>
+      <ComponentRef Id="cmp745C80E2745B3CCB8F045C9B0497D933"/>
+      <ComponentRef Id="cmp1006EBD1D7E7722A04F6B003EEFAAD06"/>
+      <ComponentRef Id="cmp06FE323ABA712F0511F272065D1BBB58"/>
+      <ComponentRef Id="cmp606EB539E7551B064BAA577887AC48ED"/>
+      <ComponentRef Id="cmp819B683532CC98C59502CB2C55736461"/>
+      <ComponentRef Id="cmpE6BDBFCB15910B89C721F8B1CAEA5E75"/>
+      <ComponentRef Id="cmpD46084A51421C4C1D13DE5C773FE4944"/>
       <ComponentRef Id="cmp883CA6FC909A0EC8BA007E2598B955E7"/>
     </ComponentGroup>
   </Fragment>
 </Include>
+<?ignore generated with msitools 0.106.45-476d-dirty ?>
+<?ignore tools/wixl/wixl-heat -i --var var.SourceDir -p /usr/i686-w64-mingw32/sys-root/mingw/ --directory-ref INSTALLDIR --win64 --component-group CG.bzip2 ?>

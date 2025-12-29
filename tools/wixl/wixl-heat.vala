@@ -6,15 +6,20 @@ static string prefix;
 static string vardir;
 [CCode (array_length = false, array_null_terminated = true)]
 static string[] exclude;
+[CCode (array_length = false, array_null_terminated = true)]
+static string[] require_pkgs;
 static bool win64;
+static bool include;
 
 private const OptionEntry[] options = {
-    { "directory-ref", 0, 0, OptionArg.STRING, ref dr, N_("Directory Ref"), null },
-    { "component-group", 0, 0, OptionArg.STRING, ref cg, N_("Component Group"), null },
-    { "var", 0, 0, OptionArg.STRING, ref vardir, N_("Variable for source dir"), null },
-    { "prefix", 'p', 0, OptionArg.STRING, ref prefix, N_("Prefix"), null },
-    { "exclude", 'x', 0, OptionArg.STRING_ARRAY, ref exclude, N_("Exclude prefix"), null },
-    { "win64", 0, 0, OptionArg.NONE, ref win64, N_("Add Win64 Component"), null },
+    { "directory-ref", 0, 0, OptionArg.STRING, ref dr, N_ ("Directory Ref"), null },
+    { "component-group", 0, 0, OptionArg.STRING, ref cg, N_ ("Component Group"), null },
+    { "var", 0, 0, OptionArg.STRING, ref vardir, N_ ("Variable for source dir"), null },
+    { "prefix", 'p', 0, OptionArg.STRING, ref prefix, N_ ("Prefix"), null },
+    { "exclude", 'x', 0, OptionArg.STRING_ARRAY, ref exclude, N_ ("Exclude prefix"), null },
+    { "require", 0, 0, OptionArg.STRING_ARRAY, ref require_pkgs, N_ ("Require package (adds <?require?> and ComponentGroupRef)"), null },
+    { "win64", 0, 0, OptionArg.NONE, ref win64, N_ ("Add Win64 Component"), null },
+    { "include", 'i', 0, OptionArg.NONE, ref include, N_ ("Make wixl-specific include file"), null },
     { null }
 };
 
@@ -26,8 +31,8 @@ bool filtered (string file) {
     return false;
 }
 
-string escape_filename(string filename) {
-    return filename.replace("$", "$$");
+string escape_filename (string filename) {
+    return filename.replace ("$", "$$");
 }
 
 public int main (string[] args) {
@@ -58,7 +63,12 @@ public int main (string[] args) {
         sourcedir = "$(%s)".printf (vardir);
 
     stdout.printf ("<?xml version=\"1.0\" encoding=\"utf-8\"?>\n");
-    stdout.printf ("<Wix xmlns=\"http://schemas.microsoft.com/wix/2006/wi\">\n");
+    if (require_pkgs != null) {
+        foreach (var pkg in require_pkgs)
+            stdout.printf ("<?require %s.wxi?>\n", pkg);
+    }
+    var root = include ? "Include" : "Wix";
+    stdout.printf ("<%s xmlns=\"http://schemas.microsoft.com/wix/2006/wi\">\n", root);
     stdout.printf ("  <Fragment>\n");
     stdout.printf ("    <DirectoryRef Id=\"%s\">\n".printf (dr));
 
@@ -89,11 +99,11 @@ public int main (string[] args) {
                        path[i] == last_path[i])
                     i++;
                 for (var j = last_path.length - i; j > 0; j--) {
-                    indent = indent[0:-2];
+                    indent = indent[0 : -2];
                     stdout.printf (indent + "</Directory>\n");
                 }
             }
-            for (; i < path.length; i++) {
+            for ( ; i < path.length; i++) {
                 stdout.printf (indent + "<Directory Id=\"%s\" Name=\"%s\">\n".printf (random_id ("dir"), path[i]));
                 indent += "  ";
             }
@@ -106,7 +116,7 @@ public int main (string[] args) {
                     stdout.printf (indent + "<Component Win64=\"$(var.Win64)\" Id=\"%s\" Guid=\"*\">\n".printf (id));
                 else
                     stdout.printf (indent + "<Component Id=\"%s\" Guid=\"*\">\n".printf (id));
-                file = sourcedir + Path.DIR_SEPARATOR_S + escape_filename(file);
+                file = sourcedir + Path.DIR_SEPARATOR_S + escape_filename (file);
                 stdout.printf (indent + "  <File Id=\"%s\" KeyPath=\"yes\" Source=\"%s\"/>\n".printf (generate_id ("fil", 1, file), file));
                 stdout.printf (indent + "</Component>\n");
             }
@@ -115,10 +125,10 @@ public int main (string[] args) {
         warning (error.message);
     }
 
-    indent = indent[0:-2];
+    indent = indent[0 : -2];
     foreach (var l in last_path) {
-      stdout.printf (indent + "</Directory>\n");
-      indent = indent[0:-2];
+        stdout.printf (indent + "</Directory>\n");
+        indent = indent[0 : -2];
     }
 
     stdout.printf ("    </DirectoryRef>\n");
@@ -126,14 +136,18 @@ public int main (string[] args) {
     if (cg != null) {
         stdout.printf ("  <Fragment>\n");
         stdout.printf ("    <ComponentGroup Id=\"%s\">\n".printf (cg));
+        if (require_pkgs != null) {
+            foreach (var pkg in require_pkgs)
+                stdout.printf ("      <ComponentGroupRef Id=\"CG.%s\"/>\n", pkg);
+        }
         foreach (var id in cmpref)
             stdout.printf ("      <ComponentRef Id=\"%s\"/>\n".printf (id));
         stdout.printf ("    </ComponentGroup>\n");
         stdout.printf ("  </Fragment>\n");
     }
 
-    stdout.printf ("</Wix>\n");
-    stdout.printf ("<!-- generated with %s -->\n", Config.PACKAGE_STRING);
-    stdout.printf ("<!-- %s -->\n", cmdline.replace ("--", "-"));
+    stdout.printf ("</%s>\n", root);
+    stdout.printf ("<?ignore generated with %s ?>\n", Config.PACKAGE_STRING);
+    stdout.printf ("<?ignore %s ?>\n", cmdline);
     return 0;
 }

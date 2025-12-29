@@ -1,0 +1,6 @@
+.*/aclocal/
+.*/lib/
+.*/include/
+.*/installed-tests/
+spicy-screenshot.exe
+spicy-stats.exe

@@ -3,9 +3,12 @@
 <Include xmlns="http://schemas.microsoft.com/wix/2006/wi">
   <Fragment>
     <DirectoryRef Id="INSTALLDIR">
-      <Directory Id="dirCF893145D80E5F20440CC9AB5D557898" Name="bin">
+      <Directory Id="dir310FC86D698DCF357B2CE8586F27753C" Name="bin">
         <Component Win64="$(var.Win64)" Id="cmp1C04BCCFC2E06BF768310AD480BC305B" Guid="*">
           <File Id="fil6BCD460BE712ADFC95F079DAD3EC89B1" KeyPath="yes" Source="$(var.SourceDir)/bin/dbus-daemon.exe"/>
+        </Component>
+        <Component Win64="$(var.Win64)" Id="cmpEBB6F253EFF41C3AFD4D869E22A90E5B" Guid="*">
+          <File Id="fil36682BCF640C033EAF20C25DA88BCBA5" KeyPath="yes" Source="$(var.SourceDir)/bin/dbus-env.bat"/>
         </Component>
         <Component Win64="$(var.Win64)" Id="cmp77A0F3EFE46C2AE719CEC38FC522EEE7" Guid="*">
           <File Id="fil6AD85131632A6218344040573E5F5A27" KeyPath="yes" Source="$(var.SourceDir)/bin/dbus-launch.exe"/>
@@ -13,19 +16,37 @@
         <Component Win64="$(var.Win64)" Id="cmp4BF4096B17077E806BAAF417FC8D8EB5" Guid="*">
           <File Id="filF9FC4016115852ECBD574535A0CFD323" KeyPath="yes" Source="$(var.SourceDir)/bin/dbus-monitor.exe"/>
         </Component>
+        <Component Win64="$(var.Win64)" Id="cmpC9C153838BBAB19AF0FDA9D0EB9C31F5" Guid="*">
+          <File Id="fil4D17A5576AB5C89E25ACEF3C6662F8B8" KeyPath="yes" Source="$(var.SourceDir)/bin/dbus-run-session.exe"/>
+        </Component>
         <Component Win64="$(var.Win64)" Id="cmpD437FF19DE11794C73D9184B136E50F8" Guid="*">
           <File Id="filB92ECA46D4A4EA153C9CCF72AFC89060" KeyPath="yes" Source="$(var.SourceDir)/bin/dbus-send.exe"/>
+        </Component>
+        <Component Win64="$(var.Win64)" Id="cmpF201234F67CA4BE48303B5A44BE70799" Guid="*">
+          <File Id="fil74A034C39468A39E9A96286A20E455B1" KeyPath="yes" Source="$(var.SourceDir)/bin/dbus-test-tool.exe"/>
+        </Component>
+        <Component Win64="$(var.Win64)" Id="cmp001CCED7FBD2FA855D8A9DE6F6F6BFF7" Guid="*">
+          <File Id="filCA88F7A3602CD8A0F18BC5E730F52F2D" KeyPath="yes" Source="$(var.SourceDir)/bin/dbus-update-activation-environment.exe"/>
         </Component>
         <Component Win64="$(var.Win64)" Id="cmp76735CE101E039C42ECBA2ECF403CE88" Guid="*">
           <File Id="fil978C2707234AF76D161E8F1526BAAD35" KeyPath="yes" Source="$(var.SourceDir)/bin/libdbus-1-3.dll"/>
         </Component>
       </Directory>
-      <Directory Id="dir134FEBB97D9165DE4598F35944A47C8C" Name="etc">
-        <Directory Id="dir0276C58E154CFB2BB662C9153C3EE284" Name="dbus-1">
+      <Directory Id="dir4E0CE566DFDB677C6A5974946C83B9BC" Name="etc">
+        <Directory Id="dirFADDAA6C3C869A7DAF280DE3EB3002C2" Name="dbus-1">
           <Component Win64="$(var.Win64)" Id="cmp22AAAB27438D6FE8E36A27E275DBFF22" Guid="*">
             <File Id="fil3EFA4C9792C16882C09AE8AA23DD75C4" KeyPath="yes" Source="$(var.SourceDir)/etc/dbus-1/session.conf"/>
           </Component>
-          <Directory Id="dir307AAC2F468F054666B797D8C1F61ABB" Name="session.d">
+        </Directory>
+      </Directory>
+      <Directory Id="dirFC2DEF757F5C82C46A686628129B733D" Name="share">
+        <Directory Id="dir69964908C47E071D7749E291646881E3" Name="dbus-1">
+          <Directory Id="dir03B0EA9988868DB67C715765E0B69502" Name="services">
+          </Directory>
+          <Component Win64="$(var.Win64)" Id="cmp1C7A3E9375F73E7C38D3AD0492CF3929" Guid="*">
+            <File Id="fil99DFB9C3A91BAE85D73DF54F12DFDD40" KeyPath="yes" Source="$(var.SourceDir)/share/dbus-1/session.conf"/>
+          </Component>
+          <Directory Id="dir480DA19AF5C028C043BE24FD970EED21" Name="session.d">
           </Directory>
         </Directory>
       </Directory>
@@ -35,13 +56,18 @@
     <ComponentGroup Id="CG.dbus">
       <ComponentGroupRef Id="CG.expat"/>
       <ComponentRef Id="cmp1C04BCCFC2E06BF768310AD480BC305B"/>
+      <ComponentRef Id="cmpEBB6F253EFF41C3AFD4D869E22A90E5B"/>
       <ComponentRef Id="cmp77A0F3EFE46C2AE719CEC38FC522EEE7"/>
       <ComponentRef Id="cmp4BF4096B17077E806BAAF417FC8D8EB5"/>
+      <ComponentRef Id="cmpC9C153838BBAB19AF0FDA9D0EB9C31F5"/>
       <ComponentRef Id="cmpD437FF19DE11794C73D9184B136E50F8"/>
+      <ComponentRef Id="cmpF201234F67CA4BE48303B5A44BE70799"/>
+      <ComponentRef Id="cmp001CCED7FBD2FA855D8A9DE6F6F6BFF7"/>
       <ComponentRef Id="cmp76735CE101E039C42ECBA2ECF403CE88"/>
       <ComponentRef Id="cmp22AAAB27438D6FE8E36A27E275DBFF22"/>
+      <ComponentRef Id="cmp1C7A3E9375F73E7C38D3AD0492CF3929"/>
     </ComponentGroup>
   </Fragment>
 </Include>
-<!-- generated with msitools 0.101.89-1f7a -->
-<!-- tools/wixl/wixl-heat -var var.SourceDir -prefix /usr/i686-w64-mingw32/sys-root/mingw/ -component-group CG.dbus -directory-ref INSTALLDIR -win64 -->
+<?ignore generated with msitools 0.106.45-476d-dirty ?>
+<?ignore tools/wixl/wixl-heat -i --var var.SourceDir -p /usr/i686-w64-mingw32/sys-root/mingw/ --directory-ref INSTALLDIR --win64 --component-group CG.dbus --require expat ?>

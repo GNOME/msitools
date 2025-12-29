@@ -1,0 +1,7 @@
+--require gtk3
+--require json-glib
+--require usbredir
+--require opus
+--require openssl
+--require gstreamer1-plugins-base
+--require hicolor-icon-theme

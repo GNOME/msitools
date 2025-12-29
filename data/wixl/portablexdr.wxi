@@ -1,19 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-<?require gcc.wxi?>
 <Include xmlns="http://schemas.microsoft.com/wix/2006/wi">
   <Fragment>
     <DirectoryRef Id="INSTALLDIR">
-      <Directory Id="dir7C303E1CF4227C4EEED3DF9B384A5920" Name="bin">
-        <Component Win64="$(var.Win64)" Id="cmp71C30D312561CF1E41637E013EB57148" Guid="*">
-          <File Id="fil1F98D5AC7BB937F51DE8B64953358EA4" KeyPath="yes" Source="$(var.SourceDir)/bin/libportablexdr-0.dll"/>
+      <Directory Id="dir903EE058F5014A0AC3AE928772365005" Name="bin">
+        <Component Win64="$(var.Win64)" Id="cmpC7FEFC3095B78EDCAE3BD8ACF7CA70BA" Guid="*">
+          <File Id="fil1AEE98DC84F238D05E7C2E8DBA68E141" KeyPath="yes" Source="$(var.SourceDir)/bin/libportablexdr-0.dll"/>
+        </Component>
+        <Component Win64="$(var.Win64)" Id="cmp83E87923F704797FCC5937374C7BD6DA" Guid="*">
+          <File Id="fil06C9893878E962B067BE25927D85E8BB" KeyPath="yes" Source="$(var.SourceDir)/bin/portable-rpcgen.exe"/>
         </Component>
       </Directory>
     </DirectoryRef>
   </Fragment>
   <Fragment>
     <ComponentGroup Id="CG.portablexdr">
-      <ComponentGroupRef Id="CG.gcc"/>
-      <ComponentRef Id="cmp71C30D312561CF1E41637E013EB57148"/>
+      <ComponentRef Id="cmpC7FEFC3095B78EDCAE3BD8ACF7CA70BA"/>
+      <ComponentRef Id="cmp83E87923F704797FCC5937374C7BD6DA"/>
     </ComponentGroup>
   </Fragment>
 </Include>
+<?ignore generated with msitools 0.106.45-476d-dirty ?>
+<?ignore build/tools/wixl/wixl-heat --var var.SourceDir -p /usr/i686-w64-mingw32/sys-root/mingw/ --directory-ref INSTALLDIR --win64 --component-group CG.portablexdr -i ?>

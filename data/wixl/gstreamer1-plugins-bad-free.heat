@@ -1,0 +1,13 @@
+--require gstreamer1-plugins-base
+--require libxml2
+--require nettle
+--require openssl
+--require opus
+--require gsm
+--require curl
+--require libwebp
+--require openjpeg
+--require librsvg2
+--require lcms2
+--require openal-soft
+--require openexr

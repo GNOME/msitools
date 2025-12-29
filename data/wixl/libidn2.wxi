@@ -1,19 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
-<?require gettext.wxi?>
+<?require gcc.wxi?>
 <Include xmlns="http://schemas.microsoft.com/wix/2006/wi">
   <Fragment>
     <DirectoryRef Id="INSTALLDIR">
-      <Directory Id="dir2D5CA9C21426E527BC8B9FD68858C67C" Name="bin">
-        <Component Win64="$(var.Win64)" Id="cmp005FB795284130F682F44FA733170184" Guid="*">
-          <File Id="FIL0F1BBCD0306C47DE8856F22FFB1DFD65" KeyPath="yes" Source="$(var.SourceDir)/bin/libidn2-0.dll"/>
+      <Directory Id="dir02AA958C3731D140806C6E3E6C96D593" Name="bin">
+        <Component Win64="$(var.Win64)" Id="cmpD258B46E33901F1894822E3A8C884972" Guid="*">
+          <File Id="filC5F7B216AF271B2CD824B983557FCB92" KeyPath="yes" Source="$(var.SourceDir)/bin/idn2.exe"/>
+        </Component>
+        <Component Win64="$(var.Win64)" Id="cmpA50D8A80474051F890B4571BEDD29D15" Guid="*">
+          <File Id="filF4DA16340B36DB620D06AF6EDBBAAB42" KeyPath="yes" Source="$(var.SourceDir)/bin/libidn2-0.dll"/>
         </Component>
       </Directory>
     </DirectoryRef>
   </Fragment>
   <Fragment>
     <ComponentGroup Id="CG.libidn2">
-      <ComponentGroupRef Id="CG.gettext"/>
-      <ComponentRef Id="cmp005FB795284130F682F44FA733170184"/>
+      <ComponentGroupRef Id="CG.gcc"/>
+      <ComponentRef Id="cmpD258B46E33901F1894822E3A8C884972"/>
+      <ComponentRef Id="cmpA50D8A80474051F890B4571BEDD29D15"/>
     </ComponentGroup>
   </Fragment>
 </Include>
+<?ignore generated with msitools 0.106.45-476d-dirty ?>
+<?ignore build/tools/wixl/wixl-heat --var var.SourceDir -p /usr/i686-w64-mingw32/sys-root/mingw/ --directory-ref INSTALLDIR --win64 --component-group CG.libidn2 --require gcc -i ?>

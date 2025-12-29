@@ -1,0 +1,5 @@
+--require cairo
+--require freetype
+--require fribidi
+--require harfbuzz
+--require fontconfig

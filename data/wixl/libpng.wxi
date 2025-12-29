@@ -1,21 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
-<?require gcc.wxi?>
 <?require zlib.wxi?>
 <Include xmlns="http://schemas.microsoft.com/wix/2006/wi">
   <Fragment>
     <DirectoryRef Id="INSTALLDIR">
-      <Directory Id="dir4F037DA059A1304DD8B0E91921F03295" Name="bin">
-        <Component Win64="$(var.Win64)" Id="cmp71CA8B05415501F69863A36302EE1D4F" Guid="*">
-          <File Id="fil61969A4C9C2629AE404A707620CF5AED" KeyPath="yes" Source="$(var.SourceDir)/bin/libpng16-16.dll"/>
+      <Directory Id="dirBE7095941A44FFEC822449B295FC9997" Name="bin">
+        <Component Win64="$(var.Win64)" Id="cmp28D678BB86C17964060C232063992B86" Guid="*">
+          <File Id="fil1E1BCBC61CB011064067A1F44403E39D" KeyPath="yes" Source="$(var.SourceDir)/bin/libpng-config"/>
+        </Component>
+        <Component Win64="$(var.Win64)" Id="cmpCAC69FC7A66A7B2EA254C1FA1B8BBEF0" Guid="*">
+          <File Id="fil7EB26008FA27E333C973A58B07147798" KeyPath="yes" Source="$(var.SourceDir)/bin/libpng16-16.dll"/>
+        </Component>
+        <Component Win64="$(var.Win64)" Id="cmpFA4131424D3B3DEAFBD1AC266875E440" Guid="*">
+          <File Id="fil7B30CE608D72D10BAD0932015E9B94E0" KeyPath="yes" Source="$(var.SourceDir)/bin/libpng16-config"/>
+        </Component>
+        <Component Win64="$(var.Win64)" Id="cmp5B6A2D9A075DA652302B1F655CB9A7A2" Guid="*">
+          <File Id="fil20E7E882D7ABC28622E28A1F2B9F2F98" KeyPath="yes" Source="$(var.SourceDir)/bin/png-fix-itxt.exe"/>
+        </Component>
+        <Component Win64="$(var.Win64)" Id="cmp0F7DCD210467E15F02EB3595FBCC15F2" Guid="*">
+          <File Id="fil109068ACED3F4F8C8F31158C28CFDF05" KeyPath="yes" Source="$(var.SourceDir)/bin/pngfix.exe"/>
         </Component>
       </Directory>
     </DirectoryRef>
   </Fragment>
   <Fragment>
     <ComponentGroup Id="CG.libpng">
-      <ComponentGroupRef Id="CG.gcc"/>
       <ComponentGroupRef Id="CG.zlib"/>
-      <ComponentRef Id="cmp71CA8B05415501F69863A36302EE1D4F"/>
+      <ComponentRef Id="cmp28D678BB86C17964060C232063992B86"/>
+      <ComponentRef Id="cmpCAC69FC7A66A7B2EA254C1FA1B8BBEF0"/>
+      <ComponentRef Id="cmpFA4131424D3B3DEAFBD1AC266875E440"/>
+      <ComponentRef Id="cmp5B6A2D9A075DA652302B1F655CB9A7A2"/>
+      <ComponentRef Id="cmp0F7DCD210467E15F02EB3595FBCC15F2"/>
     </ComponentGroup>
   </Fragment>
 </Include>
+<?ignore generated with msitools 0.106.45-476d-dirty ?>
+<?ignore build/tools/wixl/wixl-heat --var var.SourceDir -p /usr/i686-w64-mingw32/sys-root/mingw/ --directory-ref INSTALLDIR --win64 --component-group CG.libpng --require zlib -i ?>
