@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: msitools master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/msitools/issues/\n"
-"POT-Creation-Date: 2025-09-10 21:45+0000\n"
-"PO-Revision-Date: 2025-09-13 21:39+0300\n"
+"POT-Creation-Date: 2025-12-15 10:06+0000\n"
+"PO-Revision-Date: 2026-01-06 20:17+0200\n"
 "Last-Translator: Aurimas Černius <aurimas.cernius@mailo.com>\n"
 "Language-Team: Lietuvių <gnome-lt@lists.akl.lt>\n"
 "Language: lt\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
 "(n%100<10 || n%100>=20) ? 1 : 2);\n"
-"X-Generator: Poedit 3.7\n"
+"X-Generator: Poedit 3.8\n"
 
 #: tools/msiextract.vala:10 tools/wixl/wixl.vala:25
 msgid "Display version number"
@@ -43,29 +43,37 @@ msgstr "- msi failų išskleidimo įrankis"
 msgid "Please specify input files.\n"
 msgstr "Nurodykite įvesties failus.\n"
 
-#: tools/wixl/wixl-heat.vala:12
+#: tools/wixl/wixl-heat.vala:15
 msgid "Directory Ref"
 msgstr "Aplanko nuoroda"
 
-#: tools/wixl/wixl-heat.vala:13
+#: tools/wixl/wixl-heat.vala:16
 msgid "Component Group"
 msgstr "Komponento grupė"
 
-#: tools/wixl/wixl-heat.vala:14
+#: tools/wixl/wixl-heat.vala:17
 msgid "Variable for source dir"
 msgstr "Kintamasis šaltinio aplankui"
 
-#: tools/wixl/wixl-heat.vala:15
+#: tools/wixl/wixl-heat.vala:18
 msgid "Prefix"
 msgstr "Priešdėlis"
 
-#: tools/wixl/wixl-heat.vala:16
+#: tools/wixl/wixl-heat.vala:19
 msgid "Exclude prefix"
 msgstr "Išimčių priešdėlis"
 
-#: tools/wixl/wixl-heat.vala:17
+#: tools/wixl/wixl-heat.vala:20
+msgid "Require package (adds <?require?> and ComponentGroupRef)"
+msgstr "Būtinas paketas (prideda <?require?> ir ComponentGroupRef)"
+
+#: tools/wixl/wixl-heat.vala:21
 msgid "Add Win64 Component"
 msgstr "Pridėti Win64 komponentą"
+
+#: tools/wixl/wixl-heat.vala:22
+msgid "Make wixl-specific include file"
+msgstr "Sukurti wixi-specifinį įterpiamą failą"
 
 #: tools/wixl/wixl.vala:26
 msgid "Verbose output"
