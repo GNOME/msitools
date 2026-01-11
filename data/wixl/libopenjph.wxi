@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<?require gcc-c++.wxi?>
+<Include xmlns="http://schemas.microsoft.com/wix/2006/wi">
+  <Fragment>
+    <DirectoryRef Id="INSTALLDIR">
+      <Directory Id="dirA8A64A1BE3AF4CC662BA3D23A7051883" Name="bin">
+        <Component Win64="$(var.Win64)" Id="cmp05C0C2999E512FEC67536103C59902BA" Guid="*">
+          <File Id="fil6477BA187F8D14162B23DAE7AA0F3E38" KeyPath="yes" Source="$(var.SourceDir)/bin/libopenjph-0.25.dll"/>
+        </Component>
+      </Directory>
+    </DirectoryRef>
+  </Fragment>
+  <Fragment>
+    <ComponentGroup Id="CG.libopenjph">
+      <ComponentGroupRef Id="CG.gcc-c++"/>
+      <ComponentRef Id="cmp05C0C2999E512FEC67536103C59902BA"/>
+    </ComponentGroup>
+  </Fragment>
+</Include>
+<?ignore generated with msitools 0.106.47-7921 ?>
+<?ignore tools/wixl/wixl-heat --var var.SourceDir -p /usr/i686-w64-mingw32/sys-root/mingw/ --directory-ref INSTALLDIR --win64 --component-group CG.libopenjph ?>

@@ -45,6 +45,7 @@ wxi_data = files(
   'wixl/libidn2.wxi',
   'wixl/libjpeg-turbo.wxi',
   'wixl/libogg.wxi',
+  'wixl/libopenjph.wxi',
   'wixl/libpng.wxi',
   'wixl/libpsl.wxi',
   'wixl/librsvg2.wxi',
