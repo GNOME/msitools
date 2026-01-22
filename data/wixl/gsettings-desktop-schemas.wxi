@@ -1,0 +1,663 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Include xmlns="http://schemas.microsoft.com/wix/2006/wi">
+  <Fragment>
+    <DirectoryRef Id="INSTALLDIR">
+      <Directory Id="dir05F248B7A6C41320282D38D650483A68" Name="share">
+        <Directory Id="dir30A1837BE6B6827EF964FB799503C84B" Name="GConf">
+          <Directory Id="dir6EDAB1A496C55CCB644F052E0904B31F" Name="gsettings">
+            <Component Win64="$(var.Win64)" Id="cmp81F1CC6E7A0806AF8456C0304F337E05" Guid="*">
+              <File Id="fil7FA561C191B4F7915C07BA66C21A86EC" KeyPath="yes" Source="$(var.SourceDir)/share/GConf/gsettings/gsettings-desktop-schemas.convert"/>
+            </Component>
+            <Component Win64="$(var.Win64)" Id="cmpDCE91A31DF602F97B3B68ED772369040" Guid="*">
+              <File Id="fil11D67D6AD81CAAD5637DFC20BE8ABA76" KeyPath="yes" Source="$(var.SourceDir)/share/GConf/gsettings/wm-schemas.convert"/>
+            </Component>
+          </Directory>
+        </Directory>
+        <Directory Id="dirC52DBA70EB746C53F4E98FE954409F3E" Name="glib-2.0">
+          <Directory Id="dir6DADF25C56B78F98F83772F3F7EE9B56" Name="schemas">
+            <Component Win64="$(var.Win64)" Id="cmp003682D2DB6270DE90435CDA7EAF5759" Guid="*">
+              <File Id="fil01B75658302055B407AB7DABEA072D1C" KeyPath="yes" Source="$(var.SourceDir)/share/glib-2.0/schemas/org.gnome.desktop.a11y.applications.gschema.xml"/>
+            </Component>
+            <Component Win64="$(var.Win64)" Id="cmp41586B717C8877D9DC36EB851C7BBA54" Guid="*">
+              <File Id="fil1C48606E6B59D259585F99592C6A1176" KeyPath="yes" Source="$(var.SourceDir)/share/glib-2.0/schemas/org.gnome.desktop.a11y.gschema.xml"/>
+            </Component>
+            <Component Win64="$(var.Win64)" Id="cmp96675277965E99F725CBC36079F2FD7E" Guid="*">
+              <File Id="fil51712CF329B07FD51E95E196C9D1E6A5" KeyPath="yes" Source="$(var.SourceDir)/share/glib-2.0/schemas/org.gnome.desktop.a11y.interface.gschema.xml"/>
+            </Component>
+            <Component Win64="$(var.Win64)" Id="cmp00AD03DD07A1D46CD9FAE254FE2BDC43" Guid="*">
+              <File Id="filFA10D4C764F8DBF64C15AA4D312E402A" KeyPath="yes" Source="$(var.SourceDir)/share/glib-2.0/schemas/org.gnome.desktop.a11y.keyboard.gschema.xml"/>
+            </Component>
+            <Component Win64="$(var.Win64)" Id="cmp19BB33398A1801F77A6C0B9D2856AB98" Guid="*">
+              <File Id="fil24151A1C0D5842E1CF1A8B74BEC328C1" KeyPath="yes" Source="$(var.SourceDir)/share/glib-2.0/schemas/org.gnome.desktop.a11y.magnifier.gschema.xml"/>
+            </Component>
+            <Component Win64="$(var.Win64)" Id="cmpDF65EA6E3A4776640E5E742640BF0A9F" Guid="*">
+              <File Id="fil6DEF077955B407FC636CE5B3183C282C" KeyPath="yes" Source="$(var.SourceDir)/share/glib-2.0/schemas/org.gnome.desktop.a11y.mouse.gschema.xml"/>
+            </Component>
+            <Component Win64="$(var.Win64)" Id="cmp03AA804BC32889A7EB6B0BAFC1E23B11" Guid="*">
+              <File Id="fil7A4B880FB18FA9787C3EBC0C91021695" KeyPath="yes" Source="$(var.SourceDir)/share/glib-2.0/schemas/org.gnome.desktop.app-folders.gschema.xml"/>
+            </Component>
+            <Component Win64="$(var.Win64)" Id="cmp383F2281807CFC5449DC5E25C129FD33" Guid="*">
+              <File Id="fil6E9910270797357C9C70FC6EAEC777CF" KeyPath="yes" Source="$(var.SourceDir)/share/glib-2.0/schemas/org.gnome.desktop.background.gschema.xml"/>
+            </Component>
+            <Component Win64="$(var.Win64)" Id="cmp1BE933CC680619E2570AD34B58705EB9" Guid="*">
+              <File Id="filDD4587E13E7E7BAF0C53E47507540DF5" KeyPath="yes" Source="$(var.SourceDir)/share/glib-2.0/schemas/org.gnome.desktop.break-reminders.gschema.xml"/>
+            </Component>
+            <Component Win64="$(var.Win64)" Id="cmp744A3D65E0D285F3B94A67D9FAD26B10" Guid="*">
+              <File Id="fil56FFFCD93DED9BC3FCB10513298F0402" KeyPath="yes" Source="$(var.SourceDir)/share/glib-2.0/schemas/org.gnome.desktop.calendar.gschema.xml"/>
+            </Component>
+            <Component Win64="$(var.Win64)" Id="cmp166F260A4334370A45C4F9A2F6E97CAD" Guid="*">
+              <File Id="fil2E9062E8EA65BF55DD00DAA36C4D5165" KeyPath="yes" Source="$(var.SourceDir)/share/glib-2.0/schemas/org.gnome.desktop.datetime.gschema.xml"/>
+            </Component>
+            <Component Win64="$(var.Win64)" Id="cmpAA74013CC5086CB8223645F622FAAFC2" Guid="*">
+              <File Id="fil0342F4004AA327E837CFCC076A77B140" KeyPath="yes" Source="$(var.SourceDir)/share/glib-2.0/schemas/org.gnome.desktop.default-applications.gschema.xml"/>
+            </Component>
+            <Component Win64="$(var.Win64)" Id="cmp74956E813117DF631F2CA3F45EBAC7BA" Guid="*">
+              <File Id="fil97B2C068DC0C1E1560AA8A0E23FF1987" KeyPath="yes" Source="$(var.SourceDir)/share/glib-2.0/schemas/org.gnome.desktop.enums.xml"/>
+            </Component>
+            <Component Win64="$(var.Win64)" Id="cmp57D5FFB058757A6EF73077DF21E998F8" Guid="*">
+              <File Id="filA954C8C5CA6F0AF9C16B65986365CAF3" KeyPath="yes" Source="$(var.SourceDir)/share/glib-2.0/schemas/org.gnome.desktop.input-sources.gschema.xml"/>
+            </Component>
+            <Component Win64="$(var.Win64)" Id="cmp49D9520F95F2C7154F7EA7C9878053B1" Guid="*">
+              <File Id="filF57A1DF7016D45A75FE480FFE94DAF70" KeyPath="yes" Source="$(var.SourceDir)/share/glib-2.0/schemas/org.gnome.desktop.interface.gschema.xml"/>
+            </Component>
+            <Component Win64="$(var.Win64)" Id="cmp7BA291216BF78F6A96C33AAB869DD32A" Guid="*">
+              <File Id="fil1B26FB77107D4EDC9626F183E996ECBE" KeyPath="yes" Source="$(var.SourceDir)/share/glib-2.0/schemas/org.gnome.desktop.lockdown.gschema.xml"/>
+            </Component>
+            <Component Win64="$(var.Win64)" Id="cmpAB0D1AA9A963A5358D11B7A6E9A760E9" Guid="*">
+              <File Id="fil2F1EAE46467DA18922A3CA794A044C40" KeyPath="yes" Source="$(var.SourceDir)/share/glib-2.0/schemas/org.gnome.desktop.media-handling.gschema.xml"/>
+            </Component>
+            <Component Win64="$(var.Win64)" Id="cmp3AEC03B1FF4B470CDB3028A527C05B8F" Guid="*">
+              <File Id="fil93135132786106A2B42AE0102BAA1874" KeyPath="yes" Source="$(var.SourceDir)/share/glib-2.0/schemas/org.gnome.desktop.notifications.gschema.xml"/>
+            </Component>
+            <Component Win64="$(var.Win64)" Id="cmp1EF660F3DBB8EA14BED892598D56D201" Guid="*">
+              <File Id="fil47CD7CE3A44171B6327197AA2C300F6E" KeyPath="yes" Source="$(var.SourceDir)/share/glib-2.0/schemas/org.gnome.desktop.peripherals.gschema.xml"/>
+            </Component>
+            <Component Win64="$(var.Win64)" Id="cmpAC5BF2809A5BA5DCAE829BA5F1D87826" Guid="*">
+              <File Id="fil5A3245E4A76305878222E886AE04E79D" KeyPath="yes" Source="$(var.SourceDir)/share/glib-2.0/schemas/org.gnome.desktop.privacy.gschema.xml"/>
+            </Component>
+            <Component Win64="$(var.Win64)" Id="cmp7730C91F08CC28782DC0A6AF1A391438" Guid="*">
+              <File Id="filFBE5804F94DD26810F298C4D9B30395D" KeyPath="yes" Source="$(var.SourceDir)/share/glib-2.0/schemas/org.gnome.desktop.screen-time-limits.gschema.xml"/>
+            </Component>
+            <Component Win64="$(var.Win64)" Id="cmpD573792E9848637CF2B9959FF8475C10" Guid="*">
+              <File Id="fil1DBA5D5675D8A09856C46BC9B5A0704E" KeyPath="yes" Source="$(var.SourceDir)/share/glib-2.0/schemas/org.gnome.desktop.screensaver.gschema.xml"/>
+            </Component>
+            <Component Win64="$(var.Win64)" Id="cmpD4EAFA27CC38C9665FB700EFCF8DAC3C" Guid="*">
+              <File Id="fil3C9C0352E7C2AAE42C3BCE59B86F6D70" KeyPath="yes" Source="$(var.SourceDir)/share/glib-2.0/schemas/org.gnome.desktop.search-providers.gschema.xml"/>
+            </Component>
+            <Component Win64="$(var.Win64)" Id="cmpE783F1A70EF22271868A36FF9002F11E" Guid="*">
+              <File Id="filBE4548C52BBFCC52DF84CD3B281901BD" KeyPath="yes" Source="$(var.SourceDir)/share/glib-2.0/schemas/org.gnome.desktop.session.gschema.xml"/>
+            </Component>
+            <Component Win64="$(var.Win64)" Id="cmp794D7F223723805E88C88FE4FBEB9337" Guid="*">
+              <File Id="fil52D83A1AE57BA4DCB7A5D9981BDA3B01" KeyPath="yes" Source="$(var.SourceDir)/share/glib-2.0/schemas/org.gnome.desktop.sound.gschema.xml"/>
+            </Component>
+            <Component Win64="$(var.Win64)" Id="cmp9E087B60943FC7B7A70594847AE6FE1B" Guid="*">
+              <File Id="fil51F6664EA887DD356720AB4D1A4570E4" KeyPath="yes" Source="$(var.SourceDir)/share/glib-2.0/schemas/org.gnome.desktop.thumbnail-cache.gschema.xml"/>
+            </Component>
+            <Component Win64="$(var.Win64)" Id="cmpFD73FB36F24E7D654E4EF58374C08EA6" Guid="*">
+              <File Id="filB352087CC6A6ECEB268F35AC112848DF" KeyPath="yes" Source="$(var.SourceDir)/share/glib-2.0/schemas/org.gnome.desktop.thumbnailers.gschema.xml"/>
+            </Component>
+            <Component Win64="$(var.Win64)" Id="cmpF9FCC6C3900F49237E1E5F6F816E95BE" Guid="*">
+              <File Id="filB74B5E4053B9E33D2CBA02C3136C2FD0" KeyPath="yes" Source="$(var.SourceDir)/share/glib-2.0/schemas/org.gnome.desktop.wm.keybindings.gschema.xml"/>
+            </Component>
+            <Component Win64="$(var.Win64)" Id="cmpC2FBE5BAB1CADAACF890175237327ECA" Guid="*">
+              <File Id="filD326863D0891441889FDB42874C70B21" KeyPath="yes" Source="$(var.SourceDir)/share/glib-2.0/schemas/org.gnome.desktop.wm.preferences.gschema.xml"/>
+            </Component>
+            <Component Win64="$(var.Win64)" Id="cmp7232134AC8206FDFB3F3E3206622F386" Guid="*">
+              <File Id="filCBAADFD0FC76937B1F543FF711967616" KeyPath="yes" Source="$(var.SourceDir)/share/glib-2.0/schemas/org.gnome.system.locale.gschema.xml"/>
+            </Component>
+            <Component Win64="$(var.Win64)" Id="cmpE6BF14814842A5D6415AD7326E40FECC" Guid="*">
+              <File Id="fil72A065E8EC5821A2077E11891F89E7C0" KeyPath="yes" Source="$(var.SourceDir)/share/glib-2.0/schemas/org.gnome.system.location.gschema.xml"/>
+            </Component>
+            <Component Win64="$(var.Win64)" Id="cmp52F172263B4E24729643170CA893F4B8" Guid="*">
+              <File Id="fil92BC616257BE4E1C2931C382527A1827" KeyPath="yes" Source="$(var.SourceDir)/share/glib-2.0/schemas/org.gnome.system.proxy.gschema.xml"/>
+            </Component>
+          </Directory>
+        </Directory>
+        <Directory Id="dir5F964EDF760DE331748F0A46CDE08631" Name="locale">
+          <Directory Id="dir00C7768F36F15F0DDCD875824C27007E" Name="ab">
+            <Directory Id="dirD1B0111B8D5A5C18FEEB64C3FD5E4878" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp877FB423069FDD86C78121A09BA4B359" Guid="*">
+                <File Id="fil3255D771838AC0FB44D7E5AAB2C82E1F" KeyPath="yes" Source="$(var.SourceDir)/share/locale/ab/LC_MESSAGES/gsettings-desktop-schemas.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir800452EBE5F2E26AD499803C91AB54A9" Name="as">
+            <Directory Id="dir1FE19D3B3B4E32DBB363CDAB6D73A396" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp04CF1F2DA1A563DB363C31CECE4FEC54" Guid="*">
+                <File Id="fil4696D84797B561953C23403952582AB0" KeyPath="yes" Source="$(var.SourceDir)/share/locale/as/LC_MESSAGES/gsettings-desktop-schemas.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dirB7D53923A38F1DB26BB27EA0480F8430" Name="be">
+            <Directory Id="dirBD181D22555C53F51D39E0978F2AF88C" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp14752E4CDC73E8CDF7388F701F3BE839" Guid="*">
+                <File Id="filFC551F8151C05ADFCD6CAB170C615956" KeyPath="yes" Source="$(var.SourceDir)/share/locale/be/LC_MESSAGES/gsettings-desktop-schemas.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dirAE8813B1EE53D618938733A353F71008" Name="bg">
+            <Directory Id="dirBA6BCAB429C9E1FBF27E437B3D829A37" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp3371A7662772A721A33CDEA930A11FE7" Guid="*">
+                <File Id="fil4BD8ABC4E7E4CAAF4AB5A375AB4C5D05" KeyPath="yes" Source="$(var.SourceDir)/share/locale/bg/LC_MESSAGES/gsettings-desktop-schemas.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir52198FF2949DF7670569E985EBE758EC" Name="bs">
+            <Directory Id="dir6033A7718344FD1D3F164C6BE3884226" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp70AD5AED9DA40BBBC312B225DDC25A0E" Guid="*">
+                <File Id="filC12B3BB1D8E1AA469CC95AB804EE2A3C" KeyPath="yes" Source="$(var.SourceDir)/share/locale/bs/LC_MESSAGES/gsettings-desktop-schemas.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir7DC02BA2AE01FF0A1A84F5C865220862" Name="ca">
+            <Directory Id="dir0F2ACB0759141A5804D0F6DB4D934585" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmpAF4C2F8F84085117EF024DD89539E2B7" Guid="*">
+                <File Id="fil465576B1FB72615DB77DD5259DF67C7A" KeyPath="yes" Source="$(var.SourceDir)/share/locale/ca/LC_MESSAGES/gsettings-desktop-schemas.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir69D1E3845D84ED66B804C3A91621126F" Name="ca@valencia">
+            <Directory Id="dirE6CFEDE8E6EDC5863ED11D96E4C0A1DD" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp83B118AE57A8B9E559EDE8D2E2957E97" Guid="*">
+                <File Id="fil49376D48BCD7FFFA72D37308D8D5A0AD" KeyPath="yes" Source="$(var.SourceDir)/share/locale/ca@valencia/LC_MESSAGES/gsettings-desktop-schemas.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dirF8287C485A039AEE862D8599F35AADCE" Name="cs">
+            <Directory Id="dir43C9AE368EFA932C0DBAA5121063CA11" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmpFA0C6C4F31493C272741F16108E783E4" Guid="*">
+                <File Id="fil5C2C38D83BCC74E6DB708F0DD02839B3" KeyPath="yes" Source="$(var.SourceDir)/share/locale/cs/LC_MESSAGES/gsettings-desktop-schemas.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir5968223D92C89EA6090B644E89ED5BF6" Name="da">
+            <Directory Id="dir07ABB13C4E7D723D668A1768F0D5525F" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmpE30700A8ABA13002BEAB7E036056E378" Guid="*">
+                <File Id="fil0E4AB673A7BD0EFE1F3143C10B09321D" KeyPath="yes" Source="$(var.SourceDir)/share/locale/da/LC_MESSAGES/gsettings-desktop-schemas.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir6776FFC9F89A4BB8458F86B00341F0D3" Name="de">
+            <Directory Id="dir94B5D5306CF150738E6E4DFE814AEB37" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmpC2E8A70C252B3D80274B7904BD909F87" Guid="*">
+                <File Id="fil52743E240EC4B1441193FA5EEEAAFC1B" KeyPath="yes" Source="$(var.SourceDir)/share/locale/de/LC_MESSAGES/gsettings-desktop-schemas.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dirB4282F6E40AF13CE1D41C81F62FA3016" Name="el">
+            <Directory Id="dirBFEDAA2E7D36B7FBE43811869E1E9B8A" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp21A7DEC39DA64DA58716633C93A59CB6" Guid="*">
+                <File Id="fil2FF459B11218E63CF69D29031BB7D8BA" KeyPath="yes" Source="$(var.SourceDir)/share/locale/el/LC_MESSAGES/gsettings-desktop-schemas.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dirF772B5BC77A9AF434BB9EB3D59AA478F" Name="en_GB">
+            <Directory Id="dir4A16F36E6A0DCB2DC238DF0C6945DCFF" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp99AE2C50174459C5CD348A78A2CD0315" Guid="*">
+                <File Id="fil7DB41547D367174DFF8BD494B77170FD" KeyPath="yes" Source="$(var.SourceDir)/share/locale/en_GB/LC_MESSAGES/gsettings-desktop-schemas.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dirDD7CE7F81CD25459BFFEC2EE869E2A2A" Name="en_US">
+            <Directory Id="dir3406424F06B7E507E4F78FCA1BE31C2F" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp19B3DDFB1757C2A4D37849DA560D0D0F" Guid="*">
+                <File Id="fil82C46CEDCB3A4972D021C4664655666E" KeyPath="yes" Source="$(var.SourceDir)/share/locale/en_US/LC_MESSAGES/gsettings-desktop-schemas.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir3397A492D89AEC853D9B9564B00C76BF" Name="eo">
+            <Directory Id="dirA375D174C1D6B64E86FC074A31ABAA4F" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp09B15D8545F6BCE0D624B5F0EA608FDC" Guid="*">
+                <File Id="filEBE33990A94511DD603EF1EE34DA3330" KeyPath="yes" Source="$(var.SourceDir)/share/locale/eo/LC_MESSAGES/gsettings-desktop-schemas.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dirCEF79DF5416BBB8C3828D82A52731315" Name="es">
+            <Directory Id="dir463B0D2D2A70B76CAADDF3ABB62EB241" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmpB9133E6F56E77777028801ECAF7553B7" Guid="*">
+                <File Id="fil251EB20FE77FFD4F15A3D3BC0670D0F6" KeyPath="yes" Source="$(var.SourceDir)/share/locale/es/LC_MESSAGES/gsettings-desktop-schemas.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dirD23701BB79A33301ABAA2BFB10857B6A" Name="eu">
+            <Directory Id="dirF6F37D38BF90B3F134372797788BFCDB" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmpFA47A9B41924957AC2A25805ADFD444A" Guid="*">
+                <File Id="fil20EB2E8BA1DE03C34092B8B431AB8907" KeyPath="yes" Source="$(var.SourceDir)/share/locale/eu/LC_MESSAGES/gsettings-desktop-schemas.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir87C2D0BECBBA935BD4C2D3FFDE8827C6" Name="fa">
+            <Directory Id="dirFC9A0C0E36FA545FF039FADC6DCCC29F" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmpCEB820B08FF2CD6045898A82BC14E682" Guid="*">
+                <File Id="filBE3A2D79B9B3AAA0A2822F2555D4298E" KeyPath="yes" Source="$(var.SourceDir)/share/locale/fa/LC_MESSAGES/gsettings-desktop-schemas.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir777768BE2354BE7100CB750807FD4995" Name="fi">
+            <Directory Id="dir626DE23E5D1AE3B3CC3771F9B0B7759E" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp638A099A52EE30AA20FD8C9289C96E88" Guid="*">
+                <File Id="fil2174C1602C699388065AEE7B29063A5D" KeyPath="yes" Source="$(var.SourceDir)/share/locale/fi/LC_MESSAGES/gsettings-desktop-schemas.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir244268B1245B64FFE626BB9C31066EBE" Name="fr">
+            <Directory Id="dir0588E422A771C521979609264BC13863" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp28413A4D1159156234C95B055CA4E198" Guid="*">
+                <File Id="filC0CA4847C6592B08F8DC0319AE7D1D63" KeyPath="yes" Source="$(var.SourceDir)/share/locale/fr/LC_MESSAGES/gsettings-desktop-schemas.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dirC296DA4ECEA323450C2D466A8F65C9A9" Name="fur">
+            <Directory Id="dir6E440533BDBB7991A2B3863F7CA74FD9" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmpCAC8FA335C823CAE737D364EE1845459" Guid="*">
+                <File Id="filAF6E7B881B0AEE1BBA6E7668A0ECDA92" KeyPath="yes" Source="$(var.SourceDir)/share/locale/fur/LC_MESSAGES/gsettings-desktop-schemas.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir00026A9122D72DED5513BBDE41F76A06" Name="gl">
+            <Directory Id="dir43E3567082568299F47C539688EC562E" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmpBB1041912D01E728D85D599251803A4C" Guid="*">
+                <File Id="filB0AC4295AC8DCF9E1ECCF9D155D220B5" KeyPath="yes" Source="$(var.SourceDir)/share/locale/gl/LC_MESSAGES/gsettings-desktop-schemas.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dirD5679DB0B3E22F405D24BC94E3F31B1D" Name="gu">
+            <Directory Id="dir64D6BADA6CA5B3F791686CE8AA687221" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp6F9A65BE6B6F7380A067D3B23F3A99E3" Guid="*">
+                <File Id="fil8B4DA74449865FC35BFF857202092DBF" KeyPath="yes" Source="$(var.SourceDir)/share/locale/gu/LC_MESSAGES/gsettings-desktop-schemas.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir9ADDD73193B26828613B2F6F56654432" Name="he">
+            <Directory Id="dir4F7B40686FF6A5D3A0A09E4251A72E2A" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp27E2E8337C059CA3DAE94D076A180AC3" Guid="*">
+                <File Id="fil71B8FA3F5611487487C9A70E2D48AA8E" KeyPath="yes" Source="$(var.SourceDir)/share/locale/he/LC_MESSAGES/gsettings-desktop-schemas.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir3508154176014D3C6F6F03576533464C" Name="hi">
+            <Directory Id="dirBF0B647BE33D49E754DE5F3F6F5CE9B5" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmpDC21218F52C921F231727FC4B21D9938" Guid="*">
+                <File Id="filFA523A8CA67F7B3109E48F6AFB1BEDDD" KeyPath="yes" Source="$(var.SourceDir)/share/locale/hi/LC_MESSAGES/gsettings-desktop-schemas.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir091EA21F0A5F0CC004101F92D8D73C7A" Name="hr">
+            <Directory Id="dir09153A02088C0D60C24DACC321E18095" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmpB6341AB4A68637DB26128A906CFBB29E" Guid="*">
+                <File Id="filF78706A1F9A96CAB104F07FC708C80DA" KeyPath="yes" Source="$(var.SourceDir)/share/locale/hr/LC_MESSAGES/gsettings-desktop-schemas.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dirCD3FADE39303B5082DADADCC83DBEC87" Name="hu">
+            <Directory Id="dir7BAAF631151315117456205EEEFA043C" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp8BC874C3A20786A449D7DFA3E583BA4D" Guid="*">
+                <File Id="filE7A45D3138EF094FAC2CE98E95895AA4" KeyPath="yes" Source="$(var.SourceDir)/share/locale/hu/LC_MESSAGES/gsettings-desktop-schemas.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir0D54E2CE803FBF4ACB9AE5DD7DA5AA02" Name="id">
+            <Directory Id="dir4ACE20EAA9CE40748481000C6ED20FC2" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmpEE9F923761E83E0A225561CEF6F9F267" Guid="*">
+                <File Id="fil149F4E65A1257CDA99768B69D955FD80" KeyPath="yes" Source="$(var.SourceDir)/share/locale/id/LC_MESSAGES/gsettings-desktop-schemas.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dirE3BD9621937FD0F9E39BFDBCDF2E7394" Name="is">
+            <Directory Id="dirC95EBA131E16877537BFA062D23009CF" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmpE9E6AF6D677F5320BA449766E94FC67C" Guid="*">
+                <File Id="filDFD7771FBD1DC26F82EF52C7530202CA" KeyPath="yes" Source="$(var.SourceDir)/share/locale/is/LC_MESSAGES/gsettings-desktop-schemas.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir76968FC5A27B41B88E94FB1F56E29DE8" Name="it">
+            <Directory Id="dir503FAC857CB117A98206A3B6AD3795A6" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp4BDAD47A73F0636B0B10E943DBF7D9E5" Guid="*">
+                <File Id="fil75395FFB9E5CAFAF73D468A4B8F94B3C" KeyPath="yes" Source="$(var.SourceDir)/share/locale/it/LC_MESSAGES/gsettings-desktop-schemas.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dirCF4EDD0D794A534100AD7835AFC8CF61" Name="ja">
+            <Directory Id="dirD20B90210A90C9CBDF013EAF34EF7E64" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp28CFBCB86FB1C53546D7896A13E573AE" Guid="*">
+                <File Id="fil4F46A7AB933A9C0B1FE6D0163535044D" KeyPath="yes" Source="$(var.SourceDir)/share/locale/ja/LC_MESSAGES/gsettings-desktop-schemas.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir98381FADC747E989F92DBEC32AA7ECBA" Name="ka">
+            <Directory Id="dirFC4407883630CE6DF0073CFE89BAF1F1" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmpFC85B713077B47542A3A90751C1F2A66" Guid="*">
+                <File Id="filDF714642914408ECA82ABCC9CF440563" KeyPath="yes" Source="$(var.SourceDir)/share/locale/ka/LC_MESSAGES/gsettings-desktop-schemas.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir33C86D888D98171A3BBD5C21091744D7" Name="kab">
+            <Directory Id="dir506228E67FF05696242107DA851AF324" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp6610A4DC147DB52E0C8BC08CE66C45DD" Guid="*">
+                <File Id="fil0F6C64934F635FE8CB949B21BDDDD9ED" KeyPath="yes" Source="$(var.SourceDir)/share/locale/kab/LC_MESSAGES/gsettings-desktop-schemas.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir3E2783CEDF4CD0C4CA62080C9778882C" Name="kk">
+            <Directory Id="dirAD5539C2EF10927AE19570987033F458" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp38FE5CF0FB197294968ADA73915946BC" Guid="*">
+                <File Id="fil23B3B1FE3703C31BC730818FB7C66277" KeyPath="yes" Source="$(var.SourceDir)/share/locale/kk/LC_MESSAGES/gsettings-desktop-schemas.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir85DCC2EDC3FF35E9D2E57BB0F6F374BF" Name="lt">
+            <Directory Id="dir2845CD6F3ED7CF02E83BDDAE83D94E2D" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmpE5646A64783D3F64A1F4CC186FEABF2F" Guid="*">
+                <File Id="fil4AD54E7F2AD6D9ABE9334185EF77BAB5" KeyPath="yes" Source="$(var.SourceDir)/share/locale/lt/LC_MESSAGES/gsettings-desktop-schemas.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir36BBA0B881FB3F4D166C4BBFDED8960E" Name="lv">
+            <Directory Id="dir572612539B2CB4BDFF85AAFC78170AA6" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmpCD2EFA4820DE28E294BEEA0F69A2CC2B" Guid="*">
+                <File Id="fil5B3A71E85DAFDB88AE6869EDC9DBEB0B" KeyPath="yes" Source="$(var.SourceDir)/share/locale/lv/LC_MESSAGES/gsettings-desktop-schemas.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dirBB831B63283497C392560A2378239E92" Name="ml">
+            <Directory Id="dirBDCB645A3DEC667F3EF78FB0A92C9E4A" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp850A314BA252F38E0A89E8DA53E867D1" Guid="*">
+                <File Id="fil01278E8CAC46F857BCDCAA0DBBF19059" KeyPath="yes" Source="$(var.SourceDir)/share/locale/ml/LC_MESSAGES/gsettings-desktop-schemas.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir4FC926E1036BAC6D8E94507FDD72DD0A" Name="ms">
+            <Directory Id="dirD26EC05B794420CEE0A7F6DA202CAAD8" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp32983A99C7CDF9F5CE7B6B3BCE27AF67" Guid="*">
+                <File Id="filD2EB61F27197836EE0A2A504E5C411EF" KeyPath="yes" Source="$(var.SourceDir)/share/locale/ms/LC_MESSAGES/gsettings-desktop-schemas.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir590A4B86E6B32459F965F2A2366C26F2" Name="nb">
+            <Directory Id="dir047F085EC306C3678074284045AFEA98" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp9174CCE8E92B3A3C439B101A22D93AC0" Guid="*">
+                <File Id="fil9C547B5F8AE9ECD3E298EACC4FA2D2F0" KeyPath="yes" Source="$(var.SourceDir)/share/locale/nb/LC_MESSAGES/gsettings-desktop-schemas.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir13F7CE42DFF2E7116FF5650C5791DF0C" Name="ne">
+            <Directory Id="dir770BB2FA718BA572203A6B2AC8F165E0" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp85E3B133F1C64FAEEBC8A9076A3ADF30" Guid="*">
+                <File Id="fil72AF6B991F161E76A635A00F4C1A559A" KeyPath="yes" Source="$(var.SourceDir)/share/locale/ne/LC_MESSAGES/gsettings-desktop-schemas.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dirBF09047835CCBB9E59B05B9C17560E49" Name="nl">
+            <Directory Id="dir6B530A7A3DC6C0B43EA12BB1363E9A04" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmpAD9E2F4EB91711ED0278BF9FF647C84B" Guid="*">
+                <File Id="fil4E514598DB9C9E3F85B8AD50FE23C68A" KeyPath="yes" Source="$(var.SourceDir)/share/locale/nl/LC_MESSAGES/gsettings-desktop-schemas.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir8284D9E2C2CF312E4C80E6C06E449669" Name="oc">
+            <Directory Id="dir625717FAB86BCDCC470397CDF8603072" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp32D999E49A6F07D819E98C3D6205E567" Guid="*">
+                <File Id="filA91556A8FFB7804F86E6BB9C97E38958" KeyPath="yes" Source="$(var.SourceDir)/share/locale/oc/LC_MESSAGES/gsettings-desktop-schemas.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dirB52478EF2F652D6B0F3BAE3AE0D118E9" Name="or">
+            <Directory Id="dirC6C21C1692791FDF1CC9821E236A51E0" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp1364D3823185E69B41A4A4D4AC1BC4C3" Guid="*">
+                <File Id="fil62CD2EB133673DA1A36EFA34D27D9896" KeyPath="yes" Source="$(var.SourceDir)/share/locale/or/LC_MESSAGES/gsettings-desktop-schemas.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dirE3C559F63A78BD6AEBCC113039BBC446" Name="pa">
+            <Directory Id="dir56A0FF08CD9F9B3EA10CC4639127198B" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmpF15123B6479DAF7A12957F27F409074D" Guid="*">
+                <File Id="filF801DFFC00778B49D69EE92972BB7994" KeyPath="yes" Source="$(var.SourceDir)/share/locale/pa/LC_MESSAGES/gsettings-desktop-schemas.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dirBEC52DBBA6B4F77F80DBA46B25330E98" Name="pl">
+            <Directory Id="dir88FD57A8E3EEF6066BF59DBB41B5427C" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp2C04230095A5381DC4C44E869420DF3E" Guid="*">
+                <File Id="fil9B4E5248A52EB0E9774259955AC5030F" KeyPath="yes" Source="$(var.SourceDir)/share/locale/pl/LC_MESSAGES/gsettings-desktop-schemas.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir2E79B187EF5A52C49F5C803F16BE1BC3" Name="pt">
+            <Directory Id="dir8D8E376BDB9346622E936D3CC3472F80" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp84582D53F9C731F82CADC74ADEBED1EE" Guid="*">
+                <File Id="fil8C1145913C28995E865C81958151ABAA" KeyPath="yes" Source="$(var.SourceDir)/share/locale/pt/LC_MESSAGES/gsettings-desktop-schemas.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir8F18BBED8D26ADE3BFAC27C3FC84BFCF" Name="pt_BR">
+            <Directory Id="dir6C6DBBB89F37E0B5BD7AC294E2EF2691" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp23035C0BC0B9B8843B538B4379C2D8F2" Guid="*">
+                <File Id="filE98CDF3E52AE467CA27BACCF62BDFBFF" KeyPath="yes" Source="$(var.SourceDir)/share/locale/pt_BR/LC_MESSAGES/gsettings-desktop-schemas.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir451C4415122D0FB4203C952F850008AC" Name="ro">
+            <Directory Id="dir0482B31469E2CE5213BD3D15D55B91DA" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp37E1EE486D05FEC6FAF7A2E2D3CC2598" Guid="*">
+                <File Id="fil27E88C422D3A2AC6DE64097534B9095E" KeyPath="yes" Source="$(var.SourceDir)/share/locale/ro/LC_MESSAGES/gsettings-desktop-schemas.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dirFF56B01E958374B23E1253864EC6754B" Name="ru">
+            <Directory Id="dir36945CB270D821A094399E8CB742442E" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp0B4AA013DEC39CC2A11058E586DAC9E5" Guid="*">
+                <File Id="fil5EAA175A3D7B229B6A38F7AA0AA9A8E9" KeyPath="yes" Source="$(var.SourceDir)/share/locale/ru/LC_MESSAGES/gsettings-desktop-schemas.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dirFA21BC77C97502D0D10AA98CE5F85DBD" Name="sk">
+            <Directory Id="dir6CBA33368F3B0066D8B217D7F1BB0BBC" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmpEA41EBE7DDF7C4EDCBE824908BD9C0E0" Guid="*">
+                <File Id="filD664CD34F0A6E5B67D44A42AE7C5D183" KeyPath="yes" Source="$(var.SourceDir)/share/locale/sk/LC_MESSAGES/gsettings-desktop-schemas.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir01589B49507F735A0F896C47CE5C942F" Name="sl">
+            <Directory Id="dirD902A5101D690F7D8DB852C2934E4127" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp14F9D567DFF62A1B1DEE6196509772DB" Guid="*">
+                <File Id="fil972284FD47EB8D193DBBAB14838FDB6C" KeyPath="yes" Source="$(var.SourceDir)/share/locale/sl/LC_MESSAGES/gsettings-desktop-schemas.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir4861667F0BAD3A94D41AD197CC3618D2" Name="sr">
+            <Directory Id="dir2B27FAEB29AA16F0C37F65AB56831A81" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp9E4187C3A4CC432EBABA0CB36CDE9E09" Guid="*">
+                <File Id="fil3139190653E3671C3FD0BC43FF0679A3" KeyPath="yes" Source="$(var.SourceDir)/share/locale/sr/LC_MESSAGES/gsettings-desktop-schemas.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dirDC7431DAC8C86ED1C562CCD2E553A0BA" Name="sr@latin">
+            <Directory Id="dirBEA842BDD0E43E44DFA46CE06018DA44" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp07FF4F5B9575BB1462172A65D55E36DA" Guid="*">
+                <File Id="filB636F593E01E6327E9A1E8D4FE7A8538" KeyPath="yes" Source="$(var.SourceDir)/share/locale/sr@latin/LC_MESSAGES/gsettings-desktop-schemas.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir4734E20EED0225F951D65CC33B0CF592" Name="sv">
+            <Directory Id="dirEB2913C1F502AB384B8DD62668C20A4B" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmpA8A502D1DE06DDEFDE4A043105684441" Guid="*">
+                <File Id="fil8FB94119E3D8BAF1520CF5E24042BA88" KeyPath="yes" Source="$(var.SourceDir)/share/locale/sv/LC_MESSAGES/gsettings-desktop-schemas.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dirF459B2FE9AEA2E8EBC4E712654AC00B9" Name="tg">
+            <Directory Id="dirF4099BDB7B85DD7A640F798101EECC32" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmpE997CDF1269BE5F4788272E7B75557D3" Guid="*">
+                <File Id="fil61A139CD89B775E4255AC9A0324A3B4D" KeyPath="yes" Source="$(var.SourceDir)/share/locale/tg/LC_MESSAGES/gsettings-desktop-schemas.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dirC0AD83C44FC8D549C18575799159F502" Name="tr">
+            <Directory Id="dirF4858B44C1FA0FE72A481A74D5B20830" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmpD986759808691F9F0D6D283D6C061DFB" Guid="*">
+                <File Id="filD3B65C922F9F1335CB11AD1AF9F4BC88" KeyPath="yes" Source="$(var.SourceDir)/share/locale/tr/LC_MESSAGES/gsettings-desktop-schemas.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dirDA9ECD745D48266DE312F6BA6DC29A61" Name="ug">
+            <Directory Id="dir8668BF9A33E6827602C8C440E3891B88" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmpDEAC97FF64EACBAC671D11B702B6C319" Guid="*">
+                <File Id="fil5A03FF23BDCEE3104D5D729840498DA5" KeyPath="yes" Source="$(var.SourceDir)/share/locale/ug/LC_MESSAGES/gsettings-desktop-schemas.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dirCCD1D62D448AFFFAB0FE08E6680C0CB4" Name="uk">
+            <Directory Id="dir98F16AEB58935AB6D444FB22220825CE" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmpEF4B8D23400CE5F9C558FD3580283C07" Guid="*">
+                <File Id="filDE29CA3B04B6CA2BC033C368BC0F24BD" KeyPath="yes" Source="$(var.SourceDir)/share/locale/uk/LC_MESSAGES/gsettings-desktop-schemas.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dirE18DC42AB8709DB4C69EC58326B31DD2" Name="uz">
+            <Directory Id="dirCA37B61BEDC8974E1D7AFA718A30B434" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmpBA20F1950EC7004D89FAD1AAB1A34CC3" Guid="*">
+                <File Id="fil6FA482FF8D2BCA0AFFB95304E3B09212" KeyPath="yes" Source="$(var.SourceDir)/share/locale/uz/LC_MESSAGES/gsettings-desktop-schemas.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dirEF9DAB3DF5E6180E02D5A4788349CFE0" Name="vi">
+            <Directory Id="dir508902AAD13712A5830436093121B664" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp4A01BEC11939C151FFAB00C22350CCB1" Guid="*">
+                <File Id="filCB7EBEEDBA6849515107B27F4CDA4318" KeyPath="yes" Source="$(var.SourceDir)/share/locale/vi/LC_MESSAGES/gsettings-desktop-schemas.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dirD7BE63622BA19DB83A32A15E60040A57" Name="zh_CN">
+            <Directory Id="dir4497D409E5A69D92F82065C9CAD6163B" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp47BD667BC56D84E4592155D4869533CB" Guid="*">
+                <File Id="fil4BCF39270553723A7C509A52DBE2C697" KeyPath="yes" Source="$(var.SourceDir)/share/locale/zh_CN/LC_MESSAGES/gsettings-desktop-schemas.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir64B1176AA4C548824BCF9B7A4CE2BF73" Name="zh_HK">
+            <Directory Id="dir271BB6239B55FD1B33B9C40247A49544" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp44575F6AE06FBF2AA93C7F74820B0146" Guid="*">
+                <File Id="fil834A758C411B60747DA542143D0B64C0" KeyPath="yes" Source="$(var.SourceDir)/share/locale/zh_HK/LC_MESSAGES/gsettings-desktop-schemas.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir77F065EA9DFE414495908C7848FEF29A" Name="zh_TW">
+            <Directory Id="dir64770E94A4F548618E1F5F3D98070027" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp5F13911212979736E9C01C04AC1F51DB" Guid="*">
+                <File Id="fil3F90453AC567456101958182C098576F" KeyPath="yes" Source="$(var.SourceDir)/share/locale/zh_TW/LC_MESSAGES/gsettings-desktop-schemas.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+        </Directory>
+        <Directory Id="dir64815B06AC7A89DD6679738249DAD0F7" Name="pkgconfig">
+          <Component Win64="$(var.Win64)" Id="cmpB738C763B1989061E8A5A7A00249586A" Guid="*">
+            <File Id="filD29DAD913033BAE63E811FF84D32E37E" KeyPath="yes" Source="$(var.SourceDir)/share/pkgconfig/gsettings-desktop-schemas.pc"/>
+          </Component>
+        </Directory>
+      </Directory>
+    </DirectoryRef>
+  </Fragment>
+  <Fragment>
+    <ComponentGroup Id="CG.gsettings-desktop-schemas">
+      <ComponentRef Id="cmp81F1CC6E7A0806AF8456C0304F337E05"/>
+      <ComponentRef Id="cmpDCE91A31DF602F97B3B68ED772369040"/>
+      <ComponentRef Id="cmp003682D2DB6270DE90435CDA7EAF5759"/>
+      <ComponentRef Id="cmp41586B717C8877D9DC36EB851C7BBA54"/>
+      <ComponentRef Id="cmp96675277965E99F725CBC36079F2FD7E"/>
+      <ComponentRef Id="cmp00AD03DD07A1D46CD9FAE254FE2BDC43"/>
+      <ComponentRef Id="cmp19BB33398A1801F77A6C0B9D2856AB98"/>
+      <ComponentRef Id="cmpDF65EA6E3A4776640E5E742640BF0A9F"/>
+      <ComponentRef Id="cmp03AA804BC32889A7EB6B0BAFC1E23B11"/>
+      <ComponentRef Id="cmp383F2281807CFC5449DC5E25C129FD33"/>
+      <ComponentRef Id="cmp1BE933CC680619E2570AD34B58705EB9"/>
+      <ComponentRef Id="cmp744A3D65E0D285F3B94A67D9FAD26B10"/>
+      <ComponentRef Id="cmp166F260A4334370A45C4F9A2F6E97CAD"/>
+      <ComponentRef Id="cmpAA74013CC5086CB8223645F622FAAFC2"/>
+      <ComponentRef Id="cmp74956E813117DF631F2CA3F45EBAC7BA"/>
+      <ComponentRef Id="cmp57D5FFB058757A6EF73077DF21E998F8"/>
+      <ComponentRef Id="cmp49D9520F95F2C7154F7EA7C9878053B1"/>
+      <ComponentRef Id="cmp7BA291216BF78F6A96C33AAB869DD32A"/>
+      <ComponentRef Id="cmpAB0D1AA9A963A5358D11B7A6E9A760E9"/>
+      <ComponentRef Id="cmp3AEC03B1FF4B470CDB3028A527C05B8F"/>
+      <ComponentRef Id="cmp1EF660F3DBB8EA14BED892598D56D201"/>
+      <ComponentRef Id="cmpAC5BF2809A5BA5DCAE829BA5F1D87826"/>
+      <ComponentRef Id="cmp7730C91F08CC28782DC0A6AF1A391438"/>
+      <ComponentRef Id="cmpD573792E9848637CF2B9959FF8475C10"/>
+      <ComponentRef Id="cmpD4EAFA27CC38C9665FB700EFCF8DAC3C"/>
+      <ComponentRef Id="cmpE783F1A70EF22271868A36FF9002F11E"/>
+      <ComponentRef Id="cmp794D7F223723805E88C88FE4FBEB9337"/>
+      <ComponentRef Id="cmp9E087B60943FC7B7A70594847AE6FE1B"/>
+      <ComponentRef Id="cmpFD73FB36F24E7D654E4EF58374C08EA6"/>
+      <ComponentRef Id="cmpF9FCC6C3900F49237E1E5F6F816E95BE"/>
+      <ComponentRef Id="cmpC2FBE5BAB1CADAACF890175237327ECA"/>
+      <ComponentRef Id="cmp7232134AC8206FDFB3F3E3206622F386"/>
+      <ComponentRef Id="cmpE6BF14814842A5D6415AD7326E40FECC"/>
+      <ComponentRef Id="cmp52F172263B4E24729643170CA893F4B8"/>
+      <ComponentRef Id="cmp877FB423069FDD86C78121A09BA4B359"/>
+      <ComponentRef Id="cmp04CF1F2DA1A563DB363C31CECE4FEC54"/>
+      <ComponentRef Id="cmp14752E4CDC73E8CDF7388F701F3BE839"/>
+      <ComponentRef Id="cmp3371A7662772A721A33CDEA930A11FE7"/>
+      <ComponentRef Id="cmp70AD5AED9DA40BBBC312B225DDC25A0E"/>
+      <ComponentRef Id="cmpAF4C2F8F84085117EF024DD89539E2B7"/>
+      <ComponentRef Id="cmp83B118AE57A8B9E559EDE8D2E2957E97"/>
+      <ComponentRef Id="cmpFA0C6C4F31493C272741F16108E783E4"/>
+      <ComponentRef Id="cmpE30700A8ABA13002BEAB7E036056E378"/>
+      <ComponentRef Id="cmpC2E8A70C252B3D80274B7904BD909F87"/>
+      <ComponentRef Id="cmp21A7DEC39DA64DA58716633C93A59CB6"/>
+      <ComponentRef Id="cmp99AE2C50174459C5CD348A78A2CD0315"/>
+      <ComponentRef Id="cmp19B3DDFB1757C2A4D37849DA560D0D0F"/>
+      <ComponentRef Id="cmp09B15D8545F6BCE0D624B5F0EA608FDC"/>
+      <ComponentRef Id="cmpB9133E6F56E77777028801ECAF7553B7"/>
+      <ComponentRef Id="cmpFA47A9B41924957AC2A25805ADFD444A"/>
+      <ComponentRef Id="cmpCEB820B08FF2CD6045898A82BC14E682"/>
+      <ComponentRef Id="cmp638A099A52EE30AA20FD8C9289C96E88"/>
+      <ComponentRef Id="cmp28413A4D1159156234C95B055CA4E198"/>
+      <ComponentRef Id="cmpCAC8FA335C823CAE737D364EE1845459"/>
+      <ComponentRef Id="cmpBB1041912D01E728D85D599251803A4C"/>
+      <ComponentRef Id="cmp6F9A65BE6B6F7380A067D3B23F3A99E3"/>
+      <ComponentRef Id="cmp27E2E8337C059CA3DAE94D076A180AC3"/>
+      <ComponentRef Id="cmpDC21218F52C921F231727FC4B21D9938"/>
+      <ComponentRef Id="cmpB6341AB4A68637DB26128A906CFBB29E"/>
+      <ComponentRef Id="cmp8BC874C3A20786A449D7DFA3E583BA4D"/>
+      <ComponentRef Id="cmpEE9F923761E83E0A225561CEF6F9F267"/>
+      <ComponentRef Id="cmpE9E6AF6D677F5320BA449766E94FC67C"/>
+      <ComponentRef Id="cmp4BDAD47A73F0636B0B10E943DBF7D9E5"/>
+      <ComponentRef Id="cmp28CFBCB86FB1C53546D7896A13E573AE"/>
+      <ComponentRef Id="cmpFC85B713077B47542A3A90751C1F2A66"/>
+      <ComponentRef Id="cmp6610A4DC147DB52E0C8BC08CE66C45DD"/>
+      <ComponentRef Id="cmp38FE5CF0FB197294968ADA73915946BC"/>
+      <ComponentRef Id="cmpE5646A64783D3F64A1F4CC186FEABF2F"/>
+      <ComponentRef Id="cmpCD2EFA4820DE28E294BEEA0F69A2CC2B"/>
+      <ComponentRef Id="cmp850A314BA252F38E0A89E8DA53E867D1"/>
+      <ComponentRef Id="cmp32983A99C7CDF9F5CE7B6B3BCE27AF67"/>
+      <ComponentRef Id="cmp9174CCE8E92B3A3C439B101A22D93AC0"/>
+      <ComponentRef Id="cmp85E3B133F1C64FAEEBC8A9076A3ADF30"/>
+      <ComponentRef Id="cmpAD9E2F4EB91711ED0278BF9FF647C84B"/>
+      <ComponentRef Id="cmp32D999E49A6F07D819E98C3D6205E567"/>
+      <ComponentRef Id="cmp1364D3823185E69B41A4A4D4AC1BC4C3"/>
+      <ComponentRef Id="cmpF15123B6479DAF7A12957F27F409074D"/>
+      <ComponentRef Id="cmp2C04230095A5381DC4C44E869420DF3E"/>
+      <ComponentRef Id="cmp84582D53F9C731F82CADC74ADEBED1EE"/>
+      <ComponentRef Id="cmp23035C0BC0B9B8843B538B4379C2D8F2"/>
+      <ComponentRef Id="cmp37E1EE486D05FEC6FAF7A2E2D3CC2598"/>
+      <ComponentRef Id="cmp0B4AA013DEC39CC2A11058E586DAC9E5"/>
+      <ComponentRef Id="cmpEA41EBE7DDF7C4EDCBE824908BD9C0E0"/>
+      <ComponentRef Id="cmp14F9D567DFF62A1B1DEE6196509772DB"/>
+      <ComponentRef Id="cmp9E4187C3A4CC432EBABA0CB36CDE9E09"/>
+      <ComponentRef Id="cmp07FF4F5B9575BB1462172A65D55E36DA"/>
+      <ComponentRef Id="cmpA8A502D1DE06DDEFDE4A043105684441"/>
+      <ComponentRef Id="cmpE997CDF1269BE5F4788272E7B75557D3"/>
+      <ComponentRef Id="cmpD986759808691F9F0D6D283D6C061DFB"/>
+      <ComponentRef Id="cmpDEAC97FF64EACBAC671D11B702B6C319"/>
+      <ComponentRef Id="cmpEF4B8D23400CE5F9C558FD3580283C07"/>
+      <ComponentRef Id="cmpBA20F1950EC7004D89FAD1AAB1A34CC3"/>
+      <ComponentRef Id="cmp4A01BEC11939C151FFAB00C22350CCB1"/>
+      <ComponentRef Id="cmp47BD667BC56D84E4592155D4869533CB"/>
+      <ComponentRef Id="cmp44575F6AE06FBF2AA93C7F74820B0146"/>
+      <ComponentRef Id="cmp5F13911212979736E9C01C04AC1F51DB"/>
+      <ComponentRef Id="cmpB738C763B1989061E8A5A7A00249586A"/>
+    </ComponentGroup>
+  </Fragment>
+</Include>
+<?ignore generated with msitools 0.106.55-63d1 ?>
+<?ignore tools/wixl/wixl-heat --var var.SourceDir -p /usr/i686-w64-mingw32/sys-root/mingw/ --directory-ref INSTALLDIR --win64 --component-group CG.gsettings-desktop-schemas ?>

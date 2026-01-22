@@ -52,6 +52,8 @@ RUN dnf install -y --nogpgcheck dnf-plugin-builddep intltool \
         mingw64-gmp \
         mingw32-gnutls \
         mingw64-gnutls \
+        mingw32-gsettings-desktop-schemas \
+        mingw64-gsettings-desktop-schemas \
         mingw32-gsm \
         mingw64-gsm \
         mingw32-gstreamer1-plugins-bad-free \

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <?require glib2.wxi?>
 <?require gnutls.wxi?>
+<?require gsettings-desktop-schemas.wxi?>
 <Include xmlns="http://schemas.microsoft.com/wix/2006/wi">
   <Fragment>
     <DirectoryRef Id="INSTALLDIR">
@@ -533,6 +534,7 @@
     <ComponentGroup Id="CG.glib-networking">
       <ComponentGroupRef Id="CG.glib2"/>
       <ComponentGroupRef Id="CG.gnutls"/>
+      <ComponentGroupRef Id="CG.gsettings-desktop-schemas"/>
       <ComponentRef Id="cmp20CE2CD8F63317606D8168E1A734D188"/>
       <ComponentRef Id="cmpF9730E0BF15D2FEBD9BC3947788C1BDB"/>
       <ComponentRef Id="cmpCD94B8BC5279DED6AA0535512CF9F77F"/>

@@ -20,6 +20,7 @@ wxi_data = files(
   'wixl/gmp.wxi',
   'wixl/gnutls.wxi',
   'wixl/gsm.wxi',
+  'wixl/gsettings-desktop-schemas.wxi',
   'wixl/gstreamer1-plugins-bad-free.wxi',
   'wixl/gstreamer1-plugins-base.wxi',
   'wixl/gstreamer1-plugins-good.wxi',
