@@ -88,8 +88,6 @@ RUN dnf install -y --nogpgcheck dnf-plugin-builddep intltool \
         mingw64-hicolor-icon-theme \
         mingw32-icu \
         mingw64-icu \
-        mingw32-ilmbase \
-        mingw64-ilmbase \
         mingw32-jasper \
         mingw64-jasper \
         mingw32-json-glib \
