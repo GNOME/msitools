@@ -1,0 +1,159 @@
+# Kabyle translation for msitools.
+# Copyright (C) 2026 msitools's COPYRIGHT HOLDER
+# This file is distributed under the same license as the msitools package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# ButterflyOfFire <butterflyoffire@protonmail.com>, 2026.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: msitools master\n"
+"Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/msitools/issues/\n"
+"POT-Creation-Date: 2025-12-15 10:06+0000\n"
+"PO-Revision-Date: 2026-02-05 10:39+0100\n"
+"Last-Translator: ButterflyOfFire <butterflyoffire@protonmail.com>\n"
+"Language-Team: Kabyle\n"
+"Language: kab\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-DL-VCS-Web: https://gitlab.gnome.org/GNOME/msitools/\n"
+"X-DL-Lang: kab\n"
+"X-DL-Module: msitools\n"
+"X-DL-Branch: master\n"
+"X-DL-Domain: po\n"
+"X-DL-State: Translating\n"
+"Plural-Forms: nplurals=2; plural=n>1;\n"
+"X-Generator: Gtranslator 49.0\n"
+
+#: tools/msiextract.vala:10 tools/wixl/wixl.vala:25
+msgid "Display version number"
+msgstr "Sken amḍan n lqem"
+
+#: tools/msiextract.vala:11
+msgid "Extract to directory"
+msgstr ""
+
+#: tools/msiextract.vala:12
+msgid "List files only"
+msgstr "Sebder kan ifuyla"
+
+#: tools/msiextract.vala:13
+msgid "MSI_FILE..."
+msgstr "MSI_FILE..."
+
+#: tools/msiextract.vala:160
+msgid "- a msi files extracting tool"
+msgstr ""
+
+#: tools/msiextract.vala:180 tools/wixl/wixl.vala:82
+msgid "Please specify input files.\n"
+msgstr ""
+
+#: tools/wixl/wixl-heat.vala:15
+msgid "Directory Ref"
+msgstr ""
+
+#: tools/wixl/wixl-heat.vala:16
+msgid "Component Group"
+msgstr ""
+
+#: tools/wixl/wixl-heat.vala:17
+msgid "Variable for source dir"
+msgstr ""
+
+#: tools/wixl/wixl-heat.vala:18
+msgid "Prefix"
+msgstr "Adat"
+
+#: tools/wixl/wixl-heat.vala:19
+msgid "Exclude prefix"
+msgstr ""
+
+#: tools/wixl/wixl-heat.vala:20
+msgid "Require package (adds <?require?> and ComponentGroupRef)"
+msgstr ""
+
+#: tools/wixl/wixl-heat.vala:21
+msgid "Add Win64 Component"
+msgstr ""
+
+#: tools/wixl/wixl-heat.vala:22
+msgid "Make wixl-specific include file"
+msgstr ""
+
+#: tools/wixl/wixl.vala:26
+msgid "Verbose output"
+msgstr ""
+
+#: tools/wixl/wixl.vala:27
+msgid "Output file"
+msgstr "Afaylu n tuffɣa"
+
+#: tools/wixl/wixl.vala:28
+msgid "Define variable"
+msgstr ""
+
+#: tools/wixl/wixl.vala:29
+msgid "Target architecture"
+msgstr "Tasegda tanicant"
+
+#: tools/wixl/wixl.vala:30
+msgid "Include directory"
+msgstr ""
+
+#: tools/wixl/wixl.vala:31
+msgid "System extension directory"
+msgstr ""
+
+#: tools/wixl/wixl.vala:32
+msgid "System include directory"
+msgstr ""
+
+#: tools/wixl/wixl.vala:33
+msgid "Stop after the preprocessing stage"
+msgstr ""
+
+#: tools/wixl/wixl.vala:34
+msgid "Specify an extension"
+msgstr ""
+
+#: tools/wixl/wixl.vala:35
+msgid "INPUT_FILE1 [INPUT_FILE2]..."
+msgstr ""
+
+#: tools/wixl/wixl.vala:43
+#, c-format
+msgid "arch of type '%s' is not supported"
+msgstr ""
+
+#: tools/wixl/wixl.vala:55
+msgid "- a msi building tool"
+msgstr ""
+
+#: tools/wixl/wixl.vala:90
+msgid "Please specify the output file.\n"
+msgstr ""
+
+#: tools/wixl/wixl.vala:100
+#, c-format
+msgid "Extension of type '%s' is not supported.\n"
+msgstr ""
+
+#: tools/wixl/wixl.vala:117
+#, c-format
+msgid "Loading %s...\n"
+msgstr "Aɛebbi n %s...\n"
+
+#: tools/wixl/wixl.vala:127
+#, c-format
+msgid "Building %s...\n"
+msgstr ""
+
+#: tools/wixl/wixl.vala:130
+#, c-format
+msgid "Writing %s...\n"
+msgstr "Tira n %s...\n"
+
+#: tools/wixl/wixl.vala:134
+msgid "A GLib error has occurred\n"
+msgstr ""
