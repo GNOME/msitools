@@ -1,0 +1,587 @@
+<?xml version="1.0" encoding="utf-8"?>
+<?require glib2.wxi?>
+<?require glib-networking.wxi?>
+<?require sqlite.wxi?>
+<?require brotli.wxi?>
+<?require libpsl.wxi?>
+<?require libnghttp2.wxi?>
+<Include xmlns="http://schemas.microsoft.com/wix/2006/wi">
+  <Fragment>
+    <DirectoryRef Id="INSTALLDIR">
+      <Directory Id="dir87261A6BF54C4D832F8E3552D6BBB2F2" Name="bin">
+        <Component Win64="$(var.Win64)" Id="cmp95D45FA57678A7E85D42532E6A4068E3" Guid="*">
+          <File Id="filC45F55913DDD5D60B30C50A856E3399C" KeyPath="yes" Source="$(var.SourceDir)/bin/libsoup-3.0-0.dll"/>
+        </Component>
+      </Directory>
+      <Directory Id="dir59B1FCB2079884D293CE1F52C89FA028" Name="share">
+        <Directory Id="dirA539649750628FE9792F2A8E9D199A0D" Name="locale">
+          <Directory Id="dir4F25CFD879D9B3FB6C965E17A8F00B6E" Name="ab">
+            <Directory Id="dir3A11EA12A5C9E3183CAB6081FA25CFD9" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmpD4F9D889D983F8F535480FA0DB259AA2" Guid="*">
+                <File Id="filD2C92B61D2894384814E3296BC3DE8BE" KeyPath="yes" Source="$(var.SourceDir)/share/locale/ab/LC_MESSAGES/libsoup-3.0.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dirE1452EEE59E9215051FF43E30CBC2B7D" Name="an">
+            <Directory Id="dir2305DA1F95668931A7C8DB5635B14806" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmpF499E24E6A9036D8AE5288D87B702807" Guid="*">
+                <File Id="fil3D45AE2E29ACC4E55EAA86D859781199" KeyPath="yes" Source="$(var.SourceDir)/share/locale/an/LC_MESSAGES/libsoup-3.0.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dirF115DE105DD816165BB083C49FA23CFE" Name="as">
+            <Directory Id="dir2FE55E0D86938A076EE09998E31BC726" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp73C66F616D00379DCE17E7F0D0306E8C" Guid="*">
+                <File Id="filD643C88C85073983947F56CE747A396D" KeyPath="yes" Source="$(var.SourceDir)/share/locale/as/LC_MESSAGES/libsoup-3.0.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dirC3D6E4357D584936294C06FA7856CAB8" Name="be">
+            <Directory Id="dir4B56F53B0A9F361E225DA1AABAC7C12E" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmpD3F24C32821827AF75A2AA93C8FDAC38" Guid="*">
+                <File Id="fil330949D47422731F228927D775F51DB1" KeyPath="yes" Source="$(var.SourceDir)/share/locale/be/LC_MESSAGES/libsoup-3.0.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dirFEFD499A8E89C2A5E0E29BD70D0B07C9" Name="bg">
+            <Directory Id="dir369180B98CAD021C32D18232245BF2A2" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmpA6935515AE2D89AA16DD8D432EC9F72C" Guid="*">
+                <File Id="fil4864645466DBA9B978EE74FBA1F59B27" KeyPath="yes" Source="$(var.SourceDir)/share/locale/bg/LC_MESSAGES/libsoup-3.0.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir181625E59CFB42638C2F68CC46685606" Name="bn_IN">
+            <Directory Id="dir335BB1686C2B23D7BD97507C7E67B68F" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp787CE08F4F02895B30B2749CDE954928" Guid="*">
+                <File Id="fil3A22E7729ED707A50DA27FD279A7F095" KeyPath="yes" Source="$(var.SourceDir)/share/locale/bn_IN/LC_MESSAGES/libsoup-3.0.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir0CBCF06B689CBC7888174A0EBB450B55" Name="bs">
+            <Directory Id="dir1ABB8BE125070A1F5E51B11A5EAA702D" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp8D1C2712E38A714C9A99F5B169802E24" Guid="*">
+                <File Id="filE9D9ED61A012FC9DF75356DD85EC75A7" KeyPath="yes" Source="$(var.SourceDir)/share/locale/bs/LC_MESSAGES/libsoup-3.0.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir4E4A029E641A93901E5ECA6F43213F78" Name="ca">
+            <Directory Id="dir0E10CAEF23BD63D6CB14C65AD7260640" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp46B513DC72E417ACDA7E6797862793C9" Guid="*">
+                <File Id="fil76F23CC385EC8AB65011A51587411396" KeyPath="yes" Source="$(var.SourceDir)/share/locale/ca/LC_MESSAGES/libsoup-3.0.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir86641B8FD365E1DCEF58B926D033AA04" Name="ca@valencia">
+            <Directory Id="dirED73336E850581986A3A2663C617F04E" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp2DBD3CE09A4616D36311D78C906F340F" Guid="*">
+                <File Id="fil2E96475B65D0DBD53A1E2364F0A7CF4D" KeyPath="yes" Source="$(var.SourceDir)/share/locale/ca@valencia/LC_MESSAGES/libsoup-3.0.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir7B76634EF97D3571082880AF40F5BBBB" Name="cs">
+            <Directory Id="dirC8E735B535C7696B4552568B9997D665" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmpB2F4A333159C1EA6A005DAF8F3E83099" Guid="*">
+                <File Id="fil7FF2D61F4ACA368ADE05E4DDE18DDB01" KeyPath="yes" Source="$(var.SourceDir)/share/locale/cs/LC_MESSAGES/libsoup-3.0.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dirC52D852EA72094E6EA6B2B0EAE673B09" Name="da">
+            <Directory Id="dirA6592C44612707E5EB8C1BFF64218F1F" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp381D861C428B2F856FBF3563C3C1F696" Guid="*">
+                <File Id="fil808D0F51B93CF1EC6D1B00F77091257F" KeyPath="yes" Source="$(var.SourceDir)/share/locale/da/LC_MESSAGES/libsoup-3.0.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dirF0F1E858A5028691E52C2B4024797CAF" Name="de">
+            <Directory Id="dirAA7C89D5CAFE8BB463BA1A27B5FD0084" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp1625B403EC59BCE55EFC127EA2D62806" Guid="*">
+                <File Id="filC485AD148A9ABE58A7A2A1E8007E5480" KeyPath="yes" Source="$(var.SourceDir)/share/locale/de/LC_MESSAGES/libsoup-3.0.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir3D166F50F9A225348E51B9329B2B09FD" Name="el">
+            <Directory Id="dir62FE576682C36CD0A1751862E921A08A" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp2C043599289EAEF53CB64685B35A7820" Guid="*">
+                <File Id="filFAA1D1896CA70CC22E1A42FA66F1D49D" KeyPath="yes" Source="$(var.SourceDir)/share/locale/el/LC_MESSAGES/libsoup-3.0.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dirCB014427499094A978E9224F570F4C04" Name="en_GB">
+            <Directory Id="dirA368C1B03A70D91C77F9D8EA551DA179" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp6AC2EF417FF0E1ED4E97F9A751B8C3AA" Guid="*">
+                <File Id="fil4C15CB31D0EEF85C10FE28BF02F6D646" KeyPath="yes" Source="$(var.SourceDir)/share/locale/en_GB/LC_MESSAGES/libsoup-3.0.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir08A4B21FE6F91EBE46344079CA175D15" Name="eo">
+            <Directory Id="dir7A699F537DC6C5B2D9D6AAE00723AB9F" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp35A75C4ED5958107CF8C412D65DAC004" Guid="*">
+                <File Id="filC59EDD7E8700A30FEB70116D08C39CE4" KeyPath="yes" Source="$(var.SourceDir)/share/locale/eo/LC_MESSAGES/libsoup-3.0.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir6D3EBC514BB97C0345B67101596015DB" Name="es">
+            <Directory Id="dir67D2E6A83F72322B25B7C29FD27C7608" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp7CC3DD381C0F87126058C6E01521FEC4" Guid="*">
+                <File Id="fil36F653A61A8EF808A74B1CF484F4C2C3" KeyPath="yes" Source="$(var.SourceDir)/share/locale/es/LC_MESSAGES/libsoup-3.0.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir1D32388966B4BDA8F15321BD03160826" Name="et">
+            <Directory Id="dir7605301EAC8C425BEE18FBBC4D253867" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp70A2E934772B56597ED76F81A6BA63F5" Guid="*">
+                <File Id="fil1B1B16ACDB0EBC9B7C89C972DC895671" KeyPath="yes" Source="$(var.SourceDir)/share/locale/et/LC_MESSAGES/libsoup-3.0.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir626AF5456804AD1C72C12475736C8212" Name="eu">
+            <Directory Id="dir4084138F15D5A4466418492572431B5A" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp603D8E8A74FFEB0D10731C6479BB5665" Guid="*">
+                <File Id="fil5F1B8977E3EC0075BDA3B92518A6E47E" KeyPath="yes" Source="$(var.SourceDir)/share/locale/eu/LC_MESSAGES/libsoup-3.0.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dirDA3AB91065739B6FBC1F63C034996A20" Name="fa">
+            <Directory Id="dirE53265E08DD68A9A4910A269F71E10DF" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp5D4EA09D605663E9E129E347A5769902" Guid="*">
+                <File Id="filD83C1241FE3AD006E5C3F8064FBD0176" KeyPath="yes" Source="$(var.SourceDir)/share/locale/fa/LC_MESSAGES/libsoup-3.0.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dirEDCA65EDDEC6428AD19B6BA4548CB9CB" Name="fi">
+            <Directory Id="dirAF8A499FC4F84FA68DA49B358B4C541D" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp110EFA27CB352ABE4F8C835B2D90956E" Guid="*">
+                <File Id="fil9E7BFFF769E9A6BAB0579F5296E30964" KeyPath="yes" Source="$(var.SourceDir)/share/locale/fi/LC_MESSAGES/libsoup-3.0.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dirFA37760F37E71D9B071E8F995DA2A0D5" Name="fr">
+            <Directory Id="dir6BFAFB92B685C883F196DE7DEFF0344E" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp7A1042859171DE0A168EBC1D27B5AA55" Guid="*">
+                <File Id="fil18C0597632C59DA0722F7D9C80963646" KeyPath="yes" Source="$(var.SourceDir)/share/locale/fr/LC_MESSAGES/libsoup-3.0.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir01EEA8E8F0201F496EA4A57275563BD4" Name="fur">
+            <Directory Id="dirEDE8928629BDC90EB1D3CC80F51E928D" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp761A070BC2C28B2C8B5129668E9B23F7" Guid="*">
+                <File Id="filA65CEE08ED1B3650E65DA0F0B912224B" KeyPath="yes" Source="$(var.SourceDir)/share/locale/fur/LC_MESSAGES/libsoup-3.0.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir4EBF040682CF652FF7A97B92E02C9832" Name="gd">
+            <Directory Id="dir1E780FB4AAE5EA76896BB4DA579BDA81" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp7A14948507CFE53C60107FCB6F1B3C0E" Guid="*">
+                <File Id="fil66BA71E3609598555C621AF1E1374A7F" KeyPath="yes" Source="$(var.SourceDir)/share/locale/gd/LC_MESSAGES/libsoup-3.0.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dirF496A1B8A303CA7E0B28DAEB34F484F2" Name="gl">
+            <Directory Id="dir5BE029FC4989A8B884EB6865131BF48D" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp16F2B1206F947776463F95518110E444" Guid="*">
+                <File Id="filC301FB7D401481DAC033907E1342B49C" KeyPath="yes" Source="$(var.SourceDir)/share/locale/gl/LC_MESSAGES/libsoup-3.0.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dirF9F0B48AF05D5D7D3CC9E1F9AFE044E6" Name="gu">
+            <Directory Id="dir35C054E290E90F0C22EEF8ED78151590" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp5EA9C5EDAC7B7A865B0F4BA3B04183C3" Guid="*">
+                <File Id="fil9E896CDF7111F23EAE354A1FA6CD1FF7" KeyPath="yes" Source="$(var.SourceDir)/share/locale/gu/LC_MESSAGES/libsoup-3.0.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir146011A7354766841FC223FD52D44A83" Name="he">
+            <Directory Id="dir001CE26024A1189360680B6EAA733973" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp30A67146DA26A04617C5519F7AE17388" Guid="*">
+                <File Id="fil1AB4042B3721A0EB5CA9FD34ED85FB73" KeyPath="yes" Source="$(var.SourceDir)/share/locale/he/LC_MESSAGES/libsoup-3.0.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir14EB76C2F1E49F7D63D5A670F394934B" Name="hi">
+            <Directory Id="dir3752697508EAC9DB845C4E83B4D3AFB6" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp1958B8868805586B8CFC755427654B97" Guid="*">
+                <File Id="fil4067ABA806060117D5F7D75676B4EE49" KeyPath="yes" Source="$(var.SourceDir)/share/locale/hi/LC_MESSAGES/libsoup-3.0.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir96FD561B5883E05815982F6CF5F45F93" Name="hr">
+            <Directory Id="dir9721EA1BD0A9897F8EC334C2082000C4" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp67C0286999406F0149F0488C9F293B55" Guid="*">
+                <File Id="filA3FCF1EB5E25FE87356F4A3625619048" KeyPath="yes" Source="$(var.SourceDir)/share/locale/hr/LC_MESSAGES/libsoup-3.0.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dirF0AA35AF12257D3159415A45721EED80" Name="hu">
+            <Directory Id="dir02F196AD4E8331F32B4A2C6D460E6417" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp0980C4D9E269C501DBDE6853AD015082" Guid="*">
+                <File Id="fil71323BD5EBEEEC7B1FFD01ADCD6DD44A" KeyPath="yes" Source="$(var.SourceDir)/share/locale/hu/LC_MESSAGES/libsoup-3.0.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir5B87D812D81D6A5D636AA480E84DE17C" Name="id">
+            <Directory Id="dirE25186703D7547A2804511BC619AF13A" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmpDA6639714F1BC300BF198B9232797434" Guid="*">
+                <File Id="filEC3241833301BF9AACE11858A8215FCB" KeyPath="yes" Source="$(var.SourceDir)/share/locale/id/LC_MESSAGES/libsoup-3.0.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dirDD6BA043D773E78308EC9B22F8169DF6" Name="it">
+            <Directory Id="dir6EE418948D9304EEA53A1DA01A5202DF" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmpE6E78EFBF77872EDE1D48F2B9DBDF2E1" Guid="*">
+                <File Id="fil2DC14A6018668AB960ECBE4F1AB512A8" KeyPath="yes" Source="$(var.SourceDir)/share/locale/it/LC_MESSAGES/libsoup-3.0.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir3EB19CC384D65BFBE5F6CDF62CBEE0EC" Name="ja">
+            <Directory Id="dir688F6E2D87650F3894C419C64A26D6AC" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp2BBEBFFD34CC55B33877B6E03FCF7363" Guid="*">
+                <File Id="fil568EF83706640C2CF4C0ECBF0DB10C48" KeyPath="yes" Source="$(var.SourceDir)/share/locale/ja/LC_MESSAGES/libsoup-3.0.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir199FBD0038C62A363E4A3A4EB237B8E3" Name="ka">
+            <Directory Id="dirE96E7DEEF2E759D3A7F6E502CB18078E" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmpC7AF5DCC5E906ECD719ACA5B21398E24" Guid="*">
+                <File Id="filA23F73F00ED2623CFCD044FE13A2CB2D" KeyPath="yes" Source="$(var.SourceDir)/share/locale/ka/LC_MESSAGES/libsoup-3.0.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir7A4EFBA1BC94FFA2A9276CDBA794E264" Name="kab">
+            <Directory Id="dirBD32C225750D1ED8F3E66D310E1E38B5" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp114E01FC8936EBEDA8DDBF0A83A5487C" Guid="*">
+                <File Id="fil80BED0DE1D19E98E624573C0F29E1749" KeyPath="yes" Source="$(var.SourceDir)/share/locale/kab/LC_MESSAGES/libsoup-3.0.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir174810C46DF974FB752D71866ABA0F06" Name="kn">
+            <Directory Id="dirB9A4861EC4AC3ECDD0D969943A8BCB08" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmpEE799C20D314130E0C72FB4B49DB53F0" Guid="*">
+                <File Id="fil9C36DDB26D60DA5C903FAEDA8DBE6C28" KeyPath="yes" Source="$(var.SourceDir)/share/locale/kn/LC_MESSAGES/libsoup-3.0.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir8C0F883ACFF840E0DB66A3BD4F333C77" Name="ko">
+            <Directory Id="dir1E4A7CB33156C8A9F12D84DE9EB4B3DA" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp9D466B81F240D63A47BE241C82B14EF8" Guid="*">
+                <File Id="fil8428178888724CCD4ECE0B6266141B1E" KeyPath="yes" Source="$(var.SourceDir)/share/locale/ko/LC_MESSAGES/libsoup-3.0.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dirCDDCD97DE2B2A8FB9FE5D31308C4EA19" Name="lt">
+            <Directory Id="dir02B0E9B8842CD43C12358028B081A63D" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp2605ECD1A3912456B5530A3BB3507647" Guid="*">
+                <File Id="filAEF16C54D5AF23F871EEA83A1B8AC465" KeyPath="yes" Source="$(var.SourceDir)/share/locale/lt/LC_MESSAGES/libsoup-3.0.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir214A0ED18D21C56C7F914D5CB54D1562" Name="lv">
+            <Directory Id="dir29ACDF49CE2AE1D25D6DA3EE9188EE5D" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp0B610FC226C075A80D51A7ADF3EA2F3B" Guid="*">
+                <File Id="filF33F101B244100CB0D17B591E9025008" KeyPath="yes" Source="$(var.SourceDir)/share/locale/lv/LC_MESSAGES/libsoup-3.0.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir795AEFCEDF69CC2B929D8EFD2B1DBC15" Name="ml">
+            <Directory Id="dir2D5B4A130040D0C0D8ACE5918165BE7B" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp52E61C38962754FB15BBC5CBE43F250A" Guid="*">
+                <File Id="fil7011AEAA074D55B01E4D675B70152F28" KeyPath="yes" Source="$(var.SourceDir)/share/locale/ml/LC_MESSAGES/libsoup-3.0.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dirD6F9317ABA722FF90BA29EE796CBE666" Name="mr">
+            <Directory Id="dir0BDAD2586E9E774C94D8FB1B999DD8FD" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmpDFEC50C639EBB350467182C348FDCE0F" Guid="*">
+                <File Id="fil19FC00A26FCEE7039185FE7B1CC29D45" KeyPath="yes" Source="$(var.SourceDir)/share/locale/mr/LC_MESSAGES/libsoup-3.0.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir57C3386363E9CDB6FB570429A6AC48AC" Name="ms">
+            <Directory Id="dirCB74442D095D887462FDEA5C5729DEC3" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp8844DBA45E9738B864F740EA415500BE" Guid="*">
+                <File Id="filA9CCD72248426448B7F4FC1642BCD205" KeyPath="yes" Source="$(var.SourceDir)/share/locale/ms/LC_MESSAGES/libsoup-3.0.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir0854E5D07DDA5E80D717D4EC09CDF12E" Name="nb">
+            <Directory Id="dir595A150370C464E5DEBECBDBD2F99DCC" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp666718DDC18A7CFA95251C7F45A6DAA4" Guid="*">
+                <File Id="fil42D2C6AF8B33847F6C417202A8771780" KeyPath="yes" Source="$(var.SourceDir)/share/locale/nb/LC_MESSAGES/libsoup-3.0.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dirA308EFC0CB4DCFBD9A662AC263E9078B" Name="ne">
+            <Directory Id="dir9716F2FBC21EFCBF692C64C19EF1C053" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp6092BC6A2DD4F01387BD31123F8DF94F" Guid="*">
+                <File Id="fil8C6D5CDCB4EA4FEBEE65F4E2A969C8E7" KeyPath="yes" Source="$(var.SourceDir)/share/locale/ne/LC_MESSAGES/libsoup-3.0.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dirCABED3F12A0E85C039FEB192C58DCA0A" Name="nl">
+            <Directory Id="dir1766238EA0FB8709AADD46A4BAE4FBBA" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp7FF6C0591B4A1F18336DEA8E340835E1" Guid="*">
+                <File Id="filF2B352DF34846803FE5F2BA409C093E2" KeyPath="yes" Source="$(var.SourceDir)/share/locale/nl/LC_MESSAGES/libsoup-3.0.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir123CA0AF0652BD17B88C75E1FD0FE7D8" Name="oc">
+            <Directory Id="dir6927D9E75A8E3701DB277623C6B99F4B" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmpEBE8F5237AC006353106401FC8016695" Guid="*">
+                <File Id="filBC81E645C8565D1E2B7582AD8D893283" KeyPath="yes" Source="$(var.SourceDir)/share/locale/oc/LC_MESSAGES/libsoup-3.0.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir09DB652243A6E85691326CF9BA5D2F0F" Name="or">
+            <Directory Id="dirB62E7EB1EB46C25B08D5F4CECF4EE361" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp4A950660CC31AD1EBBB9BC7E41A4F2BC" Guid="*">
+                <File Id="fil9D6BA47A010BC2DAA2BA03BEE5F01660" KeyPath="yes" Source="$(var.SourceDir)/share/locale/or/LC_MESSAGES/libsoup-3.0.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir320D02EF0BB4162B742D322B44416F23" Name="pa">
+            <Directory Id="dir017D514124388C0E3E87CCF75D1CF3A6" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp10B2E534BD1D295C4826FC83CD9A0D39" Guid="*">
+                <File Id="fil8E407049F97FFC3078FCF9248A4D0D76" KeyPath="yes" Source="$(var.SourceDir)/share/locale/pa/LC_MESSAGES/libsoup-3.0.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir62D6B1852F329124490F85401170EFC8" Name="pl">
+            <Directory Id="dir7730D0D4D7028D71CCA493A0B793907E" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp23D7CA188A5724B9ECE841899BD67B72" Guid="*">
+                <File Id="fil79D26751EF51E5BFE2BD5B6FBA8A2624" KeyPath="yes" Source="$(var.SourceDir)/share/locale/pl/LC_MESSAGES/libsoup-3.0.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir7CEE645CE8110F7478F59E9F6A620D0C" Name="pt">
+            <Directory Id="dirCF650857206BA05ABE561E08ABB8DE32" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmpD6583805AE564F76202033361F2EA61F" Guid="*">
+                <File Id="filFBCABA4118655E2DE777C19392DBB44F" KeyPath="yes" Source="$(var.SourceDir)/share/locale/pt/LC_MESSAGES/libsoup-3.0.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir963F17C6CC79DE14F12B5678CED2BB24" Name="pt_BR">
+            <Directory Id="dir7DEE6C129874E4C11C1850CB94C164BE" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmpE33295C8681149D998A63908FABAE378" Guid="*">
+                <File Id="fil7751144D246FFF53DAE0C2FC152C6715" KeyPath="yes" Source="$(var.SourceDir)/share/locale/pt_BR/LC_MESSAGES/libsoup-3.0.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dirFBB857519E03205937596AEB12070F1E" Name="ro">
+            <Directory Id="dir1EC044A47F45D5EB96F151DF6816A013" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmpA862FFF2330D413EE5B3FD1974E5E22C" Guid="*">
+                <File Id="fil529F47EE1B0BAAF17413FF65C83BB5DF" KeyPath="yes" Source="$(var.SourceDir)/share/locale/ro/LC_MESSAGES/libsoup-3.0.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir92B61B5CA27E27A29AFA80F64A438A7E" Name="ru">
+            <Directory Id="dir60A6B540AD437F3DDA3A20E3EF81ECE8" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmpE920686199B38FBB43A0E0D321160A21" Guid="*">
+                <File Id="fil848C549C61DF548CDB5C9345DD6B32B2" KeyPath="yes" Source="$(var.SourceDir)/share/locale/ru/LC_MESSAGES/libsoup-3.0.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir70C7408F9244C9086BD8F5603C6451B6" Name="sk">
+            <Directory Id="dir69A4B42B7D1130A8D8947727B628122C" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp7E1C72EF13E46D8DB8C339BDE8CB1BAE" Guid="*">
+                <File Id="fil40DAF43475E928E1678A1130E2F7C092" KeyPath="yes" Source="$(var.SourceDir)/share/locale/sk/LC_MESSAGES/libsoup-3.0.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir8C1A0A738FB800EC6CE38035C16118DB" Name="sl">
+            <Directory Id="dirBE88CFE864A460E501CA4FD91071169B" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmpB9967DC763BE167C7832B936A6895D1C" Guid="*">
+                <File Id="filB4DAE7038BE79599EDAB452BAB56B84B" KeyPath="yes" Source="$(var.SourceDir)/share/locale/sl/LC_MESSAGES/libsoup-3.0.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir2D5F680012B386F5FA8ABCC1C1AB4EF3" Name="sr">
+            <Directory Id="dirEE008973D29839A37878BF26928AA1B2" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp994FE38F21AA03701BB57754B07FFC11" Guid="*">
+                <File Id="fil3C98CEDEF9A7608CA4293C601D143C7C" KeyPath="yes" Source="$(var.SourceDir)/share/locale/sr/LC_MESSAGES/libsoup-3.0.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir1F450C2B488A4E315C17A25BD3542635" Name="sr@latin">
+            <Directory Id="dir2DFAD2994797C12D6C703FB165B691AC" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmpFB40BDE2B9FBAEF7F81D1F90624C3838" Guid="*">
+                <File Id="filED0A2330E2A1B607EF3F0F9672C96A25" KeyPath="yes" Source="$(var.SourceDir)/share/locale/sr@latin/LC_MESSAGES/libsoup-3.0.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir68EF9DA8DAB8EDA1B2BC78DCE643483B" Name="sv">
+            <Directory Id="dir0C5B11AADE17E825C12FEE0D2FD11DDD" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp0E483FBE3614807479892ADC98CA0AB9" Guid="*">
+                <File Id="filAA73BC4BF0B657FBA684E707667F80C8" KeyPath="yes" Source="$(var.SourceDir)/share/locale/sv/LC_MESSAGES/libsoup-3.0.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dirE7B14ACC100778541D7B4FD38660B986" Name="ta">
+            <Directory Id="dirEDA4B157289DD4D5905AB591BA4C2EA1" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp51170EDE2B4CC3947BD826C399D12D9D" Guid="*">
+                <File Id="fil7DA0D344BC6E5FA5EA0AFB57CE65456D" KeyPath="yes" Source="$(var.SourceDir)/share/locale/ta/LC_MESSAGES/libsoup-3.0.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir467B74849ACCC3242EB86D18CC67A700" Name="te">
+            <Directory Id="dirD4AED65A847A0094ED841C53F6AF27AC" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmpB952F5A3CDF93119B012EBB11AB62CA9" Guid="*">
+                <File Id="filBB1664FD4000B0BB1E403A50E71806DB" KeyPath="yes" Source="$(var.SourceDir)/share/locale/te/LC_MESSAGES/libsoup-3.0.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dirF550633841B932BBEB9E3A9D92464382" Name="tg">
+            <Directory Id="dirE1EC61CCE82013A1F62D433CB3940694" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmpB219CE25661EA51BF38373776389EA24" Guid="*">
+                <File Id="fil5332AC21416FBC61938836331FB9C4F6" KeyPath="yes" Source="$(var.SourceDir)/share/locale/tg/LC_MESSAGES/libsoup-3.0.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dirDA253B6B33488DB560AAB162DABD04EE" Name="th">
+            <Directory Id="dir9E1EB8704CACE2FE932942824F2E0936" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp16F7014B75C0070D4EB4E00D719BF64D" Guid="*">
+                <File Id="fil8AD6C84B4C7048403AF0626FBFC51760" KeyPath="yes" Source="$(var.SourceDir)/share/locale/th/LC_MESSAGES/libsoup-3.0.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dirD59781FDF3A21CFFE7A29824FCFDCE0A" Name="tr">
+            <Directory Id="dir319AE4707CD5ABA6A6EA20FCC97CE7F6" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmpD07F1F2647E5B756602B4AFF0F7CB104" Guid="*">
+                <File Id="filA23A214DBB943FA7BB85C96BB396CFD2" KeyPath="yes" Source="$(var.SourceDir)/share/locale/tr/LC_MESSAGES/libsoup-3.0.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir8B07E6539D2DF1171E079D83FCA3AB22" Name="ug">
+            <Directory Id="dir59659D034734604024F67ECD1F3F3F05" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp50F2F03A7D6B627AD9A79524596E3606" Guid="*">
+                <File Id="fil9C1E9729C20FC826FDDE3EC9768FD97D" KeyPath="yes" Source="$(var.SourceDir)/share/locale/ug/LC_MESSAGES/libsoup-3.0.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir47293E89937813D670845027A44FD9FE" Name="uk">
+            <Directory Id="dir04307CB0282857E56C7A09BD7A6FE42B" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp4B6916D7805134D99A6EA32FAF1BE324" Guid="*">
+                <File Id="fil70C526242662402A4C433C5B62A7070E" KeyPath="yes" Source="$(var.SourceDir)/share/locale/uk/LC_MESSAGES/libsoup-3.0.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir013E5F9ED9265091BF299186152EF3F5" Name="uz@cyrillic">
+            <Directory Id="dirA2B6242F5BCB1678D089E2D23EA1DAD5" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp694750230DD1367B86B9D8E10B8BCF62" Guid="*">
+                <File Id="fil495A71BED5A4CE8A671A76E5EB2BBE4D" KeyPath="yes" Source="$(var.SourceDir)/share/locale/uz@cyrillic/LC_MESSAGES/libsoup-3.0.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir8A846F693F15DE283A9D12EAA94A3FC9" Name="vi">
+            <Directory Id="dir4D28F51911A262A64169611F68568FDB" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmpEDBCFF2A42445C065D3F1442AC17501A" Guid="*">
+                <File Id="filE1D5610538D573874D73EF1069E08132" KeyPath="yes" Source="$(var.SourceDir)/share/locale/vi/LC_MESSAGES/libsoup-3.0.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir4D066C5714FC1479CE54CFF0E4D36EB6" Name="zh_CN">
+            <Directory Id="dirBD9709D78F0EBB4C33D99CA7D696DBEC" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp5E7FD756CDE27B052637FEB37EA94B6C" Guid="*">
+                <File Id="filD1F66641BF8C310DDFCF8E706C9136B8" KeyPath="yes" Source="$(var.SourceDir)/share/locale/zh_CN/LC_MESSAGES/libsoup-3.0.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dirFC67CEDFCDFFF309A66951E672C3EED8" Name="zh_HK">
+            <Directory Id="dirA7580B870F18B5D83DC3870A82A8BDF2" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp69450D4303CE6253214DCDF6C16C82F3" Guid="*">
+                <File Id="fil7271CC7342E4EB8F55710AFBCF02909F" KeyPath="yes" Source="$(var.SourceDir)/share/locale/zh_HK/LC_MESSAGES/libsoup-3.0.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dirC6CDA131660BCA596BEC67E39497BF00" Name="zh_TW">
+            <Directory Id="dir3430535AC14F7C51C690F050F7281F59" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp3A13EC131556BE484DA10FA34D8EBB0F" Guid="*">
+                <File Id="fil8ABA93F191E94E980DD1271E8094822B" KeyPath="yes" Source="$(var.SourceDir)/share/locale/zh_TW/LC_MESSAGES/libsoup-3.0.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+        </Directory>
+      </Directory>
+    </DirectoryRef>
+  </Fragment>
+  <Fragment>
+    <ComponentGroup Id="CG.libsoup3">
+      <ComponentGroupRef Id="CG.glib2"/>
+      <ComponentGroupRef Id="CG.glib-networking"/>
+      <ComponentGroupRef Id="CG.sqlite"/>
+      <ComponentGroupRef Id="CG.brotli"/>
+      <ComponentGroupRef Id="CG.libpsl"/>
+      <ComponentGroupRef Id="CG.libnghttp2"/>
+      <ComponentRef Id="cmp95D45FA57678A7E85D42532E6A4068E3"/>
+      <ComponentRef Id="cmpD4F9D889D983F8F535480FA0DB259AA2"/>
+      <ComponentRef Id="cmpF499E24E6A9036D8AE5288D87B702807"/>
+      <ComponentRef Id="cmp73C66F616D00379DCE17E7F0D0306E8C"/>
+      <ComponentRef Id="cmpD3F24C32821827AF75A2AA93C8FDAC38"/>
+      <ComponentRef Id="cmpA6935515AE2D89AA16DD8D432EC9F72C"/>
+      <ComponentRef Id="cmp787CE08F4F02895B30B2749CDE954928"/>
+      <ComponentRef Id="cmp8D1C2712E38A714C9A99F5B169802E24"/>
+      <ComponentRef Id="cmp46B513DC72E417ACDA7E6797862793C9"/>
+      <ComponentRef Id="cmp2DBD3CE09A4616D36311D78C906F340F"/>
+      <ComponentRef Id="cmpB2F4A333159C1EA6A005DAF8F3E83099"/>
+      <ComponentRef Id="cmp381D861C428B2F856FBF3563C3C1F696"/>
+      <ComponentRef Id="cmp1625B403EC59BCE55EFC127EA2D62806"/>
+      <ComponentRef Id="cmp2C043599289EAEF53CB64685B35A7820"/>
+      <ComponentRef Id="cmp6AC2EF417FF0E1ED4E97F9A751B8C3AA"/>
+      <ComponentRef Id="cmp35A75C4ED5958107CF8C412D65DAC004"/>
+      <ComponentRef Id="cmp7CC3DD381C0F87126058C6E01521FEC4"/>
+      <ComponentRef Id="cmp70A2E934772B56597ED76F81A6BA63F5"/>
+      <ComponentRef Id="cmp603D8E8A74FFEB0D10731C6479BB5665"/>
+      <ComponentRef Id="cmp5D4EA09D605663E9E129E347A5769902"/>
+      <ComponentRef Id="cmp110EFA27CB352ABE4F8C835B2D90956E"/>
+      <ComponentRef Id="cmp7A1042859171DE0A168EBC1D27B5AA55"/>
+      <ComponentRef Id="cmp761A070BC2C28B2C8B5129668E9B23F7"/>
+      <ComponentRef Id="cmp7A14948507CFE53C60107FCB6F1B3C0E"/>
+      <ComponentRef Id="cmp16F2B1206F947776463F95518110E444"/>
+      <ComponentRef Id="cmp5EA9C5EDAC7B7A865B0F4BA3B04183C3"/>
+      <ComponentRef Id="cmp30A67146DA26A04617C5519F7AE17388"/>
+      <ComponentRef Id="cmp1958B8868805586B8CFC755427654B97"/>
+      <ComponentRef Id="cmp67C0286999406F0149F0488C9F293B55"/>
+      <ComponentRef Id="cmp0980C4D9E269C501DBDE6853AD015082"/>
+      <ComponentRef Id="cmpDA6639714F1BC300BF198B9232797434"/>
+      <ComponentRef Id="cmpE6E78EFBF77872EDE1D48F2B9DBDF2E1"/>
+      <ComponentRef Id="cmp2BBEBFFD34CC55B33877B6E03FCF7363"/>
+      <ComponentRef Id="cmpC7AF5DCC5E906ECD719ACA5B21398E24"/>
+      <ComponentRef Id="cmp114E01FC8936EBEDA8DDBF0A83A5487C"/>
+      <ComponentRef Id="cmpEE799C20D314130E0C72FB4B49DB53F0"/>
+      <ComponentRef Id="cmp9D466B81F240D63A47BE241C82B14EF8"/>
+      <ComponentRef Id="cmp2605ECD1A3912456B5530A3BB3507647"/>
+      <ComponentRef Id="cmp0B610FC226C075A80D51A7ADF3EA2F3B"/>
+      <ComponentRef Id="cmp52E61C38962754FB15BBC5CBE43F250A"/>
+      <ComponentRef Id="cmpDFEC50C639EBB350467182C348FDCE0F"/>
+      <ComponentRef Id="cmp8844DBA45E9738B864F740EA415500BE"/>
+      <ComponentRef Id="cmp666718DDC18A7CFA95251C7F45A6DAA4"/>
+      <ComponentRef Id="cmp6092BC6A2DD4F01387BD31123F8DF94F"/>
+      <ComponentRef Id="cmp7FF6C0591B4A1F18336DEA8E340835E1"/>
+      <ComponentRef Id="cmpEBE8F5237AC006353106401FC8016695"/>
+      <ComponentRef Id="cmp4A950660CC31AD1EBBB9BC7E41A4F2BC"/>
+      <ComponentRef Id="cmp10B2E534BD1D295C4826FC83CD9A0D39"/>
+      <ComponentRef Id="cmp23D7CA188A5724B9ECE841899BD67B72"/>
+      <ComponentRef Id="cmpD6583805AE564F76202033361F2EA61F"/>
+      <ComponentRef Id="cmpE33295C8681149D998A63908FABAE378"/>
+      <ComponentRef Id="cmpA862FFF2330D413EE5B3FD1974E5E22C"/>
+      <ComponentRef Id="cmpE920686199B38FBB43A0E0D321160A21"/>
+      <ComponentRef Id="cmp7E1C72EF13E46D8DB8C339BDE8CB1BAE"/>
+      <ComponentRef Id="cmpB9967DC763BE167C7832B936A6895D1C"/>
+      <ComponentRef Id="cmp994FE38F21AA03701BB57754B07FFC11"/>
+      <ComponentRef Id="cmpFB40BDE2B9FBAEF7F81D1F90624C3838"/>
+      <ComponentRef Id="cmp0E483FBE3614807479892ADC98CA0AB9"/>
+      <ComponentRef Id="cmp51170EDE2B4CC3947BD826C399D12D9D"/>
+      <ComponentRef Id="cmpB952F5A3CDF93119B012EBB11AB62CA9"/>
+      <ComponentRef Id="cmpB219CE25661EA51BF38373776389EA24"/>
+      <ComponentRef Id="cmp16F7014B75C0070D4EB4E00D719BF64D"/>
+      <ComponentRef Id="cmpD07F1F2647E5B756602B4AFF0F7CB104"/>
+      <ComponentRef Id="cmp50F2F03A7D6B627AD9A79524596E3606"/>
+      <ComponentRef Id="cmp4B6916D7805134D99A6EA32FAF1BE324"/>
+      <ComponentRef Id="cmp694750230DD1367B86B9D8E10B8BCF62"/>
+      <ComponentRef Id="cmpEDBCFF2A42445C065D3F1442AC17501A"/>
+      <ComponentRef Id="cmp5E7FD756CDE27B052637FEB37EA94B6C"/>
+      <ComponentRef Id="cmp69450D4303CE6253214DCDF6C16C82F3"/>
+      <ComponentRef Id="cmp3A13EC131556BE484DA10FA34D8EBB0F"/>
+    </ComponentGroup>
+  </Fragment>
+</Include>
+<?ignore generated with msitools 0.106.59-ee1c-dirty ?>
+<?ignore tools/wixl/wixl-heat --var var.SourceDir -p /usr/i686-w64-mingw32/sys-root/mingw/ --directory-ref INSTALLDIR --win64 --component-group CG.libsoup3 ?>

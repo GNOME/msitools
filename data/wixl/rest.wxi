@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Include xmlns="http://schemas.microsoft.com/wix/2006/wi">
-<?require libsoup.wxi?>
+<?require json-glib.wxi?>
+<?require libsoup3.wxi?>
 <?require libxml2.wxi?>
   <Fragment>
     <DirectoryRef Id="INSTALLDIR">
@@ -16,7 +17,8 @@
   </Fragment>
   <Fragment>
     <ComponentGroup Id="CG.rest">
-      <ComponentGroupRef Id="CG.libsoup"/>
+      <ComponentGroupRef Id="CG.json-glib"/>
+      <ComponentGroupRef Id="CG.libsoup3"/>
       <ComponentGroupRef Id="CG.libxml2"/>
       <ComponentRef Id="cmp6BAAF263DE7CA46F7B13DE9438870EF5"/>
       <ComponentRef Id="cmp48EA4E8957F9A5285EEA41D823BB7247"/>

@@ -112,6 +112,8 @@ RUN dnf install -y --nogpgcheck dnf-plugin-builddep intltool \
         mingw64-libpng \
         mingw32-libsoup \
         mingw64-libsoup \
+        mingw32-libsoup3 \
+        mingw64-libsoup3 \
         mingw32-libssh2 \
         mingw64-libssh2 \
         mingw32-libtasn1 \

@@ -103,12 +103,16 @@ variables:
                 mingw64-libidn2
                 mingw32-libjpeg-turbo
                 mingw64-libjpeg-turbo
+                mingw32-libnghttp2
+                mingw64-libnghttp2
                 mingw32-libogg
                 mingw64-libogg
                 mingw32-libpng
                 mingw64-libpng
                 mingw32-libsoup
                 mingw64-libsoup
+                mingw32-libsoup3
+                mingw64-libsoup3
                 mingw32-libssh2
                 mingw64-libssh2
                 mingw32-libtasn1
