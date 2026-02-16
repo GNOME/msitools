@@ -400,8 +400,10 @@ namespace Wixl {
         }
 
         public override void visit_product (WixProduct product) throws GLib.Error {
-            if (product.Codepage != null)
+            if (product.Codepage != null) {
                 db.info.set_codepage (int.parse (product.Codepage));
+                db.codepage = int.parse (product.Codepage);
+            }
 
             if (product.Name != null && db.info.get_subject () == null)
                 db.info.set_subject (product.Name);

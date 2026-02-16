@@ -1178,6 +1178,7 @@ namespace Wixl {
     class MsiDatabase: Object {
         public Arch arch;
         public Extension[] extensions;
+        public int codepage;
 
         public MsiSummaryInfo info;
         public MsiTableProperty table_property;
@@ -1386,6 +1387,8 @@ namespace Wixl {
             MsiTable table;
 
             var db = new Libmsi.Database (filename, Libmsi.DbFlags.CREATE, null);
+            if (codepage != 0)
+                db.set_codepage (codepage);
             info.save (db);
 
             var it = HashTableIter <string, MsiTable> (tables);

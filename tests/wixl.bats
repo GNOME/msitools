@@ -172,6 +172,42 @@ EOF
   [ "$status" -eq 1 ]
 }
 
+@test "wixl - codepage" {
+  mkdir -p SourceDir
+  echo "hello" > "SourceDir/hello_日本語.txt"
+  cat >codepage.wxs <<EOF
+<?xml version="1.0" encoding="utf-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+  <Product Id="ABCDDCBA-86C7-4D14-AEC0-86416A69ABDE"
+           Name="Test" Version="1.0.0" Manufacturer="Test"
+           Language="1033" Codepage="65001"
+           UpgradeCode="12345678-1234-1234-1234-123456789012">
+    <Package InstallerVersion="200" Compressed="yes" />
+    <Media Id="1" Cabinet="test.cab" EmbedCab="yes" />
+    <Directory Id="TARGETDIR" Name="SourceDir">
+      <Directory Id="ProgramFilesFolder">
+        <Directory Id="INSTALLDIR" Name="Test">
+          <Component Id="C1" Guid="ABCDDCBA-83F1-4F22-985B-FDB3C8ABD471">
+            <File Id="F1" Source="SourceDir/hello_日本語.txt" KeyPath="yes" />
+          </Component>
+        </Directory>
+      </Directory>
+    </Directory>
+    <Feature Id="Main" Level="1">
+      <ComponentRef Id="C1" />
+    </Feature>
+  </Product>
+</Wix>
+EOF
+  run "$wixl" -o out.msi codepage.wxs
+  [ "$status" -eq 0 ]
+  test -f out.msi
+
+  # verify the non-ASCII filename is preserved in the MSI
+  run "$msiinfo" export out.msi File
+  echo "$output" | grep -q "hello_日本語.txt"
+}
+
 @test "wixl - UI ext" {
   cd wixl
   run "$wixl" -o out.msi TestUI.wxs --ext ui --extdir "$SRCDIR/data/ext"
