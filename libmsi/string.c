@@ -80,7 +80,7 @@ static string_table *init_stringtable( int entries, unsigned codepage )
 
     st = msi_alloc( sizeof (string_table) );
     if( !st )
-        return NULL;    
+        return NULL;
     if( entries < 1 )
         entries = 1;
 
@@ -88,7 +88,7 @@ static string_table *init_stringtable( int entries, unsigned codepage )
     if( !st->strings )
     {
         msi_free( st );
-        return NULL;    
+        return NULL;
     }
 
     st->sorted = msi_alloc( sizeof (unsigned) * entries );
@@ -371,6 +371,7 @@ const char *msi_string_lookup_id( const string_table *st, unsigned id )
  */
 static unsigned _libmsi_string_id( const string_table *st, unsigned id, char *buffer, unsigned *sz )
 {
+    g_autoptr(GError) err = NULL;
     const char *str_utf8;
     char *str;
     size_t len;
@@ -385,8 +386,12 @@ static unsigned _libmsi_string_id( const string_table *st, unsigned id, char *bu
 
     codepage = st->codepage ? st->codepage : gsf_msole_iconv_win_codepage();
     cpconv = gsf_msole_iconv_open_codepage_for_export(codepage);
-    str = g_convert_with_iconv(str_utf8, -1, cpconv, NULL, &len, NULL);
+    str = g_convert_with_iconv(str_utf8, -1, cpconv, NULL, &len, &err);
     g_iconv_close(cpconv);
+    if (err) {
+        TRACE("Failed to convert string: %s\n", err->message);
+        return LIBMSI_RESULT_FUNCTION_FAILED;
+    }
     if( *sz < len )
     {
         *sz = len;
@@ -430,6 +435,7 @@ unsigned _libmsi_id_from_string_utf8( const string_table *st, const char *str, u
 
 static void string_totalsize( const string_table *st, unsigned *datasize, unsigned *poolsize )
 {
+    GError *err = NULL;
     unsigned i, holesize;
     size_t len;
     int codepage;
@@ -455,8 +461,14 @@ static void string_totalsize( const string_table *st, unsigned *datasize, unsign
         {
             TRACE("[%u] = %s\n", i, debugstr_a(st->strings[i].str));
             cpconv = gsf_msole_iconv_open_codepage_for_export(codepage);
-            str = g_convert_with_iconv( st->strings[i].str, -1, cpconv, NULL, &len, NULL);
+            str = g_convert_with_iconv( st->strings[i].str, -1, cpconv, NULL, &len, &err);
             g_iconv_close(cpconv);
+            if (!str) {
+                TRACE("Failed to convert string %s\n", err->message);
+                g_error_free(err);
+                (*poolsize) += 4;
+                continue;
+            }
 	    msi_free(str);
             (*datasize) += len;
             if (len>0xffff)
