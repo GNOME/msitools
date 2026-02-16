@@ -55,7 +55,7 @@ libmsi = shared_library('msi-1.0',
   libmsi_sources,
   include_directories: inc_dirs,
   dependencies: libmsi_deps,
-  version: '0.0.0',
+  version: '0.1.0',
   install: true,
 )
 

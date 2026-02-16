@@ -2627,3 +2627,28 @@ libmsi_database_new (const gchar *path,
 
     return self;
 }
+
+/**
+ * libmsi_database_set_codepage:
+ * @db: a %LibmsiDatabase
+ * @codepage: the codepage to set for the string table
+ * @error: (allow-none): #GError to set on error, or %NULL
+ *
+ * Set the string table codepage of the database. This controls
+ * how all table strings are encoded in the MSI file.
+ *
+ * Returns: %TRUE on success
+ **/
+gboolean
+libmsi_database_set_codepage (LibmsiDatabase *db, unsigned codepage, GError **error)
+{
+    g_return_val_if_fail (LIBMSI_IS_DATABASE (db), FALSE);
+    g_return_val_if_fail (!error || *error == NULL, FALSE);
+
+    unsigned r = msi_set_string_table_codepage (db->strings, codepage);
+    if (r != LIBMSI_RESULT_SUCCESS) {
+        g_set_error (error, LIBMSI_RESULT_ERROR, r, "invalid codepage %u", codepage);
+        return FALSE;
+    }
+    return TRUE;
+}

@@ -70,6 +70,9 @@ gboolean            libmsi_database_merge               (LibmsiDatabase *db,
                                                          GError **error);
 gboolean            libmsi_database_commit              (LibmsiDatabase *db,
                                                          GError **error);
+gboolean            libmsi_database_set_codepage        (LibmsiDatabase *db,
+                                                         unsigned codepage,
+                                                         GError **error);
 
 G_END_DECLS
 
