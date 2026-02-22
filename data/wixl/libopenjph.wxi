@@ -5,7 +5,7 @@
     <DirectoryRef Id="INSTALLDIR">
       <Directory Id="dirA8A64A1BE3AF4CC662BA3D23A7051883" Name="bin">
         <Component Win64="$(var.Win64)" Id="cmp05C0C2999E512FEC67536103C59902BA" Guid="*">
-          <File Id="fil6477BA187F8D14162B23DAE7AA0F3E38" KeyPath="yes" Source="$(var.SourceDir)/bin/libopenjph-0.25.dll"/>
+          <File Id="fil6477BA187F8D14162B23DAE7AA0F3E38" KeyPath="yes" Source="$(var.SourceDir)/bin/libopenjph-0.26.dll"/>
         </Component>
       </Directory>
     </DirectoryRef>
