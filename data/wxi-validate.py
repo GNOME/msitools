@@ -67,6 +67,7 @@ dllbuiltin = re.compile(
     r"avrt|"
     r"bcrypt|"
     r"bcryptprimitives|"
+    r"cfgmgr32|"
     r"comctl32|"
     r"comdlg32|"
     r"crypt32|"
