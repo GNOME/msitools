@@ -109,8 +109,6 @@ variables:
                 mingw64-libogg
                 mingw32-libpng
                 mingw64-libpng
-                mingw32-libsoup
-                mingw64-libsoup
                 mingw32-libsoup3
                 mingw64-libsoup3
                 mingw32-libssh2
