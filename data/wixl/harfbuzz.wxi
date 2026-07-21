@@ -5,15 +5,21 @@
 <Include xmlns="http://schemas.microsoft.com/wix/2006/wi">
   <Fragment>
     <DirectoryRef Id="INSTALLDIR">
-      <Directory Id="dir23689CA280C1A788EEAD61A8333D879D" Name="bin">
+      <Directory Id="dir46AE4933A49F1DF141442570DDB6D8F8" Name="bin">
         <Component Win64="$(var.Win64)" Id="cmpDD82F3F22B0BA8C58566A3559E114551" Guid="*">
           <File Id="fil4B4F9D979636D5FB20016CC2DD1F1338" KeyPath="yes" Source="$(var.SourceDir)/bin/hb-info.exe"/>
+        </Component>
+        <Component Win64="$(var.Win64)" Id="cmp681E32412F09CFEF7EB24EB7E8C09BC3" Guid="*">
+          <File Id="fil3308B8CC6A3A017270FF739EEF2A5D73" KeyPath="yes" Source="$(var.SourceDir)/bin/hb-raster.exe"/>
         </Component>
         <Component Win64="$(var.Win64)" Id="cmpA818B1314F6536E10EBC57F0FF5B2F2D" Guid="*">
           <File Id="fil229BC8CF47417462C1093A4846799221" KeyPath="yes" Source="$(var.SourceDir)/bin/hb-shape.exe"/>
         </Component>
         <Component Win64="$(var.Win64)" Id="cmp9AA1456DB9C31717DB339527C3F62A28" Guid="*">
           <File Id="filDB1AB532E6E0EC7BE571775CC4E07E84" KeyPath="yes" Source="$(var.SourceDir)/bin/hb-subset.exe"/>
+        </Component>
+        <Component Win64="$(var.Win64)" Id="cmp2AD89CFA54C622C69BF195CA3DC1D779" Guid="*">
+          <File Id="filB41B7676B2FF6BA4A08B1FE26BB2DB95" KeyPath="yes" Source="$(var.SourceDir)/bin/hb-vector.exe"/>
         </Component>
         <Component Win64="$(var.Win64)" Id="cmpE98106D964ED04BDE3481D0408199D5A" Guid="*">
           <File Id="fil07EA6DD8ADD23D6B3713CEC2FCD83407" KeyPath="yes" Source="$(var.SourceDir)/bin/hb-view.exe"/>
@@ -27,11 +33,20 @@
         <Component Win64="$(var.Win64)" Id="cmpD14E2E15993306205EC08562E5884944" Guid="*">
           <File Id="fil2058BF4808999A5555F64640DF1F923C" KeyPath="yes" Source="$(var.SourceDir)/bin/libharfbuzz-gobject-0.dll"/>
         </Component>
+        <Component Win64="$(var.Win64)" Id="cmpA72EA607702596CCA0E313ECDCB0EFD8" Guid="*">
+          <File Id="fil63F22B2DC7A6C4E076750BC0072B1BB1" KeyPath="yes" Source="$(var.SourceDir)/bin/libharfbuzz-gpu-0.dll"/>
+        </Component>
         <Component Win64="$(var.Win64)" Id="cmpC38398BFF7BC6D85AE5335CE464AAF23" Guid="*">
           <File Id="filDD2796B94D8141727EAFFBC98DABD37D" KeyPath="yes" Source="$(var.SourceDir)/bin/libharfbuzz-icu-0.dll"/>
         </Component>
+        <Component Win64="$(var.Win64)" Id="cmp6CED10E0C913F408FE517FA56AD561BE" Guid="*">
+          <File Id="filCF2FDA3F99A7D0C1758FC7F53293F44E" KeyPath="yes" Source="$(var.SourceDir)/bin/libharfbuzz-raster-0.dll"/>
+        </Component>
         <Component Win64="$(var.Win64)" Id="cmp6544651C69DAA5579C6BEAEC841B2DD1" Guid="*">
           <File Id="fil4A8A5F0AC6739D1C21219CADB6732E62" KeyPath="yes" Source="$(var.SourceDir)/bin/libharfbuzz-subset-0.dll"/>
+        </Component>
+        <Component Win64="$(var.Win64)" Id="cmp5F99AC235B327AB76B84CE58FEBC2EE7" Guid="*">
+          <File Id="fil638B7E556FDA8797C029436827C397F2" KeyPath="yes" Source="$(var.SourceDir)/bin/libharfbuzz-vector-0.dll"/>
         </Component>
       </Directory>
     </DirectoryRef>
@@ -42,14 +57,21 @@
       <ComponentGroupRef Id="CG.freetype"/>
       <ComponentGroupRef Id="CG.icu"/>
       <ComponentRef Id="cmpDD82F3F22B0BA8C58566A3559E114551"/>
+      <ComponentRef Id="cmp681E32412F09CFEF7EB24EB7E8C09BC3"/>
       <ComponentRef Id="cmpA818B1314F6536E10EBC57F0FF5B2F2D"/>
       <ComponentRef Id="cmp9AA1456DB9C31717DB339527C3F62A28"/>
+      <ComponentRef Id="cmp2AD89CFA54C622C69BF195CA3DC1D779"/>
       <ComponentRef Id="cmpE98106D964ED04BDE3481D0408199D5A"/>
       <ComponentRef Id="cmp8B40339E5485DDF2385CD34B800BAF53"/>
       <ComponentRef Id="cmpACF09CB8D707B3801BA25708F150DA31"/>
       <ComponentRef Id="cmpD14E2E15993306205EC08562E5884944"/>
+      <ComponentRef Id="cmpA72EA607702596CCA0E313ECDCB0EFD8"/>
       <ComponentRef Id="cmpC38398BFF7BC6D85AE5335CE464AAF23"/>
+      <ComponentRef Id="cmp6CED10E0C913F408FE517FA56AD561BE"/>
       <ComponentRef Id="cmp6544651C69DAA5579C6BEAEC841B2DD1"/>
+      <ComponentRef Id="cmp5F99AC235B327AB76B84CE58FEBC2EE7"/>
     </ComponentGroup>
   </Fragment>
 </Include>
+<?ignore generated with msitools 0.106.71-04d9-dirty ?>
+<?ignore tools/wixl/wixl-heat -i --var var.SourceDir -p /usr/i686-w64-mingw32/sys-root/mingw/ --directory-ref INSTALLDIR --win64 --component-group CG.harfbuzz --require cairo --require freetype --require icu ?>
