@@ -3,9 +3,9 @@
 <Include xmlns="http://schemas.microsoft.com/wix/2006/wi">
   <Fragment>
     <DirectoryRef Id="INSTALLDIR">
-      <Directory Id="dirA8A64A1BE3AF4CC662BA3D23A7051883" Name="bin">
-        <Component Win64="$(var.Win64)" Id="cmp05C0C2999E512FEC67536103C59902BA" Guid="*">
-          <File Id="fil6477BA187F8D14162B23DAE7AA0F3E38" KeyPath="yes" Source="$(var.SourceDir)/bin/libopenjph-0.26.dll"/>
+      <Directory Id="dir53808BE5FC8424A4E30CE0348EC75CB6" Name="bin">
+        <Component Win64="$(var.Win64)" Id="cmp4CF742DE55FA953A22487CF821F72A5D" Guid="*">
+          <File Id="filA578F4E7871B6A22E398F452135CFE7C" KeyPath="yes" Source="$(var.SourceDir)/bin/libopenjph-0.29.dll"/>
         </Component>
       </Directory>
     </DirectoryRef>
@@ -13,9 +13,9 @@
   <Fragment>
     <ComponentGroup Id="CG.libopenjph">
       <ComponentGroupRef Id="CG.gcc-c++"/>
-      <ComponentRef Id="cmp05C0C2999E512FEC67536103C59902BA"/>
+      <ComponentRef Id="cmp4CF742DE55FA953A22487CF821F72A5D"/>
     </ComponentGroup>
   </Fragment>
 </Include>
-<?ignore generated with msitools 0.106.47-7921 ?>
-<?ignore tools/wixl/wixl-heat --var var.SourceDir -p /usr/i686-w64-mingw32/sys-root/mingw/ --directory-ref INSTALLDIR --win64 --component-group CG.libopenjph ?>
+<?ignore generated with msitools 0.106.71-04d9-dirty ?>
+<?ignore tools/wixl/wixl-heat -i --var var.SourceDir -p /usr/i686-w64-mingw32/sys-root/mingw/ --directory-ref INSTALLDIR --win64 --component-group CG.libopenjph --require gcc-c++ ?>

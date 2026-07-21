@@ -51,7 +51,6 @@ wxi_data = files(
   'wixl/libpng.wxi',
   'wixl/libpsl.wxi',
   'wixl/librsvg2.wxi',
-  'wixl/libsoup.wxi',
   'wixl/libsoup3.wxi',
   'wixl/libssh2.wxi',
   'wixl/libtasn1.wxi',
