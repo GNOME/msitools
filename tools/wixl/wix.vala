@@ -1007,6 +1007,7 @@ namespace Wixl {
         public string BinaryKey { get; set; }
         public string DllEntry { get; set; }
         public string HideTarget { get; set; }
+        public string VBScriptCall { get; set; }
         public string JScriptCall { get; set; }
         public string Value { get; set; }
 
