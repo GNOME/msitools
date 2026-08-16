@@ -23,6 +23,8 @@ variables:
                 mingw64-adwaita-icon-theme
                 mingw32-atk
                 mingw64-atk
+                mingw32-brotli
+                mingw64-brotli
                 mingw32-bzip2
                 mingw64-bzip2
                 mingw32-cairo
