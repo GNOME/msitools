@@ -2761,7 +2761,7 @@ namespace Wixl {
                     break;
             }
 
-            if(parse_yesno(env.Permanent)) {
+            if(!parse_yesno(env.Permanent)) {
                 name_prefix += "-";
             }
 
