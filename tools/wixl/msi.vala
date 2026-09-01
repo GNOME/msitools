@@ -913,11 +913,11 @@ namespace Wixl {
             sql_insert = "INSERT INTO `CustomAction` (`Action`, `Type`, `Source`, `Target`, `ExtendedType`) VALUES (?, ?, ?, ?, ?)";
         }
 
-        public void add (string Action, int Type, string Source, string Target, int? ExtendedType = null) throws GLib.Error {
+        public void add (string Action, int Type, string? Source, string Target, int? ExtendedType = null) throws GLib.Error {
             var rec = new Libmsi.Record (5);
             if (!rec.set_string (1, Action) ||
                 !rec.set_int (2, Type) ||
-                !rec.set_string (3, Source) ||
+                (Source != null && !rec.set_string (3, Source)) ||
                 !rec.set_string (4, Target) ||
                 (ExtendedType != null && !rec.set_int (5, ExtendedType)))
                 throw new Wixl.Error.FAILED ("failed to add record");

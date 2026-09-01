@@ -1409,6 +1409,19 @@ namespace Wixl {
                 type = CustomActionType.SET_PROPERTY;
                 source = action.Property;
                 target = action.Value;
+            } else if (action.Script != null) {
+                if (action.Script == "vbscript")
+                    type = CustomActionType.VBSCRIPT_SEQUENCE;
+                else if (action.Script == "jscript")
+                    type = CustomActionType.JSCRIPT_SEQUENCE;
+                else
+                    throw new Wixl.Error.FAILED ("Unknown Script type: %s", action.Script);
+                source = null;
+                target = "";
+                foreach (var c in action.children) {
+                    if (c is WixText)
+                        target += ((WixText) c).Text;
+                }
             } else
                 throw new Wixl.Error.FAILED ("Unsupported CustomAction");
 

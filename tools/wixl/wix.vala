@@ -218,6 +218,7 @@ namespace Wixl {
                 case Xml.ElementType.COMMENT_NODE:
                     continue;
                 case Xml.ElementType.TEXT_NODE:
+                case Xml.ElementType.CDATA_SECTION_NODE:
                     add_child (new WixText (child->content));
                     continue;
                 case Xml.ElementType.ELEMENT_NODE:
@@ -1010,6 +1011,7 @@ namespace Wixl {
         public string VBScriptCall { get; set; }
         public string JScriptCall { get; set; }
         public string Value { get; set; }
+        public string Script { get; set; }
 
         public override void accept (WixNodeVisitor visitor) throws GLib.Error {
             visitor.visit_custom_action (this);
