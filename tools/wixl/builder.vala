@@ -1390,6 +1390,10 @@ namespace Wixl {
                 type = CustomActionType.JSCRIPT_BINARY;
                 source = action.BinaryKey;
                 target = action.JScriptCall;
+            } else if (action.VBScriptCall != null) {
+                type = CustomActionType.VBSCRIPT_BINARY;
+                source = action.BinaryKey;
+                target = action.VBScriptCall;
             } else if (action.ExeCommand != null && action.FileKey == null) {
                 type = CustomActionType.EXE_PROPERTY;
                 source = action.Property;
