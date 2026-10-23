@@ -15,7 +15,7 @@
 <Include xmlns="http://schemas.microsoft.com/wix/2006/wi">
   <Fragment>
     <DirectoryRef Id="INSTALLDIR">
-      <Directory Id="dir857769972A11CFACF65E9CE72A8E005E" Name="bin">
+      <Directory Id="dir720733CDDA352D2F11AFF1CC19C6183F" Name="bin">
         <Component Win64="$(var.Win64)" Id="cmp78C02C98E5E61937A0D0BD7538A69ABC" Guid="*">
           <File Id="fil10AA91652AC4E2433605D068F1933BAE" KeyPath="yes" Source="$(var.SourceDir)/bin/gst-transcoder-1.0.exe"/>
         </Component>
@@ -52,8 +52,8 @@
         <Component Win64="$(var.Win64)" Id="cmp9BAA3AD287159B490256FFD70BFF28FA" Guid="*">
           <File Id="filD9EB812800FDFE5D2182E3E871E255CF" KeyPath="yes" Source="$(var.SourceDir)/bin/libgstdxva-1.0-0.dll"/>
         </Component>
-        <Component Win64="$(var.Win64)" Id="cmpEBD7D6A56524653305636702F96B76C6" Guid="*">
-          <File Id="filBCF1321619B796731B915C813B9C49A8" KeyPath="yes" Source="$(var.SourceDir)/bin/libgsthip-0.dll"/>
+        <Component Win64="$(var.Win64)" Id="cmpF45213FD29201BCBF0A5EE30C7E8F451" Guid="*">
+          <File Id="fil70CCC6FE650DE7A55112875AD7060937" KeyPath="yes" Source="$(var.SourceDir)/bin/libgsthip-1.0-0.dll"/>
         </Component>
         <Component Win64="$(var.Win64)" Id="cmp12335C8DCBEC08051B25016C1ABEE398" Guid="*">
           <File Id="filD337DC4F685E8288FCB5ABDD44810629" KeyPath="yes" Source="$(var.SourceDir)/bin/libgstinsertbin-1.0-0.dll"/>
@@ -89,9 +89,9 @@
           <File Id="filDDD5FFBC7EE4DDA56472D2244FC05104" KeyPath="yes" Source="$(var.SourceDir)/bin/libgstwebrtc-1.0-0.dll"/>
         </Component>
       </Directory>
-      <Directory Id="dir54D221305B3288660F3891D051E7D87E" Name="lib">
-        <Directory Id="dir51C16E6262F363D0A436E5FE3E52FB3A" Name="gstreamer-1.0">
-          <Directory Id="dir4C0397FD1E537BECF2EEC872FE1CF5D7" Name="include">
+      <Directory Id="dirAC0C51D432720F6A3C203CDF5A6DB043" Name="lib">
+        <Directory Id="dir8B1565D697C8D26E05B272AF1E50859B" Name="gstreamer-1.0">
+          <Directory Id="dir8F0300F1043441008546FEF20765EDB8" Name="include">
           </Directory>
           <Component Win64="$(var.Win64)" Id="cmpF5FCC6FFE2344FCD11D3E0CAFD634BA6" Guid="*">
             <File Id="fil20A77A273F009CBCADDD6A523B1E73E2" KeyPath="yes" Source="$(var.SourceDir)/lib/gstreamer-1.0/libgstaccurip.dll"/>
@@ -395,15 +395,15 @@
           </Component>
         </Directory>
       </Directory>
-      <Directory Id="dirCAA2E0F528B1D730B0E61E8BBA7C867C" Name="share">
-        <Directory Id="dir1546662F0B8C2D469AA5DF6887B942B3" Name="gstreamer-1.0">
-          <Directory Id="dir3B495E98B762527C84AF8DA71DFCA28C" Name="encoding-profiles">
-            <Directory Id="dir829CB5C696D426CC731F225E43B946C1" Name="device">
+      <Directory Id="dir153DF2DCA072DDEBBBD5D53069F4227C" Name="share">
+        <Directory Id="dirE5F6352AE08008D49A44BBB9DF0D5699" Name="gstreamer-1.0">
+          <Directory Id="dir1CCB7A3F29FC0F023FFCCAEC59200AF7" Name="encoding-profiles">
+            <Directory Id="dir7F157D848FF3D084E3BB2ABE727E05C7" Name="device">
               <Component Win64="$(var.Win64)" Id="cmpA8E605B94D4F087817310E94B5B7D906" Guid="*">
                 <File Id="filB9D76E5EF2676AB7266C8A0F5F9FB4E1" KeyPath="yes" Source="$(var.SourceDir)/share/gstreamer-1.0/encoding-profiles/device/dvd.gep"/>
               </Component>
             </Directory>
-            <Directory Id="dir37AB62975BCF26D64029424440AA4B12" Name="file-extension">
+            <Directory Id="dir05D6BF8757648C668A3C88B1B93ED4FC" Name="file-extension">
               <Component Win64="$(var.Win64)" Id="cmpA041133EF8E595DC1DC6D26B8AFFF01F" Guid="*">
                 <File Id="filA324F50759B144F35FA0C089580E4C40" KeyPath="yes" Source="$(var.SourceDir)/share/gstreamer-1.0/encoding-profiles/file-extension/avi.gep"/>
               </Component>
@@ -432,329 +432,336 @@
                 <File Id="fil307F054B56581B85D2F1A3ACE40900C0" KeyPath="yes" Source="$(var.SourceDir)/share/gstreamer-1.0/encoding-profiles/file-extension/webm.gep"/>
               </Component>
             </Directory>
-            <Directory Id="dir39BF0CA95D65466C6749A8C868E7A25E" Name="online-services">
+            <Directory Id="dirCCCB3012B221EDC5F32CA16E26AB76BE" Name="online-services">
               <Component Win64="$(var.Win64)" Id="cmp33C1785A8097652954EFEE7CAA920E8E" Guid="*">
                 <File Id="fil589BEE0915DBB4DBAC93CD93C81BD7D6" KeyPath="yes" Source="$(var.SourceDir)/share/gstreamer-1.0/encoding-profiles/online-services/youtube.gep"/>
               </Component>
             </Directory>
           </Directory>
-          <Directory Id="dirC2E65911F43694AE4129E65C53F69533" Name="presets">
+          <Directory Id="dir8294B2CBF61DE06338D4A89F29BDD1C1" Name="presets">
             <Component Win64="$(var.Win64)" Id="cmp066E6B0165EB52B58BF3040A8B2E77D8" Guid="*">
               <File Id="fil8DBA9904A4280BC5B112930E3B1DE3F1" KeyPath="yes" Source="$(var.SourceDir)/share/gstreamer-1.0/presets/GstFreeverb.prs"/>
             </Component>
           </Directory>
         </Directory>
-        <Directory Id="dirA7A81CA2B7A9747C74DA58B8AC3EB665" Name="locale">
-          <Directory Id="dir9FB16D8A25862C5A127C501FC88CB661" Name="af">
-            <Directory Id="dirFD3A1AB6AD351B5605AA53BB5A25CEA0" Name="LC_MESSAGES">
+        <Directory Id="dir2942415ACDE508752558662E4F6787F8" Name="locale">
+          <Directory Id="dir7602DD158E6AA58388E1AB36E581B73A" Name="af">
+            <Directory Id="dir5CCC651E05DE45F6B32F35FBCF46296C" Name="LC_MESSAGES">
               <Component Win64="$(var.Win64)" Id="cmp8087692860F18BC0AF4A7E42D2B9BC5B" Guid="*">
                 <File Id="filDF8113FC9B65C8CF82ADD385C86C1EB0" KeyPath="yes" Source="$(var.SourceDir)/share/locale/af/LC_MESSAGES/gst-plugins-bad-1.0.mo"/>
               </Component>
             </Directory>
           </Directory>
-          <Directory Id="dir516F7537FD0F8339C3DB5DB32339A79B" Name="ar">
-            <Directory Id="dir7A37380DA311244B4436B60EADFDD781" Name="LC_MESSAGES">
+          <Directory Id="dir4098EC661E103EF2E7E4EB655C5A6F1A" Name="ar">
+            <Directory Id="dirB9003AD302A2E79F03093D3229983CD3" Name="LC_MESSAGES">
               <Component Win64="$(var.Win64)" Id="cmp102F9961530D2C4A5A0DF1A9C989B858" Guid="*">
                 <File Id="filB46D8140448DB40782EF63F84F00EE70" KeyPath="yes" Source="$(var.SourceDir)/share/locale/ar/LC_MESSAGES/gst-plugins-bad-1.0.mo"/>
               </Component>
             </Directory>
           </Directory>
-          <Directory Id="dir7436026AE7745F39AF7661E1A80DB729" Name="ast">
-            <Directory Id="dirB215FB5A1FBB269BDCF2274BDFD6A2C5" Name="LC_MESSAGES">
+          <Directory Id="dirB24EBFAE14B522D81601119C966186C9" Name="ast">
+            <Directory Id="dir6D59B7AA2A86CF72028D07C4C4018EDC" Name="LC_MESSAGES">
               <Component Win64="$(var.Win64)" Id="cmp3D701671A7897CBBC13AC815D12DC1F1" Guid="*">
                 <File Id="fil9E9C47A1BB6F89D94D81B9063B5C4F7F" KeyPath="yes" Source="$(var.SourceDir)/share/locale/ast/LC_MESSAGES/gst-plugins-bad-1.0.mo"/>
               </Component>
             </Directory>
           </Directory>
-          <Directory Id="dirE25CF01B9E36021AA4F68DEF7F1F49AF" Name="az">
-            <Directory Id="dir30102F45961F99AA5AE91E51138A328E" Name="LC_MESSAGES">
+          <Directory Id="dir280265919F1641AED06E036615D52FDA" Name="az">
+            <Directory Id="dir1D25D2295F00729DE5978546B48837AD" Name="LC_MESSAGES">
               <Component Win64="$(var.Win64)" Id="cmp2043CAC739EF592EE26EFBE74D87EC68" Guid="*">
                 <File Id="fil7269B5ACBF1851E3272B571238147DA2" KeyPath="yes" Source="$(var.SourceDir)/share/locale/az/LC_MESSAGES/gst-plugins-bad-1.0.mo"/>
               </Component>
             </Directory>
           </Directory>
-          <Directory Id="dir82CF5E5BF010B76E3A4F6A3EFE8B8810" Name="bg">
-            <Directory Id="dir686FE433483C235BDBA133EFF80E6EEA" Name="LC_MESSAGES">
+          <Directory Id="dir5EC176891F2EB80B02CC319F47C9114A" Name="bg">
+            <Directory Id="dir84328C93C54D7E15E9FC9B846C4AF9BE" Name="LC_MESSAGES">
               <Component Win64="$(var.Win64)" Id="cmp3398072EF8D836C5D7975126A8318A35" Guid="*">
                 <File Id="fil7CE5F073739B38F6DC309F6C5561A926" KeyPath="yes" Source="$(var.SourceDir)/share/locale/bg/LC_MESSAGES/gst-plugins-bad-1.0.mo"/>
               </Component>
             </Directory>
           </Directory>
-          <Directory Id="dirA879106043F7298A3DA932B880675D2B" Name="ca">
-            <Directory Id="dirB5BFE6529EA92014186D9CD403F708FC" Name="LC_MESSAGES">
+          <Directory Id="dir094E2FAECCB5866EC90561072105BCC0" Name="ca">
+            <Directory Id="dirDE7FEDB5EE8424D18A28E71FD5A4B81E" Name="LC_MESSAGES">
               <Component Win64="$(var.Win64)" Id="cmp77DBAE2AEB36E6EAE52D9D12310C8E11" Guid="*">
                 <File Id="filAFC0E77CEF9063F9C134B2336D41CC37" KeyPath="yes" Source="$(var.SourceDir)/share/locale/ca/LC_MESSAGES/gst-plugins-bad-1.0.mo"/>
               </Component>
             </Directory>
           </Directory>
-          <Directory Id="dir4B729ED02E4C46E1AC64ECD53C8EFFC1" Name="cs">
-            <Directory Id="dirAAA9B8CF59BBACBD25DD85A19171B500" Name="LC_MESSAGES">
+          <Directory Id="dir433EDB6D93EE0594C77FA2D5A7EF47FB" Name="cs">
+            <Directory Id="dir835EE16E77ED6982826807BE2910C2B7" Name="LC_MESSAGES">
               <Component Win64="$(var.Win64)" Id="cmp78EDCC38C8D2A707CE35424E5B42E518" Guid="*">
                 <File Id="filF573BD91D6A0ACA8720878A015648F85" KeyPath="yes" Source="$(var.SourceDir)/share/locale/cs/LC_MESSAGES/gst-plugins-bad-1.0.mo"/>
               </Component>
             </Directory>
           </Directory>
-          <Directory Id="dir91AC37549B472F0A145554E4BF16CD39" Name="da">
-            <Directory Id="dir1147FF6D9C9BBC4C0113E8BEF1324335" Name="LC_MESSAGES">
+          <Directory Id="dir459E0186615A28ED1D0E88669A9F2724" Name="da">
+            <Directory Id="dir56EE42B206A48B25A8AB115CE30B9A60" Name="LC_MESSAGES">
               <Component Win64="$(var.Win64)" Id="cmp2C37C438FE3023646E5FF89302F2F602" Guid="*">
                 <File Id="fil8F915AF883746D67C9B0F3EC509332C3" KeyPath="yes" Source="$(var.SourceDir)/share/locale/da/LC_MESSAGES/gst-plugins-bad-1.0.mo"/>
               </Component>
             </Directory>
           </Directory>
-          <Directory Id="dir57F790A8DB2D3DB0BF8463C22FFBE8A6" Name="de">
-            <Directory Id="dirB77A0DB1BCCB578C42E9284F183630AC" Name="LC_MESSAGES">
+          <Directory Id="dirA53F2AA649204E6E714A23E0CCCB3376" Name="de">
+            <Directory Id="dirEBACA5081BDC52E5B7BC8AE8B9881ED7" Name="LC_MESSAGES">
               <Component Win64="$(var.Win64)" Id="cmp464BF57EF474F8650EFE202286C29FD0" Guid="*">
                 <File Id="filF92C4F5985610EF9A37CC8D2DBC37DCF" KeyPath="yes" Source="$(var.SourceDir)/share/locale/de/LC_MESSAGES/gst-plugins-bad-1.0.mo"/>
               </Component>
             </Directory>
           </Directory>
-          <Directory Id="dir09D9F38F996921CAC1EB9E193D5E4057" Name="el">
-            <Directory Id="dirC447A34C9C69592B879002DEEAAAA2BC" Name="LC_MESSAGES">
+          <Directory Id="dir51CE358E20E8EE072FF7499EFCEC840B" Name="el">
+            <Directory Id="dirD3DD36B822BD09759709F44091F842A4" Name="LC_MESSAGES">
               <Component Win64="$(var.Win64)" Id="cmp486A68812D46E563211DEF2C740589CB" Guid="*">
                 <File Id="fil7EF01FFCA1B6F7488F8BDAB2861C6E85" KeyPath="yes" Source="$(var.SourceDir)/share/locale/el/LC_MESSAGES/gst-plugins-bad-1.0.mo"/>
               </Component>
             </Directory>
           </Directory>
-          <Directory Id="dirE0AB990971097B67559F64D51B404D76" Name="en_GB">
-            <Directory Id="dir92CF6E5585699B7E404C9E586D1F0C75" Name="LC_MESSAGES">
+          <Directory Id="dirBC42F312E5CB0385CD4410D3513CC04C" Name="en_GB">
+            <Directory Id="dirE8F241A15541589F320BA48C5FA110DE" Name="LC_MESSAGES">
               <Component Win64="$(var.Win64)" Id="cmp1FAF32D4B8E891C6383132EC4619F57F" Guid="*">
                 <File Id="filEE724513167D95C0EDC12944D945A806" KeyPath="yes" Source="$(var.SourceDir)/share/locale/en_GB/LC_MESSAGES/gst-plugins-bad-1.0.mo"/>
               </Component>
             </Directory>
           </Directory>
-          <Directory Id="dir377A38BB4612EF136B8DDB93D6613F1B" Name="eo">
-            <Directory Id="dir11FCDBEE0EB3A9F4BF338682CFFD4036" Name="LC_MESSAGES">
+          <Directory Id="dirE9D4BDA2ECCCFA1DCCF1822F50987C2B" Name="eo">
+            <Directory Id="dirDAD0EC43D27A7A533F6CFD1F0DE2768C" Name="LC_MESSAGES">
               <Component Win64="$(var.Win64)" Id="cmp34E46214BD758BA4DF4866B13E354B37" Guid="*">
                 <File Id="filCB5210868D6CB3E4A6D15B5C743A39BA" KeyPath="yes" Source="$(var.SourceDir)/share/locale/eo/LC_MESSAGES/gst-plugins-bad-1.0.mo"/>
               </Component>
             </Directory>
           </Directory>
-          <Directory Id="dir6014AC9EA4638F1E6B6BEBE61E3E3F57" Name="es">
-            <Directory Id="dir2DAECCD841ACF92B8B0364C79B218D2A" Name="LC_MESSAGES">
+          <Directory Id="dirC2AEF9709FBE67FC3397F991FAD09928" Name="es">
+            <Directory Id="dir4A0F3BB136EAC666D389C62E5A0B88A4" Name="LC_MESSAGES">
               <Component Win64="$(var.Win64)" Id="cmp864507287BF1EAD851A0605F4FDA83FB" Guid="*">
                 <File Id="fil5030AC1D12F66F4316D98B3C65D949E0" KeyPath="yes" Source="$(var.SourceDir)/share/locale/es/LC_MESSAGES/gst-plugins-bad-1.0.mo"/>
               </Component>
             </Directory>
           </Directory>
-          <Directory Id="dirDFBCDB179BE72BC09E1431AF13513D9B" Name="eu">
-            <Directory Id="dir168990510075F1E7E9608A956785DC90" Name="LC_MESSAGES">
+          <Directory Id="dir5935963610EC52529470CDDC4167E1A6" Name="eu">
+            <Directory Id="dir7C360BB0EF70AFFDE01A228BF3134E38" Name="LC_MESSAGES">
               <Component Win64="$(var.Win64)" Id="cmpA38A7C6F5C4D63BB04D251BA73A86D5C" Guid="*">
                 <File Id="fil32C1E62117CFB162E6721D7439D5857F" KeyPath="yes" Source="$(var.SourceDir)/share/locale/eu/LC_MESSAGES/gst-plugins-bad-1.0.mo"/>
               </Component>
             </Directory>
           </Directory>
-          <Directory Id="dir24FC90BCCDF83862DCB772F6FDA6C54F" Name="fi">
-            <Directory Id="dirB9240101707997FB2FC7F67D555F83D1" Name="LC_MESSAGES">
+          <Directory Id="dirC354F832546A09823299F34387D7D37C" Name="fi">
+            <Directory Id="dir6053A9622353D4F73D6AFC8BB27294AD" Name="LC_MESSAGES">
               <Component Win64="$(var.Win64)" Id="cmp947A9ED50A6DB56572176DAD827C116E" Guid="*">
                 <File Id="filE977DAED6D9FC8B5E6679B6A9942D616" KeyPath="yes" Source="$(var.SourceDir)/share/locale/fi/LC_MESSAGES/gst-plugins-bad-1.0.mo"/>
               </Component>
             </Directory>
           </Directory>
-          <Directory Id="dirA716495FB1AF92497D456411B65C4B34" Name="fr">
-            <Directory Id="dirE0129C8A8D26EBD9BA3E9C881FE0FAC9" Name="LC_MESSAGES">
+          <Directory Id="dir37BAA3F59E8795EE08BCB401F4C284A4" Name="fr">
+            <Directory Id="dir1C8CCC75F488CD565DD8A2AC280A1CCB" Name="LC_MESSAGES">
               <Component Win64="$(var.Win64)" Id="cmpFE4AFD15DCF1206FD65EDE2621EAD9EA" Guid="*">
                 <File Id="fil604188587F9123521D1EEEF0D1C1562E" KeyPath="yes" Source="$(var.SourceDir)/share/locale/fr/LC_MESSAGES/gst-plugins-bad-1.0.mo"/>
               </Component>
             </Directory>
           </Directory>
-          <Directory Id="dirE192C645C570A055AE23E8AB6D1FF382" Name="fur">
-            <Directory Id="dir01BE2902167398BBEC30BEBAD6010B51" Name="LC_MESSAGES">
+          <Directory Id="dirDFAC22A83592E6A19BD48DFA3D02142E" Name="fur">
+            <Directory Id="dirDB146D7B63CA9D95DFAA898E2393553D" Name="LC_MESSAGES">
               <Component Win64="$(var.Win64)" Id="cmpB0C4BD2D4869444495D7FFE36E90E383" Guid="*">
                 <File Id="fil4B31D0AD5A6046F0C24FC037EDD665CA" KeyPath="yes" Source="$(var.SourceDir)/share/locale/fur/LC_MESSAGES/gst-plugins-bad-1.0.mo"/>
               </Component>
             </Directory>
           </Directory>
-          <Directory Id="dir9093A9F07BF4B86141F1FAD5C001FA47" Name="gl">
-            <Directory Id="dirB4D20CCDF34E780C035549C70D822C23" Name="LC_MESSAGES">
+          <Directory Id="dir0E7D6396E4FA2D112A286E73A4E49DE6" Name="gl">
+            <Directory Id="dir0A0278791DC4C8FD95CBD73A7CD76EF5" Name="LC_MESSAGES">
               <Component Win64="$(var.Win64)" Id="cmp380F0819A84F7ECAA148B5D0C183F870" Guid="*">
                 <File Id="fil2809DA0AE0EBAEE7FE20A05AE2A43138" KeyPath="yes" Source="$(var.SourceDir)/share/locale/gl/LC_MESSAGES/gst-plugins-bad-1.0.mo"/>
               </Component>
             </Directory>
           </Directory>
-          <Directory Id="dirD5F9670A8745817C55032EA6BA9202E3" Name="hr">
-            <Directory Id="dir659CA0F34B5DFCBF3767569B7A9FC874" Name="LC_MESSAGES">
+          <Directory Id="dir1659F55580B0B2BF56BEC4CE4F22C51F" Name="hr">
+            <Directory Id="dirD665EE9F0652F8D97B91AF329D2E5E32" Name="LC_MESSAGES">
               <Component Win64="$(var.Win64)" Id="cmpE24BFE5897E0CDCE29A567AA6DA59AD7" Guid="*">
                 <File Id="filC5D2D384121AE939A5627C1FD6988796" KeyPath="yes" Source="$(var.SourceDir)/share/locale/hr/LC_MESSAGES/gst-plugins-bad-1.0.mo"/>
               </Component>
             </Directory>
           </Directory>
-          <Directory Id="dir2FAACB604396EF22ACE16142F31BC9AA" Name="hu">
-            <Directory Id="dir27991B62836643FE998E688719077528" Name="LC_MESSAGES">
+          <Directory Id="dir663815427EA3B7B214872AC73AB7B6C8" Name="hu">
+            <Directory Id="dirFDBAEA08CE84565B332A8BC75E3580D6" Name="LC_MESSAGES">
               <Component Win64="$(var.Win64)" Id="cmp2879433DEC16C6F36E32C38CB052FF66" Guid="*">
                 <File Id="filAAA5E0DCA0FF06557E7425D4243C76B2" KeyPath="yes" Source="$(var.SourceDir)/share/locale/hu/LC_MESSAGES/gst-plugins-bad-1.0.mo"/>
               </Component>
             </Directory>
           </Directory>
-          <Directory Id="dir309713DA81D10C66A563AFD05C8D3914" Name="id">
-            <Directory Id="dir59B738F560E614F2F24B5CC03EF42478" Name="LC_MESSAGES">
+          <Directory Id="dirDD82D312C6F42F6BC8971CF97C165DD1" Name="id">
+            <Directory Id="dirCCFCA3F0D86A06B88D1B3AF6C0D28AAC" Name="LC_MESSAGES">
               <Component Win64="$(var.Win64)" Id="cmp7A4A4DBF5EAA170DC2268D8B70502308" Guid="*">
                 <File Id="fil361EB123FD0F91BCD7B0AB9C2D350264" KeyPath="yes" Source="$(var.SourceDir)/share/locale/id/LC_MESSAGES/gst-plugins-bad-1.0.mo"/>
               </Component>
             </Directory>
           </Directory>
-          <Directory Id="dirE9AD8DA0C417629D4F5969B606CA4270" Name="it">
-            <Directory Id="dir0F4C3AB45F8FA2B4B057705AF9B97A01" Name="LC_MESSAGES">
+          <Directory Id="dir75695E86469F2C4624123162A51A4B80" Name="it">
+            <Directory Id="dir4EA381FDF3085391335064095D82B070" Name="LC_MESSAGES">
               <Component Win64="$(var.Win64)" Id="cmp2605F5BA5578DA5AF825B82E864EF36A" Guid="*">
                 <File Id="fil6CD7F7EE16B79A8D3BF90F30D8B604F7" KeyPath="yes" Source="$(var.SourceDir)/share/locale/it/LC_MESSAGES/gst-plugins-bad-1.0.mo"/>
               </Component>
             </Directory>
           </Directory>
-          <Directory Id="dirE60EAAB7DBF039750F2E78B54F6E7731" Name="ja">
-            <Directory Id="dir6CEC1293DF61F0546AC639E64A1E0240" Name="LC_MESSAGES">
+          <Directory Id="dirA71E2E2ABDBBD04E0E9A773170D88DE8" Name="ja">
+            <Directory Id="dir6931E85F78280E053045951ABC6B37A8" Name="LC_MESSAGES">
               <Component Win64="$(var.Win64)" Id="cmp8A497C3662E387D3E832F6A4DC67A2C8" Guid="*">
                 <File Id="fil6F8C86334F7F530D7D5B8D0313610E39" KeyPath="yes" Source="$(var.SourceDir)/share/locale/ja/LC_MESSAGES/gst-plugins-bad-1.0.mo"/>
               </Component>
             </Directory>
           </Directory>
-          <Directory Id="dir91ADF39EA0907A81A9E00A1C6ED0F68B" Name="ka">
-            <Directory Id="dir5EFBDA0CF97F9B00D54CD08151A8FA14" Name="LC_MESSAGES">
+          <Directory Id="dir6B2685FEDFA561E955F3A84C4723D85D" Name="ka">
+            <Directory Id="dir15F9303A0E913C7B9FF48CD6942C6504" Name="LC_MESSAGES">
               <Component Win64="$(var.Win64)" Id="cmp17632D96BC87C19A3BC21A2044BA03A2" Guid="*">
                 <File Id="fil585FDE18211E20855CB9FA242E5AB905" KeyPath="yes" Source="$(var.SourceDir)/share/locale/ka/LC_MESSAGES/gst-plugins-bad-1.0.mo"/>
               </Component>
             </Directory>
           </Directory>
-          <Directory Id="dir0757819CCD79B10B2C31FAB844C2B8B0" Name="ky">
-            <Directory Id="dirBE8F9B8E0CA679FCB10AFC3B9E07B99E" Name="LC_MESSAGES">
+          <Directory Id="dir623D1EF08A53B280480EE538B3D537D4" Name="kk">
+            <Directory Id="dirE61F22A48B5C0CED86AC187A49766AEB" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmpBE5E78EE3CAA56B81B3F4E131669FD78" Guid="*">
+                <File Id="fil57A54A66F0052B761C522B1E7D01865D" KeyPath="yes" Source="$(var.SourceDir)/share/locale/kk/LC_MESSAGES/gst-plugins-bad-1.0.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dirC655594398A7BFE3C535E64EE60DD208" Name="ky">
+            <Directory Id="dirC097E3B2D43748485C014A2658DACFC4" Name="LC_MESSAGES">
               <Component Win64="$(var.Win64)" Id="cmp8FB431BEF94D1B2F5DFE084A3CCA3B86" Guid="*">
                 <File Id="fil199257F227E42E92DEF80DEB72864B22" KeyPath="yes" Source="$(var.SourceDir)/share/locale/ky/LC_MESSAGES/gst-plugins-bad-1.0.mo"/>
               </Component>
             </Directory>
           </Directory>
-          <Directory Id="dirE720251796C92B90D33353DAF0375A40" Name="lt">
-            <Directory Id="dirBDF38C321917B6E68D02B718F928B7E3" Name="LC_MESSAGES">
+          <Directory Id="dir55288566D7AD42FC579D9561433CD24F" Name="lt">
+            <Directory Id="dir820AF6E80EC2D756935AF3D500653CD8" Name="LC_MESSAGES">
               <Component Win64="$(var.Win64)" Id="cmpEBFC896C1A8FE843D1F7A8AAF3DB9B8D" Guid="*">
                 <File Id="filB72032B1B13A98344CB287A8BC978EC7" KeyPath="yes" Source="$(var.SourceDir)/share/locale/lt/LC_MESSAGES/gst-plugins-bad-1.0.mo"/>
               </Component>
             </Directory>
           </Directory>
-          <Directory Id="dir46633597EF2532113887A4653CC3497B" Name="lv">
-            <Directory Id="dir8F5E6CC326E2D2E6DD8B1A793F9BD6BB" Name="LC_MESSAGES">
+          <Directory Id="dirCD8FE8A508C82FF3D88A0035932CF8A9" Name="lv">
+            <Directory Id="dir5AE73777555A536F62D827090CE3CB8C" Name="LC_MESSAGES">
               <Component Win64="$(var.Win64)" Id="cmp7E9A5F766DE61F559613C22140FD7986" Guid="*">
                 <File Id="fil9E67D5BF9B4D57C401F2A3D2730B6545" KeyPath="yes" Source="$(var.SourceDir)/share/locale/lv/LC_MESSAGES/gst-plugins-bad-1.0.mo"/>
               </Component>
             </Directory>
           </Directory>
-          <Directory Id="dir006E4AFC568026DAFE9EE27507C61E09" Name="mt">
-            <Directory Id="dirB2837BA0ACF27F74E485DCB32792431F" Name="LC_MESSAGES">
+          <Directory Id="dirEA477BA956BE455ED1E0D0B33FA06F2F" Name="mt">
+            <Directory Id="dirA5D249E03139E3029B1D0596822F4FEB" Name="LC_MESSAGES">
               <Component Win64="$(var.Win64)" Id="cmp924B79124B2270BB59FB8D4D2F1216CF" Guid="*">
                 <File Id="filC2002E47080959F59F441498E6B7E059" KeyPath="yes" Source="$(var.SourceDir)/share/locale/mt/LC_MESSAGES/gst-plugins-bad-1.0.mo"/>
               </Component>
             </Directory>
           </Directory>
-          <Directory Id="dir9BCE69A7DE5C9365C37AD246CFE45FEE" Name="nb">
-            <Directory Id="dir5F870A6E837D60E689B1EC224C3B2CF8" Name="LC_MESSAGES">
+          <Directory Id="dir519C62C25A9B7343C593129AAA116DE8" Name="nb">
+            <Directory Id="dir719ADE5BCB103B64EAD3C7B852F2F763" Name="LC_MESSAGES">
               <Component Win64="$(var.Win64)" Id="cmpB4AD8B3AD1F97156758921084B4E05BB" Guid="*">
                 <File Id="filBAB7B90896BE401F8A7B975CA1DBCE8A" KeyPath="yes" Source="$(var.SourceDir)/share/locale/nb/LC_MESSAGES/gst-plugins-bad-1.0.mo"/>
               </Component>
             </Directory>
           </Directory>
-          <Directory Id="dir5090F88FA3C80EE7A10EA24279036A60" Name="nl">
-            <Directory Id="dir9808D050BC168C30D56DD329BF683491" Name="LC_MESSAGES">
+          <Directory Id="dir739A4F36608DBF8EF983F7B6BBDF62A3" Name="nl">
+            <Directory Id="dirE645EACF5E927E17B425BE919DB0D671" Name="LC_MESSAGES">
               <Component Win64="$(var.Win64)" Id="cmpB6F11D530FCB2AB91D69E37B6241DAFF" Guid="*">
                 <File Id="fil477F2BD34AB363E5C08E9E6924876502" KeyPath="yes" Source="$(var.SourceDir)/share/locale/nl/LC_MESSAGES/gst-plugins-bad-1.0.mo"/>
               </Component>
             </Directory>
           </Directory>
-          <Directory Id="dirF378EBD972693B97DB203B9EEABA7F31" Name="or">
-            <Directory Id="dirCDE07AA1B969B422A10738975240317F" Name="LC_MESSAGES">
+          <Directory Id="dir3B73454D5167B438AF255C806F296805" Name="or">
+            <Directory Id="dirF493EE97F918D49DB37F0F4797DB28FE" Name="LC_MESSAGES">
               <Component Win64="$(var.Win64)" Id="cmp15E692F0B5A88E87D2DB68376D9DF1AD" Guid="*">
                 <File Id="fil48F34D904EED929F63918A6EC2FD935E" KeyPath="yes" Source="$(var.SourceDir)/share/locale/or/LC_MESSAGES/gst-plugins-bad-1.0.mo"/>
               </Component>
             </Directory>
           </Directory>
-          <Directory Id="dirA9E391E7A47AB177B0C35BF5DF6A61B9" Name="pl">
-            <Directory Id="dir7EC437DAEF871D3ED0F25FCD7D1E9AB7" Name="LC_MESSAGES">
+          <Directory Id="dirD86FBA601CF7502B62BF17E92A2780B2" Name="pl">
+            <Directory Id="dirA3D47DD1C9360CF5C91E1B951708868D" Name="LC_MESSAGES">
               <Component Win64="$(var.Win64)" Id="cmpE9AE9610E0872B6F294D70AA3CB820E3" Guid="*">
                 <File Id="fil08DF1D4319A3409E5DC45E836D0BFDEC" KeyPath="yes" Source="$(var.SourceDir)/share/locale/pl/LC_MESSAGES/gst-plugins-bad-1.0.mo"/>
               </Component>
             </Directory>
           </Directory>
-          <Directory Id="dirC57B582EED294AFBA00F972448267169" Name="pt_BR">
-            <Directory Id="dir1B25498F2D3C3608565DA6C010C879A1" Name="LC_MESSAGES">
+          <Directory Id="dir82AA6BE1A3B30C2A7773F1B9BD82C1EF" Name="pt_BR">
+            <Directory Id="dirD8BB33855B9CEDB89B6EBD548268A30B" Name="LC_MESSAGES">
               <Component Win64="$(var.Win64)" Id="cmpC6BACEE77BC9C8CF35C0D3A999686D22" Guid="*">
                 <File Id="filDCEA7BEA6EF99E7CD33FD60B60922779" KeyPath="yes" Source="$(var.SourceDir)/share/locale/pt_BR/LC_MESSAGES/gst-plugins-bad-1.0.mo"/>
               </Component>
             </Directory>
           </Directory>
-          <Directory Id="dir25CA670EDC85AA84A029CEC18B28F724" Name="ro">
-            <Directory Id="dirB765F29B678C1E41189C08D83A64E94C" Name="LC_MESSAGES">
+          <Directory Id="dir5ECB6F241DF3E08884A123E59A580C92" Name="ro">
+            <Directory Id="dir2C325DB2B8AD90E41EF9EE69F0A46E34" Name="LC_MESSAGES">
               <Component Win64="$(var.Win64)" Id="cmp7B79AB7E5311ACA788C2F3B686062A3F" Guid="*">
                 <File Id="fil106DC807AACA474236ADBB89DC24A4D0" KeyPath="yes" Source="$(var.SourceDir)/share/locale/ro/LC_MESSAGES/gst-plugins-bad-1.0.mo"/>
               </Component>
             </Directory>
           </Directory>
-          <Directory Id="dir53CBD6D32DF69B5DDD4F20C49652DDB2" Name="ru">
-            <Directory Id="dir47E86C4B672EDA447C23DE50E1EE1962" Name="LC_MESSAGES">
+          <Directory Id="dir59BAFD477C03789244ADEFB2CC2BEFA9" Name="ru">
+            <Directory Id="dirA9812F1463B1D98327D3A39EC12F610B" Name="LC_MESSAGES">
               <Component Win64="$(var.Win64)" Id="cmp0C9086EEE1D62DE878E9837E3E725EE4" Guid="*">
                 <File Id="filA28C16ED7141CD583399106B95411254" KeyPath="yes" Source="$(var.SourceDir)/share/locale/ru/LC_MESSAGES/gst-plugins-bad-1.0.mo"/>
               </Component>
             </Directory>
           </Directory>
-          <Directory Id="dir2C2AB1D6D0F2840378E0C17FE3E84309" Name="sk">
-            <Directory Id="dir93847D2BA5A273180AA49FA58829DB8F" Name="LC_MESSAGES">
+          <Directory Id="dir204EA8275DC54DFAED28CACDEB667222" Name="sk">
+            <Directory Id="dirA050C496809AD270A315546A4EE5B51B" Name="LC_MESSAGES">
               <Component Win64="$(var.Win64)" Id="cmp67F65BDC0135E9C2718DC15488A8500B" Guid="*">
                 <File Id="fil186AB6996AB3137962F2108EB4C142DA" KeyPath="yes" Source="$(var.SourceDir)/share/locale/sk/LC_MESSAGES/gst-plugins-bad-1.0.mo"/>
               </Component>
             </Directory>
           </Directory>
-          <Directory Id="dirC971C3A8347C84F40533F1E211DDDEDE" Name="sl">
-            <Directory Id="dir8B0F0EE9956011AE7DC6D8BDBAAB8293" Name="LC_MESSAGES">
+          <Directory Id="dirA8E8F64CEA42F5BEA940EC1BC9853329" Name="sl">
+            <Directory Id="dirC9D797CC1A566D21D7DCD57979A1B60E" Name="LC_MESSAGES">
               <Component Win64="$(var.Win64)" Id="cmp02A70E722132D55261BC165645C9EC12" Guid="*">
                 <File Id="filC83599F6C90654ADAAF099D5551E49AD" KeyPath="yes" Source="$(var.SourceDir)/share/locale/sl/LC_MESSAGES/gst-plugins-bad-1.0.mo"/>
               </Component>
             </Directory>
           </Directory>
-          <Directory Id="dir6B17902110FE187609FCD6918759CFB7" Name="sq">
-            <Directory Id="dirB306D4A8A4DFADFBC1CA8E18CA5AFEEB" Name="LC_MESSAGES">
+          <Directory Id="dirFC324DDEC88231BEE34466364EAA1976" Name="sq">
+            <Directory Id="dirCF9269BA133C0087328B847D3E2C827F" Name="LC_MESSAGES">
               <Component Win64="$(var.Win64)" Id="cmp6D3AC8CD3F52EC9C73DFC5D325A8F476" Guid="*">
                 <File Id="filA411F9E2127D61A72109A7B62417A72D" KeyPath="yes" Source="$(var.SourceDir)/share/locale/sq/LC_MESSAGES/gst-plugins-bad-1.0.mo"/>
               </Component>
             </Directory>
           </Directory>
-          <Directory Id="dir23F930CFEBB58F4F1BCE5E73F1FEB96D" Name="sr">
-            <Directory Id="dir925775EA8F5C7969665A847ABFCA6544" Name="LC_MESSAGES">
+          <Directory Id="dir4639AC222EB3A369869B00B1241392D6" Name="sr">
+            <Directory Id="dir99A6B8B27A5697F49E22BDBD650BD361" Name="LC_MESSAGES">
               <Component Win64="$(var.Win64)" Id="cmpC151F311CA0E7691CBE1A94294E1C3F6" Guid="*">
                 <File Id="filB8F9FB26D3AA84A810B63B30FA744F53" KeyPath="yes" Source="$(var.SourceDir)/share/locale/sr/LC_MESSAGES/gst-plugins-bad-1.0.mo"/>
               </Component>
             </Directory>
           </Directory>
-          <Directory Id="dir9C7E852AA91EF9B5710C9A3B79C23D14" Name="sv">
-            <Directory Id="dirB0AE45F8866B96F324F5D2FBF62230C0" Name="LC_MESSAGES">
+          <Directory Id="dir4D1985E9237E0434BEF6ACC2F2906D1A" Name="sv">
+            <Directory Id="dir3CEACD1484435D0C1BF56A9E0045C951" Name="LC_MESSAGES">
               <Component Win64="$(var.Win64)" Id="cmpD87DAB57F2E22C8BA92B8FE998CBCCDA" Guid="*">
                 <File Id="filBD4CAB3AF08CA0152867746B2086F3D5" KeyPath="yes" Source="$(var.SourceDir)/share/locale/sv/LC_MESSAGES/gst-plugins-bad-1.0.mo"/>
               </Component>
             </Directory>
           </Directory>
-          <Directory Id="dir5C2976F575C8FF9CA200FC70C53ABB98" Name="tr">
-            <Directory Id="dir6AB80943404F53E47CA707AA102B0B88" Name="LC_MESSAGES">
+          <Directory Id="dir572757D3E8B3ECF946ED9DAC60E3743D" Name="tr">
+            <Directory Id="dir9C1CD35A01ED002BF29B62045FC3A015" Name="LC_MESSAGES">
               <Component Win64="$(var.Win64)" Id="cmpED6C76894F987ECA2949FAD01A3CC819" Guid="*">
                 <File Id="filB38481A55C853FA9D04751ADD53E6661" KeyPath="yes" Source="$(var.SourceDir)/share/locale/tr/LC_MESSAGES/gst-plugins-bad-1.0.mo"/>
               </Component>
             </Directory>
           </Directory>
-          <Directory Id="dir93B81219AD9EDB60F3EE30139EA3CC8D" Name="uk">
-            <Directory Id="dir4A7DB5842BB9B79EA4918E6DF5843C4D" Name="LC_MESSAGES">
+          <Directory Id="dirEB6BFA207E026E59B11279FE33564C4F" Name="uk">
+            <Directory Id="dir1D9E35DE90F6E3FDB37EB5168CBEC767" Name="LC_MESSAGES">
               <Component Win64="$(var.Win64)" Id="cmp88D7FC178557315F001F0B3858A7657C" Guid="*">
                 <File Id="filC32899A6E0CD1BBAED832FC62C46CDDB" KeyPath="yes" Source="$(var.SourceDir)/share/locale/uk/LC_MESSAGES/gst-plugins-bad-1.0.mo"/>
               </Component>
             </Directory>
           </Directory>
-          <Directory Id="dir17A2F833EB524B24CFA75EDCC24E9DD3" Name="vi">
-            <Directory Id="dir236F7955266941399ECEEB17E05FD4AD" Name="LC_MESSAGES">
+          <Directory Id="dir158B5190FFA5ECACA5CBA516891A8544" Name="vi">
+            <Directory Id="dir3BEE62DD55E3C4D3795903EA3D2C5A5A" Name="LC_MESSAGES">
               <Component Win64="$(var.Win64)" Id="cmp435BD4D94A2D3F3859110D19C8EA3802" Guid="*">
                 <File Id="fil73352B7E088B48BA2E5FC84E07CA509E" KeyPath="yes" Source="$(var.SourceDir)/share/locale/vi/LC_MESSAGES/gst-plugins-bad-1.0.mo"/>
               </Component>
             </Directory>
           </Directory>
-          <Directory Id="dirD12C03EB97E24FCA8A6420162E3EBAA0" Name="zh_CN">
-            <Directory Id="dir600359CC9942937FB6C579888FAB9153" Name="LC_MESSAGES">
+          <Directory Id="dir8FD71AF2151A977CF688334D78B7F8DD" Name="zh_CN">
+            <Directory Id="dir673C77DA4B76BF95E943DFA5A6970EF9" Name="LC_MESSAGES">
               <Component Win64="$(var.Win64)" Id="cmp08BF4D0E0CD871325EC84DF495D90144" Guid="*">
                 <File Id="filE7B4A2EAB92B5BEA31A4DC3382853A45" KeyPath="yes" Source="$(var.SourceDir)/share/locale/zh_CN/LC_MESSAGES/gst-plugins-bad-1.0.mo"/>
               </Component>
             </Directory>
           </Directory>
-          <Directory Id="dirF46E7B5F5ADF8BBC327E7854E7D7A056" Name="zh_TW">
-            <Directory Id="dir7EEC74760DBF2B4374F0D41A56232390" Name="LC_MESSAGES">
+          <Directory Id="dir263F707AF34B48E60447FBBF70A252B7" Name="zh_TW">
+            <Directory Id="dir3D54830C780543297DCB6D05E8ED11FF" Name="LC_MESSAGES">
               <Component Win64="$(var.Win64)" Id="cmp3E1348C2B0F184089E1C44F5D0F45675" Guid="*">
                 <File Id="fil347E72BBD981DD179A0BBC0F2186750F" KeyPath="yes" Source="$(var.SourceDir)/share/locale/zh_TW/LC_MESSAGES/gst-plugins-bad-1.0.mo"/>
               </Component>
@@ -791,7 +798,7 @@
       <ComponentRef Id="cmp7F606FBDF4E15B3D5495E812C2601911"/>
       <ComponentRef Id="cmp56F5CB58D1B9948E9BB9131D880688C5"/>
       <ComponentRef Id="cmp9BAA3AD287159B490256FFD70BFF28FA"/>
-      <ComponentRef Id="cmpEBD7D6A56524653305636702F96B76C6"/>
+      <ComponentRef Id="cmpF45213FD29201BCBF0A5EE30C7E8F451"/>
       <ComponentRef Id="cmp12335C8DCBEC08051B25016C1ABEE398"/>
       <ComponentRef Id="cmp3EA1C3122BBD9048EA0D58F55EA73DBE"/>
       <ComponentRef Id="cmp53917300AE358650C927C34E74BBB7E4"/>
@@ -939,6 +946,7 @@
       <ComponentRef Id="cmp2605F5BA5578DA5AF825B82E864EF36A"/>
       <ComponentRef Id="cmp8A497C3662E387D3E832F6A4DC67A2C8"/>
       <ComponentRef Id="cmp17632D96BC87C19A3BC21A2044BA03A2"/>
+      <ComponentRef Id="cmpBE5E78EE3CAA56B81B3F4E131669FD78"/>
       <ComponentRef Id="cmp8FB431BEF94D1B2F5DFE084A3CCA3B86"/>
       <ComponentRef Id="cmpEBFC896C1A8FE843D1F7A8AAF3DB9B8D"/>
       <ComponentRef Id="cmp7E9A5F766DE61F559613C22140FD7986"/>
@@ -963,5 +971,5 @@
     </ComponentGroup>
   </Fragment>
 </Include>
-<?ignore generated with msitools 0.106.45-476d-dirty ?>
-<?ignore build/tools/wixl/wixl-heat --var var.SourceDir -p /usr/i686-w64-mingw32/sys-root/mingw/ --directory-ref INSTALLDIR --win64 --component-group CG.gstreamer1-plugins-bad-free --require gstreamer1-plugins-base --require libxml2 --require nettle --require openssl --require opus --require gsm --require curl --require libwebp --require openjpeg --require librsvg2 --require lcms2 --require openal-soft --require openexr -i ?>
+<?ignore generated with msitools 0.106.79-452f-dirty ?>
+<?ignore tools/wixl/wixl-heat -i --var var.SourceDir -p /usr/i686-w64-mingw32/sys-root/mingw/ --directory-ref INSTALLDIR --win64 --component-group CG.gstreamer1-plugins-bad-free --require gstreamer1-plugins-base --require libxml2 --require nettle --require openssl --require opus --require gsm --require curl --require libwebp --require openjpeg --require librsvg2 --require lcms2 --require openal-soft --require openexr ?>

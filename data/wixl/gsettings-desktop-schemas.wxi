@@ -3,16 +3,6 @@
   <Fragment>
     <DirectoryRef Id="INSTALLDIR">
       <Directory Id="dir05F248B7A6C41320282D38D650483A68" Name="share">
-        <Directory Id="dir30A1837BE6B6827EF964FB799503C84B" Name="GConf">
-          <Directory Id="dir6EDAB1A496C55CCB644F052E0904B31F" Name="gsettings">
-            <Component Win64="$(var.Win64)" Id="cmp81F1CC6E7A0806AF8456C0304F337E05" Guid="*">
-              <File Id="fil7FA561C191B4F7915C07BA66C21A86EC" KeyPath="yes" Source="$(var.SourceDir)/share/GConf/gsettings/gsettings-desktop-schemas.convert"/>
-            </Component>
-            <Component Win64="$(var.Win64)" Id="cmpDCE91A31DF602F97B3B68ED772369040" Guid="*">
-              <File Id="fil11D67D6AD81CAAD5637DFC20BE8ABA76" KeyPath="yes" Source="$(var.SourceDir)/share/GConf/gsettings/wm-schemas.convert"/>
-            </Component>
-          </Directory>
-        </Directory>
         <Directory Id="dirC52DBA70EB746C53F4E98FE954409F3E" Name="glib-2.0">
           <Directory Id="dir6DADF25C56B78F98F83772F3F7EE9B56" Name="schemas">
             <Component Win64="$(var.Win64)" Id="cmp003682D2DB6270DE90435CDA7EAF5759" Guid="*">
@@ -559,8 +549,6 @@
   </Fragment>
   <Fragment>
     <ComponentGroup Id="CG.gsettings-desktop-schemas">
-      <ComponentRef Id="cmp81F1CC6E7A0806AF8456C0304F337E05"/>
-      <ComponentRef Id="cmpDCE91A31DF602F97B3B68ED772369040"/>
       <ComponentRef Id="cmp003682D2DB6270DE90435CDA7EAF5759"/>
       <ComponentRef Id="cmp41586B717C8877D9DC36EB851C7BBA54"/>
       <ComponentRef Id="cmp96675277965E99F725CBC36079F2FD7E"/>
