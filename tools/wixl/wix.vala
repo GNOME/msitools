@@ -63,6 +63,7 @@ namespace Wixl {
         public abstract void visit_service_control (WixServiceControl service_control, VisitState state) throws GLib.Error;
         public abstract void visit_service_dependency (WixServiceDependency service_dependency) throws GLib.Error;
         public abstract void visit_service_install (WixServiceInstall service_install, VisitState state) throws GLib.Error;
+        public abstract void visit_service_config (WixServiceConfig service_config) throws GLib.Error;
         public abstract void visit_registry_search (WixRegistrySearch search) throws GLib.Error;
         public abstract void visit_custom_action (WixCustomAction action) throws GLib.Error;
         public abstract void visit_binary (WixBinary binary) throws GLib.Error;
@@ -721,12 +722,32 @@ namespace Wixl {
         }
     }
 
+    public class WixServiceConfig: WixElement {
+        static construct {
+            name = "ServiceConfig";
+        }
+
+        public string ServiceName { get; set; }
+        public string DelayedAutoStart { get; set; }
+        public string FailureActionsWhen { get; set; }
+        public string PreShutdownDelay { get; set; }
+        public string ServiceSid { get; set; }
+        public string OnInstall { get; set; }
+        public string OnReinstall { get; set; }
+        public string OnUninstall { get; set; }
+
+        public override void accept (WixNodeVisitor visitor) throws GLib.Error {
+            visitor.visit_service_config (this);
+        }
+    }
+
     public class WixServiceInstall: WixElement {
         static construct {
             name = "ServiceInstall";
 
             add_child_types (child_types, {
                 typeof (WixServiceDependency),
+                typeof (WixServiceConfig),
             });
         }
 
@@ -1210,6 +1231,7 @@ namespace Wixl {
                 typeof (WixRegistryKey),
                 typeof (WixServiceControl),
                 typeof (WixServiceInstall),
+                typeof (WixServiceConfig),
                 typeof (WixIniFile),
                 typeof (WixCondition),
                 typeof (WixEnvironment),
