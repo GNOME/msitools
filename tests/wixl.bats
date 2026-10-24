@@ -551,6 +551,10 @@ EOF
   echo "$output" | grep -q $'^InstallDirDlg\t'
   echo "$output" | grep -q $'^BrowseDlg\t'
 
+  run "$msiinfo" export out.msi ControlEvent
+  [ "$status" -eq 0 ]
+  echo "$output" | tr -d '\r' | grep -q $'^LicenseAgreementDlg\tNext\tNewDialog\tInstallDirDlg\t'
+
   run "$msiinfo" export out.msi InstallUISequence
   [ "$status" -eq 0 ]
   seqof() { echo "$output" | tr -d '\r' | awk -F '\t' -v a="$1" '$1 == a { print $3 }'; }
@@ -1850,4 +1854,73 @@ EOF2
   # listed once, even when MajorUpgrade also makes it secure;
   # the private property is warned about and not passed to the server
   [ "$secure" = "WIX_UPGRADE_DETECTED;WIX_DOWNGRADE_DETECTED;LISTEN_PORT;CONFIG_FILE" ]
+}
+
+@test "wixl - WixUI_FeatureTree" {
+  cd wixl
+  sed 's/WixUI_Minimal/WixUI_FeatureTree/' TestUI.wxs > featuretree.wxs
+  run "$wixl" -o out.msi featuretree.wxs --ext ui --extdir "$SRCDIR/data/ext"
+  [ "$status" -eq 0 ]
+
+  run "$msiinfo" export out.msi Dialog
+  [ "$status" -eq 0 ]
+  dialogs=$(echo "$output" | tr -d '\r' | tail -n +4 | cut -f1)
+  for d in WelcomeDlg LicenseAgreementDlg CustomizeDlg BrowseDlg DiskCostDlg VerifyReadyDlg; do
+    echo "$dialogs" | grep -qx "$d"
+  done
+
+  run "$msiinfo" export out.msi Control
+  [ "$status" -eq 0 ]
+  echo "$output" | tr -d '\r' | grep -q "$(printf '^CustomizeDlg\tTree\tSelectionTree\t25\t85\t175\t115\t7\t_BrowseProperty\t')"
+  echo "$output" | tr -d '\r' | grep -q "$(printf '^BrowseDlg\tPathEdit\tPathEdit\t')"
+
+  run "$msiinfo" export out.msi ControlEvent
+  [ "$status" -eq 0 ]
+  events=$(echo "$output" | tr -d '\r')
+  echo "$events" | grep -q "$(printf '^WelcomeDlg\tNext\tNewDialog\tLicenseAgreementDlg\t')"
+  echo "$events" | grep -q "$(printf '^LicenseAgreementDlg\tNext\tNewDialog\tCustomizeDlg\t')"
+  echo "$events" | grep -q "$(printf '^CustomizeDlg\tBrowse\tSelectionBrowse\tBrowseDlg\t')"
+  echo "$events" | grep -q "$(printf '^BrowseDlg\tOK\tSetTargetPath\t\[_BrowseProperty\]\t')"
+  echo "$events" | grep -q "$(printf '^CustomizeDlg\tNext\tNewDialog\tVerifyReadyDlg\t')"
+  echo "$events" | grep -q "$(printf '^MaintenanceTypeDlg\tChangeButton\tNewDialog\tCustomizeDlg\t')"
+  echo "$events" | grep -q "$(printf '^CustomizeDlg\tBack\tNewDialog\tMaintenanceTypeDlg\tInstalled\t')"
+}
+
+@test "wixl - WixUI files from the extension and WixVariable" {
+  cd wixl
+  # nothing in the working directory, like WiX the extension ships them
+  rm -f License.rtf
+  sed 's/WixUI_Minimal/WixUI_FeatureTree/' TestUI.wxs > uifiles.wxs
+  run "$wixl" -o out.msi uifiles.wxs --ext ui --extdir "$SRCDIR/data/ext"
+  [ "$status" -eq 0 ]
+  run "$msiinfo" export out.msi Control
+  echo "$output" | grep -q "Lorem ipsum"
+
+  # WixVariable and -D override them
+  printf '%s' '{\rtf1 my own license}' > my.rtf
+  printf '%s' '{\rtf1 the -D license}' > d.rtf
+  sed 's|<UIRef Id="WixUI_FeatureTree" />|&<WixVariable Id="WixUILicenseRtf" Value="my.rtf" />|' uifiles.wxs > uivar.wxs
+  grep -q 'WixVariable' uivar.wxs
+  run "$wixl" -o out.msi uivar.wxs --ext ui --extdir "$SRCDIR/data/ext"
+  [ "$status" -eq 0 ]
+  run "$msiinfo" export out.msi Control
+  echo "$output" | grep -q "my own license"
+  ! echo "$output" | grep -q "Lorem ipsum"
+  run "$wixl" -o out.msi -D WixUILicenseRtf=d.rtf uivar.wxs --ext ui --extdir "$SRCDIR/data/ext"
+  [ "$status" -eq 0 ]
+  run "$msiinfo" export out.msi Control
+  echo "$output" | grep -q "the -D license"
+
+  # a License.rtf next to the sources is still used, with a warning
+  cp my.rtf License.rtf
+  run "$wixl" -o out.msi uifiles.wxs --ext ui --extdir "$SRCDIR/data/ext"
+  [ "$status" -eq 0 ]
+  [[ "$output" == *"set WixUILicenseRtf to choose the license"* ]]
+  run "$msiinfo" export out.msi Control
+  echo "$output" | grep -q "my own license"
+  rm License.rtf
+
+  run "$wixl" -o out.msi -D WixUIBannerBmp=missing.bmp uifiles.wxs --ext ui --extdir "$SRCDIR/data/ext"
+  [ "$status" -ne 0 ]
+  [[ "$output" == *"Couldn't find file missing.bmp"* ]]
 }
