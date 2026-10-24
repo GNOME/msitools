@@ -313,25 +313,6 @@ extern const guint8 clsid_msi_transform[16];
 extern const guint8 clsid_msi_database[16];
 extern const guint8 clsid_msi_patch[16];
 
-/* handle unicode/ascii output in the Msi* API functions */
-typedef struct {
-    bool unicode;
-    union {
-       char *a;
-       char *w;
-    } str;
-} awstring;
-
-typedef struct {
-    bool unicode;
-    union {
-       const char *a;
-       const char *w;
-    } str;
-} awcstring;
-
-unsigned msi_strcpy_to_awstring( const char *str, awstring *awbuf, unsigned *sz );
-
 extern void free_cached_tables( LibmsiDatabase *db );
 extern unsigned _libmsi_database_commit_tables( LibmsiDatabase *db, unsigned bytes_per_strref );
 
@@ -363,22 +344,18 @@ extern unsigned write_stream_data( LibmsiDatabase *db, const char *stname,
                                const void *data, unsigned sz );
 extern unsigned write_raw_stream_data( LibmsiDatabase *db, const char *stname,
                         const void *data, unsigned sz, GsfInput **outstm );
-extern unsigned _libmsi_database_commit_streams( LibmsiDatabase *db );
 
 /* transform functions */
 extern unsigned msi_table_apply_transform( LibmsiDatabase *db, GsfInfile *stg );
 extern unsigned _libmsi_database_apply_transform( LibmsiDatabase *db,
                  const char *szTransformFile);
 extern void append_storage_to_db( LibmsiDatabase *db, GsfInfile *stg );
-extern unsigned _libmsi_database_commit_storages( LibmsiDatabase *db );
 
 /* record internals */
-extern void _libmsi_record_destroy( LibmsiRecord * );
 extern unsigned _libmsi_record_set_gsf_input( LibmsiRecord *, unsigned, GsfInput *);
 extern unsigned _libmsi_record_get_gsf_input( const LibmsiRecord *, unsigned, GsfInput **);
 extern const char *_libmsi_record_get_string_raw( const LibmsiRecord *, unsigned );
 extern unsigned _libmsi_record_get_string( const LibmsiRecord *, unsigned, char *, unsigned *);
-extern unsigned _libmsi_record_save_stream( const LibmsiRecord *, unsigned, char *, unsigned *);
 extern unsigned _libmsi_record_load_stream(LibmsiRecord *, unsigned, GsfInput *);
 extern unsigned _libmsi_record_load_stream_from_file( LibmsiRecord *, unsigned, const char *);
 extern unsigned _libmsi_record_copy_field( LibmsiRecord *, unsigned, LibmsiRecord *, unsigned );
@@ -428,10 +405,6 @@ LibmsiIStream * libmsi_istream_new (GsfInput *input);
 
 /* Helpers */
 extern char *msi_dup_record_field(LibmsiRecord *row, int index);
-extern char *msi_dup_property( LibmsiDatabase *db, const char *prop );
-extern unsigned msi_set_property( LibmsiDatabase *, const char *, const char *);
-extern unsigned msi_get_property( LibmsiDatabase *, const char *, char *, unsigned *);
-extern int msi_get_property_int( LibmsiDatabase *package, const char *prop, int def );
 
 /* common strings */
 static const char szEmpty[] = "";

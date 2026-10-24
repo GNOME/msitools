@@ -45,7 +45,6 @@ Files:     tools/msidiff.in
            tools/msidump.in
            tools/msibuild.c
            tools/msiinfo.c
-           data/wxi-validate.pl
 Copyright: 2004-2010 Ville Skyttä <ville.skytta@iki.fi>
            2012-2020 Red Hat, Inc.
            2010 Hans Leidekker for CodeWeavers

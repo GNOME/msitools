@@ -102,9 +102,6 @@ unsigned select_view_create( LibmsiDatabase *db, LibmsiView **view, LibmsiView *
 
 unsigned distinct_view_create( LibmsiDatabase *db, LibmsiView **view, LibmsiView *table );
 
-unsigned order_view_create( LibmsiDatabase *db, LibmsiView **view, LibmsiView *table,
-                       column_info *columns );
-
 unsigned where_view_create( LibmsiDatabase *db, LibmsiView **view, char *tables,
                        struct expr *cond );
 
