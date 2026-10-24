@@ -9,7 +9,7 @@ namespace Wixl {
         ARM64;
 
         public static Arch from_string (string s) throws GLib.Error {
-            return enum_from_string<Arch> (s);
+            return (Arch) enum_from_string (typeof (Arch), s);
         }
 
         public string to_string () {
@@ -27,7 +27,7 @@ namespace Wixl {
         UI = 0;
 
         public static Extension from_string(string s) throws GLib.Error {
-            return enum_from_string<Extension> (s);
+            return (Extension) enum_from_string (typeof (Extension), s);
         }
 
         public string[] get_files () {
@@ -589,7 +589,7 @@ namespace Wixl {
             COLLAPSE;
 
             public static FeatureDisplay from_string(string s) throws GLib.Error {
-                return enum_from_string<FeatureDisplay> (s);
+                return (FeatureDisplay) enum_from_string (typeof (FeatureDisplay), s);
             }
         }
         WixFeature? feature_root;
@@ -600,7 +600,7 @@ namespace Wixl {
             Disallow;
 
             public static AbsentValue from_string(string s) throws GLib.Error {
-                return enum_from_string<AbsentValue> (s);
+                return (AbsentValue) enum_from_string (typeof (AbsentValue), s);
             }
         }
 
@@ -610,7 +610,7 @@ namespace Wixl {
             Yes;
 
             public static AllowAdvertiseValue from_string(string s) throws GLib.Error {
-                return enum_from_string<AllowAdvertiseValue> (s);
+                return (AllowAdvertiseValue) enum_from_string (typeof (AllowAdvertiseValue), s);
             }
         }
 
@@ -620,7 +620,7 @@ namespace Wixl {
             Source;
 
             public static InstallDefaultValue from_string(string s) throws GLib.Error {
-                return enum_from_string<InstallDefaultValue> (s);
+                return (InstallDefaultValue) enum_from_string (typeof (InstallDefaultValue), s);
             }
         }
 
@@ -629,7 +629,7 @@ namespace Wixl {
             Install;
 
             public static TypicalDefaultValue from_string(string s) throws GLib.Error {
-                return enum_from_string<TypicalDefaultValue> (s);
+                return (TypicalDefaultValue) enum_from_string (typeof (TypicalDefaultValue), s);
             }
         }
 
@@ -779,7 +779,7 @@ namespace Wixl {
             BOTH;
 
             public static InstallMode from_string(string s) throws GLib.Error {
-                return enum_from_string<InstallMode> (s);
+                return (InstallMode) enum_from_string (typeof (InstallMode), s);
             }
         }
 
@@ -847,7 +847,7 @@ namespace Wixl {
             HKMU;
 
             public static RegistryRoot from_string(string s) throws GLib.Error {
-                return enum_from_string<RegistryRoot> (s);
+                return (RegistryRoot) enum_from_string (typeof (RegistryRoot), s);
             }
         }
 
@@ -1001,7 +1001,7 @@ namespace Wixl {
             [Description (nick = "removeTag")]
             removeTag = 4;
             public static IniFileAction from_string(string s) throws GLib.Error {
-                return enum_from_string<IniFileAction> (s);
+                return (IniFileAction) enum_from_string (typeof (IniFileAction), s);
             }
         }
         public override void visit_ini_file (WixIniFile inifile) throws GLib.Error {
@@ -1320,7 +1320,7 @@ namespace Wixl {
             DISABLED = 4;
 
             public static StartTypeAttribute from_string(string s) throws GLib.Error {
-                return enum_from_string<StartTypeAttribute> (s);
+                return (StartTypeAttribute) enum_from_string (typeof (StartTypeAttribute), s);
             }
         }
 
@@ -1330,7 +1330,7 @@ namespace Wixl {
             CRITICAL = 3;
 
             public static ErrorControlAttribute from_string(string s) throws GLib.Error {
-                return enum_from_string<ErrorControlAttribute> (s);
+                return (ErrorControlAttribute) enum_from_string (typeof (ErrorControlAttribute), s);
             }
         }
 
@@ -1373,7 +1373,7 @@ namespace Wixl {
             64BIT = 0x10;
 
             public static RegistryType from_string (string s) throws GLib.Error {
-                return enum_from_string<RegistryType> (s);
+                return (RegistryType) enum_from_string (typeof (RegistryType), s);
             }
         }
 

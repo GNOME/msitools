@@ -77,63 +77,58 @@ public int main (string[] args) {
     List<string> cmpref = null;
     var indent = "      ";
 
-    try {
-        var dis = new DataInputStream (new UnixInputStream (0));
-        string line;
+    string line;
 
-        while ((line = dis.read_line (null)) != null) {
-            if (!line.has_prefix (prefix))
-                continue;
+    while ((line = stdin.read_line ()) != null) {
+        if (!line.has_prefix (prefix))
+            continue;
 
-            var file = line[prefix.length:line.length];
-            if (filtered (file))
-                continue;
+        var file = line[prefix.length:line.length];
+        if (filtered (file))
+            continue;
 
-            var gfile = File.new_for_path (line);
-            var is_directory = gfile.query_file_type (FileQueryInfoFlags.NONE) == FileType.DIRECTORY;
+        var gfile = File.new_for_path (line);
+        var is_directory = gfile.query_file_type (FileQueryInfoFlags.NONE) == FileType.DIRECTORY;
 
-            var dir = is_directory ? file : Path.get_dirname (file);
-            var path = dir.split (Path.DIR_SEPARATOR_S, -1);
-            var i = 0;
-            if (last_path != null) {
-                while ((path[i] != null && last_path[i] != null) &&
-                       path[i] == last_path[i])
-                    i++;
-                for (var j = last_path.length - i; j > 0; j--) {
-                    indent = indent[0 : -2];
-                    stdout.printf (indent + "</Directory>\n");
-                }
-            }
-            for ( ; i < path.length; i++) {
-                // derive the id from the source prefix, path and component
-                // group, so the output is reproducible and fragments
-                // harvested from different roots or groups don't clash; a
-                // directory listed again after others gets a new id
-                var dir_path = string.joinv ("/", path[0 : i + 1]);
-                var source_root = prefix.replace ("\\", "/");
-                var id = generate_id ("dir", 4, cg, dr, source_root, dir_path);
-                for (var n = 1; id in dir_ids; n++)
-                    id = generate_id ("dir", 5, cg, dr, source_root, dir_path, n.to_string ());
-                dir_ids.add (id);
-                stdout.printf (indent + "<Directory Id=\"%s\" Name=\"%s\">\n".printf (id, path[i]));
-                indent += "  ";
-            }
-            last_path = path;
-
-            if (!is_directory) {
-                var id = generate_id ("cmp", 1, file);
-                cmpref.append (id);
-                if (win64)
-                    stdout.printf (indent + "<Component Win64=\"$(var.Win64)\" Id=\"%s\" Guid=\"*\">\n".printf (id));
-                else
-                    stdout.printf (indent + "<Component Id=\"%s\" Guid=\"*\">\n".printf (id));
-                file = sourcedir + Path.DIR_SEPARATOR_S + escape_filename (file);
-                stdout.printf (indent + "  <File Id=\"%s\" KeyPath=\"yes\" Source=\"%s\"/>\n".printf (generate_id ("fil", 1, file), file));
-                stdout.printf (indent + "</Component>\n");
+        var dir = is_directory ? file : Path.get_dirname (file);
+        var path = dir.split (Path.DIR_SEPARATOR_S, -1);
+        var i = 0;
+        if (last_path != null) {
+            while ((path[i] != null && last_path[i] != null) &&
+                   path[i] == last_path[i])
+                i++;
+            for (var j = last_path.length - i; j > 0; j--) {
+                indent = indent[0 : -2];
+                stdout.printf (indent + "</Directory>\n");
             }
         }
-    } catch (GLib.Error error) {
-        warning (error.message);
+        for ( ; i < path.length; i++) {
+            // derive the id from the source prefix, path and component
+            // group, so the output is reproducible and fragments
+            // harvested from different roots or groups don't clash; a
+            // directory listed again after others gets a new id
+            var dir_path = string.joinv ("/", path[0 : i + 1]);
+            var source_root = prefix.replace ("\\", "/");
+            var id = generate_id ("dir", 4, cg, dr, source_root, dir_path);
+            for (var n = 1; id in dir_ids; n++)
+                id = generate_id ("dir", 5, cg, dr, source_root, dir_path, n.to_string ());
+            dir_ids.add (id);
+            stdout.printf (indent + "<Directory Id=\"%s\" Name=\"%s\">\n".printf (id, path[i]));
+            indent += "  ";
+        }
+        last_path = path;
+
+        if (!is_directory) {
+            var id = generate_id ("cmp", 1, file);
+            cmpref.append (id);
+            if (win64)
+                stdout.printf (indent + "<Component Win64=\"$(var.Win64)\" Id=\"%s\" Guid=\"*\">\n".printf (id));
+            else
+                stdout.printf (indent + "<Component Id=\"%s\" Guid=\"*\">\n".printf (id));
+            file = sourcedir + Path.DIR_SEPARATOR_S + escape_filename (file);
+            stdout.printf (indent + "  <File Id=\"%s\" KeyPath=\"yes\" Source=\"%s\"/>\n".printf (generate_id ("fil", 1, file), file));
+            stdout.printf (indent + "</Component>\n");
+        }
     }
 
     indent = indent[0 : -2];
