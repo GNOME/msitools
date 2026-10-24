@@ -427,6 +427,7 @@ namespace Wixl {
 
         public string Value { get; set; }
         public string Secure { get; set; }
+        public string Hidden { get; set; }
 
         public override void accept (WixNodeVisitor visitor) throws GLib.Error {
             base.accept (visitor);
