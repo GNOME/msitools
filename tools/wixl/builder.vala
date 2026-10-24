@@ -1069,7 +1069,11 @@ namespace Wixl {
             var comp = file.parent as WixComponent;
             FileInfo info;
             file.file = find_file (source, out info);
-            var attr = FileAttribute.VITAL;
+            FileAttribute attr = 0;
+            // vital unless Vital="no": the installation fails if the
+            // file can't be installed
+            if (parse_yesno (file.Vital, true))
+                attr |= FileAttribute.VITAL;
             // like WiX, the version resource wins over DefaultVersion and
             // DefaultLanguage, which are meant for unversioned files
             string? default_language = null;
@@ -1451,6 +1455,9 @@ namespace Wixl {
             }
         }
 
+        // msidbServiceInstallErrorControlVital, not an ErrorControl value
+        const int ERROR_CONTROL_VITAL = 0x8000;
+
         public override void visit_service_install (WixServiceInstall service_install, VisitState state) throws GLib.Error {
             var comp = service_install.parent as WixComponent;
             int ServiceType;
@@ -1465,6 +1472,9 @@ namespace Wixl {
 
             StartType = StartTypeAttribute.from_string (service_install.Start);
             ErrorControl = ErrorControlAttribute.from_string (service_install.ErrorControl);
+            // the installation fails if the service can't be installed
+            if (parse_yesno (service_install.Vital))
+                ErrorControl |= ERROR_CONTROL_VITAL;
             ServiceType = ServiceTypeAttribute.from_string (service_install.Type);
 
             if (parse_yesno (service_install.Interactive))

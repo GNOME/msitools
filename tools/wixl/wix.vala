@@ -613,6 +613,7 @@ namespace Wixl {
         public string DefaultVersion { get; set; }
         public string DefaultLanguage { get; set; }
         public string CompanionFile { get; set; }
+        public string Vital { get; set; }
 
         public File file;
         public string? version;

@@ -1403,3 +1403,58 @@ EOF2
   hidden=$(echo "$output" | awk -F '\t' '$1 == "MsiHiddenProperties" { print $2 }' | tr -d '\r')
   [ "$hidden" = "PASSWORD;TOKEN" ]
 }
+
+@test "wixl - vital files and services" {
+  mkdir -p SourceDir
+  echo "hello" > SourceDir/a.txt
+  echo "hello" > SourceDir/b.exe
+  cat >vital.wxs <<EOF2
+<?xml version="1.0" encoding="utf-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+  <Product Id="ABCDDCBA-86C7-4D14-AEC0-86416A69ABDE"
+           Name="Test" Version="1.0.0" Manufacturer="Test" Language="1033"
+           UpgradeCode="12345678-1234-1234-1234-123456789012">
+    <Package InstallerVersion="200" Compressed="yes" InstallScope="perMachine" />
+    <Media Id="1" Cabinet="test.cab" EmbedCab="yes" />
+    <Directory Id="TARGETDIR" Name="SourceDir">
+      <Directory Id="ProgramFilesFolder">
+        <Directory Id="INSTALLDIR" Name="Test">
+          <Component Id="C1" Guid="ABCDDCBA-83F1-4F22-985B-FDB3C8ABD471">
+            <File Id="Default" Source="SourceDir/a.txt" KeyPath="yes" />
+            <File Id="NotVital" Name="b.txt" Source="SourceDir/a.txt" Vital="no" />
+          </Component>
+          <Component Id="C2" Guid="ABCDDCBA-83F1-4F22-985B-FDB3C8ABD472">
+            <File Id="Svc" Source="SourceDir/b.exe" KeyPath="yes" />
+            <ServiceInstall Id="VitalSvc" Name="VitalSvc" Type="ownProcess"
+                            Start="auto" ErrorControl="normal" Vital="yes" />
+            <ServiceInstall Id="PlainSvc" Name="PlainSvc" Type="ownProcess"
+                            Start="auto" ErrorControl="critical" />
+          </Component>
+        </Directory>
+      </Directory>
+    </Directory>
+    <Feature Id="Main" Level="1">
+      <ComponentRef Id="C1" />
+      <ComponentRef Id="C2" />
+    </Feature>
+  </Product>
+</Wix>
+EOF2
+  run "$wixl" -o out.msi vital.wxs
+  [ "$status" -eq 0 ]
+
+  run "$msiinfo" export out.msi File
+  [ "$status" -eq 0 ]
+  attrs() { echo "$output" | awk -F '\t' -v id="$1" '$1 == id { print $7 }' | tr -d '\r'; }
+  [ "$(attrs Default)" = "512" ]
+  [ "$(attrs NotVital)" = "0" ]
+  [ "$(attrs Svc)" = "512" ]
+
+  run "$msiinfo" export out.msi ServiceInstall
+  [ "$status" -eq 0 ]
+  errctl() { echo "$output" | awk -F '\t' -v id="$1" '$1 == id { print $6 }' | tr -d '\r'; }
+  # normal (1) | msidbServiceInstallErrorControlVital (0x8000)
+  [ "$(errctl VitalSvc)" = "32769" ]
+  # critical (3)
+  [ "$(errctl PlainSvc)" = "3" ]
+}
