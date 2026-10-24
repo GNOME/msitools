@@ -3,12 +3,12 @@
 
 <Wix xmlns="http://wixtoolset.org/schemas/v4/wxs">
     <Fragment>
-        <Binary Id="WixUI_Bmp_Banner" SourceFile="ui/bitmaps/bannrbmp.bmp" />
-        <Binary Id="WixUI_Bmp_Dialog" SourceFile="ui/bitmaps/dlgbmp.bmp" />
-        <Binary Id="WixUI_Ico_Exclam" SourceFile="ui/bitmaps/exclamic.ico" />
-        <Binary Id="WixUI_Ico_Info" SourceFile="ui/bitmaps/info.ico" />
-        <Binary Id="WixUI_Bmp_New" SourceFile="ui/bitmaps/New.ico" />
-        <Binary Id="WixUI_Bmp_Up" SourceFile="ui/bitmaps/Up.ico" />
+        <Binary Id="WixUI_Bmp_Banner" SourceFile="!(wix.WixUIBannerBmp=ui/bitmaps/bannrbmp.bmp)" />
+        <Binary Id="WixUI_Bmp_Dialog" SourceFile="!(wix.WixUIDialogBmp=ui/bitmaps/dlgbmp.bmp)" />
+        <Binary Id="WixUI_Ico_Exclam" SourceFile="!(wix.WixUIExclamationIco=ui/bitmaps/exclamic.ico)" />
+        <Binary Id="WixUI_Ico_Info" SourceFile="!(wix.WixUIInfoIco=ui/bitmaps/info.ico)" />
+        <Binary Id="WixUI_Bmp_New" SourceFile="!(wix.WixUINewIco=ui/bitmaps/New.ico)" />
+        <Binary Id="WixUI_Bmp_Up" SourceFile="!(wix.WixUIUpIco=ui/bitmaps/Up.ico)" />
 
         <UI Id="WixUI_Common">
             <!-- ui text -->
