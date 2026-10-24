@@ -148,7 +148,7 @@ namespace Wixl {
             bool accept_symbol (Op symbol) {
                 bool accepted = false;
                 if (scanner.peek_next_token () == TokenType.SYMBOL) {
-                    accepted = (int)scanner.next_value.symbol == symbol;
+                    accepted = (int) (intptr) scanner.next_value.symbol == symbol;
                 }
 
                 if (accepted)

@@ -374,8 +374,8 @@ namespace Wixl {
 
             public bool ready () {
                 var it = HashTableIter <Action, Action*> (depends_on);
-                Action dep;
-                while (it.next (null, out dep))
+                unowned Action dep;
+                while (it.next (out dep, null))
                     if (!dep.emitted)
                         return false;
                 return true;
@@ -399,9 +399,9 @@ namespace Wixl {
 
             action.lower_state = 1;
             int ret = int.MIN;
-            Action dep;
+            unowned Action dep;
             var it = HashTableIter <Action, Action*> (action.depends_on);
-            while (it.next (null, out dep))
+            while (it.next (out dep, null))
                 ret = int.max (ret, dep.sequenced ? 2 * dep.sequence + 1 : lower_bound (dep));
             action.lower = ret;
             action.lower_state = 2;
@@ -470,9 +470,9 @@ namespace Wixl {
                     bool placed = false;
                     int pos = 0;
                     if (forward) {
-                        Action dep;
+                        unowned Action dep;
                         var it = HashTableIter <Action, Action*> (action.depends_on);
-                        while (it.next (null, out dep))
+                        while (it.next (out dep, null))
                             if (dep.placed) {
                                 var after = dep.sequenced ? dep.position + 1 : dep.position;
                                 pos = placed ? int.max (pos, after) : after;
