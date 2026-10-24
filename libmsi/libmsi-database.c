@@ -2118,7 +2118,7 @@ static void cache_infile_structure( LibmsiDatabase *db )
 
     for (i = 0; i < n; i++)
     {
-        GsfInput *in = gsf_infile_child_by_index(db->infile, i);
+        GsfInput *in = msi_infile_child_by_index(db->infile, i);
         const char* name = gsf_input_name(in);
         const uint8_t *name8 = (const uint8_t *)name;
 

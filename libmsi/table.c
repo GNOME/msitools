@@ -20,6 +20,7 @@
 
 #include <stdarg.h>
 #include <assert.h>
+#include <gsf/gsf-infile-impl.h>
 
 #include "libmsi.h"
 #include "msipriv.h"
@@ -252,6 +253,59 @@ void enum_stream_names( GsfInfile *stg )
     }
 }
 
+/*
+ * libgsf >= 1.14.59 (commit fbe366e) fails to open 0-byte streams that
+ * are stored in small blocks, such as an empty _StringData or _Tables.
+ * Return an empty stream for a child that exists but cannot be opened.
+ * The child_by_* vfuncs are called directly so that libgsf does not
+ * print a warning for every such stream.
+ */
+#define INFILE_GET_CLASS(stg) G_TYPE_INSTANCE_GET_CLASS( stg, GSF_INFILE_TYPE, GsfInfileClass )
+
+static GsfInput *empty_child( GsfInput *stm, const char *name, GError *err )
+{
+    static const uint8_t empty[1];
+
+    g_debug("opening stream %s failed (%s), assuming it is empty",
+            name, err->message);
+    g_error_free( err );
+    if (stm)
+        g_object_unref( stm );
+
+    stm = gsf_input_memory_new( empty, 0, false );
+    gsf_input_set_name( stm, name );
+    return stm;
+}
+
+GsfInput *msi_infile_child_by_index( GsfInfile *stg, int i )
+{
+    GError *err = NULL;
+    GsfInput *stm;
+
+    g_return_val_if_fail( GSF_IS_INFILE( stg ), NULL );
+
+    stm = INFILE_GET_CLASS( stg )->child_by_index( stg, i, &err );
+    if (!err)
+        return stm;
+
+    return empty_child( stm, gsf_infile_name_by_index( stg, i ), err );
+}
+
+GsfInput *msi_infile_child_by_name( GsfInfile *stg, const char *name )
+{
+    GError *err = NULL;
+    GsfInput *stm;
+
+    g_return_val_if_fail( GSF_IS_INFILE( stg ), NULL );
+    g_return_val_if_fail( name != NULL, NULL );
+
+    stm = INFILE_GET_CLASS( stg )->child_by_name( stg, name, &err );
+    if (!err)
+        return stm;
+
+    return empty_child( stm, name, err );
+}
+
 unsigned read_stream_data( GsfInfile *stg, const char *stname,
                        uint8_t **pdata, unsigned *psz )
 {
@@ -268,7 +322,7 @@ unsigned read_stream_data( GsfInfile *stg, const char *stname,
     if ( !stg )
         return LIBMSI_RESULT_FUNCTION_FAILED;
 
-    stm = gsf_infile_child_by_name(stg, encname );
+    stm = msi_infile_child_by_name(stg, encname );
     msi_free(encname);
     if( !stm )
     {
