@@ -215,3 +215,78 @@ EOF
   # FIXME: add tons of tests on out.msi
   test -f out.msi
 }
+
+@test "wixl - Before/After next to standard actions" {
+  mkdir -p SourceDir
+  echo "hello" > SourceDir/hello.txt
+  cat >sequence.wxs <<EOF
+<?xml version="1.0" encoding="utf-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+  <Product Id="ABCDDCBA-86C7-4D14-AEC0-86416A69ABDE"
+           Name="Test" Version="1.0.0" Manufacturer="Test" Language="1033"
+           UpgradeCode="12345678-1234-1234-1234-123456789012">
+    <Package InstallerVersion="200" Compressed="yes" />
+    <Media Id="1" Cabinet="test.cab" EmbedCab="yes" />
+    <MajorUpgrade DowngradeErrorMessage="Newer version installed." />
+    <Directory Id="TARGETDIR" Name="SourceDir">
+      <Directory Id="ProgramFilesFolder">
+        <Directory Id="INSTALLDIR" Name="Test">
+          <Component Id="C1" Guid="ABCDDCBA-83F1-4F22-985B-FDB3C8ABD471">
+            <File Id="F1" Source="SourceDir/hello.txt" KeyPath="yes" />
+          </Component>
+        </Directory>
+      </Directory>
+    </Directory>
+    <Feature Id="Main" Level="1">
+      <ComponentRef Id="C1" />
+    </Feature>
+    <CustomAction Id="SetA" Property="A" Value="a" />
+    <CustomAction Id="SetB" Property="B" Value="b" />
+    <CustomAction Id="SetC" Property="C" Value="c" />
+    <CustomAction Id="SetD" Property="D" Value="d" />
+    <CustomAction Id="SetE" Property="E" Value="e" />
+    <CustomAction Id="SetF" Property="F" Value="f" />
+    <CustomAction Id="SetG" Property="G" Value="g" />
+    <CustomAction Id="SetH" Property="H" Value="h" />
+    <CustomAction Id="SetI" Property="I" Value="i" />
+    <CustomAction Id="SetX" Property="X" Value="x" />
+    <InstallExecuteSequence>
+      <Custom Action="SetA" Before="RemoveFiles" />
+      <Custom Action="SetB" After="InstallFiles" />
+      <Custom Action="SetC" After="InstallFiles" />
+      <Custom Action="SetD" Before="SetE" />
+      <Custom Action="SetE" After="WriteRegistryValues" />
+      <Custom Action="SetF" Before="InstallFinalize" />
+      <Custom Action="SetG" After="SetF" />
+      <Custom Action="SetH" Before="LaunchConditions" />
+      <Custom Action="SetI" Before="SetG" />
+      <Custom Action="SetX" OnExit="success" />
+    </InstallExecuteSequence>
+  </Product>
+</Wix>
+EOF
+  run "$wixl" -o out.msi sequence.wxs
+  [ "$status" -eq 0 ]
+
+  run "$msiinfo" export out.msi InstallExecuteSequence
+  [ "$status" -eq 0 ]
+  table=$(echo "$output" | tr -d '\r' | tail -n +4 | sort -t "$(printf '\t')" -k3,3n)
+  order=" $(echo "$table" | cut -f1 | tr '\n' ' ')"
+  echo "$order"
+  seqof() { echo "$table" | awk -F '\t' -v a="$1" '$1 == a { print $3 }'; }
+
+  # each action sits next to its anchor, not at the start or end of the table
+  [[ "$order" == *" InstallValidate RemoveExistingProducts InstallInitialize "* ]]
+  [[ "$order" == *" SetA RemoveFiles "* ]]
+  [[ "$order" == *" InstallFiles SetB SetC "* ]]
+  [[ "$order" == *" WriteRegistryValues SetD SetE "* ]]
+  [[ "$order" == *" SetF SetI SetG InstallFinalize "* ]]
+  [[ "$order" == *" SetH LaunchConditions "* ]]
+  [ "$(seqof RemoveExistingProducts)" -eq 1401 ]
+  [ "$(seqof SetB)" -eq 4001 ]
+  [ "$(seqof SetC)" -eq 4002 ]
+  [ "$(seqof SetA)" -lt "$(seqof RemoveFiles)" ]
+  [ "$(seqof SetF)" -lt "$(seqof InstallFinalize)" ]
+  [ "$(seqof SetH)" -gt 0 ]
+  [ "$(seqof SetX)" -eq -1 ]
+}

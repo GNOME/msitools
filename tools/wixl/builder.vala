@@ -1073,15 +1073,17 @@ namespace Wixl {
             } else {
                 if (action.Sequence != null) {
                     node.sequence = int.parse (action.Sequence);
-                }
+                    if (action.After != null || action.Before != null)
+                        warning ("action %s has a Sequence, ignoring Before/After", action.name);
+                } else {
+                    if (action.After != null) {
+                        node.add_dep (table.get_action (action.After));
+                    }
 
-                if (action.After != null) {
-                    node.add_dep (table.get_action (action.After));
-                }
-
-                if (action.Before != null) {
-                    var before = table.get_action (action.Before);
-                    before.add_dep (node);
+                    if (action.Before != null) {
+                        var before = table.get_action (action.Before);
+                        before.add_dep (node);
+                    }
                 }
             }
 

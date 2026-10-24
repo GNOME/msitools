@@ -345,67 +345,211 @@ namespace Wixl {
             public int sequence = -999;
             public WixAction? action;
 
-            public bool visited = false;
-            public bool incoming_deps = false;
+            // declaration order, used to break ties
+            public int index;
+
+            public bool emitted = false;
+            public int lower_state = 0;
+            public int lower;
+            public int upper_state = 0;
+            public int upper;
+            public bool placed;
+            public int position;
 
             // Use it as a set, so value is not refcounted please vala
             public HashTable<Action, Action*> depends_on = new HashTable<Action, Action*> (direct_hash, direct_equal);
+            // reverse of depends_on, unowned to avoid reference cycles
+            public List<unowned Action> required_by;
 
             public void add_dep (Action a) {
+                if (depends_on.contains (a))
+                    return;
                 hash_table_add (depends_on, a);
-                a.incoming_deps = true;
+                a.required_by.append (this);
             }
 
-            public int dep_max() {
-                int ret = -1;
+            public bool sequenced {
+                get { return sequence != -999; }
+            }
+
+            public bool ready () {
                 var it = HashTableIter <Action, Action*> (depends_on);
                 Action dep;
                 while (it.next (null, out dep))
-                    if (dep.sequence > ret)
-                        ret = dep.sequence;
-                return ret;
+                    if (!dep.emitted)
+                        return false;
+                return true;
             }
         }
 
         HashTable<string, Action> actions = new HashTable<string, Action> (str_hash, str_equal);
 
-        void sort_topological_visit (Action action, ref List<Action> sorted) {
-            if (action.visited)
-                return;
+        // Positions are twice the sequence, so that "right after" and
+        // "right before" a sequenced action sort around it.
 
-            action.visited = true;
+        // Right after the latest action this one must come after, through
+        // its After dependencies, or int.MIN if there is none.
+        int lower_bound (Action action) {
+            if (action.sequenced)
+                return 2 * action.sequence;
+            if (action.lower_state == 2)
+                return action.lower;
+            if (action.lower_state == 1)
+                return int.MIN; // dependency cycle
 
+            action.lower_state = 1;
+            int ret = int.MIN;
             Action dep;
             var it = HashTableIter <Action, Action*> (action.depends_on);
             while (it.next (null, out dep))
-                sort_topological_visit (dep, ref sorted);
-
-            sorted.append (action);
+                ret = int.max (ret, dep.sequenced ? 2 * dep.sequence + 1 : lower_bound (dep));
+            action.lower = ret;
+            action.lower_state = 2;
+            return ret;
         }
 
-        // before sorting topologically, sort the actions so that the
-        // one with the least max sequence dependency comes first.
-        List<weak Action> sorted_actions() {
-            CompareFunc<Action> cmp = (a, b) => {
-                if (a.sequence == b.sequence) {
-                    var a_dep = a.dep_max();
-                    var b_dep = b.dep_max();
-                    return a_dep - b_dep;
+        // Right before the earliest action that must come after this one,
+        // through Before dependencies, or int.MAX if there is none.
+        int upper_bound (Action action) {
+            if (action.sequenced)
+                return 2 * action.sequence;
+            if (action.upper_state == 2)
+                return action.upper;
+            if (action.upper_state == 1)
+                return int.MAX; // dependency cycle
+
+            action.upper_state = 1;
+            int ret = int.MAX;
+            foreach (var next in action.required_by) {
+                if (next.sequenced) {
+                    ret = int.min (ret, 2 * next.sequence - 1);
+                } else {
+                    var pos = position (next);
+                    if (pos != int.MIN)
+                        ret = int.min (ret, pos);
                 }
-                return a.sequence - b.sequence;
-            };
+            }
+            action.upper = ret;
+            action.upper_state = 2;
+            return ret;
+        }
+
+        // Where an action belongs: after the actions it must follow,
+        // otherwise before the actions that must follow it.
+        int position (Action action) {
+            var lower = lower_bound (action);
+            if (lower != int.MIN)
+                return lower;
+            var upper = upper_bound (action);
+            if (upper != int.MAX)
+                return upper;
+            return int.MIN;
+        }
+
+        // Place every action, then fill in the actions that are only tied
+        // to an anchor through a mix of Before and After (e.g. A Before B,
+        // B After C, C Before X): first next to the actions they follow,
+        // then next to the actions that follow them, until nothing changes.
+        // Each step only reads positions from the previous one, so the
+        // result does not depend on the order of the actions.
+        void place_actions (List<weak Action> list) {
+            foreach (var action in list) {
+                action.position = position (action);
+                action.placed = action.position != int.MIN;
+            }
+
+            bool forward = true;
+            while (true) {
+                List<weak Action> found = null;
+                int[] positions = {};
+
+                foreach (var action in list) {
+                    if (action.placed)
+                        continue;
+
+                    bool placed = false;
+                    int pos = 0;
+                    if (forward) {
+                        Action dep;
+                        var it = HashTableIter <Action, Action*> (action.depends_on);
+                        while (it.next (null, out dep))
+                            if (dep.placed) {
+                                var after = dep.sequenced ? dep.position + 1 : dep.position;
+                                pos = placed ? int.max (pos, after) : after;
+                                placed = true;
+                            }
+                    } else {
+                        foreach (var next in action.required_by)
+                            if (next.placed) {
+                                var before = next.sequenced ? next.position - 1 : next.position;
+                                pos = placed ? int.min (pos, before) : before;
+                                placed = true;
+                            }
+                    }
+
+                    if (placed) {
+                        found.append (action);
+                        positions += pos;
+                    }
+                }
+
+                int i = 0;
+                foreach (var action in found) {
+                    action.position = positions[i++];
+                    action.placed = true;
+                }
+
+                if (found != null)
+                    forward = true;
+                else if (forward)
+                    forward = false;
+                else
+                    break;
+            }
+        }
+
+        bool goes_before (Action a, Action b) {
+            if (a.position != b.position)
+                return a.position < b.position;
+            if (a.sequenced != b.sequenced)
+                return a.sequenced;
+            return a.index < b.index;
+        }
+
+        List<weak Action> sorted_actions () {
             var list = actions.get_values ();
-            list.sort(cmp);
+            list.sort ((a, b) => {
+                if (a.sequence != b.sequence)
+                    return a.sequence < b.sequence ? -1 : 1;
+                return a.index - b.index;
+            });
             return list;
         }
 
-        List<Action> sort_topological () {
-            List<Action> sorted = null;
+        // Kahn's algorithm: of the actions whose dependencies are all
+        // emitted, emit the one that belongs earliest in the sequence.
+        List<weak Action> sort_topological () {
+            var pending = sorted_actions ();
+            List<weak Action> sorted = null;
 
-            foreach (var action in sorted_actions()) {
-                if (action.incoming_deps)
-                    continue;
-                sort_topological_visit (action, ref sorted);
+            place_actions (pending);
+
+            while (pending != null) {
+                weak Action? next = null;
+                foreach (var action in pending)
+                    if (action.ready () && (next == null || goes_before (action, next)))
+                        next = action;
+
+                if (next == null) {
+                    foreach (var action in pending)
+                        if (next == null || goes_before (action, next))
+                            next = action;
+                    warning ("%s: dependency cycle involving action %s", name, next.name);
+                }
+
+                next.emitted = true;
+                pending.remove (next);
+                sorted.append (next);
             }
 
             return sorted;
@@ -413,8 +557,8 @@ namespace Wixl {
 
         void add_implicit_deps () {
             Action? prev = null;
-            foreach (var a in sorted_actions()) {
-                if (a.sequence == -999)
+            foreach (var a in sorted_actions ()) {
+                if (!a.sequenced)
                     continue;
                 if (prev != null)
                     a.add_dep (prev);
@@ -426,14 +570,32 @@ namespace Wixl {
             add_implicit_deps ();
             var sorted = sort_topological ();
 
+            // numbers given to unsequenced actions only ever go up, and
+            // start after the highest sequence placed before them
             int sequence = 0;
+            bool numbered = false;
             foreach (var action in sorted) {
-                if (action.sequence == -999)
+                if (!action.sequenced) {
                     action.sequence = ++sequence;
+                    numbered = true;
+                } else {
+                    if (numbered && action.sequence > 0 && action.sequence <= sequence)
+                        warning ("%s: actions placed before %s ran out of free sequence numbers, set a Sequence explicitly",
+                                 name, action.name);
+                    numbered = false;
+                    sequence = int.max (sequence, action.sequence);
+                }
 
-                sequence = action.sequence;
                 add (action.name, action.condition, action.sequence);
             }
+        }
+
+        Action new_action (string name) {
+            var action = new Action ();
+            action.name = name;
+            action.index = (int) actions.size ();
+            actions.insert (name, action);
+            return action;
         }
 
         public Action get_action (string name) {
@@ -441,9 +603,7 @@ namespace Wixl {
             if (action != null)
                 return action;
 
-            action = new Action ();
-            actions.insert (name, action);
-            action.name = name;
+            action = new_action (name);
 
             var default = MSIDefault.get_action_by_name (name);
             if (default != null)
@@ -461,9 +621,7 @@ namespace Wixl {
             if (seq != null)
                 return;
 
-            seq = new Action ();
-            actions.insert (default.name, seq);
-            seq.name = default.name;
+            seq = new_action (default.name);
             seq.sequence = default.sequence;
             seq.condition = default.condition;
         }
