@@ -415,6 +415,46 @@ static const char szStringPool[] = "_StringPool";
 static const char szName[] = "Name";
 static const char szData[] = "Data";
 
+/* little-endian integer helpers */
+static inline unsigned msi_read_le( const uint8_t *data, unsigned bytes )
+{
+    unsigned val = 0;
+    unsigned i;
+
+    for (i = 0; i < bytes; i++)
+        val |= (unsigned) data[i] << (i * 8);
+
+    return val;
+}
+
+static inline uint16_t msi_read_le16( const uint8_t *data )
+{
+    uint16_t val;
+
+    memcpy (&val, data, sizeof(val));
+    return GUINT16_FROM_LE (val);
+}
+
+static inline uint32_t msi_read_le32( const uint8_t *data )
+{
+    uint32_t val;
+
+    memcpy (&val, data, sizeof(val));
+    return GUINT32_FROM_LE (val);
+}
+
+static inline void msi_write_le16( uint8_t *data, uint16_t val )
+{
+    val = GUINT16_TO_LE (val);
+    memcpy (data, &val, sizeof(val));
+}
+
+static inline void msi_write_le32( uint8_t *data, uint32_t val )
+{
+    val = GUINT32_TO_LE (val);
+    memcpy (data, &val, sizeof(val));
+}
+
 /* memory allocation macro functions */
 
 static void *msi_alloc( size_t len ) G_GNUC_ALLOC_SIZE(1);

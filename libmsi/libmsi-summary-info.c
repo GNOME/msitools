@@ -231,20 +231,14 @@ libmsi_summary_info_get_properties (LibmsiSummaryInfo *self)
 
 static unsigned read_word( const uint8_t *data, unsigned *ofs )
 {
-    unsigned val = 0;
-    val = data[*ofs];
-    val |= data[*ofs+1] << 8;
+    unsigned val = msi_read_le16( data + *ofs );
     *ofs += 2;
     return val;
 }
 
 static unsigned read_dword( const uint8_t *data, unsigned *ofs )
 {
-    unsigned val = 0;
-    val = data[*ofs];
-    val |= data[*ofs+1] << 8;
-    val |= data[*ofs+2] << 16;
-    val |= data[*ofs+3] << 24;
+    unsigned val = msi_read_le32( data + *ofs );
     *ofs += 4;
     return val;
 }
@@ -306,7 +300,6 @@ static void parse_filetime( const char *str, guint64 *ft )
     *ft = (t + 134774ULL * 86400ULL) * 10000000ULL;
 }
 
-/* FIXME: doesn't deal with endian conversion */
 static void read_properties_from_data( LibmsiOLEVariant *prop, const uint8_t *data, unsigned sz, uint32_t cProperties )
 {
     unsigned type;
@@ -482,22 +475,16 @@ done:
 static unsigned write_word( uint8_t *data, unsigned ofs, unsigned val )
 {
     if( data )
-    {
-        data[ofs++] = val&0xff;
-        data[ofs++] = (val>>8)&0xff;
-    }
+        msi_write_le16( data + ofs, val );
+
     return 2;
 }
 
 static unsigned write_dword( uint8_t *data, unsigned ofs, unsigned val )
 {
     if( data )
-    {
-        data[ofs++] = val&0xff;
-        data[ofs++] = (val>>8)&0xff;
-        data[ofs++] = (val>>16)&0xff;
-        data[ofs++] = (val>>24)&0xff;
-    }
+        msi_write_le32( data + ofs, val );
+
     return 4;
 }
 

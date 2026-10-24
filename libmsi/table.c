@@ -692,12 +692,7 @@ static unsigned get_table( LibmsiDatabase *db, const char *name, LibmsiTable **t
 
 static unsigned read_table_int( uint8_t *const *data, unsigned row, unsigned col, unsigned bytes )
 {
-    unsigned ret = 0, i;
-
-    for (i = 0; i < bytes; i++)
-        ret += data[row][col + i] << i * 8;
-
-    return ret;
+    return msi_read_le( data[row] + col, bytes );
 }
 
 static unsigned get_tablecolumns( LibmsiDatabase *db, const char *szTableName, LibmsiColumnInfo *colinfo, unsigned *sz )
@@ -2207,16 +2202,6 @@ LibmsiCondition _libmsi_database_is_table_persistent( LibmsiDatabase *db, const 
     return t->persistent;
 }
 
-static unsigned read_raw_int(const uint8_t *data, unsigned col, unsigned bytes)
-{
-    unsigned ret = 0, i;
-
-    for (i = 0; i < bytes; i++)
-        ret += (data[col + i] << i * 8);
-
-    return ret;
-}
-
 static unsigned msi_record_encoded_stream_name( const LibmsiTableView *tv, LibmsiRecord *rec, char **pstname )
 {
     char *stname = NULL;
@@ -2286,7 +2271,7 @@ static LibmsiRecord *msi_get_transform_record( const LibmsiTableView *tv, const 
     LibmsiColumnInfo *columns = tv->columns;
     LibmsiRecord *rec;
 
-    mask = rawdata[0] | (rawdata[1] << 8);
+    mask = msi_read_le16(rawdata);
     rawdata += 2;
 
     rec = libmsi_record_new( tv->num_cols );
@@ -2329,7 +2314,7 @@ static LibmsiRecord *msi_get_transform_record( const LibmsiTableView *tv, const 
         {
             const char *sval;
 
-            val = read_raw_int(rawdata, ofs, bytes_per_strref);
+            val = msi_read_le(rawdata + ofs, bytes_per_strref);
             sval = msi_string_lookup_id( st, val );
             libmsi_record_set_string( rec, i+1, sval );
             TRACE(" field %d [%s]\n", i+1, debugstr_a(sval));
@@ -2341,13 +2326,13 @@ static LibmsiRecord *msi_get_transform_record( const LibmsiTableView *tv, const 
             switch( n )
             {
             case 2:
-                val = read_raw_int(rawdata, ofs, n);
+                val = msi_read_le(rawdata + ofs, n);
                 if (val)
                     libmsi_record_set_int( rec, i+1, val-0x8000 );
                 TRACE(" field %d [0x%04x]\n", i+1, val );
                 break;
             case 4:
-                val = read_raw_int(rawdata, ofs, n);
+                val = msi_read_le(rawdata + ofs, n);
                 if (val)
                     libmsi_record_set_int( rec, i+1, val^0x80000000 );
                 TRACE(" field %d [0x%08x]\n", i+1, val );
@@ -2536,7 +2521,7 @@ static unsigned msi_table_load_transform( LibmsiDatabase *db, GsfInfile *stg,
     /* interpret the data */
     for (n = 0; n < rawsize;)
     {
-        mask = rawdata[n] | (rawdata[n + 1] << 8);
+        mask = msi_read_le16(rawdata + n);
         if (mask & 1)
         {
             /*
