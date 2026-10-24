@@ -129,6 +129,41 @@ EOF
   test -f out.msi
 }
 
+@test "wixl - preprocessor condition evaluator" {
+  cd wixl
+  export FOO="bar"
+  cat >conditions.wxs <<'EOF'
+<?xml version="1.0"?>
+<Wix xmlns='http://schemas.microsoft.com/wix/2006/wi'>
+  <?if 1?><Property Id="c_true" Value="1"/><?endif?>
+  <?if 0?><Property Id="c_false" Value="1"/><?endif?>
+  <?if not 1?><Property Id="c_not" Value="1"/><?endif?>
+  <?if not not 1?><Property Id="c_notnot" Value="1"/><?endif?>
+  <?if (1 = 1)?><Property Id="c_num_eq" Value="1"/><?endif?>
+  <?if 1 != 2?><Property Id="c_num_ne" Value="1"/><?endif?>
+  <?if 1 < 2?><Property Id="c_lt" Value="1"/><?endif?>
+  <?if 2 <= 2?><Property Id="c_lte" Value="1"/><?endif?>
+  <?if 2 >= 2?><Property Id="c_gte" Value="1"/><?endif?>
+  <?if 2 > 1?><Property Id="c_gt" Value="1"/><?endif?>
+  <?if "foo" = "foo"?><Property Id="c_str_eq" Value="1"/><?endif?>
+  <?if "foo" = "bar"?><Property Id="c_str_ne" Value="1"/><?endif?>
+  <?if "foo" ~= "fOo"?><Property Id="c_str_case" Value="1"/><?endif?>
+  <?if 0 and 1?><Property Id="c_and" Value="1"/><?endif?>
+  <?if 0 or 1?><Property Id="c_or" Value="1"/><?endif?>
+  <?if not (1 != 2) or (1 != 2)?><Property Id="c_combo" Value="1"/><?endif?>
+  <?if $(env.FOO) = "bar"?><Property Id="c_env" Value="1"/><?endif?>
+</Wix>
+EOF
+  run "$wixl" -E conditions.wxs
+  [ "$status" -eq 0 ]
+  for id in c_true c_notnot c_num_eq c_num_ne c_lt c_lte c_gte c_gt c_str_eq c_str_case c_or c_combo c_env; do
+    echo "$output" | grep -q "Id=\"$id\""
+  done
+  for id in c_false c_not c_str_ne c_and; do
+    ! echo "$output" | grep -q "Id=\"$id\""
+  done
+}
+
 @test "wixl - system include directory" {
   cd wixl
   cat >include.wxs <<EOF

@@ -16,6 +16,17 @@ testdatabase = executable('testdatabase',
   dependencies: libmsi,
 )
 
+test('libmsi testrecord',
+  testrecord,
+  protocol: 'tap',
+)
+
+test('libmsi testdatabase',
+  testdatabase,
+  protocol: 'tap',
+  timeout: 300,
+)
+
 if host_machine.system() == 'windows'
   testsuminfo = executable('testsuminfo',
     'testsuminfo.c',
@@ -23,6 +34,11 @@ if host_machine.system() == 'windows'
     c_args: c_args,
     include_directories: inc_dirs,
     dependencies: libmsi,
+  )
+
+  test('libmsi testsuminfo',
+    testsuminfo,
+    protocol: 'tap',
   )
 endif
 

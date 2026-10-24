@@ -2,29 +2,6 @@
 
 load common
 
-@test "testdatabase shouldn't print fail" {
-  run "$testdatabase"
-  [ "$status" -eq 0 ]
-  ! echo "$output" | grep ^FAIL
-}
-
-@test "testrecord shouldn't print fail" {
-  run "$testrecord"
-  [ "$status" -eq 0 ]
-  ! echo "$output" | grep ^FAIL
-}
-
-@test "testsuminfo shouldn't print fail" {
-  if [ ! -x "$testsuminfo" ]; then
-     # meson 0.55 (at least), fails to parse skipped lines properly meson#7538
-     # skip "testsuminfo isn't built"
-     return 0
-  fi
-  run "$testsuminfo"
-  [ "$status" -eq 0 ]
-  ! echo "$output" | grep ^FAIL
-}
-
 @test "msibuild - invalid command line" {
   run "$msibuild"
   [ "$status" -eq 1 ]

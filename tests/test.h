@@ -7,17 +7,32 @@
 
 #define ok(cond, desc, ...) _ok(cond, #cond, desc, ## __VA_ARGS__ )
 
+static int test_count;
+static int test_failures;
+
 static inline void _ok(bool cond, const char *cond_str, const char *str, ...)
 {
     va_list ap;
-    va_start(ap, str);
+
+    test_count++;
     if (!cond) {
-        printf("FAIL: %s\n  ", cond_str);
+        test_failures++;
+        printf("not ok %d - %s\n", test_count, cond_str);
+        printf("# ");
+        va_start(ap, str);
         vprintf(str, ap);
+        va_end(ap);
     } else {
-        printf("ok: %s\n", cond_str);
+        printf("ok %d - %s\n", test_count, cond_str);
     }
-    va_end(ap);
+}
+
+static inline int test_report(void)
+{
+    printf("1..%d\n", test_count);
+    if (test_failures)
+        printf("# %d test(s) failed\n", test_failures);
+    return test_failures ? 1 : 0;
 }
 
 static inline void check_record_string(LibmsiRecord *rec, unsigned field, const gchar *val)

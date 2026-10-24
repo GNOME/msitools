@@ -178,12 +178,6 @@ namespace Wixl {
                     }
                 }
 
-#if 0
-                debug ("term %d", scanner.peek_next_token ());
-                if (accept (TokenType.SYMBOL))
-                    message ("symbol: %d", (int)scanner.cur_value ().symbol);
-#endif
-
                 throw new Wixl.Error.FAILED ("Invalid term");
             }
 
@@ -271,51 +265,6 @@ namespace Wixl {
                 return result;
             }
         }
-
-#if 0
-       void test (string v, bool expect = true) {
-            var evaluator = new EvalCondition (this);
-
-            message (v);
-            if (evaluator.eval (v) != expect) {
-                error ("expected %s", yesno (expect));
-            }
-       }
-
-       void tests () {
-           Environment.set_variable ("FOO", "bar", true);
-           test ("1");
-           test ("0", false);
-           test ("not 1", false);
-           test ("not not 1");
-           test ("((not (not (1))))");
-           test ("\"not1\"", false);
-           test ("\"foo\"", false);
-           test ("\"\"", false);
-           test ("\"foo\" = \"foo\"");
-           test ("1 = 1");
-           test ("1 = 2", false);
-           test ("1 != 2");
-           test ("1 < 2");
-           test ("1 <= 2");
-           test ("2 <= 2");
-           test ("2 >= 2");
-           test ("2 >= 1");
-           test ("2 > 1");
-           test ("\"foo\" ~= \"fOo\"");
-           test ("\"foo\" = \"bar\"", false);
-           test ("not (1 != 2)", false);
-           test ("0 or 0", false);
-           test ("0 or 1", true);
-           test ("0 and 1", false);
-           test ("1 and 1", true);
-           test ("not (1 != 2) or (1 != 2)", true);
-           test ("$(env.FOO) = \"bar\"", true);
-           test ("$(env.FOO) = bar", true);
-           Environment.set_variable ("FOO", "2", true);
-           test ("$(env.FOO) < 3", true);
-       }
-#endif
 
         public bool eval_condition (string str, File? file) throws GLib.Error {
             var evaluator = new EvalCondition (this, file);

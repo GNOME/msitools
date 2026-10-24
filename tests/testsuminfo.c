@@ -379,4 +379,6 @@ int main()
 
     test_suminfo();
     test_summary_binary();
+
+    return test_report();
 }

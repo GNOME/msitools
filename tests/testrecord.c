@@ -443,4 +443,6 @@ int main ()
     test_MsiRecordGetString ();
     test_MsiRecordGetInteger ();
     test_fieldzero ();
+
+    return test_report ();
 }
