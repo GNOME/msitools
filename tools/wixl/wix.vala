@@ -201,10 +201,45 @@ namespace Wixl {
             return attr->children->content;
         }
 
+        // the element name and its Id, if any, for messages
+        static string describe_node (Xml.Node *node) {
+            var id = node->get_prop ("Id");
+            return id != null ? "%s %s".printf (node->name, id) : node->name;
+        }
+
         protected void load_properties_from_node (Xml.Node *node) throws Wixl.Error {
             for (var prop = node->properties; prop != null; prop = prop->next) {
-                if (prop->type == Xml.ElementType.ATTRIBUTE_NODE)
-                    set_property (prop->name, get_attribute_content (prop));
+                if (prop->type != Xml.ElementType.ATTRIBUTE_NODE)
+                    continue;
+
+                // an attribute in the WiX namespace itself is one of ours
+                if (prop->ns != null &&
+                    prop->ns->href != "http://schemas.microsoft.com/wix/2006/wi" &&
+                    prop->ns->href != "http://wixtoolset.org/schemas/v4/wxs") {
+                    // xml:lang, xsi:schemaLocation and the like
+                    if (prop->ns->href == "http://www.w3.org/XML/1998/namespace" ||
+                        prop->ns->href == "http://www.w3.org/2001/XMLSchema-instance")
+                        continue;
+
+                    // extension attributes must not set wixl's own
+                    // properties of the same name
+                    warning ("%s: unsupported attribute %s%s%s, ignored",
+                             describe_node (node),
+                             prop->ns->prefix ?? "",
+                             prop->ns->prefix != null ? ":" : "",
+                             prop->name);
+                    continue;
+                }
+
+                // attributes wixl doesn't know would be dropped, and
+                // the package would silently behave differently
+                if (get_class ().find_property (prop->name) == null) {
+                    warning ("%s: unsupported attribute %s, ignored",
+                             describe_node (node), prop->name);
+                    continue;
+                }
+
+                set_property (prop->name, get_attribute_content (prop));
             }
         }
 
@@ -233,7 +268,8 @@ namespace Wixl {
                 default:
                     break;
                 }
-                error ("unhandled child %s node %s", name, child->name);
+                throw new Error.FAILED ("%s: unsupported element %s",
+                                        describe_node (node), child->name);
             }
         }
 

@@ -502,3 +502,50 @@ EOF2
   hashes=$(echo "$output" | tail -n +4 | cut -f1)
   [ "$hashes" = "Readme" ]
 }
+
+@test "wixl - unsupported attributes and elements" {
+  mkdir -p SourceDir
+  echo "hello" > SourceDir/hello.txt
+  cat >unsupported.wxs <<EOF2
+<?xml version="1.0" encoding="utf-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi"
+     xmlns:util="http://schemas.microsoft.com/wix/UtilExtension">
+  <Product Id="ABCDDCBA-86C7-4D14-AEC0-86416A69ABDE"
+           Name="Test" Version="1.0.0" Manufacturer="Test" Language="1033"
+           UpgradeCode="12345678-1234-1234-1234-123456789012" xml:lang="en">
+    <Package InstallerVersion="200" Compressed="yes" />
+    <Media Id="1" Cabinet="test.cab" EmbedCab="yes" />
+    <Directory Id="TARGETDIR" Name="SourceDir">
+      <Directory Id="ProgramFilesFolder">
+        <Directory Id="INSTALLDIR" Name="Test">
+          <Component Id="C1" Guid="ABCDDCBA-83F1-4F22-985B-FDB3C8ABD471" util:Guid="nope">
+            <File Id="F1" Source="SourceDir/hello.txt" KeyPath="yes" Bogus="yes" />
+            @CHILD@
+          </Component>
+        </Directory>
+      </Directory>
+    </Directory>
+    <Feature Id="Main" Level="1">
+      <ComponentRef Id="C1" />
+    </Feature>
+  </Product>
+</Wix>
+EOF2
+  # an unsupported attribute is ignored with a warning
+  sed 's/@CHILD@//' unsupported.wxs > attr.wxs
+  run "$wixl" -o out.msi attr.wxs
+  [ "$status" -eq 0 ]
+  echo "$output" | grep -F "File F1: unsupported attribute Bogus, ignored"
+  # an extension attribute doesn't override wixl's attribute of the same name
+  echo "$output" | grep -F "Component C1: unsupported attribute util:Guid, ignored"
+  ! echo "$output" | grep -F "xml:lang"
+  run "$msiinfo" export out.msi Component
+  [ "$status" -eq 0 ]
+  echo "$output" | grep -F "{ABCDDCBA-83F1-4F22-985B-FDB3C8ABD471}"
+
+  # an unsupported element is an error, not a crash
+  sed 's/@CHILD@/<Bogus \/>/' unsupported.wxs > elem.wxs
+  run "$wixl" -o out.msi elem.wxs
+  [ "$status" -eq 1 ]
+  echo "$output" | grep -F "Component C1: unsupported element Bogus"
+}
