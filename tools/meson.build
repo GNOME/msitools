@@ -47,7 +47,7 @@ if get_option('introspection')
       '--vapidir=@0@'.format(meson.project_source_root()),
       '--vapidir=@0@'.format(meson.project_build_root() / 'libmsi'),
     ],
-    c_args: ['-include', meson.project_build_root() / 'config.h'],
+    c_args: ['-include', meson.project_build_root() / 'config.h'] + vala_c_args,
     dependencies: [libmsi, libgcab, libmsi_vapi],
     install: true,
   )
