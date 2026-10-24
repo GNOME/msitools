@@ -1286,3 +1286,82 @@ EOF2
   [ $(( $(loctype R1) & 16 )) -eq 16 ]
   [ $(( $(loctype R2) & 16 )) -eq 0 ]
 }
+
+@test "wixl - UI dialogs, tab order and texts like WiX" {
+  cd wixl
+  cat >uifixes.wxs <<'EOF2'
+<?xml version="1.0" encoding="utf-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+  <Product Id="ABCDDCBA-86C7-4D14-AEC0-86416A69ABDE" Name="Test" Version="1.0.0" Manufacturer="Test" Language="1033"
+           UpgradeCode="12345678-1234-1234-1234-123456789012">
+    <Package InstallerVersion="200" Compressed="yes" />
+    <Media Id="1" Cabinet="t.cab" EmbedCab="yes" />
+    <Directory Id="TARGETDIR" Name="SourceDir">
+      <Directory Id="ProgramFilesFolder"><Directory Id="INSTALLDIR" Name="Test">
+        <Component Id="C1" Guid="ABCDDCBA-83F1-4F22-985B-FDB3C8ABD471"><File Id="F1" Source="FoobarAppl10.exe" KeyPath="yes" /></Component>
+      </Directory></Directory>
+    </Directory>
+    <Feature Id="Main" Level="1"><ComponentRef Id="C1" /></Feature>
+    <UIRef Id="WixUI_Minimal" />
+    <UIRef Id="TabUI" />
+  </Product>
+  <Fragment>
+    <UI Id="TabUI">
+      <Dialog Id="TabDlg" Width="370" Height="270" Title="Tabs">
+        <Control Id="Label" Type="Text" X="10" Y="10" Width="100" Height="10" Text="Label" />
+        <Control Id="Path" Type="PathEdit" X="10" Y="30" Width="200" Height="18" Property="P" />
+        <Control Id="Combo" Type="DirectoryCombo" X="10" Y="60" Width="200" Height="80" Property="P" Fixed="yes" Remote="yes" />
+        <Control Id="Note" Type="Text" X="10" Y="90" Width="100" Height="10" TabSkip="no" Text="Note" />
+        <Control Id="Vol" Type="VolumeSelectCombo" X="10" Y="110" Width="200" Height="80" Property="P" />
+        <Control Id="Skip" Type="PushButton" X="80" Y="200" Width="56" Height="17" TabSkip="yes" Text="Skip" />
+        <Control Id="OK" Type="PushButton" X="10" Y="200" Width="56" Height="17" Text="OK">
+          <Publish Event="SelectionBrowse" Value="CancelDlg">1</Publish>
+        </Control>
+      </Dialog>
+    </UI>
+  </Fragment>
+</Wix>
+EOF2
+  run "$wixl" -o out.msi uifixes.wxs --ext ui --extdir "$SRCDIR/data/ext"
+  [ "$status" -eq 0 ]
+
+  # dialogs that are only spawned by events are added too
+  run "$msiinfo" export out.msi Dialog
+  [ "$status" -eq 0 ]
+  dialogs=$(echo "$output" | tr -d '\r' | tail -n +4 | cut -f1)
+  for d in OutOfDiskDlg OutOfRbDiskDlg WaitForCostingDlg; do
+    echo "$dialogs" | grep -qx "$d"
+  done
+  # the first control in the tab order gets the focus
+  [ "$(echo "$output" | tr -d '\r' | awk -F '\t' '$1 == "TabDlg" { print $8 }')" = "Path" ]
+
+  # like WiX, every control but the static ones takes part in the tab
+  # order, and TabSkip overrides that; Remote is msidbControlAttributesRemoteVolume
+  run "$msiinfo" export out.msi Control
+  [ "$status" -eq 0 ]
+  ctl=$(echo "$output" | tr -d '\r')
+  nextof() { echo "$ctl" | awk -F '\t' -v c="$1" '$1 == "TabDlg" && $2 == c { print "<" $11 ">" }'; }
+  [ "$(nextof Label)" = "<>" ]
+  [ "$(nextof Path)" = "<Combo>" ]
+  [ "$(nextof Combo)" = "<Note>" ]
+  [ "$(nextof Note)" = "<Vol>" ]
+  [ "$(nextof Vol)" = "<OK>" ]
+  [ "$(nextof Skip)" = "<>" ]
+  [ "$(nextof OK)" = "<Path>" ]
+  attr=$(echo "$ctl" | awk -F '\t' '$1 == "TabDlg" && $2 == "Combo" { print $8 }')
+  [ $(( attr & 0x60000 )) -eq $(( 0x60000 )) ]
+
+  # all of WiX's UI texts, e.g. for the time remaining in ProgressDlg
+  run "$msiinfo" export out.msi UIText
+  [ "$status" -eq 0 ]
+  [ "$(echo "$output" | tr -d '\r' | tail -n +4 | wc -l)" -eq 51 ]
+  echo "$output" | grep -q "^TimeRemaining"
+
+  # SelectionBrowse opens a dialog too
+  sed '/WixUI_Minimal/d' uifixes.wxs >browse.wxs
+  run "$wixl" -o out.msi browse.wxs --ext ui --extdir "$SRCDIR/data/ext"
+  [ "$status" -eq 0 ]
+  run "$msiinfo" export out.msi Dialog
+  [ "$status" -eq 0 ]
+  echo "$output" | tr -d '\r' | cut -f1 | grep -qx CancelDlg
+}

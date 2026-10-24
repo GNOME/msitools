@@ -2347,12 +2347,6 @@ namespace Wixl {
             if (parse_yesno (dialog.ErrorDialog))
                 attributes |= DialogStyleBits.ERROR;
 
-            WixControl first = dialog.children.first().data as WixControl;
-
-            db.table_dialog.add (dialog.Id, hcenter, vcenter, width, height,
-                    attributes, dialog.Title, first.Id,
-                    dialog.Default, dialog.Cancel);
-
             // do this after we know what all the children are, which means
             // keeping a reference to the record so it can be updated in place
 
@@ -2364,16 +2358,28 @@ namespace Wixl {
             foreach (var child in dialog.children) {
                 var control = child as WixControl;
 
-                if (control.Type != "Bitmap" && control.Type != "CheckBox" &&
-                        control.Type != "Edit" &&
-                        control.Type != "PushButton" &&
-                        control.Type != "RadioButtonGroup") {
-                    continue;
+                // like WiX, every control takes part except the static
+                // ones, and TabSkip overrides that either way
+                bool tabbable;
+                switch (control.Type) {
+                case "Billboard":
+                case "Bitmap":
+                case "GroupBox":
+                case "Icon":
+                case "Line":
+                case "ProgressBar":
+                case "Text":
+                case "VolumeCostList":
+                    tabbable = false;
+                    break;
+                default:
+                    tabbable = true;
+                    break;
                 }
-
-                if (control.TabSkip != null && parse_yesno (control.TabSkip)) {
+                if (control.TabSkip != null)
+                    tabbable = !parse_yesno (control.TabSkip);
+                if (!tabbable)
                     continue;
-                }
 
                 if (firsttab == null) {
                     firsttab = control;
@@ -2385,6 +2391,14 @@ namespace Wixl {
 
                 prevtab = control;
             }
+
+            // like WiX, the first control that takes part in the tab order
+            // gets the focus
+            WixControl first = firsttab ?? (dialog.children.first ().data as WixControl);
+
+            db.table_dialog.add (dialog.Id, hcenter, vcenter, width, height,
+                    attributes, dialog.Title, first.Id,
+                    dialog.Default, dialog.Cancel);
 
             if (prevtab != null && firsttab != null && prevtab != firsttab) {
                 db.table_control.set_next_control (prevtab.record, firsttab.Id);
@@ -2474,6 +2488,8 @@ namespace Wixl {
             // Volume and Directory
             if (parse_yesno (control.Fixed))
                 attributes |= ControlAttributes.FIXED_VOLUME;
+            if (parse_yesno (control.Remote))
+                attributes |= ControlAttributes.REMOTE_VOLUME;
 
             // PictureButton
             if (control.IconSize != null) {
@@ -2599,6 +2615,16 @@ namespace Wixl {
             } else {
                 event = publish.Event;
                 argument = publish.Value;
+            }
+
+            // like WiX, a dialog that an event opens is part of the UI too,
+            // e.g. OutOfDiskDlg, which is only ever spawned
+            if ((event == "NewDialog" || event == "SpawnDialog" ||
+                 event == "SpawnWaitDialog" || event == "SelectionBrowse") &&
+                argument != null && find_element<WixDialog> (argument) == null &&
+                Extension.UI in extensions &&
+                File.new_build_filename (extdir, Extension.UI.get_dir (), argument + ".wxs").query_exists ()) {
+                load_extension_file (Extension.UI, argument);
             }
 
             if (publish.Condition != null) {
