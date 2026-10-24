@@ -407,7 +407,12 @@ namespace Wixl {
 
         public void property_update () throws GLib.Error {
             if (secureProperties.length != 0) {
-                var prop = string.joinv (";", secureProperties);
+                // a property may be secure from several sources
+                string[] secure = {};
+                foreach (var id in secureProperties)
+                    if (!(id in secure))
+                        secure += id;
+                var prop = string.joinv (";", secure);
                 db.table_property.add ("SecureCustomProperties", prop);
             }
             if (hiddenProperties.length != 0) {
@@ -549,6 +554,16 @@ namespace Wixl {
             // keep the value, e.g. a password, out of the installer log
             if (parse_yesno (prop.Hidden) && !(prop.Id in hiddenProperties))
                 hiddenProperties += prop.Id;
+
+            // pass the property from the client to the server, even when
+            // the install runs with elevated privileges for a user
+            if (parse_yesno (prop.Secure)) {
+                // only public properties are passed to the server
+                if (prop.Id != prop.Id.up ())
+                    warning ("Property %s: Secure has no effect on a private property (Id contains lowercase letters)", prop.Id);
+                else
+                    secureProperties += prop.Id;
+            }
 
             if (prop.Value == null)
                 return;

@@ -1458,3 +1458,47 @@ EOF2
   # critical (3)
   [ "$(errctl PlainSvc)" = "3" ]
 }
+
+@test "wixl - secure properties" {
+  mkdir -p SourceDir
+  echo "hello" > SourceDir/hello.txt
+  cat >secure.wxs <<EOF2
+<?xml version="1.0" encoding="utf-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+  <Product Id="ABCDDCBA-86C7-4D14-AEC0-86416A69ABDE"
+           Name="Test" Version="1.0.0" Manufacturer="Test" Language="1033"
+           UpgradeCode="12345678-1234-1234-1234-123456789012">
+    <Package InstallerVersion="200" Compressed="yes" />
+    <Media Id="1" Cabinet="test.cab" EmbedCab="yes" />
+    <Property Id="WIX_UPGRADE_DETECTED" Secure="yes" />
+    <MajorUpgrade DowngradeErrorMessage="Newer version installed." />
+    <Property Id="LISTEN_PORT" Value="9182" Secure="yes" />
+    <Property Id="private" Secure="yes" />
+    <Property Id="CONFIG_FILE" Secure="yes" />
+    <Property Id="NOT_SECURE" Value="1" />
+    <Directory Id="TARGETDIR" Name="SourceDir">
+      <Directory Id="ProgramFilesFolder">
+        <Directory Id="INSTALLDIR" Name="Test">
+          <Component Id="C1" Guid="ABCDDCBA-83F1-4F22-985B-FDB3C8ABD471">
+            <File Id="F1" Source="SourceDir/hello.txt" KeyPath="yes" />
+          </Component>
+        </Directory>
+      </Directory>
+    </Directory>
+    <Feature Id="Main" Level="1">
+      <ComponentRef Id="C1" />
+    </Feature>
+  </Product>
+</Wix>
+EOF2
+  run "$wixl" -o out.msi secure.wxs
+  [ "$status" -eq 0 ]
+  echo "$output" | grep -F "Property private: Secure has no effect"
+
+  run "$msiinfo" export out.msi Property
+  [ "$status" -eq 0 ]
+  secure=$(echo "$output" | awk -F '\t' '$1 == "SecureCustomProperties" { print $2 }' | tr -d '\r')
+  # listed once, even when MajorUpgrade also makes it secure;
+  # the private property is warned about and not passed to the server
+  [ "$secure" = "WIX_UPGRADE_DETECTED;WIX_DOWNGRADE_DETECTED;LISTEN_PORT;CONFIG_FILE" ]
+}
