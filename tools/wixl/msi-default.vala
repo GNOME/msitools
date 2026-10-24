@@ -187,6 +187,16 @@ namespace Wixl {
             return actions[action];
         }
 
+        public static string[] get_action_names (ActionFlags flag) {
+            var names = new string[0];
+
+            foreach (var action in actions)
+                if (flag in action.flags)
+                    names += action.name;
+
+            return names;
+        }
+
         public static ActionInfo? get_action_by_name (string name) {
             ActionInfo? action = null;
 

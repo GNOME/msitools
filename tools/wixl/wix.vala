@@ -1030,6 +1030,14 @@ namespace Wixl {
     }
 
     public class WixSequence: WixElement {
+        protected class void register_actions (MSIDefault.ActionFlags flag, string[] extra) {
+            foreach (var action in MSIDefault.get_action_names (flag))
+                child_types->insert (action, typeof (WixAction));
+
+            foreach (var action in extra)
+                child_types->insert (action, typeof (WixAction));
+        }
+
         public override void accept (WixNodeVisitor visitor) throws GLib.Error {
             base.accept (visitor);
             visitor.visit_sequence (this);
@@ -1040,81 +1048,14 @@ namespace Wixl {
         static construct {
             name = "InstallExecuteSequence";
 
-            foreach (var action in new string[] {
-                    "AllocateRegistrySpace",
-                    "AppSearch",
-                    "BindImage",
-                    "CCPSearch",
-                    "CostFinalize",
-                    "CostInitialize",
-                    "CreateFolders",
-                    "CreateShortcuts",
-                    "Custom",
-                    "DeleteServices",
-                    "DisableRollback",
-                    "DuplicateFiles",
-                    "FileCost",
-                    "FindRelatedProducts",
-                    "ForceReboot",
-                    "InstallExecute",
-                    "InstallExecuteAgain",
-                    "InstallFiles",
-                    "InstallFinalize",
-                    "InstallInitialize",
-                    "InstallODBC",
-                    "InstallServices",
-                    "InstallValidate",
-                    "IsolateComponents",
-                    "LaunchConditions",
-                    "MigrateFeatureStates",
-                    "MoveFiles",
-                    "MsiPublishAssemblies",
-                    "MsiUnpublishAssemblies",
-                    "PatchFiles",
-                    "ProcessComponents",
-                    "PublishComponents",
-                    "PublishFeatures",
-                    "PublishProduct",
-                    "RegisterClassInfo",
-                    "RegisterComPlus",
-                    "RegisterExtensionInfo",
-                    "RegisterFonts",
-                    "RegisterMIMEInfo",
-                    "RegisterProduct",
-                    "RegisterProgIdInfo",
-                    "RegisterTypeLibraries",
-                    "RegisterUser",
-                    "RemoveDuplicateFiles",
-                    "RemoveEnvironmentStrings",
-                    "RemoveExistingProducts",
-                    "RemoveFiles",
-                    "RemoveFolders",
-                    "RemoveIniValues",
-                    "RemoveODBC",
-                    "RemoveRegistryValues",
-                    "RemoveShortcuts",
-                    "ResolveSource",
-                    "RMCCPSearch",
-                    "ScheduleReboot",
-                    "SelfRegModules",
-                    "SelfUnregModules",
-                    "SetODBCFolders",
-                    "StartServices",
-                    "StopServices",
-                    "UnpublishComponents",
-                    "UnpublishFeatures",
-                    "UnregisterClassInfo",
-                    "UnregisterComPlus",
-                    "UnregisterExtensionInfo",
-                    "UnregisterFonts",
-                    "UnregisterMIMEInfo",
-                    "UnregisterProgIdInfo",
-                    "UnregisterTypeLibraries",
-                    "ValidateProductID",
-                    "WriteEnvironmentStrings",
-                    "WriteIniValues",
-                    "WriteRegistryValues" })
-                child_types->insert (action, typeof (WixAction));
+            register_actions (MSIDefault.ActionFlags.INSTALL_EXECUTE_SEQUENCE, {
+                "Custom",
+                "DisableRollback",
+                "ForceReboot",
+                "RemoveExistingProducts",
+                "ResolveSource",
+                "ScheduleReboot",
+            });
         }
     }
 
@@ -1122,33 +1063,12 @@ namespace Wixl {
         static construct {
             name = "InstallUISequence";
 
-            foreach (var action in new string[] {
-                    "AppSearch",
-                    "CCPSearch",
-                    "CostFinalize",
-                    "CostInitialize",
-                    "Custom",
-                    "ExecuteAction",
-                    "ExitDialog",
-                    "FatalError",
-                    "FileCost",
-                    "FindRelatedProducts",
-                    "IsolateComponents",
-                    "LaunchConditions",
-                    "MaintenanceWelcomeDlg",
-                    "MigrateFeatureStates",
-                    "PrepareDlg",
-                    "ProgressDlg",
-                    "ResolveSource",
-                    "ResumeDlg",
-                    "RMCCPSearch",
-                    "ScheduleReboot",
-                    "Show",
-                    "UserExit",
-                    "ValidateProductID",
-                    "WelcomeDlg",
-                    "WelcomeEulaDlg" })
-                child_types->insert (action, typeof (WixAction));
+            register_actions (MSIDefault.ActionFlags.INSTALL_UI_SEQUENCE, {
+                "Custom",
+                "ResolveSource",
+                "ScheduleReboot",
+                "Show",
+            });
         }
     }
 
@@ -1156,20 +1076,10 @@ namespace Wixl {
         static construct {
             name = "AdminExecuteSequence";
 
-            foreach (var action in new string[] {
-                    "CostFinalize",
-                    "CostInitialize",
-                    "Custom",
-                    "FileCost",
-                    "InstallAdminPackage",
-                    "InstallFiles",
-                    "InstallFinalize",
-                    "InstallInitialize",
-                    "InstallValidate",
-                    "LaunchConditions",
-                    "PatchFiles",
-                    "ResolveSource" })
-                child_types->insert (action, typeof (WixAction));
+            register_actions (MSIDefault.ActionFlags.ADMIN_EXECUTE_SEQUENCE, {
+                "Custom",
+                "ResolveSource",
+            });
         }
     }
 
@@ -1177,23 +1087,15 @@ namespace Wixl {
         static construct {
             name = "AdminUISequence";
 
-            foreach (var action in new string[] {
-                    "CostFinalize",
-                    "CostInitialize",
-                    "Custom",
-                    "ExecuteAction",
-                    "ExitDialog",
-                    "FatalError",
-                    "FileCost",
-                    "InstallAdminPackage",
-                    "InstallFiles",
-                    "InstallFinalize",
-                    "InstallInitialize",
-                    "InstallValidate",
-                    "LaunchConditions",
-                    "Show",
-                    "UserExit" })
-                child_types->insert (action, typeof (WixAction));
+            register_actions (MSIDefault.ActionFlags.ADMIN_UI_SEQUENCE, {
+                "Custom",
+                "InstallAdminPackage",
+                "InstallFiles",
+                "InstallFinalize",
+                "InstallInitialize",
+                "InstallValidate",
+                "Show",
+            });
         }
     }
 
@@ -1201,23 +1103,9 @@ namespace Wixl {
         static construct {
             name = "AdvertiseExecuteSequence";
 
-            foreach (var action in new string[] {
-                    "CostFinalize",
-                    "CostInitialize",
-                    "CreateShortcuts",
-                    "Custom",
-                    "InstallFinalize",
-                    "InstallInitialize",
-                    "InstallValidate",
-                    "MsiPublishAssemblies",
-                    "PublishComponents",
-                    "PublishFeatures",
-                    "PublishProduct",
-                    "RegisterClassInfo",
-                    "RegisterExtensionInfo",
-                    "RegisterMIMEInfo",
-                    "RegisterProgIdInfo" })
-                child_types->insert (action, typeof (WixAction));
+            register_actions (MSIDefault.ActionFlags.ADVT_EXECUTE_SEQUENCE, {
+                "Custom",
+            });
         }
     }
 
