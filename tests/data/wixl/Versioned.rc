@@ -1,0 +1,22 @@
+// Version resource of Versioned.dll, built with:
+//   llvm-rc /FO Versioned.res Versioned.rc
+//   lld-link /dll /noentry /nodefaultlib /machine:x64 /out:Versioned.dll Versioned.res
+1 VERSIONINFO
+FILEVERSION 1,2,3,4
+PRODUCTVERSION 1,2,0,0
+FILEOS 0x40004
+FILETYPE 2
+BEGIN
+  BLOCK "StringFileInfo"
+  BEGIN
+    BLOCK "040904B0"
+    BEGIN
+      VALUE "FileVersion", "1.2.3.4"
+      VALUE "ProductName", "wixl test"
+    END
+  END
+  BLOCK "VarFileInfo"
+  BEGIN
+    VALUE "Translation", 0x409, 1200
+  END
+END

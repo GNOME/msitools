@@ -442,3 +442,63 @@ EOF2
     echo "$output" | grep -q "invalid DefaultLanguage"
   done
 }
+
+@test "wixl - file version from PE version resource" {
+  mkdir -p SourceDir
+  cp wixl/Versioned.dll SourceDir/
+  echo "hello" > SourceDir/conf.ini
+  echo "hello" > SourceDir/readme.txt
+  cat >version.wxs <<EOF2
+<?xml version="1.0" encoding="utf-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+  <Product Id="ABCDDCBA-86C7-4D14-AEC0-86416A69ABDE"
+           Name="Test" Version="1.0.0" Manufacturer="Test" Language="1033"
+           UpgradeCode="12345678-1234-1234-1234-123456789012">
+    <Package InstallerVersion="200" Compressed="yes" />
+    <Media Id="1" Cabinet="test.cab" EmbedCab="yes" />
+    <Directory Id="TARGETDIR" Name="SourceDir">
+      <Directory Id="ProgramFilesFolder">
+        <Directory Id="INSTALLDIR" Name="Test">
+          <Component Id="C1" Guid="ABCDDCBA-83F1-4F22-985B-FDB3C8ABD471">
+            <File Id="Dll" Source="SourceDir/Versioned.dll" KeyPath="yes"
+                  DefaultVersion="9.9.9.9" DefaultLanguage="1031" />
+          </Component>
+          <Component Id="C2" Guid="ABCDDCBA-83F1-4F22-985B-FDB3C8ABD472">
+            <File Id="Conf" Source="SourceDir/conf.ini" KeyPath="yes"
+                  DefaultVersion="2.0.0.0" DefaultLanguage="1033" />
+          </Component>
+          <Component Id="C3" Guid="ABCDDCBA-83F1-4F22-985B-FDB3C8ABD473">
+            <File Id="Readme" Source="SourceDir/readme.txt" KeyPath="yes" />
+          </Component>
+        </Directory>
+      </Directory>
+    </Directory>
+    <Feature Id="Main" Level="1">
+      <ComponentRef Id="C1" />
+      <ComponentRef Id="C2" />
+      <ComponentRef Id="C3" />
+    </Feature>
+  </Product>
+</Wix>
+EOF2
+  run "$wixl" -o out.msi version.wxs
+  [ "$status" -eq 0 ]
+
+  run "$msiinfo" export out.msi File
+  [ "$status" -eq 0 ]
+  echo "$output"
+  field() { echo "$output" | awk -F '\t' -v f="$1" -v c="$2" '$1 == f { print $c }'; }
+  # the version resource wins over DefaultVersion/DefaultLanguage
+  [ "$(field Dll 5)" = "1.2.3.4" ]
+  [ "$(field Dll 6)" = "1033" ]
+  [ "$(field Conf 5)" = "2.0.0.0" ]
+  [ "$(field Conf 6)" = "1033" ]
+  [ "$(field Readme 5)" = "" ]
+  [ "$(field Readme 6)" = "" ]
+
+  # only unversioned files get a hash
+  run "$msiinfo" export out.msi MsiFileHash
+  [ "$status" -eq 0 ]
+  hashes=$(echo "$output" | tail -n +4 | cut -f1)
+  [ "$hashes" = "Readme" ]
+}

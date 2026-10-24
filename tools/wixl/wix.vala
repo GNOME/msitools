@@ -447,6 +447,7 @@ namespace Wixl {
         public string CompanionFile { get; set; }
 
         public File file;
+        public string? version;
 
         public override string path_name () throws GLib.Error {
             return Name ?? Path.get_basename (Source);

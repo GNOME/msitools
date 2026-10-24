@@ -184,6 +184,191 @@ namespace Wixl {
         hash4 = buffer[3];
     }
 
+    uint16 read_u16 (uint8[] data, size_t offset) {
+        return data[offset] | (data[offset + 1] << 8);
+    }
+
+    uint32 read_u32 (uint8[] data, size_t offset) {
+        return data[offset] | (data[offset + 1] << 8) |
+            (data[offset + 2] << 16) | ((uint32) data[offset + 3] << 24);
+    }
+
+    // version resource blocks are aligned relative to the resource start
+    size_t align4 (size_t start, size_t offset) {
+        return start + ((offset - start + 3) & ~3);
+    }
+
+    // Read a version resource block header: returns the end of the block
+    // and sets key and the offset of its value, or returns 0 if invalid.
+    size_t version_block (uint8[] data, size_t start, size_t offset, size_t end,
+                          out string key, out size_t value) {
+        key = "";
+        value = 0;
+        if (offset + 6 > end)
+            return 0;
+
+        var block_end = offset + read_u16 (data, offset);
+        if (block_end > end || block_end < offset + 6)
+            return 0;
+
+        var builder = new StringBuilder ();
+        var pos = offset + 6;
+        for (; pos + 2 <= block_end; pos += 2) {
+            var c = read_u16 (data, pos);
+            if (c == 0)
+                break;
+            builder.append_c (c < 128 ? (char) c : '?');
+        }
+        key = builder.str;
+        value = align4 (start, pos + 2);
+
+        return block_end;
+    }
+
+    /*
+     * Get the file version and languages from the version resource of a
+     * Windows PE file, like MsiGetFileVersion () does: the version is
+     * VS_FIXEDFILEINFO's file version and the languages are the ones listed
+     * in VarFileInfo\Translation. Returns false for any other file.
+     */
+    public bool get_file_version (File file, out string? version, out string? language) {
+        version = null;
+        language = null;
+
+        MappedFile map;
+        try {
+            map = new MappedFile (file.get_path (), false);
+        } catch (GLib.Error error) {
+            return false;
+        }
+        if (map.get_length () > int.MAX)
+            return false;
+        unowned uint8[] data = (uint8[]) map.get_contents ();
+        data.length = (int) map.get_length ();
+
+        if (data.length < 64 || data[0] != 'M' || data[1] != 'Z')
+            return false;
+        size_t pe = read_u32 (data, 0x3c);
+        if (pe > data.length - 24 || read_u32 (data, pe) != 0x00004550)
+            return false;
+
+        var sections = read_u16 (data, pe + 6);
+        var optional = pe + 24;
+        var optional_size = read_u16 (data, pe + 20);
+        if (optional_size < 2 || optional + optional_size + sections * 40 > data.length)
+            return false;
+
+        // the resource table is the third data directory
+        size_t directories;
+        switch (read_u16 (data, optional)) {
+        case 0x10b: // PE32
+            directories = optional + 96;
+            break;
+        case 0x20b: // PE32+
+            directories = optional + 112;
+            break;
+        default:
+            return false;
+        }
+        if (directories + 24 > optional + optional_size || read_u32 (data, directories - 4) < 3)
+            return false;
+
+        var section_table = optional + optional_size;
+        size_t rva_to_offset (uint32 rva, uint32 size) {
+            for (var i = 0; i < sections; i++) {
+                var section = section_table + i * 40;
+                var address = read_u32 (data, section + 12);
+                var raw_size = read_u32 (data, section + 16);
+                if (rva < address || rva - address >= raw_size)
+                    continue;
+                size_t offset = (size_t) read_u32 (data, section + 20) + (rva - address);
+                if (offset + size > data.length || rva - address + size > raw_size)
+                    return 0;
+                return offset;
+            }
+            return 0;
+        }
+
+        var resources = rva_to_offset (read_u32 (data, directories + 16), 16);
+        if (resources == 0)
+            return false;
+
+        // walk the type (RT_VERSION), name (VS_VERSION_INFO, else the
+        // first one) and language (the first one) levels
+        uint32 entry = 0;
+        var directory = resources;
+        int[] ids = { 16, 1, -1 };
+        for (var level = 0; level < 3; level++) {
+            if (directory + 16 > data.length)
+                return false;
+            var count = read_u16 (data, directory + 12) + read_u16 (data, directory + 14);
+            if (directory + 16 + count * 8 > data.length)
+                return false;
+            entry = 0;
+            for (var i = 0; i < count; i++) {
+                var e = directory + 16 + i * 8;
+                if (read_u32 (data, e) == ids[level]) {
+                    entry = read_u32 (data, e + 4);
+                    break;
+                }
+            }
+            if (entry == 0 && level > 0 && count > 0)
+                entry = read_u32 (data, directory + 20);
+            // only the last level points to data instead of a directory
+            if (entry == 0 || ((entry & 0x80000000) != 0) != (level < 2))
+                return false;
+            directory = resources + (entry & 0x7fffffff);
+        }
+        if (directory + 16 > data.length)
+            return false;
+
+        var size = read_u32 (data, directory + 4);
+        var info = rva_to_offset (read_u32 (data, directory), size);
+        if (info == 0)
+            return false;
+
+        // VS_VERSIONINFO, whose value is a VS_FIXEDFILEINFO
+        string key;
+        size_t value;
+        var info_end = version_block (data, info, info, info + size, out key, out value);
+        if (info_end == 0 || key != "VS_VERSION_INFO" || value + 52 > info_end ||
+            read_u32 (data, value) != 0xfeef04bd)
+            return false;
+
+        var ms = read_u32 (data, value + 8);
+        var ls = read_u32 (data, value + 12);
+        version = "%u.%u.%u.%u".printf (ms >> 16, ms & 0xffff, ls >> 16, ls & 0xffff);
+
+        var languages = new string[] {};
+        var child = align4 (info, value + read_u16 (data, info + 2));
+        while (child < info_end) {
+            var child_end = version_block (data, info, child, info_end, out key, out value);
+            if (child_end == 0)
+                break;
+            if (key == "VarFileInfo") {
+                var v = value;
+                while (v < child_end) {
+                    var var_end = version_block (data, info, v, child_end, out key, out value);
+                    if (var_end == 0)
+                        break;
+                    if (key == "Translation") {
+                        for (var t = value; t + 4 <= var_end; t += 4) {
+                            var lang = read_u16 (data, t).to_string ();
+                            if (!(lang in languages))
+                                languages += lang;
+                        }
+                    }
+                    v = align4 (info, var_end);
+                }
+            }
+            child = align4 (info, child_end);
+        }
+        if (languages.length > 0)
+            language = string.joinv (",", languages);
+
+        return true;
+    }
+
     public class UnixInputStream : GLib.InputStream {
         public int fd { get; set construct; }
 

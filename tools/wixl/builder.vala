@@ -288,7 +288,7 @@ namespace Wixl {
         private void hash_files () throws GLib.Error {
             foreach (var rec in db.table_file.records) {
                 var f = rec.get_data<WixFile> ("wixfile");
-                if (f.CompanionFile != null || f.DefaultVersion != null)
+                if (f.version != null)
                     // versioned/companion files don't need rows in hash table
                     continue;
                 
@@ -953,9 +953,9 @@ namespace Wixl {
             FileInfo info;
             file.file = find_file (source, out info);
             var attr = FileAttribute.VITAL;
-            var version = file.CompanionFile ?? file.DefaultVersion;
-
-            string? language = null;
+            // like WiX, the version resource wins over DefaultVersion and
+            // DefaultLanguage, which are meant for unversioned files
+            string? default_language = null;
             if (file.DefaultLanguage != null) {
                 int langid;
                 unowned string unparsed;
@@ -963,10 +963,19 @@ namespace Wixl {
                     unparsed != "" || langid < 0 || langid > 0xffff)
                     throw new Wixl.Error.FAILED ("file %s: invalid DefaultLanguage '%s', expected a LANGID between 0 and 65535",
                                                  file.Id, file.DefaultLanguage);
-                language = langid.to_string ();
+                default_language = langid.to_string ();
             }
 
-            var rec = db.table_file.add (file.Id, comp.Id, name, (int)info.get_size (), attr, version, language);
+            string? language = null;
+            if (file.CompanionFile != null) {
+                file.version = file.CompanionFile;
+            } else {
+                get_file_version (file.file, out file.version, out language);
+                file.version = file.version ?? file.DefaultVersion;
+            }
+            language = language ?? default_language;
+
+            var rec = db.table_file.add (file.Id, comp.Id, name, (int)info.get_size (), attr, file.version, language);
             rec.set_data<WixFile> ("wixfile", file);
 
             visit_key_element (file);
