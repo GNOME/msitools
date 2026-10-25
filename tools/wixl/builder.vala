@@ -1712,6 +1712,7 @@ namespace Wixl {
         }
 
         List<FirewallActions> firewall_actions;
+        GenericSet<string> firewall_ids = new GenericSet<string> (str_hash, str_equal);
 
         // an action name of at most 72 characters
         static string firewall_action_id (string id, string suffix) {
@@ -1734,6 +1735,11 @@ namespace Wixl {
 
             if (ex.Id == null || ex.Id == "")
                 throw new Wixl.Error.FAILED ("FirewallException: Id is required");
+            // an identifier, as in WiX; the Id is used in the action names
+            if (!/^[_A-Za-z][0-9A-Za-z_.]*$/.match (ex.Id))
+                throw new Wixl.Error.FAILED ("FirewallException %s: invalid Id", ex.Id);
+            if (!firewall_ids.add (ex.Id))
+                throw new Wixl.Error.FAILED ("FirewallException %s: duplicate Id", ex.Id);
             if (ex.Name == null || ex.Name == "")
                 throw new Wixl.Error.FAILED ("FirewallException %s: Name is required", ex.Id);
 

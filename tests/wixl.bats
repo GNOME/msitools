@@ -992,4 +992,16 @@ EOF2
   run "$wixl" -o out.msi v4.wxs
   [ "$status" -eq 1 ]
   echo "$output" | grep -F "FirewallException App: unsupported attribute Direction"
+
+  # Ids must be valid identifiers, as in WiX
+  sed 's/Id="App"/Id="A B"/' fw.wxs > badid.wxs
+  run "$wixl" -o out.msi badid.wxs
+  [ "$status" -eq 1 ]
+  echo "$output" | grep -F "FirewallException A B: invalid Id"
+
+  # duplicate Ids would produce duplicate action names
+  sed 's/Id="Port"/Id="App"/' fw.wxs > dupid.wxs
+  run "$wixl" -o out.msi dupid.wxs
+  [ "$status" -eq 1 ]
+  echo "$output" | grep -F "FirewallException App: duplicate Id"
 }
