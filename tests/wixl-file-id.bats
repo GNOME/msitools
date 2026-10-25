@@ -128,3 +128,16 @@ EOF
   echo "$output" | grep -F "File: needs a Name or a Source"
   [ ! -f none.msi ]
 }
+
+@test "wixl - File Id longer than 72 characters" {
+  mkdir -p a
+  long=$(printf 'a%.0s' {1..73})
+  echo x > "a/$long.txt"
+  echo y > a/x.txt
+  echo z > a/y.txt
+  file_id_wxs "Source=\"a/$long.txt\"" 'Source="a/x.txt"' 'Source="a/y.txt"' > long.wxs
+  run "$wixl" -o out.msi long.wxs
+  [ "$status" -eq 1 ]
+  echo "$output" | grep -F "Id is longer than 72 characters"
+  [ ! -f out.msi ]
+}

@@ -632,6 +632,8 @@ namespace Wixl {
                     throw new Wixl.Error.FAILED ("File: needs an Id, a Name or a Source");
                 Id = identifier_from_name ((Name != null && Name != "") ? Name : Path.get_basename (Source));
             }
+            if (Id.length > 72)
+                throw new Wixl.Error.FAILED ("File %s: Id is longer than 72 characters", Id);
         }
 
         public override void accept (WixNodeVisitor visitor) throws GLib.Error {
