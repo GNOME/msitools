@@ -306,6 +306,52 @@ EOF
 
   run "$msiinfo" suminfo out1.msi
   echo "$output" | grep -F "{11111111-2222-3333-4444-555555555555}"
+  unset SOURCE_DATE_EPOCH
+}
+
+@test "wixl - invalid Package Id" {
+  cd wixl
+  for id in '{11111111-2222-3333-4444-555555555555' '11111111-2222-3333-4444-555555555555}'; do
+    sed "s/<Package Id='\*'/<Package Id='$id'/" SampleFirst.wxs > invalid.wxs
+    run "$wixl" -o out.msi invalid.wxs
+    [ "$status" -ne 0 ]
+    echo "$output" | grep -F "invalid Package Id: $id"
+  done
+}
+
+@test "wixl - environment ids" {
+  cd wixl
+  cat >environment.wxs <<EOF
+<?xml version='1.0' encoding='windows-1252'?>
+<Wix xmlns='http://schemas.microsoft.com/wix/2006/wi'>
+  <Product Name='Env test' Id='ABCDDCBA-86C7-4D14-AEC0-86416A69ABDE' UpgradeCode='ABCDDCBA-7349-453F-94F6-BCB5110BA4FD'
+    Language='1033' Codepage='1252' Version='1.0.0' Manufacturer='Test'>
+    <Package Id='*' Keywords='Installer' Description='Env test' Manufacturer='Test'
+      InstallerVersion='100' Languages='1033' Compressed='yes' SummaryCodepage='1252' />
+    <Directory Id='TARGETDIR' Name='SourceDir'>
+      <Directory Id='INSTALLDIR' Name='EnvTest'>
+        <Component Id='EnvComponent' Guid='ABCDDCBA-83F1-4F22-985B-FDB3C8ABD471'>
+          <Environment Name='FOO' Value='a' Action='set' Part='all' Permanent='no' System='no' />
+          <Environment Name='FOO' Value='b' Action='set' Part='all' Permanent='no' System='yes' />
+          <Environment Id='ExplicitEnv' Name='BAR' Value='c' Action='set' Part='all' Permanent='no' System='no' />
+          <RegistryValue Root='HKCU' Key='Software\EnvTest' Type='string' Value='' KeyPath='yes' />
+        </Component>
+      </Directory>
+    </Directory>
+    <Feature Id='Complete' Level='1'>
+      <ComponentRef Id='EnvComponent' />
+    </Feature>
+  </Product>
+</Wix>
+EOF
+  run "$wixl" -o out.msi environment.wxs
+  [ "$status" -eq 0 ]
+  run "$msiinfo" export -s out.msi Environment
+  [ "$status" -eq 0 ]
+  [ "$(echo "$output" | grep -c '^INSERT INTO')" -eq 3 ]
+  echo "$output" | grep -F "'ExplicitEnv'"
+  ids=$(echo "$output" | sed -n "s/^INSERT INTO .* VALUES ('\([^']*\)'.*/\1/p" | sort -u)
+  [ "$(echo "$ids" | wc -l)" -eq 3 ]
 }
 
 @test "wixl-heat - reproducible directory ids" {
@@ -323,4 +369,10 @@ EOF
   out3=$("$wixlheat" -p test/ --component-group CG.other < list)
   ids3=$(echo "$out3" | grep -o 'Directory Id="[^"]*"' | sort)
   [ -z "$(comm -12 <(echo "$ids") <(echo "$ids3"))" ]
+  # fragments harvested from different source roots don't share directory ids
+  mkdir -p other/a
+  touch other/a/file
+  out4=$(printf '%s\n' other/a/file | "$wixlheat" -p other/)
+  ids4=$(echo "$out4" | grep -o 'Directory Id="[^"]*"' | sort)
+  [ -z "$(comm -12 <(echo "$ids") <(echo "$ids4"))" ]
 }

@@ -87,6 +87,7 @@ namespace Wixl {
         WixRoot root;
         MsiDatabase db;
         HashTable<string, string> variables;
+        GenericSet<string> environment_ids;
         List<File> includedirs;
         string extdir;
         Extension[] extensions;
@@ -94,6 +95,7 @@ namespace Wixl {
 
         construct {
             variables = new HashTable<string, string> (str_hash, str_equal);
+            environment_ids = new GenericSet<string> (str_hash, str_equal);
         }
 
         public void define_variable (string name, string value) {
@@ -345,13 +347,14 @@ namespace Wixl {
 
                     var cabfile = new GCab.File.with_file (f.Id, f.file);
                     // clamp file times for reproducible builds; cabinets
-                    // cannot store dates before 1980
+                    // store a DOS date limited to 1980-2107
                     int64 epoch;
                     if (source_date_epoch (out epoch)) {
-                        epoch = int64.max (epoch, 315532800);
+                        epoch = int64.max (epoch, cab_min_date);
+                        epoch = int64.min (epoch, cab_max_date);
                         var info = f.file.query_info (GLib.FileAttribute.TIME_MODIFIED, 0, null);
                         var mtime = info.get_modification_date_time ();
-                        if (mtime == null || mtime.to_unix () > epoch || mtime.to_unix () < 315532800)
+                        if (mtime == null || mtime.to_unix () > epoch || mtime.to_unix () < cab_min_date)
                             mtime = new DateTime.from_unix_utc (epoch);
                         cabfile.set_date_time (mtime);
                     }
@@ -432,6 +435,9 @@ namespace Wixl {
             db.table_property.add ("UpgradeCode", add_braces (product.UpgradeCode));
         }
 
+        const int64 cab_min_date = 315532800; // 1980-01-01 00:00:00 UTC
+        const int64 cab_max_date = 4354819198; // 2107-12-31 23:59:58 UTC
+
         [Flags]
         enum SourceFlags {
             SHORT_NAMES,
@@ -444,7 +450,7 @@ namespace Wixl {
             // the package code; "*" or none generates a new one
             if (package.Id != null) {
                 if (package.Id != "*" &&
-                    !Regex.match_simple ("^{?[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}}?$",
+                    !Regex.match_simple ("^(\\{[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\\}|[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})$",
                                          package.Id, RegexCompileFlags.CASELESS))
                     throw new Wixl.Error.FAILED ("invalid Package Id: %s", package.Id);
                 db.info.set_property (Libmsi.Property.UUID, get_uuid (package.Id));
@@ -2008,7 +2014,16 @@ namespace Wixl {
                     break;
             }
             var component = env.parent as WixComponent;
-            var id = env.Id ?? generate_id ("env", 2, component.Id, env.Name);
+            var id = env.Id;
+            if (id == null) {
+                // include the row identity, so rows that only differ by
+                // action/part/system/value don't share a primary key
+                id = generate_id ("env", 4, component.Id, name, env.Part ?? "all", value ?? "");
+                for (var n = 1; id in environment_ids; n++)
+                    id = generate_id ("env", 5, component.Id, name, env.Part ?? "all", value ?? "", n.to_string ());
+            }
+            if (!environment_ids.add (id))
+                throw new Wixl.Error.FAILED ("duplicate Environment Id: %s", id);
             db.table_environment.add(id, name, value, component.Id);
         }
 

@@ -105,14 +105,15 @@ public int main (string[] args) {
                 }
             }
             for ( ; i < path.length; i++) {
-                // derive the id from the path and the component group, so
-                // the output is reproducible and fragments harvested for
-                // other groups under the same directory don't clash; a
+                // derive the id from the source prefix, path and component
+                // group, so the output is reproducible and fragments
+                // harvested from different roots or groups don't clash; a
                 // directory listed again after others gets a new id
-                var dir_path = string.joinv (Path.DIR_SEPARATOR_S, path[0 : i + 1]);
-                var id = generate_id ("dir", 3, cg, dr, dir_path);
+                var dir_path = string.joinv ("/", path[0 : i + 1]);
+                var source_root = prefix.replace ("\\", "/");
+                var id = generate_id ("dir", 4, cg, dr, source_root, dir_path);
                 for (var n = 1; id in dir_ids; n++)
-                    id = generate_id ("dir", 4, cg, dr, dir_path, n.to_string ());
+                    id = generate_id ("dir", 5, cg, dr, source_root, dir_path, n.to_string ());
                 dir_ids.add (id);
                 stdout.printf (indent + "<Directory Id=\"%s\" Name=\"%s\">\n".printf (id, path[i]));
                 indent += "  ";
