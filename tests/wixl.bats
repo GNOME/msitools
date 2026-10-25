@@ -925,7 +925,6 @@ EOF2
   run "$msiinfo" export out.msi CustomAction
   [ "$status" -eq 0 ]
   ca=$(echo "$output" | tr -d '\r')
-  echo "$ca"
   row() { printf '%s\t%s\tWixlNetshExe\t%s\t' "$1" "$2" "$3"; }
   # 3122 = exe from property (50), deferred, no impersonation; +64 ignore
   # the exit code; +256 rollback
