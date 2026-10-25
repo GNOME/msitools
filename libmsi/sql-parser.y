@@ -495,7 +495,35 @@ from:
 
             $$ = $1;
         }
-  | unorderdfrom
+  | TK_FROM table TK_COMMA tablelist
+        {
+            SQL_input* sql = (SQL_input*) info;
+            LibmsiView* where = NULL;
+            char *tables;
+            unsigned r;
+
+            tables = parser_add_table( info, $4, $2 );
+            if (!tables)
+                YYABORT;
+
+            r = where_view_create( sql->db, &where, tables, NULL );
+            if( r != LIBMSI_RESULT_SUCCESS )
+                YYABORT;
+
+            PARSER_BUBBLE_UP_VIEW( sql, $$, where );
+        }
+  | TK_FROM tablelist TK_WHERE expr
+        {
+            SQL_input* sql = (SQL_input*) info;
+            LibmsiView* where = NULL;
+            unsigned r;
+
+            r = where_view_create( sql->db, &where, $2, $4 );
+            if( r != LIBMSI_RESULT_SUCCESS )
+                YYABORT;
+
+            PARSER_BUBBLE_UP_VIEW( sql, $$, where );
+        }
   ;
 
 unorderdfrom:
