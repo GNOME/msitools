@@ -426,6 +426,15 @@ EOF2
   [ "$(col F1 8)" -ge 1 ]
   [ "$(col F2 8)" -ge 1 ]
 
+  # versioned files must not get a hash row; unversioned files still need one
+  run "$msiinfo" export out.msi MsiFileHash
+  [ "$status" -eq 0 ]
+  hashes=$(echo "$output" | tr -d '\r')
+  echo "$hashes"
+  hashof() { echo "$hashes" | awk -F '\t' -v f="$1" '$1 == f { print $1 }'; }
+  [ -z "$(hashof F1)" ]
+  [ "$(hashof F2)" = "F2" ]
+
   for bad in en-US 1033abc 65536 -1; do
     sed "s/DefaultLanguage=\"1033\"/DefaultLanguage=\"$bad\"/" version.wxs > invalid.wxs
     run "$wixl" -o invalid.msi invalid.wxs
