@@ -47,6 +47,15 @@ if get_option('fuzzing')
   fuzz_link_args = ['-fsanitize=address,undefined']
 endif
 
+# The C that valac generates has unused temporaries and drops const
+# qualifiers; these warnings can't be fixed in the Vala sources.
+vala_c_args = meson.get_compiler('c').get_supported_arguments([
+  '-Wno-discarded-qualifiers',
+  '-Wno-unused-but-set-variable',
+  '-Wno-unused-function',
+  '-Wno-unused-variable',
+])
+
 subdir('completion')
 subdir('data')
 subdir('po')
