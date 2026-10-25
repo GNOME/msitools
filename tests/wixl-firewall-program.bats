@@ -40,6 +40,7 @@ fw_add_rule() {
   run "$msiinfo" export out.msi CustomAction
   [ "$status" -eq 0 ]
   rule=$(echo "$output" | tr -d '\r' | awk -F '\t' '$1 == "Fw_Rule.Add" { print $4 }')
+  [ -n "$rule" ]
 }
 
 @test "wixl - FirewallException with Program, Port and Protocol" {
