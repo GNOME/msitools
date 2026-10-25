@@ -204,7 +204,7 @@ namespace Wixl {
                           out string key, out size_t value) {
         key = "";
         value = 0;
-        if (offset + 6 > end)
+        if (offset > end || end - offset < 6)
             return 0;
 
         var block_end = offset + read_u16 (data, offset);
@@ -279,10 +279,16 @@ namespace Wixl {
                 var section = section_table + i * 40;
                 var address = read_u32 (data, section + 12);
                 var raw_size = read_u32 (data, section + 16);
-                if (rva < address || rva - address >= raw_size)
+                if (rva < address)
                     continue;
-                size_t offset = (size_t) read_u32 (data, section + 20) + (rva - address);
-                if (offset + size > data.length || rva - address + size > raw_size)
+                size_t delta = rva - address;
+                if (delta >= raw_size)
+                    continue;
+                size_t raw = read_u32 (data, section + 20);
+                if (raw > data.length || delta > data.length - raw)
+                    continue;
+                size_t offset = raw + delta;
+                if (size > data.length - offset || size > raw_size - delta)
                     return 0;
                 return offset;
             }
@@ -299,10 +305,10 @@ namespace Wixl {
         var directory = resources;
         int[] ids = { 16, 1, -1 };
         for (var level = 0; level < 3; level++) {
-            if (directory + 16 > data.length)
+            if (directory > data.length || data.length - directory < 16)
                 return false;
             var count = read_u16 (data, directory + 12) + read_u16 (data, directory + 14);
-            if (directory + 16 + count * 8 > data.length)
+            if (data.length - directory - 16 < (size_t) count * 8)
                 return false;
             entry = 0;
             for (var i = 0; i < count; i++) {
@@ -317,9 +323,12 @@ namespace Wixl {
             // only the last level points to data instead of a directory
             if (entry == 0 || ((entry & 0x80000000) != 0) != (level < 2))
                 return false;
-            directory = resources + (entry & 0x7fffffff);
+            size_t relative = entry & 0x7fffffff;
+            if (relative > data.length - resources)
+                return false;
+            directory = resources + relative;
         }
-        if (directory + 16 > data.length)
+        if (directory > data.length || data.length - directory < 16)
             return false;
 
         var size = read_u32 (data, directory + 4);
@@ -331,8 +340,8 @@ namespace Wixl {
         string key;
         size_t value;
         var info_end = version_block (data, info, info, info + size, out key, out value);
-        if (info_end == 0 || key != "VS_VERSION_INFO" || value + 52 > info_end ||
-            read_u32 (data, value) != 0xfeef04bd)
+        if (info_end == 0 || key != "VS_VERSION_INFO" || value > info_end ||
+            info_end - value < 52 || read_u32 (data, value) != 0xfeef04bd)
             return false;
 
         var ms = read_u32 (data, value + 8);
