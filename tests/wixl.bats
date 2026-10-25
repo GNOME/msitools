@@ -993,6 +993,19 @@ EOF2
   [ "$status" -eq 1 ]
   echo "$output" | grep -F "FirewallException App: unsupported attribute Direction"
 
+  # WiX treats a rule with a program as an application exception, so a
+  # Port or Protocol on it is ignored
+  sed 's/Id="App" Name="My App"/Id="App" Name="My App" Port="8080" Protocol="udp"/' fw.wxs > pport.wxs
+  run "$wixl" -o out.msi pport.wxs
+  [ "$status" -eq 0 ]
+  run "$msiinfo" export out.msi CustomAction
+  ca=$(echo "$output" | tr -d '\r')
+  addrow=$(echo "$ca" | awk -F '\t' '$1 == "Fw_App.Add" { print $4 }')
+  echo "$addrow" | grep -q 'program='
+  echo "$addrow" | grep -q 'edge=yes'
+  ! echo "$addrow" | grep -q 'localport='
+  ! echo "$addrow" | grep -q 'protocol='
+
   # Ids must be valid identifiers, as in WiX
   sed 's/Id="App"/Id="A B"/' fw.wxs > badid.wxs
   run "$wixl" -o out.msi badid.wxs
