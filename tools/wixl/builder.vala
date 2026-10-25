@@ -266,6 +266,7 @@ namespace Wixl {
                 add (MSIDefault.Action.RemoveEnvironmentStrings);
                 add (MSIDefault.Action.WriteEnvironmentStrings);
             }
+            sequence_util_service_configs (table);
             table.add_sorted_actions ();
 
             // InstallUISequence
@@ -1473,6 +1474,188 @@ namespace Wixl {
             }
             if (rows == 0)
                 throw new Wixl.Error.FAILED ("ServiceConfig %s: one of DelayedAutoStart, FailureActionsWhen, ServiceSid or PreShutdownDelay is required", name);
+        }
+
+        // sc.exe's names for util:ServiceConfig's failure action types
+        static string? sc_failure_action (string? type) throws GLib.Error {
+            switch (type) {
+            case null:
+            case "none":
+                return null;
+            case "restart":
+                return "restart";
+            case "reboot":
+                return "reboot";
+            case "runCommand":
+                return "run";
+            default:
+                throw new Wixl.Error.FAILED ("util:ServiceConfig: invalid failure action type %s", type);
+            }
+        }
+
+        /*
+         * Quote a value for sc.exe, which splits its command line like the
+         * C runtime: backslashes are literal unless they come right before
+         * a quote, where each pair gives one backslash and an odd one
+         * escapes the quote. So double the backslashes before a quote and
+         * at the end, and escape the quotes. A formatted value is only
+         * expanded at install time, and a property such as a folder may
+         * end with a backslash: add a space after a value that ends with a
+         * property, which sc.exe keeps as is, and warn about a property
+         * right before a quote inside the value, which can't be handled.
+         */
+        static string sc_quote (string value, string attribute, bool formatted = true, bool pad = true) {
+            if (formatted && value.contains ("]\""))
+                warning ("util:ServiceConfig: %s has a property right before a quote, which breaks sc.exe's quoting if the property ends with a backslash", attribute);
+
+            var str = new StringBuilder ("\"");
+            var backslashes = 0;
+            for (var i = 0; i < value.length; i++) {
+                var c = value[i];
+                if (c == '\\') {
+                    backslashes++;
+                    continue;
+                }
+                if (c == '"')
+                    backslashes = backslashes * 2 + 1;
+                for (; backslashes > 0; backslashes--)
+                    str.append_c ('\\');
+                str.append_c (c);
+            }
+            for (backslashes *= 2; backslashes > 0; backslashes--)
+                str.append_c ('\\');
+            if (formatted && pad && value.has_suffix ("]"))
+                str.append_c (' ');
+            str.append_c ('"');
+            return str.str;
+        }
+
+        // an unformatted value in a formatted string, as WiX passes it
+        static string msi_escape_brackets (string value) {
+            var str = new StringBuilder ();
+            for (var i = 0; i < value.length; i++) {
+                var c = value[i];
+                if (c == '[' || c == ']')
+                    str.append ("[\\%c]".printf (c));
+                else
+                    str.append_c (c);
+            }
+            return str.str;
+        }
+
+        static int util_service_config_number (string? value, string attribute, int max) throws GLib.Error {
+            if (value == null || value == "")
+                return 0;
+            if (!/^[0-9]{1,9}$/.match (value) || int.parse (value) > max)
+                throw new Wixl.Error.FAILED ("util:ServiceConfig: invalid %s %s, at most %d", attribute, value, max);
+            return int.parse (value);
+        }
+
+        class UtilServiceConfigAction {
+            public string name;
+            public string component;
+        }
+
+        List<UtilServiceConfigAction> util_service_configs;
+        GenericSet<string> util_service_config_ids = new GenericSet<string> (str_hash, str_equal);
+
+        /*
+         * util:ServiceConfig sets a service's failure actions. WiX does it
+         * with a custom action from its util extension, and Windows
+         * Installer's own MsiServiceConfigFailureActions table fails the
+         * installation with error 1939 (access denied) for a restart
+         * action. So run "sc.exe failure" from a deferred custom action
+         * after InstallServices, with the same values WiX passes to
+         * ChangeServiceConfig2 ().
+         */
+        public override void visit_util_service_config (WixUtilServiceConfig config) throws GLib.Error {
+            WixComponent comp;
+            string? name;
+
+            if (config.parent is WixServiceInstall) {
+                // like WiX, always the service being installed
+                var install = config.parent as WixServiceInstall;
+                if (config.ServiceName != null && config.ServiceName != install.Name)
+                    warning ("util:ServiceConfig: ServiceName %s ignored inside ServiceInstall %s", config.ServiceName, install.Name);
+                name = install.Name;
+                comp = install.parent as WixComponent;
+            } else {
+                name = config.ServiceName;
+                comp = config.parent as WixComponent;
+            }
+            if (name == null || name == "")
+                throw new Wixl.Error.FAILED ("util:ServiceConfig: ServiceName is required");
+
+            var restart_delay = util_service_config_number (config.RestartServiceDelayInSeconds, "RestartServiceDelayInSeconds", int.MAX / 1000);
+            var reset_days = util_service_config_number (config.ResetPeriodInDays, "ResetPeriodInDays", int.MAX / (24 * 60 * 60));
+
+            // like WiX, the delay is only used for restart actions; trailing
+            // "none" actions are left out, which is the same for the SCM
+            string?[] types = {
+                sc_failure_action (config.FirstFailureActionType),
+                sc_failure_action (config.SecondFailureActionType),
+                sc_failure_action (config.ThirdFailureActionType),
+            };
+            var count = 3;
+            while (count > 0 && types[count - 1] == null)
+                count--;
+            if (count == 0)
+                throw new Wixl.Error.FAILED ("util:ServiceConfig %s: no failure action set", name);
+
+            string[] actions = {};
+            for (var i = 0; i < count; i++) {
+                if (types[i] == null)
+                    throw new Wixl.Error.FAILED ("util:ServiceConfig %s: a none failure action before another action is not supported", name);
+                var delay = types[i] == "restart" ? restart_delay * 1000 : 0;
+                actions += "%s/%d".printf (types[i], delay);
+            }
+
+            // like WiX, the reboot message is not formatted
+            var command = "failure %s reset= %d actions= %s".printf (
+                sc_quote (name, "ServiceName", true, false), reset_days * 24 * 60 * 60, string.joinv ("/", actions));
+            if (config.ProgramCommandLine != null && config.ProgramCommandLine != "")
+                command += " command= " + sc_quote (config.ProgramCommandLine, "ProgramCommandLine");
+            if (config.RebootMessage != null && config.RebootMessage != "")
+                command += " reboot= " + sc_quote (msi_escape_brackets (config.RebootMessage), "RebootMessage", false);
+
+            // a unique action name of at most 72 characters
+            var base_id = "UtilServiceConfig_" + /[^A-Za-z0-9_.]|\.{2,}/.replace (name, -1, 0, "_");
+            if (base_id.length > 66)
+                base_id = "UtilServiceConfig_" + Checksum.compute_for_string (ChecksumType.SHA1, name)[0:32].up ();
+            var id = base_id;
+            for (var n = 2; id in util_service_config_ids; n++)
+                id = "%s_%d".printf (base_id, n);
+            util_service_config_ids.add (id);
+
+            if (command.length > 255)
+                warning ("util:ServiceConfig %s: the sc.exe command line is longer than 255 characters, the size of CustomAction.Target", name);
+            db.table_custom_action.add (id,
+                                        CustomActionType.EXE_PROPERTY | CustomActionType.IN_SCRIPT | CustomActionType.NO_IMPERSONATE,
+                                        "WixlScExe", command);
+            util_service_configs.append (new UtilServiceConfigAction () { name = id, component = comp.Id });
+        }
+
+        void sequence_util_service_configs (MsiTableSequence table) throws GLib.Error {
+            if (util_service_configs == null)
+                return;
+
+            // the path of sc.exe, set once for all services
+            db.table_custom_action.add ("WixlSetScExe", CustomActionType.SET_PROPERTY, "WixlScExe", "[SystemFolder]sc.exe");
+            table.get_action ("WixlSetScExe").add_dep (table.get_action ("CostFinalize"));
+
+            // after the services are installed, or the files when the
+            // services come from elsewhere, inside the install script
+            var after = "InstallInitialize";
+            if (db.table_service_install.records.length () > 0)
+                after = "InstallServices";
+            else if (db.table_file.records.length () > 0)
+                after = "InstallFiles";
+            foreach (var config in util_service_configs) {
+                var node = table.get_action (config.name);
+                // installed locally or run from source
+                node.condition = "$%s>2".printf (config.component);
+                node.add_dep (table.get_action (after));
+            }
         }
 
         enum RegistryType {

@@ -744,3 +744,128 @@ EOF2
   run "$msiinfo" export out.msi MsiServiceConfig
   echo "$output" | tr -d '\r' | grep -q "^_1a_b\.PD"
 }
+
+@test "wixl - util:ServiceConfig" {
+  mkdir -p SourceDir
+  echo "hello" > SourceDir/svc.exe
+  cat >utilsc.wxs <<'EOF2'
+<?xml version="1.0" encoding="utf-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi"
+     xmlns:util="http://schemas.microsoft.com/wix/UtilExtension">
+  <Product Id="ABCDDCBA-86C7-4D14-AEC0-86416A69ABDE"
+           Name="Test" Version="1.0.0" Manufacturer="Test" Language="1033"
+           UpgradeCode="12345678-1234-1234-1234-123456789012">
+    <Package InstallerVersion="200" Compressed="yes" />
+    <Media Id="1" Cabinet="test.cab" EmbedCab="yes" />
+    <Directory Id="TARGETDIR" Name="SourceDir">
+      <Directory Id="ProgramFilesFolder">
+        <Directory Id="INSTALLDIR" Name="Test">
+          <Component Id="C1" Guid="ABCDDCBA-83F1-4F22-985B-FDB3C8ABD471">
+            <File Id="F1" Source="SourceDir/svc.exe" KeyPath="yes" />
+            <ServiceInstall Id="S1" Name="my svc" Type="ownProcess" Start="auto" ErrorControl="normal">
+              <util:ServiceConfig FirstFailureActionType="restart" SecondFailureActionType="restart"
+                                  ThirdFailureActionType="none" ResetPeriodInDays="1"
+                                  RestartServiceDelayInSeconds="60" />
+            </ServiceInstall>
+            <util:ServiceConfig ServiceName="other" FirstFailureActionType="runCommand"
+                                SecondFailureActionType="reboot" ThirdFailureActionType="restart"
+                                ProgramCommandLine='"[INSTALLDIR]svc.exe" --recover' RebootMessage="bye [x]" />
+            <util:ServiceConfig ServiceName="other" FirstFailureActionType="restart"
+                                ProgramCommandLine="[INSTALLDIR]" />
+          </Component>
+        </Directory>
+      </Directory>
+    </Directory>
+    <Feature Id="Main" Level="1">
+      <ComponentRef Id="C1" />
+    </Feature>
+  </Product>
+</Wix>
+EOF2
+  run "$wixl" -o out.msi utilsc.wxs
+  [ "$status" -eq 0 ]
+
+  run "$msiinfo" export out.msi CustomAction
+  [ "$status" -eq 0 ]
+  ca=$(echo "$output" | tr -d '\r')
+  echo "$ca"
+  # 3122 = exe from property (50), deferred, no impersonation
+  echo "$ca" | grep -qxF "$(printf 'UtilServiceConfig_my_svc\t3122\tWixlScExe\tfailure "my svc" reset= 86400 actions= restart/60000/restart/60000\t')"
+  echo "$ca" | grep -qxF "$(printf 'UtilServiceConfig_other\t3122\tWixlScExe\tfailure "other" reset= 0 actions= run/0/reboot/0/restart/0 command= "\\"[INSTALLDIR]svc.exe\\" --recover" reboot= "bye [\\[]x[\\]]"\t')"
+  # a value ending with a property gets a space, so a trailing backslash can't escape the quote
+  echo "$ca" | grep -qxF "$(printf 'UtilServiceConfig_other_2\t3122\tWixlScExe\tfailure "other" reset= 0 actions= restart/0 command= "[INSTALLDIR] "\t')"
+  echo "$ca" | grep -qxF "$(printf 'WixlSetScExe\t51\tWixlScExe\t[SystemFolder]sc.exe\t')"
+
+  run "$msiinfo" export out.msi InstallExecuteSequence
+  [ "$status" -eq 0 ]
+  seq=$(echo "$output" | tr -d '\r')
+  seqof() { echo "$seq" | awk -F '\t' -v a="$1" '$1 == a { print $3 }'; }
+  condof() { echo "$seq" | awk -F '\t' -v a="$1" '$1 == a { print $2 }'; }
+  [ "$(condof UtilServiceConfig_my_svc)" = '$C1>2' ]
+  # the default condition of InstallServices is kept
+  [ "$(condof InstallServices)" = 'VersionNT' ]
+  [ "$(seqof UtilServiceConfig_my_svc)" -gt "$(seqof InstallServices)" ]
+  [ "$(seqof UtilServiceConfig_my_svc)" -lt "$(seqof InstallFinalize)" ]
+  [ "$(seqof WixlSetScExe)" -gt "$(seqof CostFinalize)" ]
+  [ "$(seqof WixlSetScExe)" -lt "$(seqof InstallInitialize)" ]
+
+  # one action per util:ServiceConfig
+  [ "$(echo "$ca" | grep -c '^UtilServiceConfig_')" -eq 3 ]
+
+  # a none action between two others can't be expressed for sc.exe
+  sed 's/ThirdFailureActionType="none"/ThirdFailureActionType="restart"/; s/SecondFailureActionType="restart"/SecondFailureActionType="none"/' utilsc.wxs > gap.wxs
+  run "$wixl" -o out.msi gap.wxs
+  [ "$status" -eq 1 ]
+  echo "$output" | grep -F "a none failure action before another action is not supported"
+
+  # numbers must fit sc.exe's milliseconds
+  sed 's/RestartServiceDelayInSeconds="60"/RestartServiceDelayInSeconds="3000000"/' utilsc.wxs > big.wxs
+  run "$wixl" -o out.msi big.wxs
+  [ "$status" -eq 1 ]
+  echo "$output" | grep -F "invalid RestartServiceDelayInSeconds 3000000"
+}
+
+@test "wixl - util:ServiceConfig without ServiceInstall" {
+  cat >utilsc2.wxs <<'EOF2'
+<?xml version="1.0" encoding="utf-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi"
+     xmlns:util="http://schemas.microsoft.com/wix/UtilExtension">
+  <Product Id="ABCDDCBA-86C7-4D14-AEC0-86416A69ABDE"
+           Name="Test" Version="1.0.0" Manufacturer="Test" Language="1033"
+           UpgradeCode="12345678-1234-1234-1234-123456789012">
+    <Package InstallerVersion="200" Compressed="yes" />
+    <Property Id="SVCNAME" Value="Spooler" />
+    <Directory Id="TARGETDIR" Name="SourceDir">
+      <Component Id="C1" Guid="ABCDDCBA-83F1-4F22-985B-FDB3C8ABD471">
+        <RegistryValue Root="HKLM" Key="Software\Test" Name="v" Value="1" Type="string" KeyPath="yes" />
+        <util:ServiceConfig ServiceName="[SVCNAME]" FirstFailureActionType="runCommand"
+                            ProgramCommandLine='C:\a b\run.exe "C:\dir\\"' />
+      </Component>
+    </Directory>
+    <Feature Id="Main" Level="1">
+      <ComponentRef Id="C1" />
+    </Feature>
+  </Product>
+</Wix>
+EOF2
+  run "$wixl" -o out.msi utilsc2.wxs
+  [ "$status" -eq 0 ]
+
+  run "$msiinfo" export out.msi CustomAction
+  [ "$status" -eq 0 ]
+  ca=$(echo "$output" | tr -d '\r')
+  echo "$ca"
+  # no space after the formatted service name, and the backslashes before
+  # a quote and at the end are doubled
+  echo "$ca" | grep -F 'failure "[SVCNAME]" reset= 0 actions= run/0 command= "C:\a b\run.exe \"C:\dir\\\\\""'
+
+  # inside the install script, without adding InstallFiles or InstallServices
+  run "$msiinfo" export out.msi InstallExecuteSequence
+  [ "$status" -eq 0 ]
+  seq=$(echo "$output" | tr -d '\r')
+  seqof() { echo "$seq" | awk -F '\t' -v a="$1" '$1 == a { print $3 }'; }
+  [ "$(seqof UtilServiceConfig__SVCNAME_)" -gt "$(seqof InstallInitialize)" ]
+  [ "$(seqof UtilServiceConfig__SVCNAME_)" -lt "$(seqof InstallFinalize)" ]
+  [ -z "$(seqof InstallFiles)" ]
+  [ -z "$(seqof InstallServices)" ]
+}

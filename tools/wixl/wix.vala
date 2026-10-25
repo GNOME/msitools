@@ -64,6 +64,7 @@ namespace Wixl {
         public abstract void visit_service_dependency (WixServiceDependency service_dependency) throws GLib.Error;
         public abstract void visit_service_install (WixServiceInstall service_install, VisitState state) throws GLib.Error;
         public abstract void visit_service_config (WixServiceConfig service_config) throws GLib.Error;
+        public abstract void visit_util_service_config (WixUtilServiceConfig config) throws GLib.Error;
         public abstract void visit_registry_search (WixRegistrySearch search) throws GLib.Error;
         public abstract void visit_custom_action (WixCustomAction action) throws GLib.Error;
         public abstract void visit_binary (WixBinary binary) throws GLib.Error;
@@ -261,8 +262,34 @@ namespace Wixl {
             }
         }
 
+        // elements of a WiX extension are looked up with a prefix for
+        // their namespace, like util:ServiceConfig, so they can't be
+        // confused with core elements of the same local name
+        protected static string? extension_prefix (Xml.Ns *ns) {
+            if (ns == null)
+                return null;
+            switch (ns->href) {
+            case "http://schemas.microsoft.com/wix/UtilExtension":
+            case "http://wixtoolset.org/schemas/v4/wxs/util":
+                return "util";
+            case "http://schemas.microsoft.com/wix/FirewallExtension":
+            case "http://wixtoolset.org/schemas/v4/wxs/firewall":
+                return "fw";
+            default:
+                return null;
+            }
+        }
+
+        protected static string? element_key (Xml.Node *node) {
+            if (is_wix_namespace (node->ns))
+                return node->name;
+
+            var prefix = extension_prefix (node->ns);
+            return prefix != null ? prefix + ":" + node->name : null;
+        }
+
         public virtual void load (Xml.Node *node) throws Wixl.Error {
-            if (name != null && node->name != name)
+            if (name != null && element_key (node) != name)
                 throw new Error.FAILED ("%s: invalid node %s".printf (name, node->name));
 
             load_properties_from_node (node);
@@ -276,11 +303,13 @@ namespace Wixl {
                     continue;
                 case Xml.ElementType.ELEMENT_NODE:
                     // elements from another namespace are not ours, even
-                    // when their local name matches one of our elements
-                    if (!is_wix_namespace (child->ns))
+                    // when their local name matches one of our elements;
+                    // those of a known extension are looked up with its prefix
+                    var key = element_key (child);
+                    if (key == null)
                         break;
 
-                    var t = child_types->lookup (child->name);
+                    var t = child_types->lookup (key);
                     if (t != 0) {
                         var elem = Object.new (t) as WixElement;
                         elem.load (child);
@@ -710,6 +739,26 @@ namespace Wixl {
         }
     }
 
+    // util:ServiceConfig, the service's failure actions
+    public class WixUtilServiceConfig: WixElement {
+        static construct {
+            name = "util:ServiceConfig";
+        }
+
+        public string ServiceName { get; set; }
+        public string FirstFailureActionType { get; set; }
+        public string SecondFailureActionType { get; set; }
+        public string ThirdFailureActionType { get; set; }
+        public string ResetPeriodInDays { get; set; }
+        public string RestartServiceDelayInSeconds { get; set; }
+        public string ProgramCommandLine { get; set; }
+        public string RebootMessage { get; set; }
+
+        public override void accept (WixNodeVisitor visitor) throws GLib.Error {
+            visitor.visit_util_service_config (this);
+        }
+    }
+
     public class WixServiceDependency: WixElement {
         static construct {
             name = "ServiceDependency";
@@ -748,6 +797,7 @@ namespace Wixl {
             add_child_types (child_types, {
                 typeof (WixServiceDependency),
                 typeof (WixServiceConfig),
+                typeof (WixUtilServiceConfig),
             });
         }
 
@@ -1232,6 +1282,7 @@ namespace Wixl {
                 typeof (WixServiceControl),
                 typeof (WixServiceInstall),
                 typeof (WixServiceConfig),
+                typeof (WixUtilServiceConfig),
                 typeof (WixIniFile),
                 typeof (WixCondition),
                 typeof (WixEnvironment),
