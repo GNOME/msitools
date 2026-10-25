@@ -955,7 +955,18 @@ namespace Wixl {
             var attr = FileAttribute.VITAL;
             var version = file.CompanionFile ?? file.DefaultVersion;
 
-            var rec = db.table_file.add (file.Id, comp.Id, name, (int)info.get_size (), attr, version, file.DefaultLanguage);
+            string? language = null;
+            if (file.DefaultLanguage != null) {
+                int langid;
+                unowned string unparsed;
+                if (!int.try_parse (file.DefaultLanguage, out langid, out unparsed, 10) ||
+                    unparsed != "" || langid < 0 || langid > 0xffff)
+                    throw new Wixl.Error.FAILED ("file %s: invalid DefaultLanguage '%s', expected a LANGID between 0 and 65535",
+                                                 file.Id, file.DefaultLanguage);
+                language = langid.to_string ();
+            }
+
+            var rec = db.table_file.add (file.Id, comp.Id, name, (int)info.get_size (), attr, version, language);
             rec.set_data<WixFile> ("wixfile", file);
 
             visit_key_element (file);

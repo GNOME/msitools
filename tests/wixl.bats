@@ -425,4 +425,11 @@ EOF2
   [ "$(col F1 7)" -eq 512 ]
   [ "$(col F1 8)" -ge 1 ]
   [ "$(col F2 8)" -ge 1 ]
+
+  for bad in en-US 1033abc 65536 -1; do
+    sed "s/DefaultLanguage=\"1033\"/DefaultLanguage=\"$bad\"/" version.wxs > invalid.wxs
+    run "$wixl" -o invalid.msi invalid.wxs
+    [ "$status" -eq 1 ]
+    echo "$output" | grep -q "invalid DefaultLanguage"
+  done
 }
