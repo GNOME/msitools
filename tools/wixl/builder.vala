@@ -1376,12 +1376,29 @@ namespace Wixl {
         }
 
         // like WiX, known values are mapped and anything else, such as a
-        // formatted property, is passed through
+        // formatted property, is passed through; the known values are
+        // case-sensitive, as in WiX
         static string service_config_value (string value, string[] names, string[] values) {
             for (var i = 0; i < names.length; i++)
                 if (value == names[i])
                     return values[i];
             return value;
+        }
+
+        // empty values count as unset, as in WiX
+        static string? service_config_setting (string? value) {
+            return (value == null || value == "") ? null : value;
+        }
+
+        // WiX rejects an illegal yes/no value instead of treating it as no
+        static bool service_config_yesno (string? value, string attribute) throws GLib.Error {
+            if (value == null)
+                return false;
+            if (value == "yes")
+                return true;
+            if (value == "no")
+                return false;
+            throw new Wixl.Error.FAILED ("ServiceConfig: %s must be yes or no, not '%s'", attribute, value);
         }
 
         GenericSet<string> service_config_ids = new GenericSet<string> (str_hash, str_equal);
@@ -1409,11 +1426,11 @@ namespace Wixl {
                 throw new Wixl.Error.FAILED ("ServiceConfig: ServiceName is required");
 
             int event = 0;
-            if (parse_yesno (config.OnInstall))
+            if (service_config_yesno (config.OnInstall, "OnInstall"))
                 event |= ServiceConfigEvent.INSTALL;
-            if (parse_yesno (config.OnReinstall))
+            if (service_config_yesno (config.OnReinstall, "OnReinstall"))
                 event |= ServiceConfigEvent.REINSTALL;
-            if (parse_yesno (config.OnUninstall))
+            if (service_config_yesno (config.OnUninstall, "OnUninstall"))
                 event |= ServiceConfigEvent.UNINSTALL;
             if (event == 0)
                 throw new Wixl.Error.FAILED ("ServiceConfig %s: one of OnInstall, OnReinstall or OnUninstall is required", name);
@@ -1429,25 +1446,29 @@ namespace Wixl {
             // one row per setting, with the ids and config types WiX uses;
             // empty values count as unset, as in WiX
             var rows = 0;
-            if (config.DelayedAutoStart != null && config.DelayedAutoStart != "") {
-                var value = service_config_value (config.DelayedAutoStart, { "no", "yes" }, { "0", "1" });
+            var delayed_auto_start = service_config_setting (config.DelayedAutoStart);
+            if (delayed_auto_start != null) {
+                var value = service_config_value (delayed_auto_start, { "no", "yes" }, { "0", "1" });
                 add_service_config (id + ".DS", name, event, 3, value, comp.Id);
                 rows++;
             }
-            if (config.FailureActionsWhen != null && config.FailureActionsWhen != "") {
-                var value = service_config_value (config.FailureActionsWhen,
+            var failure_actions_when = service_config_setting (config.FailureActionsWhen);
+            if (failure_actions_when != null) {
+                var value = service_config_value (failure_actions_when,
                                                   { "failedToStop", "failedToStopOrReturnedError" }, { "0", "1" });
                 add_service_config (id + ".FA", name, event, 4, value, comp.Id);
                 rows++;
             }
-            if (config.ServiceSid != null && config.ServiceSid != "") {
-                var value = service_config_value (config.ServiceSid,
+            var service_sid = service_config_setting (config.ServiceSid);
+            if (service_sid != null) {
+                var value = service_config_value (service_sid,
                                                   { "none", "unrestricted", "restricted" }, { "0", "1", "3" });
                 add_service_config (id + ".SS", name, event, 5, value, comp.Id);
                 rows++;
             }
-            if (config.PreShutdownDelay != null && config.PreShutdownDelay != "") {
-                add_service_config (id + ".PD", name, event, 7, config.PreShutdownDelay, comp.Id);
+            var pre_shutdown_delay = service_config_setting (config.PreShutdownDelay);
+            if (pre_shutdown_delay != null) {
+                add_service_config (id + ".PD", name, event, 7, pre_shutdown_delay, comp.Id);
                 rows++;
             }
             if (rows == 0)

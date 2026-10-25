@@ -685,6 +685,10 @@ EOF2
             </ServiceInstall>
             <ServiceConfig Id="Other" ServiceName="other-svc" PreShutdownDelay="60000"
                            ServiceSid="restricted" OnUninstall="yes" />
+            <ServiceConfig Id="Zeros" ServiceName="zeros-svc" DelayedAutoStart="no"
+                           FailureActionsWhen="failedToStop" ServiceSid="none" OnInstall="yes" />
+            <ServiceConfig Id="Prop" ServiceName="prop-svc" PreShutdownDelay="[DELAY]"
+                           OnReinstall="yes" />
           </Component>
         </Directory>
       </Directory>
@@ -701,10 +705,13 @@ EOF2
   run "$msiinfo" export out.msi MsiServiceConfig
   [ "$status" -eq 0 ]
   rows=$(echo "$output" | tr -d '\r' | tail -n +4 | LC_ALL=C sort)
-  echo "$rows"
   [ "$rows" = "$(printf '%s\t%s\t%s\t%s\t%s\t%s\n' \
       Other.PD other-svc 2 7 60000 C1 \
       Other.SS other-svc 2 5 3 C1 \
+      Prop.PD prop-svc 4 7 [DELAY] C1 \
+      Zeros.DS zeros-svc 1 3 0 C1 \
+      Zeros.FA zeros-svc 1 4 0 C1 \
+      Zeros.SS zeros-svc 1 5 0 C1 \
       my_svc.DS my-svc 5 3 1 C1 \
       my_svc.FA my-svc 5 4 1 C1)" ]
 
@@ -717,6 +724,12 @@ EOF2
   run "$wixl" -o out.msi noevent.wxs
   [ "$status" -eq 1 ]
   echo "$output" | grep -F "OnInstall, OnReinstall or OnUninstall is required"
+
+  # an invalid yes/no value is an error, not silently treated as no
+  sed 's/OnUninstall="yes"/OnUninstall="maybe"/' serviceconfig.wxs > badyesno.wxs
+  run "$wixl" -o out.msi badyesno.wxs
+  [ "$status" -eq 1 ]
+  echo "$output" | grep -F "OnUninstall must be yes or no, not 'maybe'"
 
   # the same setting twice for one service needs distinct ids
   sed 's/Id="Other" ServiceName="other-svc" PreShutdownDelay="60000"/ServiceName="my-svc" DelayedAutoStart="no"/' serviceconfig.wxs > dup.wxs
