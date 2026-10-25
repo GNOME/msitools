@@ -2118,14 +2118,26 @@ static void cache_infile_structure( LibmsiDatabase *db )
 
     for (i = 0; i < n; i++)
     {
-        GsfInput *in = msi_infile_child_by_index(db->infile, i);
-        const char* name = gsf_input_name(in);
-        const uint8_t *name8 = (const uint8_t *)name;
+        const char *name = gsf_infile_name_by_index(db->infile, i);
+        const uint8_t *name8;
+        GsfInput *in;
 
         if (!name) {
             g_warn_if_reached();
             continue;
         }
+
+        /* child_by_index() returns NULL for some embedded streams, such as
+         * the .cab files in recent Windows SDK MSIs, while the same child
+         * can still be opened by name. Do not call gsf_input_name() before
+         * this check, it asserts on a NULL input. */
+        in = msi_infile_child_by_name(db->infile, name);
+        if (!in) {
+            g_warn_if_reached();
+            continue;
+        }
+
+        name8 = (const uint8_t *)name;
         /* table streams are not in the _Streams table */
         if (!GSF_IS_INFILE(in) || gsf_infile_num_children(GSF_INFILE(in)) == -1) {
             /* UTF-8 encoding of 0x4840.  */
