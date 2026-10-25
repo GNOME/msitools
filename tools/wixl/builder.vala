@@ -1832,6 +1832,9 @@ namespace Wixl {
             if (ex.Description != null && ex.Description != "")
                 add += " description=" + crt_quote (firewall_escape_brackets (ex.Description));
 
+            if (add.length > 255 || remove.length > 255)
+                warning ("FirewallException %s: the netsh command line is longer than 255 characters, the size of CustomAction.Target", ex.Id);
+
             var deferred = CustomActionType.EXE_PROPERTY | CustomActionType.IN_SCRIPT | CustomActionType.NO_IMPERSONATE;
             var rollback = deferred | CustomActionType.ROLLBACK;
             // removing a rule that isn't there fails, which is fine

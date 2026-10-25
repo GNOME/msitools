@@ -1006,6 +1006,13 @@ EOF2
   ! echo "$addrow" | grep -q 'localport='
   ! echo "$addrow" | grep -q 'protocol='
 
+  # a longer name than the CustomAction.Target column can hold gives a warning
+  long=$(printf 'x%.0s' {1..240})
+  sed "s/Name=\"My App\"/Name=\"$long\"/" fw.wxs > long.wxs
+  run "$wixl" -o out.msi long.wxs
+  [ "$status" -eq 0 ]
+  echo "$output" | grep -F "FirewallException App: the netsh command line is longer than 255 characters"
+
   # Ids must be valid identifiers, as in WiX
   sed 's/Id="App"/Id="A B"/' fw.wxs > badid.wxs
   run "$wixl" -o out.msi badid.wxs
