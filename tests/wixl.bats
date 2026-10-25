@@ -248,6 +248,79 @@ EOF
   test -f out.msi
 }
 
+@test "wixl - Publish default Order" {
+  cd wixl
+  mkdir -p SourceDir
+  echo "hello" > SourceDir/hello.txt
+  cat >publish.wxs <<EOF
+<?xml version="1.0" encoding="utf-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+  <Product Id="ABCDDCBA-86C7-4D14-AEC0-86416A69ABDE"
+           Name="Test" Version="1.0.0" Manufacturer="Test" Language="1033"
+           UpgradeCode="12345678-1234-1234-1234-123456789012">
+    <Package InstallerVersion="200" Compressed="yes" />
+    <Media Id="1" Cabinet="test.cab" EmbedCab="yes" />
+    <Directory Id="TARGETDIR" Name="SourceDir">
+      <Directory Id="ProgramFilesFolder">
+        <Directory Id="INSTALLDIR" Name="Test">
+          <Component Id="C1" Guid="ABCDDCBA-83F1-4F22-985B-FDB3C8ABD471">
+            <File Id="F1" Source="SourceDir/hello.txt" KeyPath="yes" />
+          </Component>
+        </Directory>
+      </Directory>
+    </Directory>
+    <Feature Id="Main" Level="1">
+      <ComponentRef Id="C1" />
+    </Feature>
+    <UIRef Id="TestUI" />
+  </Product>
+  <Fragment>
+    <UI Id="TestUI">
+      <UIRef Id="WixUI_Minimal" />
+      <Dialog Id="TestDlg" Width="370" Height="270" Title="Test">
+        <Control Id="Next" Type="PushButton" X="236" Y="243" Width="56" Height="17" Text="Next">
+          <Publish Property="A" Value="1" />
+          <Publish Property="B" Value="1" />
+          <Publish Property="C" Value="1" Order="5" />
+          <Publish Property="D" Value="1" />
+        </Control>
+        <Control Id="Cancel" Type="PushButton" X="304" Y="243" Width="56" Height="17" Text="Cancel">
+          <Publish Event="EndDialog" Value="Exit" />
+        </Control>
+      </Dialog>
+      <Publish Dialog="WelcomeDlg" Control="Next" Event="NewDialog" Value="TestDlg" Order="10" />
+      <Publish Dialog="TestDlg" Control="Next" Event="EndDialog" Value="Return" />
+    </UI>
+  </Fragment>
+</Wix>
+EOF
+  run "$wixl" -o out.msi publish.wxs --ext ui --extdir "$SRCDIR/data/ext"
+  [ "$status" -eq 0 ]
+
+  run "$msiinfo" export out.msi ControlEvent
+  [ "$status" -eq 0 ]
+  table=$(echo "$output" | tr -d '\r' | tail -n +4)
+  echo "$table"
+  orderof() { echo "$table" | awk -F '\t' -v d="$1" -v c="$2" -v e="$3" -v a="$4" \
+    '$1 == d && $2 == c && $3 == e && $4 == a { print $6 }'; }
+
+  # nested under a Control: one greater than the previous Publish of
+  # that control, the next default counts on from an explicit Order
+  [ "$(orderof TestDlg Next '[A]' 1)" -eq 1 ]
+  [ "$(orderof TestDlg Next '[B]' 1)" -eq 2 ]
+  [ "$(orderof TestDlg Next '[C]' 1)" -eq 5 ]
+  [ "$(orderof TestDlg Next '[D]' 1)" -eq 6 ]
+  [ "$(orderof TestDlg Cancel EndDialog Exit)" -eq 1 ]
+  [ "$(orderof WelcomeDlg Next '[WixUI_InstallMode]' Update)" -eq 1 ]
+  # under a UI element: always 1, an earlier Order="999" does not leak
+  [ "$(orderof ExitDialog Finish EndDialog Return)" -eq 999 ]
+  [ "$(orderof VerifyReadyDlg Back NewDialog MaintenanceTypeDlg)" -eq 1 ]
+  [ "$(orderof WelcomeDlg Next NewDialog VerifyReadyDlg)" -eq 1 ]
+  [ "$(orderof TestDlg Next EndDialog Return)" -eq 1 ]
+  # an explicit Order is used as given and runs after the defaults
+  [ "$(orderof WelcomeDlg Next NewDialog TestDlg)" -eq 10 ]
+}
+
 @test "wixl - Before/After next to standard actions" {
   mkdir -p SourceDir
   echo "hello" > SourceDir/hello.txt

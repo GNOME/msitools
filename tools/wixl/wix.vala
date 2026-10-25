@@ -1484,6 +1484,10 @@ namespace Wixl {
         // controls, so keep a reference to the record so it can be updated
         public Libmsi.Record record;
 
+        // order of the last nested <Publish>, the next one without an
+        // Order defaults to one greater
+        public int publish_order = 0;
+
         public override void accept (WixNodeVisitor visitor) throws GLib.Error {
             base.accept (visitor);
             visitor.visit_control (this);
@@ -1494,10 +1498,6 @@ namespace Wixl {
         static construct {
             name = "Publish";
         }
-
-        // if it isn't set then the default value should be one greater than
-        // any previous <Publish> element's order, so keep track
-        public static int order = 1;
 
         public string Control { get; set; }
         public string Dialog { get; set; }
