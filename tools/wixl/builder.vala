@@ -1432,6 +1432,12 @@ namespace Wixl {
 
             // FIXME: so many missing things here...
             if (action.Error != null) {
+                if (action.BinaryKey != null || action.DllEntry != null ||
+                    action.ExeCommand != null || action.FileKey != null ||
+                    action.JScriptCall != null || action.Property != null ||
+                    action.Script != null || action.Value != null ||
+                    action.VBScriptCall != null)
+                    throw new Wixl.Error.FAILED ("Error cannot be combined with another action source");
                 type = CustomActionType.ERROR;
                 source = null;
                 target = action.Error;
@@ -1492,30 +1498,34 @@ namespace Wixl {
             } else
                 throw new Wixl.Error.FAILED ("Unsupported CustomAction");
 
-            if (action.Execute == "firstSequence")
-                type |= CustomActionType.FIRST_SEQUENCE;
-            else if (action.Execute == "oncePerProcess")
-                type |= CustomActionType.ONCE_PER_PROCESS;
-            else if (action.Execute == "clientRepeat")
-                type |= CustomActionType.CLIENT_REPEAT;
-            else if (action.Execute == "deferred")
-                type |= CustomActionType.IN_SCRIPT;
-            else if (action.Execute == "rollback")
-                type |= CustomActionType.IN_SCRIPT | CustomActionType.ROLLBACK;
-            else if (action.Execute == "commit")
-                type |= CustomActionType.IN_SCRIPT | CustomActionType.COMMIT;
+            // WiX ignores these for error actions; setting them would give
+            // an invalid type such as 19 | IN_SCRIPT | CONTINUE
+            if (type != CustomActionType.ERROR) {
+                if (action.Execute == "firstSequence")
+                    type |= CustomActionType.FIRST_SEQUENCE;
+                else if (action.Execute == "oncePerProcess")
+                    type |= CustomActionType.ONCE_PER_PROCESS;
+                else if (action.Execute == "clientRepeat")
+                    type |= CustomActionType.CLIENT_REPEAT;
+                else if (action.Execute == "deferred")
+                    type |= CustomActionType.IN_SCRIPT;
+                else if (action.Execute == "rollback")
+                    type |= CustomActionType.IN_SCRIPT | CustomActionType.ROLLBACK;
+                else if (action.Execute == "commit")
+                    type |= CustomActionType.IN_SCRIPT | CustomActionType.COMMIT;
 
-            if (action.Return == "ignore")
-                type |= CustomActionType.CONTINUE;
-            else if (action.Return == "asyncWait")
-                type |= CustomActionType.ASYNC;
-            else if (action.Return == "asyncNoWait") {
-                type |= CustomActionType.CONTINUE;
-                type |= CustomActionType.ASYNC;
+                if (action.Return == "ignore")
+                    type |= CustomActionType.CONTINUE;
+                else if (action.Return == "asyncWait")
+                    type |= CustomActionType.ASYNC;
+                else if (action.Return == "asyncNoWait") {
+                    type |= CustomActionType.CONTINUE;
+                    type |= CustomActionType.ASYNC;
+                }
+
+                if ((type & CustomActionType.IN_SCRIPT) == CustomActionType.IN_SCRIPT && !parse_yesno (action.Impersonate))
+                    type |= CustomActionType.NO_IMPERSONATE;
             }
-
-            if ((type & CustomActionType.IN_SCRIPT) == CustomActionType.IN_SCRIPT && !parse_yesno (action.Impersonate))
-                type |= CustomActionType.NO_IMPERSONATE;
 
             db.table_custom_action.add (action.Id, type, source, target);
         }

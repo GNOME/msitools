@@ -159,7 +159,19 @@ EOF
   [ "$status" -eq 0 ]
   run "$msiinfo" export out.msi CustomAction
   # Type 19 is msidbCustomActionTypeTextData: display Target as an error message
-  echo "$output" | grep -q '^AbortInstall	19		Installation aborted by custom action.'
+  [ "$(echo "$output" | tr -d '\r' | grep '^AbortInstall' | cut -f1-4)" = "$(printf 'AbortInstall\t19\t\tInstallation aborted by custom action.')" ]
+
+  # Execute/Return/Impersonate are ignored for error actions, like WiX
+  sed 's|Error="Installation aborted by custom action."|Error="Installation aborted by custom action." Execute="deferred" Return="ignore" Impersonate="no"|' custom-action-error.wxs > error-flags.wxs
+  run "$wixl" -o flags.msi error-flags.wxs
+  [ "$status" -eq 0 ]
+  run "$msiinfo" export flags.msi CustomAction
+  [ "$(echo "$output" | tr -d '\r' | grep '^AbortInstall' | cut -f1-4)" = "$(printf 'AbortInstall\t19\t\tInstallation aborted by custom action.')" ]
+
+  # WiX rejects Error combined with another action source
+  sed 's|Error="Installation aborted by custom action."|Error="Installation aborted by custom action." Property="SomeProp"|' custom-action-error.wxs > error-conflict.wxs
+  run "$wixl" -o conflict.msi error-conflict.wxs
+  [ "$status" -ne 0 ]
 }
 
 @test "wixl - script CustomAction sourced from a Property" {
@@ -169,8 +181,8 @@ EOF
   run "$msiinfo" export out.msi CustomAction
   # Type 53/54: JScript/VBScript stored in the Property named by Source,
   # entry point named by Target.
-  echo "$output" | grep -q '^RunVBScript	54	VBScriptText	Entry'
-  echo "$output" | grep -q '^RunJScript	53	JScriptText	Entry'
+  [ "$(echo "$output" | tr -d '\r' | grep '^RunVBScript' | cut -f1-4)" = "$(printf 'RunVBScript\t54\tVBScriptText\tEntry')" ]
+  [ "$(echo "$output" | tr -d '\r' | grep '^RunJScript' | cut -f1-4)" = "$(printf 'RunJScript\t53\tJScriptText\tEntry')" ]
 }
 
 @test "wixl-heat - simple" {
