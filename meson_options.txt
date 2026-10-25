@@ -9,3 +9,9 @@ option('introspection',
   value: true,
   description: 'generate GObject Introspection data',
 )
+
+option('fuzzing',
+  type: 'boolean',
+  value: false,
+  description: 'build the libFuzzer harnesses (requires clang)',
+)

@@ -37,3 +37,14 @@ test('Tools tests',
     'BUILDDIR': meson.project_build_root(),
   },
 )
+
+if get_option('fuzzing')
+  fuzz_version = executable('fuzz-version',
+    'fuzz-version.c',
+    include_directories: [inc_dirs, include_directories('../tools/wixl')],
+    c_args: ['-fsanitize=fuzzer,address,undefined'],
+    link_args: ['-fsanitize=fuzzer,address,undefined'],
+    link_with: libcommon,
+    dependencies: [glib, gio],
+  )
+endif

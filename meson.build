@@ -36,6 +36,17 @@ includedir = join_paths(prefix, get_option('includedir'))
 
 inc_dirs = include_directories('.', 'include')
 
+fuzz_c_args = []
+fuzz_link_args = []
+if get_option('fuzzing')
+  fuzz_cc = meson.get_compiler('c')
+  if fuzz_cc.get_id() != 'clang'
+    error('The fuzzing option requires clang')
+  endif
+  fuzz_c_args = ['-fsanitize=fuzzer-no-link,address,undefined']
+  fuzz_link_args = ['-fsanitize=address,undefined']
+endif
+
 subdir('completion')
 subdir('data')
 subdir('po')

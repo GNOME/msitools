@@ -10,6 +10,7 @@ libcommon = static_library('common',
     '--vapidir=@0@'.format(meson.project_source_root() / 'vapi'),
     '--vapidir=@0@'.format(meson.current_source_dir()),
   ],
+  c_args: fuzz_c_args,
   dependencies: glib,
 )
 
@@ -33,6 +34,7 @@ wixl = executable('wixl',
   c_args: ['-include', meson.project_build_root() / 'config.h'],
   include_directories: inc_dirs,
   link_with: libcommon,
+  link_args: fuzz_link_args,
   dependencies: [
     libmsi,
     libmsi_vapi,
@@ -56,6 +58,7 @@ wixl_heat = executable('wixl-heat',
   c_args: ['-include', meson.project_build_root() / 'config.h'],
   include_directories: inc_dirs,
   link_with: libcommon,
+  link_args: fuzz_link_args,
   dependencies: [
     libmsi,
     libmsi_vapi,

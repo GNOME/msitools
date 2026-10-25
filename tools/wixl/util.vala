@@ -246,6 +246,16 @@ namespace Wixl {
         unowned uint8[] data = (uint8[]) map.get_contents ();
         data.length = (int) map.get_length ();
 
+        return get_file_version_data (data, out version, out language);
+    }
+
+    /*
+     * Same as get_file_version(), for an in-memory PE image.
+     */
+    public bool get_file_version_data (uint8[] data, out string? version, out string? language) {
+        version = null;
+        language = null;
+
         if (data.length < 64 || data[0] != 'M' || data[1] != 'Z')
             return false;
         size_t pe = read_u32 (data, 0x3c);
