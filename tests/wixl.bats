@@ -518,7 +518,7 @@ EOF2
     <Directory Id="TARGETDIR" Name="SourceDir">
       <Directory Id="ProgramFilesFolder">
         <Directory Id="INSTALLDIR" Name="Test">
-          <Component Id="C1" Guid="ABCDDCBA-83F1-4F22-985B-FDB3C8ABD471" util:Guid="nope">
+          <Component Id="C1" Guid="ABCDDCBA-83F1-4F22-985B-FDB3C8ABD471" util:Guid="nope" util:Bogus="1">
             <File Id="F1" Source="SourceDir/hello.txt" KeyPath="yes" Bogus="yes" />
             @CHILD@
           </Component>
@@ -538,6 +538,7 @@ EOF2
   echo "$output" | grep -F "File F1: unsupported attribute Bogus, ignored"
   # an extension attribute doesn't override wixl's attribute of the same name
   echo "$output" | grep -F "Component C1: unsupported attribute util:Guid, ignored"
+  echo "$output" | grep -F "Component C1: unsupported attribute util:Bogus, ignored"
   ! echo "$output" | grep -F "xml:lang"
   run "$msiinfo" export out.msi Component
   [ "$status" -eq 0 ]
@@ -548,4 +549,11 @@ EOF2
   run "$wixl" -o out.msi elem.wxs
   [ "$status" -eq 1 ]
   echo "$output" | grep -F "Component C1: unsupported element Bogus"
+
+  # a foreign element with a known name is not a WiX element
+  sed 's|@CHILD@|<util:File Id="F2" Source="SourceDir/hello.txt" KeyPath="yes" />|' \
+      unsupported.wxs > ns-elem.wxs
+  run "$wixl" -o out.msi ns-elem.wxs
+  [ "$status" -eq 1 ]
+  echo "$output" | grep -F "Component C1: unsupported element util:File"
 }

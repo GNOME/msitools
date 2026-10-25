@@ -201,10 +201,31 @@ namespace Wixl {
             return attr->children->content;
         }
 
+        // whether a node is in a WiX namespace, or in no namespace at all
+        // (some documents don't declare one)
+        static bool is_wix_namespace (Xml.Ns *ns) {
+            if (ns == null)
+                return true;
+
+            return ns->href == "http://schemas.microsoft.com/wix/2006/wi" ||
+                   ns->href == "http://wixtoolset.org/schemas/v4/wxs";
+        }
+
+        // the name with its namespace prefix, if any, for messages
+        static string qualified_name (Xml.Ns *ns, string name) {
+            return ns != null && ns->prefix != null ?
+                "%s:%s".printf (ns->prefix, name) : name;
+        }
+
         // the element name and its Id, if any, for messages
-        static string describe_node (Xml.Node *node) {
-            var id = node->get_prop ("Id");
-            return id != null ? "%s %s".printf (node->name, id) : node->name;
+        string describe_node (Xml.Node *node) {
+            for (var prop = node->properties; prop != null; prop = prop->next) {
+                if (prop->type == Xml.ElementType.ATTRIBUTE_NODE &&
+                    prop->ns == null && prop->name == "Id")
+                    return "%s %s".printf (node->name, get_attribute_content (prop));
+            }
+
+            return node->name;
         }
 
         protected void load_properties_from_node (Xml.Node *node) throws Wixl.Error {
@@ -213,9 +234,7 @@ namespace Wixl {
                     continue;
 
                 // an attribute in the WiX namespace itself is one of ours
-                if (prop->ns != null &&
-                    prop->ns->href != "http://schemas.microsoft.com/wix/2006/wi" &&
-                    prop->ns->href != "http://wixtoolset.org/schemas/v4/wxs") {
+                if (!is_wix_namespace (prop->ns)) {
                     // xml:lang, xsi:schemaLocation and the like
                     if (prop->ns->href == "http://www.w3.org/XML/1998/namespace" ||
                         prop->ns->href == "http://www.w3.org/2001/XMLSchema-instance")
@@ -223,11 +242,9 @@ namespace Wixl {
 
                     // extension attributes must not set wixl's own
                     // properties of the same name
-                    warning ("%s: unsupported attribute %s%s%s, ignored",
+                    warning ("%s: unsupported attribute %s, ignored",
                              describe_node (node),
-                             prop->ns->prefix ?? "",
-                             prop->ns->prefix != null ? ":" : "",
-                             prop->name);
+                             qualified_name (prop->ns, prop->name));
                     continue;
                 }
 
@@ -257,6 +274,11 @@ namespace Wixl {
                     add_child (new WixText (child->content));
                     continue;
                 case Xml.ElementType.ELEMENT_NODE:
+                    // elements from another namespace are not ours, even
+                    // when their local name matches one of our elements
+                    if (!is_wix_namespace (child->ns))
+                        break;
+
                     var t = child_types->lookup (child->name);
                     if (t != 0) {
                         var elem = Object.new (t) as WixElement;
@@ -269,7 +291,8 @@ namespace Wixl {
                     break;
                 }
                 throw new Error.FAILED ("%s: unsupported element %s",
-                                        describe_node (node), child->name);
+                                        describe_node (node),
+                                        qualified_name (child->ns, child->name));
             }
         }
 
