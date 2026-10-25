@@ -147,3 +147,18 @@ Restrict: 0 (0)
 Application: Windows Installer XML (3.7.1119.0)
 Security: 2 (2)" ]
 }
+
+@test "msibuild - temporary rows are not saved" {
+  run "$msibuild" out.msi -i tables.txt columns.txt button.txt
+  [ "$status" -eq 0 ]
+  # a temporary row used to make the save drop or garble the rows
+  # stored after it, and write past the end of its buffer
+  run "$msibuild" out.msi -q "INSERT INTO RadioButton (Property, \`Order\`, Value, X, Y, Width, Height, Text) VALUES ('AAA', 1, 'tmp', 0, 0, 1, 1, 'tmp') TEMPORARY"
+  [ "$status" -eq 0 ]
+  # one stored before the persistent rows
+  run "$msibuild" out.msi -q "INSERT INTO RadioButton (Property, \`Order\`, Value, X, Y, Width, Height, Text) VALUES ('IAgree', 0, 'tmp', 0, 0, 1, 1, 'tmp') TEMPORARY"
+  [ "$status" -eq 0 ]
+  run "$msiinfo" export out.msi RadioButton
+  exp=$(cat button.txt)
+  [ "$output" = "$exp" ]
+}

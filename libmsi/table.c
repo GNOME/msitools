@@ -925,7 +925,7 @@ err:
 static unsigned save_table( LibmsiDatabase *db, const LibmsiTable *t, unsigned bytes_per_strref )
 {
     uint8_t *rawdata = NULL;
-    unsigned rawsize, i, j, row_size, row_count;
+    unsigned rawsize, i, j, p, row_size, row_count;
     unsigned r = LIBMSI_RESULT_FUNCTION_FAILED;
 
     /* Nothing to do for non-persistent tables */
@@ -942,15 +942,11 @@ static unsigned save_table( LibmsiDatabase *db, const LibmsiTable *t, unsigned b
     TRACE("Saving %s\n", debugstr_a( t->name ) );
 
     row_size = msi_table_get_row_size( db, t->colinfo, t->col_count, bytes_per_strref );
-    row_count = t->row_count;
+    /* temporary rows are not saved */
+    row_count = 0;
     for (i = 0; i < t->row_count; i++)
-    {
-        if (!t->data_persistent[i])
-        {
-            row_count = 1; /* yes, this is bizarre */
-            break;
-        }
-    }
+        if (t->data_persistent[i])
+            row_count++;
     rawsize = row_count * row_size;
     rawdata = msi_alloc_zero( rawsize );
     if( !rawdata )
@@ -960,11 +956,11 @@ static unsigned save_table( LibmsiDatabase *db, const LibmsiTable *t, unsigned b
     }
 
     rawsize = 0;
-    for (i = 0; i < t->row_count; i++)
+    for (i = 0, p = 0; i < t->row_count; i++)
     {
         unsigned ofs = 0, ofs_mem = 0;
 
-        if (!t->data_persistent[i]) break;
+        if (!t->data_persistent[i]) continue;
 
         for (j = 0; j < t->col_count; j++)
         {
@@ -988,12 +984,13 @@ static unsigned save_table( LibmsiDatabase *db, const LibmsiTable *t, unsigned b
             }
             for (k = 0; k < n; k++)
             {
-                rawdata[ofs * row_count + i * n + k] = t->data[i][ofs_mem + k];
+                rawdata[ofs * row_count + p * n + k] = t->data[i][ofs_mem + k];
             }
             ofs_mem += m;
             ofs += n;
         }
         rawsize += row_size;
+        p++;
     }
 
     TRACE("writing %d bytes\n", rawsize);
