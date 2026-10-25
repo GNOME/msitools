@@ -1213,6 +1213,7 @@ EOF2
   build arm64
   [ "$status" -eq 0 ]
   [ "$(template)" = "Arm64;1033" ]
+  [ $(( $(win64) & 256 )) -eq 256 ]
 
   # an explicit Win64="no" still wins over the Platform default
   sed 's/Guid="ABCDDCBA-83F1-4F22-985B-FDB3C8ABD471"/Guid="ABCDDCBA-83F1-4F22-985B-FDB3C8ABD471" Win64="no"/' platform.wxs >nowin64.wxs
