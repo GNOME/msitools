@@ -809,7 +809,7 @@ namespace Wixl {
             sql_insert = "INSERT INTO `Component` (`Component`, `ComponentId`, `Directory_`, `Attributes`, `KeyPath`, `Condition`) VALUES (?, ?, ?, ?, ?, ?)";
         }
 
-        public void add (string Component, string? ComponentId, string Directory, int Attributes, string? KeyPath = null, string? Condition) throws GLib.Error {
+        public void add (string Component, string? ComponentId, string Directory, int Attributes, string? KeyPath = null, string? Condition = null) throws GLib.Error {
             var rec = new Libmsi.Record (6);
             if (!rec.set_string (1, Component) ||
                 (ComponentId != null && !rec.set_string (2, ComponentId)) ||
@@ -1400,14 +1400,12 @@ namespace Wixl {
             case Arch.ARM64:
                 return "Arm64";
             case Arch.X86:
-                // case Arch.INTEL:
                 return "Intel";
-            case Arch.IA64:
-            case Arch.X64:
-                // case Arch.INTEL64:
+            default:
+                // IA64 and X64; INTEL and INTEL64 are aliases of X86
+                // and IA64
                 return "x64";
             }
-            assert_not_reached ();
         }
 
         public MsiDatabase (Arch arch, Extension[] extensions) {
