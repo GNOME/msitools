@@ -1,0 +1,14 @@
+<!-- Built with WiX 5: wix build -o pool-holes.msi pool-holes.wxs
+     WiX leaves unused entries (ids 3 and 4) in the string pool. -->
+<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs">
+  <Package Name="msitools pool fixture" Manufacturer="msitools-test" Version="1.0.0"
+           ProductCode="7E3B9F10-0D99-4C99-9A99-0000000000B1"
+           UpgradeCode="7E3B9F10-0D99-4C99-9A99-0000000000A9" Scope="perUser">
+    <StandardDirectory Id="LocalAppDataFolder">
+      <Component Id="C1" Guid="7E3B9F10-0D99-4C99-9A99-0000000000C1">
+        <RegistryValue Root="HKCU" Key="Software\msitools-pool-fixture" Name="installed" Type="integer" Value="1" KeyPath="yes" />
+      </Component>
+    </StandardDirectory>
+    <Feature Id="Main"><ComponentRef Id="C1" /></Feature>
+  </Package>
+</Wix>

@@ -162,3 +162,17 @@ Security: 2 (2)" ]
   exp=$(cat button.txt)
   [ "$output" = "$exp" ]
 }
+
+@test "msibuild - INSERT into an MSI with unused string ids" {
+  # pool-holes.msi was built by WiX 5 from pool-holes.wxs, and its string
+  # pool has unused entries (ids 3 and 4) that a new string reuses.
+  cp pool-holes.msi out.msi
+  run "$msibuild" out.msi -q "INSERT INTO Property (Property, Value) VALUES ('SOMEPROP', 'somevalue')"
+  [ "$status" -eq 0 ]
+  # Windows Installer only opens tables whose rows are sorted by key: the
+  # new key has the lowest string id, so it must be stored first.
+  run "$msiinfo" export out.msi Property
+  [ "$status" -eq 0 ]
+  keys=$(echo "$output" | tail -n +4 | cut -f1 | tr -d '\r' | paste -sd ' ')
+  [ "$keys" = "SOMEPROP UpgradeCode Manufacturer ProductCode ProductLanguage ProductName ProductVersion SecureCustomProperties" ]
+}

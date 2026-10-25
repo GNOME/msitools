@@ -922,10 +922,60 @@ err:
     return r;
 }
 
+/* a table has at most 32 columns, so at most 32 key columns */
+struct table_keys
+{
+    const LibmsiTable *t;
+    unsigned count;
+    unsigned ofs[32];
+    unsigned width[32];
+};
+
+/* compare the key columns of two rows as stored, which orders strings
+ * by id and integers by value */
+static int compare_table_keys( const struct table_keys *keys, unsigned a, unsigned b )
+{
+    unsigned j;
+
+    for (j = 0; j < keys->count; j++)
+    {
+        unsigned x = read_table_int( keys->t->data, a, keys->ofs[j], keys->width[j] );
+        unsigned y = read_table_int( keys->t->data, b, keys->ofs[j], keys->width[j] );
+        if (x != y)
+            return x < y ? -1 : 1;
+    }
+    return 0;
+}
+
+/* stable merge sort of the row indexes in order[0..count) */
+static void sort_table_rows( const struct table_keys *keys, unsigned *order, unsigned *tmp, unsigned count )
+{
+    unsigned width, lo, i, a, b;
+
+    for (width = 1; width < count; width *= 2)
+    {
+        for (lo = 0; lo < count; lo += 2 * width)
+        {
+            unsigned mid = MIN( lo + width, count ), hi = MIN( lo + 2 * width, count );
+
+            for (i = lo, a = lo, b = mid; i < hi; i++)
+            {
+                if (a < mid && (b >= hi || compare_table_keys( keys, order[a], order[b] ) <= 0))
+                    tmp[i] = order[a++];
+                else
+                    tmp[i] = order[b++];
+            }
+        }
+        memcpy( order, tmp, count * sizeof(*order) );
+    }
+}
+
 static unsigned save_table( LibmsiDatabase *db, const LibmsiTable *t, unsigned bytes_per_strref )
 {
+    struct table_keys keys = { t, 0 };
+    unsigned *order = NULL, *tmp;
     uint8_t *rawdata = NULL;
-    unsigned rawsize, i, j, p, row_size, row_count;
+    unsigned rawsize, i, j, p, key_ofs, row_size, row_count;
     unsigned r = LIBMSI_RESULT_FUNCTION_FAILED;
 
     /* Nothing to do for non-persistent tables */
@@ -943,10 +993,16 @@ static unsigned save_table( LibmsiDatabase *db, const LibmsiTable *t, unsigned b
 
     row_size = msi_table_get_row_size( db, t->colinfo, t->col_count, bytes_per_strref );
     /* temporary rows are not saved */
+    order = msi_alloc( 2 * (t->row_count + 1) * sizeof(*order) );
+    if( !order )
+    {
+        r = LIBMSI_RESULT_NOT_ENOUGH_MEMORY;
+        goto err;
+    }
     row_count = 0;
     for (i = 0; i < t->row_count; i++)
         if (t->data_persistent[i])
-            row_count++;
+            order[row_count++] = i;
     rawsize = row_count * row_size;
     rawdata = msi_alloc_zero( rawsize );
     if( !rawdata )
@@ -955,12 +1011,29 @@ static unsigned save_table( LibmsiDatabase *db, const LibmsiTable *t, unsigned b
         goto err;
     }
 
-    rawsize = 0;
-    for (i = 0, p = 0; i < t->row_count; i++)
+    /* Windows Installer expects the rows sorted by their primary key
+     * (or it fails to open the table with error 2211), but rows are not
+     * always kept in that order: a new string may get a lower id than
+     * the strings already in the table when the string pool has unused
+     * entries, and a row with a NULL key is inserted first. */
+    for (j = 0, key_ofs = 0; j < t->col_count; j++)
     {
-        unsigned ofs = 0, ofs_mem = 0;
+        unsigned m = bytes_per_column( db, &t->colinfo[j], LONG_STR_BYTES );
 
-        if (!t->data_persistent[i]) continue;
+        if (t->colinfo[j].type & MSITYPE_KEY && keys.count < G_N_ELEMENTS(keys.ofs))
+        {
+            keys.ofs[keys.count] = key_ofs;
+            keys.width[keys.count++] = m;
+        }
+        key_ofs += m;
+    }
+    tmp = order + t->row_count + 1;
+    sort_table_rows( &keys, order, tmp, row_count );
+
+    rawsize = 0;
+    for (p = 0; p < row_count; p++)
+    {
+        unsigned ofs = 0, ofs_mem = 0, row = order[p];
 
         for (j = 0; j < t->col_count; j++)
         {
@@ -975,7 +1048,7 @@ static unsigned save_table( LibmsiDatabase *db, const LibmsiTable *t, unsigned b
             }
             if (t->colinfo[j].type & MSITYPE_STRING && n < m)
             {
-                unsigned id = read_table_int( t->data, i, ofs_mem, LONG_STR_BYTES );
+                unsigned id = read_table_int( t->data, row, ofs_mem, LONG_STR_BYTES );
                 if (id > 1 << bytes_per_strref * 8)
                 {
                     g_critical("string id %u out of range\n", id);
@@ -984,19 +1057,19 @@ static unsigned save_table( LibmsiDatabase *db, const LibmsiTable *t, unsigned b
             }
             for (k = 0; k < n; k++)
             {
-                rawdata[ofs * row_count + p * n + k] = t->data[i][ofs_mem + k];
+                rawdata[ofs * row_count + p * n + k] = t->data[row][ofs_mem + k];
             }
             ofs_mem += m;
             ofs += n;
         }
         rawsize += row_size;
-        p++;
     }
 
     TRACE("writing %d bytes\n", rawsize);
     r = write_stream_data( db, t->name, rawdata, rawsize );
 
 err:
+    msi_free( order );
     msi_free( rawdata );
     return r;
 }
