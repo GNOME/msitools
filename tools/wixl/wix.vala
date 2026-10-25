@@ -83,6 +83,7 @@ namespace Wixl {
         public abstract void visit_progress_text (WixProgressText progress_text) throws GLib.Error;
         public abstract void visit_environment (WixEnvironment env) throws GLib.Error;
         public abstract void visit_copy_file (WixCopyFile copy_file) throws GLib.Error;
+        public abstract void visit_fw_firewall_exception (WixFwFirewallException exception) throws GLib.Error;
     }
 
     public abstract class WixNode: Object {
@@ -518,13 +519,88 @@ namespace Wixl {
         }
     }
 
+    public class WixFwRemoteAddress: WixElement {
+        static construct {
+            name = "fw:RemoteAddress";
+        }
+
+        public string get_text () {
+            var text = "";
+            foreach (var c in children)
+                if (c is WixText)
+                    text += ((WixText) c).Text;
+            return text.strip ();
+        }
+
+        public override void accept (WixNodeVisitor visitor) throws GLib.Error {
+        }
+    }
+
+    // fw:FirewallException, an inbound Windows Firewall rule
+    public class WixFwFirewallException: WixElement {
+        static construct {
+            name = "fw:FirewallException";
+
+            add_child_types (child_types, {
+                typeof (WixFwRemoteAddress),
+            });
+        }
+
+        public string Name { get; set; }
+        public string File { get; set; }
+        public string Program { get; set; }
+        public string Port { get; set; }
+        public string Protocol { get; set; }
+        public string Scope { get; set; }
+        public string Profile { get; set; }
+        public string IgnoreFailure { get; set; }
+        public string Description { get; set; }
+
+        public override void load (Xml.Node *node) throws Wixl.Error {
+            // WiX v4 added attributes like Direction or Action that netsh
+            // rules could express, but wixl doesn't implement them yet.
+            // Like WiX, an attribute in the firewall namespace counts as
+            // unqualified; xml: and xsi: attributes are ignored.
+            for (var prop = node->properties; prop != null; prop = prop->next) {
+                if (prop->ns != null && (prop->ns->href == "http://www.w3.org/XML/1998/namespace" ||
+                                         prop->ns->href == "http://www.w3.org/2001/XMLSchema-instance"))
+                    continue;
+                if ((prop->ns != null && extension_prefix (prop->ns) != "fw") ||
+                    get_class ().find_property (prop->name) == null) {
+                    var prefix = prop->ns != null && prop->ns->prefix != null ? prop->ns->prefix + ":" : "";
+                    throw new Wixl.Error.FAILED ("FirewallException %s: unsupported attribute %s%s", node->get_prop ("Id") ?? "", prefix, prop->name);
+                }
+                set_property (prop->name, prop->children != null ? prop->children->content : "");
+            }
+
+            for (var child = node->children; child != null; child = child->next) {
+                if (child->type != Xml.ElementType.ELEMENT_NODE)
+                    continue;
+                var key = element_key (child);
+                Type t = 0;
+                if (key != null)
+                    t = child_types->lookup (key);
+                if (t == 0)
+                    throw new Wixl.Error.FAILED ("FirewallException %s: unsupported element %s", Id ?? "", child->name);
+                var elem = Object.new (t) as WixElement;
+                elem.load (child);
+                add_child (elem);
+            }
+        }
+
+        public override void accept (WixNodeVisitor visitor) throws GLib.Error {
+            visitor.visit_fw_firewall_exception (this);
+        }
+    }
+
     public class WixFile: WixKeyElement {
         static construct {
             name = "File";
 
             add_child_types (child_types, {
                 typeof (WixShortcut),
-                typeof (WixCopyFile)
+                typeof (WixCopyFile),
+                typeof (WixFwFirewallException)
             });
         }
 
@@ -1286,7 +1362,8 @@ namespace Wixl {
                 typeof (WixIniFile),
                 typeof (WixCondition),
                 typeof (WixEnvironment),
-                typeof (WixCopyFile)
+                typeof (WixCopyFile),
+                typeof (WixFwFirewallException)
             });
         }
 

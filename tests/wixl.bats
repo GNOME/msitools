@@ -880,3 +880,116 @@ EOF2
   [ -z "$(seqof InstallFiles)" ]
   [ -z "$(seqof InstallServices)" ]
 }
+@test "wixl - fw:FirewallException" {
+  mkdir -p SourceDir
+  echo "hello" > SourceDir/app.exe
+  cat >fw.wxs <<'EOF2'
+<?xml version="1.0" encoding="utf-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi"
+     xmlns:fw="http://schemas.microsoft.com/wix/FirewallExtension">
+  <Product Id="ABCDDCBA-86C7-4D14-AEC0-86416A69ABDE"
+           Name="Test" Version="1.0.0" Manufacturer="Test" Language="1033"
+           UpgradeCode="12345678-1234-1234-1234-123456789012">
+    <Package InstallerVersion="200" Compressed="yes" />
+    <Media Id="1" Cabinet="test.cab" EmbedCab="yes" />
+    <Directory Id="TARGETDIR" Name="SourceDir">
+      <Directory Id="ProgramFilesFolder">
+        <Directory Id="INSTALLDIR" Name="Test">
+          <Component Id="C1" Guid="ABCDDCBA-83F1-4F22-985B-FDB3C8ABD471">
+            <File Id="F1" Source="SourceDir/app.exe" KeyPath="yes">
+              <fw:FirewallException Id="App" Name="My App" Scope="localSubnet" Profile="private"
+                                    fw:Description="a \ b [x]" xml:lang="en" />
+            </File>
+          </Component>
+          <Component Id="C2" Guid="ABCDDCBA-83F1-4F22-985B-FDB3C8ABD472">
+            <CreateFolder />
+            <fw:FirewallException Id="Port" Name="[ProductName] port" Port="[LISTEN_PORT]" IgnoreFailure="yes">
+              <fw:RemoteAddress>10.0.0.0/8</fw:RemoteAddress>
+              <fw:RemoteAddress>LocalSubnet</fw:RemoteAddress>
+              <fw:RemoteAddress>*</fw:RemoteAddress>
+            </fw:FirewallException>
+          </Component>
+        </Directory>
+      </Directory>
+    </Directory>
+    <Feature Id="Main" Level="1">
+      <ComponentRef Id="C1" />
+      <ComponentRef Id="C2" />
+    </Feature>
+  </Product>
+</Wix>
+EOF2
+  run "$wixl" -o out.msi fw.wxs
+  [ "$status" -eq 0 ]
+
+  run "$msiinfo" export out.msi CustomAction
+  [ "$status" -eq 0 ]
+  ca=$(echo "$output" | tr -d '\r')
+  echo "$ca"
+  row() { printf '%s\t%s\tWixlNetshExe\t%s\t' "$1" "$2" "$3"; }
+  # 3122 = exe from property (50), deferred, no impersonation; +64 ignore
+  # the exit code; +256 rollback
+  del='advfirewall firewall delete rule name="My App" dir=in'
+  add='advfirewall firewall add rule name="My App" dir=in program="[#F1]" action=allow enable=yes profile=private remoteip="localsubnet" edge=yes description="a \ b [\[]x[\]]"'
+  echo "$ca" | grep -qxF "$(row Fw_App.RestoreRollback 3442 "$add")"
+  echo "$ca" | grep -qxF "$(row Fw_App.RemoveBeforeAdd 3186 "$del")"
+  echo "$ca" | grep -qxF "$(row Fw_App.AddRollback 3442 "$del")"
+  echo "$ca" | grep -qxF "$(row Fw_App.Add 3122 "$add")"
+  echo "$ca" | grep -qxF "$(row Fw_App.RemoveRollback 3442 "$add")"
+  echo "$ca" | grep -qxF "$(row Fw_App.Remove 3186 "$del")"
+  # a port rule, TCP by default, with IgnoreFailure
+  echo "$ca" | grep -qxF "$(row Fw_Port.Add 3186 'advfirewall firewall add rule name="[ProductName] port" dir=in protocol=tcp localport="[LISTEN_PORT]" action=allow enable=yes profile=any remoteip="10.0.0.0/8,LocalSubnet,any"')"
+  # a port from a property may differ when the rule is removed, so
+  # deleting doesn't use it
+  echo "$ca" | grep -qxF "$(row Fw_Port.Remove 3186 'advfirewall firewall delete rule name="[ProductName] port" dir=in')"
+  echo "$ca" | grep -qxF "$(printf 'WixlSetNetshExe\t51\tWixlNetshExe\t[SystemFolder]netsh.exe\t')"
+  [ "$(echo "$ca" | grep -c '^Fw_')" -eq 12 ]
+
+  run "$msiinfo" export out.msi InstallExecuteSequence
+  [ "$status" -eq 0 ]
+  seq=$(echo "$output" | tr -d '\r')
+  seqof() { echo "$seq" | awk -F '\t' -v a="$1" '$1 == a { print $3 }'; }
+  condof() { echo "$seq" | awk -F '\t' -v a="$1" '$1 == a { print $2 }'; }
+  [ "$(condof Fw_App.Add)" = '$C1>2' ]
+  [ "$(condof Fw_App.Remove)" = '$C1=2' ]
+  [ "$(condof Fw_App.RestoreRollback)" = '$C1>2 AND ?C1>2' ]
+  [ "$(condof Fw_Port.Add)" = '$C2>2' ]
+  [ "$(seqof Fw_App.RestoreRollback)" -gt "$(seqof InstallFiles)" ]
+  [ "$(seqof Fw_App.RemoveBeforeAdd)" -gt "$(seqof Fw_App.RestoreRollback)" ]
+  [ "$(seqof Fw_App.AddRollback)" -gt "$(seqof Fw_App.RemoveBeforeAdd)" ]
+  [ "$(seqof Fw_App.Add)" -gt "$(seqof Fw_App.AddRollback)" ]
+  # all rules are deleted before any is added, as they may share a name
+  [ "$(seqof Fw_App.AddRollback)" -gt "$(seqof Fw_Port.RemoveBeforeAdd)" ]
+  [ "$(seqof Fw_Port.AddRollback)" -gt "$(seqof Fw_App.RemoveBeforeAdd)" ]
+  [ "$(seqof Fw_App.Add)" -lt "$(seqof InstallFinalize)" ]
+  [ "$(seqof Fw_App.RemoveRollback)" -gt "$(seqof InstallInitialize)" ]
+  [ "$(seqof Fw_App.Remove)" -gt "$(seqof Fw_App.RemoveRollback)" ]
+  [ "$(seqof Fw_App.Remove)" -lt "$(seqof RemoveFiles)" ]
+  [ "$(seqof WixlSetNetshExe)" -gt "$(seqof CostFinalize)" ]
+  [ "$(seqof WixlSetNetshExe)" -lt "$(seqof InstallInitialize)" ]
+
+  # the native netsh.exe for 64-bit packages
+  run "$wixl" -a x64 -o out64.msi fw.wxs
+  [ "$status" -eq 0 ]
+  run "$msiinfo" export out64.msi CustomAction
+  [ "$status" -eq 0 ]
+  echo "$output" | tr -d '\r' | grep -qxF "$(printf 'WixlSetNetshExe\t51\tWixlNetshExe\t[System64Folder]netsh.exe\t')"
+
+  # errors like WiX's
+  sed 's/ Scope="localSubnet"//' fw.wxs > noscope.wxs
+  run "$wixl" -o out.msi noscope.wxs
+  [ "$status" -eq 1 ]
+  echo "$output" | grep -F "FirewallException App: Scope or RemoteAddress is required"
+  sed 's/ IgnoreFailure="yes"/ IgnoreFailure="yes" Scope="any"/' fw.wxs > both.wxs
+  run "$wixl" -o out.msi both.wxs
+  [ "$status" -eq 1 ]
+  echo "$output" | grep -F "FirewallException Port: Scope and RemoteAddress can't be used together"
+  sed 's#<fw:RemoteAddress>\*</fw:RemoteAddress>#<fw:RemoteAddress> </fw:RemoteAddress>#' fw.wxs > empty.wxs
+  run "$wixl" -o out.msi empty.wxs
+  [ "$status" -eq 1 ]
+  echo "$output" | grep -F "FirewallException Port: empty RemoteAddress"
+  sed 's/ Profile="private"/ Profile="private" Direction="out"/' fw.wxs > v4.wxs
+  run "$wixl" -o out.msi v4.wxs
+  [ "$status" -eq 1 ]
+  echo "$output" | grep -F "FirewallException App: unsupported attribute Direction"
+}

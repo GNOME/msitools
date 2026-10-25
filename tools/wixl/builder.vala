@@ -267,6 +267,7 @@ namespace Wixl {
                 add (MSIDefault.Action.WriteEnvironmentStrings);
             }
             sequence_util_service_configs (table);
+            sequence_firewall_exceptions (table);
             table.add_sorted_actions ();
 
             // InstallUISequence
@@ -1657,6 +1658,251 @@ namespace Wixl {
                 // installed locally or run from source
                 node.condition = "$%s>2".printf (config.component);
                 node.add_dep (table.get_action (after));
+            }
+        }
+
+        /*
+         * Quote an argument like the C runtime parses it, which netsh.exe
+         * uses: backslashes are literal unless they come right before a
+         * quote, where each pair gives one backslash and an odd one
+         * escapes the quote.
+         */
+        static string crt_quote (string value) {
+            var str = new StringBuilder ("\"");
+            var backslashes = 0;
+            for (var i = 0; i < value.length; i++) {
+                var c = value[i];
+                if (c == '\\') {
+                    backslashes++;
+                    continue;
+                }
+                if (c == '"')
+                    backslashes = backslashes * 2 + 1;
+                for (; backslashes > 0; backslashes--)
+                    str.append_c ('\\');
+                str.append_c (c);
+            }
+            for (backslashes *= 2; backslashes > 0; backslashes--)
+                str.append_c ('\\');
+            str.append_c ('"');
+            return str.str;
+        }
+
+        // an unformatted value in a formatted string
+        static string firewall_escape_brackets (string value) {
+            var str = new StringBuilder ();
+            for (var i = 0; i < value.length; i++) {
+                var c = value[i];
+                if (c == '[' || c == ']')
+                    str.append ("[\\%c]".printf (c));
+                else
+                    str.append_c (c);
+            }
+            return str.str;
+        }
+
+        class FirewallActions {
+            public string component;
+            public string restore_rollback;
+            public string add;
+            public string add_rollback;
+            public string remove_before_add;
+            public string remove;
+            public string remove_rollback;
+        }
+
+        List<FirewallActions> firewall_actions;
+
+        // an action name of at most 72 characters
+        static string firewall_action_id (string id, string suffix) {
+            var name = "Fw_" + id + suffix;
+            if (name.length > 72)
+                name = "Fw_" + Checksum.compute_for_string (ChecksumType.SHA1, id)[0:32].up () + suffix;
+            return name;
+        }
+
+        /*
+         * fw:FirewallException adds an inbound allow rule. WiX does it with
+         * custom actions from its firewall extension, which wixl can't use,
+         * so run "netsh advfirewall firewall" from deferred custom actions
+         * instead, with the same rule as WiX's: the program or the port,
+         * the remote addresses, the profiles and the description.
+         */
+        public override void visit_fw_firewall_exception (WixFwFirewallException ex) throws GLib.Error {
+            WixComponent comp;
+            string? file_id = null;
+
+            if (ex.Id == null || ex.Id == "")
+                throw new Wixl.Error.FAILED ("FirewallException: Id is required");
+            if (ex.Name == null || ex.Name == "")
+                throw new Wixl.Error.FAILED ("FirewallException %s: Name is required", ex.Id);
+
+            if (ex.parent is WixFile) {
+                if (ex.File != null || ex.Program != null)
+                    throw new Wixl.Error.FAILED ("FirewallException %s: File and Program are not allowed inside File", ex.Id);
+                file_id = ex.parent.Id;
+                comp = ex.parent.parent as WixComponent;
+            } else {
+                comp = ex.parent as WixComponent;
+                if (ex.File != null && ex.Program != null)
+                    throw new Wixl.Error.FAILED ("FirewallException %s: File and Program can't be used together", ex.Id);
+                if (ex.File != null) {
+                    if (find_element<WixFile> (ex.File) == null)
+                        throw new Wixl.Error.FAILED ("FirewallException %s: file %s not found", ex.Id, ex.File);
+                    file_id = ex.File;
+                }
+            }
+            var program = file_id != null ? "[#%s]".printf (file_id) : ex.Program;
+            if (program == null && ex.Port == null)
+                throw new Wixl.Error.FAILED ("FirewallException %s: a File parent, File, Program or Port is required", ex.Id);
+
+            // the remote addresses, from Scope or RemoteAddress children
+            string[] addresses = {};
+            foreach (var c in ex.children) {
+                if (!(c is WixFwRemoteAddress))
+                    continue;
+                var address = ((WixFwRemoteAddress) c).get_text ();
+                if (address == "")
+                    throw new Wixl.Error.FAILED ("FirewallException %s: empty RemoteAddress", ex.Id);
+                // netsh has no *, WiX's COM API takes it for any address
+                addresses += address == "*" ? "any" : address;
+            }
+            string remote;
+            if (ex.Scope != null) {
+                if (addresses.length > 0)
+                    throw new Wixl.Error.FAILED ("FirewallException %s: Scope and RemoteAddress can't be used together", ex.Id);
+                if (ex.Scope == "any")
+                    remote = "any";
+                else if (ex.Scope == "localSubnet")
+                    remote = "localsubnet";
+                else
+                    throw new Wixl.Error.FAILED ("FirewallException %s: invalid Scope %s", ex.Id, ex.Scope);
+            } else if (addresses.length > 0) {
+                remote = string.joinv (",", addresses);
+            } else {
+                throw new Wixl.Error.FAILED ("FirewallException %s: Scope or RemoteAddress is required", ex.Id);
+            }
+
+            string profile;
+            switch (ex.Profile ?? "all") {
+            case "all":
+                profile = "any";
+                break;
+            case "domain":
+            case "private":
+            case "public":
+                profile = ex.Profile;
+                break;
+            default:
+                throw new Wixl.Error.FAILED ("FirewallException %s: invalid Profile %s", ex.Id, ex.Profile);
+            }
+
+            // Like WiX, which removes rules by name, deleting selects the
+            // rule by its name and direction only: values such as a port
+            // from a property may differ when a later maintenance
+            // installation removes the rule.
+            var rule = "name=%s dir=in".printf (crt_quote (ex.Name));
+            var remove = "advfirewall firewall delete rule " + rule;
+            if (program != null)
+                rule += " program=" + crt_quote (program);
+            if (ex.Port != null) {
+                // like WiX, TCP unless set otherwise
+                var protocol = ex.Protocol ?? "tcp";
+                if (protocol != "tcp" && protocol != "udp")
+                    throw new Wixl.Error.FAILED ("FirewallException %s: invalid Protocol %s", ex.Id, protocol);
+                rule += " protocol=%s localport=%s".printf (protocol, crt_quote (ex.Port));
+            } else if (ex.Protocol != null) {
+                if (ex.Protocol != "tcp" && ex.Protocol != "udp")
+                    throw new Wixl.Error.FAILED ("FirewallException %s: invalid Protocol %s", ex.Id, ex.Protocol);
+                rule += " protocol=" + ex.Protocol;
+            }
+
+            var add = "advfirewall firewall add rule %s action=allow enable=yes profile=%s remoteip=%s".printf (
+                rule, profile, crt_quote (remote));
+            // like WiX, a program rule allows edge traversal
+            if (program != null)
+                add += " edge=yes";
+            // like WiX, the description is not formatted
+            if (ex.Description != null && ex.Description != "")
+                add += " description=" + crt_quote (firewall_escape_brackets (ex.Description));
+
+            var deferred = CustomActionType.EXE_PROPERTY | CustomActionType.IN_SCRIPT | CustomActionType.NO_IMPERSONATE;
+            var rollback = deferred | CustomActionType.ROLLBACK;
+            // removing a rule that isn't there fails, which is fine
+            var ignore = CustomActionType.CONTINUE;
+            var check = parse_yesno (ex.IgnoreFailure) ? CustomActionType.CONTINUE : 0;
+
+            var a = new FirewallActions ();
+            a.component = comp.Id;
+            a.restore_rollback = firewall_action_id (ex.Id, ".RestoreRollback");
+            a.remove_before_add = firewall_action_id (ex.Id, ".RemoveBeforeAdd");
+            a.add_rollback = firewall_action_id (ex.Id, ".AddRollback");
+            a.add = firewall_action_id (ex.Id, ".Add");
+            a.remove_rollback = firewall_action_id (ex.Id, ".RemoveRollback");
+            a.remove = firewall_action_id (ex.Id, ".Remove");
+            db.table_custom_action.add (a.restore_rollback, rollback | ignore, "WixlNetshExe", add);
+            db.table_custom_action.add (a.remove_before_add, deferred | ignore, "WixlNetshExe", remove);
+            db.table_custom_action.add (a.add_rollback, rollback | ignore, "WixlNetshExe", remove);
+            db.table_custom_action.add (a.add, deferred | check, "WixlNetshExe", add);
+            db.table_custom_action.add (a.remove_rollback, rollback | ignore, "WixlNetshExe", add);
+            db.table_custom_action.add (a.remove, deferred | ignore, "WixlNetshExe", remove);
+            firewall_actions.append (a);
+        }
+
+        void sequence_firewall_exceptions (MsiTableSequence table) throws GLib.Error {
+            if (firewall_actions == null)
+                return;
+
+            // the path of netsh.exe, set once for all rules
+            // the native netsh.exe, not the 32-bit one, for 64-bit packages
+            var system = arch == Arch.X64 || arch == Arch.IA64 || arch == Arch.ARM64 ? "System64Folder" : "SystemFolder";
+            db.table_custom_action.add ("WixlSetNetshExe", CustomActionType.SET_PROPERTY, "WixlNetshExe", "[%s]netsh.exe".printf (system));
+            table.get_action ("WixlSetNetshExe").add_dep (table.get_action ("CostFinalize"));
+
+            // like WiX, add the rules after the files are installed and
+            // remove them before the files are removed
+            var have_files = db.table_file.records.length () > 0;
+            var after = table.get_action (have_files ? "InstallFiles" : "InstallInitialize");
+            var before = table.get_action (have_files ? "RemoveFiles" : "InstallFinalize");
+            // Installed locally or run from source, also on repair: delete
+            // the rules first, as netsh would add a second one, and only
+            // then add them, so that rules sharing a name, such as a TCP
+            // and a UDP port, don't delete each other.
+            var prev = after;
+            foreach (var a in firewall_actions) {
+                var install = "$%s>2".printf (a.component);
+                // on a repair, put the rule that was there back if the
+                // installation fails after deleting it
+                var restore_rollback = table.get_action (a.restore_rollback);
+                restore_rollback.condition = "$%s>2 AND ?%s>2".printf (a.component, a.component);
+                restore_rollback.add_dep (prev);
+                var remove_before_add = table.get_action (a.remove_before_add);
+                remove_before_add.condition = install;
+                remove_before_add.add_dep (restore_rollback);
+                prev = remove_before_add;
+            }
+            foreach (var a in firewall_actions) {
+                var install = "$%s>2".printf (a.component);
+                var add_rollback = table.get_action (a.add_rollback);
+                add_rollback.condition = install;
+                add_rollback.add_dep (prev);
+                var add = table.get_action (a.add);
+                add.condition = install;
+                add.add_dep (add_rollback);
+                prev = add;
+            }
+
+            foreach (var a in firewall_actions) {
+
+                // removed, on uninstall or when the feature is removed
+                var uninstall = "$%s=2".printf (a.component);
+                var remove = table.get_action (a.remove);
+                remove.condition = uninstall;
+                before.add_dep (remove);
+                var remove_rollback = table.get_action (a.remove_rollback);
+                remove_rollback.condition = uninstall;
+                remove.add_dep (remove_rollback);
+                remove_rollback.add_dep (table.get_action ("InstallInitialize"));
             }
         }
 
