@@ -39,6 +39,7 @@ namespace Wixl {
         public abstract void visit_directory (WixDirectory dir) throws GLib.Error;
         public abstract void visit_component (WixComponent comp, VisitState state) throws GLib.Error;
         public abstract void visit_feature (WixFeature feature, VisitState state) throws GLib.Error;
+        public abstract void visit_feature_ref (WixFeatureRef ref) throws GLib.Error;
         public abstract void visit_component_ref (WixComponentRef ref) throws GLib.Error;
         public abstract void visit_remove_folder (WixRemoveFolder rm) throws GLib.Error;
         public abstract void visit_registry_value (WixRegistryValue reg) throws GLib.Error;
@@ -387,6 +388,8 @@ namespace Wixl {
                 typeof (WixDirectory),
                 typeof (WixDirectoryRef),
                 typeof (WixComponentGroup),
+                typeof (WixFeature),
+                typeof (WixFeatureRef),
                 typeof (WixBinary),
                 typeof (WixUI),
                 typeof (WixUIRef),
@@ -765,6 +768,29 @@ namespace Wixl {
             visitor.visit_feature (this, VisitState.ENTER);
             base.accept (visitor);
             visitor.visit_feature (this, VisitState.LEAVE);
+        }
+    }
+
+    public class WixFeatureRef: WixElementRef<WixFeature> {
+        static construct {
+            name = "FeatureRef";
+            ref_type = typeof (WixFeature);
+
+            add_child_types (child_types, {
+                typeof (WixComponentRef),
+                typeof (WixComponentGroupRef),
+                typeof (WixFeature),
+                typeof (WixCondition),
+            });
+        }
+
+        public override string full_path (WixResolver r) throws GLib.Error {
+            return ((WixElement)r.resolve<WixFeature> (this)).full_path (r);
+        }
+
+        public override void accept (WixNodeVisitor visitor) throws GLib.Error {
+            visitor.visit_feature_ref (this);
+            base.accept (visitor);
         }
     }
 
@@ -1219,6 +1245,7 @@ namespace Wixl {
                 typeof (WixDirectory),
                 typeof (WixDirectoryRef),
                 typeof (WixFeature),
+                typeof (WixFeatureRef),
                 typeof (WixIcon),
                 typeof (WixInstallExecuteSequence),
                 typeof (WixInstallUISequence),

@@ -61,6 +61,64 @@ INSERT INTO \`Component\` (\`Component\`, \`ComponentId\`, \`Directory_\`, \`Att
   test -f out.msi
 }
 
+@test "wixl - Feature in Fragment and FeatureRef" {
+  cd wixl
+  mkdir -p SourceDir
+  echo "hello" > SourceDir/hello.txt
+  cat >feature.wxs <<EOF
+<?xml version="1.0" encoding="utf-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+  <Fragment>
+    <Feature Id="Extra" Title="Extra" Level="2">
+      <ComponentRef Id="C1" />
+    </Feature>
+    <FeatureRef Id="Extra">
+      <ComponentRef Id="C1" />
+      <ComponentRef Id="C2" />
+    </FeatureRef>
+  </Fragment>
+</Wix>
+EOF
+  cat >main.wxs <<EOF
+<?xml version="1.0" encoding="utf-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+  <Product Id="ABCDDCBA-86C7-4D14-AEC0-86416A69ABDE"
+           Name="Test" Version="1.0.0" Manufacturer="Test" Language="1033"
+           UpgradeCode="12345678-1234-1234-1234-123456789012">
+    <Package InstallerVersion="200" Compressed="yes" />
+    <Media Id="1" Cabinet="test.cab" EmbedCab="yes" />
+    <Directory Id="TARGETDIR" Name="SourceDir">
+      <Directory Id="ProgramFilesFolder">
+        <Directory Id="INSTALLDIR" Name="Test">
+          <Component Id="C1" Guid="ABCDDCBA-83F1-4F22-985B-FDB3C8ABD471">
+            <File Id="F1" Source="SourceDir/hello.txt" KeyPath="yes" />
+          </Component>
+          <Component Id="C2" Guid="ABCDDCBA-83F1-4F22-985B-FDB3C8ABD472">
+            <File Id="F2" Source="SourceDir/hello.txt" KeyPath="yes" />
+          </Component>
+        </Directory>
+      </Directory>
+    </Directory>
+    <Feature Id="Main" Level="1">
+      <ComponentRef Id="C1" />
+    </Feature>
+    <FeatureRef Id="Extra" />
+  </Product>
+</Wix>
+EOF
+  run "$wixl" -o out.msi feature.wxs main.wxs
+  [ "$status" -eq 0 ]
+
+  run "$msiinfo" export out.msi Feature
+  [ "$status" -eq 0 ]
+  echo "$output" | grep -q $'^Main\t'
+  echo "$output" | grep -q $'^Extra\t'
+
+  run "$msiinfo" export out.msi FeatureComponents
+  [ "$status" -eq 0 ]
+  echo "$output" | grep -q $'^Extra\tC2'
+}
+
 @test "wixl - preprocessor variables" {
   cd wixl
   export MY_VAR="Hello!"

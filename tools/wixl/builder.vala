@@ -745,7 +745,11 @@ namespace Wixl {
                 break;
             }
 
-            string? parent = (feature.parent is WixFeature) ? feature.parent.Id : null;
+            string? parent = null;
+            if (feature.parent is WixFeature)
+                parent = feature.parent.Id;
+            else if (feature.parent is WixFeatureRef)
+                parent = resolve<WixFeature> (feature.parent as WixElement).Id;
             int level = feature.Level != null ? int.parse (feature.Level) : 1;
 
             int attributes = 0;
@@ -802,6 +806,12 @@ namespace Wixl {
 
         }
 
+        public override void visit_feature_ref (WixFeatureRef ref) throws GLib.Error {
+            // the referenced Feature has already been visited where it is
+            // defined; this only validates the reference
+            resolve<WixFeature> (@ref);
+        }
+
         void feature_add_component (WixFeature feature, WixComponent component) throws GLib.Error {
             if (component.in_feature.find (feature) != null)
                 return;
@@ -823,8 +833,8 @@ namespace Wixl {
         public override void visit_component_ref (WixComponentRef ref) throws GLib.Error {
             var component = resolve<WixComponent> (@ref);
 
-            if (ref.parent is WixFeature) {
-                feature_add_component (@ref.parent as WixFeature, component);
+            if (ref.parent is WixFeature || ref.parent is WixFeatureRef) {
+                feature_add_component (resolve<WixFeature> (@ref.parent as WixElement), component);
             } else if (ref.parent is WixComponentGroup) {
                 // will be added in GroupRef
             } else
@@ -834,8 +844,8 @@ namespace Wixl {
         public override void visit_component_group_ref (WixComponentGroupRef ref) throws GLib.Error {
             var group = resolve<WixComponentGroup> (@ref);
 
-            if (ref.parent is WixFeature) {
-                var feature = ref.parent as WixFeature;
+            if (ref.parent is WixFeature || ref.parent is WixFeatureRef) {
+                var feature = resolve<WixFeature> (@ref.parent as WixElement);
                 feature_add_component_group (feature, group);
             } else if (ref.parent is WixComponentGroup) {
                 // is added by parent group
@@ -1186,9 +1196,10 @@ namespace Wixl {
             return_if_fail (condition.children.length () == 1);
             var text = condition.children.first ().data as WixText;
 
-            if (condition.parent is WixFeature) {
+            if (condition.parent is WixFeature || condition.parent is WixFeatureRef) {
+                var feature = resolve<WixFeature> (condition.parent as WixElement);
                 var level = condition.Level != null ? int.parse (condition.Level) : 0;
-                db.table_condition.add (condition.parent.Id, level, text.Text.strip());
+                db.table_condition.add (feature.Id, level, text.Text.strip());
             } else if (condition.parent is WixComponent) {
                 ((WixComponent)condition.parent).Condition = text.Text.strip();
             } else if (condition.parent is WixProduct)
