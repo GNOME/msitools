@@ -12,6 +12,11 @@ namespace Wixl {
             return (Arch) enum_from_string (typeof (Arch), s);
         }
 
+        // packages for these platforms install to the 64-bit view by default
+        public bool is_64bit () {
+            return this == X64 || this == IA64 || this == ARM64;
+        }
+
         public string to_string () {
             switch (this) {
             case X86: return "x86";
@@ -613,7 +618,7 @@ namespace Wixl {
 
             if (comp.Win64 != null && parse_yesno (comp.Win64))
                 attr |= ComponentAttribute.64BIT;
-            else if (comp.Win64 == null && (arch == Arch.X64 || arch == Arch.IA64))
+            else if (comp.Win64 == null && arch.is_64bit ())
                 attr |= ComponentAttribute.64BIT;
 
             if (comp.Permanent != null && parse_yesno (comp.Permanent))
@@ -2041,7 +2046,7 @@ namespace Wixl {
 
             if (search.Win64 != null && parse_yesno (search.Win64))
                 type |= RegistryType.64BIT;
-            else if (search.Win64 == null && (arch == Arch.X64 || arch == Arch.IA64))
+            else if (search.Win64 == null && arch.is_64bit ())
                 type |= RegistryType.64BIT;
 
             db.table_app_search.add (property.Id, search.Id);

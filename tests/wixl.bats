@@ -1233,3 +1233,56 @@ EOF2
   [ "$status" -ne 0 ]
   [[ "$output" == *"conflicts with Package Platform 'x64'"* ]]
 }
+@test "wixl - arm64 components and searches default to Win64" {
+  mkdir -p SourceDir
+  echo "hello" > SourceDir/hello.txt
+  cat >arm64.wxs <<EOF2
+<?xml version="1.0" encoding="utf-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+  <Product Id="ABCDDCBA-86C7-4D14-AEC0-86416A69ABDE"
+           Name="Test" Version="1.0.0" Manufacturer="Test" Language="1033"
+           UpgradeCode="12345678-1234-1234-1234-123456789012">
+    <Package InstallerVersion="500" Compressed="yes" />
+    <Media Id="1" Cabinet="test.cab" EmbedCab="yes" />
+    <Property Id="P1">
+      <RegistrySearch Id="R1" Root="HKLM" Key="Software\Test" Name="v" Type="raw" />
+    </Property>
+    <Property Id="P2">
+      <RegistrySearch Id="R2" Root="HKLM" Key="Software\Test" Name="v" Type="raw" Win64="no" />
+    </Property>
+    <Directory Id="TARGETDIR" Name="SourceDir">
+      <Directory Id="ProgramFiles64Folder">
+        <Directory Id="INSTALLDIR" Name="Test">
+          <Component Id="C1" Guid="ABCDDCBA-83F1-4F22-985B-FDB3C8ABD471">
+            <File Id="F1" Source="SourceDir/hello.txt" KeyPath="yes" />
+          </Component>
+          <Component Id="C2" Guid="ABCDDCBA-83F1-4F22-985B-FDB3C8ABD472" Win64="no">
+            <RegistryValue Root="HKLM" Key="Software\Test" Name="v" Value="1" Type="string" KeyPath="yes" />
+          </Component>
+        </Directory>
+      </Directory>
+    </Directory>
+    <Feature Id="Main" Level="1">
+      <ComponentRef Id="C1" />
+      <ComponentRef Id="C2" />
+    </Feature>
+  </Product>
+</Wix>
+EOF2
+  run "$wixl" -a arm64 -o out.msi arm64.wxs
+  [ "$status" -eq 0 ]
+
+  # msidbComponentAttributes64bit = 256
+  run "$msiinfo" export out.msi Component
+  [ "$status" -eq 0 ]
+  attr() { echo "$output" | tr -d '\r' | awk -F '\t' -v c="$1" '$1 == c { print $4 }'; }
+  [ $(( $(attr C1) & 256 )) -eq 256 ]
+  [ $(( $(attr C2) & 256 )) -eq 0 ]
+
+  # msidbLocatorType64bit = 16
+  run "$msiinfo" export out.msi RegLocator
+  [ "$status" -eq 0 ]
+  loctype() { echo "$output" | tr -d '\r' | awk -F '\t' -v s="$1" '$1 == s { print $5 }'; }
+  [ $(( $(loctype R1) & 16 )) -eq 16 ]
+  [ $(( $(loctype R2) & 16 )) -eq 0 ]
+}
