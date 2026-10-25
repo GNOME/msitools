@@ -17,6 +17,52 @@
             <UIText Id="GB" Value="GB" />
             <UIText Id="KB" Value="KB" />
             <UIText Id="MB" Value="MB" />
+            <UIText Id="MenuAbsent" Value="Entire feature will be unavailable" />
+            <UIText Id="MenuAdvertise" Value="Feature will be installed when required" />
+            <UIText Id="MenuAllCD" Value="Entire feature will be installed to run from CD" />
+            <UIText Id="MenuAllLocal" Value="Entire feature will be installed on local hard drive" />
+            <UIText Id="MenuAllNetwork" Value="Entire feature will be installed to run from network" />
+            <UIText Id="MenuCD" Value="Will be installed to run from CD" />
+            <UIText Id="MenuLocal" Value="Will be installed on local hard drive" />
+            <UIText Id="MenuNetwork" Value="Will be installed to run from network" />
+            <UIText Id="NewFolder" Value="Folder|New Folder" />
+            <UIText Id="ScriptInProgress" Value="Gathering required information..." />
+            <UIText Id="SelAbsentAbsent" Value="This feature will remain uninstalled" />
+            <UIText Id="SelAbsentAdvertise" Value="This feature will be set to be installed when required" />
+            <UIText Id="SelAbsentCD" Value="This feature will be installed to run from CD" />
+            <UIText Id="SelAbsentLocal" Value="This feature will be installed on the local hard drive" />
+            <UIText Id="SelAbsentNetwork" Value="This feature will be installed to run from the network" />
+            <UIText Id="SelAdvertiseAbsent" Value="This feature will become unavailable" />
+            <UIText Id="SelAdvertiseAdvertise" Value="Will be installed when required" />
+            <UIText Id="SelAdvertiseCD" Value="This feature will be available to run from CD" />
+            <UIText Id="SelAdvertiseLocal" Value="This feature will be installed on your local hard drive" />
+            <UIText Id="SelAdvertiseNetwork" Value="This feature will be available to run from the network" />
+            <UIText Id="SelCDAbsent" Value="This feature will be uninstalled completely, you won&#x27;t be able to run it from CD" />
+            <UIText Id="SelCDAdvertise" Value="This feature will change from run from CD state to set to be installed when required" />
+            <UIText Id="SelCDCD" Value="This feature will remain to be run from CD" />
+            <UIText Id="SelCDLocal" Value="This feature will change from run from CD state to be installed on the local hard drive" />
+            <UIText Id="SelChildCostNeg" Value="This feature frees up [1] on your hard drive." />
+            <UIText Id="SelChildCostPos" Value="This feature requires [1] on your hard drive." />
+            <UIText Id="SelCostPending" Value="Compiling cost for this feature..." />
+            <UIText Id="SelLocalAbsent" Value="This feature will be completely removed" />
+            <UIText Id="SelLocalAdvertise" Value="This feature will be removed from your local hard drive, but will be set to be installed when required" />
+            <UIText Id="SelLocalCD" Value="This feature will be removed from your local hard drive, but will be still available to run from CD" />
+            <UIText Id="SelLocalLocal" Value="This feature will remain on your local hard drive" />
+            <UIText Id="SelLocalNetwork" Value="This feature will be removed from your local hard drive, but will be still available to run from the network" />
+            <UIText Id="SelNetworkAbsent" Value="This feature will be uninstalled completely, you won&#x27;t be able to run it from the network" />
+            <UIText Id="SelNetworkAdvertise" Value="This feature will change from run from network state to set to be installed when required" />
+            <UIText Id="SelNetworkLocal" Value="This feature will change from run from network state to be installed on the local hard drive" />
+            <UIText Id="SelNetworkNetwork" Value="This feature will remain to be run from the network" />
+            <UIText Id="SelParentCostNegNeg" Value="This feature frees up [1] on your hard drive. It has [2] of [3] subfeatures selected. The subfeatures free up [4] on your hard drive." />
+            <UIText Id="SelParentCostNegPos" Value="This feature frees up [1] on your hard drive. It has [2] of [3] subfeatures selected. The subfeatures require [4] on your hard drive." />
+            <UIText Id="SelParentCostPosNeg" Value="This feature requires [1] on your hard drive. It has [2] of [3] subfeatures selected. The subfeatures free up [4] on your hard drive." />
+            <UIText Id="SelParentCostPosPos" Value="This feature requires [1] on your hard drive. It has [2] of [3] subfeatures selected. The subfeatures require [4] on your hard drive." />
+            <UIText Id="TimeRemaining" Value="Time remaining:{ [1] minutes}{ [2] seconds}" />
+            <UIText Id="VolumeCostAvailable" Value="Available" />
+            <UIText Id="VolumeCostDifference" Value="Difference" />
+            <UIText Id="VolumeCostRequired" Value="Required" />
+            <UIText Id="VolumeCostSize" Value="Disk Size" />
+            <UIText Id="VolumeCostVolume" Value="Volume" />
         </UI>
     </Fragment>
 </Wix>
