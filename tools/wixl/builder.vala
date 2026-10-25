@@ -376,7 +376,7 @@ namespace Wixl {
         }
 
         private void shortcut_target () throws GLib.Error {
-            var shortcuts = get_elements<WixShortcut> ();
+            var shortcuts = (WixShortcut[]) get_elements<WixShortcut> ();
             foreach (var sc in shortcuts) {
                 if (sc.Target != null)
                     continue;
