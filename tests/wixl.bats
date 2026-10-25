@@ -1111,4 +1111,10 @@ EOF2
   run "$wixl" -o out.msi core.wxs
   [ "$status" -ne 0 ]
   echo "$output" | grep -F "EventSource"
+
+  # WiX's EventSource has no Id attribute
+  sed 's/<util:EventSource Log="Application"/<util:EventSource Id="app" Log="Application"/' eventsource.wxs > id.wxs
+  run "$wixl" -o out.msi id.wxs
+  [ "$status" -eq 1 ]
+  echo "$output" | grep -F "EventSource app: Id is not supported"
 }

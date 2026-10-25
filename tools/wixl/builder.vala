@@ -920,6 +920,8 @@ namespace Wixl {
         // the registry values that WiX's util extension writes
         public override void visit_util_event_source (WixUtilEventSource source) throws GLib.Error {
             var comp = source.parent as WixComponent;
+            if (source.Id != null)
+                throw new Wixl.Error.FAILED ("EventSource %s: Id is not supported", source.Id);
             if (source.Log == null || source.Name == null || source.EventMessageFile == null)
                 throw new Wixl.Error.FAILED ("EventSource: Log, Name and EventMessageFile are required");
             if (source.Log == "Security")
