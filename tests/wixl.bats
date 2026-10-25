@@ -376,3 +376,53 @@ EOF
   ids4=$(echo "$out4" | grep -o 'Directory Id="[^"]*"' | sort)
   [ -z "$(comm -12 <(echo "$ids") <(echo "$ids4"))" ]
 }
+
+@test "wixl - File DefaultVersion and DefaultLanguage" {
+  mkdir -p SourceDir
+  echo "hello" > SourceDir/app.exe
+  echo "hello" > SourceDir/readme.txt
+  cat >version.wxs <<EOF2
+<?xml version="1.0" encoding="utf-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+  <Product Id="ABCDDCBA-86C7-4D14-AEC0-86416A69ABDE"
+           Name="Test" Version="1.0.0" Manufacturer="Test" Language="1033"
+           UpgradeCode="12345678-1234-1234-1234-123456789012">
+    <Package InstallerVersion="200" Compressed="yes" />
+    <Media Id="1" Cabinet="test.cab" EmbedCab="yes" />
+    <Directory Id="TARGETDIR" Name="SourceDir">
+      <Directory Id="ProgramFilesFolder">
+        <Directory Id="INSTALLDIR" Name="Test">
+          <Component Id="C1" Guid="ABCDDCBA-83F1-4F22-985B-FDB3C8ABD471">
+            <File Id="F1" Source="SourceDir/app.exe" KeyPath="yes"
+                  DefaultVersion="1.2.3.4" DefaultLanguage="1033" />
+          </Component>
+          <Component Id="C2" Guid="ABCDDCBA-83F1-4F22-985B-FDB3C8ABD472">
+            <File Id="F2" Source="SourceDir/readme.txt" KeyPath="yes"
+                  DefaultLanguage="0" />
+          </Component>
+        </Directory>
+      </Directory>
+    </Directory>
+    <Feature Id="Complete" Level="1">
+      <ComponentRef Id="C1" />
+      <ComponentRef Id="C2" />
+    </Feature>
+  </Product>
+</Wix>
+EOF2
+  run "$wixl" -o out.msi version.wxs
+  [ "$status" -eq 0 ]
+
+  run "$msiinfo" export out.msi File
+  [ "$status" -eq 0 ]
+  table=$(echo "$output" | tr -d '\r')
+  echo "$table"
+  col() { echo "$table" | awk -F '\t' -v f="$1" -v c="$2" '$1 == f { print $c }'; }
+  [ "$(col F1 5)" = "1.2.3.4" ]
+  [ "$(col F1 6)" = "1033" ]
+  [ "$(col F2 5)" = "" ]
+  [ "$(col F2 6)" = "0" ]
+  [ "$(col F1 7)" -eq 512 ]
+  [ "$(col F1 8)" -ge 1 ]
+  [ "$(col F2 8)" -ge 1 ]
+}

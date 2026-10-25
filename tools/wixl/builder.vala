@@ -955,7 +955,7 @@ namespace Wixl {
             var attr = FileAttribute.VITAL;
             var version = file.CompanionFile ?? file.DefaultVersion;
 
-            var rec = db.table_file.add (file.Id, comp.Id, name, (int)info.get_size (), attr, version);
+            var rec = db.table_file.add (file.Id, comp.Id, name, (int)info.get_size (), attr, version, file.DefaultLanguage);
             rec.set_data<WixFile> ("wixfile", file);
 
             visit_key_element (file);

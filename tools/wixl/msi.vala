@@ -673,19 +673,20 @@ namespace Wixl {
         static construct {
             name = "File";
             sql_create = "CREATE TABLE `File` (`File` CHAR(72) NOT NULL, `Component_` CHAR(72) NOT NULL, `FileName` CHAR(255) NOT NULL LOCALIZABLE, `FileSize` LONG NOT NULL, `Version` CHAR(72), `Language` CHAR(20), `Attributes` INT, `Sequence` LONG NOT NULL PRIMARY KEY `File`)";
-            sql_insert = "INSERT INTO `File` (`File`, `Component_`, `FileName`, `FileSize`, `Version`, `Attributes`, `Sequence`) VALUES (?, ?, ?, ?, ?, ?, ?)";
+            sql_insert = "INSERT INTO `File` (`File`, `Component_`, `FileName`, `FileSize`, `Version`, `Language`, `Attributes`, `Sequence`) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
         }
 
-        public Libmsi.Record add (string File, string Component, string FileName, int FileSize, int Attributes, string? Version = null, int Sequence = 1) throws GLib.Error {
-            var rec = new Libmsi.Record (7);
+        public Libmsi.Record add (string File, string Component, string FileName, int FileSize, int Attributes, string? Version = null, string? Language = null, int Sequence = 1) throws GLib.Error {
+            var rec = new Libmsi.Record (8);
 
             if (!rec.set_string (1, File) ||
                 !rec.set_string (2, Component) ||
                 !rec.set_string (3, FileName) ||
                 !rec.set_int (4, FileSize) ||
                 (Version != null && !rec.set_string (5, Version)) ||
-                !rec.set_int (6, Attributes) ||
-                !rec.set_int (7, Sequence))
+                (Language != null && !rec.set_string (6, Language)) ||
+                !rec.set_int (7, Attributes) ||
+                !rec.set_int (8, Sequence))
                 throw new Wixl.Error.FAILED ("failed to add record");
 
             records.append (rec);
@@ -694,7 +695,7 @@ namespace Wixl {
         }
 
         public static bool set_sequence (Libmsi.Record rec, int Sequence) {
-            return rec.set_int (7, Sequence);
+            return rec.set_int (8, Sequence);
         }
     }
 
