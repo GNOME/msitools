@@ -1440,12 +1440,26 @@ namespace Wixl {
                 source = action.BinaryKey;
                 target = action.DllEntry;
             } else if (action.JScriptCall != null) {
-                type = CustomActionType.JSCRIPT_BINARY;
-                source = action.BinaryKey;
+                if (action.BinaryKey != null) {
+                    type = CustomActionType.JSCRIPT_BINARY;
+                    source = action.BinaryKey;
+                } else if (action.Property != null) {
+                    type = CustomActionType.JSCRIPT_PROPERTY;
+                    source = action.Property;
+                } else {
+                    throw new Wixl.Error.FAILED ("JScriptCall requires BinaryKey or Property");
+                }
                 target = action.JScriptCall;
             } else if (action.VBScriptCall != null) {
-                type = CustomActionType.VBSCRIPT_BINARY;
-                source = action.BinaryKey;
+                if (action.BinaryKey != null) {
+                    type = CustomActionType.VBSCRIPT_BINARY;
+                    source = action.BinaryKey;
+                } else if (action.Property != null) {
+                    type = CustomActionType.VBSCRIPT_PROPERTY;
+                    source = action.Property;
+                } else {
+                    throw new Wixl.Error.FAILED ("VBScriptCall requires BinaryKey or Property");
+                }
                 target = action.VBScriptCall;
             } else if (action.ExeCommand != null && action.FileKey == null) {
                 type = CustomActionType.EXE_PROPERTY;

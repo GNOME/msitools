@@ -162,6 +162,17 @@ EOF
   echo "$output" | grep -q '^AbortInstall	19		Installation aborted by custom action.'
 }
 
+@test "wixl - script CustomAction sourced from a Property" {
+  cd wixl
+  run "$wixl" -o out.msi custom-action-script-property.wxs
+  [ "$status" -eq 0 ]
+  run "$msiinfo" export out.msi CustomAction
+  # Type 53/54: JScript/VBScript stored in the Property named by Source,
+  # entry point named by Target.
+  echo "$output" | grep -q '^RunVBScript	54	VBScriptText	Entry'
+  echo "$output" | grep -q '^RunJScript	53	JScriptText	Entry'
+}
+
 @test "wixl-heat - simple" {
   mkdir -p test/a/b test/c
   touch test/a/file test/c/file
