@@ -121,6 +121,27 @@ namespace Wixl {
         return str;
     }
 
+    // like WiX v3, replace the characters an identifier can't have and runs
+    // of dots with '_', and prefix '_' if the name doesn't start with a
+    // letter or '_'
+    public string identifier_from_name (string name) {
+        var id = new StringBuilder ();
+        unichar c;
+
+        for (var i = 0; name.get_next_char (ref i, out c);) {
+            if (c == '.' && name[i] == '.') {
+                while (name[i] == '.')
+                    i++;
+                id.append_c ('_');
+            } else
+                id.append_unichar (c < 128 && (c.isalnum () || c == '_' || c == '.') ? c : '_');
+        }
+        if (!(name[0].isalpha () || name[0] == '_'))
+            id.prepend_c ('_');
+
+        return id.str;
+    }
+
     public string yesno (bool yes) {
         return yes ? "yes" : "no";
     }

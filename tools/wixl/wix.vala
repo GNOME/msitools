@@ -618,6 +618,17 @@ namespace Wixl {
             return Name ?? Path.get_basename (Source);
         }
 
+        public override void load (Xml.Node *node) throws Wixl.Error {
+            base.load (node);
+
+            // like WiX v3, the Id defaults to the file name
+            if (Id == null) {
+                if (Name == null && Source == null)
+                    throw new Wixl.Error.FAILED ("File: needs an Id, a Name or a Source");
+                Id = identifier_from_name (Name ?? Path.get_basename (Source));
+            }
+        }
+
         public override void accept (WixNodeVisitor visitor) throws GLib.Error {
             base.accept (visitor);
             visitor.visit_file (this);

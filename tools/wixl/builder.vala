@@ -88,6 +88,7 @@ namespace Wixl {
         MsiDatabase db;
         HashTable<string, string> variables;
         GenericSet<string> environment_ids;
+        GenericSet<string> file_ids;
         List<File> includedirs;
         string extdir;
         Extension[] extensions;
@@ -96,6 +97,7 @@ namespace Wixl {
         construct {
             variables = new HashTable<string, string> (str_hash, str_equal);
             environment_ids = new GenericSet<string> (str_hash, str_equal);
+            file_ids = new GenericSet<string> (str_hash, str_equal);
         }
 
         public void define_variable (string name, string value) {
@@ -950,6 +952,11 @@ namespace Wixl {
         public override void visit_file (WixFile file) throws GLib.Error {
             file.DiskId = file.DiskId ?? "1";
             return_if_fail (file.DiskId == "1");
+
+            // a File without an Id gets its file name, which may be taken
+            if (!file_ids.add (file.Id))
+                throw new Wixl.Error.FAILED ("duplicate File Id: %s (Source %s), set a unique Id",
+                                             file.Id, file.Source ?? file.path_name ());
 
             var name = file.path_name ();
             var source = file.Source ?? name;
