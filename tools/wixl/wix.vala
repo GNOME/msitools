@@ -42,6 +42,7 @@ namespace Wixl {
         public abstract void visit_component_ref (WixComponentRef ref) throws GLib.Error;
         public abstract void visit_remove_folder (WixRemoveFolder rm) throws GLib.Error;
         public abstract void visit_registry_value (WixRegistryValue reg) throws GLib.Error;
+        public abstract void visit_util_event_source (WixUtilEventSource source) throws GLib.Error;
         public abstract void visit_file (WixFile reg) throws GLib.Error;
         public abstract void visit_remove_file (WixRemoveFile rf) throws GLib.Error;
         public abstract void visit_ini_file (WixIniFile reg) throws GLib.Error;
@@ -677,6 +678,36 @@ namespace Wixl {
 
         public override void accept (WixNodeVisitor visitor) throws GLib.Error {
             visitor.visit_registry_value (this);
+        }
+    }
+
+    public class WixUtilEventSource: WixKeyElement {
+        static construct {
+            name = "util:EventSource";
+        }
+
+        public string Log { get; set; }
+        public string Name { get; set; }
+        public string EventMessageFile { get; set; }
+        public string CategoryMessageFile { get; set; }
+        public string CategoryCount { get; set; }
+        public string ParameterMessageFile { get; set; }
+        public string SupportsErrors { get; set; }
+        public string SupportsFailureAudits { get; set; }
+        public string SupportsInformationals { get; set; }
+        public string SupportsSuccessAudits { get; set; }
+        public string SupportsWarnings { get; set; }
+
+        public string registry_key () {
+            return "SYSTEM\\CurrentControlSet\\Services\\EventLog\\" + Log + "\\" + Name;
+        }
+
+        public override string path_name () throws GLib.Error {
+            return "HKLM/" + registry_key ();
+        }
+
+        public override void accept (WixNodeVisitor visitor) throws GLib.Error {
+            visitor.visit_util_event_source (this);
         }
     }
 
@@ -1368,6 +1399,7 @@ namespace Wixl {
                 typeof (WixCreateFolder),
                 typeof (WixRemoveFolder),
                 typeof (WixRegistryValue),
+                typeof (WixUtilEventSource),
                 typeof (WixFile),
                 typeof (WixRemoveFile),
                 typeof (WixShortcut),

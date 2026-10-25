@@ -563,7 +563,7 @@ namespace Wixl {
             if (comp.key == null && component_default_key != null)
                 comp.key = component_default_key;
 
-            if (comp.key is WixRegistryValue)
+            if ((comp.key is WixRegistryValue || comp.key is WixUtilEventSource))
                 attr |= ComponentAttribute.REGISTRY_KEY_PATH;
 
             var dir = get_directory (comp);
@@ -909,6 +909,61 @@ namespace Wixl {
             db.table_registry.add (reg.Id, r, reg_key, comp.Id, reg.Name, value);
 
             visit_key_element (reg, comp);
+        }
+
+        string add_event_source_value (WixComponent comp, string key, string name, string value) throws GLib.Error {
+            var id = generate_id ("reg", 4, comp.Id, "hklm", key, name.down ());
+            db.table_registry.add (id, RegistryRoot.HKLM, key, comp.Id, name, value);
+            return id;
+        }
+
+        // the registry values that WiX's util extension writes
+        public override void visit_util_event_source (WixUtilEventSource source) throws GLib.Error {
+            var comp = source.parent as WixComponent;
+            if (source.Log == null || source.Name == null || source.EventMessageFile == null)
+                throw new Wixl.Error.FAILED ("EventSource: Log, Name and EventMessageFile are required");
+            if (source.Log == "Security")
+                throw new Wixl.Error.FAILED ("EventSource %s: Log can't be Security", source.Name);
+
+            int64 category_count = 0;
+            if (source.CategoryCount != null &&
+                (!int64.try_parse (source.CategoryCount, out category_count) ||
+                 category_count < 0 || category_count > int.MAX))
+                throw new Wixl.Error.FAILED ("EventSource %s: invalid CategoryCount %s", source.Name, source.CategoryCount);
+            if (source.CategoryMessageFile != null && source.CategoryCount == null)
+                throw new Wixl.Error.FAILED ("EventSource %s: CategoryMessageFile requires CategoryCount", source.Name);
+            if (source.CategoryMessageFile == null && category_count > 0)
+                throw new Wixl.Error.FAILED ("EventSource %s: CategoryCount requires CategoryMessageFile", source.Name);
+
+            var key = source.registry_key ();
+
+            // the EventMessageFile value is the key path
+            source.Id = add_event_source_value (comp, key, "EventMessageFile", "#%" + source.EventMessageFile);
+            if (source.CategoryMessageFile != null)
+                add_event_source_value (comp, key, "CategoryMessageFile", "#%" + source.CategoryMessageFile);
+            if (source.CategoryCount != null)
+                add_event_source_value (comp, key, "CategoryCount", "#" + category_count.to_string ());
+            if (source.ParameterMessageFile != null)
+                add_event_source_value (comp, key, "ParameterMessageFile", "#%" + source.ParameterMessageFile);
+
+            int types = 0;
+            if (parse_yesno (source.SupportsErrors))
+                types |= 1;
+            if (parse_yesno (source.SupportsWarnings))
+                types |= 2;
+            if (parse_yesno (source.SupportsInformationals))
+                types |= 4;
+            if (parse_yesno (source.SupportsSuccessAudits))
+                types |= 8;
+            if (parse_yesno (source.SupportsFailureAudits))
+                types |= 16;
+            if (types != 0)
+                add_event_source_value (comp, key, "TypesSupported", "#" + types.to_string ());
+
+            // like other extension elements, only the key path when
+            // KeyPath="yes", never picked as the default
+            if (parse_yesno (source.KeyPath))
+                visit_key_element (source, comp);
         }
 
         [Flags]

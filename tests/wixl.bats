@@ -1030,3 +1030,85 @@ EOF2
   [ "$status" -eq 1 ]
   echo "$output" | grep -F "FirewallException App: duplicate Id"
 }
+@test "wixl - util:EventSource" {
+  mkdir -p SourceDir
+  echo "hello" > SourceDir/app.exe
+  cat >eventsource.wxs <<'EOF2'
+<?xml version="1.0" encoding="utf-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi"
+     xmlns:util="http://schemas.microsoft.com/wix/UtilExtension">
+  <Product Id="ABCDDCBA-86C7-4D14-AEC0-86416A69ABDE"
+           Name="Test" Version="1.0.0" Manufacturer="Test" Language="1033"
+           UpgradeCode="12345678-1234-1234-1234-123456789012">
+    <Package InstallerVersion="200" Compressed="yes" InstallScope="perMachine" />
+    <Media Id="1" Cabinet="test.cab" EmbedCab="yes" />
+    <Directory Id="TARGETDIR" Name="SourceDir">
+      <Directory Id="ProgramFilesFolder">
+        <Directory Id="INSTALLDIR" Name="Test">
+          <Component Id="C1" Guid="ABCDDCBA-83F1-4F22-985B-FDB3C8ABD471">
+            <File Id="App" Source="SourceDir/app.exe" KeyPath="yes" />
+            <util:EventSource Log="Application" Name="app"
+                              EventMessageFile="%SystemRoot%\System32\EventCreate.exe"
+                              SupportsErrors="yes" SupportsInformationals="yes"
+                              SupportsWarnings="yes" />
+          </Component>
+          <Component Id="C2" Guid="*">
+            <util:EventSource Log="Custom" Name="other" KeyPath="yes"
+                              EventMessageFile="[INSTALLDIR]msg.dll"
+                              CategoryMessageFile="[INSTALLDIR]cat.dll" CategoryCount="3"
+                              ParameterMessageFile="[INSTALLDIR]param.dll"
+                              SupportsSuccessAudits="yes" SupportsFailureAudits="yes" />
+          </Component>
+        </Directory>
+      </Directory>
+    </Directory>
+    <Feature Id="Main" Level="1">
+      <ComponentRef Id="C1" />
+      <ComponentRef Id="C2" />
+    </Feature>
+  </Product>
+</Wix>
+EOF2
+  run "$wixl" -o out.msi eventsource.wxs
+  [ "$status" -eq 0 ]
+
+  run "$msiinfo" export out.msi Registry
+  [ "$status" -eq 0 ]
+  regs=$(echo "$output" | tail -n +4 | cut -f2- | tr -d '\r' | sort)
+  exp=$(sort <<'EOF2'
+2	SYSTEM\CurrentControlSet\Services\EventLog\Application\app	EventMessageFile	#%%SystemRoot%\System32\EventCreate.exe	C1
+2	SYSTEM\CurrentControlSet\Services\EventLog\Application\app	TypesSupported	#7	C1
+2	SYSTEM\CurrentControlSet\Services\EventLog\Custom\other	EventMessageFile	#%[INSTALLDIR]msg.dll	C2
+2	SYSTEM\CurrentControlSet\Services\EventLog\Custom\other	CategoryMessageFile	#%[INSTALLDIR]cat.dll	C2
+2	SYSTEM\CurrentControlSet\Services\EventLog\Custom\other	CategoryCount	#3	C2
+2	SYSTEM\CurrentControlSet\Services\EventLog\Custom\other	ParameterMessageFile	#%[INSTALLDIR]param.dll	C2
+2	SYSTEM\CurrentControlSet\Services\EventLog\Custom\other	TypesSupported	#24	C2
+EOF2
+)
+  [ "$regs" = "$exp" ]
+
+  # KeyPath="yes" makes the EventMessageFile value the key path
+  run "$msiinfo" export out.msi Component
+  [ "$status" -eq 0 ]
+  c2=$(echo "$output" | awk -F '\t' '$1 == "C2" { print $6 }' | tr -d '\r')
+  # msidbComponentAttributesRegistryKeyPath
+  [ "$(echo "$output" | awk -F '\t' '$1 == "C2" { print $4 }')" = "4" ]
+  # without KeyPath the EventSource doesn't take the File's place
+  [ "$(echo "$output" | awk -F '\t' '$1 == "C1" { print $6 }' | tr -d '\r')" = "App" ]
+  run "$msiinfo" export out.msi Registry
+  [ "$status" -eq 0 ]
+  name=$(echo "$output" | awk -F '\t' -v id="$c2" '$1 == id { print $4 }' | tr -d '\r')
+  [ "$name" = "EventMessageFile" ]
+
+  # CategoryMessageFile needs CategoryCount
+  sed 's/ CategoryCount="3"//' eventsource.wxs > nocount.wxs
+  run "$wixl" -o out.msi nocount.wxs
+  [ "$status" -eq 1 ]
+  echo "$output" | grep -F "CategoryMessageFile requires CategoryCount"
+
+  # an EventSource outside the util namespace is not the extension's
+  sed 's/<util:EventSource Log="Application"/<EventSource Log="Application"/' eventsource.wxs > core.wxs
+  run "$wixl" -o out.msi core.wxs
+  [ "$status" -ne 0 ]
+  echo "$output" | grep -F "EventSource"
+}
