@@ -528,10 +528,11 @@ string_table *msi_load_string_table( GsfInfile *stg, unsigned *bytes_per_strref 
     while ( i<count )
     {
         /* the string reference count is always the second word */
+        len = GUINT16_FROM_LE(pool[i*2]);
         refs = GUINT16_FROM_LE(pool[i*2+1]);
 
         /* empty entries have two zeros, still have a string id */
-        if (GUINT16_FROM_LE(pool[i*2]) == 0 && refs == 0)
+        if (len == 0 && refs == 0)
         {
             i++;
             n++;
@@ -539,20 +540,16 @@ string_table *msi_load_string_table( GsfInfile *stg, unsigned *bytes_per_strref 
         }
 
         /*
-         * If a string is over 64k, the previous string entry is made null
-         * and the high word of the length is inserted in the null string's
-         * reference count field.
+         * If a string is over 64k, the previous string length entry is made null
+         * and the length is written in the next entry
          */
-        if (GUINT16_FROM_LE(pool[i*2]) == 0)
+        if (len == 0)
         {
-            len = (GUINT16_FROM_LE(pool[i*2+3]) << 16) + GUINT16_FROM_LE(pool[i*2+2]);
-            i += 2;
+            i++;
+            len = (GUINT16_FROM_LE(pool[i*2+1]) << 16) + GUINT16_FROM_LE(pool[i*2]);
         }
-        else
-        {
-            len = GUINT16_FROM_LE(pool[i*2]);
-            i += 1;
-        }
+
+        i++;
 
         if ( (offset + len) > datasize )
         {
@@ -650,20 +647,23 @@ unsigned msi_save_string_table( const string_table *st, LibmsiDatabase *db, unsi
             continue;
         }
 
-        if (sz >= 0x10000)
+        if (sz >= 0x10000) // >= 64KiB
         {
-            /* Write a dummy entry, with the high part of the length
-             * in the reference count.  */
-            pool[ i*4 ] = 0;
+            pool[ i*4 ]     = 0;
             pool[ i*4 + 1 ] = 0;
-            pool[ i*4 + 2 ] = (sz >> 16);
-            pool[ i*4 + 3 ] = (sz >> 24);
+            pool[ i*4 + 2 ] = st->strings[n].persistent_refcount;
+            pool[ i*4 + 3 ] = st->strings[n].persistent_refcount >> 8;
             i++;
+            pool[ i*4 ]     = sz;
+            pool[ i*4 + 1 ] = sz >> 8;
+            pool[ i*4 + 2 ] = sz >> 16;
+            pool[ i*4 + 3 ] = sz >> 24;
+        } else { // < 64KiB
+            pool[ i*4 ]     = sz;
+            pool[ i*4 + 1 ] = sz >> 8;
+            pool[ i*4 + 2 ] = st->strings[n].persistent_refcount;
+            pool[ i*4 + 3 ] = st->strings[n].persistent_refcount >> 8;
         }
-        pool[ i*4 ]     = sz;
-        pool[ i*4 + 1 ] = sz >> 8;
-        pool[ i*4 + 2 ] = st->strings[n].persistent_refcount;
-        pool[ i*4 + 3 ] = st->strings[n].persistent_refcount >> 8;
         i++;
         used += sz;
         if( used > datasize  )

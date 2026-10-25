@@ -1020,7 +1020,9 @@ static void test_longstrings(void)
     LibmsiRecord *hrec = 0;
     unsigned len;
     unsigned r;
-    const unsigned STRING_LENGTH = 0x10005;
+    /* Use a string whose high length word is larger than the
+     * reference count, to catch the two words being swapped on save. */
+    const unsigned STRING_LENGTH = 0x20005;
 
     unlink(msifile);
     /* just libmsi_database_open should not create a file */
