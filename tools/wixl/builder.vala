@@ -1944,13 +1944,17 @@ namespace Wixl {
                 condition = publish.Condition;
             }
 
+            // like WiX: under a UI element the default order is always 1,
+            // under a Control it is one greater than the previous
+            // <Publish> of that control; an explicit Order is used as
+            // given and the count continues from it
+            var parent_control = publish.parent as WixControl;
+            order = parent_control != null ? parent_control.publish_order + 1 : 1;
             if (publish.Order != null) {
-                // use the next integer if nested under control
                 order = int.parse (publish.Order);
-                WixPublish.order = order + 1;
-            } else {
-                // use the given value and update the next value
-                order = WixPublish.order++;
+            }
+            if (parent_control != null) {
+                parent_control.publish_order = order;
             }
 
             db.table_control_event.add (dialog, control, event, argument,
