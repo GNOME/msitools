@@ -1117,4 +1117,37 @@ EOF2
   run "$wixl" -o out.msi id.wxs
   [ "$status" -eq 1 ]
   echo "$output" | grep -F "EventSource app: Id is not supported"
+
+  # the remaining validations
+  sed 's/Log="Application"/Log="Security"/' eventsource.wxs > security.wxs
+  run "$wixl" -o out.msi security.wxs
+  [ "$status" -eq 1 ]
+  echo "$output" | grep -F "Log can't be Security"
+
+  sed 's/EventMessageFile="[^"]*"//' eventsource.wxs > nomessage.wxs
+  run "$wixl" -o out.msi nomessage.wxs
+  [ "$status" -eq 1 ]
+  echo "$output" | grep -F "Log, Name and EventMessageFile are required"
+
+  sed 's/CategoryMessageFile="[^"]*"//' eventsource.wxs > nocatcount.wxs
+  run "$wixl" -o out.msi nocatcount.wxs
+  [ "$status" -eq 1 ]
+  echo "$output" | grep -F "CategoryCount requires CategoryMessageFile"
+
+  # all supports bits
+  sed 's/SupportsWarnings="yes"/SupportsWarnings="yes" SupportsSuccessAudits="yes" SupportsFailureAudits="yes"/' eventsource.wxs > alltypes.wxs
+  run "$wixl" -o out.msi alltypes.wxs
+  [ "$status" -eq 0 ]
+  run "$msiinfo" export out.msi Registry
+  [ "$status" -eq 0 ]
+  echo "$output" | tr -d '\r' | grep -qF "$(printf 'TypesSupported\t#31')"
+
+  # a non-KeyPath EventSource doesn't make the component key path
+  sed 's/Guid="\*"/Guid="A07E8D44-5F60-7182-BDCE-4567890123DE"/; s/ Name="other" KeyPath="yes"/ Name="other"/' eventsource.wxs > nokey.wxs
+  run "$wixl" -o out.msi nokey.wxs
+  [ "$status" -eq 0 ]
+  run "$msiinfo" export out.msi Component
+  [ "$status" -eq 0 ]
+  [ "$(echo "$output" | awk -F '\t' '$1 == "C2" { print $4 }')" = "0" ]
+  [ -z "$(echo "$output" | awk -F '\t' '$1 == "C2" { print $6 }' | tr -d '\r')" ]
 }
