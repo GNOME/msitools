@@ -1830,8 +1830,8 @@ namespace Wixl {
          * fw:FirewallException adds an inbound allow rule. WiX does it with
          * custom actions from its firewall extension, which wixl can't use,
          * so run "netsh advfirewall firewall" from deferred custom actions
-         * instead, with the same rule as WiX's: the program or the port,
-         * the remote addresses, the profiles and the description.
+         * instead, with the same rule as WiX's: the program and/or the
+         * port, the remote addresses, the profiles and the description.
          */
         public override void visit_fw_firewall_exception (WixFwFirewallException ex) throws GLib.Error {
             WixComponent comp;
