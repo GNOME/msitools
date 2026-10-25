@@ -5,8 +5,8 @@ namespace Wixl {
         FIXME,
     }
 
-    public G enum_from_string<G> (string str) throws GLib.Error {
-        var k = (EnumClass)typeof(G).class_ref ();
+    public int enum_from_string (Type type, string str) throws GLib.Error {
+        var k = (EnumClass)type.class_ref ();
         var v = k.get_value_by_nick (str);
 
         if (v == null)
@@ -15,7 +15,7 @@ namespace Wixl {
     }
 
     public void hash_table_add<G> (HashTable<G, G*> h, G o) {
-        h.replace (o, o);
+        h.replace (o, (G*) o);
     }
 
     public string add_braces (string str) {
@@ -386,21 +386,5 @@ namespace Wixl {
             language = string.joinv (",", languages);
 
         return true;
-    }
-
-    public class UnixInputStream : GLib.InputStream {
-        public int fd { get; set construct; }
-
-        public UnixInputStream(int fd_) {
-            fd = fd_;
-        }
-
-        public override ssize_t read ([CCode (array_length_type = "gsize")] uint8[] buffer, GLib.Cancellable? cancellable = null) throws GLib.IOError {
-            return Posix.read(fd, buffer, buffer.length);
-        }
-
-        public override bool close(GLib.Cancellable? cancellable = null) throws GLib.IOError {
-            return true;
-        }
     }
 } // Wixl
