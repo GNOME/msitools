@@ -662,3 +662,72 @@ EOF2
   [ "$status" -eq 1 ]
   echo "$output" | grep -F "Component C1: unsupported element util:File"
 }
+
+@test "wixl - ServiceConfig" {
+  mkdir -p SourceDir
+  echo "hello" > SourceDir/svc.exe
+  cat >serviceconfig.wxs <<EOF2
+<?xml version="1.0" encoding="utf-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+  <Product Id="ABCDDCBA-86C7-4D14-AEC0-86416A69ABDE"
+           Name="Test" Version="1.0.0" Manufacturer="Test" Language="1033"
+           UpgradeCode="12345678-1234-1234-1234-123456789012">
+    <Package InstallerVersion="500" Compressed="yes" />
+    <Media Id="1" Cabinet="test.cab" EmbedCab="yes" />
+    <Directory Id="TARGETDIR" Name="SourceDir">
+      <Directory Id="ProgramFilesFolder">
+        <Directory Id="INSTALLDIR" Name="Test">
+          <Component Id="C1" Guid="ABCDDCBA-83F1-4F22-985B-FDB3C8ABD471">
+            <File Id="F1" Source="SourceDir/svc.exe" KeyPath="yes" />
+            <ServiceInstall Id="S1" Name="my-svc" Type="ownProcess" Start="auto" ErrorControl="normal">
+              <ServiceConfig DelayedAutoStart="yes" FailureActionsWhen="failedToStopOrReturnedError"
+                             OnInstall="yes" OnReinstall="yes" />
+            </ServiceInstall>
+            <ServiceConfig Id="Other" ServiceName="other-svc" PreShutdownDelay="60000"
+                           ServiceSid="restricted" OnUninstall="yes" />
+          </Component>
+        </Directory>
+      </Directory>
+    </Directory>
+    <Feature Id="Main" Level="1">
+      <ComponentRef Id="C1" />
+    </Feature>
+  </Product>
+</Wix>
+EOF2
+  run "$wixl" -o out.msi serviceconfig.wxs
+  [ "$status" -eq 0 ]
+
+  run "$msiinfo" export out.msi MsiServiceConfig
+  [ "$status" -eq 0 ]
+  rows=$(echo "$output" | tr -d '\r' | tail -n +4 | LC_ALL=C sort)
+  echo "$rows"
+  [ "$rows" = "$(printf '%s\t%s\t%s\t%s\t%s\t%s\n' \
+      Other.PD other-svc 2 7 60000 C1 \
+      Other.SS other-svc 2 5 3 C1 \
+      my_svc.DS my-svc 5 3 1 C1 \
+      my_svc.FA my-svc 5 4 1 C1)" ]
+
+  run "$msiinfo" export out.msi InstallExecuteSequence
+  [ "$status" -eq 0 ]
+  echo "$output" | tr -d '\r' | grep -q "$(printf 'MsiConfigureServices\tVersionNT>=600\t5850')"
+
+  # WiX requires an event and a setting
+  sed 's/ OnUninstall="yes"//' serviceconfig.wxs > noevent.wxs
+  run "$wixl" -o out.msi noevent.wxs
+  [ "$status" -eq 1 ]
+  echo "$output" | grep -F "OnInstall, OnReinstall or OnUninstall is required"
+
+  # the same setting twice for one service needs distinct ids
+  sed 's/Id="Other" ServiceName="other-svc" PreShutdownDelay="60000"/ServiceName="my-svc" DelayedAutoStart="no"/' serviceconfig.wxs > dup.wxs
+  run "$wixl" -o out.msi dup.wxs
+  [ "$status" -eq 1 ]
+  echo "$output" | grep -F "duplicate MsiServiceConfig row my_svc.DS"
+
+  # ids are made from the name like WiX does
+  sed 's/Id="Other" ServiceName="other-svc"/ServiceName="1a..b"/' serviceconfig.wxs > name.wxs
+  run "$wixl" -o out.msi name.wxs
+  [ "$status" -eq 0 ]
+  run "$msiinfo" export out.msi MsiServiceConfig
+  echo "$output" | tr -d '\r' | grep -q "^_1a_b\.PD"
+}

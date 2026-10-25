@@ -1040,6 +1040,27 @@ namespace Wixl {
         }
     }
 
+    class MsiTableMsiServiceConfig : MsiTable {
+        static construct {
+            name = "MsiServiceConfig";
+            sql_create = "CREATE TABLE `MsiServiceConfig` (`MsiServiceConfig` CHAR(72) NOT NULL, `Name` CHAR(255) NOT NULL, `Event` SHORT NOT NULL, `ConfigType` LONG NOT NULL, `Argument` CHAR(0), `Component_` CHAR(72) NOT NULL PRIMARY KEY `MsiServiceConfig`)";
+            sql_insert = "INSERT INTO `MsiServiceConfig` (`MsiServiceConfig`, `Name`, `Event`, `ConfigType`, `Argument`, `Component_`) VALUES (?, ?, ?, ?, ?, ?)";
+        }
+
+        public void add (string MsiServiceConfig, string Name, int Event, int ConfigType, string Argument, string Component) throws GLib.Error {
+            var rec = new Libmsi.Record (6);
+            if (!rec.set_string (1, MsiServiceConfig) ||
+                !rec.set_string (2, Name) ||
+                !rec.set_int (3, Event) ||
+                !rec.set_int (4, ConfigType) ||
+                !rec.set_string (5, Argument) ||
+                !rec.set_string (6, Component))
+                throw new Wixl.Error.FAILED ("failed to add record");
+
+            records.append (rec);
+        }
+    }
+
     class MsiTableSignature : MsiTable {
         static construct {
             name = "Signature";
@@ -1353,6 +1374,7 @@ namespace Wixl {
         public MsiTableRegistry table_registry;
         public MsiTableServiceControl table_service_control;
         public MsiTableServiceInstall table_service_install;
+        public MsiTableMsiServiceConfig table_msi_service_config;
         public MsiTableFile table_file;
         public MsiTableIniFile table_ini_file;
         public MsiTableRemoveIniFile table_remove_ini_file;
@@ -1445,6 +1467,7 @@ namespace Wixl {
             table_condition = new MsiTableCondition ();
             table_service_control = new MsiTableServiceControl ();
             table_service_install = new MsiTableServiceInstall ();
+            table_msi_service_config = new MsiTableMsiServiceConfig ();
             table_file = new MsiTableFile ();
             table_ini_file = new MsiTableIniFile ();
             table_remove_ini_file = new MsiTableRemoveIniFile ();
@@ -1487,6 +1510,7 @@ namespace Wixl {
                     table_condition,
                     table_service_control,
                     table_service_install,
+                    table_msi_service_config,
                     table_file,
                     table_ini_file,
                     table_remove_ini_file,

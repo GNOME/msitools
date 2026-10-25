@@ -254,6 +254,8 @@ namespace Wixl {
             }
             if (db.table_service_install.records.length () > 0)
                 add (MSIDefault.Action.InstallServices);
+            if (db.table_msi_service_config.records.length () > 0)
+                add (MSIDefault.Action.MsiConfigureServices);
             if (db.table_create_folder.records.length () > 0) {
                 add (MSIDefault.Action.RemoveFolders);
                 add (MSIDefault.Action.CreateFolders);
@@ -1365,6 +1367,92 @@ namespace Wixl {
             db.table_service_install.add(service_install.Id, service_install.Name, service_install.DisplayName, ServiceType, StartType, ErrorControl, service_install.LoadOrderGroup, ServiceDependencies, service_install.Account, service_install.Password, service_install.Arguments, comp.Id, Description);
         }
 
+
+        [Flags]
+        enum ServiceConfigEvent {
+            INSTALL = 1 << 0,
+            UNINSTALL = 1 << 1,
+            REINSTALL = 1 << 2,
+        }
+
+        // like WiX, known values are mapped and anything else, such as a
+        // formatted property, is passed through
+        static string service_config_value (string value, string[] names, string[] values) {
+            for (var i = 0; i < names.length; i++)
+                if (value == names[i])
+                    return values[i];
+            return value;
+        }
+
+        GenericSet<string> service_config_ids = new GenericSet<string> (str_hash, str_equal);
+
+        void add_service_config (string id, string name, int event, int type, string value, string component) throws GLib.Error {
+            if (!service_config_ids.add (id))
+                throw new Wixl.Error.FAILED ("ServiceConfig %s: duplicate MsiServiceConfig row %s, set a distinct Id", name, id);
+            db.table_msi_service_config.add (id, name, event, type, value, component);
+        }
+
+        public override void visit_service_config (WixServiceConfig config) throws GLib.Error {
+            WixComponent comp;
+            string? name = config.ServiceName;
+
+            if (config.parent is WixServiceInstall) {
+                var install = config.parent as WixServiceInstall;
+                if (name != null)
+                    throw new Wixl.Error.FAILED ("ServiceConfig: ServiceName is not allowed inside ServiceInstall");
+                name = install.Name;
+                comp = install.parent as WixComponent;
+            } else {
+                comp = config.parent as WixComponent;
+            }
+            if (name == null || name == "")
+                throw new Wixl.Error.FAILED ("ServiceConfig: ServiceName is required");
+
+            int event = 0;
+            if (parse_yesno (config.OnInstall))
+                event |= ServiceConfigEvent.INSTALL;
+            if (parse_yesno (config.OnReinstall))
+                event |= ServiceConfigEvent.REINSTALL;
+            if (parse_yesno (config.OnUninstall))
+                event |= ServiceConfigEvent.UNINSTALL;
+            if (event == 0)
+                throw new Wixl.Error.FAILED ("ServiceConfig %s: one of OnInstall, OnReinstall or OnUninstall is required", name);
+
+            // like WiX's GetIdentifierFromName ()
+            var id = config.Id;
+            if (id == null || id == "") {
+                id = /[^A-Za-z0-9_.]|\.{2,}/.replace (name, -1, 0, "_");
+                if (!(id[0].isalpha () || id[0] == '_'))
+                    id = "_" + id;
+            }
+
+            // one row per setting, with the ids and config types WiX uses;
+            // empty values count as unset, as in WiX
+            var rows = 0;
+            if (config.DelayedAutoStart != null && config.DelayedAutoStart != "") {
+                var value = service_config_value (config.DelayedAutoStart, { "no", "yes" }, { "0", "1" });
+                add_service_config (id + ".DS", name, event, 3, value, comp.Id);
+                rows++;
+            }
+            if (config.FailureActionsWhen != null && config.FailureActionsWhen != "") {
+                var value = service_config_value (config.FailureActionsWhen,
+                                                  { "failedToStop", "failedToStopOrReturnedError" }, { "0", "1" });
+                add_service_config (id + ".FA", name, event, 4, value, comp.Id);
+                rows++;
+            }
+            if (config.ServiceSid != null && config.ServiceSid != "") {
+                var value = service_config_value (config.ServiceSid,
+                                                  { "none", "unrestricted", "restricted" }, { "0", "1", "3" });
+                add_service_config (id + ".SS", name, event, 5, value, comp.Id);
+                rows++;
+            }
+            if (config.PreShutdownDelay != null && config.PreShutdownDelay != "") {
+                add_service_config (id + ".PD", name, event, 7, config.PreShutdownDelay, comp.Id);
+                rows++;
+            }
+            if (rows == 0)
+                throw new Wixl.Error.FAILED ("ServiceConfig %s: one of DelayedAutoStart, FailureActionsWhen, ServiceSid or PreShutdownDelay is required", name);
+        }
 
         enum RegistryType {
             DIRECTORY,
