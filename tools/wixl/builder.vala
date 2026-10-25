@@ -2761,6 +2761,9 @@ namespace Wixl {
                     break;
             }
 
+            // Permanent="yes" keeps the variable on uninstall, so the
+            // remove-on-uninstall "-" prefix is only added otherwise
+            // (Permanent defaults to "no").
             if(!parse_yesno(env.Permanent)) {
                 name_prefix += "-";
             }

@@ -459,6 +459,44 @@ EOF
   [ "$(echo "$ids" | wc -l)" -eq 3 ]
 }
 
+@test "wixl - Environment Permanent controls remove-on-uninstall" {
+  cd wixl
+  cat >environment-permanent.wxs <<EOF
+<?xml version='1.0' encoding='windows-1252'?>
+<Wix xmlns='http://schemas.microsoft.com/wix/2006/wi'>
+  <Product Name='Env test' Id='ABCDDCBA-86C7-4D14-AEC0-86416A69ABDE' UpgradeCode='ABCDDCBA-7349-453F-94F6-BCB5110BA4FD'
+    Language='1033' Codepage='1252' Version='1.0.0' Manufacturer='Test'>
+    <Package Id='*' Keywords='Installer' Description='Env test' Manufacturer='Test'
+      InstallerVersion='100' Languages='1033' Compressed='yes' SummaryCodepage='1252' />
+    <Directory Id='TARGETDIR' Name='SourceDir'>
+      <Directory Id='INSTALLDIR' Name='EnvTest'>
+        <Component Id='EnvComponent' Guid='ABCDDCBA-83F1-4F22-985B-FDB3C8ABD471'>
+          <Environment Name='DEFAULT_REMOVE' Value='a' Action='set' Part='all' />
+          <Environment Name='EXPLICIT_REMOVE' Value='b' Action='set' Part='all' Permanent='no' />
+          <Environment Name='EXPLICIT_KEEP' Value='c' Action='set' Part='all' Permanent='yes' />
+          <Environment Name='SYSTEM_KEEP' Value='d' Action='set' Part='all' Permanent='yes' System='yes' />
+          <RegistryValue Root='HKCU' Key='Software\EnvTest' Type='string' Value='' KeyPath='yes' />
+        </Component>
+      </Directory>
+    </Directory>
+    <Feature Id='Complete' Level='1'>
+      <ComponentRef Id='EnvComponent' />
+    </Feature>
+  </Product>
+</Wix>
+EOF
+  run "$wixl" -o out.msi environment-permanent.wxs
+  [ "$status" -eq 0 ]
+  run "$msiinfo" export -s out.msi Environment
+  [ "$status" -eq 0 ]
+  # Permanent="no" is the default and removes the variable on uninstall
+  echo "$output" | grep -F "'=-DEFAULT_REMOVE'"
+  echo "$output" | grep -F "'=-EXPLICIT_REMOVE'"
+  # Permanent="yes" keeps the variable on uninstall
+  echo "$output" | grep -F "'=EXPLICIT_KEEP'"
+  echo "$output" | grep -F "'=*SYSTEM_KEEP'"
+}
+
 @test "wixl-heat - reproducible directory ids" {
   mkdir -p test/a/b test/c
   touch test/a/file test/a/b/file test/c/file
