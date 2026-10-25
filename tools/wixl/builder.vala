@@ -1921,13 +1921,13 @@ namespace Wixl {
             // installation removes the rule.
             var rule = "name=%s dir=in".printf (crt_quote (ex.Name));
             var remove = "advfirewall firewall delete rule " + rule;
-            // Like WiX, a rule with a program is an application exception:
-            // Port and Protocol only apply to port rules and are ignored.
+            // Like WiX, a rule with a program is restricted to its Port and
+            // Protocol too, if they are set.
             if (ex.Protocol != null && ex.Protocol != "tcp" && ex.Protocol != "udp")
                 throw new Wixl.Error.FAILED ("FirewallException %s: invalid Protocol %s", ex.Id, ex.Protocol);
-            if (program != null) {
+            if (program != null)
                 rule += " program=" + crt_quote (program);
-            } else if (ex.Port != null) {
+            if (ex.Port != null) {
                 // like WiX, TCP unless set otherwise
                 var protocol = ex.Protocol ?? "tcp";
                 rule += " protocol=%s localport=%s".printf (protocol, crt_quote (ex.Port));

@@ -998,18 +998,17 @@ EOF2
   [ "$status" -eq 1 ]
   echo "$output" | grep -F "FirewallException App: unsupported attribute Direction"
 
-  # WiX treats a rule with a program as an application exception, so a
-  # Port or Protocol on it is ignored
+  # like WiX, a rule with a program is also restricted to its Port and
+  # Protocol
   sed 's/Id="App" Name="My App"/Id="App" Name="My App" Port="8080" Protocol="udp"/' fw.wxs > pport.wxs
   run "$wixl" -o out.msi pport.wxs
   [ "$status" -eq 0 ]
   run "$msiinfo" export out.msi CustomAction
+  [ "$status" -eq 0 ]
   ca=$(echo "$output" | tr -d '\r')
   addrow=$(echo "$ca" | awk -F '\t' '$1 == "Fw_App.Add" { print $4 }')
-  echo "$addrow" | grep -q 'program='
-  echo "$addrow" | grep -q 'edge=yes'
-  ! echo "$addrow" | grep -q 'localport='
-  ! echo "$addrow" | grep -q 'protocol='
+  [[ "$addrow" == *' program="[#F1]" protocol=udp localport="8080" '* ]]
+  [[ "$addrow" == *' edge=yes'* ]]
 
   # a longer name than the CustomAction.Target column can hold gives a warning
   long=$(printf 'x%.0s' {1..240})
