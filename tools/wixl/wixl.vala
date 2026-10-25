@@ -18,7 +18,7 @@ namespace Wixl {
     static string[] includedirs;
     static string wxidir;
     static string extdir;
-    static Arch arch = Arch.X86;
+    static Arch? arch = null;
     static Extension[] extensions;
 
     private const OptionEntry[] options = {

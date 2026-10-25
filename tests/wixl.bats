@@ -1151,3 +1151,56 @@ EOF2
   [ "$(echo "$output" | awk -F '\t' '$1 == "C2" { print $4 }')" = "0" ]
   [ -z "$(echo "$output" | awk -F '\t' '$1 == "C2" { print $6 }' | tr -d '\r')" ]
 }
+@test "wixl - Package Platform" {
+  cd wixl
+  cat >platform.wxs <<'EOF2'
+<?xml version="1.0" encoding="utf-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+  <Product Id="ABCDDCBA-86C7-4D14-AEC0-86416A69ABDE" Name="Test" Version="1.0.0" Manufacturer="Test" Language="1033"
+           UpgradeCode="12345678-1234-1234-1234-123456789012">
+    <Package InstallerVersion="200" Compressed="yes" Platform="PLATFORM" />
+    <Media Id="1" Cabinet="t.cab" EmbedCab="yes" />
+    <Directory Id="TARGETDIR" Name="SourceDir">
+      <Directory Id="ProgramFiles64Folder"><Directory Id="INSTALLDIR" Name="Test">
+        <Component Id="C1" Guid="ABCDDCBA-83F1-4F22-985B-FDB3C8ABD471"><File Id="F1" Source="FoobarAppl10.exe" KeyPath="yes" /></Component>
+      </Directory></Directory>
+    </Directory>
+    <Feature Id="Main" Level="1"><ComponentRef Id="C1" /></Feature>
+  </Product>
+</Wix>
+EOF2
+  build() { sed "s/PLATFORM/$1/" platform.wxs >p.wxs; shift; run "$wixl" -o out.msi "$@" p.wxs; }
+  template() { "$msiinfo" suminfo out.msi | grep '^Template:' | sed 's/^Template: *//'; }
+  win64() { "$msiinfo" export out.msi Component | tr -d '\r' | awk -F '\t' '$1 == "C1" { print $4 }'; }
+
+  # like WiX, Platform sets the architecture without -a
+  build x64
+  [ "$status" -eq 0 ]
+  [ "$(template)" = "x64;1033" ]
+  [ $(( $(win64) & 256 )) -eq 256 ]
+  build intel
+  [ "$status" -eq 0 ]
+  [ "$(template)" = "Intel;1033" ]
+  [ $(( $(win64) & 256 )) -eq 0 ]
+
+  # -a may repeat it, but not contradict it
+  build x64 -a x64
+  [ "$status" -eq 0 ]
+  [ "$(template)" = "x64;1033" ]
+  build x64 -a x86
+  [ "$status" -ne 0 ]
+  [[ "$output" == *"conflicts with arch"* ]]
+
+  build arm
+  [ "$status" -ne 0 ]
+  [[ "$output" == *"Platform 'arm' is not supported"* ]]
+
+  # nor the sys.BUILDARCH the sources already used
+  sed 's|<Package |<?if $(sys.BUILDARCH) = x64 ?><?endif?>&|' platform.wxs >buildarch.wxs
+  sed "s/PLATFORM/x64/" buildarch.wxs >p.wxs
+  run "$wixl" -o out.msi p.wxs
+  [ "$status" -ne 0 ]
+  [[ "$output" == *"conflicts with sys.BUILDARCH 'x86'"* ]]
+  run "$wixl" -o out.msi -a x64 p.wxs
+  [ "$status" -eq 0 ]
+}

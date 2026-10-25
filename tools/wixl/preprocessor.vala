@@ -5,6 +5,7 @@ namespace Wixl {
         unowned List<File> includedirs;
         HashTable<string, string> variables;
         Arch arch;
+        public bool buildarch_used { get; private set; }
         construct {
             variables = new HashTable<string, string> (str_hash, str_equal);
         }
@@ -50,6 +51,7 @@ namespace Wixl {
                 case "SOURCEFILEPATH":
                     return file.get_path ();
                 case "BUILDARCH":
+                    buildarch_used = true;
                     return arch.to_string();
                 }
                 break;

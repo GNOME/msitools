@@ -60,11 +60,12 @@ namespace Wixl {
 
     class WixBuilder: WixNodeVisitor, WixResolver {
 
-        public WixBuilder (string[] includedirs, Arch arch, Extension[] extensions, string extdir) {
+        public WixBuilder (string[] includedirs, Arch? arch, Extension[] extensions, string extdir) {
             add_path (".");
             foreach (var i in includedirs)
                 this.includedirs.append (File.new_for_path (i));
-            this.arch = arch;
+            this.arch = arch ?? Arch.X86;
+            this.arch_set = arch != null;
             this.extensions = extensions;
             this.extdir = extdir;
 
@@ -93,6 +94,8 @@ namespace Wixl {
         string extdir;
         Extension[] extensions;
         Arch arch;
+        bool arch_set;
+        bool buildarch_used;
 
         construct {
             variables = new HashTable<string, string> (str_hash, str_equal);
@@ -141,6 +144,8 @@ namespace Wixl {
 
             var p = new Preprocessor (variables, includedirs, arch);
             var doc = p.preprocess (data, file);
+            if (p.buildarch_used)
+                buildarch_used = true;
             if (preproc_only) {
                 doc.dump_format (FileStream.fdopen (1, "w"));
                 return;
@@ -401,7 +406,37 @@ namespace Wixl {
             }
         }
 
+        // Package/@Platform sets the architecture, like -a, so that the
+        // template and the Win64 defaults agree; it can't contradict -a,
+        // the sys.BUILDARCH the sources already used, or another Package
+        void package_platform () throws GLib.Error {
+            string? set_by = null;
+            if (arch_set)
+                set_by = "arch '%s'".printf (arch.to_string ());
+            else if (buildarch_used)
+                set_by = "sys.BUILDARCH '%s' (use -a)".printf (arch.to_string ());
+
+            var packages = (WixPackage[]) get_elements<WixPackage> ();
+            foreach (var package in packages) {
+                if (package.Platform == null)
+                    continue;
+
+                Arch platform;
+                try {
+                    platform = Arch.from_string (package.Platform.down ());
+                } catch (GLib.Error e) {
+                    throw new Wixl.Error.FAILED ("Package Platform '%s' is not supported", package.Platform);
+                }
+                if (set_by != null && platform != arch)
+                    throw new Wixl.Error.FAILED ("Package Platform '%s' conflicts with %s",
+                                                 package.Platform, set_by);
+                arch = platform;
+                set_by = "Package Platform '%s'".printf (package.Platform);
+            }
+        }
+
         public MsiDatabase build () throws GLib.Error {
+            package_platform ();
             db = new MsiDatabase (arch, extensions);
 
             foreach (var r in roots) {
