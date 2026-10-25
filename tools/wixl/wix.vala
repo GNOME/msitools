@@ -1073,6 +1073,7 @@ namespace Wixl {
         public string JScriptCall { get; set; }
         public string Value { get; set; }
         public string Script { get; set; }
+        public string Error { get; set; }
 
         public override void accept (WixNodeVisitor visitor) throws GLib.Error {
             visitor.visit_custom_action (this);

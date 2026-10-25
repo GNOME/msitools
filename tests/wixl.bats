@@ -153,6 +153,15 @@ EOF
   test -f out.msi
 }
 
+@test "wixl - Error CustomAction" {
+  cd wixl
+  run "$wixl" -o out.msi custom-action-error.wxs
+  [ "$status" -eq 0 ]
+  run "$msiinfo" export out.msi CustomAction
+  # Type 19 is msidbCustomActionTypeTextData: display Target as an error message
+  echo "$output" | grep -q '^AbortInstall	19		Installation aborted by custom action.'
+}
+
 @test "wixl-heat - simple" {
   mkdir -p test/a/b test/c
   touch test/a/file test/c/file

@@ -1431,7 +1431,11 @@ namespace Wixl {
             string source, target;
 
             // FIXME: so many missing things here...
-            if (action.DllEntry != null) {
+            if (action.Error != null) {
+                type = CustomActionType.ERROR;
+                source = null;
+                target = action.Error;
+            } else if (action.DllEntry != null) {
                 type = CustomActionType.DLL_BINARY;
                 source = action.BinaryKey;
                 target = action.DllEntry;
