@@ -343,7 +343,19 @@ namespace Wixl {
                     if (component.in_feature.length () == 0)
                         continue;
 
-                    folder.add_file (new GCab.File.with_file (f.Id, f.file), false);
+                    var cabfile = new GCab.File.with_file (f.Id, f.file);
+                    // clamp file times for reproducible builds; cabinets
+                    // cannot store dates before 1980
+                    int64 epoch;
+                    if (source_date_epoch (out epoch)) {
+                        epoch = int64.max (epoch, 315532800);
+                        var info = f.file.query_info (GLib.FileAttribute.TIME_MODIFIED, 0, null);
+                        var mtime = info.get_modification_date_time ();
+                        if (mtime == null || mtime.to_unix () > epoch || mtime.to_unix () < 315532800)
+                            mtime = new DateTime.from_unix_utc (epoch);
+                        cabfile.set_date_time (mtime);
+                    }
+                    folder.add_file (cabfile, false);
                     sequence += 1;
                     MsiTableFile.set_sequence (rec, sequence);
                 }
@@ -429,6 +441,15 @@ namespace Wixl {
         }
 
         public override void visit_package (WixPackage package) throws GLib.Error {
+            // the package code; "*" or none generates a new one
+            if (package.Id != null) {
+                if (package.Id != "*" &&
+                    !Regex.match_simple ("^{?[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}}?$",
+                                         package.Id, RegexCompileFlags.CASELESS))
+                    throw new Wixl.Error.FAILED ("invalid Package Id: %s", package.Id);
+                db.info.set_property (Libmsi.Property.UUID, get_uuid (package.Id));
+            }
+
             if (package.Comments != null)
                 db.info.set_comments (package.Comments);
 
@@ -1987,7 +2008,8 @@ namespace Wixl {
                     break;
             }
             var component = env.parent as WixComponent;
-            db.table_environment.add(Uuid.string_random (), name, value, component.Id);
+            var id = env.Id ?? generate_id ("env", 2, component.Id, env.Name);
+            db.table_environment.add(id, name, value, component.Id);
         }
 
         public override void visit_copy_file (WixCopyFile copy_file) throws GLib.Error {

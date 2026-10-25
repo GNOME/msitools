@@ -290,3 +290,37 @@ EOF
   [ "$(seqof SetH)" -gt 0 ]
   [ "$(seqof SetX)" -eq -1 ]
 }
+
+@test "wixl - reproducible build with SOURCE_DATE_EPOCH" {
+  cd wixl
+  sed "s/<Package Id='\*'/<Package Id='11111111-2222-3333-4444-555555555555'/" SampleFirst.wxs > repro.wxs
+  export SOURCE_DATE_EPOCH=1700000000
+  run "$wixl" -o out1.msi repro.wxs
+  [ "$status" -eq 0 ]
+  # input files newer than SOURCE_DATE_EPOCH are clamped in the cabinet
+  touch -t 203001010000 FoobarAppl10.exe Manual.pdf Helper.dll
+  sleep 1
+  run "$wixl" -o out2.msi repro.wxs
+  [ "$status" -eq 0 ]
+  cmp out1.msi out2.msi
+
+  run "$msiinfo" suminfo out1.msi
+  echo "$output" | grep -F "{11111111-2222-3333-4444-555555555555}"
+}
+
+@test "wixl-heat - reproducible directory ids" {
+  mkdir -p test/a/b test/c
+  touch test/a/file test/a/b/file test/c/file
+  # test/a is listed again after test/c
+  printf '%s\n' test/a/file test/c/file test/a/b/file > list
+  out1=$("$wixlheat" -p test/ < list)
+  out2=$("$wixlheat" -p test/ < list)
+  [ "$out1" = "$out2" ]
+  ids=$(echo "$out1" | grep -o 'Directory Id="[^"]*"' | sort)
+  [ "$(echo "$ids" | wc -l)" -eq 4 ]
+  [ "$(echo "$ids" | uniq | wc -l)" -eq 4 ]
+  # fragments for other component groups don't share directory ids
+  out3=$("$wixlheat" -p test/ --component-group CG.other < list)
+  ids3=$(echo "$out3" | grep -o 'Directory Id="[^"]*"' | sort)
+  [ -z "$(comm -12 <(echo "$ids") <(echo "$ids3"))" ]
+}

@@ -34,8 +34,35 @@ namespace Wixl {
         return uuid;
     }
 
+    // the build time, or SOURCE_DATE_EPOCH for reproducible builds
+    // (https://reproducible-builds.org/specs/source-date-epoch/)
     public int64 now () {
+        int64 t;
+        if (source_date_epoch (out t))
+            return t;
         return get_real_time() / TimeSpan.SECOND;
+    }
+
+    bool source_date_epoch_warned = false;
+
+    public bool source_date_epoch (out int64 t) {
+        t = 0;
+        var epoch = Environment.get_variable ("SOURCE_DATE_EPOCH");
+        if (epoch == null || epoch == "")
+            return false;
+
+        // decimal digits only, up to the end of year 9999
+        uint64 v = 0;
+        if (!Regex.match_simple ("^[0-9]{1,12}$", epoch) ||
+            !uint64.try_parse (epoch, out v, null, 10) || v > 253402300799) {
+            if (!source_date_epoch_warned)
+                warning ("ignoring invalid SOURCE_DATE_EPOCH: %s", epoch);
+            source_date_epoch_warned = true;
+            return false;
+        }
+
+        t = (int64) v;
+        return true;
     }
 
     public uint64 time_to_filetime (int64 t) {
@@ -92,16 +119,6 @@ namespace Wixl {
         var str = prefix + hash[0:32].up ();
 
         return str;
-    }
-
-    public string random_id (string prefix) {
-        var data = new uint32[8] {};
-        for (var i = 0; i < 8; i++)
-            data[i] = Random.next_int ();
-
-        var hash = Checksum.compute_for_data (ChecksumType.SHA1, (uint8[])data);
-
-        return prefix + hash[0:32].up ();
     }
 
     public string yesno (bool yes) {
