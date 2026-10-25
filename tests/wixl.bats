@@ -1203,4 +1203,33 @@ EOF2
   [[ "$output" == *"conflicts with sys.BUILDARCH 'x86'"* ]]
   run "$wixl" -o out.msi -a x64 p.wxs
   [ "$status" -eq 0 ]
+
+  # the other supported platforms keep their -a template and Win64 defaults
+  build ia64
+  [ "$status" -eq 0 ]
+  [ "$(template)" = "x64;1033" ]
+  [ $(( $(win64) & 256 )) -eq 256 ]
+
+  build arm64
+  [ "$status" -eq 0 ]
+  [ "$(template)" = "Arm64;1033" ]
+
+  # an explicit Win64="no" still wins over the Platform default
+  sed 's/Guid="ABCDDCBA-83F1-4F22-985B-FDB3C8ABD471"/Guid="ABCDDCBA-83F1-4F22-985B-FDB3C8ABD471" Win64="no"/' platform.wxs >nowin64.wxs
+  sed "s/PLATFORM/x64/" nowin64.wxs >p.wxs
+  run "$wixl" -o out.msi p.wxs
+  [ "$status" -eq 0 ]
+  [ $(( $(win64) & 256 )) -eq 0 ]
+
+  # BUILDARCH matching the Platform/default architecture is allowed
+  sed "s/PLATFORM/x86/" buildarch.wxs >p.wxs
+  run "$wixl" -o out.msi p.wxs
+  [ "$status" -eq 0 ]
+  [ "$(template)" = "Intel;1033" ]
+
+  # another Package may not contradict it
+  sed 's|<Package InstallerVersion="200" Compressed="yes" Platform="PLATFORM" />|<Package InstallerVersion="200" Compressed="yes" Platform="x64" /><Package InstallerVersion="200" Compressed="yes" Platform="x86" />|' platform.wxs >two.wxs
+  run "$wixl" -o out.msi two.wxs
+  [ "$status" -ne 0 ]
+  [[ "$output" == *"conflicts with Package Platform 'x64'"* ]]
 }
