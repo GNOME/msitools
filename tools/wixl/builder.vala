@@ -1476,17 +1476,19 @@ namespace Wixl {
                 throw new Wixl.Error.FAILED ("ServiceConfig %s: one of DelayedAutoStart, FailureActionsWhen, ServiceSid or PreShutdownDelay is required", name);
         }
 
-        // sc.exe's names for util:ServiceConfig's failure action types
+        // sc.exe's names for util:ServiceConfig's failure action types;
+        // WiX's custom action compares these case-insensitively
         static string? sc_failure_action (string? type) throws GLib.Error {
-            switch (type) {
-            case null:
+            if (type == null)
+                return null;
+            switch (type.down ()) {
             case "none":
                 return null;
             case "restart":
                 return "restart";
             case "reboot":
                 return "reboot";
-            case "runCommand":
+            case "runcommand":
                 return "run";
             default:
                 throw new Wixl.Error.FAILED ("util:ServiceConfig: invalid failure action type %s", type);

@@ -788,7 +788,6 @@ EOF2
   run "$msiinfo" export out.msi CustomAction
   [ "$status" -eq 0 ]
   ca=$(echo "$output" | tr -d '\r')
-  echo "$ca"
   # 3122 = exe from property (50), deferred, no impersonation
   echo "$ca" | grep -qxF "$(printf 'UtilServiceConfig_my_svc\t3122\tWixlScExe\tfailure "my svc" reset= 86400 actions= restart/60000/restart/60000\t')"
   echo "$ca" | grep -qxF "$(printf 'UtilServiceConfig_other\t3122\tWixlScExe\tfailure "other" reset= 0 actions= run/0/reboot/0/restart/0 command= "\\"[INSTALLDIR]svc.exe\\" --recover" reboot= "bye [\\[]x[\\]]"\t')"
@@ -823,6 +822,19 @@ EOF2
   run "$wixl" -o out.msi big.wxs
   [ "$status" -eq 1 ]
   echo "$output" | grep -F "invalid RestartServiceDelayInSeconds 3000000"
+
+  # WiX's custom action compares the failure action types case-insensitively
+  sed 's/FirstFailureActionType="restart"/FirstFailureActionType="Restart"/' utilsc.wxs > case.wxs
+  run "$wixl" -o out.msi case.wxs
+  [ "$status" -eq 0 ]
+  run "$msiinfo" export out.msi CustomAction
+  echo "$output" | tr -d '\r' | grep -qF 'actions= restart/60000/restart/60000'
+
+  # an unknown failure action type is still an error
+  sed 's/FirstFailureActionType="restart"/FirstFailureActionType="bogus"/' utilsc.wxs > badtype.wxs
+  run "$wixl" -o out.msi badtype.wxs
+  [ "$status" -eq 1 ]
+  echo "$output" | grep -F "invalid failure action type bogus"
 }
 
 @test "wixl - util:ServiceConfig without ServiceInstall" {
@@ -854,7 +866,6 @@ EOF2
   run "$msiinfo" export out.msi CustomAction
   [ "$status" -eq 0 ]
   ca=$(echo "$output" | tr -d '\r')
-  echo "$ca"
   # no space after the formatted service name, and the backslashes before
   # a quote and at the end are doubled
   echo "$ca" | grep -F 'failure "[SVCNAME]" reset= 0 actions= run/0 command= "C:\a b\run.exe \"C:\dir\\\\\""'
