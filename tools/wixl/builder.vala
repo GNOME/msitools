@@ -403,11 +403,16 @@ namespace Wixl {
         }
 
         string[] secureProperties;
+        string[] hiddenProperties;
 
         public void property_update () throws GLib.Error {
             if (secureProperties.length != 0) {
                 var prop = string.joinv (";", secureProperties);
                 db.table_property.add ("SecureCustomProperties", prop);
+            }
+            if (hiddenProperties.length != 0) {
+                var prop = string.joinv (";", hiddenProperties);
+                db.table_property.add ("MsiHiddenProperties", prop);
             }
         }
 
@@ -541,6 +546,10 @@ namespace Wixl {
         }
 
         public override void visit_property (WixProperty prop) throws GLib.Error {
+            // keep the value, e.g. a password, out of the installer log
+            if (parse_yesno (prop.Hidden) && !(prop.Id in hiddenProperties))
+                hiddenProperties += prop.Id;
+
             if (prop.Value == null)
                 return;
 
