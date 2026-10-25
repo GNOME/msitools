@@ -1764,18 +1764,24 @@ namespace Wixl {
 
             // the remote addresses, from Scope or RemoteAddress children
             string[] addresses = {};
+            var any_address = false;
             foreach (var c in ex.children) {
                 if (!(c is WixFwRemoteAddress))
                     continue;
                 var address = ((WixFwRemoteAddress) c).get_text ();
                 if (address == "")
                     throw new Wixl.Error.FAILED ("FirewallException %s: empty RemoteAddress", ex.Id);
-                // netsh has no *, WiX's COM API takes it for any address
-                addresses += address == "*" ? "any" : address;
+                // netsh has no *, WiX's COM API takes it for any address;
+                // netsh also rejects any mixed with addresses, and * alone
+                // wins over the others anyway
+                if (address == "*")
+                    any_address = true;
+                else
+                    addresses += address;
             }
             string remote;
             if (ex.Scope != null) {
-                if (addresses.length > 0)
+                if (addresses.length > 0 || any_address)
                     throw new Wixl.Error.FAILED ("FirewallException %s: Scope and RemoteAddress can't be used together", ex.Id);
                 if (ex.Scope == "any")
                     remote = "any";
@@ -1783,6 +1789,8 @@ namespace Wixl {
                     remote = "localsubnet";
                 else
                     throw new Wixl.Error.FAILED ("FirewallException %s: invalid Scope %s", ex.Id, ex.Scope);
+            } else if (any_address) {
+                remote = "any";
             } else if (addresses.length > 0) {
                 remote = string.joinv (",", addresses);
             } else {

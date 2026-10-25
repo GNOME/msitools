@@ -937,7 +937,13 @@ EOF2
   echo "$ca" | grep -qxF "$(row Fw_App.RemoveRollback 3442 "$add")"
   echo "$ca" | grep -qxF "$(row Fw_App.Remove 3186 "$del")"
   # a port rule, TCP by default, with IgnoreFailure
-  echo "$ca" | grep -qxF "$(row Fw_Port.Add 3186 'advfirewall firewall add rule name="[ProductName] port" dir=in protocol=tcp localport="[LISTEN_PORT]" action=allow enable=yes profile=any remoteip="10.0.0.0/8,LocalSubnet,any"')"
+  echo "$ca" | grep -qxF "$(row Fw_Port.Add 3186 'advfirewall firewall add rule name="[ProductName] port" dir=in protocol=tcp localport="[LISTEN_PORT]" action=allow enable=yes profile=any remoteip="any"')"
+  # without *, the remote addresses are passed as a list
+  sed '/<fw:RemoteAddress>\*<\/fw:RemoteAddress>/d' fw.wxs > noany.wxs
+  run "$wixl" -o out.msi noany.wxs
+  [ "$status" -eq 0 ]
+  run "$msiinfo" export out.msi CustomAction
+  echo "$output" | tr -d '\r' | grep -qF 'remoteip="10.0.0.0/8,LocalSubnet"'
   # a port from a property may differ when the rule is removed, so
   # deleting doesn't use it
   echo "$ca" | grep -qxF "$(row Fw_Port.Remove 3186 'advfirewall firewall delete rule name="[ProductName] port" dir=in')"
