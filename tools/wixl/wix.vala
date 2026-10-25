@@ -615,17 +615,22 @@ namespace Wixl {
         public string? version;
 
         public override string path_name () throws GLib.Error {
-            return Name ?? Path.get_basename (Source);
+            if (Name != null && Name != "")
+                return Name;
+            if (Source != null && Source != "")
+                return Path.get_basename (Source);
+            throw new Wixl.Error.FAILED ("File: needs a Name or a Source");
         }
 
         public override void load (Xml.Node *node) throws Wixl.Error {
             base.load (node);
 
-            // like WiX v3, the Id defaults to the file name
-            if (Id == null) {
-                if (Name == null && Source == null)
+            // like WiX v3, the Id defaults to the file name; empty values
+            // count as unset
+            if (Id == null || Id == "") {
+                if ((Name == null || Name == "") && (Source == null || Source == ""))
                     throw new Wixl.Error.FAILED ("File: needs an Id, a Name or a Source");
-                Id = identifier_from_name (Name ?? Path.get_basename (Source));
+                Id = identifier_from_name ((Name != null && Name != "") ? Name : Path.get_basename (Source));
             }
         }
 

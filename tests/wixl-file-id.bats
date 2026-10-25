@@ -102,3 +102,29 @@ EOF
   echo "$output" | grep -F "duplicate File Id: hello.txt"
   [ ! -f out.msi ]
 }
+
+@test "wixl - empty File Id and Name" {
+  mkdir -p a
+  echo x > a/x.txt
+  echo y > a/y.txt
+  echo z > a/z.txt
+  # an empty Id or Name is treated like an absent one
+  file_id_wxs 'Id="" Source="a/x.txt"' 'Name="" Source="a/y.txt"' \
+              'Id="" Name="named.txt" Source="a/z.txt"' > empty.wxs
+  run "$wixl" -o out.msi empty.wxs
+  [ "$status" -eq 0 ]
+  run "$msiinfo" export out.msi File
+  [ "$status" -eq 0 ]
+  files=$(echo "$output" | tr -d '\r' | tail -n +4 | cut -f1-3 | LC_ALL=C sort)
+  [ "$files" = "$(printf '%s\t%s\t%s\n' \
+      named.txt C3 named.txt \
+      x.txt C1 x.txt \
+      y.txt C2 y.txt)" ]
+
+  # an explicit Id still needs a Name or a Source
+  file_id_wxs 'Id="x"' 'Source="a/x.txt"' 'Source="a/y.txt"' > noname.wxs
+  run "$wixl" -o none.msi noname.wxs
+  [ "$status" -eq 1 ]
+  echo "$output" | grep -F "File: needs a Name or a Source"
+  [ ! -f none.msi ]
+}
