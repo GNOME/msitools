@@ -1573,10 +1573,14 @@ namespace Wixl {
             info.save (db);
 
             var it = HashTableIter <string, MsiTable> (tables);
-            while (it.next (out name, out table))
+            while (it.next (out name, out table)) {
+                // like WiX, don't create tables that have no records
+                if (table.records.length () == 0 && table.sql_create != null)
+                    continue;
                 table.create (db);
+            }
 
-                db.commit ();
+            db.commit ();
         }
     }
 

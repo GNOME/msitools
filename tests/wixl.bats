@@ -460,6 +460,34 @@ EOF
   ! echo "$output" | grep -q WIX_DOWNGRADE_DETECTED
 }
 
+@test "wixl - empty tables are omitted" {
+  cd wixl
+  cat >empty.wxs <<EOF
+<?xml version="1.0" encoding="utf-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+  <Product Id="ABCDDCBA-86C7-4D14-AEC0-86416A69ABDE"
+           Name="Test" Version="1.0.0" Manufacturer="Test" Language="1033"
+           UpgradeCode="12345678-1234-1234-1234-123456789012">
+    <Package InstallerVersion="200" Compressed="yes" />
+    <Media Id="1" Cabinet="test.cab" EmbedCab="yes" />
+    <Directory Id="TARGETDIR" Name="SourceDir" />
+    <Feature Id="Main" Level="1" />
+  </Product>
+</Wix>
+EOF
+  run "$wixl" -o out.msi empty.wxs
+  [ "$status" -eq 0 ]
+
+  run "$msiinfo" tables out.msi
+  [ "$status" -eq 0 ]
+  for table in Condition CreateFolder DuplicateFile Environment Icon IniFile \
+               MsiServiceConfig MoveFile Registry RemoveFile RemoveIniFile \
+               ServiceControl ServiceInstall Shortcut; do
+    ! echo "$output" | grep -qx "$table"
+  done
+  echo "$output" | grep -qx Feature
+}
+
 @test "wixl - UIRef enables bundled UI" {
   cd wixl
   cat >uiauto.wxs <<EOF
