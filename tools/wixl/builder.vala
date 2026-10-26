@@ -2299,33 +2299,58 @@ namespace Wixl {
 
         public override void visit_major_upgrade (WixMajorUpgrade major) throws GLib.Error {
             var product = major.parent as WixProduct;
+            var upgrade_code = get_uuid (product.UpgradeCode);
+            var allow_downgrades = parse_yesno (major.AllowDowngrades);
 
-            var property = "WIX_DOWNGRADE_DETECTED";
-            if (major.AllowDowngrades == "yes") {
-                db.table_upgrade.add (get_uuid (product.UpgradeCode), product.Version, "", UpgradeAttribute.MIGRATE_FEATURES, property);
+            if (allow_downgrades) {
+                // any installed version is newer than "0", so this detects
+                // downgrades as regular upgrades
+                db.table_upgrade.add (upgrade_code, "0", null,
+                                      UpgradeAttribute.MIGRATE_FEATURES | UpgradeAttribute.VERSION_MIN_INCLUSIVE,
+                                      "WIX_UPGRADE_DETECTED");
             } else {
-                db.table_upgrade.add (get_uuid (product.UpgradeCode), product.Version, "", UpgradeAttribute.ONLY_DETECT, property);
-            }
-            secureProperties += property;
+                var attributes = UpgradeAttribute.MIGRATE_FEATURES;
+                if (parse_yesno (major.AllowSameVersionUpgrades))
+                    attributes |= UpgradeAttribute.VERSION_MAX_INCLUSIVE;
 
-            if (major.AllowSameVersionUpgrades == "yes") {
-                property = "WIX_SAME_VERSION_UPGRADE_DETECTED";
-                db.table_upgrade.add (get_uuid (product.UpgradeCode), product.Version, product.Version, UpgradeAttribute.MIGRATE_FEATURES | UpgradeAttribute.VERSION_MIN_INCLUSIVE | UpgradeAttribute.VERSION_MAX_INCLUSIVE, property);
-                secureProperties += property;
-            }
+                db.table_upgrade.add (upgrade_code, null, product.Version,
+                                      attributes, "WIX_UPGRADE_DETECTED");
+                db.table_upgrade.add (upgrade_code, product.Version, null,
+                                      UpgradeAttribute.ONLY_DETECT, "WIX_DOWNGRADE_DETECTED");
+                secureProperties += "WIX_DOWNGRADE_DETECTED";
 
-            property = "WIX_UPGRADE_DETECTED";
-            db.table_upgrade.add (get_uuid (product.UpgradeCode), "", product.Version, UpgradeAttribute.MIGRATE_FEATURES, property);
-            secureProperties += property;
-
-            if (major.DowngradeErrorMessage != null && major.AllowDowngrades != "yes") {
-                db.table_launch_condition.add ("NOT WIX_DOWNGRADE_DETECTED", major.DowngradeErrorMessage);
+                if (major.DowngradeErrorMessage != null)
+                    db.table_launch_condition.add ("NOT WIX_DOWNGRADE_DETECTED", major.DowngradeErrorMessage);
             }
+            secureProperties += "WIX_UPGRADE_DETECTED";
 
             var table = db.table_install_execute_sequence;
             var node = table.get_action ("RemoveExistingProducts");
-            warn_if_fail (node.action == null);
-            node.add_dep (table.get_action ("InstallValidate"));
+
+            var after = "InstallValidate";
+            if (major.Schedule != null) {
+                switch (major.Schedule) {
+                case "afterInstallValidate":
+                    after = "InstallValidate";
+                    break;
+                case "afterInstallInitialize":
+                    after = "InstallInitialize";
+                    break;
+                case "afterInstallExecute":
+                    after = "InstallExecute";
+                    break;
+                case "afterInstallExecuteAgain":
+                    after = "InstallExecuteAgain";
+                    break;
+                case "afterInstallFinalize":
+                    after = "InstallFinalize";
+                    break;
+                default:
+                    throw new Wixl.Error.FAILED ("MajorUpgrade: invalid Schedule '%s'", major.Schedule);
+                }
+            }
+
+            node.add_dep (table.get_action (after));
         }
 
         public override void visit_media_template (WixMediaTemplate tmpl) throws GLib.Error {

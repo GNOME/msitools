@@ -407,6 +407,59 @@ EOF
   [ "$(seqof SetARPINSTALLLOCATION)" -eq $(( $(seqof CostFinalize) + 1 )) ]
 }
 
+@test "wixl - MajorUpgrade schedule and upgrade table" {
+  cd wixl
+  cat >major.wxs <<EOF
+<?xml version="1.0" encoding="utf-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+  <Product Id="ABCDDCBA-86C7-4D14-AEC0-86416A69ABDE"
+           Name="Test" Version="1.0.0" Manufacturer="Test" Language="1033"
+           UpgradeCode="12345678-1234-1234-1234-123456789012">
+    <Package InstallerVersion="200" Compressed="yes" />
+    <Media Id="1" Cabinet="test.cab" EmbedCab="yes" />
+    <MajorUpgrade Schedule="afterInstallInitialize"
+                  AllowSameVersionUpgrades="yes"
+                  DowngradeErrorMessage="Newer version installed." />
+  </Product>
+</Wix>
+EOF
+  run "$wixl" -o out.msi major.wxs
+  [ "$status" -eq 0 ]
+
+  run "$msiinfo" export out.msi Upgrade
+  [ "$status" -eq 0 ]
+  upgrade_row() { echo "$output" | tr -d '\r' | awk -F '\t' -v p="$1" '$7 == p { print }'; }
+  [ "$(upgrade_row WIX_UPGRADE_DETECTED | cut -f5)" = "513" ]
+  [ "$(upgrade_row WIX_DOWNGRADE_DETECTED | cut -f5)" = "2" ]
+  ! echo "$output" | grep -q WIX_SAME_VERSION_UPGRADE_DETECTED
+
+  run "$msiinfo" export out.msi InstallExecuteSequence
+  [ "$status" -eq 0 ]
+  seqof() { echo "$output" | tr -d '\r' | awk -F '\t' -v a="$1" '$1 == a { print $3 }'; }
+  [ "$(seqof RemoveExistingProducts)" -eq $(( $(seqof InstallInitialize) + 1 )) ]
+
+  cat >allow.wxs <<EOF
+<?xml version="1.0" encoding="utf-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+  <Product Id="ABCDDCBA-86C7-4D14-AEC0-86416A69ABDE"
+           Name="Test" Version="1.0.0" Manufacturer="Test" Language="1033"
+           UpgradeCode="12345678-1234-1234-1234-123456789012">
+    <Package InstallerVersion="200" Compressed="yes" />
+    <Media Id="1" Cabinet="test.cab" EmbedCab="yes" />
+    <MajorUpgrade AllowDowngrades="yes" />
+  </Product>
+</Wix>
+EOF
+  run "$wixl" -o out.msi allow.wxs
+  [ "$status" -eq 0 ]
+
+  run "$msiinfo" export out.msi Upgrade
+  [ "$status" -eq 0 ]
+  [ "$(upgrade_row WIX_UPGRADE_DETECTED | cut -f2)" = "0" ]
+  [ "$(upgrade_row WIX_UPGRADE_DETECTED | cut -f5)" = "257" ]
+  ! echo "$output" | grep -q WIX_DOWNGRADE_DETECTED
+}
+
 @test "wixl - UIRef enables bundled UI" {
   cd wixl
   cat >uiauto.wxs <<EOF

@@ -1250,6 +1250,8 @@ namespace Wixl {
 
         public string AllowDowngrades { get; set; }
 
+        public string Schedule { get; set; }
+
         public override void accept (WixNodeVisitor visitor) throws GLib.Error {
             visitor.visit_major_upgrade (this);
         }
