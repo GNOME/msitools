@@ -103,6 +103,90 @@ namespace Wixl {
                    buffer[12], buffer[13], buffer[14], buffer[15]);
     }
 
+    // matches WiX's legal 8.3 file name characters and lengths
+    public bool is_valid_short_filename (string filename) {
+        if (filename == null || filename.length == 0)
+            return false;
+
+        int dot = -1;
+        for (int i = 0; i < filename.length; i++) {
+            if (filename[i] == '.') {
+                if (dot != -1)
+                    return false;
+                dot = i;
+            }
+        }
+
+        int base_len = dot == -1 ? filename.length : dot;
+        int ext_len = dot == -1 ? 0 : filename.length - dot - 1;
+        if (base_len < 1 || base_len > 8 || ext_len > 3)
+            return false;
+
+        for (int i = 0; i < filename.length; i++) {
+            if (i == dot)
+                continue;
+            char c = filename[i];
+            if (c == '\\' || c == '?' || c == '|' || c == '>' || c == '<' ||
+                c == ':' || c == '/' || c == '*' || c == '"' || c == '+' ||
+                c == ',' || c == ';' || c == '=' || c == '[' || c == ']' ||
+                c == ' ')
+                return false;
+        }
+
+        return true;
+    }
+
+    // port of WiX CompilerCore.GenerateShortName()
+    public string generate_short_name (string long_name, bool keep_extension, string[] args) {
+        var parts = new string[args.length + 1];
+        parts[0] = long_name.down ();
+        for (int i = 0; i < args.length; i++)
+            parts[i + 1] = args[i] ?? "";
+
+        var data = string.joinv ("|", parts);
+        long written;
+        var utf16 = data.to_utf16 (-1, null, out written);
+        var bytes = new uint8[written * 2];
+        Memory.copy (bytes, (void*) utf16, written * 2);
+
+        var checksum = new Checksum (ChecksumType.MD5);
+        checksum.update (bytes, bytes.length);
+
+        uint8 digest[16];
+        size_t digest_len = digest.length;
+        checksum.get_digest (digest, ref digest_len);
+
+        var short_name = Base64.encode (digest)[0:8]
+            .replace ("/", "_")
+            .replace ("+", "-")
+            .down ();
+
+        if (keep_extension) {
+            var dot = long_name.last_index_of_char ('.');
+            if (dot > 0) {
+                var ext = long_name[dot:long_name.length];
+                if (ext.length > 4)
+                    ext = ext[0:4];
+                var candidate = short_name + ext;
+                if (is_valid_short_filename (candidate))
+                    short_name = candidate;
+            }
+        }
+
+        return short_name;
+    }
+
+    // port of WiX Compiler.GetMsiFilenameValue()
+    public string msi_filename_value (string short_name, string long_name) {
+        if (short_name.down () != long_name.down ())
+            return short_name + "|" + long_name;
+
+        if (is_valid_short_filename (long_name))
+            return long_name;
+
+        return short_name;
+    }
+
     public string generate_id (string prefix, uint n, ...) {
         var l = va_list ();
         var args = new string[n];

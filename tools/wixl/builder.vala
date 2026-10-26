@@ -601,16 +601,26 @@ namespace Wixl {
 
         public override void visit_directory (WixDirectory dir) throws GLib.Error {
             var defaultdir = dir.Name ?? ".";
+            WixDirectory? parent = null;
 
             if (dir.parent is WixProduct || dir.parent is WixFragment) {
                 if (dir.Id != "TARGETDIR")
                     throw new Wixl.Error.FAILED ("Invalid root directory");
-                db.table_directory.add (dir.Id, null, defaultdir);
             } else if (dir.parent is WixDirectory || dir.parent is WixDirectoryRef) {
-                var parent = resolve<WixDirectory> (dir.parent);
-                db.table_directory.add (dir.Id, parent.Id, defaultdir);
-            } else
+                parent = resolve<WixDirectory> (dir.parent);
+            } else {
                 warning ("unhandled parent type %s", dir.parent.name);
+                return;
+            }
+
+            if (defaultdir != "." && defaultdir != "SourceDir" &&
+                !is_valid_short_filename (defaultdir)) {
+                var short_name = generate_short_name (defaultdir, false,
+                    { "Directory", parent != null ? parent.Id : "" });
+                defaultdir = msi_filename_value (short_name, defaultdir);
+            }
+
+            db.table_directory.add (dir.Id, parent != null ? parent.Id : null, defaultdir);
         }
 
         [Flags]
@@ -1109,6 +1119,12 @@ namespace Wixl {
             var name = file.path_name ();
             var source = file.Source ?? name;
             var comp = file.parent as WixComponent;
+
+            var short_name = name;
+            if (!is_valid_short_filename (name))
+                short_name = generate_short_name (name, true, { "File", comp.Id });
+            var file_name = msi_filename_value (short_name, name);
+
             FileInfo info;
             file.file = find_file (source, out info);
             FileAttribute attr = 0;
@@ -1138,7 +1154,7 @@ namespace Wixl {
             }
             language = language ?? default_language;
 
-            var rec = db.table_file.add (file.Id, comp.Id, name, (int)info.get_size (), attr, file.version, language);
+            var rec = db.table_file.add (file.Id, comp.Id, file_name, (int)info.get_size (), attr, file.version, language);
             rec.set_data<WixFile> ("wixfile", file);
 
             visit_key_element (file);
