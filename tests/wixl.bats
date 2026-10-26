@@ -365,6 +365,73 @@ EOF
   test -f out.msi
 }
 
+@test "wixl - SetProperty and WixVariable" {
+  cd wixl
+  mkdir -p SourceDir
+  echo "hello" > SourceDir/hello.txt
+  cat >setprop.wxs <<EOF
+<?xml version="1.0" encoding="utf-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+  <Product Id="ABCDDCBA-86C7-4D14-AEC0-86416A69ABDE"
+           Name="Test" Version="1.0.0" Manufacturer="Test" Language="1033"
+           UpgradeCode="12345678-1234-1234-1234-123456789012">
+    <Package InstallerVersion="200" Compressed="yes" />
+    <Media Id="1" Cabinet="test.cab" EmbedCab="yes" />
+    <WixVariable Id="WixUILicenseRtf" Value="License.rtf" />
+    <Directory Id="TARGETDIR" Name="SourceDir">
+      <Directory Id="ProgramFilesFolder">
+        <Directory Id="INSTALLDIR" Name="Test">
+          <Component Id="C1" Guid="ABCDDCBA-83F1-4F22-985B-FDB3C8ABD471">
+            <File Id="F1" Source="SourceDir/hello.txt" KeyPath="yes" />
+          </Component>
+        </Directory>
+      </Directory>
+    </Directory>
+    <Feature Id="Main" Level="1">
+      <ComponentRef Id="C1" />
+    </Feature>
+    <SetProperty Id="ARPINSTALLLOCATION" Value="[INSTALLDIR]" After="CostFinalize" />
+  </Product>
+</Wix>
+EOF
+  run "$wixl" -o out.msi setprop.wxs
+  [ "$status" -eq 0 ]
+
+  run "$msiinfo" export out.msi CustomAction
+  [ "$status" -eq 0 ]
+  echo "$output" | grep -q $'^SetARPINSTALLLOCATION\t51\tARPINSTALLLOCATION\t\\[INSTALLDIR\\]'
+
+  run "$msiinfo" export out.msi InstallExecuteSequence
+  [ "$status" -eq 0 ]
+  seqof() { echo "$output" | tr -d '\r' | awk -F '\t' -v a="$1" '$1 == a { print $3 }'; }
+  [ "$(seqof SetARPINSTALLLOCATION)" -eq $(( $(seqof CostFinalize) + 1 )) ]
+}
+
+@test "wixl - UIRef enables bundled UI" {
+  cd wixl
+  cat >uiauto.wxs <<EOF
+<?xml version="1.0" encoding="utf-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+  <Product Id="ABCDDCBA-86C7-4D14-AEC0-86416A69ABDE"
+           Name="Test" Version="1.0.0" Manufacturer="Test" Language="1033"
+           UpgradeCode="12345678-1234-1234-1234-123456789012">
+    <Package InstallerVersion="200" Compressed="yes" />
+    <Media Id="1" Cabinet="test.cab" EmbedCab="yes" />
+    <Property Id="WIXUI_INSTALLDIR" Value="INSTALL_ROOT" />
+    <UIRef Id="WixUI_InstallDir" />
+    <UIRef Id="WixUI_ErrorProgressText" />
+  </Product>
+</Wix>
+EOF
+  run "$wixl" -o out.msi uiauto.wxs --extdir "$SRCDIR/data/ext"
+  [ "$status" -eq 0 ]
+
+  run "$msiinfo" export out.msi Dialog
+  [ "$status" -eq 0 ]
+  echo "$output" | grep -q $'^InstallDirDlg\t'
+  echo "$output" | grep -q $'^BrowseDlg\t'
+}
+
 @test "wixl - Publish default Order" {
   cd wixl
   mkdir -p SourceDir

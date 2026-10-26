@@ -69,6 +69,8 @@ namespace Wixl {
         public abstract void visit_util_service_config (WixUtilServiceConfig config) throws GLib.Error;
         public abstract void visit_registry_search (WixRegistrySearch search) throws GLib.Error;
         public abstract void visit_custom_action (WixCustomAction action) throws GLib.Error;
+        public abstract void visit_set_property (WixSetProperty set_property) throws GLib.Error;
+        public abstract void visit_wix_variable (WixVariable variable) throws GLib.Error;
         public abstract void visit_binary (WixBinary binary) throws GLib.Error;
         public abstract void visit_major_upgrade (WixMajorUpgrade major) throws GLib.Error;
         public abstract void visit_media_template (WixMediaTemplate media) throws GLib.Error;
@@ -394,6 +396,8 @@ namespace Wixl {
                 typeof (WixUI),
                 typeof (WixUIRef),
                 typeof (WixInstallUISequence),
+                typeof (WixSetProperty),
+                typeof (WixVariable),
             });
         }
 
@@ -1193,6 +1197,34 @@ namespace Wixl {
         }
     }
 
+    public class WixSetProperty: WixElement {
+        static construct {
+            name = "SetProperty";
+        }
+
+        public string Value { get; set; }
+        public string After { get; set; }
+        public string Before { get; set; }
+        public string Sequence { get; set; }
+        public string Condition { get; set; }
+
+        public override void accept (WixNodeVisitor visitor) throws GLib.Error {
+            visitor.visit_set_property (this);
+        }
+    }
+
+    public class WixVariable: WixElement {
+        static construct {
+            name = "WixVariable";
+        }
+
+        public string Value { get; set; }
+
+        public override void accept (WixNodeVisitor visitor) throws GLib.Error {
+            visitor.visit_wix_variable (this);
+        }
+    }
+
     public class WixBinary: WixElement {
         static construct {
             name = "Binary";
@@ -1257,6 +1289,8 @@ namespace Wixl {
                 typeof (WixProperty),
                 typeof (WixUpgrade),
                 typeof (WixCustomAction),
+                typeof (WixSetProperty),
+                typeof (WixVariable),
                 typeof (WixBinary),
                 typeof (WixMajorUpgrade),
                 typeof (WixMediaTemplate),

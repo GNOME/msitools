@@ -93,6 +93,7 @@ namespace Wixl {
         WixRoot root;
         MsiDatabase db;
         HashTable<string, string> variables;
+        HashTable<string, string> wix_variables;
         GenericSet<string> environment_ids;
         GenericSet<string> file_ids;
         List<File> includedirs;
@@ -104,6 +105,7 @@ namespace Wixl {
 
         construct {
             variables = new HashTable<string, string> (str_hash, str_equal);
+            wix_variables = new HashTable<string, string> (str_hash, str_equal);
             environment_ids = new GenericSet<string> (str_hash, str_equal);
             file_ids = new GenericSet<string> (str_hash, str_equal);
         }
@@ -278,12 +280,14 @@ namespace Wixl {
                 add (MSIDefault.Action.RemoveEnvironmentStrings);
                 add (MSIDefault.Action.WriteEnvironmentStrings);
             }
+            sequence_set_properties (table);
             sequence_util_service_configs (table);
             sequence_firewall_exceptions (table);
             table.add_sorted_actions ();
 
             // InstallUISequence
             table = db.table_install_ui_sequence;
+            sequence_set_properties (table);
             add (MSIDefault.Action.ValidateProductID);
             add (MSIDefault.Action.CostInitialize);
             add (MSIDefault.Action.FileCost);
@@ -301,6 +305,7 @@ namespace Wixl {
         }
 
         List<WixMedia> medias;
+        List<WixSetProperty> set_properties;
         private void hash_files () throws GLib.Error {
             foreach (var rec in db.table_file.records) {
                 var f = rec.get_data<WixFile> ("wixfile");
@@ -452,6 +457,18 @@ namespace Wixl {
 
         public MsiDatabase build () throws GLib.Error {
             package_platform ();
+
+            // a UIRef to the bundled WiX UI implies the extension, so
+            // CPack-style sources don't need an explicit --ext ui; this
+            // must happen before the database is created so its UI tables
+            // exist
+            if (!(Extension.UI in extensions) && get_elements<WixUIRef> ().length > 0) {
+                extensions += Extension.UI;
+                add_path (File.new_for_path (extdir).get_path ());
+                foreach (var file in Extension.UI.get_files ())
+                    load_extension_file (Extension.UI, file);
+            }
+
             db = new MsiDatabase (arch, extensions);
 
             foreach (var r in roots) {
@@ -1787,6 +1804,24 @@ namespace Wixl {
             util_service_configs.append (new UtilServiceConfigAction () { name = id, component = comp.Id });
         }
 
+        void sequence_set_properties (MsiTableSequence table) throws GLib.Error {
+            foreach (var set_property in set_properties) {
+                var node = table.get_action ("Set" + set_property.Id);
+
+                if (set_property.Condition != null)
+                    node.condition = set_property.Condition;
+
+                if (set_property.Sequence != null) {
+                    node.sequence = int.parse (set_property.Sequence);
+                } else {
+                    if (set_property.After != null)
+                        node.add_dep (table.get_action (set_property.After));
+                    if (set_property.Before != null)
+                        table.get_action (set_property.Before).add_dep (node);
+                }
+            }
+        }
+
         void sequence_util_service_configs (MsiTableSequence table) throws GLib.Error {
             if (util_service_configs == null)
                 return;
@@ -2236,6 +2271,25 @@ namespace Wixl {
             db.table_custom_action.add (action.Id, type, source, target);
         }
 
+        public override void visit_set_property (WixSetProperty set_property) throws GLib.Error {
+            if (set_property.Id == null || set_property.Value == null)
+                throw new Wixl.Error.FAILED ("SetProperty requires Id and Value");
+            if (set_property.Sequence != null && (set_property.After != null || set_property.Before != null))
+                throw new Wixl.Error.FAILED ("SetProperty %s: Sequence cannot be combined with After or Before", set_property.Id);
+            if (set_property.Sequence == null && set_property.After == null && set_property.Before == null)
+                throw new Wixl.Error.FAILED ("SetProperty %s: one of Sequence, After or Before is required", set_property.Id);
+
+            db.table_custom_action.add ("Set" + set_property.Id, CustomActionType.SET_PROPERTY,
+                                        set_property.Id, set_property.Value);
+            set_properties.append (set_property);
+        }
+
+        public override void visit_wix_variable (WixVariable variable) throws GLib.Error {
+            if (variable.Id == null)
+                throw new Wixl.Error.FAILED ("WixVariable requires an Id");
+            wix_variables.insert (variable.Id, variable.Value ?? "");
+        }
+
         public override void visit_binary (WixBinary binary) throws GLib.Error {
             FileInfo info;
 
@@ -2284,6 +2338,14 @@ namespace Wixl {
 
         public override void visit_ui_ref (WixUIRef ref) throws GLib.Error {
             if (find_element<WixUI>(@ref.Id) == null) {
+                // a UIRef to the bundled WiX UI implies the extension, so
+                // CPack-style sources don't need an explicit --ext ui
+                if (!(Extension.UI in extensions)) {
+                    extensions += Extension.UI;
+                    add_path (File.new_for_path (extdir).get_path ());
+                    foreach (var file in Extension.UI.get_files ())
+                        load_extension_file (Extension.UI, file);
+                }
                 load_extension_file(Extension.UI, @ref.Id);
             }
         }
@@ -2299,7 +2361,29 @@ namespace Wixl {
             if (text.SourceFile != null) {
                 // use the contents of the given file
                 string data;
-                File file = find_file (text.SourceFile, null);
+                var source_file = text.SourceFile;
+
+                // WixUILicenseRtf overrides the UI extension's default
+                // license, as it does in WiX
+                if ((source_file == "ui/License.rtf" || source_file == "License.rtf") &&
+                    wix_variables.contains ("WixUILicenseRtf")) {
+                    var license = wix_variables.lookup ("WixUILicenseRtf");
+                    if (license != null && license != "")
+                        source_file = license;
+                }
+
+                File file;
+                try {
+                    file = find_file (source_file, null);
+                } catch (GLib.Error error) {
+                    if (!Path.is_absolute (source_file))
+                        throw error;
+                    // the generated path may come from another build
+                    // directory; fall back to the file name next to the
+                    // sources
+                    file = find_file (Path.get_basename (source_file), null);
+                }
+
                 FileUtils.get_contents (file.get_path (), out data);
                 control.Text = data;
             } else if (text.children.length () > 0) {
