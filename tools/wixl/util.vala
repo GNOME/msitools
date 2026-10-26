@@ -154,8 +154,9 @@ namespace Wixl {
     }
 
     public string unquote (string str) {
-        if ((str[0] == '\'' && str[str.length-1] == '\'') ||
-            (str[0] == '"' && str[str.length-1] == '"'))
+        if (str.length >= 2 &&
+            ((str[0] == '\'' && str[str.length-1] == '\'') ||
+             (str[0] == '"' && str[str.length-1] == '"')))
             return str[1:-1];
 
         return str;

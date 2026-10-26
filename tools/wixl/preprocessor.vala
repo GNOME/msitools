@@ -32,6 +32,13 @@ namespace Wixl {
             return variables.lookup (name);
         }
 
+        public string? eval_defined (string str, File? file) throws GLib.Error {
+            if (str.index_of (".") == -1)
+                return lookup_variable (str);
+
+            return eval_variable (str, file);
+        }
+
         public string? eval_variable (string str, File? file) throws GLib.Error {
             var var = str.split (".", 2);
             if (var.length != 2)
@@ -341,12 +348,12 @@ namespace Wixl {
                     case "ifdef":
                         ifstack.push_head (context);
                         var value = reader.const_value ().strip ();
-                        context = new IfContext (context.enabled && context.is_true, eval_variable (value, file) != null, IfContext.State.IF);
+                        context = new IfContext (context.enabled && context.is_true, eval_defined (value, file) != null, IfContext.State.IF);
                         break;
                     case "ifndef":
                         ifstack.push_head (context);
                         var value = reader.const_value ().strip ();
-                        context = new IfContext (context.enabled && context.is_true, eval_variable (value, file) == null, IfContext.State.IF);
+                        context = new IfContext (context.enabled && context.is_true, eval_defined (value, file) == null, IfContext.State.IF);
                         break;
                     case "else":
                         if (ifstack.is_empty ())
@@ -393,11 +400,11 @@ namespace Wixl {
                         undefine_variable (value);
                         break;
                     case "require":
-                        var value = eval (reader.const_value (), file).strip ();
+                        var value = unquote (eval (reader.const_value (), file).strip ());
                         include (value, loc, writer, true);
                         break;
                     case "include":
-                        var value = eval (reader.const_value (), file).strip ();
+                        var value = unquote (eval (reader.const_value (), file).strip ());
                         include (value, loc, writer);
                         break;
                     case "warning":

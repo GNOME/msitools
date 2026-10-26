@@ -187,6 +187,30 @@ EOF
   test -f out.msi
 }
 
+@test "wixl - quoted preprocessor include" {
+  cd wixl
+  cat >quoted.wxi <<EOF
+<?xml version="1.0"?>
+<Include xmlns="http://schemas.microsoft.com/wix/2006/wi">
+  <?define Greeting="hello"?>
+</Include>
+EOF
+  cat >quoted.wxs <<EOF
+<?xml version="1.0"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+  <?include "quoted.wxi"?>
+  <?ifdef Greeting?>
+  <Property Id="GreetingDefined" Value="yes"/>
+  <?endif?>
+  <Property Id="Greeting" Value="\$(var.Greeting)"/>
+</Wix>
+EOF
+  run "$wixl" -E quoted.wxs
+  [ "$status" -eq 0 ]
+  echo "$output" | grep -q 'Value="hello"'
+  echo "$output" | grep -q 'Id="GreetingDefined"'
+}
+
 @test "wixl - preprocessor condition evaluator" {
   cd wixl
   export FOO="bar"
