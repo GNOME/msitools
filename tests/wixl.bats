@@ -550,6 +550,13 @@ EOF
   [ "$status" -eq 0 ]
   echo "$output" | grep -q $'^InstallDirDlg\t'
   echo "$output" | grep -q $'^BrowseDlg\t'
+
+  run "$msiinfo" export out.msi InstallUISequence
+  [ "$status" -eq 0 ]
+  seqof() { echo "$output" | tr -d '\r' | awk -F '\t' -v a="$1" '$1 == a { print $3 }'; }
+  [ "$(seqof MaintenanceWelcomeDlg)" -eq 1296 ]
+  [ "$(seqof ResumeDlg)" -eq 1297 ]
+  [ "$(seqof WelcomeDlg)" -eq 1298 ]
 }
 
 @test "wixl - Publish default Order" {

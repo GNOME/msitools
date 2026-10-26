@@ -598,6 +598,10 @@ namespace Wixl {
             return action;
         }
 
+        public Action? lookup_action (string name) {
+            return actions.lookup (name);
+        }
+
         public Action get_action (string name) {
             var action = actions.lookup (name);
             if (action != null)

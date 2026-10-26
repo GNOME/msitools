@@ -301,6 +301,24 @@ namespace Wixl {
                 add (MSIDefault.Action.LaunchConditions);
             if (db.table_app_search.records.length () > 0)
                 add (MSIDefault.Action.AppSearch);
+
+            // WiX leaves sequence 1295 free in UI sets that don't include
+            // WelcomeEulaDlg, shifting the maintenance, resume and welcome
+            // dialogs up by one
+            if (table.lookup_action ("WelcomeEulaDlg") == null) {
+                var maintenance = table.lookup_action ("MaintenanceWelcomeDlg");
+                var resume = table.lookup_action ("ResumeDlg");
+                var welcome = table.lookup_action ("WelcomeDlg");
+                if (maintenance != null && resume != null && welcome != null &&
+                    (maintenance.action == null || maintenance.action.Sequence == null) &&
+                    (resume.action == null || resume.action.Sequence == null) &&
+                    (welcome.action == null || welcome.action.Sequence == null)) {
+                    maintenance.sequence = 1296;
+                    resume.sequence = 1297;
+                    welcome.sequence = 1298;
+                }
+            }
+
             table.add_sorted_actions ();
         }
 
