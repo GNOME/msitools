@@ -1896,7 +1896,7 @@ EOF2
   run "$msiinfo" export out.msi Control
   echo "$output" | grep -q "Lorem ipsum"
 
-  # WixVariable and -D override them
+  # WixVariable overrides the extension default; -D needs Overridable="yes"
   printf '%s' '{\rtf1 my own license}' > my.rtf
   printf '%s' '{\rtf1 the -D license}' > d.rtf
   sed 's|<UIRef Id="WixUI_FeatureTree" />|&<WixVariable Id="WixUILicenseRtf" Value="my.rtf" />|' uifiles.wxs > uivar.wxs
@@ -1907,6 +1907,12 @@ EOF2
   echo "$output" | grep -q "my own license"
   ! echo "$output" | grep -q "Lorem ipsum"
   run "$wixl" -o out.msi -D WixUILicenseRtf=d.rtf uivar.wxs --ext ui --extdir "$SRCDIR/data/ext"
+  [ "$status" -eq 0 ]
+  run "$msiinfo" export out.msi Control
+  echo "$output" | grep -q "my own license"
+  ! echo "$output" | grep -q "the -D license"
+  sed 's|Value="my.rtf"|Value="my.rtf" Overridable="yes"|' uivar.wxs > uiover.wxs
+  run "$wixl" -o out.msi -D WixUILicenseRtf=d.rtf uiover.wxs --ext ui --extdir "$SRCDIR/data/ext"
   [ "$status" -eq 0 ]
   run "$msiinfo" export out.msi Control
   echo "$output" | grep -q "the -D license"
@@ -1923,4 +1929,32 @@ EOF2
   run "$wixl" -o out.msi -D WixUIBannerBmp=missing.bmp uifiles.wxs --ext ui --extdir "$SRCDIR/data/ext"
   [ "$status" -ne 0 ]
   [[ "$output" == *"Couldn't find file missing.bmp"* ]]
+}
+
+@test "wixl - WixVariable Overridable duplicate rules" {
+  cd wixl
+  printf '%s' '{\rtf1 first license}' > first.rtf
+  printf '%s' '{\rtf1 second license}' > second.rtf
+  sed 's/WixUI_Minimal/WixUI_FeatureTree/' TestUI.wxs > wixvar-base.wxs
+  sed 's|<UIRef Id="WixUI_FeatureTree" />|&<WixVariable Id="WixUILicenseRtf" Value="first.rtf" Overridable="yes" /><WixVariable Id="WixUILicenseRtf" Value="second.rtf" Overridable="yes" />|' wixvar-base.wxs > wixvar.wxs
+
+  run "$wixl" -o out.msi wixvar.wxs --ext ui --extdir "$SRCDIR/data/ext"
+  [ "$status" -ne 0 ]
+  [[ "$output" == *"WixVariable 'WixUILicenseRtf' is defined twice"* ]]
+
+  # a later non-overridable definition replaces an overridable one
+  sed 's|Value="second.rtf" Overridable="yes"|Value="second.rtf"|' wixvar.wxs > wixvar2.wxs
+  run "$wixl" -o out.msi wixvar2.wxs --ext ui --extdir "$SRCDIR/data/ext"
+  [ "$status" -eq 0 ]
+  run "$msiinfo" export out.msi Control
+  [ "$status" -eq 0 ]
+  echo "$output" | grep -q "second license"
+
+  # a later overridable definition does not replace a non-overridable one
+  sed 's|Value="first.rtf" Overridable="yes"|Value="first.rtf"|' wixvar.wxs > wixvar3.wxs
+  run "$wixl" -o out.msi wixvar3.wxs --ext ui --extdir "$SRCDIR/data/ext"
+  [ "$status" -eq 0 ]
+  run "$msiinfo" export out.msi Control
+  [ "$status" -eq 0 ]
+  echo "$output" | grep -q "first license"
 }

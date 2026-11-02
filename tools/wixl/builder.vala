@@ -1107,12 +1107,16 @@ namespace Wixl {
                 if (v.Id == null)
                     throw new Wixl.Error.FAILED ("WixVariable without Id");
                 var prev = wix_variables.lookup (v.Id);
-                if (prev != null && !parse_yesno (prev.Overridable)) {
-                    if (!parse_yesno (v.Overridable))
-                        throw new Wixl.Error.FAILED ("WixVariable '%s' is defined twice", v.Id);
-                    continue;
+                if (prev == null) {
+                    wix_variables.insert (v.Id, v);
+                } else if (parse_yesno (prev.Overridable) && !parse_yesno (v.Overridable)) {
+                    // a non-overridable definition replaces an overridable one
+                    wix_variables.insert (v.Id, v);
+                } else if (!parse_yesno (v.Overridable) ||
+                           (parse_yesno (prev.Overridable) && parse_yesno (v.Overridable))) {
+                    throw new Wixl.Error.FAILED ("WixVariable '%s' is defined twice", v.Id);
                 }
-                wix_variables.insert (v.Id, v);
+                // else the earlier non-overridable definition wins
             }
 
             // the UI extension used to take License.rtf from next to the
@@ -1128,6 +1132,7 @@ namespace Wixl {
                     var v = new WixVariable ();
                     v.Id = license;
                     v.Value = file.get_path ();
+                    v.Overridable = "yes";
                     wix_variables.insert (license, v);
                     break;
                 }
@@ -1135,7 +1140,8 @@ namespace Wixl {
         }
 
         // like WiX's binder, replace !(wix.Name) and !(wix.Name=default)
-        // with the value of a -D define or a WixVariable
+        // with a -D define or a WixVariable value. A -D define only
+        // overrides a WixVariable that is Overridable="yes".
         string expand_wix_variables (string str) throws GLib.Error {
             if (!str.contains ("!(wix."))
                 return str;
@@ -1151,7 +1157,11 @@ namespace Wixl {
                 var name = info.fetch (1);
                 var def = info.fetch (2);
                 var v = wix_variables.lookup (name);
-                string? value = variables.lookup (name) ?? (v != null ? v.Value : null);
+                string? value;
+                if (v != null && !parse_yesno (v.Overridable))
+                    value = v.Value;
+                else
+                    value = variables.lookup (name) ?? (v != null ? v.Value : null);
                 if (value == null && def != null && def != "")
                     value = def;
                 if (value == null)
