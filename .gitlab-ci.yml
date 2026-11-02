@@ -189,6 +189,7 @@ variables:
                 mingw64-winpthreads
                 mingw32-zlib
                 mingw64-zlib
+  DEPENDENCIES_MSI: mingw64-binutils wine
 
 .build:
   stage: "build"
@@ -214,6 +215,49 @@ build_stable:
   extends: .build
   rules:
     - if: $CI_COMMIT_BRANCH
+
+.build-msi:
+  stage: "build"
+  image: fedora:rawhide
+  variables:
+    WINEDEBUG: "-all"
+  before_script:
+    - rm -f /etc/rpm/macros.image-language-conf
+    - dnf update -y --nogpgcheck
+    - dnf install -y --nogpgcheck $DEPENDENCIES $DEPENDENCIES_MSI
+    - dnf builddep -y --nogpgcheck msitools
+    - git submodule update --init --recursive
+  script:
+    - meson setup _build-native -Dvalidate-wxi=false
+    - ninja -C _build-native
+    - meson setup _build-cross --cross-file build-aux/mingw64-cross.ini --prefix=/
+        -Dmsi=true -Dintrospection=true -Dvalidate-wxi=false
+        -Dmsi-wixl=$PWD/_build-native/tools/wixl/wixl
+        -Dmsi-msiinfo=$PWD/_build-native/tools/msiinfo
+        -Dmsi-msiextract=$PWD/_build-native/tools/msiextract
+    - ninja -C _build-cross
+    - ninja -C _build-cross msitools-msi
+    - test -n "$(find _build-cross/data/msi -name 'msitools-v*.msi' | head -1)"
+    - meson test -C _build-cross "msitools MSI FeatureTree" --print-errorlogs
+    - meson test -C _build-cross "msitools MSI install smoke" --print-errorlogs
+  artifacts:
+    name: "${CI_JOB_NAME}-${CI_COMMIT_REF_NAME}"
+    when: always
+    expire_in: 1 week
+    paths:
+      - "_build-cross/data/msi/msitools-v*.msi"
+      - "_build-cross/meson-logs/*.txt"
+
+build_msi:
+  extends: .build-msi
+  rules:
+    - if: $CI_COMMIT_TAG && $CI_COMMIT_REF_PROTECTED
+
+build_msi_branch:
+  extends: .build-msi
+  rules:
+    - if: $CI_COMMIT_BRANCH
+      when: manual
 
 build-release-tarball:
   extends: .build
