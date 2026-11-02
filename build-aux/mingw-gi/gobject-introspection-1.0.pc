@@ -1,0 +1,11 @@
+# Build-machine g-ir-scanner for the mingw cross build.  The scanner compiles
+# a self-contained dumper against the target library, so only the tools are
+# needed, not a target libgirepository.
+g_ir_scanner=/usr/bin/g-ir-scanner
+g_ir_compiler=/usr/bin/g-ir-compiler
+
+Name: gobject-introspection
+Description: cross-build gobject-introspection tools
+Version: 1.86.0
+Libs:
+Cflags:

@@ -24,7 +24,7 @@ msibuild = executable('msibuild',
   install: true,
 )
 
-misiinfo = executable('msiinfo',
+msiinfo = executable('msiinfo',
   'msiinfo.c',
   libmsi_enums_h,
   include_directories: inc_dirs,

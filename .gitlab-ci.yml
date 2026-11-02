@@ -224,3 +224,35 @@ build-release-tarball:
     when: "always"
     paths:
       - "${TARBALL_ARTIFACT_PATH}"
+
+.build-cross-introspection:
+  stage: "build"
+  image: fedora:rawhide
+  variables:
+    WINEDEBUG: "-all"
+  before_script:
+    - rm -f /etc/rpm/macros.image-language-conf
+    - dnf update -y --nogpgcheck
+    - dnf install -y --nogpgcheck $DEPENDENCIES wine
+    - dnf builddep -y --nogpgcheck msitools
+    - git submodule update --init --recursive
+  script:
+    - meson setup _build-cross --cross-file build-aux/mingw64-cross.ini --prefix=/
+        -Dintrospection=true -Dvalidate-wxi=false
+    - ninja -C _build-cross
+    - test -f _build-cross/libmsi/Libmsi-1.0.gir
+    - test -f _build-cross/libmsi/Libmsi-1.0.typelib
+    - test -f _build-cross/libmsi/libmsi-1.0.vapi
+    - test -f _build-cross/tools/msiextract.exe
+    - test -f _build-cross/tools/wixl/wixl.exe
+    - test -f _build-cross/tools/wixl/wixl-heat.exe
+  artifacts:
+    when: always
+    expire_in: 1 week
+    paths:
+      - "_build-cross/meson-logs/*.txt"
+
+build_cross_introspection:
+  extends: .build-cross-introspection
+  rules:
+    - if: $CI_COMMIT_BRANCH

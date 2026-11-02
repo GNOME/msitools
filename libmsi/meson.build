@@ -71,6 +71,34 @@ pc.generate(
 )
 
 if get_option('introspection')
+  gir_extra_args = ['--c-include=libmsi.h']
+  gir_env = []
+
+  if meson.is_cross_build() and host_machine.system() == 'windows'
+    # Meson does not pass the cross-file exe_wrapper to g-ir-scanner.  Run the
+    # scanner's temporary dumper through wine so it can load the target DLLs.
+    gir_runner = find_program('wine', native: true, required: false)
+    if not gir_runner.found()
+      error('wine is required to generate introspection data for Windows')
+    endif
+
+    mingw_sysroot = meson.get_external_property('mingw_sysroot',
+      '/usr/x86_64-w64-mingw32/sys-root/mingw')
+    wine_sysroot = 'Z:' + mingw_sysroot.replace('/', '\\')
+    wine_build = 'Z:' + meson.current_build_dir().replace('/', '\\')
+
+    gir_extra_args += ['--use-binary-wrapper=' + gir_runner.full_path()]
+    gir_env += [
+      'GI_HOST_OS=nt',
+      'WINEPATH=' + wine_sysroot + '\\bin;' + wine_build,
+    ]
+
+    mingw_dlltool = meson.get_external_property('mingw_dlltool', '')
+    if mingw_dlltool != ''
+      gir_env += ['DLLTOOL=' + mingw_dlltool]
+    endif
+  endif
+
   libmsi_gir = gnome.generate_gir(libmsi,
     namespace: 'Libmsi',
     nsversion: '1.0',
@@ -88,9 +116,8 @@ if get_option('introspection')
       'GObject-2.0',
       'Gio-2.0',
     ],
-    extra_args: [
-      '--c-include=libmsi.h',
-    ],
+    extra_args: gir_extra_args,
+    env: gir_env,
     install: true,
   )
 
