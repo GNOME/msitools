@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<?require libgcab1.wxi?>
+<?require libgsf.wxi?>
+<Include xmlns="http://schemas.microsoft.com/wix/2006/wi">
+  <Fragment>
+    <ComponentGroup Id="CG.Deps">
+      <ComponentGroupRef Id="CG.libgcab1"/>
+      <ComponentGroupRef Id="CG.libgsf"/>
+    </ComponentGroup>
+  </Fragment>
+</Include>

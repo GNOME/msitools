@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+  <Product Id="*"
+           Name="msitools"
+           Language="1033"
+           Codepage="1252"
+           Version="$(var.ProductVersion)"
+           Manufacturer="msitools project"
+           UpgradeCode="7E5A9F6C-3B2D-4C8E-9F1A-6D4B2C8E0A71">
+    <Package InstallerVersion="500"
+             Compressed="yes"
+             InstallScope="perMachine"
+             Platform="x64"
+             Description="msitools - inspect and build Windows Installer packages"
+             Comments="msitools is a set of tools to inspect and build MSI files." />
+    <MediaTemplate EmbedCab="yes" />
+
+    <MajorUpgrade AllowSameVersionUpgrades="yes"
+                  DowngradeErrorMessage="A newer msitools is already installed." />
+
+    <UIRef Id="WixUI_FeatureTree" />
+    <Property Id="WIXUI_INSTALLDIR" Value="INSTALLDIR" />
+    <SetProperty Id="ARPINSTALLLOCATION" Value="[INSTALLDIR]" After="CostFinalize" />
+
+    <Property Id="ARPPRODUCTICON" Value="msitools.ico" />
+    <Property Id="ARPHELPLINK" Value="https://gitlab.gnome.org/GNOME/msitools" />
+
+    <WixVariable Id="WixUILicenseRtf" Value="License.rtf" Overridable="yes" />
+    <WixVariable Id="WixUIBannerBmp" Value="banner.bmp" Overridable="yes" />
+    <WixVariable Id="WixUIDialogBmp" Value="dialog.bmp" Overridable="yes" />
+
+    <Icon Id="msitools.ico" SourceFile="msitools.ico" />
+
+    <Directory Id="TARGETDIR" Name="SourceDir">
+      <Directory Id="ProgramFiles64Folder" Name="PFiles64">
+        <Directory Id="INSTALLDIR" Name="msitools" />
+      </Directory>
+
+      <Directory Id="ProgramMenuFolder" Name="Programs">
+        <Directory Id="ProgramMenuDir" Name="msitools">
+          <Component Id="ProgramMenuDir" Guid="7E5A9F6C-3B2D-4C8E-9F1A-6D4B2C8E0A72">
+            <RemoveFolder Id="RemoveProgramMenuDir" On="uninstall" />
+            <RegistryValue Root="HKLM" Key="Software\msitools"
+                           Name="ProgramMenuDir" Type="string" Value=""
+                           KeyPath="yes" />
+          </Component>
+        </Directory>
+      </Directory>
+    </Directory>
+
+    <DirectoryRef Id="INSTALLDIR">
+      <Component Id="EnvPath" Guid="7E5A9F6C-3B2D-4C8E-9F1A-6D4B2C8E0A73">
+        <Environment Id="MsitoolsPath" Name="PATH" Value="[INSTALLDIR]bin"
+                     Action="set" Part="last" System="yes" Permanent="no" />
+        <Environment Id="WixlDatadir" Name="WIXL_DATADIR"
+                     Value="[INSTALLDIR]share"
+                     Action="set" Part="all" System="yes" Permanent="no" />
+        <RegistryValue Root="HKLM" Key="Software\msitools"
+                       Name="InstallDir" Type="string" Value="[INSTALLDIR]"
+                       KeyPath="yes" />
+      </Component>
+
+      <Component Id="ShellShortcut" Guid="7E5A9F6C-3B2D-4C8E-9F1A-6D4B2C8E0A74">
+        <File Id="MsitoolsCmd" Name="msitools.cmd"
+              Source="$(var.SourceDir)/msitools.cmd" KeyPath="yes">
+          <Shortcut Id="StartMenuMsitools"
+                    Directory="ProgramMenuDir"
+                    Name="msitools Command Prompt"
+                    Description="Open a command prompt with msitools on PATH"
+                    WorkingDirectory="INSTALLDIR"
+                    Icon="msitools.ico"
+                    Advertise="yes" />
+        </File>
+      </Component>
+    </DirectoryRef>
+
+    <Feature Id="Msitools" Title="msitools"
+             Description="Tools to inspect and build Windows Installer packages."
+             Level="1" Display="expand" Absent="disallow"
+             ConfigurableDirectory="INSTALLDIR">
+      <Feature Id="CoreTools" Title="Command-line tools"
+               Description="msiinfo, msibuild and the libmsi runtime."
+               Level="1" Absent="disallow">
+        <ComponentGroupRef Id="CG.Core" />
+        <ComponentGroupRef Id="CG.Deps" />
+        <ComponentRef Id="EnvPath" />
+        <ComponentRef Id="ShellShortcut" />
+        <ComponentRef Id="ProgramMenuDir" />
+      </Feature>
+
+      <Feature Id="WixAuthoring" Title="WiX authoring files"
+               Description="wixl, wixl-heat and the bundled WiX authoring data."
+               Level="1" Absent="allow">
+        <ComponentGroupRef Id="CG.Wix" />
+      </Feature>
+
+      <Feature Id="Translations" Title="Translations"
+               Description="Translated messages for the msitools tools."
+               Level="2" Absent="allow">
+        <ComponentGroupRef Id="CG.Locale" />
+      </Feature>
+
+      <Feature Id="Development" Title="Development files"
+               Description="Headers, pkg-config, Vala and GObject Introspection data."
+               Level="3" Absent="allow">
+        <ComponentGroupRef Id="CG.Dev" />
+      </Feature>
+    </Feature>
+  </Product>
+
+  <?include deps.wxi?>
+  <?include components-core.wxi?>
+  <?include components-wix.wxi?>
+  <?include components-locale.wxi?>
+  <?include components-dev.wxi?>
+</Wix>

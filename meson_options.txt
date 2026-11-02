@@ -15,3 +15,27 @@ option('fuzzing',
   value: false,
   description: 'build the libFuzzer harnesses (requires clang)',
 )
+
+option('msi',
+  type: 'boolean',
+  value: false,
+  description: 'build the Windows MSI release package',
+)
+
+option('msi-wixl',
+  type: 'string',
+  value: '',
+  description: 'external wixl to build the MSI with (default: the built wixl)',
+)
+
+option('msi-msiinfo',
+  type: 'string',
+  value: '',
+  description: 'msiinfo used to validate the MSI, requires a build-machine binary (default: the built msiinfo)',
+)
+
+option('msi-msiextract',
+  type: 'string',
+  value: '',
+  description: 'msiextract used to validate the MSI, requires a build-machine binary (default: the built msiextract)',
+)

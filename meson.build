@@ -62,6 +62,7 @@ subdir('po')
 subdir('include')
 subdir('libmsi')
 subdir('tools')
+subdir('data/msi')
 
 if host_machine.system() != 'windows' #FIXME
   subdir('tests')
