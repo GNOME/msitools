@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<?require glib2.wxi?>
+<Include xmlns="http://schemas.microsoft.com/wix/2006/wi">
+  <Fragment>
+    <DirectoryRef Id="INSTALLDIR">
+      <Directory Id="dirC3B626FD190E31ECBB2A652C82D71D56" Name="bin">
+        <Component Win64="$(var.Win64)" Id="cmp4B28ED26FCBDBF8A67B38694975AE528" Guid="*">
+          <File Id="fil67202629DEA9CA2DCCBC077B7EEAF9F1" KeyPath="yes" Source="$(var.SourceDir)/bin/libgcab-1.0-0.dll"/>
+        </Component>
+      </Directory>
+    </DirectoryRef>
+  </Fragment>
+  <Fragment>
+    <ComponentGroup Id="CG.libgcab1">
+      <ComponentGroupRef Id="CG.glib2"/>
+      <ComponentRef Id="cmp4B28ED26FCBDBF8A67B38694975AE528"/>
+    </ComponentGroup>
+  </Fragment>
+</Include>
+<?ignore generated with msitools 0.106.165-93cc-dirty ?>
+<?ignore build-native/tools/wixl/wixl-heat -i --var var.SourceDir -p /usr/x86_64-w64-mingw32/sys-root/mingw/ --directory-ref INSTALLDIR --win64 --component-group CG.libgcab1 --require glib2 ?>

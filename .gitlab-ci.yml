@@ -95,12 +95,16 @@ variables:
                 mingw64-libepoxy
                 mingw32-libffi
                 mingw64-libffi
+                mingw32-libgcab1
+                mingw64-libgcab1
                 mingw32-libgcrypt
                 mingw64-libgcrypt
                 mingw32-libgovirt
                 mingw64-libgovirt
                 mingw32-libgpg-error
                 mingw64-libgpg-error
+                mingw32-libgsf
+                mingw64-libgsf
                 mingw32-libidn2
                 mingw64-libidn2
                 mingw32-libjpeg-turbo

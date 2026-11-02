@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 #
 # Regenerate a wixl/<pkg>.wxi include file from the file list of the
-# installed mingw32-<pkg> RPM, via wixl-heat.
+# installed mingw32-<pkg> or mingw64-<pkg> RPM, via wixl-heat.
 #
 # Two optional sidecar files next to wixl/<pkg>.wxi customize the
 # output, and are also consumed by wxi-validate.py:
@@ -83,15 +83,16 @@ def find_wixl_heat():
     override = os.environ.get("WIXL_HEAT")
     if override:
         return override
-    default = os.path.join(REPO_DIR, "build", "tools", "wixl", "wixl-heat")
-    if os.path.isfile(default) and os.access(default, os.X_OK):
-        return default
+    for build_dir in ("build-native", "build"):
+        default = os.path.join(REPO_DIR, build_dir, "tools", "wixl", "wixl-heat")
+        if os.path.isfile(default) and os.access(default, os.X_OK):
+            return default
     return None
 
 
 def main():
     parser = argparse.ArgumentParser(
-        description="Regenerate a wixl/<pkg>.wxi file from the installed mingw32-<pkg> RPM"
+        description="Regenerate a wixl/<pkg>.wxi file from the installed mingw<32|64>-<pkg> RPM"
     )
     parser.add_argument("package")
     parser.add_argument(
@@ -109,7 +110,8 @@ def main():
         )
         return 1
 
-    rpmname = f"mingw32-{pkg}"
+    rpmarch = "64" if args.arch == "x86_64" else "32"
+    rpmname = f"mingw{rpmarch}-{pkg}"
     try:
         rpm_files = get_rpm_files(rpmname)
     except subprocess.CalledProcessError:
@@ -135,7 +137,8 @@ def main():
     ] + load_heat_args(pkg)
 
     result = subprocess.run(
-        cmd, input="\n".join(files), capture_output=True, text=True, cwd=build_dir
+        cmd, input="\n".join(files), capture_output=True, text=True, cwd=build_dir,
+        check=False,
     )
     if result.returncode != 0:
         print(result.stderr, file=sys.stderr)
