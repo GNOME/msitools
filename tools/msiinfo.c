@@ -307,6 +307,7 @@ static int cmd_suminfo(struct Command *cmd, int argc, char **argv, GError **erro
     if (!si)
         goto end;
 
+    print_suminfo(si, LIBMSI_PROPERTY_CODEPAGE, "Codepage");
     print_suminfo(si, LIBMSI_PROPERTY_TITLE, "Title");
     print_suminfo(si, LIBMSI_PROPERTY_SUBJECT, "Subject");
     print_suminfo(si, LIBMSI_PROPERTY_AUTHOR, "Author");

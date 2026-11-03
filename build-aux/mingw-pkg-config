@@ -1,0 +1,8 @@
+#!/bin/sh
+# The Fedora mingw pkg-config personality prepends the sysroot to variables
+# such as g_ir_scanner, which point at build-machine tools.  Clear it so the
+# gobject-introspection shim can return native paths.
+PKG_CONFIG_SYSROOT_DIR=
+export PKG_CONFIG_SYSROOT_DIR
+
+exec x86_64-w64-mingw32-pkg-config "$@"

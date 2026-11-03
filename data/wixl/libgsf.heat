@@ -1,0 +1,3 @@
+--require bzip2
+--require glib2
+--require libxml2

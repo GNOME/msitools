@@ -2,6 +2,12 @@ v0.106
 ======
 
 - !75 Support <Condition> inside <Feature> and <Component>
+- wixl: write an ANSI code page in the summary information so that
+  Windows Installer can open packages built with Codepage=65001
+- packaging: build a Windows MSI release artifact with the FeatureTree UI
+- packaging: include wixl, wixl-heat and the libmsi introspection data in
+  the Windows package
+- msiextract: build for Windows
 
 v0.105
 ======

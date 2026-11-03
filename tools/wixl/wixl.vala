@@ -57,8 +57,11 @@ namespace Wixl {
         opt_context.set_help_enabled (true);
         opt_context.add_main_entries (options, null);
 
-        wxidir = Path.build_filename (Config.DATADIR, "wixl-" + Config.PACKAGE_VERSION, "include");
-        extdir = Path.build_filename (Config.DATADIR, "wixl-" + Config.PACKAGE_VERSION, "ext");
+        var wixl_datadir = GLib.Environment.get_variable ("WIXL_DATADIR");
+        if (wixl_datadir == null)
+            wixl_datadir = Config.DATADIR;
+        wxidir = Path.build_filename (wixl_datadir, "wixl-" + Config.PACKAGE_VERSION, "include");
+        extdir = Path.build_filename (wixl_datadir, "wixl-" + Config.PACKAGE_VERSION, "ext");
 
         try {
             opt_context.parse (ref args);

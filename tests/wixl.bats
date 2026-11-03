@@ -351,10 +351,40 @@ EOF
   run "$wixl" -o out.msi codepage.wxs
   [ "$status" -eq 0 ]
   test -f out.msi
+  # Windows Installer refuses a Unicode code page in the summary information
+  # (msiexec reports 1620), so wixl falls back to an ANSI one there
+  echo "$output" | grep -q "codepage 65001 is not supported by Windows Installer"
 
-  # verify the non-ASCII filename is preserved in the MSI
+  run "$msiinfo" suminfo out.msi
+  echo "$output" | grep -q "^Codepage: 1252 (4e4)$"
+
+  # the string table keeps the requested code page...
+  run "$msiinfo" export out.msi _ForceCodepage
+  echo "$output" | grep -q "^65001"
+
+  # ...so the non-ASCII filename is preserved in the MSI
   run "$msiinfo" export out.msi File
   echo "$output" | grep -q "hello_日本語.txt"
+}
+
+@test "wixl - ANSI codepage" {
+  cd wixl
+  run "$wixl" -D Codepage=932 -o out.msi codepage-attr.wxs
+  [ "$status" -eq 0 ]
+
+  # an ANSI code page is used for the summary information and the strings
+  run "$msiinfo" suminfo out.msi
+  echo "$output" | grep -q "^Codepage: 932 (3a4)$"
+  run "$msiinfo" export out.msi _ForceCodepage
+  echo "$output" | grep -q "^932"
+}
+
+@test "wixl - invalid codepage" {
+  cd wixl
+  run "$wixl" -D Codepage=utf8 -o out.msi codepage-attr.wxs
+  [ "$status" -eq 1 ]
+  echo "$output" | grep -q "Product Codepage 'utf8' is not a number"
+  [ ! -f out.msi ]
 }
 
 @test "wixl - short directory and file names" {
@@ -550,6 +580,10 @@ EOF
   [ "$status" -eq 0 ]
   echo "$output" | grep -q $'^InstallDirDlg\t'
   echo "$output" | grep -q $'^BrowseDlg\t'
+
+  run "$msiinfo" export out.msi ControlEvent
+  [ "$status" -eq 0 ]
+  echo "$output" | tr -d '\r' | grep -q $'^LicenseAgreementDlg\tNext\tNewDialog\tInstallDirDlg\t'
 
   run "$msiinfo" export out.msi InstallUISequence
   [ "$status" -eq 0 ]
@@ -1850,4 +1884,107 @@ EOF2
   # listed once, even when MajorUpgrade also makes it secure;
   # the private property is warned about and not passed to the server
   [ "$secure" = "WIX_UPGRADE_DETECTED;WIX_DOWNGRADE_DETECTED;LISTEN_PORT;CONFIG_FILE" ]
+}
+
+@test "wixl - WixUI_FeatureTree" {
+  cd wixl
+  sed 's/WixUI_Minimal/WixUI_FeatureTree/' TestUI.wxs > featuretree.wxs
+  run "$wixl" -o out.msi featuretree.wxs --ext ui --extdir "$SRCDIR/data/ext"
+  [ "$status" -eq 0 ]
+
+  run "$msiinfo" export out.msi Dialog
+  [ "$status" -eq 0 ]
+  dialogs=$(echo "$output" | tr -d '\r' | tail -n +4 | cut -f1)
+  for d in WelcomeDlg LicenseAgreementDlg CustomizeDlg BrowseDlg DiskCostDlg VerifyReadyDlg; do
+    echo "$dialogs" | grep -qx "$d"
+  done
+
+  run "$msiinfo" export out.msi Control
+  [ "$status" -eq 0 ]
+  echo "$output" | tr -d '\r' | grep -q "$(printf '^CustomizeDlg\tTree\tSelectionTree\t25\t85\t175\t115\t7\t_BrowseProperty\t')"
+  echo "$output" | tr -d '\r' | grep -q "$(printf '^BrowseDlg\tPathEdit\tPathEdit\t')"
+
+  run "$msiinfo" export out.msi ControlEvent
+  [ "$status" -eq 0 ]
+  events=$(echo "$output" | tr -d '\r')
+  echo "$events" | grep -q "$(printf '^WelcomeDlg\tNext\tNewDialog\tLicenseAgreementDlg\t')"
+  echo "$events" | grep -q "$(printf '^LicenseAgreementDlg\tNext\tNewDialog\tCustomizeDlg\t')"
+  echo "$events" | grep -q "$(printf '^CustomizeDlg\tBrowse\tSelectionBrowse\tBrowseDlg\t')"
+  echo "$events" | grep -q "$(printf '^BrowseDlg\tOK\tSetTargetPath\t\[_BrowseProperty\]\t')"
+  echo "$events" | grep -q "$(printf '^CustomizeDlg\tNext\tNewDialog\tVerifyReadyDlg\t')"
+  echo "$events" | grep -q "$(printf '^MaintenanceTypeDlg\tChangeButton\tNewDialog\tCustomizeDlg\t')"
+  echo "$events" | grep -q "$(printf '^CustomizeDlg\tBack\tNewDialog\tMaintenanceTypeDlg\tInstalled\t')"
+}
+
+@test "wixl - WixUI files from the extension and WixVariable" {
+  cd wixl
+  # nothing in the working directory, like WiX the extension ships them
+  rm -f License.rtf
+  sed 's/WixUI_Minimal/WixUI_FeatureTree/' TestUI.wxs > uifiles.wxs
+  run "$wixl" -o out.msi uifiles.wxs --ext ui --extdir "$SRCDIR/data/ext"
+  [ "$status" -eq 0 ]
+  run "$msiinfo" export out.msi Control
+  echo "$output" | grep -q "Lorem ipsum"
+
+  # WixVariable overrides the extension default; -D needs Overridable="yes"
+  printf '%s' '{\rtf1 my own license}' > my.rtf
+  printf '%s' '{\rtf1 the -D license}' > d.rtf
+  sed 's|<UIRef Id="WixUI_FeatureTree" />|&<WixVariable Id="WixUILicenseRtf" Value="my.rtf" />|' uifiles.wxs > uivar.wxs
+  grep -q 'WixVariable' uivar.wxs
+  run "$wixl" -o out.msi uivar.wxs --ext ui --extdir "$SRCDIR/data/ext"
+  [ "$status" -eq 0 ]
+  run "$msiinfo" export out.msi Control
+  echo "$output" | grep -q "my own license"
+  ! echo "$output" | grep -q "Lorem ipsum"
+  run "$wixl" -o out.msi -D WixUILicenseRtf=d.rtf uivar.wxs --ext ui --extdir "$SRCDIR/data/ext"
+  [ "$status" -eq 0 ]
+  run "$msiinfo" export out.msi Control
+  echo "$output" | grep -q "my own license"
+  ! echo "$output" | grep -q "the -D license"
+  sed 's|Value="my.rtf"|Value="my.rtf" Overridable="yes"|' uivar.wxs > uiover.wxs
+  run "$wixl" -o out.msi -D WixUILicenseRtf=d.rtf uiover.wxs --ext ui --extdir "$SRCDIR/data/ext"
+  [ "$status" -eq 0 ]
+  run "$msiinfo" export out.msi Control
+  echo "$output" | grep -q "the -D license"
+
+  # a License.rtf next to the sources is still used, with a warning
+  cp my.rtf License.rtf
+  run "$wixl" -o out.msi uifiles.wxs --ext ui --extdir "$SRCDIR/data/ext"
+  [ "$status" -eq 0 ]
+  [[ "$output" == *"set WixUILicenseRtf to choose the license"* ]]
+  run "$msiinfo" export out.msi Control
+  echo "$output" | grep -q "my own license"
+  rm License.rtf
+
+  run "$wixl" -o out.msi -D WixUIBannerBmp=missing.bmp uifiles.wxs --ext ui --extdir "$SRCDIR/data/ext"
+  [ "$status" -ne 0 ]
+  [[ "$output" == *"Couldn't find file missing.bmp"* ]]
+}
+
+@test "wixl - WixVariable Overridable duplicate rules" {
+  cd wixl
+  printf '%s' '{\rtf1 first license}' > first.rtf
+  printf '%s' '{\rtf1 second license}' > second.rtf
+  sed 's/WixUI_Minimal/WixUI_FeatureTree/' TestUI.wxs > wixvar-base.wxs
+  sed 's|<UIRef Id="WixUI_FeatureTree" />|&<WixVariable Id="WixUILicenseRtf" Value="first.rtf" Overridable="yes" /><WixVariable Id="WixUILicenseRtf" Value="second.rtf" Overridable="yes" />|' wixvar-base.wxs > wixvar.wxs
+
+  run "$wixl" -o out.msi wixvar.wxs --ext ui --extdir "$SRCDIR/data/ext"
+  [ "$status" -ne 0 ]
+  [[ "$output" == *"WixVariable 'WixUILicenseRtf' is defined twice"* ]]
+
+  # a later non-overridable definition replaces an overridable one
+  sed 's|Value="second.rtf" Overridable="yes"|Value="second.rtf"|' wixvar.wxs > wixvar2.wxs
+  run "$wixl" -o out.msi wixvar2.wxs --ext ui --extdir "$SRCDIR/data/ext"
+  [ "$status" -eq 0 ]
+  run "$msiinfo" export out.msi Control
+  [ "$status" -eq 0 ]
+  echo "$output" | grep -q "second license"
+
+  # a later overridable definition does not replace a non-overridable one
+  sed 's|Value="first.rtf" Overridable="yes"|Value="first.rtf"|' wixvar.wxs > wixvar3.wxs
+  run "$wixl" -o out.msi wixvar3.wxs --ext ui --extdir "$SRCDIR/data/ext"
+  [ "$status" -eq 0 ]
+  run "$msiinfo" export out.msi Control
+  [ "$status" -eq 0 ]
+  echo "$output" | grep -q "first license"
 }

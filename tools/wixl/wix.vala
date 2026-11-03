@@ -1219,6 +1219,7 @@ namespace Wixl {
         }
 
         public string Value { get; set; }
+        public string Overridable { get; set; }
 
         public override void accept (WixNodeVisitor visitor) throws GLib.Error {
             visitor.visit_wix_variable (this);
@@ -1462,6 +1463,7 @@ namespace Wixl {
                 typeof (WixBinary),
                 typeof (WixDialog),
                 typeof (WixDialogRef),
+                typeof (WixVariable),
                 typeof (WixProperty),
                 typeof (WixPublish),
                 typeof (WixTextStyle),

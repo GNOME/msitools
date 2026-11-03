@@ -24,7 +24,7 @@ msibuild = executable('msibuild',
   install: true,
 )
 
-misiinfo = executable('msiinfo',
+msiinfo = executable('msiinfo',
   'msiinfo.c',
   libmsi_enums_h,
   include_directories: inc_dirs,
@@ -40,9 +40,7 @@ if get_option('introspection')
     include_directories: inc_dirs,
     vala_args: [
       '--enable-experimental',
-      '--pkg', 'gio-unix-2.0',
       '--pkg', 'libgcab-1.0',
-      '--pkg', 'posix',
       '--pkg', 'config',
       '--vapidir=@0@'.format(meson.project_source_root()),
       '--vapidir=@0@'.format(meson.project_build_root() / 'libmsi'),

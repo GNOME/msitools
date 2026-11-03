@@ -1,0 +1,475 @@
+<?xml version="1.0" encoding="utf-8"?>
+<?require bzip2.wxi?>
+<?require glib2.wxi?>
+<?require libxml2.wxi?>
+<Include xmlns="http://schemas.microsoft.com/wix/2006/wi">
+  <Fragment>
+    <DirectoryRef Id="INSTALLDIR">
+      <Directory Id="dir09411158F67E193A575C36043625B267" Name="bin">
+        <Component Win64="$(var.Win64)" Id="cmp704E443DDD37BEADB229AE4CCD4D8048" Guid="*">
+          <File Id="filAFFF6EF399FF8C563DE9481CDA59427E" KeyPath="yes" Source="$(var.SourceDir)/bin/gsf-office-thumbnailer.exe"/>
+        </Component>
+        <Component Win64="$(var.Win64)" Id="cmpB71B51C49A7A4CA6146773A49812E719" Guid="*">
+          <File Id="filCC457CCD85BB34BFA02820FFC5ECC91F" KeyPath="yes" Source="$(var.SourceDir)/bin/gsf-vba-dump.exe"/>
+        </Component>
+        <Component Win64="$(var.Win64)" Id="cmp46FA0A02DA95D82AAC95CDB58AB6F9F3" Guid="*">
+          <File Id="filC8113AF85AC80C822DD1CE4E1A62DBCA" KeyPath="yes" Source="$(var.SourceDir)/bin/gsf.exe"/>
+        </Component>
+        <Component Win64="$(var.Win64)" Id="cmp2964F1CE78DCA80D8F51738D46641609" Guid="*">
+          <File Id="filC3A906D22D59C7F83CAF6929920D8C29" KeyPath="yes" Source="$(var.SourceDir)/bin/libgsf-1-114.dll"/>
+        </Component>
+        <Component Win64="$(var.Win64)" Id="cmpE8C2FE9881DAE3C4642F4A9AC318A84A" Guid="*">
+          <File Id="filA51606E8629377F59BDE9D26FAFC66E0" KeyPath="yes" Source="$(var.SourceDir)/bin/libgsf-win32-1-114.dll"/>
+        </Component>
+      </Directory>
+      <Directory Id="dirEEE4BD85BD6DE7E9B53CB76D8B87EFF8" Name="share">
+        <Directory Id="dir56D5028579C9D7DA05DD64D0682569DD" Name="locale">
+          <Directory Id="dir9EE860FFE0AC98EC4ADD01A4D9332C35" Name="as">
+            <Directory Id="dirBCAE516B3B6516272E60C13E5E03330F" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmpEE19787FE68E20706BCBDCB870488E62" Guid="*">
+                <File Id="filB66929AA6AE81B84118781283579F61F" KeyPath="yes" Source="$(var.SourceDir)/share/locale/as/LC_MESSAGES/libgsf.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir0EC8C061B89E6279A2E01CC3BD9836F8" Name="bs">
+            <Directory Id="dirB7BFF7501E8DD189E2141FAB96570400" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp167B44CE1E040EBCEF679955CE7CAEE4" Guid="*">
+                <File Id="fil03368B3B42490D238EDC6688B775027A" KeyPath="yes" Source="$(var.SourceDir)/share/locale/bs/LC_MESSAGES/libgsf.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dirA1DBC9E5FCE964758993337C67A8B338" Name="ca">
+            <Directory Id="dir4C8787F0FEE911755794640A5BEDD463" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp243D767E2166D725F6B276ADF2977FEA" Guid="*">
+                <File Id="filB4B45AAE9A308891F6ED991666BCF8D1" KeyPath="yes" Source="$(var.SourceDir)/share/locale/ca/LC_MESSAGES/libgsf.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir87B1C14BAC9763A83B6AF1A3A3CDCCCD" Name="ca@valencia">
+            <Directory Id="dirFA6C6DE83FECEF988AFAE945404858E5" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp43DC7737696FA0BE299C2ADC53F2839B" Guid="*">
+                <File Id="fil3C2005F122999F5A79DB09CA604A1A2E" KeyPath="yes" Source="$(var.SourceDir)/share/locale/ca@valencia/LC_MESSAGES/libgsf.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir635B0D51BB94CBCC3F26128C30825E4A" Name="cs">
+            <Directory Id="dir305FCFB6139DC869F346613096C325F6" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp33D7E816EC8E372A19645C4E33759814" Guid="*">
+                <File Id="fil41B83989BC1A062D6B2E87859909496E" KeyPath="yes" Source="$(var.SourceDir)/share/locale/cs/LC_MESSAGES/libgsf.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dirB66020347602DD87F5A163D25F8F2B72" Name="da">
+            <Directory Id="dir3BDE3512BF21777F0E4D951EB1C558F0" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp44D6809AD3EB95A64324E08FDA6E024C" Guid="*">
+                <File Id="fil4AF91F64B9633FC64DC40C6BE6AA1C0F" KeyPath="yes" Source="$(var.SourceDir)/share/locale/da/LC_MESSAGES/libgsf.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dirE02388874A9EB1FDB763002133D3718A" Name="de">
+            <Directory Id="dir52034968C0EC5F2020ADB4F4C8FB0D29" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmpD61C4100258A057C42F695C2EA9D8F85" Guid="*">
+                <File Id="fil2A0C9B0920D26E835A59D2734BE1252D" KeyPath="yes" Source="$(var.SourceDir)/share/locale/de/LC_MESSAGES/libgsf.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dirAABA26307CC94A71AEF1FBE2F4E6446B" Name="el">
+            <Directory Id="dirEC95524D4E514DC4FCEFF7327F0EEA6D" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp21648FA2B30C9343B4AD4331653A9D59" Guid="*">
+                <File Id="filDE7F483BB3469F5921DD00EE949BA485" KeyPath="yes" Source="$(var.SourceDir)/share/locale/el/LC_MESSAGES/libgsf.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir69033E6AB86B0160C4B12D397086B217" Name="en_GB">
+            <Directory Id="dirABC99B5C616C329BE5CD26E67DFCC018" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmpD08799A25F10E3D7338E42090567BB3C" Guid="*">
+                <File Id="fil62E5F2F1807629F8BA728557B42A6DB5" KeyPath="yes" Source="$(var.SourceDir)/share/locale/en_GB/LC_MESSAGES/libgsf.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dirDEEB01590E353229BB6F33B6F66AE88E" Name="eo">
+            <Directory Id="dir2552E1B047683EF2EEC4AD64CE843615" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp781A1A2E778F65A91589AFAD5443805C" Guid="*">
+                <File Id="filB0277EB60BFA637A3CEE909E1995103B" KeyPath="yes" Source="$(var.SourceDir)/share/locale/eo/LC_MESSAGES/libgsf.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dirD5F8CDFB1C08591D7736E2C645197C60" Name="es">
+            <Directory Id="dir07FD5699798CAD78BEF52335E3CB61D0" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmpD0DB4971BA81D470E35B8E16332C333A" Guid="*">
+                <File Id="fil0ECF48E3365C42C68A07D5AE6F1348C1" KeyPath="yes" Source="$(var.SourceDir)/share/locale/es/LC_MESSAGES/libgsf.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dirAE12E7151E260B4A37779F3968387BC1" Name="eu">
+            <Directory Id="dir9DE2BE5E00EA50E788BBF7766D48FDB8" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmpD4302F9700DAC7C6C19F13CC384ECF15" Guid="*">
+                <File Id="filF70B61D37C312DABB7079A8A6DB4396E" KeyPath="yes" Source="$(var.SourceDir)/share/locale/eu/LC_MESSAGES/libgsf.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir4DB980E8188D169C1135F75F3A8F659D" Name="fi">
+            <Directory Id="dirE97456EB3539D7DCE8BF3BA5A374CD17" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmpEA29B77D981E149E9DA1A55E9CFD6A53" Guid="*">
+                <File Id="fil53FA4C44FED82FEED2206431D07C4DA7" KeyPath="yes" Source="$(var.SourceDir)/share/locale/fi/LC_MESSAGES/libgsf.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir4C1498772C83E947CFC7C52A931F8936" Name="fr">
+            <Directory Id="dirD994C64E6F66F503BFBC841CA47EA012" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmpDD21ACC8C76DFE03179CEA20AA21BDAE" Guid="*">
+                <File Id="fil5FDC2E7D32225B7B636155060B58DE59" KeyPath="yes" Source="$(var.SourceDir)/share/locale/fr/LC_MESSAGES/libgsf.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir6E2C2716F9E4555A3B2140DE87093435" Name="gl">
+            <Directory Id="dir7E7D9C9C5D5F33CCD2FAD27ABEA876E1" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmpEB41A1B216E247514F3BA3DF64BBE273" Guid="*">
+                <File Id="fil9D51BAE85AFDCB075DB5B65D7132FBE4" KeyPath="yes" Source="$(var.SourceDir)/share/locale/gl/LC_MESSAGES/libgsf.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dirECB24EFC142174654BF2692DEDFC2BA5" Name="he">
+            <Directory Id="dir47F9583DDB01F4AE7AA5578364B2A290" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp54AFCB001934B2FA8ADEBEBA6E69D779" Guid="*">
+                <File Id="fil1E6ECC1AABB8EB4D95B2839E2D1E5999" KeyPath="yes" Source="$(var.SourceDir)/share/locale/he/LC_MESSAGES/libgsf.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir8A96AD8189B2C0F69E915B3EC28F9D3B" Name="hi">
+            <Directory Id="dir67659FC9A54B83218CE1CDC9C0B79562" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp16ACF912E7F7967C302EB7CEE44B4B58" Guid="*">
+                <File Id="fil86B5F1F77FA65F68E0C62B4BC6EE9D5A" KeyPath="yes" Source="$(var.SourceDir)/share/locale/hi/LC_MESSAGES/libgsf.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir33D96A21417715EB3BE8DECBEEAE3BAD" Name="hr">
+            <Directory Id="dir8531DBE2B6AE826F95AFF3847ACEA832" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmpA1E42B131488E306372AAB1E59BC5655" Guid="*">
+                <File Id="filD7FEEA2F10D07BE2C0DE0605C56BB5D4" KeyPath="yes" Source="$(var.SourceDir)/share/locale/hr/LC_MESSAGES/libgsf.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dirAAB436817888130D082393B7EC721CD7" Name="hu">
+            <Directory Id="dirA7D75F6016BA8F48291D75272F9D92AD" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmpC227F8DE711B441F920C45CAFB5DBB73" Guid="*">
+                <File Id="fil5F908369F5D2D1114326583886265FBE" KeyPath="yes" Source="$(var.SourceDir)/share/locale/hu/LC_MESSAGES/libgsf.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dirA05A4798076547A6A135A136D04A26CF" Name="id">
+            <Directory Id="dir6B4962264FAE97DBCF8E32DC2486C2EF" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp192F79AB887683BF732A47C658EA40BC" Guid="*">
+                <File Id="filF6BACDE496DC7A6B47E7D0826C6FC740" KeyPath="yes" Source="$(var.SourceDir)/share/locale/id/LC_MESSAGES/libgsf.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir1ADC6FB593B6046658760F6010F1C4C5" Name="it">
+            <Directory Id="dir901D8A95FE294CA28B1C91B5B2C25676" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp59DC535A3DEACC667B3FA407A7EC7213" Guid="*">
+                <File Id="filE6A6DC1BEDE20C77A0AB3E1142756D08" KeyPath="yes" Source="$(var.SourceDir)/share/locale/it/LC_MESSAGES/libgsf.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir223DA7F9BEEA06BF821FF88D40C92103" Name="ja">
+            <Directory Id="dir158B6FD5FFD14F2EE2F0D4E9CB61B83D" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmpA512F161B5F6FEDFA6E9252585B3F471" Guid="*">
+                <File Id="fil1264BF5FA9F6070CC1510FE4E126195A" KeyPath="yes" Source="$(var.SourceDir)/share/locale/ja/LC_MESSAGES/libgsf.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dirA6D3B8E7A87F5B0D4B99F218842972D7" Name="ka">
+            <Directory Id="dir6C6B6094CC4B34C7293E5537740691F1" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmpD128404BD1177EBD02FC2C646C8D2F51" Guid="*">
+                <File Id="fil6EAB9B20DCCC4B5874A4AA4D6E808007" KeyPath="yes" Source="$(var.SourceDir)/share/locale/ka/LC_MESSAGES/libgsf.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir8D1E38F4496012B96948194FE99AE39D" Name="kk">
+            <Directory Id="dir7B17EB3D1DC558790CA639A2D62804B4" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp5CA89B0F6DA6532AC4AD90A3F68F5FB7" Guid="*">
+                <File Id="filDCDF0964B63B09B60BB7442E19E9AAA1" KeyPath="yes" Source="$(var.SourceDir)/share/locale/kk/LC_MESSAGES/libgsf.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir2FFD25CF765BB3C03655CEC4CAAEF393" Name="ko">
+            <Directory Id="dirA930C8C3375155D3AC3C30C66AA559D5" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp0B39BA1F484DBC829206B09D68E56472" Guid="*">
+                <File Id="filC8E3EEE44AC13FAD7BF987AFBE5F60F7" KeyPath="yes" Source="$(var.SourceDir)/share/locale/ko/LC_MESSAGES/libgsf.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dirBDE5C881423C71015EE524AF4BDC583D" Name="lt">
+            <Directory Id="dir8FB01A9FA3D9E937F1BFF509246ED973" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp3B7A7B1367407F9A1C0376E2270023E4" Guid="*">
+                <File Id="fil80CAFC1C93D8EB30E9E6C49ED776FF1B" KeyPath="yes" Source="$(var.SourceDir)/share/locale/lt/LC_MESSAGES/libgsf.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir38B2F2E0A1EB7041FFBE5194113E214D" Name="lv">
+            <Directory Id="dir0B482291A77ECED28E8C606039EBDB98" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp74CB2AAB750E8858B86A1083E86B5D30" Guid="*">
+                <File Id="fil2665E548671FABE669D661B68344E298" KeyPath="yes" Source="$(var.SourceDir)/share/locale/lv/LC_MESSAGES/libgsf.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dirDF16A68859E1A2CD22139741E1633ECB" Name="ml">
+            <Directory Id="dir8194EA4AA1C4E0558917A1BBAB132218" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp71D76F2D3695D9875314978D221F1EFA" Guid="*">
+                <File Id="filC43DF5BF13D32ECAE5B96ACE460ED5B3" KeyPath="yes" Source="$(var.SourceDir)/share/locale/ml/LC_MESSAGES/libgsf.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dirFE526D1CDDB6099695EB3DCE2C4747E7" Name="nb">
+            <Directory Id="dirF29D1234BFF3ECF4FFF46180D9A4AE3E" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp923AE4593B7723E402F6125A77FC4C8E" Guid="*">
+                <File Id="filA63CBFC74F275ED02350AB1FDAF22AF2" KeyPath="yes" Source="$(var.SourceDir)/share/locale/nb/LC_MESSAGES/libgsf.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dirEF65002411B1FE4C763F85A7BE93F7E3" Name="nl">
+            <Directory Id="dir2A84F03ECE9DE3C77259B071A0EAD7A4" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp5ECCAB9A950E265235921003F0A08911" Guid="*">
+                <File Id="fil2744A2248B51BB164E939D4D83BC0D8A" KeyPath="yes" Source="$(var.SourceDir)/share/locale/nl/LC_MESSAGES/libgsf.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dirE19AA816273B92B7B0E79D7C2DB6A25E" Name="nn">
+            <Directory Id="dir919A21D7CDB6BC528BD94F053A0101BC" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmpE2209059ED90C6EDDFB070B2F8AC6BA1" Guid="*">
+                <File Id="fil24089585206624244DAFA8223D387EF5" KeyPath="yes" Source="$(var.SourceDir)/share/locale/nn/LC_MESSAGES/libgsf.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir4D827F1499BB668DB132EFEF871A31A0" Name="oc">
+            <Directory Id="dir54021CEF6CF9FCABA43325E3477E52E9" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp05C058DC119EA09DBCBA31C80C0CFA57" Guid="*">
+                <File Id="filA1D1221831C21411CE0864D7B2DAB7DE" KeyPath="yes" Source="$(var.SourceDir)/share/locale/oc/LC_MESSAGES/libgsf.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir6134729BC3AFC9E1FA4D85C556C41591" Name="pa">
+            <Directory Id="dirCDC3D6B96DFFAAFB7E6E69C0B75D6DA9" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp66ADEEFDA1322E44384D2EDE061558C2" Guid="*">
+                <File Id="fil66414DEB7840BEA3E588342A22526DFA" KeyPath="yes" Source="$(var.SourceDir)/share/locale/pa/LC_MESSAGES/libgsf.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dirEDA47CB22E4857A641183D89DAF19598" Name="pl">
+            <Directory Id="dirEEDEFBF0BF81CBA9D21B58356D259AB6" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmpF582536798F0998B36FDBE453356A59A" Guid="*">
+                <File Id="fil7E656FF3671FCF06E3A864D608528157" KeyPath="yes" Source="$(var.SourceDir)/share/locale/pl/LC_MESSAGES/libgsf.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir4365408DBF4C5B42EEAA45F78E5930AA" Name="pt">
+            <Directory Id="dir7733C80D079E125B5E51B41F089F0A03" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp5ABFC3CE0E2364BFA5F49390EA540940" Guid="*">
+                <File Id="fil39689ECC1CB517D966C1832FC5FEFE73" KeyPath="yes" Source="$(var.SourceDir)/share/locale/pt/LC_MESSAGES/libgsf.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir452972B80767AD33B6459F27AB642035" Name="pt_BR">
+            <Directory Id="dirCF1D97EDA532E8572B7DC7B1819A1712" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp44454512E0022BC85D759095764A1A75" Guid="*">
+                <File Id="filFE6A3B5037571E41D7F971BD7735C605" KeyPath="yes" Source="$(var.SourceDir)/share/locale/pt_BR/LC_MESSAGES/libgsf.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir7D993C698702656A714D07292952E1A7" Name="ro">
+            <Directory Id="dir5C26179E1895CB73482C7228D1C03CFD" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmpFAFCA7E76AC95C3158F41CB4F6D2371C" Guid="*">
+                <File Id="filB78542F7D1A1B390E1809A3CEE2F5A15" KeyPath="yes" Source="$(var.SourceDir)/share/locale/ro/LC_MESSAGES/libgsf.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir4D233460216E413D8A545C9A6F627CD7" Name="ru">
+            <Directory Id="dirBD3CBF50234E40E0CFDD220849A5BEB2" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmpC3150E13B51F0A15D92CDAD3B4190555" Guid="*">
+                <File Id="fil5A06D4FC1CD9E07BEC165D74732576D5" KeyPath="yes" Source="$(var.SourceDir)/share/locale/ru/LC_MESSAGES/libgsf.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir1883EA273E4109BD37F54B3B8FEA49F4" Name="sk">
+            <Directory Id="dir940E23A6374D7908B0674CD515F6AE86" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmpC02DA98F2D0D1CB9E873CB43119BE2E0" Guid="*">
+                <File Id="fil9E87EFF826BA0352960F14D802403E1C" KeyPath="yes" Source="$(var.SourceDir)/share/locale/sk/LC_MESSAGES/libgsf.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir4CDA8B86B1E2E3C5D8E89F0E5ADF061A" Name="sl">
+            <Directory Id="dir4AE269330E4AAC142A2D52DBA8771960" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp4AD4FFEAD7826438109A2268CBC38B5C" Guid="*">
+                <File Id="fil0FF0EABE5CA2C1C6DCBFB2896FF2F0FA" KeyPath="yes" Source="$(var.SourceDir)/share/locale/sl/LC_MESSAGES/libgsf.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir9B23C5FFF5692D0FFDAC1CEFBC1FB1D6" Name="sr">
+            <Directory Id="dir114BDBC142EF34184E720ACD5ADEAE9A" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmpEA7BE5FA904FE18D224FF46FADC1916F" Guid="*">
+                <File Id="fil5F33E3555A4CFA36A0F7BA4996D7808A" KeyPath="yes" Source="$(var.SourceDir)/share/locale/sr/LC_MESSAGES/libgsf.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir95BC0A219BB176C0CE397BCC118D0443" Name="sr@latin">
+            <Directory Id="dir1629F160E1B9CE417D3D9C0D32B13BEF" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmpB9F797821AB6C12DA0CC70D745CCB80E" Guid="*">
+                <File Id="fil139EF0B1C125B8A69DB4FEFE52B54DEE" KeyPath="yes" Source="$(var.SourceDir)/share/locale/sr@latin/LC_MESSAGES/libgsf.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dirEF9C5B14D26853AB61D518655A2865F2" Name="sv">
+            <Directory Id="dir47DEE6E70140E7E6F61FC494F7C607A7" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp548C22331850DA1803E9103054D1B770" Guid="*">
+                <File Id="filC24D539CFEA75C230C94F5A065077531" KeyPath="yes" Source="$(var.SourceDir)/share/locale/sv/LC_MESSAGES/libgsf.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir48365385E3CD065CAA3DEB56F7A4A55B" Name="ta">
+            <Directory Id="dir9897DD344751286027B93A41FDD25AF2" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp8E32B96BA4B727CF68B02B86E824A464" Guid="*">
+                <File Id="fil50A8C7D4C2D289CAE3193EF4EB1F2CE4" KeyPath="yes" Source="$(var.SourceDir)/share/locale/ta/LC_MESSAGES/libgsf.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir38C8C4CD3D36A757301100EB61A82A77" Name="tg">
+            <Directory Id="dir01A627FD369A672920CDE7A2F7A3394C" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp78AEC476033B9A220CA244F7135400F4" Guid="*">
+                <File Id="filAEC9AC1385B02C40E448B8D177CBD865" KeyPath="yes" Source="$(var.SourceDir)/share/locale/tg/LC_MESSAGES/libgsf.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir95C4722A4A2997B3C3A7DB4E6EFD821A" Name="th">
+            <Directory Id="dir21AD8527FC1109F8BDF9B419B8A40C59" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp5A387732931FE8311A53BE9FAB83053B" Guid="*">
+                <File Id="filC0CE3140CC324C57917EE94C4CDC4A0C" KeyPath="yes" Source="$(var.SourceDir)/share/locale/th/LC_MESSAGES/libgsf.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir0E6C5AAFACD39A0FFC2EA5AF7EF9161E" Name="tr">
+            <Directory Id="dir89E84C0D2E13717FF3900F3FE04C6C5A" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmpFB41A4A99C5EA33D6E0D946630171F57" Guid="*">
+                <File Id="fil9E3DDCCA2363FF7C2BFF21FF394F74F4" KeyPath="yes" Source="$(var.SourceDir)/share/locale/tr/LC_MESSAGES/libgsf.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir565FEB548A9CC46D38A236973E437EF7" Name="uk">
+            <Directory Id="dirD17502DBCBD9C7CBFAAB467816AFAF22" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp1BCE135AF3B900107726C26CC91C4F9C" Guid="*">
+                <File Id="fil6F6328624A16A3B1F318409F617E2C31" KeyPath="yes" Source="$(var.SourceDir)/share/locale/uk/LC_MESSAGES/libgsf.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir061C6302FB2BB6F82A5D1C3AA9ECBD7A" Name="zh_CN">
+            <Directory Id="dir4083D4759B344CD66F87FD6B935A94C0" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp7D3EC6C8A6E6B9C668B411345B0D85E3" Guid="*">
+                <File Id="filF172BE11534A24D53DC41C90066DF754" KeyPath="yes" Source="$(var.SourceDir)/share/locale/zh_CN/LC_MESSAGES/libgsf.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dirBF160405E5E2CEDA48B4B04740EAF37E" Name="zh_HK">
+            <Directory Id="dirDCA5060B05C8C3FBB6A1B33358148213" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp2C6E1B82F4F59584D876A1CFE3506145" Guid="*">
+                <File Id="filDA942CD24C5C867DB74233FE3F70EE6E" KeyPath="yes" Source="$(var.SourceDir)/share/locale/zh_HK/LC_MESSAGES/libgsf.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="dir9D1D935ABF37FBC9946C253350E05EE9" Name="zh_TW">
+            <Directory Id="dirA52F70A30BCCDF368101909ED5D27DC8" Name="LC_MESSAGES">
+              <Component Win64="$(var.Win64)" Id="cmp0B9784DEED9A2B4018ED779A925B1BE7" Guid="*">
+                <File Id="fil9A31928E1A18D5BBBAEB48CDDC9AD2DA" KeyPath="yes" Source="$(var.SourceDir)/share/locale/zh_TW/LC_MESSAGES/libgsf.mo"/>
+              </Component>
+            </Directory>
+          </Directory>
+        </Directory>
+        <Directory Id="dir633D58BC89D36D7A8FDF350C800BE7D5" Name="man">
+          <Directory Id="dirCD2EA7A0F10F0679F41B0DBACCB83CD9" Name="man1">
+            <Component Win64="$(var.Win64)" Id="cmp3E341F9F5DC35F9FCCD589833BB3827F" Guid="*">
+              <File Id="fil736125E9E2813D8A26EEE05193D336B1" KeyPath="yes" Source="$(var.SourceDir)/share/man/man1/gsf-office-thumbnailer.1"/>
+            </Component>
+            <Component Win64="$(var.Win64)" Id="cmp512933711564493F8912780FA2A7C951" Guid="*">
+              <File Id="filA4B6390CBEB5055DDF4E6519193E9DAA" KeyPath="yes" Source="$(var.SourceDir)/share/man/man1/gsf-vba-dump.1"/>
+            </Component>
+            <Component Win64="$(var.Win64)" Id="cmp90DEF8DFB5DD32FE0AA1C639E4B403E3" Guid="*">
+              <File Id="fil10151DF6749D916814FEE102954072A0" KeyPath="yes" Source="$(var.SourceDir)/share/man/man1/gsf.1"/>
+            </Component>
+          </Directory>
+        </Directory>
+        <Directory Id="dirF043FA94A3A21F7B2EAB502F5D015405" Name="thumbnailers">
+          <Component Win64="$(var.Win64)" Id="cmpB998E12116ED08E3721AAE3E1C0C9B01" Guid="*">
+            <File Id="fil9DD37FF69AA6B5548E4D93A64711B457" KeyPath="yes" Source="$(var.SourceDir)/share/thumbnailers/gsf-office.thumbnailer"/>
+          </Component>
+        </Directory>
+      </Directory>
+    </DirectoryRef>
+  </Fragment>
+  <Fragment>
+    <ComponentGroup Id="CG.libgsf">
+      <ComponentGroupRef Id="CG.bzip2"/>
+      <ComponentGroupRef Id="CG.glib2"/>
+      <ComponentGroupRef Id="CG.libxml2"/>
+      <ComponentRef Id="cmp704E443DDD37BEADB229AE4CCD4D8048"/>
+      <ComponentRef Id="cmpB71B51C49A7A4CA6146773A49812E719"/>
+      <ComponentRef Id="cmp46FA0A02DA95D82AAC95CDB58AB6F9F3"/>
+      <ComponentRef Id="cmp2964F1CE78DCA80D8F51738D46641609"/>
+      <ComponentRef Id="cmpE8C2FE9881DAE3C4642F4A9AC318A84A"/>
+      <ComponentRef Id="cmpEE19787FE68E20706BCBDCB870488E62"/>
+      <ComponentRef Id="cmp167B44CE1E040EBCEF679955CE7CAEE4"/>
+      <ComponentRef Id="cmp243D767E2166D725F6B276ADF2977FEA"/>
+      <ComponentRef Id="cmp43DC7737696FA0BE299C2ADC53F2839B"/>
+      <ComponentRef Id="cmp33D7E816EC8E372A19645C4E33759814"/>
+      <ComponentRef Id="cmp44D6809AD3EB95A64324E08FDA6E024C"/>
+      <ComponentRef Id="cmpD61C4100258A057C42F695C2EA9D8F85"/>
+      <ComponentRef Id="cmp21648FA2B30C9343B4AD4331653A9D59"/>
+      <ComponentRef Id="cmpD08799A25F10E3D7338E42090567BB3C"/>
+      <ComponentRef Id="cmp781A1A2E778F65A91589AFAD5443805C"/>
+      <ComponentRef Id="cmpD0DB4971BA81D470E35B8E16332C333A"/>
+      <ComponentRef Id="cmpD4302F9700DAC7C6C19F13CC384ECF15"/>
+      <ComponentRef Id="cmpEA29B77D981E149E9DA1A55E9CFD6A53"/>
+      <ComponentRef Id="cmpDD21ACC8C76DFE03179CEA20AA21BDAE"/>
+      <ComponentRef Id="cmpEB41A1B216E247514F3BA3DF64BBE273"/>
+      <ComponentRef Id="cmp54AFCB001934B2FA8ADEBEBA6E69D779"/>
+      <ComponentRef Id="cmp16ACF912E7F7967C302EB7CEE44B4B58"/>
+      <ComponentRef Id="cmpA1E42B131488E306372AAB1E59BC5655"/>
+      <ComponentRef Id="cmpC227F8DE711B441F920C45CAFB5DBB73"/>
+      <ComponentRef Id="cmp192F79AB887683BF732A47C658EA40BC"/>
+      <ComponentRef Id="cmp59DC535A3DEACC667B3FA407A7EC7213"/>
+      <ComponentRef Id="cmpA512F161B5F6FEDFA6E9252585B3F471"/>
+      <ComponentRef Id="cmpD128404BD1177EBD02FC2C646C8D2F51"/>
+      <ComponentRef Id="cmp5CA89B0F6DA6532AC4AD90A3F68F5FB7"/>
+      <ComponentRef Id="cmp0B39BA1F484DBC829206B09D68E56472"/>
+      <ComponentRef Id="cmp3B7A7B1367407F9A1C0376E2270023E4"/>
+      <ComponentRef Id="cmp74CB2AAB750E8858B86A1083E86B5D30"/>
+      <ComponentRef Id="cmp71D76F2D3695D9875314978D221F1EFA"/>
+      <ComponentRef Id="cmp923AE4593B7723E402F6125A77FC4C8E"/>
+      <ComponentRef Id="cmp5ECCAB9A950E265235921003F0A08911"/>
+      <ComponentRef Id="cmpE2209059ED90C6EDDFB070B2F8AC6BA1"/>
+      <ComponentRef Id="cmp05C058DC119EA09DBCBA31C80C0CFA57"/>
+      <ComponentRef Id="cmp66ADEEFDA1322E44384D2EDE061558C2"/>
+      <ComponentRef Id="cmpF582536798F0998B36FDBE453356A59A"/>
+      <ComponentRef Id="cmp5ABFC3CE0E2364BFA5F49390EA540940"/>
+      <ComponentRef Id="cmp44454512E0022BC85D759095764A1A75"/>
+      <ComponentRef Id="cmpFAFCA7E76AC95C3158F41CB4F6D2371C"/>
+      <ComponentRef Id="cmpC3150E13B51F0A15D92CDAD3B4190555"/>
+      <ComponentRef Id="cmpC02DA98F2D0D1CB9E873CB43119BE2E0"/>
+      <ComponentRef Id="cmp4AD4FFEAD7826438109A2268CBC38B5C"/>
+      <ComponentRef Id="cmpEA7BE5FA904FE18D224FF46FADC1916F"/>
+      <ComponentRef Id="cmpB9F797821AB6C12DA0CC70D745CCB80E"/>
+      <ComponentRef Id="cmp548C22331850DA1803E9103054D1B770"/>
+      <ComponentRef Id="cmp8E32B96BA4B727CF68B02B86E824A464"/>
+      <ComponentRef Id="cmp78AEC476033B9A220CA244F7135400F4"/>
+      <ComponentRef Id="cmp5A387732931FE8311A53BE9FAB83053B"/>
+      <ComponentRef Id="cmpFB41A4A99C5EA33D6E0D946630171F57"/>
+      <ComponentRef Id="cmp1BCE135AF3B900107726C26CC91C4F9C"/>
+      <ComponentRef Id="cmp7D3EC6C8A6E6B9C668B411345B0D85E3"/>
+      <ComponentRef Id="cmp2C6E1B82F4F59584D876A1CFE3506145"/>
+      <ComponentRef Id="cmp0B9784DEED9A2B4018ED779A925B1BE7"/>
+      <ComponentRef Id="cmp3E341F9F5DC35F9FCCD589833BB3827F"/>
+      <ComponentRef Id="cmp512933711564493F8912780FA2A7C951"/>
+      <ComponentRef Id="cmp90DEF8DFB5DD32FE0AA1C639E4B403E3"/>
+      <ComponentRef Id="cmpB998E12116ED08E3721AAE3E1C0C9B01"/>
+    </ComponentGroup>
+  </Fragment>
+</Include>
+<?ignore generated with msitools 0.106.171-86a7-dirty ?>
+<?ignore build-native/tools/wixl/wixl-heat -i --var var.SourceDir -p /usr/x86_64-w64-mingw32/sys-root/mingw/ --directory-ref INSTALLDIR --win64 --component-group CG.libgsf --require bzip2 --require glib2 --require libxml2 ?>

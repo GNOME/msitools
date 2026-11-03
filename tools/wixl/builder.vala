@@ -93,7 +93,7 @@ namespace Wixl {
         WixRoot root;
         MsiDatabase db;
         HashTable<string, string> variables;
-        HashTable<string, string> wix_variables;
+        HashTable<string, WixVariable> wix_variables;
         GenericSet<string> environment_ids;
         GenericSet<string> file_ids;
         List<File> includedirs;
@@ -105,7 +105,7 @@ namespace Wixl {
 
         construct {
             variables = new HashTable<string, string> (str_hash, str_equal);
-            wix_variables = new HashTable<string, string> (str_hash, str_equal);
+            wix_variables = new HashTable<string, WixVariable> (str_hash, str_equal);
             environment_ids = new GenericSet<string> (str_hash, str_equal);
             file_ids = new GenericSet<string> (str_hash, str_equal);
         }
@@ -487,6 +487,7 @@ namespace Wixl {
                     load_extension_file (Extension.UI, file);
             }
 
+            collect_wix_variables ();
             db = new MsiDatabase (arch, extensions);
 
             foreach (var r in roots) {
@@ -505,10 +506,41 @@ namespace Wixl {
             return db;
         }
 
+        // Windows Installer keeps the summary information code page
+        // (PID_CODEPAGE) in a 16 bit field and refuses packages that use a
+        // Unicode code page there: msiexec reports 1620 "This installation
+        // package could not be opened" and silently drops every summary
+        // string.  The string table code page is a separate setting, so a
+        // UTF-8 database can still keep 65001 for the payload.
+        private const int summary_codepage = 1252;
+
+        private static bool is_ansi_codepage (int codepage) {
+            switch (codepage) {
+            case 1200: case 1201: case 12000: case 12001:
+            case 65000: case 65001:
+                return false;
+
+            default:
+                return true;
+            }
+        }
+
         public override void visit_product (WixProduct product) throws GLib.Error {
             if (product.Codepage != null) {
-                db.info.set_codepage (int.parse (product.Codepage));
-                db.codepage = int.parse (product.Codepage);
+                int codepage;
+                if (!int.try_parse (product.Codepage, out codepage))
+                    throw new Wixl.Error.FAILED ("Product Codepage '%s' is not a number",
+                                                 product.Codepage);
+
+                if (!is_ansi_codepage (codepage)) {
+                    warning ("codepage %d is not supported by Windows Installer "
+                             + "for the summary information, using %d instead",
+                             codepage, summary_codepage);
+                    db.info.set_codepage (summary_codepage);
+                } else {
+                    db.info.set_codepage (codepage);
+                }
+                db.codepage = codepage;
             }
 
             if (product.Name != null && db.info.get_subject () == null)
@@ -1099,8 +1131,86 @@ namespace Wixl {
             COMPRESSED = 1 << 13
         }
 
+        void collect_wix_variables () throws GLib.Error {
+            wix_variables = new HashTable<string, WixVariable> (str_hash, str_equal);
+            var vars = (WixVariable[]) get_elements<WixVariable> ();
+            foreach (var v in vars) {
+                if (v.Id == null)
+                    throw new Wixl.Error.FAILED ("WixVariable without Id");
+                var prev = wix_variables.lookup (v.Id);
+                if (prev == null) {
+                    wix_variables.insert (v.Id, v);
+                } else if (parse_yesno (prev.Overridable) && !parse_yesno (v.Overridable)) {
+                    // a non-overridable definition replaces an overridable one
+                    wix_variables.insert (v.Id, v);
+                } else if (!parse_yesno (v.Overridable) ||
+                           (parse_yesno (prev.Overridable) && parse_yesno (v.Overridable))) {
+                    throw new Wixl.Error.FAILED ("WixVariable '%s' is defined twice", v.Id);
+                }
+                // else the earlier non-overridable definition wins
+            }
+
+            // the UI extension used to take License.rtf from next to the
+            // sources; keep that, but WiX takes it from WixUILicenseRtf
+            const string license = "WixUILicenseRtf";
+            if (Extension.UI in extensions &&
+                variables.lookup (license) == null && wix_variables.lookup (license) == null) {
+                foreach (var p in path) {
+                    var file = p.get_child ("License.rtf");
+                    if (!file.query_exists ())
+                        continue;
+                    warning ("using %s, set %s to choose the license", file.get_path (), license);
+                    var v = new WixVariable ();
+                    v.Id = license;
+                    v.Value = file.get_path ();
+                    v.Overridable = "yes";
+                    wix_variables.insert (license, v);
+                    break;
+                }
+            }
+        }
+
+        // like WiX's binder, replace !(wix.Name) and !(wix.Name=default)
+        // with a -D define or a WixVariable value. A -D define only
+        // overrides a WixVariable that is Overridable="yes".
+        string expand_wix_variables (string str) throws GLib.Error {
+            if (!str.contains ("!(wix."))
+                return str;
+
+            var re = new Regex ("""!\(wix\.([A-Za-z_][A-Za-z0-9_.]*)(?:=([^)]*))?\)""");
+            var result = new StringBuilder ();
+            int end = 0;
+            MatchInfo info;
+            re.match (str, 0, out info);
+            while (info.matches ()) {
+                int start, stop;
+                info.fetch_pos (0, out start, out stop);
+                var name = info.fetch (1);
+                var def = info.fetch (2);
+                var v = wix_variables.lookup (name);
+                string? value;
+                if (v != null && !parse_yesno (v.Overridable))
+                    value = v.Value;
+                else
+                    value = variables.lookup (name) ?? (v != null ? v.Value : null);
+                if (value == null && def != null && def != "")
+                    value = def;
+                if (value == null)
+                    throw new Wixl.Error.FAILED ("WixVariable '%s' is not defined", name);
+
+                result.append (str[end:start]);
+                result.append (value);
+                end = stop;
+                info.next ();
+            }
+            result.append (str[end:str.length]);
+
+            return result.str;
+        }
+
         File? find_file (string name, out FileInfo info) throws GLib.Error {
             info = null;
+            name = expand_wix_variables (name);
 
             if (Path.is_absolute (name)) {
                 var file = File.new_for_path (name);
@@ -2321,7 +2431,8 @@ namespace Wixl {
         public override void visit_wix_variable (WixVariable variable) throws GLib.Error {
             if (variable.Id == null)
                 throw new Wixl.Error.FAILED ("WixVariable requires an Id");
-            wix_variables.insert (variable.Id, variable.Value ?? "");
+            if (wix_variables.lookup (variable.Id) == null)
+                wix_variables.insert (variable.Id, variable);
         }
 
         public override void visit_binary (WixBinary binary) throws GLib.Error {
@@ -2424,9 +2535,10 @@ namespace Wixl {
 
                 // WixUILicenseRtf overrides the UI extension's default
                 // license, as it does in WiX
+                var license_variable = wix_variables.lookup ("WixUILicenseRtf");
                 if ((source_file == "ui/License.rtf" || source_file == "License.rtf") &&
-                    wix_variables.contains ("WixUILicenseRtf")) {
-                    var license = wix_variables.lookup ("WixUILicenseRtf");
+                    license_variable != null) {
+                    var license = license_variable.Value;
                     if (license != null && license != "")
                         source_file = license;
                 }

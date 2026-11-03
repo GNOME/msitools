@@ -6,7 +6,7 @@
         <UI>
             <Dialog Id="MaintenanceWelcomeDlg" Width="370" Height="270" Title="[ProductName] Setup">
                 <Control Id="Next" Type="PushButton" X="236" Y="243" Width="56" Height="17" Default="yes" Text="Next">
-                    <Publish Event="SpawnWaitDialog" Value="WaitForCostingDlg" Condition="1 OR CostingComplete = 1" />
+                    <Publish Event="SpawnWaitDialog" Value="WaitForCostingDlg" Condition="CostingComplete = 1" />
                 </Control>
                 <Control Id="Cancel" Type="PushButton" X="304" Y="243" Width="56" Height="17" Cancel="yes" Text="Cancel">
                     <Publish Event="SpawnDialog" Value="CancelDlg" />

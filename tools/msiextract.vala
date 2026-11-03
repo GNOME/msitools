@@ -1,5 +1,3 @@
-using Posix;
-
 static bool version;
 static bool list_only;
 [CCode (array_length = false, array_null_terminated = true)]
@@ -137,7 +135,7 @@ public void extract (string filename) throws GLib.Error {
     }
 
     if (list_only)
-        exit (0);
+        Process.exit (0);
 
     query = new Libmsi.Query (db, "SELECT * FROM `Media`");
     query.execute ();
@@ -166,19 +164,19 @@ public int main (string[] args) {
         opt_context.parse (ref args);
     } catch (OptionError.BAD_VALUE err) {
         GLib.stdout.printf (opt_context.get_help (true, null));
-        exit (1);
+        Process.exit (1);
     } catch (OptionError error) {
         warning (error.message);
     }
 
     if (version) {
         GLib.stdout.printf ("%s\n", Config.PACKAGE_VERSION);
-        exit (0);
+        Process.exit (0);
     }
 
     if (files.length < 1) {
         GLib.stderr.printf (_("Please specify input files.\n"));
-        exit (1);
+        Process.exit (1);
     }
 
     if (directory == null)
@@ -189,7 +187,7 @@ public int main (string[] args) {
             extract (file);
     } catch (GLib.Error error) {
         GLib.stderr.printf ("%s\n", error.message);
-        exit (1);
+        Process.exit (1);
     }
 
     return 0;
