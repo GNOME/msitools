@@ -109,7 +109,8 @@ Binary" ]
 @test "msibuild - update _SummaryInformation table" {
   run "$msibuild" -i out.msi _SummaryInformation.idt
   run "$msiinfo" suminfo out.msi
-  [ "$output" = "Title: Installation Database
+  [ "$output" = "Codepage: 1252 (4e4)
+Title: Installation Database
 Subject: Acme's Foobar 1.0 Installer
 Author: Acme Ltd.
 Keywords: Installer
