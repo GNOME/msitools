@@ -351,10 +351,40 @@ EOF
   run "$wixl" -o out.msi codepage.wxs
   [ "$status" -eq 0 ]
   test -f out.msi
+  # Windows Installer refuses a Unicode code page in the summary information
+  # (msiexec reports 1620), so wixl falls back to an ANSI one there
+  echo "$output" | grep -q "codepage 65001 is not supported by Windows Installer"
 
-  # verify the non-ASCII filename is preserved in the MSI
+  run "$msiinfo" suminfo out.msi
+  echo "$output" | grep -q "^Codepage: 1252 (4e4)$"
+
+  # the string table keeps the requested code page...
+  run "$msiinfo" export out.msi _ForceCodepage
+  echo "$output" | grep -q "^65001"
+
+  # ...so the non-ASCII filename is preserved in the MSI
   run "$msiinfo" export out.msi File
   echo "$output" | grep -q "hello_日本語.txt"
+}
+
+@test "wixl - ANSI codepage" {
+  cd wixl
+  run "$wixl" -D Codepage=932 -o out.msi codepage-attr.wxs
+  [ "$status" -eq 0 ]
+
+  # an ANSI code page is used for the summary information and the strings
+  run "$msiinfo" suminfo out.msi
+  echo "$output" | grep -q "^Codepage: 932 (3a4)$"
+  run "$msiinfo" export out.msi _ForceCodepage
+  echo "$output" | grep -q "^932"
+}
+
+@test "wixl - invalid codepage" {
+  cd wixl
+  run "$wixl" -D Codepage=utf8 -o out.msi codepage-attr.wxs
+  [ "$status" -eq 1 ]
+  echo "$output" | grep -q "Product Codepage 'utf8' is not a number"
+  [ ! -f out.msi ]
 }
 
 @test "wixl - short directory and file names" {

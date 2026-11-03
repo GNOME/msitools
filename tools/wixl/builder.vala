@@ -506,10 +506,41 @@ namespace Wixl {
             return db;
         }
 
+        // Windows Installer keeps the summary information code page
+        // (PID_CODEPAGE) in a 16 bit field and refuses packages that use a
+        // Unicode code page there: msiexec reports 1620 "This installation
+        // package could not be opened" and silently drops every summary
+        // string.  The string table code page is a separate setting, so a
+        // UTF-8 database can still keep 65001 for the payload.
+        private const int summary_codepage = 1252;
+
+        private static bool is_ansi_codepage (int codepage) {
+            switch (codepage) {
+            case 1200: case 1201: case 12000: case 12001:
+            case 65000: case 65001:
+                return false;
+
+            default:
+                return true;
+            }
+        }
+
         public override void visit_product (WixProduct product) throws GLib.Error {
             if (product.Codepage != null) {
-                db.info.set_codepage (int.parse (product.Codepage));
-                db.codepage = int.parse (product.Codepage);
+                int codepage;
+                if (!int.try_parse (product.Codepage, out codepage))
+                    throw new Wixl.Error.FAILED ("Product Codepage '%s' is not a number",
+                                                 product.Codepage);
+
+                if (!is_ansi_codepage (codepage)) {
+                    warning ("codepage %d is not supported by Windows Installer "
+                             + "for the summary information, using %d instead",
+                             codepage, summary_codepage);
+                    db.info.set_codepage (summary_codepage);
+                } else {
+                    db.info.set_codepage (codepage);
+                }
+                db.codepage = codepage;
             }
 
             if (product.Name != null && db.info.get_subject () == null)

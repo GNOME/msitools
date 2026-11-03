@@ -2,6 +2,8 @@ v0.106
 ======
 
 - !75 Support <Condition> inside <Feature> and <Component>
+- wixl: write an ANSI code page in the summary information so that
+  Windows Installer can open packages built with Codepage=65001
 
 v0.105
 ======
