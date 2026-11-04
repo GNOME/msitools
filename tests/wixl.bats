@@ -313,6 +313,27 @@ EOF
   [ "$out" = '          <File Id="fil18D0F9984B0565992BE4B64E573B4237" KeyPath="yes" Source="SourceDir/a/file"/>' ]
 }
 
+@test "wixl-heat - trailing separators" {
+  mkdir -p test/a testing
+  touch test/a/file testing/file
+
+  # the prefix may be given with or without its trailing separator
+  out1=$(printf 'test/a/file\n' | "$wixlheat" -p test/ | grep -E '<Directory|<File')
+  out2=$(printf 'test/a/file\n' | "$wixlheat" -p test | grep -E '<Directory|<File')
+  [ "$out1" = "$out2" ]
+
+  # a directory listed with a trailing separator must not produce an empty
+  # Directory name or a doubled separator in the source path
+  out=$(printf 'test/a/\ntest/a/file\n' | "$wixlheat" -p test/)
+  ! echo "$out" | grep -q 'Name=""'
+  ! echo "$out" | grep -q 'Source="SourceDir//'
+  [ "$(echo "$out" | grep -c '<Directory Id=')" -eq 1 ]
+
+  # a sibling that only shares the prefix text is not matched
+  out=$(printf 'testing/file\n' | "$wixlheat" -p test)
+  ! echo "$out" | grep -q '<File'
+}
+
 @test "wixl - XML error" {
   cd wixl
 
