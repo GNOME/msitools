@@ -191,7 +191,6 @@ static int mime2utf(int x)
 
 char *decode_streamname(const char *in)
 {
-    unsigned count = 0;
     const uint8_t *p = (const uint8_t *)in;
     char *out;
     uint8_t *q;
@@ -208,14 +207,12 @@ char *decode_streamname(const char *in)
             *q++ = mime2utf(p[2]&0x7f);
             *q++ = mime2utf(p[1]^0xa0);
             p += 3;
-            count += 2;
             continue;
         }
         if( ch == 0xe4 && p[1] == 0xa0 ) {
             /* UTF-8 encoding of 0x4800..0x483f.  */
             *q++ = mime2utf(p[2]&0x7f);
             p += 3;
-            count++;
             continue;
         }
         *q++ = *p++;
@@ -228,7 +225,6 @@ char *decode_streamname(const char *in)
         if( ch >= 0xf0) {
             *q++ = *p++;
         }
-        count++;
     }
     *q = 0;
     return out;
