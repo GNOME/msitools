@@ -1748,14 +1748,19 @@ static int find_insert_index( LibmsiTableView *tv, LibmsiRecord *rec )
 static unsigned table_view_insert_row( LibmsiView *view, LibmsiRecord *rec, unsigned row, bool temporary )
 {
     LibmsiTableView *tv = (LibmsiTableView*)view;
-    unsigned i, r;
+    unsigned i, r, column = 0;
 
     TRACE("%p %p %s\n", tv, rec, temporary ? "true" : "false" );
 
     /* check that the key is unique - can we find a matching row? */
-    r = table_validate_new( tv, rec, NULL );
+    r = table_validate_new( tv, rec, &column );
     if( r != LIBMSI_RESULT_SUCCESS )
+    {
+        view->error = r == LIBMSI_RESULT_INVALID_DATA ?
+                      LIBMSI_DB_ERROR_REQUIRED : LIBMSI_DB_ERROR_DUPLICATEKEY;
+        view->error_column = column < tv->num_cols ? tv->columns[column].colname : NULL;
         return LIBMSI_RESULT_FUNCTION_FAILED;
+    }
 
     if (row == -1)
         row = find_insert_index( tv, rec );

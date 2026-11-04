@@ -276,6 +276,18 @@ struct _LibmsiView
     const char *error_column;
 };
 
+static inline void msi_view_clear_error(LibmsiView *view)
+{
+    view->error = LIBMSI_DB_ERROR_SUCCESS;
+    view->error_column = NULL;
+}
+
+static inline void msi_view_propagate_error(LibmsiView *view, const LibmsiView *child)
+{
+    view->error = child->error;
+    view->error_column = child->error_column;
+}
+
 #define MSI_MAX_PROPS 20
 
 enum LibmsiOLEVariantType

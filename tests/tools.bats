@@ -20,7 +20,16 @@ load common
   run "$msibuild" qerror2.msi -q "INSERT INTO T (A) VALUES ('dup')"
   [ "$status" -ne 0 ]
   [[ "$output" == *"error: cannot execute SQL query"* ]]
+  [[ "$output" == *'duplicate key in column "A"'* ]]
   [[ "$output" != *"Usage: msibuild"* ]]
+}
+
+@test "msibuild - SQL required value error is reported" {
+  run "$msibuild" qerror3.msi -q "CREATE TABLE T (A CHAR(32) NOT NULL, B CHAR(32) PRIMARY KEY B)"
+  [ "$status" -eq 0 ]
+  run "$msibuild" qerror3.msi -q "INSERT INTO T (B) VALUES ('x')"
+  [ "$status" -ne 0 ]
+  [[ "$output" == *'required value missing in column "A"'* ]]
 }
 
 @test "msibuild - invalid command line" {
