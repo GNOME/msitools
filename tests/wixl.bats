@@ -1067,6 +1067,35 @@ EOF2
   echo "$output" | grep -F "Component C1: unsupported element util:File"
 }
 
+@test "wixl - RegistryValue type is case-insensitive" {
+  cat >registry-type.wxs <<'EOF2'
+<?xml version="1.0" encoding="utf-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+  <Product Id="ABCDDCBA-86C7-4D14-AEC0-86416A69ABDE"
+           Name="Test" Version="1.0.0" Manufacturer="Test" Language="1033"
+           UpgradeCode="12345678-1234-1234-1234-123456789012">
+    <Package InstallerVersion="200" Compressed="yes" />
+    <Directory Id="TARGETDIR" Name="SourceDir">
+      <Component Id="C1" Guid="ABCDDCBA-83F1-4F22-985B-FDB3C8ABD471">
+        <RegistryValue Root="HKLM" Key="Software\Test" Name="v"
+                       Type="multiString" Value="a" KeyPath="yes" />
+      </Component>
+    </Directory>
+    <Feature Id="Main" Level="1">
+      <ComponentRef Id="C1" />
+    </Feature>
+  </Product>
+</Wix>
+EOF2
+  run "$wixl" -o out.msi registry-type.wxs
+  [ "$status" -eq 0 ]
+
+  sed 's/Type="multiString"/Type="bogus"/' registry-type.wxs > bad-type.wxs
+  run "$wixl" -o out.msi bad-type.wxs
+  [ "$status" -eq 1 ]
+  echo "$output" | grep -F "Can't convert string 'bogus' to enum"
+}
+
 @test "wixl - ServiceConfig" {
   mkdir -p SourceDir
   echo "hello" > SourceDir/svc.exe
