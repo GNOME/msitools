@@ -44,6 +44,8 @@ wixl = executable('wixl',
   install: true,
 )
 
+install_man('wixl.1')
+
 wixl_heat = executable('wixl-heat',
   'wixl-heat.vala',
   config_h,
