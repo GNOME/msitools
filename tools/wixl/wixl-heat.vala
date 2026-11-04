@@ -55,10 +55,15 @@ public int main (string[] args) {
         warning (error.message);
     }
 
-    if (prefix == null) {
+    if (prefix == null || prefix == "") {
         GLib.stderr.printf ("Please specify source dir prefix\n");
         return 1;
     }
+
+    // the prefix may be given with or without its trailing separator; strip
+    // it, so matching and the generated ids do not depend on it
+    while (prefix.length > 1 && prefix.has_suffix (Path.DIR_SEPARATOR_S))
+        prefix = prefix[0 : prefix.length - 1];
     if (vardir != null)
         sourcedir = "$(%s)".printf (vardir);
 
@@ -84,7 +89,16 @@ public int main (string[] args) {
             continue;
 
         var file = line[prefix.length:line.length];
-        if (filtered (file))
+        // don't match a sibling that only shares the prefix text
+        if (file != "" && !file.has_prefix (Path.DIR_SEPARATOR_S))
+            continue;
+        // ignore separators around the entry, so a directory listed as
+        // "usr/bin/" yields the same output as "usr/bin"
+        while (file.has_prefix (Path.DIR_SEPARATOR_S))
+            file = file[1:file.length];
+        while (file.has_suffix (Path.DIR_SEPARATOR_S))
+            file = file[0 : file.length - 1];
+        if (file == "" || filtered (file))
             continue;
 
         var gfile = File.new_for_path (line);
