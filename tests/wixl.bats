@@ -1112,6 +1112,81 @@ EOF2
   echo "$output" | grep -F "Can't convert string 'bogus' to enum"
 }
 
+@test "wixl - MultiStringValue registry values" {
+  cat >multistring.wxs <<'EOF2'
+<?xml version="1.0" encoding="utf-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+  <Product Id="ABCDDCBA-86C7-4D14-AEC0-86416A69ABDE"
+           Name="Test" Version="1.0.0" Manufacturer="Test" Language="1033"
+           UpgradeCode="12345678-1234-1234-1234-123456789012">
+    <Package InstallerVersion="200" Compressed="yes" />
+    <Directory Id="TARGETDIR" Name="SourceDir">
+      <Component Id="C1" Guid="ABCDDCBA-83F1-4F22-985B-FDB3C8ABD471">
+        <RegistryValue Id="R1" Root="HKLM" Key="Software\Test" Name="v1"
+                       Type="multiString" KeyPath="yes">
+          <MultiStringValue Value="a" />
+          <MultiStringValue Value="b" />
+        </RegistryValue>
+        <RegistryValue Id="R2" Root="HKLM" Key="Software\Test" Name="v2"
+                       Type="multiString" Action="append">
+          <MultiStringValue>c</MultiStringValue>
+          <MultiStringValue>d</MultiStringValue>
+        </RegistryValue>
+        <RegistryValue Id="R3" Root="HKLM" Key="Software\Test" Name="v3"
+                       Type="multiString" Action="Prepend">
+          <MultiStringValue>e</MultiStringValue>
+        </RegistryValue>
+        <RegistryValue Id="R4" Root="HKLM" Key="Software\Test" Name="v4"
+                       Type="multiString">
+          <MultiStringValue>f</MultiStringValue>
+        </RegistryValue>
+        <RegistryValue Id="R5" Root="HKLM" Key="Software\Test" Name="v5"
+                       Type="multiString" Action="append" Value="g" />
+      </Component>
+    </Directory>
+    <Feature Id="Main" Level="1">
+      <ComponentRef Id="C1" />
+    </Feature>
+  </Product>
+</Wix>
+EOF2
+  run "$wixl" -o out.msi multistring.wxs
+  [ "$status" -eq 0 ]
+
+  run "$msiinfo" export out.msi Registry
+  [ "$status" -eq 0 ]
+  registry=$(echo "$output" | tr -d '\r')
+  value() { echo "$registry" | awk -F '\t' -v r="$1" '$1 == r { print $5 }'; }
+  [ "$(value R1)" = "a[~]b" ]
+  [ "$(value R2)" = "[~]c[~]d" ]
+  [ "$(value R3)" = "e[~]" ]
+  [ "$(value R4)" = "f" ]
+  [ "$(value R5)" = "[~]g" ]
+
+  sed 's/Action="append"/Action="bogus"/' multistring.wxs > bad-action.wxs
+  run "$wixl" -o out.msi bad-action.wxs
+  [ "$status" -eq 1 ]
+  echo "$output" | grep -F "invalid Action 'bogus'"
+
+  sed 's/Type="multiString" Action="append" Value="g"/Type="string" Action="append" Value="g"/' \
+      multistring.wxs > bad-type.wxs
+  run "$wixl" -o out.msi bad-type.wxs
+  [ "$status" -eq 1 ]
+  echo "$output" | grep -F "Action 'append' requires type multiString"
+
+  sed 's/Id="R1" Root="HKLM"/Id="R1" Value="x" Root="HKLM"/' \
+      multistring.wxs > bad-value.wxs
+  run "$wixl" -o out.msi bad-value.wxs
+  [ "$status" -eq 1 ]
+  echo "$output" | grep -F "Value cannot be combined with MultiStringValue"
+
+  sed 's/Type="multiString" KeyPath="yes"/Type="string" KeyPath="yes"/' \
+      multistring.wxs > bad-child-type.wxs
+  run "$wixl" -o out.msi bad-child-type.wxs
+  [ "$status" -eq 1 ]
+  echo "$output" | grep -F "MultiStringValue requires type multiString"
+}
+
 @test "wixl - ServiceConfig" {
   mkdir -p SourceDir
   echo "hello" > SourceDir/svc.exe

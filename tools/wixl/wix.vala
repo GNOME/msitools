@@ -671,9 +671,35 @@ namespace Wixl {
         }
     }
 
+    public class WixMultiStringValue: WixElement {
+        static construct {
+            name = "MultiStringValue";
+        }
+
+        public string Value { get; set; }
+
+        public string get_text () {
+            if (Value != null)
+                return Value;
+
+            var text = "";
+            foreach (var c in children)
+                if (c is WixText)
+                    text += ((WixText) c).Text;
+            return text.strip ();
+        }
+
+        public override void accept (WixNodeVisitor visitor) throws GLib.Error {
+        }
+    }
+
     public class WixRegistryValue: WixKeyElement {
         static construct {
             name = "RegistryValue";
+
+            add_child_types (child_types, {
+                typeof (WixMultiStringValue),
+            });
         }
 
         public string Root { get; set; }
@@ -681,6 +707,7 @@ namespace Wixl {
         public string Type { get; set; }
         public string Value { get; set; }
         public string Name { get; set; }
+        public string Action { get; set; }
 
         public override string path_name () throws GLib.Error {
             return Root + "/" + Key;
