@@ -246,6 +246,61 @@ EOF
   done
 }
 
+@test "wixl - preprocessor foreach" {
+  cd wixl
+  cat >foreach.wxs <<'EOF'
+<?xml version="1.0"?>
+<Wix xmlns='http://schemas.microsoft.com/wix/2006/wi'>
+  <?define LcidList = "1033;1041;1055"?>
+  <?foreach LCID in 1033;1041;1055?>
+  <Property Id="Direct$(var.LCID)" Value="$(var.LCID)"/>
+  <?endforeach?>
+  <?foreach var.LCID in $(var.LcidList)?>
+  <Property Id="List$(var.LCID)" Value="$(var.LCID)"/>
+  <?endforeach?>
+  <?foreach A in a;b?>
+  <?foreach B in 1;2?>
+  <Property Id="Nested$(var.A)$(var.B)" Value="$(var.A)$(var.B)"/>
+  <?endforeach?>
+  <?endforeach?>
+  <?if 0?>
+  <?foreach X in hidden?>
+  <Property Id="Hidden$(var.X)" Value="$(var.X)"/>
+  <?endforeach?>
+  <?endif?>
+  <?foreach X in a;b?>
+  <?ifdef Seen?>
+  <Property Id="Leaked$(var.X)" Value="$(var.Seen)"/>
+  <?endif?>
+  <?define Seen = $(var.X)?>
+  <?endforeach?>
+</Wix>
+EOF
+  run "$wixl" -E foreach.wxs
+  [ "$status" -eq 0 ]
+
+  for id in Direct1033 Direct1041 Direct1055 List1033 List1041 List1055 \
+            Nesteda1 Nesteda2 Nestedb1 Nestedb2; do
+    echo "$output" | grep -q "Id=\"$id\""
+  done
+  [ "$(echo "$output" | grep -c 'Id="Direct')" -eq 3 ]
+  [ "$(echo "$output" | grep -c 'Id="List')" -eq 3 ]
+  [ "$(echo "$output" | grep -c 'Id="Nested')" -eq 4 ]
+  ! echo "$output" | grep -q 'Id="Hidden'
+  ! echo "$output" | grep -q 'Id="Leaked'
+
+  cat >missing.wxs <<'EOF'
+<?xml version="1.0"?>
+<Wix xmlns='http://schemas.microsoft.com/wix/2006/wi'>
+  <?foreach X in a?>
+  <Property Id="$(var.X)" Value="$(var.X)"/>
+</Wix>
+EOF
+  run "$wixl" -E missing.wxs
+  [ "$status" -ne 0 ]
+  echo "$output" | grep -F "Missing endforeach"
+}
+
 @test "wixl - system include directory" {
   cd wixl
   cat >include.wxs <<EOF
