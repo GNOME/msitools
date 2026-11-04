@@ -37,6 +37,105 @@ enum
 
 G_DEFINE_TYPE (LibmsiQuery, libmsi_query, G_TYPE_OBJECT);
 
+static const char *
+db_error_message (LibmsiDBError error)
+{
+    switch (error) {
+    case LIBMSI_DB_ERROR_SUCCESS:
+        return "success";
+    case LIBMSI_DB_ERROR_INVALIDARG:
+        return "invalid argument";
+    case LIBMSI_DB_ERROR_MOREDATA:
+        return "more data";
+    case LIBMSI_DB_ERROR_FUNCTIONERROR:
+        return "function error";
+    case LIBMSI_DB_ERROR_DUPLICATEKEY:
+        return "duplicate key";
+    case LIBMSI_DB_ERROR_REQUIRED:
+        return "required value missing";
+    case LIBMSI_DB_ERROR_BADLINK:
+        return "bad link";
+    case LIBMSI_DB_ERROR_OVERFLOW:
+        return "overflow";
+    case LIBMSI_DB_ERROR_UNDERFLOW:
+        return "underflow";
+    case LIBMSI_DB_ERROR_NOTINSET:
+        return "value not in set";
+    case LIBMSI_DB_ERROR_BADVERSION:
+        return "bad version";
+    case LIBMSI_DB_ERROR_BADCASE:
+        return "bad case";
+    case LIBMSI_DB_ERROR_BADGUID:
+        return "bad GUID";
+    case LIBMSI_DB_ERROR_BADWILDCARD:
+        return "bad wildcard";
+    case LIBMSI_DB_ERROR_BADIDENTIFIER:
+        return "bad identifier";
+    case LIBMSI_DB_ERROR_BADLANGUAGE:
+        return "bad language";
+    case LIBMSI_DB_ERROR_BADFILENAME:
+        return "bad filename";
+    case LIBMSI_DB_ERROR_BADPATH:
+        return "bad path";
+    case LIBMSI_DB_ERROR_BADCONDITION:
+        return "bad condition";
+    case LIBMSI_DB_ERROR_BADFORMATTED:
+        return "bad formatted value";
+    case LIBMSI_DB_ERROR_BADTEMPLATE:
+        return "bad template";
+    case LIBMSI_DB_ERROR_BADDEFAULTDIR:
+        return "bad default directory";
+    case LIBMSI_DB_ERROR_BADREGPATH:
+        return "bad registry path";
+    case LIBMSI_DB_ERROR_BADCUSTOMSOURCE:
+        return "bad custom source";
+    case LIBMSI_DB_ERROR_BADPROPERTY:
+        return "bad property";
+    case LIBMSI_DB_ERROR_MISSINGDATA:
+        return "missing data";
+    case LIBMSI_DB_ERROR_BADCATEGORY:
+        return "bad category";
+    case LIBMSI_DB_ERROR_BADKEYTABLE:
+        return "bad key table";
+    case LIBMSI_DB_ERROR_BADMAXMINVALUES:
+        return "bad min/max values";
+    case LIBMSI_DB_ERROR_BADCABINET:
+        return "bad cabinet";
+    case LIBMSI_DB_ERROR_BADSHORTCUT:
+        return "bad shortcut";
+    case LIBMSI_DB_ERROR_STRINGOVERFLOW:
+        return "string overflow";
+    case LIBMSI_DB_ERROR_BADLOCALIZEATTRIB:
+        return "bad localize attribute";
+    }
+
+    return "unknown error";
+}
+
+static void
+query_set_error (LibmsiQuery *self, unsigned result, const char *action,
+                 GError **error)
+{
+    LibmsiView *view = self->view;
+
+    if (view && view->error != LIBMSI_DB_ERROR_SUCCESS) {
+        if (view->error_column) {
+            g_set_error (error, LIBMSI_RESULT_ERROR, result,
+                         "cannot %s SQL query \"%s\": %s in column \"%s\"",
+                         action, self->query, db_error_message (view->error),
+                         view->error_column);
+        } else {
+            g_set_error (error, LIBMSI_RESULT_ERROR, result,
+                         "cannot %s SQL query \"%s\": %s",
+                         action, self->query, db_error_message (view->error));
+        }
+        return;
+    }
+
+    g_set_error (error, LIBMSI_RESULT_ERROR, result,
+                 "cannot %s SQL query \"%s\"", action, self->query);
+}
+
 static void
 libmsi_query_init (LibmsiQuery *self)
 {
@@ -141,7 +240,8 @@ init (LibmsiQuery *self, GError **error)
     r = _libmsi_parse_sql (self->database, self->query, &self->view, &self->mem);
 
     if (r != LIBMSI_RESULT_SUCCESS)
-        g_set_error_literal (error, LIBMSI_RESULT_ERROR, r, G_STRFUNC);
+        g_set_error (error, LIBMSI_RESULT_ERROR, r,
+                     "cannot prepare SQL query \"%s\"", self->query);
 
     return r == LIBMSI_RESULT_SUCCESS;
 }
@@ -401,13 +501,15 @@ libmsi_query_fetch (LibmsiQuery *query, GError **error)
     g_return_val_if_fail (!error || *error == NULL, NULL);
 
     g_object_ref(query);
+    if (query->view)
+        msi_view_clear_error (query->view);
     ret = _libmsi_query_fetch( query, &record );
-    g_object_unref(query);
 
-    /* FIXME: raise error when it happens */
     if (ret != LIBMSI_RESULT_SUCCESS &&
         ret != NO_MORE_ITEMS)
-        g_set_error_literal (error, LIBMSI_RESULT_ERROR, ret, G_STRFUNC);
+        query_set_error (query, ret, "fetch row for", error);
+
+    g_object_unref(query);
 
     return record;
 }
@@ -434,17 +536,19 @@ libmsi_query_close (LibmsiQuery *query, GError **error)
 
     g_object_ref(query);
     view = query->view;
-    if( !view )
-        return LIBMSI_RESULT_FUNCTION_FAILED;
-    if( !view->ops->close )
-        return LIBMSI_RESULT_FUNCTION_FAILED;
+    if( !view || !view->ops->close ) {
+        query_set_error (query, LIBMSI_RESULT_FUNCTION_FAILED, "close", error);
+        g_object_unref(query);
+        return FALSE;
+    }
 
+    msi_view_clear_error (view);
     ret = view->ops->close( view );
-    g_object_unref(query);
 
-    /* FIXME: raise error when it happens */
     if (ret != LIBMSI_RESULT_SUCCESS)
-        g_set_error_literal (error, LIBMSI_RESULT_ERROR, ret, G_STRFUNC);
+        query_set_error (query, ret, "close", error);
+
+    g_object_unref(query);
 
     return ret == LIBMSI_RESULT_SUCCESS;
 }
@@ -494,15 +598,16 @@ libmsi_query_execute (LibmsiQuery *query, LibmsiRecord *rec, GError **error)
     if( rec )
         g_object_ref(rec);
 
+    if (query->view)
+        msi_view_clear_error (query->view);
     ret = _libmsi_query_execute( query, rec );
+
+    if (ret != LIBMSI_RESULT_SUCCESS)
+        query_set_error (query, ret, "execute", error);
 
     g_object_unref(query);
     if( rec )
         g_object_unref(rec);
-
-    /* FIXME: raise error when it happens */
-    if (ret != LIBMSI_RESULT_SUCCESS)
-        g_set_error_literal (error, LIBMSI_RESULT_ERROR, ret, G_STRFUNC);
 
     return ret == LIBMSI_RESULT_SUCCESS;
 }
@@ -552,6 +657,8 @@ LibmsiResult _libmsi_query_get_column_info( LibmsiQuery *query, LibmsiColInfo in
     const char *name;
     bool temporary;
 
+    *prec = NULL;
+
     if( !view )
         return LIBMSI_RESULT_FUNCTION_FAILED;
 
@@ -597,7 +704,7 @@ LibmsiResult _libmsi_query_get_column_info( LibmsiQuery *query, LibmsiColInfo in
 LibmsiRecord *
 libmsi_query_get_column_info (LibmsiQuery *query, LibmsiColInfo info, GError **error)
 {
-    LibmsiRecord *rec;
+    LibmsiRecord *rec = NULL;
     unsigned r;
 
     TRACE("%p %d\n", query, info);
@@ -636,8 +743,13 @@ libmsi_query_get_error (LibmsiQuery *query, gchar **column, GError **error)
 
     v = query->view;
     if (v->error != LIBMSI_DB_ERROR_SUCCESS) {
-        /* FIXME: view could have a GError with message? */
-        g_set_error (error, LIBMSI_DB_ERROR, v->error, G_STRFUNC);
+        if (v->error_column)
+            g_set_error (error, LIBMSI_DB_ERROR, v->error,
+                         "%s in column \"%s\"",
+                         db_error_message (v->error), v->error_column);
+        else
+            g_set_error (error, LIBMSI_DB_ERROR, v->error,
+                         "%s", db_error_message (v->error));
         if (column)
             *column = g_strdup (v->error_column);
     }

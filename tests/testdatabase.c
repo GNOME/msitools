@@ -7156,6 +7156,49 @@ static void test_columnorder(void)
     unlink(msifile);
 }
 
+static void test_query_error(void)
+{
+    LibmsiDatabase *hdb;
+    LibmsiQuery *query;
+    GError *error = NULL;
+    gchar *column = NULL;
+    unsigned r;
+
+    hdb = create_db();
+    ok(hdb, "failed to create db\n");
+
+    r = run_query(hdb, NULL,
+                  "CREATE TABLE `T` (`A` CHAR(32) NOT NULL PRIMARY KEY `A`)");
+    ok(r == LIBMSI_RESULT_SUCCESS, "failed to create table\n");
+
+    query = libmsi_query_new(hdb, "INSERT INTO `T` (`A`) VALUES ('dup')", &error);
+    ok(query && !error, "failed to open query\n");
+    r = libmsi_query_execute(query, NULL, &error);
+    ok(r, "failed to insert\n");
+    libmsi_query_close(query, NULL);
+    g_object_unref(query);
+
+    query = libmsi_query_new(hdb, "INSERT INTO `T` (`A`) VALUES ('dup')", &error);
+    ok(query && !error, "failed to open query\n");
+    r = libmsi_query_execute(query, NULL, &error);
+    ok(!r, "expected duplicate key failure\n");
+    ok(error != NULL, "expected an error\n");
+    g_clear_error(&error);
+
+    libmsi_query_get_error(query, &column, &error);
+    ok(error != NULL, "expected a view error\n");
+    ok(error && strstr(error->message, "duplicate key"),
+       "unexpected message: %s\n", error ? error->message : "none");
+    ok(column && !strcmp(column, "A"), "unexpected column: %s\n",
+       column ? column : "none");
+    g_free(column);
+    g_clear_error(&error);
+
+    libmsi_query_close(query, NULL);
+    g_object_unref(query);
+    g_object_unref(hdb);
+}
+
 static void test_createtable(void)
 {
     LibmsiDatabase *hdb;
@@ -7515,6 +7558,7 @@ int main()
     test_insertorder();
     test_columnorder();
     test_suminfo_import();
+    test_query_error();
     test_createtable();
     test_collation();
     test_embedded_nulls();

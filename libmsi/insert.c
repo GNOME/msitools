@@ -208,10 +208,14 @@ static unsigned insert_view_execute( LibmsiView *view, LibmsiRecord *record )
     if( !sv )
         return LIBMSI_RESULT_FUNCTION_FAILED;
 
+    msi_view_clear_error( sv );
     r = sv->ops->execute( sv, 0 );
     TRACE("sv execute returned %x\n", r);
     if( r )
+    {
+        msi_view_propagate_error( view, sv );
         return r;
+    }
 
     r = sv->ops->get_dimensions( sv, NULL, &col_count );
     if( r )
@@ -233,7 +237,10 @@ static unsigned insert_view_execute( LibmsiView *view, LibmsiRecord *record )
     if( row_has_null_primary_keys( iv, values ) )
         row = 0;
 
+    msi_view_clear_error( iv->table );
     r = iv->table->ops->insert_row( iv->table, values, row, iv->bIsTemp );
+    if( r != LIBMSI_RESULT_SUCCESS )
+        msi_view_propagate_error( view, iv->table );
 
 err:
     if( values )
@@ -247,6 +254,7 @@ static unsigned insert_view_close( LibmsiView *view )
 {
     LibmsiInsertView *iv = (LibmsiInsertView*)view;
     LibmsiView *sv;
+    unsigned r;
 
     TRACE("%p\n", iv);
 
@@ -254,7 +262,12 @@ static unsigned insert_view_close( LibmsiView *view )
     if( !sv )
         return LIBMSI_RESULT_FUNCTION_FAILED;
 
-    return sv->ops->close( sv );
+    msi_view_clear_error( sv );
+    r = sv->ops->close( sv );
+    if( r != LIBMSI_RESULT_SUCCESS )
+        msi_view_propagate_error( view, sv );
+
+    return r;
 }
 
 static unsigned insert_view_get_dimensions( LibmsiView *view, unsigned *rows, unsigned *cols )
