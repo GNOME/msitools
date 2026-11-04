@@ -302,6 +302,22 @@ EOF
   [ "$(echo "$output" | tr -d '\r' | grep '^RunJScript' | cut -f1-4)" = "$(printf 'RunJScript\t53\tJScriptText\tEntry')" ]
 }
 
+@test "wixl - FileKey CustomAction" {
+  cd wixl
+  run "$wixl" -o out.msi custom-action-filekey.wxs
+  [ "$status" -eq 0 ]
+  run "$msiinfo" export out.msi CustomAction
+  # Type 3090 is msidbCustomActionTypeExe (18) with deferred
+  # (msidbCustomActionTypeInScript, 0x400) and no-impersonate (0x800):
+  # Source is a File key, Target the command line
+  [ "$(echo "$output" | tr -d '\r' | grep '^RunFile' | cut -f1-4)" = "$(printf 'RunFile\t3090\tFoobarEXE\t/quiet')" ]
+
+  # an undefined FileKey is rejected
+  sed "s/FileKey='FoobarEXE'/FileKey='Missing' /" custom-action-filekey.wxs > missing.wxs
+  run "$wixl" -o missing.msi missing.wxs
+  [ "$status" -ne 0 ]
+}
+
 @test "wixl-heat - simple" {
   mkdir -p test/a/b test/c
   touch test/a/file test/c/file
