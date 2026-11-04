@@ -141,7 +141,8 @@ init (LibmsiQuery *self, GError **error)
     r = _libmsi_parse_sql (self->database, self->query, &self->view, &self->mem);
 
     if (r != LIBMSI_RESULT_SUCCESS)
-        g_set_error_literal (error, LIBMSI_RESULT_ERROR, r, G_STRFUNC);
+        g_set_error (error, LIBMSI_RESULT_ERROR, r,
+                     "cannot prepare SQL query \"%s\"", self->query);
 
     return r == LIBMSI_RESULT_SUCCESS;
 }
@@ -496,13 +497,13 @@ libmsi_query_execute (LibmsiQuery *query, LibmsiRecord *rec, GError **error)
 
     ret = _libmsi_query_execute( query, rec );
 
+    if (ret != LIBMSI_RESULT_SUCCESS)
+        g_set_error (error, LIBMSI_RESULT_ERROR, ret,
+                     "cannot execute SQL query \"%s\"", query->query);
+
     g_object_unref(query);
     if( rec )
         g_object_unref(rec);
-
-    /* FIXME: raise error when it happens */
-    if (ret != LIBMSI_RESULT_SUCCESS)
-        g_set_error_literal (error, LIBMSI_RESULT_ERROR, ret, G_STRFUNC);
 
     return ret == LIBMSI_RESULT_SUCCESS;
 }

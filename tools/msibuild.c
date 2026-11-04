@@ -231,7 +231,9 @@ static int do_query(const char *sql, void *opaque)
 
 end:
     if (query) {
-        libmsi_query_close(query, error);
+        /* error may already be set; libmsi_query_close() asserts that it is
+         * not, so only report a close failure when there is nothing else */
+        libmsi_query_close(query, error && !*error ? error : NULL);
         g_object_unref(query);
     }
 
@@ -316,7 +318,7 @@ int main(int argc, char *argv[])
                     ret = sql_get_statement("", do_query, &error);
                 }
                 if (ret) {
-                    break;
+                    goto end;
                 }
                 argc--, argv++;
             } while (argv[1] && argv[1][0] != '-');

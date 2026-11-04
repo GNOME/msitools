@@ -2,6 +2,27 @@
 
 load common
 
+@test "msibuild - SQL error is reported" {
+  run "$msibuild" qerror.msi -q "SELECT FROM"
+  [ "$status" -ne 0 ]
+  # the error from libmsi must be shown, not just the usage
+  [[ "$output" == *"error:"* ]]
+  [[ "$output" == *"cannot prepare SQL query"* ]]
+  [[ "$output" == *"SELECT FROM"* ]]
+  [[ "$output" != *"Usage: msibuild"* ]]
+}
+
+@test "msibuild - SQL execution error is reported" {
+  run "$msibuild" qerror2.msi -q "CREATE TABLE T (A CHAR(32) PRIMARY KEY A)"
+  [ "$status" -eq 0 ]
+  run "$msibuild" qerror2.msi -q "INSERT INTO T (A) VALUES ('dup')"
+  [ "$status" -eq 0 ]
+  run "$msibuild" qerror2.msi -q "INSERT INTO T (A) VALUES ('dup')"
+  [ "$status" -ne 0 ]
+  [[ "$output" == *"error: cannot execute SQL query"* ]]
+  [[ "$output" != *"Usage: msibuild"* ]]
+}
+
 @test "msibuild - invalid command line" {
   run "$msibuild"
   [ "$status" -eq 1 ]
