@@ -257,8 +257,10 @@ static gchar* filetime_to_string (guint64 ft)
 
 static void parse_filetime( const char *str, guint64 *ft )
 {
-    /* set to 0, tm_isdst can make the result vary: */
+    /* let mktime() apply the DST rules of the date, like the local-time
+     * display in filetime_to_string(), so the roundtrip is stable */
     struct tm tm = { 0, };
+    tm.tm_isdst = -1;
     time_t t;
     const char *p = str;
     char *end;
