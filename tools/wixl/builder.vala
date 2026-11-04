@@ -979,20 +979,11 @@ namespace Wixl {
             INTEGER,
             BINARY,
             EXPANDABLE,
+            [Description (nick = "multiString")]
             MULTI_STRING;
 
             public static RegistryValueType from_string(string s) throws GLib.Error {
-                if (s == "string")
-                    return STRING;
-                if (s == "integer")
-                    return INTEGER;
-                if (s == "binary")
-                    return BINARY;
-                if (s == "expandable")
-                    return EXPANDABLE;
-                if (s == "multistring")
-                    return MULTI_STRING;
-                throw new Wixl.Error.FAILED ("Can't convert string to enum");
+                return (RegistryValueType) enum_from_string (typeof (RegistryValueType), s);
             }
         }
 

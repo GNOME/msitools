@@ -9,9 +9,16 @@ namespace Wixl {
         var k = (EnumClass)type.class_ref ();
         var v = k.get_value_by_nick (str);
 
-        if (v == null)
-            throw new Wixl.Error.FAILED ("Can't convert string to enum");
-        return v.value;
+        if (v != null)
+            return v.value;
+
+        /* WiX attribute values are case-insensitive, unlike enum nicks */
+        var folded = str.casefold ();
+        foreach (var value in k.values) {
+            if (value.value_nick != null && value.value_nick.casefold () == folded)
+                return value.value;
+        }
+        throw new Wixl.Error.FAILED ("Can't convert string '%s' to enum", str);
     }
 
     public void hash_table_add<G> (HashTable<G, G*> h, G o) {
