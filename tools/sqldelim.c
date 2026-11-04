@@ -86,7 +86,7 @@ static int sql_compare_keyword(const void *m1, const void *m2){
 static int sqlite_find_keyword(const char *z, int n)
 {
     char str[MAX_TOKEN_LEN + 1];
-    Keyword *r;
+    const Keyword *r;
 
     if (n > MAX_TOKEN_LEN)
         return false;

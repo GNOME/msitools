@@ -144,7 +144,7 @@ namespace Wixl {
     }
 
     // port of WiX CompilerCore.GenerateShortName()
-    public string generate_short_name (string long_name, bool keep_extension, string[] args) {
+    public string generate_short_name (string long_name, bool keep_extension, string[] args) throws GLib.Error {
         var parts = new string[args.length + 1];
         parts[0] = long_name.down ();
         for (int i = 0; i < args.length; i++)
