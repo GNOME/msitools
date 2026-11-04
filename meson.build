@@ -54,6 +54,9 @@ vala_c_args = meson.get_compiler('c').get_supported_arguments([
   '-Wno-unused-but-set-variable',
   '-Wno-unused-function',
   '-Wno-unused-variable',
+  '-Wno-pointer-sign',
+  '-Wno-incompatible-pointer-types',
+  '-DVALA_STRICT_C',
 ])
 
 subdir('completion')
