@@ -33,6 +33,64 @@ Provided tools include:
   and directories.
 
 
+## Building
+
+*msitools* is built with [Meson](https://mesonbuild.com/). You will need:
+
+- a C compiler, `pkg-config`, Meson >= 1.4 and Ninja
+
+- a Vala compiler (`valac`)
+
+- `bison` and `perl`
+
+- GLib, GObject and GIO >= 2.68
+
+- libgsf, libgcab >= 0.1.10 and libxml2
+
+- gobject-introspection and the GLib GIR files (on Debian/Ubuntu:
+  `libgirepository1.0-dev`), unless introspection is disabled
+
+- the [bats-core](https://github.com/bats-core/bats-core) submodule, to
+  run the tests
+
+The test suite lives in a git submodule, so clone recursively:
+
+    git clone --recursive https://gitlab.gnome.org/GNOME/msitools.git
+    cd msitools
+
+In an existing checkout, fetch it with:
+
+    git submodule update --init --recursive
+
+Configure and build in a separate build directory:
+
+    meson setup _build
+    meson compile -C _build
+
+Run the tests and install with:
+
+    meson test -C _build
+    meson install -C _build
+
+The default build uses GObject introspection and also builds the
+Vala-based tools (`wixl`, `wixl-heat`, `msiextract`). Pass
+`-Dintrospection=false` to `meson setup` to build only the C tools
+(`msiinfo`, `msibuild`, `msidump`, `msidiff`) without the
+introspection dependencies:
+
+    meson setup _build -Dintrospection=false
+
+Without the GLib GIR file, the default build fails while generating
+`Libmsi-1.0.gir` with:
+
+    Couldn't find include 'GLib-2.0.gir'
+
+Distributions provide the dependencies, for example:
+
+    sudo dnf builddep msitools
+    sudo apt build-dep msitools
+
+
 ## Notes
 
 Right now, *msitools* does not work under Windows.  It is planned that
