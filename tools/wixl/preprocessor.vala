@@ -278,18 +278,59 @@ namespace Wixl {
             return evaluator.eval (str);
         }
 
-        class Location: Object {
-            public File file;
+        class Event: Object {
+            public Xml.ReaderType type;
+            public string name;
+            public string? value;
+            public string[] attr_names = {};
+            public string[] attr_values = {};
+            public bool empty;
+            public int depth;
             public int line;
 
-            public Location (Xml.TextReader reader, File file) {
+            public Event (Xml.TextReader reader) {
+                type = (Xml.ReaderType) reader.node_type ();
+                depth = reader.depth ();
+                line = reader.current_node ()->line;
+
+                switch (type) {
+                case Xml.ReaderType.ELEMENT:
+                    name = reader.const_name ();
+                    empty = reader.is_empty_element () > 0;
+                    while (reader.move_to_next_attribute () > 0) {
+                        attr_names += reader.const_name ();
+                        attr_values += reader.const_value ();
+                    }
+                    break;
+                case Xml.ReaderType.END_ELEMENT:
+                    name = reader.const_name ();
+                    break;
+                case Xml.ReaderType.PROCESSING_INSTRUCTION:
+                    name = reader.const_local_name ();
+                    value = reader.const_value ();
+                    break;
+                case Xml.ReaderType.TEXT:
+                case Xml.ReaderType.CDATA:
+                    value = reader.const_value ();
+                    break;
+                default:
+                    break;
+                }
+            }
+        }
+
+        class Location: Object {
+            public File? file;
+            public int line;
+
+            public Location (File? file, int line) {
                 this.file = file;
-                var node = reader.current_node ();
-                this.line = node->line;
+                this.line = line;
             }
 
             public string to_string () {
-                return "%s:%d".printf (file.get_basename (), line);
+                var name = file != null ? file.get_basename () : "<input>";
+                return "%s:%d".printf (name, line);
             }
         }
 
@@ -332,63 +373,140 @@ namespace Wixl {
             }
         }
 
-        void preprocess_xml (Xml.TextReader reader, Xml.TextWriter writer, File? file, bool is_include = false) throws GLib.Error {
-            IfContext context = new IfContext (true, true);
-            var ifstack = new Queue<IfContext> ();
-            int status;
+        class PreprocessState: Object {
+            public IfContext context;
+            public Queue<IfContext> ifstack;
 
-            while ((status = reader.read ()) > 0) {
-                var loc = new Location (reader, file);
+            public PreprocessState () {
+                context = new IfContext (true, true);
+                ifstack = new Queue<IfContext> ();
+            }
+        }
+
+        HashTable<string, string> copy_variables () {
+            var copy = new HashTable<string, string> (str_hash, str_equal);
+            string name, value;
+            var it = HashTableIter<string, string> (variables);
+            while (it.next (out name, out value))
+                copy.insert (name, value);
+            return copy;
+        }
+
+        void restore_variables (HashTable<string, string> copy) {
+            variables.remove_all ();
+            string name, value;
+            var it = HashTableIter<string, string> (copy);
+            while (it.next (out name, out value))
+                variables.insert (name, value);
+        }
+
+        string[] foreach_values (string directive, File? file, out string variable) throws GLib.Error {
+            MatchInfo info;
+            var r = /^\s*(?P<name>\S+)\s+in\s+(?P<list>.*?)\s*$/;
+            if (!r.match (directive, 0, out info))
+                throw new Wixl.Error.FAILED ("invalid foreach");
+
+            variable = remove_prefix ("var.", info.fetch_named ("name"));
+            var list = eval (info.fetch_named ("list").strip (), file);
+            var values = list.split (";");
+            for (var i = 0; i < values.length; i++)
+                values[i] = unquote (values[i].strip ());
+            return values;
+        }
+
+        int find_endforeach (GenericArray<Event> events, uint start, uint end) throws GLib.Error {
+            int depth = 0;
+            for (uint i = start; i < end; i++) {
+                var event = events.get (i);
+                if (event.type != Xml.ReaderType.PROCESSING_INSTRUCTION)
+                    continue;
+                if (event.name == "foreach") {
+                    depth++;
+                } else if (event.name == "endforeach") {
+                    if (depth == 0)
+                        return (int) i;
+                    depth--;
+                }
+            }
+
+            throw new Wixl.Error.FAILED ("Missing endforeach");
+        }
+
+        void preprocess_events (GenericArray<Event> events, uint start, uint end,
+                                Xml.TextWriter writer, File? file, PreprocessState state,
+                                bool is_include) throws GLib.Error {
+            for (uint i = start; i < end; i++) {
+                var event = events.get (i);
+                var loc = new Location (file, event.line);
                 bool handled = false;
 
-                if (reader.node_type () == Xml.ReaderType.PROCESSING_INSTRUCTION) {
+                if (event.type == Xml.ReaderType.PROCESSING_INSTRUCTION && event.name == "foreach") {
+                    var endloc = find_endforeach (events, i + 1, end);
+                    if (state.context.enabled && state.context.is_true) {
+                        string variable;
+                        var values = foreach_values (event.value ?? "", file, out variable);
+                        var saved = copy_variables ();
+                        foreach (var value in values) {
+                            restore_variables (saved);
+                            define_variable (variable, value);
+                            preprocess_events (events, i + 1, (uint) endloc, writer, file, state, is_include);
+                        }
+                        restore_variables (saved);
+                    }
+                    i = (uint) endloc;
+                    continue;
+                }
+
+                if (event.type == Xml.ReaderType.PROCESSING_INSTRUCTION) {
                     handled = true;
 
-                    switch (reader.const_local_name ()) {
+                    switch (event.name) {
                     case "ifdef":
-                        ifstack.push_head (context);
-                        var value = reader.const_value ().strip ();
-                        context = new IfContext (context.enabled && context.is_true, eval_defined (value, file) != null, IfContext.State.IF);
+                        state.ifstack.push_head (state.context);
+                        var value = (event.value ?? "").strip ();
+                        state.context = new IfContext (state.context.enabled && state.context.is_true, eval_defined (value, file) != null, IfContext.State.IF);
                         break;
                     case "ifndef":
-                        ifstack.push_head (context);
-                        var value = reader.const_value ().strip ();
-                        context = new IfContext (context.enabled && context.is_true, eval_defined (value, file) == null, IfContext.State.IF);
+                        state.ifstack.push_head (state.context);
+                        var value = (event.value ?? "").strip ();
+                        state.context = new IfContext (state.context.enabled && state.context.is_true, eval_defined (value, file) == null, IfContext.State.IF);
                         break;
                     case "else":
-                        if (ifstack.is_empty ())
+                        if (state.ifstack.is_empty ())
                             throw new Wixl.Error.FAILED ("Unmatched else");
-                        if (!context.state.in_if ())
+                        if (!state.context.state.in_if ())
                             throw new Wixl.Error.FAILED ("Unmatched else");
-                        context.state = IfContext.State.ELSE;
-                        context.is_true = context.never_true;
+                        state.context.state = IfContext.State.ELSE;
+                        state.context.is_true = state.context.never_true;
                         break;
                     case "endif":
-                        if (ifstack.is_empty ())
+                        if (state.ifstack.is_empty ())
                             throw new Wixl.Error.FAILED ("Unmatched endif");
-                        context = ifstack.pop_head ();
+                        state.context = state.ifstack.pop_head ();
                         break;
                     case "if":
-                        ifstack.push_head (context);
-                        var value = reader.const_value ().strip ();
-                        context = new IfContext (context.enabled && context.is_true, eval_condition (value, file), IfContext.State.IF);
+                        state.ifstack.push_head (state.context);
+                        var value = (event.value ?? "").strip ();
+                        state.context = new IfContext (state.context.enabled && state.context.is_true, eval_condition (value, file), IfContext.State.IF);
                         break;
+                    case "endforeach":
+                        throw new Wixl.Error.FAILED ("Unmatched endforeach");
                     default:
                         handled = false;
                         break;
                     }
                 }
 
-                if (handled || !context.enabled || !context.is_true)
+                if (handled || !state.context.enabled || !state.context.is_true)
                     continue;
 
-                switch (reader.node_type ()) {
+                switch (event.type) {
                 case Xml.ReaderType.PROCESSING_INSTRUCTION:
-                    switch (reader.const_local_name ()) {
+                    switch (event.name) {
                     case "define":
                         MatchInfo info;
                         var r = /^\s*(?P<name>.+?)\s*=\s*(?P<value>.+?)\s*$/;
-                        if (r.match (reader.const_value (), 0, out info)) {
+                        if (r.match (event.value ?? "", 0, out info)) {
                             var name = remove_prefix ("var.", info.fetch_named ("name"));
                             var value = unquote (info.fetch_named ("value"));
                             define_variable (name, value);
@@ -396,64 +514,73 @@ namespace Wixl {
                             throw new Wixl.Error.FAILED ("invalid define");
                         break;
                     case "undef":
-                        var value = reader.const_value ().strip ();
+                        var value = (event.value ?? "").strip ();
                         undefine_variable (value);
                         break;
                     case "require":
-                        var value = unquote (eval (reader.const_value (), file).strip ());
+                        var value = unquote (eval (event.value ?? "", file).strip ());
                         include (value, loc, writer, true);
                         break;
                     case "include":
-                        var value = unquote (eval (reader.const_value (), file).strip ());
+                        var value = unquote (eval (event.value ?? "", file).strip ());
                         include (value, loc, writer);
                         break;
                     case "warning":
-                        print ("warning", loc, eval (reader.const_value (), file));
+                        print ("warning", loc, eval (event.value ?? "", file));
                         break;
                     case "error":
-                        print ("error", loc, eval (reader.const_value (), file));
+                        print ("error", loc, eval (event.value ?? "", file));
                         Posix.exit (1);
                         break;
                     default:
-                        warning ("unhandled preprocessor instruction %s", reader.const_local_name ());
+                        warning ("unhandled preprocessor instruction %s", event.name);
                         break;
                     }
                     break;
                 case Xml.ReaderType.ELEMENT:
-                    var empty = reader.is_empty_element () > 0;
-                    if (is_include && reader.depth () == 0 &&
-                        reader.const_name () == "Include")
+                    if (is_include && event.depth == 0 && event.name == "Include")
                         break;
 
-                    writer.start_element (reader.const_name ());
-                    while (reader.move_to_next_attribute () > 0) {
-                        var value = eval (reader.const_value (), file);
-                        writer.write_attribute (reader.const_name (), value);
-                    }
+                    writer.start_element (event.name);
+                    for (var j = 0; j < event.attr_names.length; j++)
+                        writer.write_attribute (event.attr_names[j], eval (event.attr_values[j], file));
 
-                    if (empty)
+                    if (event.empty)
                         writer.end_element ();
                     break;
                 case Xml.ReaderType.END_ELEMENT:
-                    if (is_include && reader.depth () == 0 &&
-                        reader.const_name () == "Include")
+                    if (is_include && event.depth == 0 && event.name == "Include")
                         break;
 
                     writer.end_element ();
                     break;
                 case Xml.ReaderType.TEXT:
-                    writer.write_string (eval (reader.const_value (), file));
+                    writer.write_string (eval (event.value ?? "", file));
                     break;
                 case Xml.ReaderType.CDATA:
-                    writer.write_cdata (eval (reader.const_value (), file));
+                    writer.write_cdata (eval (event.value ?? "", file));
+                    break;
+                default:
                     break;
                 }
             }
+        }
 
-            if (!ifstack.is_empty ())
-                throw new Wixl.Error.FAILED ("Missing endif");
+        void preprocess_xml (Xml.TextReader reader, Xml.TextWriter writer, File? file, bool is_include = false) throws GLib.Error {
+            var events = new GenericArray<Event> ();
+            int status;
+
+            while ((status = reader.read ()) > 0)
+                events.add (new Event (reader));
+
             if (status != 0)
                 throw new Wixl.Error.FAILED ("Failed to parse XML");
+
+            var state = new PreprocessState ();
+            preprocess_events (events, 0, (uint) events.length, writer, file, state, is_include);
+
+            if (!state.ifstack.is_empty ())
+                throw new Wixl.Error.FAILED ("Missing endif");
         }
 
         bool include_try (string filename, Xml.TextWriter writer) throws GLib.Error {
@@ -486,7 +613,8 @@ namespace Wixl {
             dirs += name;
             foreach (var dir in includedirs)
                 dirs += dir.get_child (name).get_path ();
-            dirs += loc.file.get_parent ().get_child (name).get_path ();
+            if (loc.file != null)
+                dirs += loc.file.get_parent ().get_child (name).get_path ();
 
             foreach (var inc in dirs) {
                 success = include_try (inc, writer);
