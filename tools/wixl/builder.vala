@@ -1031,6 +1031,36 @@ namespace Wixl {
                                       reg.Name != null ? reg.Name.down () : null);
             }
 
+            string[] multi_values = {};
+            foreach (var child in reg.children)
+                if (child is WixMultiStringValue)
+                    multi_values += ((WixMultiStringValue) child).get_text ();
+
+            var action = (reg.Action ?? "write").down ();
+            if (action != "write" && action != "append" && action != "prepend")
+                throw new Wixl.Error.FAILED ("RegistryValue %s: invalid Action '%s'",
+                                             reg.Id, action);
+            if (action != "write" && t != RegistryValueType.MULTI_STRING)
+                throw new Wixl.Error.FAILED ("RegistryValue %s: Action '%s' requires type multiString",
+                                             reg.Id, action);
+            if (multi_values.length > 0 && t != RegistryValueType.MULTI_STRING)
+                throw new Wixl.Error.FAILED ("RegistryValue %s: MultiStringValue requires type multiString",
+                                             reg.Id);
+
+            if (multi_values.length > 0) {
+                if (reg.Value != null)
+                    throw new Wixl.Error.FAILED ("RegistryValue %s: Value cannot be combined with MultiStringValue",
+                                                 reg.Id);
+                value = string.joinv ("[~]", multi_values);
+            }
+
+            if (t == RegistryValueType.MULTI_STRING) {
+                if (action == "append")
+                    value = "[~]" + (value ?? "");
+                else if (action == "prepend")
+                    value = (value ?? "") + "[~]";
+            }
+
             switch (t) {
             case RegistryValueType.INTEGER:
                 value = "#" + value;
