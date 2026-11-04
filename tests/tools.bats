@@ -107,8 +107,10 @@ Binary" ]
 }
 
 @test "msibuild - update _SummaryInformation table" {
-  run "$msibuild" -i out.msi _SummaryInformation.idt
-  run "$msiinfo" suminfo out.msi
+  # December is in DST in Australia/Sydney; mktime() used to force
+  # standard time and shift the timestamps by one hour
+  run env TZ=Australia/Sydney "$msibuild" -i out.msi _SummaryInformation.idt
+  run env TZ=Australia/Sydney "$msiinfo" suminfo out.msi
   [ "$output" = "Codepage: 1252 (4e4)
 Title: Installation Database
 Subject: Acme's Foobar 1.0 Installer
