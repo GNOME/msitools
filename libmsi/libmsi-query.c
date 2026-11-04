@@ -403,12 +403,13 @@ libmsi_query_fetch (LibmsiQuery *query, GError **error)
 
     g_object_ref(query);
     ret = _libmsi_query_fetch( query, &record );
-    g_object_unref(query);
 
-    /* FIXME: raise error when it happens */
     if (ret != LIBMSI_RESULT_SUCCESS &&
         ret != NO_MORE_ITEMS)
-        g_set_error_literal (error, LIBMSI_RESULT_ERROR, ret, G_STRFUNC);
+        g_set_error (error, LIBMSI_RESULT_ERROR, ret,
+                     "cannot fetch row for SQL query \"%s\"", query->query);
+
+    g_object_unref(query);
 
     return record;
 }
@@ -435,17 +436,21 @@ libmsi_query_close (LibmsiQuery *query, GError **error)
 
     g_object_ref(query);
     view = query->view;
-    if( !view )
-        return LIBMSI_RESULT_FUNCTION_FAILED;
-    if( !view->ops->close )
-        return LIBMSI_RESULT_FUNCTION_FAILED;
+    if( !view || !view->ops->close ) {
+        g_set_error (error, LIBMSI_RESULT_ERROR,
+                     LIBMSI_RESULT_FUNCTION_FAILED,
+                     "cannot close SQL query \"%s\"", query->query);
+        g_object_unref(query);
+        return FALSE;
+    }
 
     ret = view->ops->close( view );
-    g_object_unref(query);
 
-    /* FIXME: raise error when it happens */
     if (ret != LIBMSI_RESULT_SUCCESS)
-        g_set_error_literal (error, LIBMSI_RESULT_ERROR, ret, G_STRFUNC);
+        g_set_error (error, LIBMSI_RESULT_ERROR, ret,
+                     "cannot close SQL query \"%s\"", query->query);
+
+    g_object_unref(query);
 
     return ret == LIBMSI_RESULT_SUCCESS;
 }
