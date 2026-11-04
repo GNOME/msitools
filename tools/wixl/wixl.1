@@ -1,0 +1,148 @@
+.\" This manual page is part of msitools.
+.TH WIXL 1 "2026-11-04" "msitools" "User Commands"
+.SH NAME
+wixl \- build Windows Installer packages from WiX XML
+.SH SYNOPSIS
+.B wixl
+[\fIOPTIONS\fR] \fIFILE\fR...
+.SH DESCRIPTION
+.B wixl
+builds a Windows Installer (MSI) package from one or more WiX source
+files.  The input uses the WiX v3 schema, with partial compatibility
+with the WiX v4 namespace.
+.PP
+Several input files are loaded in order and share the same preprocessor
+variables, include directories and extensions.
+.SH OPTIONS
+.TP
+.BR \-o ", " \-\-output =\fIFILE\fR
+Write the MSI package to
+.IR FILE .
+If this option is omitted, the output name is the first input file with
+its
+.B .wxs
+suffix replaced by
+.BR .msi .
+.TP
+.BR \-a ", " \-\-arch =\fIARCH\fR
+Set the target processor architecture.  See
+.BR ARCHITECTURES
+below.  The default is
+.BR x86 .
+.TP
+.BR \-D ", " \-\-define =\fINAME\fR[\fB=\fIVALUE\fR]
+Define a preprocessor variable.  If no value is given, the variable is
+defined with the value
+.BR 1 .
+The variable can be referenced as
+.BR $(var.\fINAME\fB) .
+This option may be repeated.
+.TP
+.BR \-I ", " \-\-includedir =\fIDIR\fR
+Add
+.I DIR
+to the list of directories searched by the preprocessor's
+.B include
+statement.  This option may be repeated.
+.TP
+.B \-\-extdir=\fIDIR\fR
+Use
+.I DIR
+as the directory containing WiX extensions.
+.TP
+.B \-\-wxidir=\fIDIR\fR
+Use
+.I DIR
+as the directory containing the bundled WiX include files.
+.TP
+.BR \-E ", " \-\-only\-preproc
+Stop after preprocessing and write the resulting XML to standard
+output.  No MSI package is created.
+.TP
+.B \-\-ext=\fIEXTENSION\fR
+Enable a WiX extension.  The supported extension is
+.BR ui ,
+which provides the WixUI dialog sets.  This option may be repeated.
+.TP
+.BR \-v ", " \-\-verbose
+Print the files being loaded and the package being written.
+.TP
+.B \-\-version
+Print the version number and exit.
+.SH ARCHITECTURES
+The target architecture is selected with
+.BR \-a / \-\-arch
+or with the
+.B Platform
+attribute of the
+.B Package
+element.  Architecture identifiers are case-insensitive.  If both are
+present, they must agree.  They must also agree with the architecture
+that
+.B $(sys.BUILDARCH)
+expands to when the source uses it.
+.PP
+The accepted identifiers are:
+.TP
+.BR x86 ", " intel
+32-bit x86.  This is the default architecture and uses the
+.B Intel
+template in the MSI summary information.
+.TP
+.B x64
+64-bit x86.  Components and searches default to the 64-bit view.
+.TP
+.BR ia64 ", " intel64
+64-bit Itanium.  This is a legacy architecture; it uses the
+.B x64
+summary template and defaults to the 64-bit view.
+.TP
+.B arm64
+64-bit ARM.  Components and searches default to the 64-bit view.
+.PP
+The 32-bit
+.B arm
+and
+.B msil
+identifiers are not supported.  MSI template summary information has no
+32-bit ARM or MSIL architecture.
+.SH ENVIRONMENT
+.TP
+.B WIXL_DATADIR
+Override the compiled-in data directory.  The WiX include and extension
+files are looked up below this directory.
+.SH EXAMPLES
+Build a package using the default architecture:
+.PP
+.RS 4
+.nf
+wixl \-o hello.msi hello.wxs
+.fi
+.RE
+.PP
+Build an ARM64 package:
+.PP
+.RS 4
+.nf
+wixl \-a arm64 \-o hello\-arm64.msi hello.wxs
+.fi
+.RE
+.PP
+Define a version variable used by the source:
+.PP
+.RS 4
+.nf
+wixl \-D Version=1.2.3 \-o hello.msi hello.wxs
+.fi
+.RE
+.SH SEE ALSO
+The msitools README and the WiX v3 documentation:
+.UR https://gitlab.gnome.org/GNOME/msitools
+.UE
+and
+.UR https://docs.firegiant.com/wix3/
+.UE .
+.SH BUGS
+Report bugs at
+.UR https://gitlab.gnome.org/GNOME/msitools/issues
+.UE .
