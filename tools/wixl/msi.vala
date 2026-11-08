@@ -1434,6 +1434,11 @@ namespace Wixl {
             }
         }
 
+        public void set_template_languages (string languages) throws GLib.Error {
+            info.set_property (Libmsi.Property.TEMPLATE,
+                               "%s;%s".printf (get_arch_template (), languages));
+        }
+
         public MsiDatabase (Arch arch, Extension[] extensions) {
             this.arch = arch;
             this.extensions = extensions;
