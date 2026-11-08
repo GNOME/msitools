@@ -479,6 +479,36 @@ EOF
   [ ! -f out.msi ]
 }
 
+@test "wixl - strings not representable in the codepage" {
+  cat >cyrillic.wxs <<'EOF'
+<?xml version="1.0" encoding="utf-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+  <Product Id="ABCDDCBA-86C7-4D14-AEC0-86416A69ABDE"
+           Name="Test" Version="1.0.0" Manufacturer="Test"
+           Language="1049" Codepage="$(var.Codepage)"
+           UpgradeCode="12345678-1234-1234-1234-123456789012">
+    <Package InstallerVersion="200" Compressed="yes" />
+    <Property Id="GREETING" Value="Hello, мир" />
+    <Directory Id="TARGETDIR" Name="SourceDir">
+      <Directory Id="ProgramFilesFolder">
+        <Directory Id="INSTALLDIR" Name="Test" />
+      </Directory>
+    </Directory>
+  </Product>
+</Wix>
+EOF
+  run "$wixl" -D Codepage=1251 -o out.msi cyrillic.wxs
+  [ "$status" -eq 0 ]
+  run "$msiinfo" export out.msi Property
+  echo "$output" | grep -qF $'GREETING\tHello, мир'
+
+  # the string is not silently saved empty
+  run "$wixl" -D Codepage=1252 -o out1252.msi cyrillic.wxs
+  [ "$status" -ne 0 ]
+  [[ "$output" == *"string \"Hello, мир\" can't be represented in code page 1252"* ]]
+  [ ! -f out1252.msi ]
+}
+
 @test "wixl - short directory and file names" {
   cd wixl
   mkdir -p SourceDir

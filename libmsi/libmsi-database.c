@@ -2399,10 +2399,11 @@ libmsi_database_commit (LibmsiDatabase *db, GError **error)
 
     /* FIXME: lock the database */
 
-    r = msi_save_string_table (db->strings, db, &bytes_per_strref);
+    r = msi_save_string_table (db->strings, db, &bytes_per_strref, error);
     if (r != LIBMSI_RESULT_SUCCESS) {
-        g_set_error (error, LIBMSI_RESULT_ERROR, r,
-                     "failed to save string table r=%08x\n", r);
+        if (error && !*error)
+            g_set_error (error, LIBMSI_RESULT_ERROR, r,
+                         "failed to save string table r=%08x\n", r);
         goto end;
     }
 

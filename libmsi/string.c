@@ -369,7 +369,7 @@ const char *msi_string_lookup_id( const string_table *st, unsigned id )
  *
  * Returned string is not NUL-terminated.
  */
-static unsigned _libmsi_string_id( const string_table *st, unsigned id, char *buffer, unsigned *sz )
+static unsigned _libmsi_string_id( const string_table *st, unsigned id, char *buffer, unsigned *sz, GError **error )
 {
     g_autoptr(GError) err = NULL;
     const char *str_utf8;
@@ -389,7 +389,9 @@ static unsigned _libmsi_string_id( const string_table *st, unsigned id, char *bu
     str = g_convert_with_iconv(str_utf8, -1, cpconv, NULL, &len, &err);
     g_iconv_close(cpconv);
     if (err) {
-        TRACE("Failed to convert string: %s\n", err->message);
+        g_set_error(error, LIBMSI_RESULT_ERROR, LIBMSI_RESULT_FUNCTION_FAILED,
+                    "string \"%s\" can't be represented in code page %d: %s",
+                    str_utf8, codepage, err->message);
         return LIBMSI_RESULT_FUNCTION_FAILED;
     }
     if( *sz < len )
@@ -576,7 +578,7 @@ end:
     return st;
 }
 
-unsigned msi_save_string_table( const string_table *st, LibmsiDatabase *db, unsigned *bytes_per_strref )
+unsigned msi_save_string_table( const string_table *st, LibmsiDatabase *db, unsigned *bytes_per_strref, GError **error )
 {
     unsigned i, datasize = 0, poolsize = 0, sz, used, r, codepage, n;
     unsigned ret = LIBMSI_RESULT_FUNCTION_FAILED;
@@ -631,11 +633,12 @@ unsigned msi_save_string_table( const string_table *st, LibmsiDatabase *db, unsi
         }
 
         sz = datasize - used;
-        r = _libmsi_string_id( st, n, data+used, &sz );
+        r = _libmsi_string_id( st, n, data+used, &sz, error );
         if( r != LIBMSI_RESULT_SUCCESS )
         {
-            g_critical("failed to fetch string\n");
-            sz = 0;
+            /* don't save the string as empty, the data would be lost */
+            ret = r;
+            goto err;
         }
 
         if (sz == 0) {

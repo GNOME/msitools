@@ -342,7 +342,7 @@ extern void msi_destroy_stringtable( string_table *st );
 extern const char *msi_string_lookup_id( const string_table *st, unsigned id );
 extern string_table *msi_init_string_table( unsigned *bytes_per_strref );
 extern string_table *msi_load_string_table( GsfInfile *stg, unsigned *bytes_per_strref );
-extern unsigned msi_save_string_table( const string_table *st, LibmsiDatabase *db, unsigned *bytes_per_strref );
+extern unsigned msi_save_string_table( const string_table *st, LibmsiDatabase *db, unsigned *bytes_per_strref, GError **error );
 extern unsigned msi_get_string_table_codepage( const string_table *st );
 extern unsigned msi_set_string_table_codepage( string_table *st, unsigned codepage );
 
