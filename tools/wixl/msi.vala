@@ -1439,6 +1439,13 @@ namespace Wixl {
                                "%s;%s".printf (get_arch_template (), languages));
         }
 
+        // the cabinets that aren't embedded, written next to the package
+        HashTable<string, Bytes> cabinet_files = new HashTable<string, Bytes> (str_hash, str_equal);
+
+        public void add_cabinet_file (string name, uint8[] data) {
+            cabinet_files.insert (name, new Bytes (data));
+        }
+
         public MsiDatabase (Arch arch, Extension[] extensions) {
             this.arch = arch;
             this.extensions = extensions;
@@ -1590,6 +1597,14 @@ namespace Wixl {
             }
 
             db.commit ();
+
+            var dir = File.new_for_path (filename).get_parent ();
+            var cabinets = HashTableIter<string, Bytes> (cabinet_files);
+            string cabinet;
+            Bytes data;
+            while (cabinets.next (out cabinet, out data))
+                dir.get_child (cabinet).replace_contents (data.get_data (), null, false,
+                                                          FileCreateFlags.NONE, null);
         }
     }
 

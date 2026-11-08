@@ -863,6 +863,49 @@ EOF
   [ "$(seqof SetX)" -eq -1 ]
 }
 
+@test "wixl - external cabinet" {
+  mkdir -p SourceDir out
+  echo "hello" > SourceDir/hello.txt
+  cat >cabinet.wxs <<'EOF'
+<?xml version="1.0" encoding="utf-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+  <Product Id="ABCDDCBA-86C7-4D14-AEC0-86416A69ABDE"
+           Name="Test" Version="1.0.0" Manufacturer="Test" Language="1033"
+           UpgradeCode="12345678-1234-1234-1234-123456789012">
+    <Package InstallerVersion="200" Compressed="yes" />
+    <Media Id="1" Cabinet="test.cab" EmbedCab="$(var.EmbedCab)" />
+    <Directory Id="TARGETDIR" Name="SourceDir">
+      <Directory Id="ProgramFilesFolder">
+        <Directory Id="INSTALLDIR" Name="Test">
+          <Component Id="C1" Guid="ABCDDCBA-83F1-4F22-985B-FDB3C8ABD471">
+            <File Id="F1" Source="SourceDir/hello.txt" KeyPath="yes" />
+          </Component>
+        </Directory>
+      </Directory>
+    </Directory>
+    <Feature Id="Main" Level="1">
+      <ComponentRef Id="C1" />
+    </Feature>
+  </Product>
+</Wix>
+EOF
+  run "$wixl" -D EmbedCab=yes -o embedded.msi cabinet.wxs
+  [ "$status" -eq 0 ]
+  "$msiinfo" extract embedded.msi test.cab > embedded.cab
+
+  # like WiX, a cabinet that isn't embedded is written next to the package
+  run "$wixl" -D EmbedCab=no -o out/external.msi cabinet.wxs
+  [ "$status" -eq 0 ]
+  test -f out/external.msi
+  test -f out/test.cab
+  [ ! -f test.cab ]
+  cmp embedded.cab out/test.cab
+  run "$msiinfo" export out/external.msi Media
+  echo "$output" | grep -qF $'\ttest.cab\t'
+  run "$msiinfo" streams out/external.msi
+  [[ "$output" != *"test.cab"* ]]
+}
+
 @test "wixl - reproducible build with SOURCE_DATE_EPOCH" {
   cd wixl
   sed "s/<Package Id='\*'/<Package Id='11111111-2222-3333-4444-555555555555'/" SampleFirst.wxs > repro.wxs
