@@ -242,7 +242,7 @@ EOF
     echo "$output" | grep -q "Id=\"$id\""
   done
   for id in c_false c_not c_str_ne c_and; do
-    ! echo "$output" | grep -q "Id=\"$id\""
+    [[ "$output" != *"Id=\"$id\""* ]]
   done
 }
 
@@ -286,8 +286,8 @@ EOF
   [ "$(echo "$output" | grep -c 'Id="Direct')" -eq 3 ]
   [ "$(echo "$output" | grep -c 'Id="List')" -eq 3 ]
   [ "$(echo "$output" | grep -c 'Id="Nested')" -eq 4 ]
-  ! echo "$output" | grep -q 'Id="Hidden'
-  ! echo "$output" | grep -q 'Id="Leaked'
+  [[ "$output" != *'Id="Hidden'* ]]
+  [[ "$output" != *'Id="Leaked'* ]]
 
   cat >missing.wxs <<'EOF'
 <?xml version="1.0"?>
@@ -396,13 +396,13 @@ EOF
   # a directory listed with a trailing separator must not produce an empty
   # Directory name or a doubled separator in the source path
   out=$(printf 'test/a/\ntest/a/file\n' | "$wixlheat" -p test/)
-  ! echo "$out" | grep -q 'Name=""'
-  ! echo "$out" | grep -q 'Source="SourceDir//'
+  [[ "$out" != *'Name=""'* ]]
+  [[ "$out" != *'Source="SourceDir//'* ]]
   [ "$(echo "$out" | grep -c '<Directory Id=')" -eq 1 ]
 
   # a sibling that only shares the prefix text is not matched
   out=$(printf 'testing/file\n' | "$wixlheat" -p test)
-  ! echo "$out" | grep -q '<File'
+  [[ "$out" != *'<File'* ]]
 }
 
 @test "wixl - XML error" {
@@ -622,7 +622,7 @@ EOF
   upgrade_row() { echo "$output" | tr -d '\r' | awk -F '\t' -v p="$1" '$7 == p { print }'; }
   [ "$(upgrade_row WIX_UPGRADE_DETECTED | cut -f5)" = "513" ]
   [ "$(upgrade_row WIX_DOWNGRADE_DETECTED | cut -f5)" = "2" ]
-  ! echo "$output" | grep -q WIX_SAME_VERSION_UPGRADE_DETECTED
+  [[ "$output" != *WIX_SAME_VERSION_UPGRADE_DETECTED* ]]
 
   run "$msiinfo" export out.msi InstallExecuteSequence
   [ "$status" -eq 0 ]
@@ -648,7 +648,7 @@ EOF
   [ "$status" -eq 0 ]
   [ "$(upgrade_row WIX_UPGRADE_DETECTED | cut -f2)" = "0" ]
   [ "$(upgrade_row WIX_UPGRADE_DETECTED | cut -f5)" = "257" ]
-  ! echo "$output" | grep -q WIX_DOWNGRADE_DETECTED
+  [[ "$output" != *WIX_DOWNGRADE_DETECTED* ]]
 }
 
 @test "wixl - empty tables are omitted" {
@@ -674,7 +674,7 @@ EOF
   for table in Condition CreateFolder DuplicateFile Environment Icon IniFile \
                MsiServiceConfig MoveFile Registry RemoveFile RemoveIniFile \
                ServiceControl ServiceInstall Shortcut; do
-    ! echo "$output" | grep -qx "$table"
+    [ -z "$(echo "$output" | grep -x "$table")" ]
   done
   echo "$output" | grep -qx Feature
 }
@@ -1254,7 +1254,7 @@ EOF2
   # an extension attribute doesn't override wixl's attribute of the same name
   echo "$output" | grep -F "Component C1: unsupported attribute util:Guid, ignored"
   echo "$output" | grep -F "Component C1: unsupported attribute util:Bogus, ignored"
-  ! echo "$output" | grep -F "xml:lang"
+  [[ "$output" != *"xml:lang"* ]]
   run "$msiinfo" export out.msi Component
   [ "$status" -eq 0 ]
   echo "$output" | grep -F "{ABCDDCBA-83F1-4F22-985B-FDB3C8ABD471}"
@@ -2315,12 +2315,12 @@ EOF2
   [ "$status" -eq 0 ]
   run "$msiinfo" export out.msi Control
   echo "$output" | grep -q "my own license"
-  ! echo "$output" | grep -q "Lorem ipsum"
+  [[ "$output" != *"Lorem ipsum"* ]]
   run "$wixl" -o out.msi -D WixUILicenseRtf=d.rtf uivar.wxs --ext ui --extdir "$SRCDIR/data/ext"
   [ "$status" -eq 0 ]
   run "$msiinfo" export out.msi Control
   echo "$output" | grep -q "my own license"
-  ! echo "$output" | grep -q "the -D license"
+  [[ "$output" != *"the -D license"* ]]
   sed 's|Value="my.rtf"|Value="my.rtf" Overridable="yes"|' uivar.wxs > uiover.wxs
   run "$wixl" -o out.msi -D WixUILicenseRtf=d.rtf uiover.wxs --ext ui --extdir "$SRCDIR/data/ext"
   [ "$status" -eq 0 ]
