@@ -1413,6 +1413,8 @@ namespace Wixl {
         public MsiTableMoveFile table_move_file;
 
         public HashTable<string, MsiTable> tables;
+        // the cabinets that aren't embedded, written next to the package
+        HashTable<string, Bytes> cabinet_files = new HashTable<string, Bytes> (str_hash, str_equal);
 
         int get_default_version () {
             if (arch == Arch.X86)
@@ -1439,11 +1441,8 @@ namespace Wixl {
                                "%s;%s".printf (get_arch_template (), languages));
         }
 
-        // the cabinets that aren't embedded, written next to the package
-        HashTable<string, Bytes> cabinet_files = new HashTable<string, Bytes> (str_hash, str_equal);
-
-        public void add_cabinet_file (string name, uint8[] data) {
-            cabinet_files.insert (name, new Bytes (data));
+        public void add_cabinet_file (string name, owned uint8[] data) {
+            cabinet_files.insert (name, new Bytes.take ((owned) data));
         }
 
         public MsiDatabase (Arch arch, Extension[] extensions) {
@@ -1596,15 +1595,22 @@ namespace Wixl {
                 table.create (db);
             }
 
-            db.commit ();
-
             var dir = File.new_for_path (filename).get_parent ();
             var cabinets = HashTableIter<string, Bytes> (cabinet_files);
             string cabinet;
             Bytes data;
-            while (cabinets.next (out cabinet, out data))
-                dir.get_child (cabinet).replace_contents (data.get_data (), null, false,
-                                                          FileCreateFlags.NONE, null);
+            while (cabinets.next (out cabinet, out data)) {
+                if (cabinet == "." || cabinet == ".." ||
+                    Path.get_basename (cabinet) != cabinet)
+                    throw new Wixl.Error.FAILED ("Invalid cabinet name '%s'".printf (cabinet));
+                var cabinet_file = dir.get_child (cabinet);
+                if (cabinet_file.equal (File.new_for_path (filename)))
+                    throw new Wixl.Error.FAILED ("Cabinet '%s' would overwrite the package".printf (cabinet));
+                cabinet_file.replace_contents (data.get_data (), null, false,
+                                               FileCreateFlags.NONE, null);
+            }
+
+            db.commit ();
         }
     }
 

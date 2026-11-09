@@ -904,6 +904,31 @@ EOF
   echo "$output" | grep -qF $'\ttest.cab\t'
   run "$msiinfo" streams out/external.msi
   [[ "$output" != *"test.cab"* ]]
+
+  # the default output path has no directory component
+  run "$wixl" -D EmbedCab=no -o external.msi cabinet.wxs
+  [ "$status" -eq 0 ]
+  test -f external.msi
+  test -f test.cab
+  cmp out/test.cab test.cab
+}
+
+@test "wixl - external cabinet name" {
+  cd wixl
+
+  sed -e "s/Cabinet='Sample.cab'/Cabinet='..\\/evil.cab'/" \
+      -e "s/EmbedCab='yes'/EmbedCab='no'/" SampleFirst.wxs > evil.wxs
+  run "$wixl" -o evil.msi evil.wxs
+  [ "$status" -eq 1 ]
+  [[ "$output" == *"Invalid cabinet name"* ]]
+  [ ! -f evil.cab ]
+  [ ! -f ../evil.cab ]
+
+  sed -e "s/Cabinet='Sample.cab'/Cabinet='evil.msi'/" \
+      -e "s/EmbedCab='yes'/EmbedCab='no'/" SampleFirst.wxs > overwrite.wxs
+  run "$wixl" -o evil.msi overwrite.wxs
+  [ "$status" -eq 1 ]
+  [[ "$output" == *"would overwrite the package"* ]]
 }
 
 @test "wixl - reproducible build with SOURCE_DATE_EPOCH" {
