@@ -409,6 +409,8 @@ namespace Wixl {
                 var input = new MemoryInputStream.from_data (output.get_data ()[0:output.data_size], null);
                 if (parse_yesno (m.EmbedCab))
                     db.table_streams.add (m.Cabinet, input, output.data_size);
+                else if (m.Cabinet != null)
+                    db.add_cabinet_file (m.Cabinet, output.get_data ()[0:output.data_size]);
 
                 db.table_media.set_last_sequence (m.record, sequence);
             }
