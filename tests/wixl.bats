@@ -1766,6 +1766,7 @@ EOF2
   [ "$(echo "$output" | awk -F '\t' '$1 == "C2" { print $4 }')" = "0" ]
   [ -z "$(echo "$output" | awk -F '\t' '$1 == "C2" { print $6 }' | tr -d '\r')" ]
 }
+
 @test "wixl - summary template languages" {
   cd wixl
   cat >languages.wxs <<'EOF2'
@@ -1799,10 +1800,19 @@ EOF2
   build ''
   [ "$status" -eq 0 ]
   [ "$(template)" = "Intel;1049" ]
+  build 'Languages=""'
+  [ "$status" -eq 0 ]
+  [ "$(template)" = "Intel;1049" ]
 
   build 'Languages="en-US"'
   [ "$status" -ne 0 ]
   [[ "$output" == *"Package Languages: invalid language 'en-US'"* ]]
+  build 'Languages="1049, en-US"'
+  [ "$status" -ne 0 ]
+  [[ "$output" == *"Package Languages: invalid language 'en-US'"* ]]
+  build 'Languages="1049,"'
+  [ "$status" -ne 0 ]
+  [[ "$output" == *"Package Languages: invalid language ''"* ]]
 }
 
 @test "wixl - Package Platform" {

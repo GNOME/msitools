@@ -525,18 +525,23 @@ namespace Wixl {
             }
         }
 
+        // a LANGID in decimal, from an attribute such as Product/@Language
+        int parse_langid (string what, string value) throws GLib.Error {
+            int langid = 0;
+            unowned string unparsed = "";
+            if (value == "" ||
+                !int.try_parse (value, out langid, out unparsed, 10) ||
+                unparsed != "" || langid < 0 || langid > 0xffff)
+                throw new Wixl.Error.FAILED ("%s: invalid language '%s', expected a LANGID between 0 and 65535",
+                                             what, value);
+            return langid;
+        }
+
         // a comma-separated list of LANGIDs, like Package/@Languages
         string parse_languages (string what, string value) throws GLib.Error {
             string[] langids = {};
-            foreach (var language in value.split (",")) {
-                int langid;
-                unowned string unparsed;
-                if (!int.try_parse (language.strip (), out langid, out unparsed, 10) ||
-                    unparsed != "" || langid < 0 || langid > 0xffff)
-                    throw new Wixl.Error.FAILED ("%s: invalid language '%s', expected LANGIDs between 0 and 65535",
-                                                 what, value);
-                langids += langid.to_string ();
-            }
+            foreach (var language in value.split (","))
+                langids += parse_langid (what, language.strip ()).to_string ();
             return string.joinv (",", langids);
         }
 
@@ -548,7 +553,7 @@ namespace Wixl {
             // which defaults to Product/@Language
             var languages = package_languages;
             if (languages == null && product.Language != null)
-                languages = parse_languages ("Product Language", product.Language);
+                languages = parse_langid ("Product Language", product.Language).to_string ();
             if (languages != null)
                 db.set_template_languages (languages);
 
@@ -605,7 +610,7 @@ namespace Wixl {
                 db.info.set_property (Libmsi.Property.UUID, get_uuid (package.Id));
             }
 
-            if (package.Languages != null)
+            if (package.Languages != null && package.Languages.strip () != "")
                 package_languages = parse_languages ("Package Languages", package.Languages);
 
             if (package.Comments != null)
