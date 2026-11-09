@@ -363,9 +363,11 @@ const char *msi_string_lookup_id( const string_table *st, unsigned id )
  *
  *  [in] st         - pointer to the string table
  *  [in] id         - id of the string to retrieve
- *  [out] buffer    - destination of the UTF8 string
+ *  [out] buffer    - destination of the string, encoded in the code page
+ *                    of the string table
  *  [in/out] sz     - number of bytes available in the buffer on input
  *                    number of bytes used on output
+ *  [out] error     - return location for a #GError, or %NULL
  *
  * Returned string is not NUL-terminated.
  */
@@ -382,7 +384,11 @@ static unsigned _libmsi_string_id( const string_table *st, unsigned id, char *bu
 
     str_utf8 = msi_string_lookup_id( st, id );
     if( !str_utf8 )
+    {
+        g_set_error(error, LIBMSI_RESULT_ERROR, LIBMSI_RESULT_FUNCTION_FAILED,
+                    "string id %u not found", id);
         return LIBMSI_RESULT_FUNCTION_FAILED;
+    }
 
     codepage = st->codepage ? st->codepage : gsf_msole_iconv_win_codepage();
     cpconv = gsf_msole_iconv_open_codepage_for_export(codepage);
