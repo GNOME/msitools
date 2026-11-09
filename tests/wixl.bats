@@ -957,6 +957,43 @@ EOF
   [ -z "$(comm -12 <(echo "$ids") <(echo "$ids4"))" ]
 }
 
+@test "wixl-heat - output builds without preprocessor warnings" {
+  mkdir -p SourceDir/a
+  echo "hello" > SourceDir/a/file
+  printf '%s\n' SourceDir/a/file | "$wixlheat" -p SourceDir/ \
+    --component-group CG --directory-ref INSTALLDIR > heat.wxs
+  # wixl-heat records how the fragment was generated in <?ignore?>
+  grep -qF '<?ignore' heat.wxs
+  cat >heat-product.wxs <<EOF
+<?xml version="1.0" encoding="utf-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+  <Product Id="ABCDDCBA-86C7-4D14-AEC0-86416A69ABDE"
+           Name="Test" Version="1.0.0" Manufacturer="Test" Language="1033"
+           UpgradeCode="12345678-1234-1234-1234-123456789012">
+    <Package InstallerVersion="200" Compressed="yes" />
+    <Media Id="1" Cabinet="test.cab" EmbedCab="yes" />
+    <Directory Id="TARGETDIR" Name="SourceDir">
+      <Directory Id="ProgramFilesFolder">
+        <Directory Id="INSTALLDIR" Name="Test" />
+      </Directory>
+    </Directory>
+    <Feature Id="Main" Level="1">
+      <ComponentGroupRef Id="CG" />
+    </Feature>
+  </Product>
+</Wix>
+EOF
+  run "$wixl" -o out.msi heat-product.wxs heat.wxs
+  [ "$status" -eq 0 ]
+  [[ "$output" != *"unhandled preprocessor instruction"* ]]
+  test -f out.msi
+
+  run "$wixl" -E heat.wxs
+  [ "$status" -eq 0 ]
+  [[ "$output" != *"unhandled preprocessor instruction"* ]]
+  [[ "$output" != *"<?ignore"* ]]
+}
+
 @test "wixl - File DefaultVersion and DefaultLanguage" {
   mkdir -p SourceDir
   echo "hello" > SourceDir/app.exe

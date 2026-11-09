@@ -528,6 +528,9 @@ namespace Wixl {
                     case "warning":
                         print ("warning", loc, eval (event.value ?? "", file));
                         break;
+                    case "ignore":
+                        // wixl-heat writes its version and command line as <?ignore ...?>
+                        break;
                     case "error":
                         print ("error", loc, eval (event.value ?? "", file));
                         Posix.exit (1);
