@@ -1766,6 +1766,45 @@ EOF2
   [ "$(echo "$output" | awk -F '\t' '$1 == "C2" { print $4 }')" = "0" ]
   [ -z "$(echo "$output" | awk -F '\t' '$1 == "C2" { print $6 }' | tr -d '\r')" ]
 }
+@test "wixl - summary template languages" {
+  cd wixl
+  cat >languages.wxs <<'EOF2'
+<?xml version="1.0" encoding="utf-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+  <Product Id="ABCDDCBA-86C7-4D14-AEC0-86416A69ABDE" Name="Test" Version="1.0.0" Manufacturer="Test" Language="1049"
+           UpgradeCode="12345678-1234-1234-1234-123456789012">
+    <Package InstallerVersion="200" Compressed="yes" LANGUAGES />
+    <Media Id="1" Cabinet="t.cab" EmbedCab="yes" />
+    <Directory Id="TARGETDIR" Name="SourceDir">
+      <Directory Id="ProgramFilesFolder"><Directory Id="INSTALLDIR" Name="Test">
+        <Component Id="C1" Guid="ABCDDCBA-83F1-4F22-985B-FDB3C8ABD471"><File Id="F1" Source="FoobarAppl10.exe" KeyPath="yes" /></Component>
+      </Directory></Directory>
+    </Directory>
+    <Feature Id="Main" Level="1"><ComponentRef Id="C1" /></Feature>
+  </Product>
+</Wix>
+EOF2
+  build() { sed "s/LANGUAGES/$1/" languages.wxs >l.wxs; shift; run "$wixl" -o out.msi "$@" l.wxs; }
+  template() { "$msiinfo" suminfo out.msi | grep '^Template:' | sed 's/^Template: *//'; }
+
+  # like WiX, the template lists Package/@Languages...
+  build 'Languages="1033"'
+  [ "$status" -eq 0 ]
+  [ "$(template)" = "Intel;1033" ]
+  build 'Languages="1049, 1033"' -a x64
+  [ "$status" -eq 0 ]
+  [ "$(template)" = "x64;1049,1033" ]
+
+  # ...which defaults to Product/@Language
+  build ''
+  [ "$status" -eq 0 ]
+  [ "$(template)" = "Intel;1049" ]
+
+  build 'Languages="en-US"'
+  [ "$status" -ne 0 ]
+  [[ "$output" == *"Package Languages: invalid language 'en-US'"* ]]
+}
+
 @test "wixl - Package Platform" {
   cd wixl
   cat >platform.wxs <<'EOF2'

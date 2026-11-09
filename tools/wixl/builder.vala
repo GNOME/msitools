@@ -525,7 +525,33 @@ namespace Wixl {
             }
         }
 
+        // a comma-separated list of LANGIDs, like Package/@Languages
+        string parse_languages (string what, string value) throws GLib.Error {
+            string[] langids = {};
+            foreach (var language in value.split (",")) {
+                int langid;
+                unowned string unparsed;
+                if (!int.try_parse (language.strip (), out langid, out unparsed, 10) ||
+                    unparsed != "" || langid < 0 || langid > 0xffff)
+                    throw new Wixl.Error.FAILED ("%s: invalid language '%s', expected LANGIDs between 0 and 65535",
+                                                 what, value);
+                langids += langid.to_string ();
+            }
+            return string.joinv (",", langids);
+        }
+
+        // Package/@Languages, the Package is visited before its Product
+        string? package_languages;
+
         public override void visit_product (WixProduct product) throws GLib.Error {
+            // like WiX, the summary template lists Package/@Languages,
+            // which defaults to Product/@Language
+            var languages = package_languages;
+            if (languages == null && product.Language != null)
+                languages = parse_languages ("Product Language", product.Language);
+            if (languages != null)
+                db.set_template_languages (languages);
+
             if (product.Codepage != null) {
                 int codepage;
                 if (!int.try_parse (product.Codepage, out codepage))
@@ -578,6 +604,9 @@ namespace Wixl {
                     throw new Wixl.Error.FAILED ("invalid Package Id: %s", package.Id);
                 db.info.set_property (Libmsi.Property.UUID, get_uuid (package.Id));
             }
+
+            if (package.Languages != null)
+                package_languages = parse_languages ("Package Languages", package.Languages);
 
             if (package.Comments != null)
                 db.info.set_comments (package.Comments);
