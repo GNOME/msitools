@@ -403,6 +403,7 @@ static unsigned _libmsi_string_id( const string_table *st, unsigned id, char *bu
     if( *sz < len )
     {
         *sz = len;
+        msi_free(str);
         return LIBMSI_RESULT_MORE_DATA;
     }
     *sz = len;
